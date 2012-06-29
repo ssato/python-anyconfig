@@ -4,3 +4,4 @@ include nose.cfg
 include python-anyconfig.spec.in
 include setup.py
 recursive-include anyconfig *.py
+include src/*

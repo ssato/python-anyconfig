@@ -97,11 +97,11 @@ def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):
     return [(a, vs) for a, vs in attr_and_values(s)]
 
 
-def parse(s):
-    if ":" in s:
-        return parse_attrlist(s)
-    elif "," in s:
-        return parse_list(s)
+def parse(s, lsep=",", avsep=":", vssep=",", avssep=";"):
+    if avsep in s:
+        return parse_attrlist(s, avsep, vssep, avssep)
+    elif lsep in s:
+        return parse_list(s, lsep)
     else:
         return parse_single(s)
 

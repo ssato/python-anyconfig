@@ -68,6 +68,20 @@ def parse_list(s, sep=","):
     return [parse_single(x) for x in s.split(sep) if x]
 
 
+def parse_list_str(optstr, sep=","):
+    """
+    Simple parser for optstr gives a list of items separated with "," (comma).
+
+    >>> parse_list_str("")
+    []
+    >>> parse_list_str("a,b")
+    ['a', 'b']
+    >>> parse_list_str("a,b,")
+    ['a', 'b']
+    """
+    return [p for p in optstr.split(sep) if p]
+
+
 def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):
     """
     Simple parser to parse expressions in the form of

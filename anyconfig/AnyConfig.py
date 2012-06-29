@@ -34,33 +34,31 @@ def __find_parser(config_path, forced_type=None):
     return cparser
 
 
-class AnyConfigParser(object):
+def load(config_path, forced_type=None, **kwargs):
+    """
+    @param config_path: Configuration file path
+    @param forced_type: Forced configuration parser type
+    """
+    cparser = __find_parser(config_path, forced_type)
+    if not cparser:
+        return B.Bunch()
 
-    def load(self, config_path, forced_type=None, **kwargs):
-        """
-        @param config_path: Configuration file path
-        @param forced_type: Forced configuration parser type
-        """
-        cparser = __find_parser(config_path, forced_type)
-        if not cparser:
-            return B.Bunch()
+    return cparser.load(config_path, **kwargs)
 
-        return cparser.load(config_path, **kwargs)
+def dump(data, config_path, forced_type=None):
+    cparser = __find_parser(config_path, forced_type)
+    if not cparser:
+        return B.Bunch()
 
-    def dump(self, data, config_path, forced_type=None):
-        cparser = __find_parser(config_path, forced_type)
-        if not cparser:
-            return B.Bunch()
+    if not getattr(cparser, "dump", False):
+        logging.warn(
+            "Dump method not implemented. Fallback to JsonConfigPaser"
+        )
+        cparser = BJ.JsonConfigPaser()
+        config_path = os.path.splitext(config_path)[0] + ".json"
 
-        if not getattr(cparser, "dump", False):
-            logging.warn(
-                "Dump method not implemented. Fallback to JsonConfigPaser"
-            )
-            cparser = BJ.JsonConfigPaser()
-            config_path = os.path.splitext(config_path)[0] + ".json"
-
-        logging.debug("Save to: " + config_path)
-        cparser.dump(data, config_path)
+    logging.debug("Save to: " + config_path)
+    cparser.dump(data, config_path)
 
 
 # vim:sw=4:ts=4:et:

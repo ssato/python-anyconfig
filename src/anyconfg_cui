@@ -1,0 +1,9 @@
+#! /usr/bin/python
+#
+import anyconfig.cui
+import sys
+
+anyconfig.cui.main(sys.argv)
+
+
+# vim:sw=4:ts=4:et:

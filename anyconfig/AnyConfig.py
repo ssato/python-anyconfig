@@ -41,9 +41,21 @@ def load(config_path, forced_type=None, **kwargs):
     """
     cparser = __find_parser(config_path, forced_type)
     if not cparser:
-        return B.Bunch()
+        return None
 
     return cparser.load(config_path, **kwargs)
+
+
+def loads(paths=[]):
+    """
+    @param paths: Configuration file path list
+    """
+    config = B.Bunch()
+    for p in paths:
+        config.update(load(p))
+    
+    return config
+
 
 def dump(data, config_path, forced_type=None):
     cparser = __find_parser(config_path, forced_type)

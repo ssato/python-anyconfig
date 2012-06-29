@@ -5,8 +5,6 @@
 import anyconfig.backend.ini_ as I
 
 import os
-import os.path
-import sys
 import tempfile
 import unittest
 

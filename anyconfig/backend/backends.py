@@ -7,8 +7,6 @@ import anyconfig.backend.ini_ as BINI
 import anyconfig.backend.json_ as BJSON
 import anyconfig.backend.xml_ as BXML
 import anyconfig.backend.yaml_ as BYAML
-import anyconfig.utils as U
-
 
 _CPs = [
     BINI.IniConfigParser,
@@ -24,9 +22,8 @@ def find_by_file(config_file, cps=_CPs):
 
     @param config_file: Config file path
     """
-    fext = U.get_file_extension(config_file)
     for cp in cps:
-        if cp.supports(fext):
+        if cp.supports(config_file):
             return cp
 
     return None

@@ -72,7 +72,7 @@ class YamlConfigPaser(Base.BaseConfigParser):
 
     @classmethod
     def dumps(cls, data, *args, **kwargs):
-        return yaml.dumps(data)
+        return yaml.dump(data, None)
 
     @classmethod
     def dump(cls, data, config_path, *args, **kwargs):

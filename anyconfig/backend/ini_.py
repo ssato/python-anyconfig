@@ -39,7 +39,7 @@ class IniConfigParser(Base.BaseConfigParser):
             if v.startswith('"') and v.endswith('"'):
                 return v[1:-1]
             elif sep in v:
-                return [P.parse(x) for x in U.parse_list_str(v)]
+                return [P.parse(x) for x in P.parse_list_str(v)]
             else:
                 return P.parse(v)
 
@@ -47,7 +47,7 @@ class IniConfigParser(Base.BaseConfigParser):
             parser = configparser.SafeConfigParser()
             parser.read(config_path)
 
-            # Treat key and value pairs in [DEFAULTS] as special.
+            # Treat key and value pairs in [DEFAULT] as special.
             for k, v in parser.defaults().iteritems():
                 config[k] = __parse(v)
 

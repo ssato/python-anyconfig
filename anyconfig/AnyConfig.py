@@ -53,7 +53,7 @@ def loads(paths=[]):
     config = B.Bunch()
     for p in paths:
         config.update(load(p))
-    
+
     return config
 
 

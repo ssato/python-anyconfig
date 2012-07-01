@@ -63,7 +63,6 @@ class IniConfigParser(Base.BaseConfigParser):
 
         return config
 
-
     @classmethod
     def dumps(cls, data, config_path, *args, **kwargs):
         raise NotImplementedError("Not yet")

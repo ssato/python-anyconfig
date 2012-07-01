@@ -61,7 +61,7 @@ class YamlBunchLoader(yaml.Loader):
         return mapping
 
 
-class YamlConfigPaser(Base.BaseConfigParser):
+class YamlConfigParser(Base.BaseConfigParser):
 
     _type = "yaml"
     _extentions = ["yaml", "yml"]

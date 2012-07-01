@@ -64,9 +64,9 @@ def dump(data, config_path, forced_type=None):
 
     if not getattr(cparser, "dump", False):
         logging.warn(
-            "Dump method not implemented. Fallback to JsonConfigPaser"
+            "Dump method not implemented. Fallback to JsonConfigParser"
         )
-        cparser = BJ.JsonConfigPaser()
+        cparser = BJ.JsonConfigParser()
         config_path = os.path.splitext(config_path)[0] + ".json"
 
     logging.debug("Save to: " + config_path)

@@ -10,8 +10,8 @@ import anyconfig.backend.yaml_ as BYAML
 
 _CPs = [
     BINI.IniConfigParser,
-    BJSON.JsonConfigPaser, 
-    BYAML.YamlConfigPaser,
+    BJSON.JsonConfigParser,
+    BYAML.YamlConfigParser,
     BXML.XmlConfigParser,
 ]
 

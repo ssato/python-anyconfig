@@ -26,7 +26,7 @@ def dict_to_bunch(json_obj_dict):
     return B.Bunch(**json_obj_dict)
 
 
-class JsonConfigPaser(Base.BaseConfigParser):
+class JsonConfigParser(Base.BaseConfigParser):
 
     _type = "json"
     _extensions = ["json", "jsn"]

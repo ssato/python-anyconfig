@@ -51,5 +51,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul  2 2012 Satoru SATOH <ssato@redhat.com> - 0.0.2-1
+- Fixed packaging bug that some modules were missing from the list
+
 * Fri Jun 29 2012 Satoru SATOH <ssato@redhat.com> - 0.0.1-1
 - Initial packaging

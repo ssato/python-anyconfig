@@ -9,7 +9,7 @@ curdir = os.getcwd()
 sys.path.append(curdir)
 
 PACKAGE = "python-anyconfig"
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 # If daily snapshot versioning mode:
 #VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")

@@ -24,15 +24,13 @@ class IniConfigParser(Base.BaseConfigParser):
 
     @classmethod
     def load(cls, config_path, sep=",", **kwargs):
-        """
-        @param config_path: Config file path
-        """
+        config = B.Bunch()
+
         if not os.path.exists(config_path):
-            logging.info("Not exist: " + config_path)
-            return B.Bunch()
+            logging.warn("Not exist: " + config_path)
+            return config
 
         logging.info("Loading config: " + config_path)
-        config = B.Bunch()
 
         # FIXME: Ugly
         def __parse(v):

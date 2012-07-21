@@ -25,6 +25,7 @@ class BaseConfigParser(object):
     def load(cls, config_file, **kwargs):
         """
         @param config_file:  Config file path
+        @return: B.Bunch object holding configuration parameters
         """
         raise NotImplementedError("Inherited class MUST implement this")
 

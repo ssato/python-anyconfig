@@ -7,12 +7,14 @@ import anyconfig.backend.ini_ as BINI
 import anyconfig.backend.json_ as BJSON
 import anyconfig.backend.xml_ as BXML
 import anyconfig.backend.yaml_ as BYAML
+import anyconfig.backend.properties_ as BPROP
 
 _CPs = [
     BINI.IniConfigParser,
     BJSON.JsonConfigParser,
     BYAML.YamlConfigParser,
     BXML.XmlConfigParser,
+    BPROP.PropertiesParser,
 ]
 
 

@@ -38,7 +38,7 @@ class PropertiesParser(Base.BaseConfigParser):
         for k, v in data.iteritems():
             p.setProperty(k, v)
 
-        p.store(open(config_path, 'w')
+        p.store(open(config_path, 'w'))
 
 
 # vim:sw=4:ts=4:et:

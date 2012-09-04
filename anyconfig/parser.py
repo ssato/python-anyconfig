@@ -17,6 +17,11 @@ def parse_single(s):
     """
     Very simple parser to parse expressions represent some single values.
 
+    :param s: a string to parse
+    :return: Int | Bool | String
+
+    >>> parse_single(None)
+    ''
     >>> parse_single("0")
     0
     >>> parse_single("123")
@@ -33,10 +38,13 @@ def parse_single(s):
     def matched(pat, s):
         return pat.match(s) is not None
 
+    if s is None:
+        return ''
+
     s = s.strip()
 
     if not s:
-        return ""
+        return ''
 
     if matched(BOOL_PATTERN, s):
         return bool(s)
@@ -54,7 +62,9 @@ def parse_list(s, sep=","):
     """
     Simple parser to parse expressions reprensent some list values.
 
-    @param sep: Char to separate items of list.
+    :param s: a string to parse
+    :param sep: Char to separate items of list
+    :return: [Int | Bool | String]
 
     >>> parse_list("")
     []
@@ -66,20 +76,6 @@ def parse_list(s, sep=","):
     ['a', 'b']
     """
     return [parse_single(x) for x in s.split(sep) if x]
-
-
-def parse_list_str(optstr, sep=","):
-    """
-    Simple parser for optstr gives a list of items separated with "," (comma).
-
-    >>> parse_list_str("")
-    []
-    >>> parse_list_str("a,b")
-    ['a', 'b']
-    >>> parse_list_str("a,b,")
-    ['a', 'b']
-    """
-    return [p for p in optstr.split(sep) if p]
 
 
 def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):

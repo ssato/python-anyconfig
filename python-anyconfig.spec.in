@@ -16,6 +16,10 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python
 Requires:       PyYAML
+%if %{?rhel}%{!?rhel:0} == 5
+Requires:       python-simplejson
+%endif
+#Requires:       python-pyjavaproperties
 
 
 %description
@@ -51,6 +55,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug  4 2012 Satoru SATOH <ssato@redhat.com> - 0.0.3-1
+- Fixed a grave syntax error in anyconfig.backend.properties_
+- Some docstring cleanups
+- Some refactoring
+- Implemented dicts merge/replacements came from config files
+
 * Mon Jul  2 2012 Satoru SATOH <ssato@redhat.com> - 0.0.2-1
 - Fixed packaging bug that some modules were missing from the list
 

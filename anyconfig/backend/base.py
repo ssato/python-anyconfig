@@ -24,23 +24,23 @@ class BaseConfigParser(object):
     @classmethod
     def load(cls, config_file, **kwargs):
         """
-        @param config_file:  Config file path
-        @return: B.Bunch object holding configuration parameters
+        :param config_file:  Config file path
+        :return: B.Bunch object holding configuration parameters
         """
         raise NotImplementedError("Inherited class MUST implement this")
 
     @classmethod
     def dumps(cls, data, *args, **kwargs):
         """
-        @param data: Data to dump
+        :param data: Data to dump
         """
         return repr(data)  # or str(...) ?
 
     @classmethod
     def dump(cls, data, config_path, *args, **kwargs):
         """
-        @param data: Data to dump
-        @param config_path: Dump destination file path
+        :param data: Data to dump
+        :param config_path: Dump destination file path
         """
         open(config_path, "w").write(cls.dumps(data))
 

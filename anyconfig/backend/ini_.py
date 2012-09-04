@@ -37,7 +37,7 @@ class IniConfigParser(Base.BaseConfigParser):
             if v.startswith('"') and v.endswith('"'):
                 return v[1:-1]
             elif sep in v:
-                return [P.parse(x) for x in P.parse_list_str(v)]
+                return [P.parse(x) for x in P.parse_list(v)]
             else:
                 return P.parse(v)
 

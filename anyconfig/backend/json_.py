@@ -27,9 +27,8 @@ def dict_to_bunch(json_obj_dict):
 
 
 class JsonConfigParser(Base.BaseConfigParser):
-
     _type = "json"
-    _extensions = ["json", "jsn"]
+    _extentions = ["json", "jsn"]
 
     @classmethod
     def load(cls, config_path, *args, **kwargs):

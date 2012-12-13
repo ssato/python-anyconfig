@@ -46,13 +46,15 @@ def load(config_path, forced_type=None, **kwargs):
     return cparser.load(config_path, **kwargs)
 
 
-def loads(paths=[]):
+def loads(paths=[], update=B.ST_MERGE_DICTS):
     """
     @param paths: Configuration file path list
+    @param update: Update merging strategy to use.
+        see also: anyconfig.Bunch.update
     """
     config = B.Bunch()
     for p in paths:
-        config.update(load(p))
+        config.update(load(p), update)
 
     return config
 
@@ -71,6 +73,5 @@ def dump(data, config_path, forced_type=None):
 
     logging.debug("Save to: " + config_path)
     cparser.dump(data, config_path)
-
 
 # vim:sw=4:ts=4:et:

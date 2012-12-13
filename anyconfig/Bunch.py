@@ -7,8 +7,12 @@ import copy
 #from collections import OrderedDict as dict
 
 
-_STRATEGIES = (ST_REPLACE, ST_MERGE_DICTS, ST_MERGE_DICTS_AND_LISTS) = \
-(1, 2, 3)
+(ST_REPLACE, ST_MERGE_DICTS, ST_MERGE_DICTS_AND_LISTS) = (0, 1, 2)
+ST_MERGE_STRATEGY_MAP = {
+    ST_REPLACE: "Replace all",
+    ST_MERGE_DICTS: "Merge dicts",
+    ST_MERGE_DICTS_AND_LISTS: "Merge dicts and lists",
+}
 
 
 def is_Bunch_or_dict(x):
@@ -25,7 +29,6 @@ class Bunch(dict):
 
     @see http://ruslanspivak.com/2011/06/12/the-bunch-pattern/
     """
-
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
@@ -48,12 +51,12 @@ class Bunch(dict):
         """
         if strategy == ST_REPLACE:
             self.update_w_replace(other)
-        elif strategy == ST_MERGE_DICTS:
-            self.update_w_merge(other)
         elif strategy == ST_MERGE_DICTS_AND_LISTS:
             self.update_w_merge(other, merge_lists=True)
         else:
-            self.update_w_merge(other)  # FIXME: Which is suitable for default?
+            # TODO: Which strategy should be choosen for default?
+            #       (Current default is ST_MERGE_DICTS.)
+            self.update_w_merge(other, merge_lists=False)
 
     def update_w_replace(self, other):
         if is_Bunch_or_dict(other):
@@ -78,6 +81,5 @@ class Bunch(dict):
                         self[k] = self[k] + list(v)
                     else:
                         self[k] = v
-
 
 # vim:sw=4:ts=4:et:

@@ -20,7 +20,8 @@ def is_Bunch_or_dict(x):
 
 
 def is_iterable(x):
-    return isinstance(x, (list, tuple)) or getattr(x, "next", False)
+    return isinstance(x, (list, tuple)) or \
+        (not isinstance(x, (int, str, dict)) and getattr(x, "next", False))
 
 
 class Bunch(dict):
@@ -69,7 +70,7 @@ class Bunch(dict):
         """Merge members recursively.
 
         @param merge_lists: Merge not only dicts but also lists,
-            e.g. [1, 2], [3, 4] ==> [1, 2, 3, 4]
+            e.g. [1, 2, 3], [3, 4] ==> [1, 2, 3, 4]
         """
         if is_Bunch_or_dict(other):
             for k, v in other.iteritems():
@@ -78,7 +79,7 @@ class Bunch(dict):
                     self[k].update_w_merge(v, merge_lists)
                 else:
                     if merge_lists and is_iterable(v):
-                        self[k] = self[k] + list(v)
+                        self[k] += [x for x in list(v) if x not in self[k]]
                     else:
                         self[k] = v
 

@@ -43,6 +43,7 @@ def load(config_path, forced_type=None, **kwargs):
     if not cparser:
         return None
 
+    logging.info("Loading: " + config_path)
     return cparser.load(config_path, **kwargs)
 
 

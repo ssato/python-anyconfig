@@ -2,7 +2,7 @@
 # Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.backend.yaml_ as Y
+import anyconfig.backend.yaml_ as T
 
 import os
 import tempfile
@@ -18,7 +18,7 @@ sect0:
 """
 
 
-class Test_JsonConfigParser(unittest.TestCase):
+class Test_YamlConfigParser(unittest.TestCase):
 
     def setUp(self):
         (_, conf) = tempfile.mkstemp(prefix="ac-test-")
@@ -28,9 +28,14 @@ class Test_JsonConfigParser(unittest.TestCase):
     def tearDown(self):
         os.remove(self.config_path)
 
+    def test_00_supports(self):
+        self.assertFalse(T.YamlConfigParser.supports("/a/b/c/d.ini"))
+        self.assertFalse(T.YamlConfigParser.supports("/a/b/c/d.json"))
+        self.assertTrue(T.YamlConfigParser.supports("/a/b/c/d.yml"))
+
     def test_00_load(self):
 
-        c = Y.YamlConfigParser.load(self.config_path)
+        c = T.YamlConfigParser.load(self.config_path)
 
         self.assertEquals(c['a'], 0, str(c))
         self.assertEquals(c['b'], "bbb", c)
@@ -38,6 +43,5 @@ class Test_JsonConfigParser(unittest.TestCase):
         self.assertEquals(c.b, "bbb")
 
         self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
-
 
 # vim:sw=4:ts=4:et:

@@ -28,7 +28,11 @@ class Test_IniConfigParser(unittest.TestCase):
     def tearDown(self):
         os.remove(self.config_path)
 
-    def test_00_load(self):
+    def test_00_supports(self):
+        self.assertTrue(I.IniConfigParser.supports("/a/b/c/d.ini"))
+        self.assertFalse(I.IniConfigParser.supports("/a/b/c/d.json"))
+
+    def test_10_load(self):
 
         c = I.IniConfigParser.load(self.config_path)
         print str(c)
@@ -38,6 +42,5 @@ class Test_IniConfigParser(unittest.TestCase):
         self.assertEquals(c.b, "bbb")
 
         self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
-
 
 # vim:sw=4:ts=4:et:

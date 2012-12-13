@@ -2,7 +2,7 @@
 # Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.backend.json_ as J
+import anyconfig.backend.json_ as T
 
 import os
 import tempfile
@@ -30,9 +30,13 @@ class Test_JsonConfigParser(unittest.TestCase):
     def tearDown(self):
         os.remove(self.config_path)
 
-    def test_00_load(self):
+    def test_00_supports(self):
+        self.assertFalse(T.JsonConfigParser.supports("/a/b/c/d.ini"))
+        self.assertTrue(T.JsonConfigParser.supports("/a/b/c/d.json"))
 
-        c = J.JsonConfigParser.load(self.config_path)
+    def test_10_load(self):
+
+        c = T.JsonConfigParser.load(self.config_path)
 
         self.assertEquals(c['a'], 0, str(c))
         self.assertEquals(c['b'], "bbb", c)
@@ -40,6 +44,5 @@ class Test_JsonConfigParser(unittest.TestCase):
         self.assertEquals(c.b, "bbb")
 
         self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
-
 
 # vim:sw=4:ts=4:et:

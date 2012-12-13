@@ -14,7 +14,6 @@ VERSION = "0.0.3"
 # If daily snapshot versioning mode:
 #VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
-
 data_files = []
 
 

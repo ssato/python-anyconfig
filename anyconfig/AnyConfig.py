@@ -62,10 +62,7 @@ def loads(paths=[], update=B.ST_MERGE_DICTS):
 
 def dump(data, config_path, forced_type=None):
     cparser = __find_parser(config_path, forced_type)
-    if not cparser:
-        return B.Bunch()
-
-    if not getattr(cparser, "dump", False):
+    if not cparser or not getattr(cparser, "dump", False):
         logging.warn(
             "Dump method not implemented. Fallback to JsonConfigParser"
         )

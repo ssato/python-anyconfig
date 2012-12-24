@@ -11,7 +11,7 @@ SUPPORTED = False
 class BaseConfigParser(object):
 
     _type = None
-    _extentions = []
+    _extensions = []
 
     @classmethod
     def type(cls):
@@ -19,7 +19,7 @@ class BaseConfigParser(object):
 
     @classmethod
     def supports(cls, config_file):
-        return U.get_file_extension(config_file) in cls._extentions
+        return U.get_file_extension(config_file) in cls._extensions
 
     @classmethod
     def load(cls, config_file, **kwargs):

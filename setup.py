@@ -8,11 +8,10 @@ import sys
 curdir = os.getcwd()
 sys.path.append(curdir)
 
-PACKAGE = "python-anyconfig"
-VERSION = "0.0.3"
+import anyconfig
 
-# If daily snapshot versioning mode:
-#VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
+PACKAGE = "python-anyconfig"
+VERSION = anyconfig.VERSION
 
 data_files = []
 

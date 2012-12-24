@@ -10,7 +10,7 @@ import logging
 import os.path
 
 
-def __find_parser(config_path, forced_type=None):
+def find_parser(config_path, forced_type=None):
     """
     @param config_path: Configuration file path
     @param forced_type: Forced configuration parser type
@@ -39,7 +39,7 @@ def load(config_path, forced_type=None, **kwargs):
     @param config_path: Configuration file path
     @param forced_type: Forced configuration parser type
     """
-    cparser = __find_parser(config_path, forced_type)
+    cparser = find_parser(config_path, forced_type)
     if not cparser:
         return None
 
@@ -61,7 +61,7 @@ def loads(paths=[], update=B.ST_MERGE_DICTS):
 
 
 def dump(data, config_path, forced_type=None):
-    cparser = __find_parser(config_path, forced_type)
+    cparser = find_parser(config_path, forced_type)
     if not cparser or not getattr(cparser, "dump", False):
         logging.warn(
             "Dump method not implemented. Fallback to JsonConfigParser"

@@ -5,11 +5,58 @@ import anyconfig.AnyConfig as A
 import anyconfig.Bunch as B
 import anyconfig.tests.common as C
 
+import anyconfig.backend.ini_ as BINI
+import anyconfig.backend.json_ as BJSON
+import anyconfig.backend.xml_ as BXML
+import anyconfig.backend.yaml_ as BYAML
+import anyconfig.backend.properties_ as BPROP
+
 import os.path
 import unittest
 
 
-class Test_00_effectful_functions(unittest.TestCase):
+class Test_10_pure_functions(unittest.TestCase):
+
+    def test_10_find_parser__w_forced_type(self):
+        cpath = "dummy.conf"
+
+        # These parsers should be supported.
+        self.assertEquals(A.find_parser(cpath, "ini"), BINI.IniConfigParser)
+        self.assertEquals(A.find_parser(cpath, "json"), BJSON.JsonConfigParser)
+
+        if BYAML.SUPPORTED:
+            self.assertEquals(A.find_parser(cpath, "yaml"),
+                              BYAML.YamlConfigParser)
+
+        if BXML.SUPPORTED:
+            self.assertEquals(A.find_parser(cpath, "xml"),
+                              BXML.XmlConfigParser)
+
+        if BPROP.SUPPORTED:
+            self.assertEquals(A.find_parser(cpath, "properties"),
+                              BPROP.PropertiesParser)
+
+    def test_20_find_parser__by_file(self):
+        self.assertEquals(A.find_parser("dummy.ini"), BINI.IniConfigParser)
+        self.assertEquals(A.find_parser("dummy.json"), BJSON.JsonConfigParser)
+        self.assertEquals(A.find_parser("dummy.jsn"), BJSON.JsonConfigParser)
+
+        if BYAML.SUPPORTED:
+            self.assertEquals(A.find_parser("dummy.yaml"),
+                              BYAML.YamlConfigParser)
+            self.assertEquals(A.find_parser("dummy.yml"),
+                              BYAML.YamlConfigParser)
+
+        if BXML.SUPPORTED:
+            self.assertEquals(A.find_parser("dummy.xml"),
+                              BXML.XmlConfigParser)
+
+        if BPROP.SUPPORTED:
+            self.assertEquals(A.find_parser("dummy.properties"),
+                              BPROP.PropertiesParser)
+
+
+class Test_20_effectful_functions(unittest.TestCase):
 
     def setUp(self):
         self.workdir = C.setup_workdir()

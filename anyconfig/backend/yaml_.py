@@ -64,7 +64,7 @@ class YamlBunchLoader(yaml.Loader):
 class YamlConfigParser(Base.BaseConfigParser):
 
     _type = "yaml"
-    _extentions = ["yaml", "yml"]
+    _extensions = ["yaml", "yml"]
 
     @classmethod
     def load(cls, config_path, *args, **kwargs):

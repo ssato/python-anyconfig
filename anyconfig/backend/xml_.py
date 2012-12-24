@@ -45,7 +45,7 @@ def etree_to_Bunch(root):
 class XmlConfigParser(Base.BaseConfigParser):
 
     _type = "xml"
-    _extentions = ["xml"]
+    _extensions = ["xml"]
 
     @classmethod
     def load(cls, config_path, *args, **kwargs):

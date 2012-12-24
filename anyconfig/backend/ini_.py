@@ -20,7 +20,7 @@ SUPPORTED = True  # It's always available.
 
 class IniConfigParser(Base.BaseConfigParser):
     _type = "ini"
-    _extentions = ["ini"]
+    _extensions = ["ini"]
 
     @classmethod
     def load(cls, config_path, sep=",", **kwargs):

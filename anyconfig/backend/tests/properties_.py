@@ -19,44 +19,46 @@ sect0.c = x;y;z
 TEST_STRICT = False
 
 
-class Test_PropertiesParser(unittest.TestCase):
+if T.SUPPORTED:
 
-    def setUp(self):
-        (_, conf) = tempfile.mkstemp(prefix="ac-test-")
-        open(conf, 'w').write(CONF_0)
-        self.config_path = conf
+    class Test_PropertiesParser(unittest.TestCase):
 
-    def tearDown(self):
-        os.remove(self.config_path)
+        def setUp(self):
+            (_, conf) = tempfile.mkstemp(prefix="ac-test-")
+            open(conf, 'w').write(CONF_0)
+            self.config_path = conf
 
-    def test_00_supports(self):
-        self.assertTrue(T.PropertiesParser.supports("/a/b/c/d.properties"))
-        self.assertFalse(T.PropertiesParser.supports("/a/b/c/d.json"))
+        def tearDown(self):
+            os.remove(self.config_path)
 
-    def test_10_loads(self):
-        """TODO: implement PropertiesParser.loads"""
-        return
+        def test_00_supports(self):
+            self.assertTrue(T.PropertiesParser.supports("/a/b/c/d.properties"))
+            self.assertFalse(T.PropertiesParser.supports("/a/b/c/d.json"))
 
-        c = T.PropertiesParser.loads(CONF_0)
+        def test_10_loads(self):
+            """TODO: implement PropertiesParser.loads"""
+            return
 
-        self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c.b, "bbb")
+            c = T.PropertiesParser.loads(CONF_0)
 
-        if TEST_STRICT:
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c.a, 0)
-            self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+            self.assertEquals(c['b'], "bbb", c)
+            self.assertEquals(c.b, "bbb")
 
-    def test_20_load(self):
-        c = T.PropertiesParser.load(self.config_path)
+            if TEST_STRICT:
+                self.assertEquals(c['a'], 0, str(c))
+                self.assertEquals(c.a, 0)
+                self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
 
-        self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c.b, "bbb")
+        def test_20_load(self):
+            c = T.PropertiesParser.load(self.config_path)
 
-        if TEST_STRICT:
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c.a, 0)
-            self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+            self.assertEquals(c['b'], "bbb", c)
+            self.assertEquals(c.b, "bbb")
+
+            if TEST_STRICT:
+                self.assertEquals(c['a'], 0, str(c))
+                self.assertEquals(c.a, 0)
+                self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
 
 
 # vim:sw=4:ts=4:et:

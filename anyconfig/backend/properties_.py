@@ -23,21 +23,28 @@ except ImportError:
     import StringIO
 
 
-def load_impl(config_fp, container):
-    p = pyjavaproperties.Properties()
-    p.load(config_fp)
+if SUPPORTED:
+    def load_impl(config_fp, container):
+        p = pyjavaproperties.Properties()
+        p.load(config_fp)
 
-    return container(p.getPropertyDict())
+        return container(p.getPropertyDict())
 
+    def dump_impl(data, config_fp):
+        """TODO: How to encode nested dicts?
+        """
+        p = pyjavaproperties.Properties()
+        for k, v in data.iteritems():
+            p.setProperty(k, v)
 
-def dump_impl(data, config_fp):
-    """TODO: How to encode nested dicts?
-    """
-    p = pyjavaproperties.Properties()
-    for k, v in data.iteritems():
-        p.setProperty(k, v)
+        p.store(config_fp)
 
-    p.store(config_fp)
+else:
+    def load_impl(config_fp, container):
+        return container()
+
+    def dump_impl(data, config_fp):
+        pass
 
 
 class PropertiesParser(Base.ConfigParser):

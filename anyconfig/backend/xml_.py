@@ -3,8 +3,6 @@
 # License: MIT
 #
 import anyconfig.backend.base as Base
-import anyconfig.Bunch as B
-
 import logging
 
 
@@ -26,37 +24,40 @@ except ImportError:
             SUPPORTED = False
 
 
-def etree_to_Bunch(root):
+def etree_to_container(root, container):
     """
-    Convert XML ElementTree to a collection of Bunch objects.
+    Convert XML ElementTree to a collection of container objects.
     """
-    tree = B.Bunch()
+    tree = container()
 
     if len(root):  # It has children.
         # FIXME: Configuration item cannot have both attributes and
         # values (list) at the same time in current implementation:
-        tree[root.tag] = [etree_to_Bunch(c) for c in root]
+        tree[root.tag] = [etree_to_container(c, container) for c in root]
     else:
-        tree[root.tag] = B.Bunch(**root.attrib)
+        tree[root.tag] = container(**root.attrib)
 
     return tree
 
 
-class XmlConfigParser(Base.BaseConfigParser):
+class XmlConfigParser(Base.ConfigParser):
 
     _type = "xml"
     _extensions = ["xml"]
+
+    @classmethod
+    def loads(cls, config_content, *args, **kwargs):
+        tree = etree.fromstring(config_content)
+        root = tree.getroot()
+
+        return etree_to_container(root, cls.container())
 
     @classmethod
     def load(cls, config_path, *args, **kwargs):
         tree = etree.parse(config_path)
         root = tree.getroot()
 
-        return etree_to_Bunch(root)
-
-    @classmethod
-    def dumps(cls, data, config_path, *args, **kwargs):
-        raise NotImplementedError("Not yet")
+        return etree_to_container(root, cls.container())
 
 
 # vim:sw=4:ts=4:et:

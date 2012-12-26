@@ -33,7 +33,18 @@ class Test_YamlConfigParser(unittest.TestCase):
         self.assertFalse(T.YamlConfigParser.supports("/a/b/c/d.json"))
         self.assertTrue(T.YamlConfigParser.supports("/a/b/c/d.yml"))
 
-    def test_00_load(self):
+    def test_10_loads(self):
+
+        c = T.YamlConfigParser.loads(CONF_0)
+
+        self.assertEquals(c['a'], 0, str(c))
+        self.assertEquals(c['b'], "bbb", c)
+        self.assertEquals(c.a, 0)
+        self.assertEquals(c.b, "bbb")
+
+        self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+
+    def test_20_load(self):
 
         c = T.YamlConfigParser.load(self.config_path)
 
@@ -43,5 +54,6 @@ class Test_YamlConfigParser(unittest.TestCase):
         self.assertEquals(c.b, "bbb")
 
         self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+
 
 # vim:sw=4:ts=4:et:

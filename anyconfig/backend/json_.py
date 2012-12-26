@@ -3,7 +3,6 @@
 # License: MIT
 #
 import anyconfig.backend.base as Base
-import anyconfig.Bunch as B
 
 import logging
 import sys
@@ -22,17 +21,21 @@ except ImportError:
         SUPPORTED = False
 
 
-def dict_to_bunch(json_obj_dict):
-    return B.Bunch(**json_obj_dict)
+def dict_to_container(json_obj_dict):
+    return JsonConfigParser.container()(**json_obj_dict)
 
 
-class JsonConfigParser(Base.BaseConfigParser):
+class JsonConfigParser(Base.ConfigParser):
     _type = "json"
     _extensions = ["json", "jsn"]
 
     @classmethod
+    def loads(cls, config_content, *args, **kwargs):
+        return json.loads(config_content, object_hook=dict_to_container)
+
+    @classmethod
     def load(cls, config_path, *args, **kwargs):
-        return json.load(open(config_path), object_hook=dict_to_bunch)
+        return json.load(open(config_path), object_hook=dict_to_container)
 
     @classmethod
     def dumps(cls, data, *args, **kwargs):

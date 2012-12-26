@@ -34,8 +34,17 @@ class Test_JsonConfigParser(unittest.TestCase):
         self.assertFalse(T.JsonConfigParser.supports("/a/b/c/d.ini"))
         self.assertTrue(T.JsonConfigParser.supports("/a/b/c/d.json"))
 
-    def test_10_load(self):
+    def test_10_loads(self):
+        c = T.JsonConfigParser.loads(CONF_0)
 
+        self.assertEquals(c['a'], 0, str(c))
+        self.assertEquals(c['b'], "bbb", c)
+        self.assertEquals(c.a, 0)
+        self.assertEquals(c.b, "bbb")
+
+        self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+
+    def test_20_load(self):
         c = T.JsonConfigParser.load(self.config_path)
 
         self.assertEquals(c['a'], 0, str(c))

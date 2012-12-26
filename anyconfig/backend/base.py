@@ -3,15 +3,17 @@
 # License: MIT
 #
 import anyconfig.utils as U
+import anyconfig.Bunch as B
 
 
 SUPPORTED = False
 
 
-class BaseConfigParser(object):
+class ConfigParser(object):
 
     _type = None
     _extensions = []
+    _container = B.Bunch
 
     @classmethod
     def type(cls):
@@ -22,10 +24,26 @@ class BaseConfigParser(object):
         return U.get_file_extension(config_file) in cls._extensions
 
     @classmethod
+    def container(cls):
+        return cls._container
+
+    @classmethod
+    def set_container(cls, container):
+        cls._container = container
+
+    @classmethod
+    def loads(cls, config_content, **kwargs):
+        """
+        :param config_content:  Config file content
+        :return: cls.container object holding config parameters
+        """
+        raise NotImplementedError("Inherited class MUST implement this")
+
+    @classmethod
     def load(cls, config_file, **kwargs):
         """
         :param config_file:  Config file path
-        :return: B.Bunch object holding configuration parameters
+        :return: cls.container object holding config parameters
         """
         raise NotImplementedError("Inherited class MUST implement this")
 
@@ -43,6 +61,5 @@ class BaseConfigParser(object):
         :param config_path: Dump destination file path
         """
         open(config_path, "w").write(cls.dumps(data))
-
 
 # vim:sw=4:ts=4:et:

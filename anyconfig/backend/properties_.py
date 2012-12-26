@@ -3,7 +3,6 @@
 # License: MIT
 #
 import anyconfig.backend.base as Base
-import anyconfig.Bunch as B
 
 import logging
 import sys
@@ -18,27 +17,54 @@ except ImportError:
         "pyjavaproperties module is not available. Disabled its support.\n"
     )
 
+try:
+    import cStringIO as StringIO
+except ImportError:
+    import StringIO
 
-class PropertiesParser(Base.BaseConfigParser):
+
+def load_impl(config_fp, container):
+    p = pyjavaproperties.Properties()
+    p.load(config_fp)
+
+    return container(p.getPropertyDict())
+
+
+def dump_impl(data, config_fp):
+    """TODO: How to encode nested dicts?
+    """
+    p = pyjavaproperties.Properties()
+    for k, v in data.iteritems():
+        p.setProperty(k, v)
+
+    p.store(config_fp)
+
+
+class PropertiesParser(Base.ConfigParser):
 
     _type = "properties"
     _extensions = ["properties"]
 
+    #@classmethod
+    #def loads(cls, config_content, *args, **kwargs):
+    #    config_fp = StringIO.StringIO(config_content)
+    #    return load_impl(config_fp, cls.container())
+
     @classmethod
     def load(cls, config_path, *args, **kwargs):
-        p = pyjavaproperties.Properties()
-        p.load(open(config_path))
-        return B.Bunch(p.getPropertyDict())
+        return load_impl(open(config_path), cls.container())
+
+    @classmethod
+    def dumps(cls, data, *args, **kwargs):
+        config_fp = StringIO.StringIO()
+        dump_impl(data, config_fp)
+        return config_fp.getvalue()
 
     @classmethod
     def dump(cls, data, config_path, *args, **kwargs):
         """TODO: How to encode nested dicts?
         """
-        p = pyjavaproperties.Properties()
-        for k, v in data.iteritems():
-            p.setProperty(k, v)
-
-        p.store(open(config_path, 'w'))
+        dump_impl(data, open(config_path, 'w'))
 
 
 # vim:sw=4:ts=4:et:

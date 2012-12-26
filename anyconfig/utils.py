@@ -2,6 +2,7 @@
 # Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+import glob
 import os.path
 
 
@@ -20,5 +21,8 @@ def get_file_extension(file_path):
     else:
         return ""
 
+
+def sglob(files_pattern):
+    return sorted(glob.glob(files_pattern))
 
 # vim:sw=4:ts=4:et:

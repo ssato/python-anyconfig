@@ -33,7 +33,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         self.assertEquals(a.b.b, a1.b.b)
         self.assertEquals(a.b.c, a1.b.c)
 
-    def test_20_dump_and_loads(self):
+    def test_20_dump_and_mload(self):
         a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
         b = B.Bunch(a=2, b=B.Bunch(b=[1, 2, 3, 4, 5], d="D"))
 
@@ -46,7 +46,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         A.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        x = A.loads([a_path, b_path])
+        x = A.mload([a_path, b_path])
 
         # FIXME: Too verbose
         self.assertEquals(a.name, x.name)
@@ -55,7 +55,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         self.assertEquals(a.b.c, x.b.c)
         self.assertEquals(b.b.d, x.b.d)
 
-        x = A.loads([a_path, b_path], B.ST_MERGE_DICTS_AND_LISTS)
+        x = A.mload([a_path, b_path], update=B.ST_MERGE_DICTS_AND_LISTS)
 
         self.assertEquals(a.name, x.name)
         self.assertEquals(b.a, x.a)

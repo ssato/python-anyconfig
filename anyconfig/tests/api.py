@@ -1,7 +1,7 @@
 #
 # Copyright (C) 2012 Satoru SATOH <ssato at redhat.com>
 #
-import anyconfig.AnyConfig as A
+import anyconfig.api as A
 import anyconfig.Bunch as B
 import anyconfig.tests.common as C
 

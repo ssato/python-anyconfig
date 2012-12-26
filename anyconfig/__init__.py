@@ -26,7 +26,8 @@ VERSION = "0.0.3"
 
 __version__ = VERSION
 __all__ = [
-    'dump', 'load', 'loads',
+    "load", "loads", "mload", "mload_metaconf",
+    "dump", "dumps",
 ]
 
 __author__ = 'Satoru SATOH <ssat@redhat.com>'

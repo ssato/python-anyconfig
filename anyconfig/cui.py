@@ -2,7 +2,7 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-import anyconfig.AnyConfig as A
+import anyconfig.api as A
 import anyconfig.backend.backends as Backends
 
 import codecs

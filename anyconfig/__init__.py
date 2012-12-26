@@ -16,7 +16,7 @@ The returned object is an anyconfig.Bunch object, dict-like object but its
 values are also accessible as attributes, by default.
 
 """
-from .AnyConfig import load, loads, dump
+from .api import load, loads, dump
 
 VERSION = "0.0.3"
 

@@ -55,6 +55,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan  4 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.1-1
+- Added metaconfig module to control config-loading behavior
+- Added some new APIs including anyconfig.{mload,loads}, etc.
+- Started CI tests w/ Travis
+
 * Tue Aug  4 2012 Satoru SATOH <ssato@redhat.com> - 0.0.3-1
 - Fixed a grave syntax error in anyconfig.backend.properties_
 - Some docstring cleanups

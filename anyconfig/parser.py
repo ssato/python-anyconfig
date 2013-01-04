@@ -78,7 +78,7 @@ def parse_list(s, sep=","):
     return [parse_single(x) for x in s.split(sep) if x]
 
 
-def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):
+def parse_attrlist_0(s, avs_sep=":", vs_sep=",", as_sep=";"):
     """
     Simple parser to parse expressions in the form of
     [ATTR1:VAL0,VAL1,...;ATTR2:VAL0,VAL2,..].
@@ -88,9 +88,12 @@ def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):
     :param vs_sep:  char to separate values
     :param as_sep:  char to separate attributes
 
-    >>> parse_attrlist("requires:bash,zsh")
+    :return: dict where key = (Int | String | ...),
+        value = (Int | Bool | String | ...) | [Int | Bool | String | ...]
+
+    >>> parse_attrlist_0("requires:bash,zsh")
     [('requires', ['bash', 'zsh'])]
-    >>> parse_attrlist("obsoletes:sysdata;conflicts:sysdata-old")
+    >>> parse_attrlist_0("obsoletes:sysdata;conflicts:sysdata-old")
     [('obsoletes', ['sysdata']), ('conflicts', ['sysdata-old'])]
     """
     def attr_and_values(s):
@@ -105,6 +108,22 @@ def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):
                 yield (_attr, _values)
 
     return [(a, vs) for a, vs in attr_and_values(s)]
+
+
+def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):
+    """
+    Simple parser to parse expressions in the form of
+    [ATTR1:VAL0,VAL1,...;ATTR2:VAL0,VAL2,..].
+
+    :param s: input string
+    :param avs_sep:  char to separate attribute and values
+    :param vs_sep:  char to separate values
+    :param as_sep:  char to separate attributes
+
+    >>> parse_attrlist("requires:bash,zsh")
+    {'requires': ['bash', 'zsh']}
+    """
+    return dict(parse_attrlist_0(s, avs_sep, vs_sep, as_sep))
 
 
 def parse(s, lsep=",", avsep=":", vssep=",", avssep=";"):

@@ -40,24 +40,25 @@ def etree_to_container(root, container):
     return tree
 
 
-class XmlConfigParser(Base.ConfigParser):
+if SUPPORTED:
+    class XmlConfigParser(Base.ConfigParser):
 
-    _type = "xml"
-    _extensions = ["xml"]
+        _type = "xml"
+        _extensions = ["xml"]
 
-    @classmethod
-    def loads(cls, config_content, *args, **kwargs):
-        tree = etree.fromstring(config_content)
-        root = tree.getroot()
+        @classmethod
+        def loads(cls, config_content, *args, **kwargs):
+            tree = etree.fromstring(config_content)
+            root = tree.getroot()
 
-        return etree_to_container(root, cls.container())
+            return etree_to_container(root, cls.container())
 
-    @classmethod
-    def load(cls, config_path, *args, **kwargs):
-        tree = etree.parse(config_path)
-        root = tree.getroot()
+        @classmethod
+        def load(cls, config_path, *args, **kwargs):
+            tree = etree.parse(config_path)
+            root = tree.getroot()
 
-        return etree_to_container(root, cls.container())
+            return etree_to_container(root, cls.container())
 
 
 # vim:sw=4:ts=4:et:

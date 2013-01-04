@@ -12,10 +12,16 @@ import anyconfig.backend.properties_ as BPROP
 _CPs = [
     BINI.IniConfigParser,
     BJSON.JsonConfigParser,
-    BYAML.YamlConfigParser,
-    BXML.XmlConfigParser,
-    BPROP.PropertiesParser,
 ]
+
+if BYAML.SUPPORTED:
+    _CPs.append(BYAML.YamlConfigParser)
+
+if BXML.SUPPORTED:
+    _CPs.append(BXML.XmlConfigParser)
+
+if BPROP.SUPPORTED:
+    _CPs.append(BPROP.PropertiesParser)
 
 
 def find_by_file(config_file, cps=_CPs):

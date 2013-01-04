@@ -55,6 +55,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan  4 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.2-1
+- Fixed a few that yaml.* and etree.* not defined when yaml and etree module is
+  not found, causing build time error
+
 * Fri Jan  4 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.1-1
 - Added metaconfig module to control config-loading behavior
 - Added some new APIs including anyconfig.{mload,loads}, etc.

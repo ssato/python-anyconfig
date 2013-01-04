@@ -18,7 +18,7 @@ values are also accessible as attributes, by default.
 """
 from .api import load, loads, mload, mload_metaconf, dump, dumps
 
-VERSION = "0.0.3"
+VERSION = "0.0.3.1"
 
 # If daily snapshot versioning mode:
 #importt datetime

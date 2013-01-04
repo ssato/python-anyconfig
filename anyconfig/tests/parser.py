@@ -32,13 +32,13 @@ class Test_parser(unittest.TestCase):
         self.assertEquals(P.parse_list("a,b,"), ["a", "b"])
         self.assertEquals(P.parse_list("a|b|", "|"), ["a", "b"])
 
-    def test_02_parse_attrlist(self):
+    def test_02_parse_attrlist_0(self):
         self.assertEquals(
-            P.parse_attrlist("requires:bash,zsh"),
+            P.parse_attrlist_0("requires:bash,zsh"),
             [('requires', ['bash', 'zsh'])]
         )
         self.assertEquals(
-            P.parse_attrlist("obsoletes:sysdata;conflicts:sysdata-old"),
+            P.parse_attrlist_0("obsoletes:sysdata;conflicts:sysdata-old"),
             [('obsoletes', ['sysdata']), ('conflicts', ['sysdata-old'])]
         )
 

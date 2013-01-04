@@ -5,6 +5,7 @@
 import anyconfig.Bunch as B
 import anyconfig.backend.backends as Backends
 import anyconfig.backend.json_ as BJ
+import anyconfig.parser as P
 import anyconfig.utils as U
 
 import logging
@@ -50,14 +51,14 @@ def load(config_path, forced_type=None, **kwargs):
     return cparser.load(config_path, **kwargs)
 
 
-def loads(config_content, forced_type, **kwargs):
+def loads(config_content, forced_type=None, **kwargs):
     """
     :param config_content: Configuration file's content
     :param forced_type: Forced configuration parser type
     """
     cparser = find_parser("dummy_path", forced_type)
     if not cparser:
-        return None
+        return P.parse(config_content)
 
     logging.info("Loading")
     return cparser.loads(config_content, **kwargs)

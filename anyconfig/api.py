@@ -56,7 +56,7 @@ def loads(config_content, forced_type=None, **kwargs):
     :param config_content: Configuration file's content
     :param forced_type: Forced configuration parser type
     """
-    cparser = find_parser("dummy_path", forced_type)
+    cparser = find_parser(None, forced_type)
     if not cparser:
         return P.parse(config_content)
 

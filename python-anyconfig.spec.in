@@ -3,15 +3,18 @@
 # disable debuginfo
 %define debug_package %{nil}
 
+%define pkgname anyconfig
 
-Name:           python-anyconfig
+
+Name:           python-%{pkgname}
 Version:        @VERSION@
 Release:        1%{?dist}
 Summary:        Generic access to configuration files in some formats
 Group:          Development/Libraries
 License:        MIT
 URL:            https://github.com/ssato/%{name}
-Source0:        https://github.com/ssato/%{name}/tarball/master/%{name}-%{version}.tar.gz
+#Source0:        https://github.com/ssato/%{name}/tarball/master/%{name}-%{version}.tar.gz
+Source0:        %{pkgname}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python
@@ -28,7 +31,7 @@ formats such like INI, JSON and YAML.
 
 
 %prep
-%setup -q
+%setup -q -n %{pkgname}-%{version}
 
 
 %build
@@ -55,6 +58,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan  4 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.3-1
+- Changed APIs (new: load, {single,mulit}_load) and some cleanups
+- Complemented some meta package info to register this module to PyPI
+- Changed the name of python module; stripped 'python-' from its name
+
 * Fri Jan  4 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.2-1
 - Fixed a few that yaml.* and etree.* not defined when yaml and etree module is
   not found, causing build time error

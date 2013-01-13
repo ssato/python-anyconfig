@@ -10,7 +10,7 @@ sys.path.append(curdir)
 
 import anyconfig
 
-PACKAGE = "python-anyconfig"
+PACKAGE = "anyconfig"
 VERSION = anyconfig.VERSION
 
 data_files = []
@@ -46,7 +46,7 @@ class SrpmCommand(Command):
             os.path.abspath(os.curdir), "dist"
         )
         rpmspec = params["rpmspec"] = os.path.join(
-            rpmdir, "../%s.spec" % PACKAGE
+            rpmdir, "../python-%s.spec" % PACKAGE
         )
 
         for subdir in ("SRPMS", "RPMS", "BUILD", "BUILDROOT"):
@@ -69,10 +69,27 @@ class RpmCommand(SrpmCommand):
 setup(name=PACKAGE,
     version=VERSION,
     description="Generic access to configuration files in some formats",
+    long_description=open("README.md").read(),
     author="Satoru SATOH",
     author_email="ssato@redhat.com",
     license="MIT",
     url="https://github.com/ssato/python-anyconfig",
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Environment :: Console",
+        "Operating System :: OS Independent",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Text Processing :: Markup",
+        "Topic :: Utilities",
+        "License :: OSI Approved :: MIT License",
+    ],
+    #platform=
+    install_requires=[],
+    tests_require=['nose', 'pep8'],
     packages=[
         "anyconfig",
         "anyconfig.tests",

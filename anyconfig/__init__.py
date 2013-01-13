@@ -19,7 +19,7 @@ values are also accessible as attributes, by default.
 from .api import single_load, multi_load, load, loads, dump, dumps, \
     MS_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 
-VERSION = "0.0.3.2"
+VERSION = "0.0.3.3"
 
 # If daily snapshot versioning mode:
 #importt datetime

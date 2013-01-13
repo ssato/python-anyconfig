@@ -88,8 +88,8 @@ setup(name=PACKAGE,
         "License :: OSI Approved :: MIT License",
     ],
     #platform=
-    install_requires=[],
-    tests_require=['nose', 'pep8'],
+    #install_requires=[],
+    #tests_require=['nose', 'pep8'],
     packages=[
         "anyconfig",
         "anyconfig.tests",

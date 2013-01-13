@@ -12,6 +12,17 @@ import logging
 import os.path
 
 
+MS_REPLACE = "replace"
+MS_DICTS = "merge_dicts"
+MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
+
+MERGE_STRATEGIES = dict(
+    replace=B.ST_REPLACE,
+    merge_dicts=B.ST_MERGE_DICTS,
+    merge_dicts_and_lists=B.ST_MERGE_DICTS_AND_LISTS,
+)
+
+
 def find_parser(config_path, forced_type=None):
     """
     :param config_path: Configuration file path
@@ -23,20 +34,20 @@ def find_parser(config_path, forced_type=None):
             logging.error(
                 "No parser found for given type: " + forced_type
             )
+            return None
     else:
         cparser = Backends.find_by_file(config_path)
         if not cparser:
             logging.error(
                 "No parser found for given file: " + config_path
             )
+            return None
 
-    if cparser:
-        logging.info("Using config parser: " + str(cparser))
-
+    logging.debug("Using config parser: " + str(cparser))
     return cparser
 
 
-def load(config_path, forced_type=None, **kwargs):
+def single_load(config_path, forced_type=None, **kwargs):
     """
     Load single config file.
 
@@ -44,11 +55,48 @@ def load(config_path, forced_type=None, **kwargs):
     :param forced_type: Forced configuration parser type
     """
     cparser = find_parser(config_path, forced_type)
-    if not cparser:
+    if cparser is None:
         return None
 
-    logging.info("Loading: " + config_path)
+    logging.debug("Loading: " + config_path)
     return cparser.load(config_path, **kwargs)
+
+
+def multi_load(paths=[], forced_type=None, merge=MS_DICTS_AND_LISTS):
+    """
+    Load multiple config files.
+
+    :param paths: Configuration file path list
+    :param forced_type: Forced configuration parser type
+    :param merge: Update and merging strategy to use.
+        see also: anyconfig.Bunch.update()
+    """
+    config = B.Bunch()
+    merge_st = MERGE_STRATEGIES.get(merge, False)
+
+    if not merge_st:
+        raise RuntimeError("Invalid merge strategy given: " + merge)
+
+    for p in paths:
+        config.update(single_load(p, forced_type), merge_st)
+
+    return config
+
+
+def load(path_or_pattern, forced_type=None, merge=MS_DICTS_AND_LISTS):
+    """
+    Load single or multiple config files of given path pattern.
+
+    :param path_or_pattern:
+        Configuration file path or its pattern such as '/a/b/*.json'
+    :param forced_type: Forced configuration parser type
+    :param merge: Merging strategy to use.
+        see also: anyconfig.Bunch.update()
+    """
+    if os.path.exists(path_or_pattern):
+        return single_load(path_or_pattern, forced_type)
+    else:
+        return multi_load(U.sglob(path_or_pattern), forced_type, merge)
 
 
 def loads(config_content, forced_type=None, **kwargs):
@@ -57,75 +105,49 @@ def loads(config_content, forced_type=None, **kwargs):
     :param forced_type: Forced configuration parser type
     """
     cparser = find_parser(None, forced_type)
-    if not cparser:
+    if cparser is None:
         return P.parse(config_content)
 
-    logging.info("Loading")
     return cparser.loads(config_content, **kwargs)
 
 
-def mload(paths=[], forced_type=None, update=B.ST_MERGE_DICTS):
+def _find_dumper(config_path, forced_type=None):
     """
-    Load multiple config files.
+    Find configuration parser to dump data.
 
-    :param paths: Configuration file path list
+    :param config_path: Output filename
     :param forced_type: Forced configuration parser type
-    :param update: Update merging strategy to use.
-        see also: anyconfig.Bunch.update()
     """
-    config = B.Bunch()
-    for p in paths:
-        config.update(load(p, forced_type), update)
-
-    return config
-
-
-def dump(data, config_path, forced_type=None):
     cparser = find_parser(config_path, forced_type)
-    if not cparser or not getattr(cparser, "dump", False):
+
+    if cparser is None or not getattr(cparser, "dump", False):
         logging.warn(
             "Dump method not implemented. Fallback to JsonConfigParser"
         )
         cparser = BJ.JsonConfigParser()
-        config_path = os.path.splitext(config_path)[0] + ".json"
 
-    logging.debug("Save to: " + config_path)
-    cparser.dump(data, config_path)
+    return cparser
+
+
+def dump(data, config_path, forced_type=None):
+    """
+    Save `data` as `config_path`.
+
+    :param data: Data object to dump
+    :param config_path: Output filename
+    :param forced_type: Forced configuration parser type
+    """
+    _find_dumper(config_path, forced_type).dump(data, config_path)
 
 
 def dumps(data, forced_type):
-    cparser = find_parser("dummy_path", forced_type)
-    if not cparser or not getattr(cparser, "dumps", False):
-        logging.warn(
-            "Dumps method not implemented. Fallback to JsonConfigParser"
-        )
-        cparser = BJ.JsonConfigParser()
-
-    return cparser.dumps(data)
-
-
-def mload_metaconf(metaconf_path, forced_type=None, conf_exts=".conf"):
     """
-    Load meta config files to define ``meta`` config parameters such like
-    config files' search paths and formats, etc.
+    Return string representation of `data` in forced type format.
 
-    :param metaconf_path: Dir in which meta confs exit or meta conf path
-    :param forced_type: Forced config parser type
-    :param conf_exts: Config files' extension. `forced_type` or `conf_exts`
-        must be given.
+    :param data: Data object to dump
+    :param forced_type: Forced configuration parser type
     """
-    if os.path.isdir(metaconf_path):
-        metaconfdir = metaconf_path
-        confs = U.sglob(os.path.join(metaconf_path, conf_exts))
-    else:
-        metaconfdir = os.path.dirname(metaconf_path)
-        confs = [metaconf_path]  # It's not a dir, just a file.
+    return _find_dumper(None, forced_type).dumps(data)
 
-    d = mload(confs, forced_type)
-
-    if "topdir" not in d:
-        d["topdir"] = os.path.abspath(os.path.join(metaconfdir, ".."))
-
-    return d
 
 # vim:sw=4:ts=4:et:

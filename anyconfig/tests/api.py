@@ -75,7 +75,7 @@ class Test_20_effectful_functions(unittest.TestCase):
     def tearDown(self):
         pass  # C.cleanup_workdir(self.workdir)
 
-    def test_10_dump_and_load(self):
+    def test_10_dump_and_single_load(self):
         a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
 
         a_path = os.path.join(self.workdir, "a.json")
@@ -83,7 +83,7 @@ class Test_20_effectful_functions(unittest.TestCase):
         A.dump(a, a_path)
         self.assertTrue(os.path.exists(a_path))
 
-        a1 = A.load(a_path)
+        a1 = A.single_load(a_path)
 
         # FIXME: Too verbose
         self.assertEquals(a.name, a1.name)
@@ -91,7 +91,7 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a.b.b, a1.b.b)
         self.assertEquals(a.b.c, a1.b.c)
 
-    def test_20_dump_and_mload(self):
+    def test_20_dump_and_multi_load(self):
         a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
         b = B.Bunch(a=2, b=B.Bunch(b=[1, 2, 3, 4, 5], d="D"))
 
@@ -104,7 +104,7 @@ class Test_20_effectful_functions(unittest.TestCase):
         A.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        x = A.mload([a_path, b_path])
+        x = A.multi_load([a_path, b_path], merge=A.MS_DICTS)
 
         # FIXME: Too verbose
         self.assertEquals(a.name, x.name)
@@ -113,7 +113,7 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a.b.c, x.b.c)
         self.assertEquals(b.b.d, x.b.d)
 
-        x = A.mload([a_path, b_path], update=B.ST_MERGE_DICTS_AND_LISTS)
+        x = A.multi_load([a_path, b_path])
 
         self.assertEquals(a.name, x.name)
         self.assertEquals(b.a, x.a)
@@ -121,32 +121,26 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a.b.c, x.b.c)
         self.assertEquals(b.b.d, x.b.d)
 
-    def test_50_mload_metaconf__single_file(self):
-        m0_content = '{"topdir": "/tmp"}\n'
-        m0_path = os.path.join(self.workdir, "m0.json")
+    def test_30_dump_and_load(self):
+        a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
+        b = B.Bunch(a=2, b=B.Bunch(b=[1, 2, 3, 4, 5], d="D"))
 
-        open(m0_path, 'w').write(m0_content)
+        a_path = os.path.join(self.workdir, "a.json")
+        b_path = os.path.join(self.workdir, "b.json")
 
-        mc = A.mload_metaconf(m0_path)
-        self.assertEquals(mc.topdir, "/tmp")
+        A.dump(a, a_path)
+        self.assertTrue(os.path.exists(a_path))
 
-    def test_52_mload_metaconf__dir(self):
-        m0_content = '{}\n'
-        m1_content = '{"topdir": "/tmp"\n'
+        A.dump(b, b_path)
+        self.assertTrue(os.path.exists(b_path))
 
-        subdir = "metaconf.d"
-        confdir = os.path.join(self.workdir, subdir)
+        x = A.load(os.path.join(self.workdir, '*.json'))
 
-        os.makedirs(confdir)
-
-        m0_path = os.path.join(confdir, "m0.json")
-        m1_path = os.path.join(confdir, "m1.json")
-
-        open(m0_path, 'w').write(m0_content)
-        open(m1_path, 'w').write(m1_content)
-
-        mc = A.mload_metaconf(confdir, conf_exts=".json")
-        self.assertEquals(mc.topdir, self.workdir)
+        self.assertEquals(a.name, x.name)
+        self.assertEquals(b.a, x.a)
+        self.assertEquals([1, 2, 3, 4, 5], x.b.b)
+        self.assertEquals(a.b.c, x.b.c)
+        self.assertEquals(b.b.d, x.b.d)
 
 
 # vim:sw=4:ts=4:et:

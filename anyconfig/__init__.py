@@ -16,7 +16,8 @@ The returned object is an anyconfig.Bunch object, dict-like object but its
 values are also accessible as attributes, by default.
 
 """
-from .api import load, loads, mload, mload_metaconf, dump, dumps
+from .api import single_load, multi_load, load, loads, dump, dumps, \
+    MS_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 
 VERSION = "0.0.3.2"
 
@@ -26,8 +27,9 @@ VERSION = "0.0.3.2"
 
 __version__ = VERSION
 __all__ = [
-    "load", "loads", "mload", "mload_metaconf",
+    "single_load", "multi_load", "load", "loads",
     "dump", "dumps",
+    "MS_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
 ]
 
 __author__ = 'Satoru SATOH <ssat@redhat.com>'

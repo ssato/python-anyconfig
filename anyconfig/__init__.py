@@ -35,7 +35,7 @@ the followings:
   a.yml::
 
     a: 1
-    b: 
+    b:
        - c: 0
        - c: 2
     d:
@@ -44,17 +44,17 @@ the followings:
 
   b.yml::
 
-    b: 
+    b:
        - c: 3
     d:
        e: "bbb"
 
   then::
-  
+
     load(["a.yml", "b.yml"], merge=anyconfig.MS_REPLACE)
-    
+
   will give object such like::
-  
+
     {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb"}}
 
 * anyconfig.MS_DICTS: Merge dicts recursively. That is, the following
@@ -64,7 +64,7 @@ the followings:
     load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS)
 
   will give object such like::
-  
+
     {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb", 'f': 3}}
 
 * anyconfig.MS_DICTS_AND_LISTS: Merge dicts and lists recursively. That is, the

@@ -50,4 +50,8 @@ def find_by_type(cptype, cps=_CPs):
     return None
 
 
+def list_types(cps=_CPs):
+    """List available config types."""
+    return [cp.type() for cp in cps]
+
 # vim:sw=4:ts=4:et:

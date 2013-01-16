@@ -113,9 +113,9 @@ def load(path_specs, forced_type=None, merge=MS_DICTS_AND_LISTS):
     should and how be checked then instead ?
     """
     try:
-        if os.path.exists(path_specs):
+        if os.path.exists(path_specs) and os.path.isfile(path_specs):
             return single_load(path_specs, forced_type)
-    except TypeError:
+    except (TypeError, IOError):
         pass  # ``path_specs`` should be a list of paths or paths pattern.
 
     return multi_load(path_specs, forced_type, merge)

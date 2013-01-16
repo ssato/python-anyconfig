@@ -113,13 +113,21 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a.b.c, x.b.c)
         self.assertEquals(b.b.d, x.b.d)
 
-        x = A.multi_load([a_path, b_path])
+        y = A.multi_load([a_path, b_path])
 
-        self.assertEquals(a.name, x.name)
-        self.assertEquals(b.a, x.a)
-        self.assertEquals([1, 2, 3, 4, 5], x.b.b)
-        self.assertEquals(a.b.c, x.b.c)
-        self.assertEquals(b.b.d, x.b.d)
+        self.assertEquals(a.name, y.name)
+        self.assertEquals(b.a, y.a)
+        self.assertEquals([1, 2, 3, 4, 5], y.b.b)
+        self.assertEquals(a.b.c, y.b.c)
+        self.assertEquals(b.b.d, y.b.d)
+
+        z = A.multi_load(os.path.join(self.workdir, "*.json"))
+
+        self.assertEquals(a.name, z.name)
+        self.assertEquals(b.a, z.a)
+        self.assertEquals([1, 2, 3, 4, 5], z.b.b)
+        self.assertEquals(a.b.c, z.b.c)
+        self.assertEquals(b.b.d, z.b.d)
 
     def test_30_dump_and_load(self):
         a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))

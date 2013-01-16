@@ -36,4 +36,10 @@ class Test_00_pure_functions(unittest.TestCase):
         self.assertTrue(yml_t, T.BYAML.YamlConfigParser)
         self.assertTrue(T.find_by_type(unknown_t) is None)
 
+    def test_30_list_types(self):
+        types = T.list_types()
+
+        self.assertTrue(isinstance(types, list))
+        self.assertTrue(bool(list))  # ensure it's not empty.
+
 # vim:sw=4:ts=4:et:

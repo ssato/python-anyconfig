@@ -36,12 +36,13 @@ class TestBunch(unittest.TestCase):
         #self.assertEquals(bunch.keys(), ("name", "category", "newkey"))
 
     def test_update__w_merge_dicts(self):
-        a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
+        a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"), e=[3, 4])
         b = B.Bunch(a=2, b=B.Bunch(b=[1, 2, 3], d="D"))
 
         ref = B.Bunch(**a.copy())
         ref.a = 2
         ref.b = B.Bunch(b=[1, 2, 3], c="C", d="D")
+        ref.e = [3, 4]
 
         a.update(b)
 

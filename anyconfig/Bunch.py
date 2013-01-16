@@ -75,7 +75,11 @@ class Bunch(dict):
                     self[k].update_w_merge(v, merge_lists)
                 else:
                     if merge_lists and U.is_iterable(v):
-                        self[k] += [x for x in list(v) if x not in self[k]]
+                        v0 = self.get(k, None)
+                        if v0 is None:
+                            self[k] = [x for x in list(v)]
+                        else:
+                            self[k] += [x for x in list(v) if x not in v0]
                     else:
                         self[k] = v
 

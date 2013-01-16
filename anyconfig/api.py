@@ -65,7 +65,7 @@ def single_load(config_path, forced_type=None, **kwargs):
     return cparser.load(config_path, **kwargs)
 
 
-def multi_load(paths, forced_type=None, merge=MS_DICTS_AND_LISTS):
+def multi_load(paths, forced_type=None, merge=MS_DICTS_AND_LISTS, marker='*'):
     """
     Load multiple config files.
 
@@ -78,27 +78,33 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS_AND_LISTS):
 
       multi_load("/etc/foo/conf.d/*.yml")
 
-    :param paths: List of config file paths or its glob pattern
+    :param paths: List of config file paths or a glob pattern to list paths
     :param forced_type: Forced configuration parser type
     :param merge: Strategy to merge config results of multiple config files
         loaded. see also: anyconfig.Bunch.update()
+    :param marker: Globbing markerer to detect paths patterns
     """
     merge_st = MERGE_STRATEGIES.get(merge, False)
 
     if not merge_st:
         raise RuntimeError("Invalid merge strategy given: " + merge)
 
-    if not U.is_iterable(paths):  # Should be a glob pattern.
+    if marker in paths:
         paths = U.sglob(paths)
 
     config = B.Bunch()
     for p in paths:
-        config.update(single_load(p, forced_type), merge_st)
+        if marker in p:  # Nested pattern cases, e.g. ['*.yml', '/a/b/c.yml'].
+            conf_updates = multi_load(p, forced_type, merge, marker)
+        else:
+            conf_updates = single_load(p, forced_type)
+
+        config.update(conf_updates, merge_st)
 
     return config
 
 
-def load(path_specs, forced_type=None, merge=MS_DICTS_AND_LISTS):
+def load(path_specs, forced_type=None, merge=MS_DICTS_AND_LISTS, marker='*'):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -106,19 +112,13 @@ def load(path_specs, forced_type=None, merge=MS_DICTS_AND_LISTS):
     :param path_specs:
         Configuration file path or paths or its pattern such as '/a/b/*.json'
     :param forced_type: Forced configuration parser type
-    :param merge: Merging strategy to use.
-        see also: anyconfig.Bunch.update()
-
-    FIXME: First trying to stat `path_specs` feels unsmart. Which case
-    should and how be checked then instead ?
+    :param merge: Merging strategy to use. see also: anyconfig.Bunch.update()
+    :param marker: Globbing marker to detect paths patterns
     """
-    try:
-        if os.path.exists(path_specs) and os.path.isfile(path_specs):
-            return single_load(path_specs, forced_type)
-    except (TypeError, IOError):
-        pass  # ``path_specs`` should be a list of paths or paths pattern.
-
-    return multi_load(path_specs, forced_type, merge)
+    if marker in path_specs or U.is_iterable(path_specs):
+        return multi_load(path_specs, forced_type, merge, marker)
+    else:
+        return single_load(path_specs, forced_type)
 
 
 def loads(config_content, forced_type=None, **kwargs):

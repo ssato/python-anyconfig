@@ -65,7 +65,6 @@ if SUPPORTED:
 
             return mapping
 
-
     class YamlConfigParser(Base.ConfigParser):
 
         _type = "yaml"

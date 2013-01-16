@@ -85,18 +85,28 @@ def multi_load(paths=[], forced_type=None, merge=MS_DICTS_AND_LISTS):
 
 def load(path_or_pattern, forced_type=None, merge=MS_DICTS_AND_LISTS):
     """
-    Load single or multiple config files of given path pattern.
+    Load single or multiple config files or multiple config files specified in
+    given paths pattern.
 
     :param path_or_pattern:
-        Configuration file path or its pattern such as '/a/b/*.json'
+        Configuration file path or paths or its pattern such as '/a/b/*.json'
     :param forced_type: Forced configuration parser type
     :param merge: Merging strategy to use.
         see also: anyconfig.Bunch.update()
+
+    FIXME: First trying to stat `path_or_pattern` feels unsmart. Which case
+    should and how be checked then instead ?
     """
-    if os.path.exists(path_or_pattern):
-        return single_load(path_or_pattern, forced_type)
-    else:
-        return multi_load(U.sglob(path_or_pattern), forced_type, merge)
+    try:
+        if os.path.exists(path_or_pattern):
+            return single_load(path_or_pattern, forced_type)
+    except TypeError:
+        pass
+
+    if not U.is_iterable(path_or_pattern):  # Should be a glob pattern.
+        path_or_pattern = U.sglob(path_or_pattern)
+
+    return multi_load(path_or_pattern, forced_type, merge)
 
 
 def loads(config_content, forced_type=None, **kwargs):

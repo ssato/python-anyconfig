@@ -134,13 +134,28 @@ class Test_20_effectful_functions(unittest.TestCase):
         A.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        x = A.load(os.path.join(self.workdir, '*.json'))
+        c1 = A.load(a_path)
 
-        self.assertEquals(a.name, x.name)
-        self.assertEquals(b.a, x.a)
-        self.assertEquals([1, 2, 3, 4, 5], x.b.b)
-        self.assertEquals(a.b.c, x.b.c)
-        self.assertEquals(b.b.d, x.b.d)
+        self.assertEquals(a.name, c1.name)
+        self.assertEquals(a.a, c1.a)
+        self.assertEquals(a.b.b, c1.b.b)
+        self.assertEquals(a.b.c, c1.b.c)
+
+        c2 = A.load(os.path.join(self.workdir, '*.json'))
+
+        self.assertEquals(a.name, c2.name)
+        self.assertEquals(b.a, c2.a)
+        self.assertEquals([1, 2, 3, 4, 5], c2.b.b)
+        self.assertEquals(a.b.c, c2.b.c)
+        self.assertEquals(b.b.d, c2.b.d)
+
+        c3 = A.load([a_path, b_path])
+
+        self.assertEquals(a.name, c3.name)
+        self.assertEquals(b.a, c3.a)
+        self.assertEquals([1, 2, 3, 4, 5], c3.b.b)
+        self.assertEquals(a.b.c, c3.b.c)
+        self.assertEquals(b.b.d, c3.b.d)
 
 
 # vim:sw=4:ts=4:et:

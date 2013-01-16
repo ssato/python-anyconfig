@@ -58,6 +58,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 16 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.4-1
+- Fine tunes in some APIs to load multi config files
+- Updated and enhanced CUI frontend, anyconfig_cui
+- Fixed a bug in anyconfig.Bunch.update_w_merge that cause error when merging
+  lists with passing merge_lists=True argument
+- Updated module's doctext and added some usage examples
+
 * Fri Jan  4 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.3-1
 - Changed APIs (new: load, {single,mulit}_load) and some cleanups
 - Complemented some meta package info to register this module to PyPI

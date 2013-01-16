@@ -1,6 +1,7 @@
 #
 # Copyright (C) 2011, 2012 Satoru SATOH <ssato@redhat.com>
 #
+import anyconfig.utils as U
 import copy
 
 # TODO: Keep items' order:
@@ -17,11 +18,6 @@ ST_MERGE_STRATEGY_MAP = {
 
 def is_Bunch_or_dict(x):
     return isinstance(x, (Bunch, dict))
-
-
-def is_iterable(x):
-    return isinstance(x, (list, tuple)) or \
-        (not isinstance(x, (int, str, dict)) and getattr(x, "next", False))
 
 
 class Bunch(dict):
@@ -78,7 +74,7 @@ class Bunch(dict):
                         is_Bunch_or_dict(self[k]):  # update recursively.
                     self[k].update_w_merge(v, merge_lists)
                 else:
-                    if merge_lists and is_iterable(v):
+                    if merge_lists and U.is_iterable(v):
                         self[k] += [x for x in list(v) if x not in self[k]]
                     else:
                         self[k] = v

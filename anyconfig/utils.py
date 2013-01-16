@@ -25,4 +25,30 @@ def get_file_extension(file_path):
 def sglob(files_pattern):
     return sorted(glob.glob(files_pattern))
 
+
+def is_iterable(x):
+    """
+
+    >>> is_iterable([])
+    True
+    >>> is_iterable(())
+    True
+    >>> is_iterable([x for x in range(10)])
+    True
+    >>> is_iterable((1, 2, 3))
+    True
+    >>> g = (x for x in range(10))
+    >>> is_iterable(g)
+    True
+    >>> is_iterable("abc")
+    False
+    >>> is_iterable(0)
+    False
+    >>> is_iterable({})
+    False
+    """
+    return isinstance(x, (list, tuple)) or \
+        (not isinstance(x, (int, str, dict)) and \
+            bool(getattr(x, "next", False)))
+
 # vim:sw=4:ts=4:et:

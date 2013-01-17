@@ -42,23 +42,19 @@ if T.SUPPORTED:
             c = T.PropertiesParser.loads(CONF_0)
 
             self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c.b, "bbb")
 
             if TEST_STRICT:
                 self.assertEquals(c['a'], 0, str(c))
-                self.assertEquals(c.a, 0)
-                self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+                self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_20_load(self):
             c = T.PropertiesParser.load(self.config_path)
 
             self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c.b, "bbb")
 
             if TEST_STRICT:
                 self.assertEquals(c['a'], 0, str(c))
-                self.assertEquals(c.a, 0)
-                self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+                self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
 
 
 # vim:sw=4:ts=4:et:

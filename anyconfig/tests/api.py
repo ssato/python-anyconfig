@@ -57,14 +57,13 @@ class Test_10_pure_functions(unittest.TestCase):
                               BPROP.PropertiesParser)
 
     def test_30_dumps_and_loads(self):
-        a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         a1 = A.loads(A.dumps(a, "json"), "json")
 
-        # FIXME: Too verbose
-        self.assertEquals(a.name, a1.name)
-        self.assertEquals(a.a, a1.a)
-        self.assertEquals(a.b.b, a1.b.b)
-        self.assertEquals(a.b.c, a1.b.c)
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
 
 class Test_20_effectful_functions(unittest.TestCase):
@@ -76,7 +75,7 @@ class Test_20_effectful_functions(unittest.TestCase):
         pass  # C.cleanup_workdir(self.workdir)
 
     def test_10_dump_and_single_load(self):
-        a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
         a_path = os.path.join(self.workdir, "a.json")
 
@@ -85,15 +84,14 @@ class Test_20_effectful_functions(unittest.TestCase):
 
         a1 = A.single_load(a_path)
 
-        # FIXME: Too verbose
-        self.assertEquals(a.name, a1.name)
-        self.assertEquals(a.a, a1.a)
-        self.assertEquals(a.b.b, a1.b.b)
-        self.assertEquals(a.b.c, a1.b.c)
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
     def test_20_dump_and_multi_load(self):
-        a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
-        b = B.Bunch(a=2, b=B.Bunch(b=[1, 2, 3, 4, 5], d="D"))
+        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.json")
@@ -104,34 +102,33 @@ class Test_20_effectful_functions(unittest.TestCase):
         A.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        x = A.multi_load([a_path, b_path], merge=A.MS_DICTS)
+        a1 = A.multi_load([a_path, b_path], merge=A.MS_DICTS)
 
-        # FIXME: Too verbose
-        self.assertEquals(a.name, x.name)
-        self.assertEquals(b.a, x.a)
-        self.assertEquals(b.b.b, x.b.b)
-        self.assertEquals(a.b.c, x.b.c)
-        self.assertEquals(b.b.d, x.b.d)
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      b["a"])
+        self.assertEquals(a1["b"]["b"], b["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+        self.assertEquals(a1["b"]["d"], b["b"]["d"])
 
-        y = A.multi_load([a_path, b_path])
+        a2 = A.multi_load([a_path, b_path], merge=A.MS_DICTS_AND_LISTS)
 
-        self.assertEquals(a.name, y.name)
-        self.assertEquals(b.a, y.a)
-        self.assertEquals([1, 2, 3, 4, 5], y.b.b)
-        self.assertEquals(a.b.c, y.b.c)
-        self.assertEquals(b.b.d, y.b.d)
+        self.assertEquals(a2["name"],   a["name"])
+        self.assertEquals(a2["a"],      b["a"])
+        self.assertEquals(a2["b"]["b"], [0, 1, 2, 3, 4, 5])
+        self.assertEquals(a2["b"]["c"], a["b"]["c"])
+        self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
-        z = A.multi_load(os.path.join(self.workdir, "*.json"))
+        a3 = A.multi_load(os.path.join(self.workdir, "*.json"))
 
-        self.assertEquals(a.name, z.name)
-        self.assertEquals(b.a, z.a)
-        self.assertEquals([1, 2, 3, 4, 5], z.b.b)
-        self.assertEquals(a.b.c, z.b.c)
-        self.assertEquals(b.b.d, z.b.d)
+        self.assertEquals(a3["name"],   a["name"])
+        self.assertEquals(a3["a"],      b["a"])
+        self.assertEquals(a3["b"]["b"], [0, 1, 2, 3, 4, 5])
+        self.assertEquals(a3["b"]["c"], a["b"]["c"])
+        self.assertEquals(a3["b"]["d"], b["b"]["d"])
 
     def test_30_dump_and_load(self):
-        a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
-        b = B.Bunch(a=2, b=B.Bunch(b=[1, 2, 3, 4, 5], d="D"))
+        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.json")
@@ -142,28 +139,27 @@ class Test_20_effectful_functions(unittest.TestCase):
         A.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        c1 = A.load(a_path)
+        a1 = A.load(a_path)
 
-        self.assertEquals(a.name, c1.name)
-        self.assertEquals(a.a, c1.a)
-        self.assertEquals(a.b.b, c1.b.b)
-        self.assertEquals(a.b.c, c1.b.c)
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
-        c2 = A.load(os.path.join(self.workdir, '*.json'))
+        a2 = A.load(os.path.join(self.workdir, '*.json'))
 
-        self.assertEquals(a.name, c2.name)
-        self.assertEquals(b.a, c2.a)
-        self.assertEquals([1, 2, 3, 4, 5], c2.b.b)
-        self.assertEquals(a.b.c, c2.b.c)
-        self.assertEquals(b.b.d, c2.b.d)
+        self.assertEquals(a2["name"],   a["name"])
+        self.assertEquals(a2["a"],      b["a"])
+        self.assertEquals(a2["b"]["b"], [0, 1, 2, 3, 4, 5])
+        self.assertEquals(a2["b"]["c"], a["b"]["c"])
+        self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
-        c3 = A.load([a_path, b_path])
+        a3 = A.load([a_path, b_path])
 
-        self.assertEquals(a.name, c3.name)
-        self.assertEquals(b.a, c3.a)
-        self.assertEquals([1, 2, 3, 4, 5], c3.b.b)
-        self.assertEquals(a.b.c, c3.b.c)
-        self.assertEquals(b.b.d, c3.b.d)
-
+        self.assertEquals(a3["name"],   a["name"])
+        self.assertEquals(a3["a"],      b["a"])
+        self.assertEquals(a3["b"]["b"], [0, 1, 2, 3, 4, 5])
+        self.assertEquals(a3["b"]["c"], a["b"]["c"])
+        self.assertEquals(a3["b"]["d"], b["b"]["d"])
 
 # vim:sw=4:ts=4:et:

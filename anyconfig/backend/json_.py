@@ -22,7 +22,7 @@ except ImportError:
 
 
 def dict_to_container(json_obj_dict):
-    return JsonConfigParser.container()(**json_obj_dict)
+    return JsonConfigParser.container().create(json_obj_dict)
 
 
 class JsonConfigParser(Base.ConfigParser):

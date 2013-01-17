@@ -18,7 +18,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         pass  # C.cleanup_workdir(self.workdir)
 
     def test_10_dump_and_load(self):
-        a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
         a_path = os.path.join(self.workdir, "a.json")
 
@@ -28,14 +28,14 @@ class Test_10_effectful_functions(unittest.TestCase):
         a1 = A.load(a_path)
 
         # FIXME: Too verbose
-        self.assertEquals(a.name, a1.name)
-        self.assertEquals(a.a, a1.a)
-        self.assertEquals(a.b.b, a1.b.b)
-        self.assertEquals(a.b.c, a1.b.c)
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
     def test_20_dump_and_multi_load(self):
-        a = B.Bunch(name="a", a=1, b=B.Bunch(b=[1, 2], c="C"))
-        b = B.Bunch(a=2, b=B.Bunch(b=[1, 2, 3, 4, 5], d="D"))
+        a = dict(name="a", a=1, b=dict(b=[0, 1], c="C"))
+        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.json")
@@ -46,21 +46,20 @@ class Test_10_effectful_functions(unittest.TestCase):
         A.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        x = A.multi_load([a_path, b_path], merge=A.MS_DICTS)
+        a1 = A.multi_load([a_path, b_path], merge=A.MS_DICTS)
 
-        # FIXME: Too verbose
-        self.assertEquals(a.name, x.name)
-        self.assertEquals(b.a, x.a)
-        self.assertEquals(b.b.b, x.b.b)
-        self.assertEquals(a.b.c, x.b.c)
-        self.assertEquals(b.b.d, x.b.d)
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      b["a"])
+        self.assertEquals(a1["b"]["b"], b["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+        self.assertEquals(a1["b"]["d"], b["b"]["d"])
 
-        x = A.multi_load([a_path, b_path])
+        a2 = A.multi_load([a_path, b_path], merge=A.MS_DICTS_AND_LISTS)
 
-        self.assertEquals(a.name, x.name)
-        self.assertEquals(b.a, x.a)
-        self.assertEquals([1, 2, 3, 4, 5], x.b.b)
-        self.assertEquals(a.b.c, x.b.c)
-        self.assertEquals(b.b.d, x.b.d)
+        self.assertEquals(a2["name"],   a["name"])
+        self.assertEquals(a2["a"],      b["a"])
+        self.assertEquals(a2["b"]["b"], [0, 1, 2, 3, 4, 5])
+        self.assertEquals(a2["b"]["c"], a["b"]["c"])
+        self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
 # vim:sw=4:ts=4:et:

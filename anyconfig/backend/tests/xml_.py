@@ -42,8 +42,6 @@ class Test_XmlConfigParser(unittest.TestCase):
 
         self.assertEquals(c['a'], 0, str(c))
         self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c.a, 0)
-        self.assertEquals(c.b, "bbb")
 
         # FIXME: Needs to implement list parser ?
         #self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
@@ -56,10 +54,6 @@ class Test_XmlConfigParser(unittest.TestCase):
 
         self.assertEquals(c['a'], 0, str(c))
         self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c.a, 0)
-        self.assertEquals(c.b, "bbb")
-
-        #self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
 
 
 # vim:sw=4:ts=4:et:

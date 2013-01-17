@@ -17,7 +17,7 @@ def is_MergeableDict_or_dict(x):
 
 class MergeableDict(dict):
     """
-    Dict-like object supports 'merge' operation.
+    Dict based object supports 'merge' operation.
     """
 
     # TODO: Which strategy should be choosen for default?

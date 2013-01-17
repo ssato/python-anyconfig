@@ -4,6 +4,7 @@
 #
 import anyconfig.utils as U
 import anyconfig.Bunch as B
+import anyconfig.mergeabledict as D
 
 
 SUPPORTED = False
@@ -13,7 +14,8 @@ class ConfigParser(object):
 
     _type = None
     _extensions = []
-    _container = B.Bunch
+    #_container = B.Bunch
+    _container = D.MergeableDict
 
     @classmethod
     def type(cls):

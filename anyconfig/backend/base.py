@@ -2,9 +2,8 @@
 # Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.utils as U
-import anyconfig.Bunch as B
 import anyconfig.mergeabledict as D
+import anyconfig.utils as U
 
 
 SUPPORTED = False
@@ -14,7 +13,6 @@ class ConfigParser(object):
 
     _type = None
     _extensions = []
-    #_container = B.Bunch
     _container = D.MergeableDict
 
     @classmethod

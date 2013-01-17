@@ -2,7 +2,7 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.Bunch as B
+import anyconfig.mergeabledict as M
 import anyconfig.backend.backends as Backends
 import anyconfig.backend.json_ as BJ
 import anyconfig.parser as P
@@ -17,13 +17,16 @@ MS_DICTS = "merge_dicts"
 MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 
 MERGE_STRATEGIES = dict(
-    replace=B.ST_REPLACE,
-    merge_dicts=B.ST_MERGE_DICTS,
-    merge_dicts_and_lists=B.ST_MERGE_DICTS_AND_LISTS,
+    replace=M.ST_REPLACE,
+    merge_dicts=M.ST_MERGE_DICTS,
+    merge_dicts_and_lists=M.ST_MERGE_DICTS_AND_LISTS,
 )
 
 # Re-export:
 list_types = Backends.list_types
+
+# alias:
+container = M.MergeableDict
 
 
 def find_parser(config_path, forced_type=None):
@@ -81,7 +84,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS_AND_LISTS, marker='*'):
     :param paths: List of config file paths or a glob pattern to list paths
     :param forced_type: Forced configuration parser type
     :param merge: Strategy to merge config results of multiple config files
-        loaded. see also: anyconfig.Bunch.update()
+        loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
     :param marker: Globbing markerer to detect paths patterns
     """
     merge_st = MERGE_STRATEGIES.get(merge, False)
@@ -92,7 +95,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS_AND_LISTS, marker='*'):
     if marker in paths:
         paths = U.sglob(paths)
 
-    config = B.Bunch()
+    config = container()
     for p in paths:
         if marker in p:  # Nested pattern cases, e.g. ['*.yml', '/a/b/c.yml'].
             conf_updates = multi_load(p, forced_type, merge, marker)
@@ -112,7 +115,7 @@ def load(path_specs, forced_type=None, merge=MS_DICTS_AND_LISTS, marker='*'):
     :param path_specs:
         Configuration file path or paths or its pattern such as '/a/b/*.json'
     :param forced_type: Forced configuration parser type
-    :param merge: Merging strategy to use. see also: anyconfig.Bunch.update()
+    :param merge: Merging strategy to use
     :param marker: Globbing marker to detect paths patterns
     """
     if marker in path_specs or U.is_iterable(path_specs):

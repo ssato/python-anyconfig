@@ -2,7 +2,6 @@
 # Copyright (C) 2012 Satoru SATOH <ssato at redhat.com>
 #
 import anyconfig.api as A
-import anyconfig.Bunch as B
 import anyconfig.tests.common as C
 
 import anyconfig.backend.ini_ as BINI

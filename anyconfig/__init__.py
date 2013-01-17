@@ -12,8 +12,8 @@ use
     jd = anyconfig.load("foo.json")
     yd = anyconfig.load("bar.yaml")
 
-The returned object is an anyconfig.Bunch object, dict-like object but its
-values are also accessible as attributes, by default.
+The returned object is an instance of anyconfig.mergeabledict.MergeableDict
+class, dict-based class support recursive dicts and lists merge operation.
 
 You can also load multiple config files at once w/ anyconfig.multi_load:
 

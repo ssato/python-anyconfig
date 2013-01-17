@@ -52,7 +52,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc README.md
+%doc README.rst
 %{_bindir}/*
 %{python_sitelib}/*
 

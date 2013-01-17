@@ -54,27 +54,20 @@ There is a CUI frontend 'anyconfig_cui' for demonstration purpose.
 
 It can process various config files and output a summarized config file::
 
-  ssato@localhost% anyconfg_cui
+  $ anyconfig_cui -h
   Usage: anyconfg_cui [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
 
   Examples:
-    anyconfg_cui -t yaml /etc/xyz/conf.d/a.conf
-    anyconfg_cui -t yaml '/etc/xyz/conf.d/*.conf'
-    anyconfg_cui /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
-
-
-  ssato@localhost% anyconfg_cui -h
-  Usage: anyconfg_cui [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
-
-  Examples:
-    anyconfg_cui -t yaml /etc/xyz/conf.d/a.conf
-    anyconfg_cui -t yaml '/etc/xyz/conf.d/*.conf'
+    anyconfg_cui --list
+    anyconfg_cui -I yaml /etc/xyz/conf.d/a.conf
+    anyconfg_cui -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
     anyconfg_cui /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
 
 
   Options:
     -h, --help            show this help message and exit
     -D, --debug           Debug mode
+    -L, --list            List supported config types
     -o OUTPUT, --output=OUTPUT
                           Output file path
     -I ITYPE, --itype=ITYPE
@@ -85,7 +78,7 @@ It can process various config files and output a summarized config file::
                           Explicitly select type of Output config files from
                           ini, json, yaml, xml, properties [Automatically
                           detected by file path]
-  ssato@localhost%
+  $
 
 
 Test Status

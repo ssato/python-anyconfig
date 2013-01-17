@@ -20,8 +20,9 @@ USAGE = """\
 %prog [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
 
 Examples:
-  %prog -t yaml /etc/xyz/conf.d/a.conf
-  %prog -t yaml '/etc/xyz/conf.d/*.conf'
+  %prog --list
+  %prog -I yaml /etc/xyz/conf.d/a.conf
+  %prog -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
   %prog /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
 """
 
@@ -29,6 +30,7 @@ Examples:
 def main(argv=sys.argv):
     defaults = {
         "debug": False,
+        "list": False,
         "output": None,
         "itype": None,
         "otype": None,
@@ -41,18 +43,25 @@ def main(argv=sys.argv):
     p.set_defaults(**defaults)
 
     p.add_option("-D", "--debug", action="store_true", help="Debug mode")
+    p.add_option("-L", "--list", help="List supported config types",
+                 action="store_true")
     p.add_option("-o", "--output", help="Output file path")
     p.add_option("-I", "--itype", choices=ctypes, help=(type_help % "Input"))
     p.add_option("-O", "--otype", choices=ctypes, help=(type_help % "Output"))
 
     (options, args) = p.parse_args(argv[1:])
 
-    if not args:
-        p.print_usage()
-        sys.exit(-1)
-
     llvl = logging.DEBUG if options.debug else logging.INFO
     logging.basicConfig(level=llvl)
+
+    if not args:
+        if options.list:
+            sys.stdout.write("Supported config types: " + \
+                             ", ".join(A.list_types()) + "\n")
+            sys.exit(0)
+        else:
+            p.print_usage()
+            sys.exit(-1)
 
     data = A.load(args, options.itype)
 

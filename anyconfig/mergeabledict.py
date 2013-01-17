@@ -23,6 +23,18 @@ class MergeableDict(dict):
     # TODO: Which strategy should be choosen for default?
     strategy = ST_MERGE_DICTS_AND_LISTS
 
+    @classmethod
+    def create(cls, x):
+        """Create an instance from any object.
+        """
+        if is_MergeableDict_or_dict(x):
+            return MergeableDict((k, cls.create(v)) for k, v in
+                                    x.iteritems())
+        elif U.is_iterable(x):
+            return type(x)(cls.create(v) for v in x)
+        else:
+            return x
+
     def get_strategy(self):
         return self.strategy
 

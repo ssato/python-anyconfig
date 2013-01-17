@@ -69,7 +69,7 @@ class RpmCommand(SrpmCommand):
 setup(name=PACKAGE,
     version=VERSION,
     description="Generic access to configuration files in some formats",
-    long_description=open("README.md").read(),
+    long_description=open("README.rst").read(),
     author="Satoru SATOH",
     author_email="ssato@redhat.com",
     license="MIT",

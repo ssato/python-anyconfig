@@ -81,6 +81,21 @@ It can process various config files and output a summarized config file::
   $
 
 
+Build & Install
+================
+
+If you're Fedora or Red Hat Enterprise Linux user, try::
+
+  $ python setup.py srpm && mock dist/SRPMS/python-anyconfig-<ver_dist>.src.rpm
+  
+or::
+
+  $ python setup.py rpm
+
+and install built RPMs. 
+
+Otherwise, try usual way such like 'python setup.py bdist', etc.
+
 Test Status
 =============
 

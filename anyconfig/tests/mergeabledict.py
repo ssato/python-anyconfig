@@ -10,6 +10,12 @@ import unittest
 
 class Test_MergeableDict(unittest.TestCase):
 
+    def test_create(self):
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), e=[3, 4])
+        b = T.MergeableDict.create(a)
+
+        self.assertTrue(isinstance(b, T.MergeableDict))
+
     def test_update__w_merge_dicts(self):
         a = T.MergeableDict(name="a", a=1,
                             b=T.MergeableDict(b=[1, 2], c="C"),

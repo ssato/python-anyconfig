@@ -35,13 +35,9 @@ class Test_IniConfigParser(unittest.TestCase):
     def test_10_loads(self):
 
         c = I.IniConfigParser.loads(CONF_0)
-        print str(c)
         self.assertEquals(c['a'], 0, str(c))
         self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c.a, 0)
-        self.assertEquals(c.b, "bbb")
-
-        self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+        self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
 
     def test_20_load(self):
 
@@ -49,9 +45,6 @@ class Test_IniConfigParser(unittest.TestCase):
         print str(c)
         self.assertEquals(c['a'], 0, str(c))
         self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c.a, 0)
-        self.assertEquals(c.b, "bbb")
-
-        self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+        self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
 
 # vim:sw=4:ts=4:et:

@@ -21,7 +21,7 @@ class MergeableDict(dict):
     """
 
     # TODO: Which strategy should be choosen for default?
-    strategy = ST_MERGE_DICTS_AND_LISTS
+    strategy = ST_MERGE_DICTS
 
     @classmethod
     def create(cls, x):

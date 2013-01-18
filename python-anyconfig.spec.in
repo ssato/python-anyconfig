@@ -58,6 +58,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 18 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.5-1
+- Changed the default merge strategy of anyconfig.mergeabledict.MergeableDict
+  from merge_dicts_and_lists to merge_dicts
+- Updated README and added some usage examples
+
 * Thu Jan 17 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.4-1
 - Fine tunes in some APIs to load multi config files
 - Updated and enhanced CUI frontend, anyconfig_cui

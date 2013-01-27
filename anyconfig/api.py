@@ -129,6 +129,9 @@ def loads(config_content, forced_type=None, **kwargs):
     :param config_content: Configuration file's content
     :param forced_type: Forced configuration parser type
     """
+    if forced_type is None:
+        return P.parse(config_content)
+
     cparser = find_parser(None, forced_type)
     if cparser is None:
         return P.parse(config_content)

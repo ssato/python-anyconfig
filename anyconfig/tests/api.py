@@ -79,7 +79,7 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.workdir = C.setup_workdir()
 
     def tearDown(self):
-        pass  # C.cleanup_workdir(self.workdir)
+        C.cleanup_workdir(self.workdir)
 
     def test_10_dump_and_single_load(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))

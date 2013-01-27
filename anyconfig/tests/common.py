@@ -10,7 +10,7 @@ def selfdir():
 
 
 def setup_workdir():
-    return tempfile.mkdtemp(dir="/tmp", prefix="anyconfig-tests")
+    return tempfile.mkdtemp(dir="/tmp", prefix="python-anyconfig-tests-")
 
 
 def cleanup_workdir(workdir):

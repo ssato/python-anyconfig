@@ -23,6 +23,12 @@ To load single config file::
   # extension).
   data1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
 
+  # Loaded config should be a dict-like object.
+  # examples:
+  # data1["a"] => 1
+  # data1["b"]["b1"] => "xyz"
+  # data1["c"]["c1"]["c13"] => [1, 2, 3]
+
   # Same as above
   data2 = anyconfig.single_load("/path/to/foo/conf.d/a.yml")
 

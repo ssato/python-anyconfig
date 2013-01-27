@@ -64,6 +64,14 @@ class Test_10_pure_functions(unittest.TestCase):
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
+    def test_40_loads_wo_type(self):
+        a = dict(requires=["bash", "zsh"])
+        a_s = "requires:bash,zsh"
+
+        a1 = A.loads(a_s)
+
+        self.assertEquals(a1["requires"],   a["requires"])
+
 
 class Test_20_effectful_functions(unittest.TestCase):
 

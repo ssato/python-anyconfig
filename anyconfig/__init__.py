@@ -80,7 +80,7 @@ the followings:
 from .api import single_load, multi_load, load, loads, dump, dumps, \
     list_types, MS_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 
-VERSION = "0.0.3.5"
+VERSION = "0.0.3.6"
 
 # If daily snapshot versioning mode:
 #importt datetime

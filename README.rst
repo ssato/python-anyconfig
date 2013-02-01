@@ -67,6 +67,10 @@ It can process various config files and output a summarized config file::
     anyconfg_cui --list
     anyconfg_cui -I yaml /etc/xyz/conf.d/a.conf
     anyconfg_cui -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
+    anyconfg_cui '/etc/xyz/conf.d/*.json' -o xyz.yml \
+      --atype json -A '{"obsoletes": "sysdata", "conflicts": "sysdata-old"}'
+    anyconfg_cui '/etc/xyz/conf.d/*.json' -o xyz.yml \
+      -A obsoletes:sysdata;conflicts:sysdata-old
     anyconfg_cui /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
 
 
@@ -79,11 +83,19 @@ It can process various config files and output a summarized config file::
     -I ITYPE, --itype=ITYPE
                           Explicitly select type of Input config files from ini,
                           json, yaml, xml, properties [Automatically detected by
-                          file path]
+                          file ext]
     -O OTYPE, --otype=OTYPE
                           Explicitly select type of Output config files from
                           ini, json, yaml, xml, properties [Automatically
-                          detected by file path]
+                          detected by file ext]
+    -A ARGS, --args=ARGS  Argument configs to override
+    --atype=ATYPE         Explicitly select type of argument config from ini,
+                          json, yaml, xml, properties. If this option is not
+                          set, original parser is used:  'K:V' will become {K:
+                          V}, 'K:V_0,V_1,..' will become {K: [V_0, V_1, ...]},
+                          and 'K_0:V_0;K_1:V_1' will become {K_0: V_0, K_1: V_1}
+                          (where the tyep of K is str, type of V is one of Int,
+                          str, etc.
   $
 
 

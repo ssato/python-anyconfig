@@ -39,7 +39,7 @@ class Test_parser(unittest.TestCase):
         )
         self.assertEquals(
             P.parse_attrlist_0("obsoletes:sysdata;conflicts:sysdata-old"),
-            [('obsoletes', ['sysdata']), ('conflicts', ['sysdata-old'])]
+            [('obsoletes', 'sysdata'), ('conflicts', 'sysdata-old')]
         )
 
     def test_03_parse(self):

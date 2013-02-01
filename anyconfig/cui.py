@@ -52,7 +52,13 @@ def option_parser(defaults=DEFAULTS, usage=USAGE):
 
     p.add_option("-A", "--args", help="Argument configs to override")
     p.add_option("", "--atype", choices=ctypes,
-        help="Explicitly select type of argument config from " + ctypes_s)
+        help="Explicitly select type of argument config from " + ctypes_s \
+            + ". If this option is not set, original parser is used: " \
+            + " 'K:V' will become {K: V}, 'K:V_0,V_1,..' will become " \
+            + "{K: [V_0, V_1, ...]}, and 'K_0:V_0;K_1:V_1' will become " \
+            + "{K_0: V_0, K_1: V_1} " \
+            + "(where the tyep of K is str, type of V is one of " \
+            + "Int, str, etc.")
 
     return p
 

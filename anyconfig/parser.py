@@ -90,17 +90,18 @@ def parse_attrlist_0(s, avs_sep=":", vs_sep=",", as_sep=";"):
     :param vs_sep:  char to separate values
     :param as_sep:  char to separate attributes
 
-    :return: dict where key = (Int | String | ...),
-        value = (Int | Bool | String | ...) | [Int | Bool | String | ...]
+    :return: a list of tuples of (key, value | [value])
+        where key = (Int | String | ...),
+              value = (Int | Bool | String | ...) | [Int | Bool | String | ...]
 
     >>> parse_attrlist_0("a:1")
-    [('a', [1])]
+    [('a', 1)]
     >>> parse_attrlist_0("a:1;b:xyz")
-    [('a', [1]), ('b', ['xyz'])]
+    [('a', 1), ('b', 'xyz')]
     >>> parse_attrlist_0("requires:bash,zsh")
     [('requires', ['bash', 'zsh'])]
     >>> parse_attrlist_0("obsoletes:sysdata;conflicts:sysdata-old")
-    [('obsoletes', ['sysdata']), ('conflicts', ['sysdata-old'])]
+    [('obsoletes', 'sysdata'), ('conflicts', 'sysdata-old')]
     """
     def attr_and_values(s):
         for rel in parse_list(s, as_sep):
@@ -111,8 +112,6 @@ def parse_attrlist_0(s, avs_sep=":", vs_sep=",", as_sep=";"):
 
             if vs_sep in str(_values):
                 _values = parse_list(_values, vs_sep)
-            else:
-                _values = [_values]
 
             if _values:
                 yield (_attr, _values)

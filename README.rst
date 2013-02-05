@@ -107,22 +107,22 @@ the followings:
 CUI frontend
 -------------
 
-There is a CUI frontend 'anyconfig_cui' for demonstration purpose.
+There is a CUI frontend 'anyconfig_cli' for demonstration purpose.
 
 It can process various config files and output a summarized config file::
 
-  $ anyconfig_cui -h
-  Usage: anyconfg_cui [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
+  $ anyconfig_cli -h
+  Usage: anyconfg_cli [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
 
   Examples:
-    anyconfg_cui --list
-    anyconfg_cui -I yaml /etc/xyz/conf.d/a.conf
-    anyconfg_cui -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
-    anyconfg_cui '/etc/xyz/conf.d/*.json' -o xyz.yml \
+    anyconfg_cli --list
+    anyconfg_cli -I yaml /etc/xyz/conf.d/a.conf
+    anyconfg_cli -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
+    anyconfg_cli '/etc/xyz/conf.d/*.json' -o xyz.yml \
       --atype json -A '{"obsoletes": "sysdata", "conflicts": "sysdata-old"}'
-    anyconfg_cui '/etc/xyz/conf.d/*.json' -o xyz.yml \
+    anyconfg_cli '/etc/xyz/conf.d/*.json' -o xyz.yml \
       -A obsoletes:sysdata;conflicts:sysdata-old
-    anyconfg_cui /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
+    anyconfg_cli /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
 
 
   Options:

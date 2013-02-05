@@ -59,6 +59,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Feb  1 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.6-1
+- Renamed from anyconfig.cui to anyconfig.cli
+- Renamed from anyconfig_cui to anyconfig_cli
+
+* Fri Feb  1 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.6-1
 - Added -A and --atype option to anyconfig_cui to override configs w/ -A option
 - Fixed an error in anyconfig.api.loads when config type is None
 - Updated usage example of anyconfig_cui in README

@@ -1,7 +1,7 @@
 #
 # Copyright (C) 2013 Satoru SATOH <ssato at redhat.com>
 #
-import anyconfig.cui as T
+import anyconfig.cli as T
 import anyconfig.api as A
 import anyconfig.tests.common as C
 

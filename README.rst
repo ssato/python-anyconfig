@@ -104,10 +104,10 @@ the followings:
     {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
 
 
-CUI frontend
+CLI frontend
 -------------
 
-There is a CUI frontend 'anyconfig_cli' for demonstration purpose.
+There is a CLI frontend 'anyconfig_cli' for demonstration purpose.
 
 It can process various config files and output a summarized config file::
 

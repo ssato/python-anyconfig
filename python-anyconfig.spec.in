@@ -58,7 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Feb  1 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.6-1
+* Fri Feb  1 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.7-1
 - Renamed from anyconfig.cui to anyconfig.cli
 - Renamed from anyconfig_cui to anyconfig_cli
 

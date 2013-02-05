@@ -83,7 +83,7 @@ from .api import single_load, multi_load, load, loads, dump, dumps, \
 VERSION = "0.0.3.6"
 
 # If daily snapshot versioning mode:
-#importt datetime
+#import datetime
 #VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
 __version__ = VERSION

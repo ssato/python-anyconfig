@@ -53,6 +53,57 @@ To load multiple config files::
   # overwritten by the later ones:
   data3 = anyconfig.load("/etc/foo.d/*.json", merge=anyconfig.MS_REPLACE)
 
+On loading multiple config files, you can choose strategy to merge configs from
+the followings:
+
+* anyconfig.MS_REPLACE: Replace all configuration parameters provided in former
+  config files are simply replaced w/ the ones in later config files.
+
+  For example, if a.yml and b.yml are like followings:
+
+  a.yml::
+
+    a: 1
+    b:
+       - c: 0
+       - c: 2
+    d:
+       e: "aaa"
+       f: 3
+
+  b.yml::
+
+    b:
+       - c: 3
+    d:
+       e: "bbb"
+
+  then::
+
+    load(["a.yml", "b.yml"], merge=anyconfig.MS_REPLACE)
+
+  will give object such like::
+
+    {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb"}}
+
+* anyconfig.MS_DICTS: Merge dicts recursively. That is, the following::
+
+    load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS)
+
+  will give object such like::
+
+    {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb", 'f': 3}}
+
+* anyconfig.MS_DICTS_AND_LISTS: Merge dicts and lists recursively. That is, the
+  following::
+
+    load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS_AND_LISTS)
+
+  will give object such like::
+
+    {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
+
+
 CUI frontend
 -------------
 

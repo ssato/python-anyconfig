@@ -96,7 +96,7 @@ setup(name=PACKAGE,
         "anyconfig.backend",
         "anyconfig.backend.tests",
     ],
-    scripts=glob.glob("src/*"),
+    scripts=glob.glob("tools/*"),
     data_files=data_files,
     cmdclass={
         "srpm": SrpmCommand,

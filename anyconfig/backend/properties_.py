@@ -13,8 +13,8 @@ try:
     import pyjavaproperties
     SUPPORTED = True
 except ImportError:
-    sys.stderr.write(
-        "pyjavaproperties module is not available. Disabled its support.\n"
+    logging.debug(
+        "pyjavaproperties module is not available. Disabled its support."
     )
 
 try:

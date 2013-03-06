@@ -56,6 +56,17 @@ class Test_MergeableDict(unittest.TestCase):
 
         self.assertEquals(a, ref)
 
+    def test_update__wo_replace(self):
+        a = T.MergeableDict(a=1, b=T.MergeableDict(b=[1, 2], c="C"))
+        b = T.MergeableDict(name="foo", a=2, b=T.MergeableDict(b=[3, 4, 5], d="D"))
+
+        ref = T.MergeableDict(**a.copy())
+        ref['name'] = b['name']
+
+        a.update(b, T.ST_NO_REPLACE)
+
+        self.assertEquals(a, ref)
+
     def test_update__w_None(self):
         a = T.MergeableDict(name="a", a=1, b=T.MergeableDict(b=[1, 2], c="C"))
         ref = T.MergeableDict(**a.copy())

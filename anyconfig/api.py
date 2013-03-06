@@ -18,6 +18,7 @@ MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 
 MERGE_STRATEGIES = dict(
     replace=M.ST_REPLACE,
+    noreplace=M.ST_NO_REPLACE,
     merge_dicts=M.ST_MERGE_DICTS,
     merge_dicts_and_lists=M.ST_MERGE_DICTS_AND_LISTS,
 )

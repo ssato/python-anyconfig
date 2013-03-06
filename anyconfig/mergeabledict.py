@@ -8,7 +8,10 @@ import copy
 #from collections import OrderedDict as dict
 
 
-(ST_REPLACE, ST_MERGE_DICTS, ST_MERGE_DICTS_AND_LISTS) = (0, 1, 2)
+(ST_REPLACE,
+ ST_MERGE_DICTS,
+ ST_MERGE_DICTS_AND_LISTS,
+ ST_NO_REPLACE) = (0, 1, 2, 3)
 
 
 def is_MergeableDict_or_dict(x):
@@ -46,17 +49,31 @@ class MergeableDict(dict):
 
         if strategy == ST_REPLACE:
             self.update_w_replace(other)
+        elif strategy == ST_NO_REPLACE:
+            self.update_wo_replace(other)
         elif strategy == ST_MERGE_DICTS_AND_LISTS:
             self.update_w_merge(other, merge_lists=True)
         else:
             self.update_w_merge(other, merge_lists=False)
 
     def update_w_replace(self, other):
+        """Update and replace self w/ other if both has same keys.
+
+        :param other: object of which type is same as self's.
+        """
         if is_MergeableDict_or_dict(other):
             for k, v in other.iteritems():
                 self[k] = v
         else:
             self = copy.copy(other)
+
+    def update_wo_replace(self, other):
+        """Update self w/ other but never replace self w/ other.
+        """
+        if is_MergeableDict_or_dict(other):
+            for k, v in other.iteritems():
+                if k not in self:
+                    self[k] = v
 
     def update_w_merge(self, other, merge_lists=False):
         """Merge members recursively.

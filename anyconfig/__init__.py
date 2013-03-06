@@ -28,7 +28,7 @@ On loading multiple config files, you can choose strategy to merge configs from
 the followings:
 
 * anyconfig.MS_REPLACE: Replace all configuration parameters provided in former
-  config files are simply replaced w/ the ones in later config files.
+  config files w/ the ones in later config files.
 
   For example, if a.yml and b.yml are like followings:
 
@@ -57,6 +57,36 @@ the followings:
 
     {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb"}}
 
+* anyconfig.MS_NO_REPLACE: Do not replace configuration parameters provided in
+  former config files.
+
+  For example, if a.yml and b.yml are like followings:
+
+  a.yml::
+
+    b:
+       - c: 0
+       - c: 2
+    d:
+       e: "aaa"
+       f: 3
+
+  b.yml::
+
+    a: 1
+    b:
+       - c: 3
+    d:
+       e: "bbb"
+
+  then::
+
+    load(["a.yml", "b.yml"], merge=anyconfig.MS_NO_REPLACE)
+
+  will give object such like::
+
+    {'a': 1, 'b': [{'c': 0}, {'c': 2}], 'd': {'e': "bbb", 'f': 3}}
+
 * anyconfig.MS_DICTS: Merge dicts recursively. That is, the following
 
   ::
@@ -78,7 +108,8 @@ the followings:
 
 """
 from .api import single_load, multi_load, load, loads, dump, dumps, \
-    list_types, MS_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
+    list_types, find_parser, \
+    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 
 VERSION = "0.0.3.6"
 
@@ -88,9 +119,10 @@ VERSION = "0.0.3.6"
 
 __version__ = VERSION
 __all__ = [
+    "list_types", "find_parser",
     "single_load", "multi_load", "load", "loads",
     "dump", "dumps", "list_types",
-    "MS_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
+    "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
 ]
 
 __author__ = 'Satoru SATOH <ssat@redhat.com>'

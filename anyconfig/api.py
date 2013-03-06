@@ -13,6 +13,7 @@ import os.path
 
 
 MS_REPLACE = "replace"
+MS_NO_REPLACE = "noreplace"
 MS_DICTS = "merge_dicts"
 MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 

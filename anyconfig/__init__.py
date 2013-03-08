@@ -108,7 +108,7 @@ the followings:
 
 """
 from .api import single_load, multi_load, load, loads, dump, dumps, \
-    list_types, find_parser, \
+    list_types, find_parser, find_loader, \
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 
 VERSION = "0.0.3.6"
@@ -119,7 +119,7 @@ VERSION = "0.0.3.6"
 
 __version__ = VERSION
 __all__ = [
-    "list_types", "find_parser",
+    "list_types", "find_parser", "find_loader",
     "single_load", "multi_load", "load", "loads",
     "dump", "dumps", "list_types",
     "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",

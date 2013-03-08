@@ -27,8 +27,9 @@ MERGE_STRATEGIES = dict(
 # Re-export:
 list_types = Backends.list_types
 
-# alias:
+# aliases:
 container = M.MergeableDict
+find_loader = find_parser
 
 
 def find_parser(config_path, forced_type=None):

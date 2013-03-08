@@ -27,10 +27,6 @@ MERGE_STRATEGIES = dict(
 # Re-export:
 list_types = Backends.list_types
 
-# aliases:
-container = M.MergeableDict
-find_loader = find_parser
-
 
 def find_parser(config_path, forced_type=None):
     """
@@ -54,6 +50,11 @@ def find_parser(config_path, forced_type=None):
 
     logging.debug("Using config parser: " + str(cparser))
     return cparser
+
+
+# aliases:
+container = M.MergeableDict
+find_loader = find_parser
 
 
 def single_load(config_path, forced_type=None, **kwargs):

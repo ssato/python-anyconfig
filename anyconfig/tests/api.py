@@ -17,42 +17,42 @@ import unittest
 
 class Test_10_pure_functions(unittest.TestCase):
 
-    def test_10_find_parser__w_forced_type(self):
+    def test_10_find_loader__w_forced_type(self):
         cpath = "dummy.conf"
 
         # These parsers should be supported.
-        self.assertEquals(A.find_parser(cpath, "ini"), BINI.IniConfigParser)
-        self.assertEquals(A.find_parser(cpath, "json"), BJSON.JsonConfigParser)
+        self.assertEquals(A.find_loader(cpath, "ini"), BINI.IniConfigParser)
+        self.assertEquals(A.find_loader(cpath, "json"), BJSON.JsonConfigParser)
 
         if BYAML.SUPPORTED:
-            self.assertEquals(A.find_parser(cpath, "yaml"),
+            self.assertEquals(A.find_loader(cpath, "yaml"),
                               BYAML.YamlConfigParser)
 
         if BXML.SUPPORTED:
-            self.assertEquals(A.find_parser(cpath, "xml"),
+            self.assertEquals(A.find_loader(cpath, "xml"),
                               BXML.XmlConfigParser)
 
         if BPROP.SUPPORTED:
-            self.assertEquals(A.find_parser(cpath, "properties"),
+            self.assertEquals(A.find_loader(cpath, "properties"),
                               BPROP.PropertiesParser)
 
-    def test_20_find_parser__by_file(self):
-        self.assertEquals(A.find_parser("dummy.ini"), BINI.IniConfigParser)
-        self.assertEquals(A.find_parser("dummy.json"), BJSON.JsonConfigParser)
-        self.assertEquals(A.find_parser("dummy.jsn"), BJSON.JsonConfigParser)
+    def test_20_find_loader__by_file(self):
+        self.assertEquals(A.find_loader("dummy.ini"), BINI.IniConfigParser)
+        self.assertEquals(A.find_loader("dummy.json"), BJSON.JsonConfigParser)
+        self.assertEquals(A.find_loader("dummy.jsn"), BJSON.JsonConfigParser)
 
         if BYAML.SUPPORTED:
-            self.assertEquals(A.find_parser("dummy.yaml"),
+            self.assertEquals(A.find_loader("dummy.yaml"),
                               BYAML.YamlConfigParser)
-            self.assertEquals(A.find_parser("dummy.yml"),
+            self.assertEquals(A.find_loader("dummy.yml"),
                               BYAML.YamlConfigParser)
 
         if BXML.SUPPORTED:
-            self.assertEquals(A.find_parser("dummy.xml"),
+            self.assertEquals(A.find_loader("dummy.xml"),
                               BXML.XmlConfigParser)
 
         if BPROP.SUPPORTED:
-            self.assertEquals(A.find_parser("dummy.properties"),
+            self.assertEquals(A.find_loader("dummy.properties"),
                               BPROP.PropertiesParser)
 
     def test_30_dumps_and_loads(self):

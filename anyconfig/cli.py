@@ -94,13 +94,13 @@ def main(argv=sys.argv):
         data.update(diff, options.merge)
 
     if options.output:
-        cp = A.find_parser(options.output, options.otype)
+        cp = A.find_loader(options.output, options.otype)
         cp.dump(data, options.output)
     else:
         assert options.otype is not None, \
             "Please specify Output type w/ -O/--otype option"
 
-        cp = A.find_parser(None, options.otype)
+        cp = A.find_loader(None, options.otype)
         sys.stdout.write(cp.dumps(data))
 
 

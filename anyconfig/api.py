@@ -27,8 +27,11 @@ MERGE_STRATEGIES = {
 # Re-export:
 list_types = Backends.list_types
 
+# aliases:
+container = M.MergeableDict
 
-def find_parser(config_path, forced_type=None):
+
+def find_loader(config_path, forced_type=None):
     """
     :param config_path: Configuration file path
     :param forced_type: Forced configuration parser type
@@ -52,11 +55,6 @@ def find_parser(config_path, forced_type=None):
     return cparser
 
 
-# aliases:
-container = M.MergeableDict
-find_loader = find_parser
-
-
 def single_load(config_path, forced_type=None, **kwargs):
     """
     Load single config file.
@@ -64,7 +62,7 @@ def single_load(config_path, forced_type=None, **kwargs):
     :param config_path: Configuration file path
     :param forced_type: Forced configuration parser type
     """
-    cparser = find_parser(config_path, forced_type)
+    cparser = find_loader(config_path, forced_type)
     if cparser is None:
         return None
 
@@ -136,7 +134,7 @@ def loads(config_content, forced_type=None, **kwargs):
     if forced_type is None:
         return P.parse(config_content)
 
-    cparser = find_parser(None, forced_type)
+    cparser = find_loader(None, forced_type)
     if cparser is None:
         return P.parse(config_content)
 
@@ -150,7 +148,7 @@ def _find_dumper(config_path, forced_type=None):
     :param config_path: Output filename
     :param forced_type: Forced configuration parser type
     """
-    cparser = find_parser(config_path, forced_type)
+    cparser = find_loader(config_path, forced_type)
 
     if cparser is None or not getattr(cparser, "dump", False):
         logging.warn(

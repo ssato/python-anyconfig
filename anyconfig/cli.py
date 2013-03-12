@@ -17,7 +17,7 @@ sys.stderr = codecs.getwriter(__enc)(sys.stderr)
 
 
 DEFAULTS = dict(debug=False, list=False, output=None, itype=None, otype=None,
-                atype=None)
+                atype=None, merge=A.MS_DICTS)
 
 USAGE = """\
 %prog [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
@@ -31,14 +31,20 @@ Examples:
   %prog '/etc/xyz/conf.d/*.json' -o xyz.yml \\
     -A obsoletes:sysdata;conflicts:sysdata-old
   %prog /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
+  %prog '/etc/foo.d/*.json' -M noreplace
 """
 
 
 def option_parser(defaults=DEFAULTS, usage=USAGE):
     ctypes = A.list_types()
     ctypes_s = ", ".join(ctypes)
-    type_help = "Explicitly select type of %s config files from " + \
+    type_help = "Select type of %s config files from " + \
         ctypes_s + " [Automatically detected by file ext]"
+
+    mts = A.MERGE_STRATEGIES.keys()
+    mts_s = ", ".join(mts)
+    mt_help = "Select strategy to merge multiple configs from " + \
+        mts_s + " [%(merge)s]" % defaults
 
     p = optparse.OptionParser(usage)
     p.set_defaults(**defaults)
@@ -49,6 +55,7 @@ def option_parser(defaults=DEFAULTS, usage=USAGE):
     p.add_option("-o", "--output", help="Output file path")
     p.add_option("-I", "--itype", choices=ctypes, help=(type_help % "Input"))
     p.add_option("-O", "--otype", choices=ctypes, help=(type_help % "Output"))
+    p.add_option("-M", "--merge", choices=mts, help=mt_help)
 
     p.add_option("-A", "--args", help="Argument configs to override")
     p.add_option("", "--atype", choices=ctypes,
@@ -79,11 +86,11 @@ def main(argv=sys.argv):
             p.print_usage()
             sys.exit(-1)
 
-    data = A.load(args, options.itype)
+    data = A.load(args, options.itype, options.merge)
 
     if options.args:
         diff = A.loads(options.args, options.atype)
-        data.update(diff)
+        data.update(diff, options.merge)
 
     if options.output:
         cp = A.find_parser(options.output, options.otype)

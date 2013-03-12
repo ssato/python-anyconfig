@@ -11,7 +11,7 @@ import copy
 (ST_REPLACE,
  ST_MERGE_DICTS,
  ST_MERGE_DICTS_AND_LISTS,
- ST_NO_REPLACE) = (0, 1, 2, 3)
+ ST_NO_REPLACE) = (1, 2, 3, 4)
 
 
 def is_MergeableDict_or_dict(x):

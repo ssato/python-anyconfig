@@ -123,6 +123,7 @@ It can process various config files and output a summarized config file::
     anyconfg_cli '/etc/xyz/conf.d/*.json' -o xyz.yml \
       -A obsoletes:sysdata;conflicts:sysdata-old
     anyconfg_cli /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
+    anyconfg_cli '/etc/foo.d/*.json' -M noreplace
 
 
   Options:
@@ -132,19 +133,21 @@ It can process various config files and output a summarized config file::
     -o OUTPUT, --output=OUTPUT
                           Output file path
     -I ITYPE, --itype=ITYPE
-                          Explicitly select type of Input config files from ini,
-                          json, yaml, xml, properties [Automatically detected by
-                          file ext]
+                          Select type of Input config files from ini, json,
+                          yaml, xml [Automatically detected by file ext]
     -O OTYPE, --otype=OTYPE
-                          Explicitly select type of Output config files from
-                          ini, json, yaml, xml, properties [Automatically
-                          detected by file ext]
+                          Select type of Output config files from ini, json,
+                          yaml, xml [Automatically detected by file ext]
+    -M MERGE, --merge=MERGE
+                          Select strategy to merge multiple configs from
+                          noreplace, merge_dicts_and_lists, merge_dicts, replace
+                          [merge_dicts]
     -A ARGS, --args=ARGS  Argument configs to override
     --atype=ATYPE         Explicitly select type of argument config from ini,
-                          json, yaml, xml, properties. If this option is not
-                          set, original parser is used:  'K:V' will become {K:
-                          V}, 'K:V_0,V_1,..' will become {K: [V_0, V_1, ...]},
-                          and 'K_0:V_0;K_1:V_1' will become {K_0: V_0, K_1: V_1}
+                          json, yaml, xml. If this option is not set, original
+                          parser is used:  'K:V' will become {K: V},
+                          'K:V_0,V_1,..' will become {K: [V_0, V_1, ...]}, and
+                          'K_0:V_0;K_1:V_1' will become {K_0: V_0, K_1: V_1}
                           (where the tyep of K is str, type of V is one of Int,
                           str, etc.
   $

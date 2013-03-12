@@ -127,11 +127,27 @@ class Test_20_effectful_functions(unittest.TestCase):
 
         a3 = A.multi_load(os.path.join(self.workdir, "*.json"))
 
-        self.assertEquals(a3["name"],   a["name"])
-        self.assertEquals(a3["a"],      b["a"])
-        self.assertEquals(a3["b"]["b"], [0, 1, 2, 3, 4, 5])
-        self.assertEquals(a3["b"]["c"], a["b"]["c"])
-        self.assertEquals(a3["b"]["d"], b["b"]["d"])
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      b["a"])
+        self.assertEquals(a1["b"]["b"], b["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+        self.assertEquals(a1["b"]["d"], b["b"]["d"])
+
+        a4 = A.multi_load([a_path, b_path], merge=A.MS_REPLACE)
+
+        self.assertEquals(a4["name"],   a["name"])
+        self.assertEquals(a4["a"],      b["a"])
+        self.assertEquals(a4["b"]["b"], b["b"]["b"])
+        self.assertFalse("c" in a4["b"])
+        self.assertEquals(a4["b"]["d"], b["b"]["d"])
+
+        a5 = A.multi_load([a_path, b_path], merge=A.MS_NO_REPLACE)
+
+        self.assertEquals(a5["name"],   a["name"])
+        self.assertEquals(a5["a"],      a["a"])
+        self.assertEquals(a5["b"]["b"], a["b"]["b"])
+        self.assertEquals(a5["b"]["c"], a["b"]["c"])
+        self.assertFalse("d" in a5["b"])
 
     def test_30_dump_and_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
@@ -157,7 +173,7 @@ class Test_20_effectful_functions(unittest.TestCase):
 
         self.assertEquals(a2["name"],   a["name"])
         self.assertEquals(a2["a"],      b["a"])
-        self.assertEquals(a2["b"]["b"], [0, 1, 2, 3, 4, 5])
+        self.assertEquals(a2["b"]["b"], [1, 2, 3, 4, 5])
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
@@ -165,7 +181,7 @@ class Test_20_effectful_functions(unittest.TestCase):
 
         self.assertEquals(a3["name"],   a["name"])
         self.assertEquals(a3["a"],      b["a"])
-        self.assertEquals(a3["b"]["b"], [0, 1, 2, 3, 4, 5])
+        self.assertEquals(a3["b"]["b"], [1, 2, 3, 4, 5])
         self.assertEquals(a3["b"]["c"], a["b"]["c"])
         self.assertEquals(a3["b"]["d"], b["b"]["d"])
 

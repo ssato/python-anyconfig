@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011, 2012 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 #
 import anyconfig.mergeabledict as T
 import anyconfig.tests.common as C
@@ -58,7 +58,8 @@ class Test_MergeableDict(unittest.TestCase):
 
     def test_update__wo_replace(self):
         a = T.MergeableDict(a=1, b=T.MergeableDict(b=[1, 2], c="C"))
-        b = T.MergeableDict(name="foo", a=2, b=T.MergeableDict(b=[3, 4, 5], d="D"))
+        b = T.MergeableDict(name="foo", a=2,
+                            b=T.MergeableDict(b=[3, 4, 5], d="D"))
 
         ref = T.MergeableDict(**a.copy())
         ref['name'] = b['name']

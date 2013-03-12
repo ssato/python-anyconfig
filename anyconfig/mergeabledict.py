@@ -32,7 +32,7 @@ class MergeableDict(dict):
         """
         if is_MergeableDict_or_dict(x):
             return MergeableDict((k, cls.create(v)) for k, v in
-                                    x.iteritems())
+                                 x.iteritems())
         elif U.is_iterable(x):
             return type(x)(cls.create(v) for v in x)
         else:
@@ -86,7 +86,8 @@ class MergeableDict(dict):
         if is_MergeableDict_or_dict(other):
             for k, v in other.iteritems():
                 if k in self and is_MergeableDict_or_dict(v) and \
-                        is_MergeableDict_or_dict(self[k]):  # update recursively.
+                        is_MergeableDict_or_dict(self[k]):
+                    # update recursively.
                     self[k].update_w_merge(v, merge_lists)
                 else:
                     if merge_lists and U.is_iterable(v):

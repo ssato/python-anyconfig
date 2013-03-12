@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 import glob
@@ -48,7 +48,7 @@ def is_iterable(x):
     False
     """
     return isinstance(x, (list, tuple)) or \
-        (not isinstance(x, (int, str, dict)) and \
-            bool(getattr(x, "next", False)))
+        (not isinstance(x, (int, str, dict)) and
+         bool(getattr(x, "next", False)))
 
 # vim:sw=4:ts=4:et:

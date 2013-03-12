@@ -72,7 +72,7 @@ def single_load(config_path, forced_type=None, **kwargs):
     return cparser.load(config_path, **kwargs)
 
 
-def multi_load(paths, forced_type=None, merge=MS_DICTS_AND_LISTS, marker='*'):
+def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*'):
     """
     Load multiple config files.
 
@@ -91,9 +91,9 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS_AND_LISTS, marker='*'):
         loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
     :param marker: Globbing markerer to detect paths patterns
     """
-    merge_st = MERGE_STRATEGIES.get(merge, False)
+    merge_st = MERGE_STRATEGIES.get(merge, None)
 
-    if not merge_st:
+    if merge_st is None:
         raise RuntimeError("Invalid merge strategy given: " + merge)
 
     if marker in paths:
@@ -111,7 +111,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS_AND_LISTS, marker='*'):
     return config
 
 
-def load(path_specs, forced_type=None, merge=MS_DICTS_AND_LISTS, marker='*'):
+def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*'):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.

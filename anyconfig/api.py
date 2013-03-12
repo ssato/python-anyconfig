@@ -17,12 +17,12 @@ MS_NO_REPLACE = "noreplace"
 MS_DICTS = "merge_dicts"
 MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 
-MERGE_STRATEGIES = dict(
-    replace=M.ST_REPLACE,
-    noreplace=M.ST_NO_REPLACE,
-    merge_dicts=M.ST_MERGE_DICTS,
-    merge_dicts_and_lists=M.ST_MERGE_DICTS_AND_LISTS,
-)
+MERGE_STRATEGIES = {
+    MS_REPLACE: M.ST_REPLACE,
+    MS_NO_REPLACE: M.ST_NO_REPLACE,
+    MS_DICTS: M.ST_MERGE_DICTS,
+    MS_DICTS_AND_LISTS: M.ST_MERGE_DICTS_AND_LISTS,
+}
 
 # Re-export:
 list_types = Backends.list_types

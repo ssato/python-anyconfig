@@ -46,6 +46,13 @@ def _parse(v, sep=_SEP):
         return P.parse(v)
 
 
+def _to_s(v, sep=_SEP):
+    if isinstance(v, list):
+        return ", ".join(x for x in v)
+    else:
+        return str(v)
+
+
 def load_impl(config_fp, container, sep=_SEP):
     """
     :param config_fp: File or file-like object provides ini-style conf
@@ -59,21 +66,40 @@ def load_impl(config_fp, container, sep=_SEP):
         parser = configparser.SafeConfigParser()
         parser.readfp(config_fp)
 
-        # Treat key and value pairs in [DEFAULT] as special.
-        for k, v in parser.defaults().iteritems():
-            config[k] = _parse(v, sep)
+        if parser.defaults():
+            config["DEFAULT"] = container()
+
+            for k, v in parser.defaults().iteritems():
+                config["DEFAULT"][k] = _parse(v, sep)
 
         for s in parser.sections():
             config[s] = container()
 
-            for k in parser.options(s):
-                v = parser.get(s, k)
+            for k, v in parser.items(s):
                 config[s][k] = _parse(v, sep)
 
     except Exception, e:
         logging.warn(e)
 
     return config
+
+
+def mk_lines_g(data):
+    has_default = "DEFAULT" in data
+
+    def is_inherited_from_default(k, v):
+        return has_default and data["DEFAULT"].get(k, None) == v
+
+    for sect, params in data.iteritems():
+        yield "[%s]\n" % sect
+
+        for k, v in params.iteritems():
+            if sect != "DEFAULT" and is_inherited_from_default(k, v):
+                continue
+
+            yield "%s = %s\n" % (k, _to_s(v))
+
+        yield "\n"  # put an empty line just after each sections.
 
 
 class IniConfigParser(Base.ConfigParser):
@@ -99,24 +125,15 @@ class IniConfigParser(Base.ConfigParser):
     @classmethod
     def dumps(cls, data, *args, **kwargs):
         config_fp = StringIO.StringIO()
-
-        for sect, params in data:
-            config_fp.write("[%s]\n", sect)
-
-            for k, v in params.iteritems():
-                config_fp.write("%s = %s" % (k, v))
+        for l in mk_lines_g(data):
+            config_fp.write(l)
 
         return config_fp.getvalue()
 
-    # FIXME: Duplicated code w/ cls.dumps
     @classmethod
     def dump(cls, data, config_path, *args, **kwargs):
         with open(config_path, 'w') as config_fp:
-            for sect, params in data:
-                config_fp.write("[%s]\n", sect)
-
-                for k, v in params.iteritems():
-                    config_fp.write("%s = %s" % (k, v))
-
+            for l in mk_lines_g(data):
+                config_fp.write(l)
 
 # vim:sw=4:ts=4:et:

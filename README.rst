@@ -33,7 +33,7 @@ To load single config file::
   data2 = anyconfig.single_load("/path/to/foo/conf.d/a.yml")
 
   # Or you can specify config type explicitly.
-  data3 = anyconfg.load("/path/to/foo/conf.d/b.conf", "yaml")
+  data3 = anyconfig.load("/path/to/foo/conf.d/b.conf", "yaml")
 
   # Same as above
   data4 = anyconfig.single_load("/path/to/foo/conf.d/b.conf", "yaml")

@@ -58,6 +58,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 12 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.8-1
+- Do not expose internal repr. of loaded data when dump them
+- Fix for ini (configparser) backend
+
 * Tue Mar 12 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.7-1
 - change API from anyconfig.find_parser to anyconfig.find_loader
 - [anyconfig_cli] rename cli frontend from anyconfig_cui to anyconfig_cli

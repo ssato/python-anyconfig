@@ -19,7 +19,8 @@ def is_MergeableDict_or_dict(x):
 
 
 def convert_to(x):
-    """Convert MergeableDict instances to a dict object.
+    """
+    Convert a MergeableDict instances to a dict object.
 
     Borrowed basic idea and implementation from bunch.unbunchify.
     (bunch is distributed under MIT license same as this module.)
@@ -28,6 +29,18 @@ def convert_to(x):
         return dict((k, convert_to(v)) for k, v in x.iteritems())
     elif U.is_iterable(x):
         return type(x)(convert_to(v) for v in x)
+    else:
+        return x
+
+
+def create_from(x):
+    """
+    Try creating a MergeableDict instance[s] from a dict or any other objects.
+    """
+    if is_MergeableDict_or_dict(x):
+        return MergeableDict((k, create_from(v)) for k, v in x.iteritems())
+    elif U.is_iterable(x):
+        return type(x)(create_from(v) for v in x)
     else:
         return x
 
@@ -43,14 +56,10 @@ class MergeableDict(dict):
     @classmethod
     def create(cls, x):
         """Create an instance from any object.
+
+        NOTE: It will be kept for a while for backward compatibility.
         """
-        if is_MergeableDict_or_dict(x):
-            return MergeableDict((k, cls.create(v)) for k, v in
-                                 x.iteritems())
-        elif U.is_iterable(x):
-            return type(x)(cls.create(v) for v in x)
-        else:
-            return x
+        return create_from(x)
 
     def get_strategy(self):
         return self.strategy

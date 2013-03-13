@@ -10,9 +10,9 @@ import unittest
 
 class Test_00_utility_functions(unittest.TestCase):
 
-    def test_create_and_convert_to(self):
+    def test_create_from__convert_to(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), e=[3, 4])
-        b = T.MergeableDict.create(a)
+        b = T.create_from(a)
         c = T.convert_to(b)
 
         self.assertTrue(isinstance(b, T.MergeableDict))

@@ -55,11 +55,12 @@ class MergeableDict(dict):
 
     @classmethod
     def create(cls, x):
-        """Create an instance from any object.
-
-        NOTE: It will be kept for a while for backward compatibility.
-        """
+        """Create an instance from any object."""
         return create_from(x)
+
+    @classmethod
+    def convert_to(cls, x):
+        return convert_to(x)
 
     def get_strategy(self):
         return self.strategy

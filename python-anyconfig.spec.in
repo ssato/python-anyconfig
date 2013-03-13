@@ -58,7 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Mar 12 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.8-1
+* Wed Mar 13 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.8-1
 - Do not expose internal repr. of loaded data when dump them
 - Fix for ini (configparser) backend
 

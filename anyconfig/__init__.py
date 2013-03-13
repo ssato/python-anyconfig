@@ -113,7 +113,7 @@ from .api import single_load, multi_load, load, loads, dump, dumps, \
     list_types, find_loader, \
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 
-VERSION = "0.0.3.7"
+VERSION = "0.0.3.8"
 
 # If daily snapshot versioning mode:
 #import datetime

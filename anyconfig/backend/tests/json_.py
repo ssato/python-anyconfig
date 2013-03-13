@@ -48,4 +48,22 @@ class Test_JsonConfigParser(unittest.TestCase):
         self.assertEquals(c['b'], "bbb", c)
         self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
 
+    def test_30_dumps(self):
+        c = T.JsonConfigParser.loads(CONF_0)
+        s = T.JsonConfigParser.dumps(c)
+        c = T.JsonConfigParser.loads(s)
+
+        self.assertEquals(c['a'], 0, str(c))
+        self.assertEquals(c['b'], "bbb", c)
+        self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
+
+    def test_40_dump(self):
+        c = T.JsonConfigParser.loads(CONF_0)
+        T.JsonConfigParser.dump(c, self.config_path)
+        c = T.JsonConfigParser.load(self.config_path)
+
+        self.assertEquals(c['a'], 0, str(c))
+        self.assertEquals(c['b'], "bbb", c)
+        self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
+
 # vim:sw=4:ts=4:et:

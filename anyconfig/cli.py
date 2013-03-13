@@ -41,7 +41,7 @@ def option_parser(defaults=DEFAULTS, usage=USAGE):
     type_help = "Select type of %s config files from " + \
         ctypes_s + " [Automatically detected by file ext]"
 
-    mts = A.MERGE_STRATEGIES.keys()
+    mts = A.MERGE_STRATEGIES
     mts_s = ", ".join(mts)
     mt_help = "Select strategy to merge multiple configs from " + \
         mts_s + " [%(merge)s]" % defaults

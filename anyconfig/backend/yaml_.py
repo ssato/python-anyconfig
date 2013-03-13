@@ -39,11 +39,13 @@ if SUPPORTED:
 
         @classmethod
         def dumps(cls, data, *args, **kwargs):
-            return yaml.dump(data, None)
+            convert_to = cls.container().convert_to
+            return yaml.dump(convert_to(data), None)
 
         @classmethod
         def dump(cls, data, config_path, *args, **kwargs):
-            yaml.dump(data, open(config_path, "w"))
+            convert_to = cls.container().convert_to
+            yaml.dump(convert_to(data), open(config_path, "w"))
 
 
 # vim:sw=4:ts=4:et:

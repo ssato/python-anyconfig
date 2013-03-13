@@ -13,9 +13,11 @@ use
     yd = anyconfig.load("bar.yaml")
 
 The returned object is an instance of anyconfig.mergeabledict.MergeableDict
-class, dict-based class support recursive dicts and lists merge operation.
+class, dict-based class supports recursive merge operations.
 
-You can also load multiple config files at once w/ anyconfig.multi_load:
+You can also load multiple config files at once w/ anyconfig.multi_load or
+anyconfig.load (anyconfig.load does not distinguish between single and multiple
+config files):
 
     conf = anyconfig.multi_load(["foo.json", "bar.yaml"])
 

@@ -45,7 +45,7 @@ class Test_10_MergeableDict(unittest.TestCase):
         ref['a'] = 2
         ref['b'] = T.MergeableDict(b=[1, 2, 3, 4, 5], c="C", d="D")
 
-        a.update(b, T.ST_MERGE_DICTS_AND_LISTS)
+        a.update(b, T.MS_DICTS_AND_LISTS)
 
         self.assertEquals(a, ref)
 
@@ -58,7 +58,7 @@ class Test_10_MergeableDict(unittest.TestCase):
         ref['b'] = b['b']
         ref['b']['c'] = a['b']['c']
 
-        a.update(b, T.ST_REPLACE)
+        a.update(b, T.MS_REPLACE)
 
         self.assertEquals(a, ref)
 
@@ -70,7 +70,7 @@ class Test_10_MergeableDict(unittest.TestCase):
         ref = T.MergeableDict(**a.copy())
         ref['name'] = b['name']
 
-        a.update(b, T.ST_NO_REPLACE)
+        a.update(b, T.MS_NO_REPLACE)
 
         self.assertEquals(a, ref)
 

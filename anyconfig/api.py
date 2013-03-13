@@ -11,18 +11,9 @@ import anyconfig.utils as U
 import logging
 import os.path
 
-
-MS_REPLACE = "replace"
-MS_NO_REPLACE = "noreplace"
-MS_DICTS = "merge_dicts"
-MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
-
-MERGE_STRATEGIES = {
-    MS_REPLACE: M.ST_REPLACE,
-    MS_NO_REPLACE: M.ST_NO_REPLACE,
-    MS_DICTS: M.ST_MERGE_DICTS,
-    MS_DICTS_AND_LISTS: M.ST_MERGE_DICTS_AND_LISTS,
-}
+# Import some global constants will be re-exported:
+from anyconfig.mergeabledict import MS_REPLACE, MS_NO_REPLACE, \
+    MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES
 
 # Re-export:
 list_types = Backends.list_types
@@ -89,10 +80,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*'):
         loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
     :param marker: Globbing markerer to detect paths patterns
     """
-    merge_st = MERGE_STRATEGIES.get(merge, None)
-
-    if merge_st is None:
-        raise RuntimeError("Invalid merge strategy given: " + merge)
+    assert merge in MERGE_STRATEGIES, "Invalid merge strategy: " + merge
 
     if marker in paths:
         paths = U.sglob(paths)
@@ -104,7 +92,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*'):
         else:
             conf_updates = single_load(p, forced_type)
 
-        config.update(conf_updates, merge_st)
+        config.update(conf_updates, merge)
 
     return config
 

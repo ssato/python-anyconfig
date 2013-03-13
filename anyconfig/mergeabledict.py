@@ -9,10 +9,12 @@ import copy
 #from collections import OrderedDict as dict
 
 
-(ST_REPLACE,
- ST_MERGE_DICTS,
- ST_MERGE_DICTS_AND_LISTS,
- ST_NO_REPLACE) = (1, 2, 3, 4)
+MS_REPLACE = "replace"
+MS_NO_REPLACE = "noreplace"
+MS_DICTS = "merge_dicts"
+MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
+
+MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 
 
 def is_MergeableDict_or_dict(x):
@@ -52,7 +54,7 @@ class MergeableDict(dict):
     """
 
     # TODO: Which strategy should be choosen for default?
-    strategy = ST_MERGE_DICTS
+    strategy = MS_DICTS
 
     @classmethod
     def create(cls, x):
@@ -72,11 +74,11 @@ class MergeableDict(dict):
         if strategy is None:
             strategy = self.get_strategy()
 
-        if strategy == ST_REPLACE:
+        if strategy == MS_REPLACE:
             self.update_w_replace(other)
-        elif strategy == ST_NO_REPLACE:
+        elif strategy == MS_NO_REPLACE:
             self.update_wo_replace(other)
-        elif strategy == ST_MERGE_DICTS_AND_LISTS:
+        elif strategy == MS_DICTS_AND_LISTS:
             self.update_w_merge(other, merge_lists=True)
         else:
             self.update_w_merge(other, merge_lists=False)

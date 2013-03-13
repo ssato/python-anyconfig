@@ -19,7 +19,7 @@ except ImportError:
     import StringIO
 
 
-SUPPORTED = True  # It should always be available.
+SUPPORTED = True  # It should be available w/ python dist always.
 
 _SEP = ','
 

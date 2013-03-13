@@ -1,5 +1,6 @@
 #
-# Copyright (C) 2013 Satoru SATOH <ssato at redhat.com>
+# Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
+# License: MIT
 #
 import anyconfig.cli as T
 import anyconfig.api as A

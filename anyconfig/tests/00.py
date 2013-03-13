@@ -1,5 +1,6 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato at redhat.com>
+# Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
+# License: MIT
 #
 import anyconfig as A
 import anyconfig.tests.common as C

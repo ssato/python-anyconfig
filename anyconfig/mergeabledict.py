@@ -18,6 +18,19 @@ def is_MergeableDict_or_dict(x):
     return isinstance(x, (MergeableDict, dict))
 
 
+def convert_to(x):
+    """Convert MergeableDict instances to a dict object.
+
+    Borrowed basic idea and implementation from bunch.unbunchify.
+    """
+    if is_MergeableDict_or_dict(x):
+        return dict((k, convert_to(v)) for k, v in x.iteritems())
+    elif U.is_iterable(x):
+        return type(x)(convert_to(v) for v in x)
+    else:
+        return x
+
+
 class MergeableDict(dict):
     """
     Dict based object supports 'merge' operation.

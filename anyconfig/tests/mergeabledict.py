@@ -8,13 +8,19 @@ import os.path
 import unittest
 
 
-class Test_MergeableDict(unittest.TestCase):
+class Test_00_utility_functions(unittest.TestCase):
 
-    def test_create(self):
+    def test_create_and_convert_to(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), e=[3, 4])
         b = T.MergeableDict.create(a)
+        c = T.convert_to(b)
 
         self.assertTrue(isinstance(b, T.MergeableDict))
+        self.assertTrue(isinstance(c, dict))
+        self.assertFalse(isinstance(c, T.MergeableDict))
+
+
+class Test_10_MergeableDict(unittest.TestCase):
 
     def test_update__w_merge_dicts(self):
         a = T.MergeableDict(name="a", a=1,

@@ -86,6 +86,36 @@ the followings:
 
     {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb"}}
 
+* anyconfig.MS_NO_REPLACE: Do not replace configuration parameters provided in
+  former config files.
+
+  For example, if a.yml and b.yml are like followings:
+
+  a.yml::
+
+    b:
+       - c: 0
+       - c: 2
+    d:
+       e: "aaa"
+       f: 3
+
+  b.yml::
+
+    a: 1
+    b:
+       - c: 3
+    d:
+       e: "bbb"
+
+  then::
+
+    load(["a.yml", "b.yml"], merge=anyconfig.MS_NO_REPLACE)
+
+  will give object such like::
+
+    {'a': 1, 'b': [{'c': 0}, {'c': 2}], 'd': {'e': "bbb", 'f': 3}}
+
 * anyconfig.MS_DICTS: Merge dicts recursively. That is, the following::
 
     load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS)
@@ -107,9 +137,9 @@ the followings:
 CLI frontend
 -------------
 
-There is a CLI frontend 'anyconfig_cli' for demonstration purpose.
+There is a CLI frontend 'anyconfig_cli' for its demonstration purpose.
 
-It can process various config files and output a summarized config file::
+It can process various config files and output a merged config file::
 
   $ anyconfig_cli -h
   Usage: anyconfg_cli [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]

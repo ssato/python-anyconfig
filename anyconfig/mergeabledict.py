@@ -22,6 +22,7 @@ def convert_to(x):
     """Convert MergeableDict instances to a dict object.
 
     Borrowed basic idea and implementation from bunch.unbunchify.
+    (bunch is distributed under MIT license same as this module.)
     """
     if is_MergeableDict_or_dict(x):
         return dict((k, convert_to(v)) for k, v in x.iteritems())

@@ -75,7 +75,11 @@ def main(argv=sys.argv):
     (options, args) = p.parse_args(argv[1:])
 
     llvl = logging.DEBUG if options.debug else logging.INFO
-    logging.basicConfig(level=llvl)
+    logging.getLogger().setLevel(llvl)
+
+    # FIXME: customize loggging format
+    # fmt = "%(asctime)s %(levelname)-6s %(message)s"
+    # ...
 
     if not args:
         if options.list:

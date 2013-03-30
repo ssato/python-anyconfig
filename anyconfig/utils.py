@@ -49,7 +49,6 @@ def is_iterable(x):
     False
     """
     return isinstance(x, (list, tuple, types.GeneratorType)) or \
-        (not isinstance(x, (int, str, dict)) and
-         bool(getattr(x, "next", False)))
+        not isinstance(x, (int, str, dict))
 
 # vim:sw=4:ts=4:et:

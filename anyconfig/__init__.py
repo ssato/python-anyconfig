@@ -116,8 +116,11 @@ from .api import single_load, multi_load, load, loads, dump, dumps, \
 VERSION = "0.0.3.8"
 
 # If daily snapshot versioning mode:
-#import datetime
-#VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
+import os
+
+if os.environ.get("_ANYCONFIG_SNAPSHOT_BUILD", None) is not None:
+    import datetime
+    VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
 __version__ = VERSION
 __all__ = [

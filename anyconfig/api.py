@@ -57,7 +57,7 @@ def single_load(config_path, forced_type=None, **kwargs):
     if cparser is None:
         return None
 
-    logging.debug("Loading: " + config_path)
+    logging.info("Loading: " + config_path)
     return cparser.load(config_path, **kwargs)
 
 

@@ -7,16 +7,20 @@ import anyconfig.parser as P
 
 import logging
 import os.path
+import sys
 
 try:
     import ConfigParser as configparser
 except ImportError:
-    import configparser  # python > 3.0
+    import configparser  # python >= 3.0
 
 try:
     import cStringIO as StringIO
 except ImportError:
-    import StringIO
+    try:
+        import StringIO
+    except ImportError:
+        import io as StringIO  # python >= 3.0
 
 
 SUPPORTED = True  # It should be available w/ python dist always.
@@ -78,8 +82,8 @@ def load_impl(config_fp, container, sep=_SEP):
             for k, v in parser.items(s):
                 config[s][k] = _parse(v, sep)
 
-    except Exception, e:
-        logging.warn(e)
+    except Exception:
+        logging.warn(sys.exc_info()[-1])
 
     return config
 

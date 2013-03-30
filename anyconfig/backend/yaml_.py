@@ -15,7 +15,10 @@ except ImportError:
 try:
     import cStringIO as StringIO
 except ImportError:
-    import StringIO
+    try:
+        import StringIO
+    except ImportError:
+        import io as StringIO  # python >= 3.0
 
 
 if SUPPORTED:

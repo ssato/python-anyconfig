@@ -58,7 +58,7 @@ class SrpmCommand(Command):
             sdir = params[subdir] = os.path.join(rpmdir, subdir)
 
             if not os.path.exists(sdir):
-                os.makedirs(sdir, 0755)
+                os.makedirs(sdir, 493)  # 493 = 0o755 (py3) or 0755 (py2)
 
         c = open(rpmspec + ".in").read()
         open(rpmspec, "w").write(c.replace("@VERSION@", VERSION))

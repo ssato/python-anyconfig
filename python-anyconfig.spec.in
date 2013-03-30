@@ -1,9 +1,14 @@
+%if 0%{?fedora} > 12
+%global with_python3 1
+%else
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%endif
 
 # disable debuginfo
 %define debug_package %{nil}
 
 %define pkgname anyconfig
+%global with_properties_support 0
 
 
 Name:           python-%{pkgname}
@@ -22,28 +27,62 @@ Requires:       PyYAML
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:       python-simplejson
 %endif
-#Requires:       python-pyjavaproperties
+%if 0%{?with_python3}
+BuildRequires: python3-devel
+BuildRequires: python3-setuptools
+%endif
+%if 0%{?with_properties_support}
+Requires:       python-pyjavaproperties
+%endif
 
 
 %description
 Python library to provide generic access to configuration files in some
 formats such like INI, JSON and YAML.
 
+%if 0%{?with_python3}
+%package -n     python3-%{pkgname}
+Summary:        Generic access to configuration files in some formats
+Group:          Development/Libraries
+
+%description -n python3-%{pkgname}
+Python library to provide generic access to configuration files in some
+formats such like INI, JSON and YAML.
+%endif
+
 
 %prep
 %setup -q -n %{pkgname}-%{version}
 
+%if 0%{?with_python3}
+rm -rf %{py3dir}
+cp -a . %{py3dir}
+%endif
+
 
 %build
 %{__python} setup.py build
+
+%if 0%{?with_python3}
+pushd %{py3dir}
+%{__python3} setup.py build
+popd
+%endif
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 
+%if 0%{?with_python3}
+pushd %{py3dir}
+%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
+popd
+%endif
+
 # Make egg-info not included in this package:
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/python_*.egg-info
+rm -f $RPM_BUILD_ROOT%{python3_sitelib}/python_*.egg-info
 
 
 %clean
@@ -55,6 +94,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.rst
 %{_bindir}/*
 %{python_sitelib}/*
+
+%if 0%{?with_python3}
+%files -n     python3-%{pkgname}
+%defattr(644,root,root,755)
+%doc README.rst
+%{python3_sitelib}/*
+%endif
 
 
 %changelog

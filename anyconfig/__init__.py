@@ -109,26 +109,18 @@ the followings:
     {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
 
 """
+from .globals import AUTHOR, VERSION
 from .api import single_load, multi_load, load, loads, dump, dumps, \
     list_types, find_loader, \
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 
-VERSION = "0.0.3.8"
-
-# If daily snapshot versioning mode:
-import os
-
-if os.environ.get("_ANYCONFIG_SNAPSHOT_BUILD", None) is not None:
-    import datetime
-    VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
-
+__author__ = AUTHOR
 __version__ = VERSION
+
 __all__ = [
     "list_types", "find_loader", "single_load", "multi_load", "load", "loads",
     "dump", "dumps", "list_types",
     "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
 ]
-
-__author__ = 'Satoru SATOH <ssat@redhat.com>'
 
 # vim:sw=4:ts=4:et:

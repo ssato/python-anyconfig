@@ -15,16 +15,25 @@ if os.environ.get("_ANYCONFIG_SNAPSHOT_BUILD", None) is not None:
     VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
 # Setup logger:
-_LOGGING_FORMAT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+_LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
 
-logging.basicConfig(level=logging.WARNING, format=_LOGGING_FORMAT)
 
-LOGGER = logging.getLogger("anyconfig")
+def getLogger(name="anyconfig", format=_LOGGING_FORMAT,
+              level=logging.WARNING, **kwargs):
+    """
+    Initialize custom logger.
+    """
+    logging.basicConfig(level=level, format=format)
+    logger = logging.getLogger(name)
 
-sh = logging.StreamHandler()
-sh.setLevel(logging.WARNING)
-sh.setFormatter(logging.Formatter(_LOGGING_FORMAT))
+    h = logging.StreamHandler()
+    h.setLevel(level)
+    h.setFormatter(logging.Formatter(format))
+    logger.addHandler(h)
 
-LOGGER.addHandler(sh)
+    return logger
+
+
+LOGGER = getLogger()
 
 # vim:sw=4:ts=4:et:

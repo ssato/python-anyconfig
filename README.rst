@@ -7,6 +7,15 @@ Generic access to configuration files in any formats (to be in the future).
 * Author: Satoru SATOH <ssato@redhat.com>
 * License: MIT
 
+Current supported configuration file formats are:
+
+* JSON
+* YAML
+* Ini-style
+* XML (experimental)
+* Java properties file (experimental and only available if pyjavaproperties
+  module was found.)
+
 Usage
 ======
 

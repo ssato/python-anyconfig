@@ -2,25 +2,14 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+from anyconfig.compat import StringIO, configparser, iteritems
+
 import anyconfig.backend.base as Base
 import anyconfig.parser as P
 
 import logging
 import os.path
 import sys
-
-try:
-    import ConfigParser as configparser
-except ImportError:
-    import configparser  # python >= 3.0
-
-try:
-    import cStringIO as StringIO
-except ImportError:
-    try:
-        import StringIO
-    except ImportError:
-        import io as StringIO  # python >= 3.0
 
 
 SUPPORTED = True  # It should be available w/ python dist always.
@@ -73,7 +62,7 @@ def load_impl(config_fp, container, sep=_SEP):
         if parser.defaults():
             config["DEFAULT"] = container()
 
-            for k, v in parser.defaults().iteritems():
+            for k, v in iteritems(parser.defaults()):
                 config["DEFAULT"][k] = _parse(v, sep)
 
         for s in parser.sections():
@@ -94,10 +83,10 @@ def mk_lines_g(data):
     def is_inherited_from_default(k, v):
         return has_default and data["DEFAULT"].get(k, None) == v
 
-    for sect, params in data.iteritems():
+    for sect, params in iteritems(data):
         yield "[%s]\n" % sect
 
-        for k, v in params.iteritems():
+        for k, v in iteritems(params):
             if sect != "DEFAULT" and is_inherited_from_default(k, v):
                 continue
 
@@ -112,7 +101,7 @@ class IniConfigParser(Base.ConfigParser):
 
     @classmethod
     def loads(cls, config_content, sep=_SEP, **kwargs):
-        config_fp = StringIO.StringIO(config_content)
+        config_fp = StringIO(config_content)
         return load_impl(config_fp, cls.container(), sep)
 
     @classmethod
@@ -128,7 +117,7 @@ class IniConfigParser(Base.ConfigParser):
 
     @classmethod
     def dumps(cls, data, *args, **kwargs):
-        config_fp = StringIO.StringIO()
+        config_fp = StringIO()
         for l in mk_lines_g(data):
             config_fp.write(l)
 

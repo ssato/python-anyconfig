@@ -2,6 +2,8 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+from anyconfig.compat import StringIO
+
 import anyconfig.backend.base as Base
 import logging
 
@@ -12,14 +14,6 @@ try:
 except ImportError:
     logging.warn("YAML module is not available. Disabled its support.")
 
-try:
-    import cStringIO as StringIO
-except ImportError:
-    try:
-        import StringIO
-    except ImportError:
-        import io as StringIO  # python >= 3.0
-
 
 if SUPPORTED:
     class YamlConfigParser(Base.ConfigParser):
@@ -29,7 +23,7 @@ if SUPPORTED:
 
         @classmethod
         def loads(cls, config_content, *args, **kwargs):
-            config_fp = StringIO.StringIO(config_content)
+            config_fp = StringIO(config_content)
             create = cls.container().create
 
             return create(yaml.load(config_fp))

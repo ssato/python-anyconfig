@@ -2,6 +2,8 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
+from anyconfig.compat import iteritems
+
 import anyconfig.utils as U
 import copy
 
@@ -29,7 +31,7 @@ def convert_to(x):
     (bunch is distributed under MIT license same as this module.)
     """
     if is_MergeableDict_or_dict(x):
-        return dict((k, convert_to(v)) for k, v in x.iteritems())
+        return dict((k, convert_to(v)) for k, v in iteritems(x))
     elif U.is_iterable(x):
         return type(x)(convert_to(v) for v in x)
     else:
@@ -41,7 +43,7 @@ def create_from(x):
     Try creating a MergeableDict instance[s] from a dict or any other objects.
     """
     if is_MergeableDict_or_dict(x):
-        return MergeableDict((k, create_from(v)) for k, v in x.iteritems())
+        return MergeableDict((k, create_from(v)) for k, v in iteritems(x))
     elif U.is_iterable(x):
         return type(x)(create_from(v) for v in x)
     else:
@@ -89,7 +91,7 @@ class MergeableDict(dict):
         :param other: object of which type is same as self's.
         """
         if is_MergeableDict_or_dict(other):
-            for k, v in other.iteritems():
+            for k, v in iteritems(other):
                 self[k] = v
         else:
             self = copy.copy(other)
@@ -98,7 +100,7 @@ class MergeableDict(dict):
         """Update self w/ other but never replace self w/ other.
         """
         if is_MergeableDict_or_dict(other):
-            for k, v in other.iteritems():
+            for k, v in iteritems(other):
                 if k not in self:
                     self[k] = v
 
@@ -111,7 +113,7 @@ class MergeableDict(dict):
             [1, 2, 2], [2, 4] ==> [1, 2, 2, 4]
         """
         if is_MergeableDict_or_dict(other):
-            for k, v in other.iteritems():
+            for k, v in iteritems(other):
                 if k in self and is_MergeableDict_or_dict(v) and \
                         is_MergeableDict_or_dict(self[k]):
                     # update recursively.

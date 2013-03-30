@@ -3,8 +3,6 @@
 # License: MIT
 #
 import anyconfig.backend.base as Base
-
-import logging
 import sys
 
 

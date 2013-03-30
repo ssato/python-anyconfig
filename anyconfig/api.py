@@ -42,7 +42,7 @@ def find_loader(config_path, forced_type=None):
             )
             return None
 
-    logging.debug("Using config parser: " + str(cparser))
+    logging.debug("Using config parser of type: " + cparser.type())
     return cparser
 
 

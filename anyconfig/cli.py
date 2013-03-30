@@ -76,7 +76,7 @@ Int, str, etc.""" % ctypes_s
     p.add_option("-q", "--quiet", action="store_const", dest="loglevel",
                  const=0, help="Same as --silent option")
     p.add_option("-v", "--verbose", action="store_const", dest="loglevel",
-                 const=2, help="Debug mode")
+                 const=2, help="Verbose mode")
 
     return p
 

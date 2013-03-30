@@ -16,8 +16,8 @@ sys.stdout = codecs.getwriter(__enc)(sys.stdout)
 sys.stderr = codecs.getwriter(__enc)(sys.stderr)
 
 
-DEFAULTS = dict(debug=False, list=False, output=None, itype=None, otype=None,
-                atype=None, merge=A.MS_DICTS)
+DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
+                otype=None, atype=None, merge=A.MS_DICTS)
 
 USAGE = """\
 %prog [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
@@ -33,6 +33,11 @@ Examples:
   %prog /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
   %prog '/etc/foo.d/*.json' -M noreplace
 """
+
+
+def to_log_level(level):
+    assert level >= 0 and level < 3, "wrong log level passed: " + str(level)
+    return [logging.WARN, logging.INFO, logging.DEBUG][level]
 
 
 def option_parser(defaults=DEFAULTS, usage=USAGE):
@@ -56,7 +61,6 @@ Int, str, etc.""" % ctypes_s
     p = optparse.OptionParser(usage)
     p.set_defaults(**defaults)
 
-    p.add_option("-D", "--debug", action="store_true", help="Debug mode")
     p.add_option("-L", "--list", help="List supported config types",
                  action="store_true")
     p.add_option("-o", "--output", help="Output file path")
@@ -67,6 +71,13 @@ Int, str, etc.""" % ctypes_s
     p.add_option("-A", "--args", help="Argument configs to override")
     p.add_option("", "--atype", choices=ctypes, help=af_help)
 
+    p.add_option("-s", "--silent", action="store_const", dest="loglevel",
+                 const=0, help="Silent or quiet mode")
+    p.add_option("-q", "--quiet", action="store_const", dest="loglevel",
+                 const=0, help="Same as --silent option")
+    p.add_option("-v", "--verbose", action="store_const", dest="loglevel",
+                 const=2, help="Debug mode")
+
     return p
 
 
@@ -74,8 +85,7 @@ def main(argv=sys.argv):
     p = option_parser()
     (options, args) = p.parse_args(argv[1:])
 
-    llvl = logging.DEBUG if options.debug else logging.INFO
-    logging.getLogger().setLevel(llvl)
+    A.set_loglevel(to_log_level(options.loglevel))
 
     # FIXME: customize loggging format
     # fmt = "%(asctime)s %(levelname)-6s %(message)s"

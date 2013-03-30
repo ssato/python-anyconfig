@@ -4,6 +4,7 @@
 #
 import glob
 import os.path
+import types
 
 
 def get_file_extension(file_path):
@@ -47,7 +48,7 @@ def is_iterable(x):
     >>> is_iterable({})
     False
     """
-    return isinstance(x, (list, tuple)) or \
+    return isinstance(x, (list, tuple, types.GeneratorType)) or \
         (not isinstance(x, (int, str, dict)) and
          bool(getattr(x, "next", False)))
 

@@ -63,6 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 - [anyconfig_cli] add -s/--silent and -v/--verbose option to control log level
   and removed -d/--debug option
 - Implement build time snapshot-versioning-mode
+- Port and make it work w/ python-3.x also
 
 * Wed Mar 13 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.8-1
 - Do not expose internal repr. of loaded data when dump them

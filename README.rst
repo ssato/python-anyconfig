@@ -158,7 +158,6 @@ It can process various config files and output a merged config file::
 
   Options:
     -h, --help            show this help message and exit
-    -D, --debug           Debug mode
     -L, --list            List supported config types
     -o OUTPUT, --output=OUTPUT
                           Output file path
@@ -180,6 +179,9 @@ It can process various config files and output a merged config file::
                           'K_0:V_0;K_1:V_1' will become {K_0: V_0, K_1: V_1}
                           (where the tyep of K is str, type of V is one of Int,
                           str, etc.
+    -s, --silent          Silent or quiet mode
+    -q, --quiet           Same as --silent option
+    -v, --verbose         Verbose mode
   $
 
 

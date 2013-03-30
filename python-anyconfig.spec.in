@@ -58,6 +58,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 31 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.9-1
+- Some fixes and enhancements around logging code
+- [anyconfig_cli] add -s/--silent and -v/--verbose option to control log level
+  and removed -d/--debug option
+- Implement build time snapshot-versioning-mode
+
 * Wed Mar 13 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.8-1
 - Do not expose internal repr. of loaded data when dump them
 - Fix for ini (configparser) backend

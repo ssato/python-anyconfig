@@ -77,7 +77,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         self.assertNotEquals(a["a"], x["a"])
         self.assertNotEquals(a["d"], x["d"])
 
-        self.assertEquals(x["name"], u'x')
+        self.assertEquals(x["name"], 'x')
         self.assertEquals(x["a"], 10)
         self.assertEquals(x["d"], [3, 4])
 

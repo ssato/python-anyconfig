@@ -2,9 +2,6 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import glob
-import itertools
-import logging
 import re
 
 

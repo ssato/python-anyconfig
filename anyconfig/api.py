@@ -2,13 +2,13 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+import anyconfig.globals as G
 import anyconfig.mergeabledict as M
 import anyconfig.backend.backends as Backends
 import anyconfig.backend.json_ as BJ
 import anyconfig.parser as P
 import anyconfig.utils as U
 
-import logging
 import os.path
 
 # Import some global constants will be re-exported:
@@ -17,9 +17,15 @@ from anyconfig.mergeabledict import MS_REPLACE, MS_NO_REPLACE, \
 
 # Re-export:
 list_types = Backends.list_types
+getLogger = G.getLogger
 
 # aliases:
 container = M.MergeableDict
+logging = G.LOGGER
+
+
+def set_loglevel(level):
+    logging.setLevel(level)
 
 
 def find_loader(config_path, forced_type=None):

@@ -161,7 +161,10 @@ def dump(data, config_path, forced_type=None):
     :param config_path: Output filename
     :param forced_type: Forced configuration parser type
     """
-    _find_dumper(config_path, forced_type).dump(data, config_path)
+    dumper = _find_dumper(config_path, forced_type)
+
+    logging.info("Dumping: " + config_path)
+    dumper.dump(data, config_path)
 
 
 def dumps(data, forced_type):

@@ -2,19 +2,19 @@
 python-anyconfig
 =================
 
-Generic access to configuration files in any formats (to be in the future).
+Generic access to configuration files in any formats (to be in the future) with
+configuration merge (or cascade, overlay) support.
 
 * Author: Satoru SATOH <ssato@redhat.com>
 * License: MIT
 
 Current supported configuration file formats are:
 
-* JSON
-* YAML
-* Ini-style
-* XML (experimental)
-* Java properties file (experimental and only available if pyjavaproperties
-  module was found.)
+* JSON w/ json or simplejson
+* YAML w/ PyYAML
+* Ini w/ configparser
+* XML w/ lxml or ElementTree (experimental)
+* Java properties file w/ pyjavaproperties if it's available (experimental)
 
 Usage
 ======
@@ -207,7 +207,8 @@ or::
 
 and install built RPMs. 
 
-Otherwise, try usual way such like 'python setup.py bdist', etc.
+Otherwise, try usual ways to build and/or install python modules such like
+'easy_install anyconfig', 'python setup.py bdist', etc.
 
 Test Status
 =============

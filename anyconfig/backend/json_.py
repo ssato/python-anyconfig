@@ -19,9 +19,9 @@ except ImportError:
         SUPPORTED = False
 
 
-_LOAD_OPTS = ["encoding", "cls", "parse_float", "parse_int", "parse_constant"]
-_DUMP_OPTS = ["encoding", "cls", "skipkeys", "ensure_ascii", "check_circular",
-              "allow_nan", "indent", "separators"]
+_LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant"]
+_DUMP_OPTS = ["cls", "skipkeys", "ensure_ascii", "check_circular", "allow_nan",
+              "indent", "separators"]
 
 
 def dict_to_container(json_obj_dict):

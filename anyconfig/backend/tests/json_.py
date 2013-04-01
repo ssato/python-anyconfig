@@ -49,7 +49,7 @@ class Test_JsonConfigParser(unittest.TestCase):
         self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
 
     def test_20_load__optional_kwargs(self):
-        c = T.JsonConfigParser.load(self.config_path, encoding="utf-8")
+        c = T.JsonConfigParser.load(self.config_path, parse_int=None)
 
         self.assertEquals(c['a'], 0, str(c))
         self.assertEquals(c['b'], "bbb", c)
@@ -75,7 +75,7 @@ class Test_JsonConfigParser(unittest.TestCase):
 
     def test_40_dump(self):
         c = T.JsonConfigParser.loads(CONF_0)
-        T.JsonConfigParser.dump(c, self.config_path, encoding="utf-8",
+        T.JsonConfigParser.dump(c, self.config_path, parse_int=None,
                                 indent=3)
         c = T.JsonConfigParser.load(self.config_path)
 

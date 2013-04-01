@@ -9,6 +9,26 @@ import anyconfig.utils as U
 SUPPORTED = False
 
 
+def mk_opt_args(keys, kwargs):
+    """
+    Make optional kwargs valid and optimized for each backend.
+
+    :param keys: optional argument names
+    :param kwargs: keyword arguements to process
+
+    >>> mk_opt_args(("aaa", ), dict(aaa=1, bbb=2))
+    {'aaa': 1}
+    >>> mk_opt_args(("aaa", ), dict(bbb=2))
+    {}
+    """
+    def filter_kwargs(kwargs):
+        for k in keys:
+            if k in kwargs:
+                yield (k, kwargs[k])
+
+    return dict((k, v) for k, v in filter_kwargs(kwargs))
+
+
 class ConfigParser(object):
 
     _type = None

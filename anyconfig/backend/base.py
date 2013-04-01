@@ -34,6 +34,7 @@ class ConfigParser(object):
     _type = None
     _extensions = []
     _container = D.MergeableDict
+    _supported = False
 
     @classmethod
     def type(cls):
@@ -41,7 +42,8 @@ class ConfigParser(object):
 
     @classmethod
     def supports(cls, config_file):
-        return U.get_file_extension(config_file) in cls._extensions
+        return cls._supported and \
+            U.get_file_extension(config_file) in cls._extensions
 
     @classmethod
     def container(cls):

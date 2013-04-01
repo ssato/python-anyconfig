@@ -3,9 +3,9 @@
 # License: MIT
 #
 from anyconfig.compat import StringIO, iteritems
+from anyconfig.globals import LOGGER as logging
 
 import anyconfig.backend.base as Base
-import logging
 import sys
 
 

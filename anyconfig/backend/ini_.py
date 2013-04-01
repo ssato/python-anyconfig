@@ -3,11 +3,11 @@
 # License: MIT
 #
 from anyconfig.compat import StringIO, configparser, iteritems
+from anyconfig.globals import LOGGER as logging
 
 import anyconfig.backend.base as Base
 import anyconfig.parser as P
 
-import logging
 import os.path
 import sys
 

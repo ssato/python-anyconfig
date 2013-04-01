@@ -19,6 +19,11 @@ except ImportError:
         SUPPORTED = False
 
 
+_LOAD_OPTS = ["encoding", "cls", "parse_float", "parse_int", "parse_constant"]
+_DUMP_OPTS = ["encoding", "cls", "skipkeys", "ensure_ascii", "check_circular",
+              "allow_nan", "indent", "separators"]
+
+
 def dict_to_container(json_obj_dict):
     return JsonConfigParser.container().create(json_obj_dict)
 
@@ -28,20 +33,23 @@ class JsonConfigParser(Base.ConfigParser):
     _extensions = ["json", "jsn"]
 
     @classmethod
-    def loads(cls, config_content, *args, **kwargs):
-        return json.loads(config_content, object_hook=dict_to_container)
+    def loads(cls, config_content, **kwargs):
+        return json.loads(config_content, object_hook=dict_to_container,
+                          **Base.mk_opt_args(_LOAD_OPTS, kwargs))
 
     @classmethod
-    def load(cls, config_path, *args, **kwargs):
-        return json.load(open(config_path), object_hook=dict_to_container)
+    def load(cls, config_path, **kwargs):
+        return json.load(open(config_path), object_hook=dict_to_container,
+                         **Base.mk_opt_args(_LOAD_OPTS, kwargs))
 
     @classmethod
-    def dumps(cls, data, *args, **kwargs):
-        return json.dumps(data, indent=2)
+    def dumps(cls, data, **kwargs):
+        return json.dumps(data, **Base.mk_opt_args(_DUMP_OPTS, kwargs))
 
     @classmethod
-    def dump(cls, data, config_path, *args, **kwargs):
-        json.dump(data, open(config_path, "w"), indent=2)
+    def dump(cls, data, config_path, **kwargs):
+        json.dump(data, open(config_path, "w"),
+                  **Base.mk_opt_args(_DUMP_OPTS, kwargs))
 
 
 # vim:sw=4:ts=4:et:

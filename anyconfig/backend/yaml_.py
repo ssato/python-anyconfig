@@ -15,34 +15,42 @@ except ImportError:
     logging.warn("YAML module is not available. Disabled its support.")
 
 
+_LOAD_OPTS = ["Loader"]
+_DUMP_TOPS = ["stream", "Dumper"]
+
+
 if SUPPORTED:
     class YamlConfigParser(Base.ConfigParser):
 
         _type = "yaml"
-        _extensions = ["yaml", "yml"]
+        _extensions = ("yaml", "yml")
 
         @classmethod
-        def loads(cls, config_content, *args, **kwargs):
+        def loads(cls, config_content, **kwargs):
             config_fp = StringIO(config_content)
             create = cls.container().create
 
-            return create(yaml.load(config_fp))
+            return create(yaml.load(config_fp,
+                                    **Base.mk_opt_args(_LOAD_OPTS, kwargs)))
 
         @classmethod
-        def load(cls, config_path, *args, **kwargs):
+        def load(cls, config_path, **kwargs):
             create = cls.container().create
 
-            return create(yaml.load(open(config_path)))
+            return create(yaml.load(open(config_path),
+                                    **Base.mk_opt_args(_LOAD_OPTS, kwargs)))
 
         @classmethod
-        def dumps(cls, data, *args, **kwargs):
+        def dumps(cls, data, **kwargs):
             convert_to = cls.container().convert_to
-            return yaml.dump(convert_to(data), None)
+            return yaml.dump(convert_to(data),
+                             **Base.mk_opt_args(_DUMP_TOPS, kwargs))
 
         @classmethod
-        def dump(cls, data, config_path, *args, **kwargs):
+        def dump(cls, data, config_path, **kwargs):
             convert_to = cls.container().convert_to
-            yaml.dump(convert_to(data), open(config_path, "w"))
+            yaml.dump(convert_to(data), open(config_path, "w"),
+                      **Base.mk_opt_args(_DUMP_TOPS, kwargs))
 
 
 # vim:sw=4:ts=4:et:

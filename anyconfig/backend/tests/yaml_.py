@@ -18,6 +18,8 @@ sect0:
 """
 
 if T.SUPPORTED:
+    import yaml
+
     class Test_YamlConfigParser(unittest.TestCase):
 
         def setUp(self):
@@ -47,6 +49,14 @@ if T.SUPPORTED:
             self.assertEquals(c['b'], "bbb", c)
             self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
 
+        def test_20_load__w_options(self):
+            c = T.YamlConfigParser.load(self.config_path,
+                                        Loader=yaml.loader.Loader)
+
+            self.assertEquals(c['a'], 0, str(c))
+            self.assertEquals(c['b'], "bbb", c)
+            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+
         def test_30_dumps(self):
             c = T.YamlConfigParser.loads(CONF_0)
             s = T.YamlConfigParser.dumps(c)
@@ -59,6 +69,16 @@ if T.SUPPORTED:
         def test_40_dump(self):
             c = T.YamlConfigParser.loads(CONF_0)
             T.YamlConfigParser.dump(c, self.config_path)
+            c = T.YamlConfigParser.load(self.config_path)
+
+            self.assertEquals(c['a'], 0, str(c))
+            self.assertEquals(c['b'], "bbb", c)
+            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+
+        def test_40_dump__w_options(self):
+            c = T.YamlConfigParser.loads(CONF_0)
+            T.YamlConfigParser.dump(c, self.config_path,
+                                    Dumper=yaml.dumper.Dumper)
             c = T.YamlConfigParser.load(self.config_path)
 
             self.assertEquals(c['a'], 0, str(c))

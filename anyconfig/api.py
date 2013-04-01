@@ -58,6 +58,8 @@ def single_load(config_path, forced_type=None, **kwargs):
 
     :param config_path: Configuration file path
     :param forced_type: Forced configuration parser type
+    :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
+        JSON loader/dumper backend
     """
     cparser = find_loader(config_path, forced_type)
     if cparser is None:
@@ -67,7 +69,7 @@ def single_load(config_path, forced_type=None, **kwargs):
     return cparser.load(config_path, **kwargs)
 
 
-def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*'):
+def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
     """
     Load multiple config files.
 
@@ -85,6 +87,8 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*'):
     :param merge: Strategy to merge config results of multiple config files
         loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
     :param marker: Globbing markerer to detect paths patterns
+    :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
+        JSON loader/dumper backend
     """
     assert merge in MERGE_STRATEGIES, "Invalid merge strategy: " + merge
 
@@ -94,16 +98,16 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*'):
     config = container()
     for p in paths:
         if marker in p:  # Nested pattern cases, e.g. ['*.yml', '/a/b/c.yml'].
-            conf_updates = multi_load(p, forced_type, merge, marker)
+            conf_updates = multi_load(p, forced_type, merge, marker, **kwargs)
         else:
-            conf_updates = single_load(p, forced_type)
+            conf_updates = single_load(p, forced_type, **kwargs)
 
         config.update(conf_updates, merge)
 
     return config
 
 
-def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*'):
+def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -113,17 +117,21 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*'):
     :param forced_type: Forced configuration parser type
     :param merge: Merging strategy to use
     :param marker: Globbing marker to detect paths patterns
+    :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
+        JSON loader/dumper backend
     """
     if marker in path_specs or U.is_iterable(path_specs):
-        return multi_load(path_specs, forced_type, merge, marker)
+        return multi_load(path_specs, forced_type, merge, marker, **kwargs)
     else:
-        return single_load(path_specs, forced_type)
+        return single_load(path_specs, forced_type, **kwargs)
 
 
 def loads(config_content, forced_type=None, **kwargs):
     """
     :param config_content: Configuration file's content
     :param forced_type: Forced configuration parser type
+    :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
+        JSON loader/dumper backend
     """
     if forced_type is None:
         return P.parse(config_content)
@@ -153,28 +161,32 @@ def _find_dumper(config_path, forced_type=None):
     return cparser
 
 
-def dump(data, config_path, forced_type=None):
+def dump(data, config_path, forced_type=None, **kwargs):
     """
     Save `data` as `config_path`.
 
     :param data: Data object to dump
     :param config_path: Output filename
     :param forced_type: Forced configuration parser type
+    :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
+        JSON loader/dumper backend
     """
     dumper = _find_dumper(config_path, forced_type)
 
     logging.info("Dumping: " + config_path)
-    dumper.dump(data, config_path)
+    dumper.dump(data, config_path, **kwargs)
 
 
-def dumps(data, forced_type):
+def dumps(data, forced_type, **kwargs):
     """
     Return string representation of `data` in forced type format.
 
     :param data: Data object to dump
     :param forced_type: Forced configuration parser type
+    :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
+        JSON loader/dumper backend
     """
-    return _find_dumper(None, forced_type).dumps(data)
+    return _find_dumper(None, forced_type).dumps(data, **kwargs)
 
 
 # vim:sw=4:ts=4:et:

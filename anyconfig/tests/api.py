@@ -65,6 +65,15 @@ class Test_10_pure_functions(unittest.TestCase):
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
+    def test_30_dumps_and_loads__w_options(self):
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        a1 = A.loads(A.dumps(a, "json", indent=2), "json", ensure_ascii=False)
+
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+
     def test_40_loads_wo_type(self):
         a = dict(requires=["bash", "zsh"])
         a_s = "requires:bash,zsh"
@@ -179,6 +188,42 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
         a3 = A.load([a_path, b_path])
+
+        self.assertEquals(a3["name"],   a["name"])
+        self.assertEquals(a3["a"],      b["a"])
+        self.assertEquals(a3["b"]["b"], [1, 2, 3, 4, 5])
+        self.assertEquals(a3["b"]["c"], a["b"]["c"])
+        self.assertEquals(a3["b"]["d"], b["b"]["d"])
+
+    def test_30_dump_and_load__w_options(self):
+        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+
+        a_path = os.path.join(self.workdir, "a.json")
+        b_path = os.path.join(self.workdir, "b.json")
+
+        A.dump(a, a_path, indent=2, encoding="utf-8")
+        self.assertTrue(os.path.exists(a_path))
+
+        A.dump(b, b_path, encoding="utf-8")
+        self.assertTrue(os.path.exists(b_path))
+
+        a1 = A.load(a_path, encoding="utf-8")
+
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+
+        a2 = A.load(os.path.join(self.workdir, '*.json'), encoding="utf-8")
+
+        self.assertEquals(a2["name"],   a["name"])
+        self.assertEquals(a2["a"],      b["a"])
+        self.assertEquals(a2["b"]["b"], [1, 2, 3, 4, 5])
+        self.assertEquals(a2["b"]["c"], a["b"]["c"])
+        self.assertEquals(a2["b"]["d"], b["b"]["d"])
+
+        a3 = A.load([a_path, b_path], encoding="utf-8")
 
         self.assertEquals(a3["name"],   a["name"])
         self.assertEquals(a3["a"],      b["a"])

@@ -111,15 +111,15 @@ the followings:
 """
 from .globals import AUTHOR, VERSION
 from .api import single_load, multi_load, load, loads, dump, dumps, \
-    list_types, find_loader, \
+    list_types, find_loader, container, logging, set_loglevel \
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 
 __author__ = AUTHOR
 __version__ = VERSION
 
 __all__ = [
-    "list_types", "find_loader", "single_load", "multi_load", "load", "loads",
-    "dump", "dumps", "list_types",
+    "single_load", "multi_load", "load", "loads", "dump", "dumps",
+    "list_types", "find_loader", "container", "logging", "set_loglevel",
     "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
 ]
 

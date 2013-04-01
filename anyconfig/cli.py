@@ -2,11 +2,11 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-from anyconfig.globals import LOGGER as logging
 import anyconfig.api as A
 
 import codecs
 import locale
+import logging
 import optparse
 import sys
 

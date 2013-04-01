@@ -48,14 +48,14 @@ class ConfigParser(object):
         raise NotImplementedError("Inherited class MUST implement this")
 
     @classmethod
-    def dumps(cls, data, *args, **kwargs):
+    def dumps(cls, data, **kwargs):
         """
         :param data: Data to dump
         """
         return repr(data)  # or str(...) ?
 
     @classmethod
-    def dump(cls, data, config_path, *args, **kwargs):
+    def dump(cls, data, config_path, **kwargs):
         """
         :param data: Data to dump
         :param config_path: Dump destination file path

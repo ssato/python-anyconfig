@@ -19,8 +19,13 @@ if C.IS_PYTHON_3:
 
     _encoding = _encoding.lower()
 
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=_encoding)
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=_encoding)
+    # FIXME: Fix the error, "AttributeError: '_io.StringIO' object has no
+    # attribute 'buffer'".
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=_encoding)
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=_encoding)
+    except AttributeError:
+        pass
 else:
     sys.stdout = codecs.getwriter(_encoding)(sys.stdout)
     sys.stderr = codecs.getwriter(_encoding)(sys.stderr)

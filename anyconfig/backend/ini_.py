@@ -56,14 +56,18 @@ def load_impl(config_fp, container, sep=_SEP, **kwargs):
     config = container()
 
     # Optional arguements for configparser.SafeConfigParser{,readfp}
-    filename = kwargs.get("filename", None)
-    defaults = kwargs.get("defaults", None)
-    allow_no_value = kwargs.get("allow_no_value", False)
+    kwargs_0 = Base.mk_opt_args(("defaults", "dict_type", "allow_no_value"),
+                                kwargs)
+    kwargs_1 = Base.mk_opt_args(("filename", ), kwargs)
+    experimental = False  # disabled until fix the issue.
 
     try:
-        parser = configparser.SafeConfigParser(defaults=defaults,
-                                               allow_no_value=allow_no_value)
-        parser.readfp(config_fp, filename=filename)
+        if experimental:
+            parser = configparser.SafeConfigParser(**kwrags_0)
+            parser.readfp(config_fp, **kwrags_1)
+        else:
+            parser = configparser.SafeConfigParser()
+            parser.readfp(config_fp)
 
         if parser.defaults():
             config["DEFAULT"] = container()

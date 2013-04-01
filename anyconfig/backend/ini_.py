@@ -46,7 +46,7 @@ def _to_s(v, sep=_SEP):
         return str(v)
 
 
-def load_impl(config_fp, container, sep=_SEP):
+def load_impl(config_fp, container, sep=_SEP, **kwargs):
     """
     :param config_fp: File or file-like object provides ini-style conf
     :param container: Object container to hold parsed objects
@@ -55,9 +55,15 @@ def load_impl(config_fp, container, sep=_SEP):
     """
     config = container()
 
+    # Optional arguements for configparser.SafeConfigParser{,readfp}
+    filename = kwargs.get("filename", None)
+    defaults = kwargs.get("defaults", None)
+    allow_no_value = kwargs.get("allow_no_value", False)
+
     try:
-        parser = configparser.SafeConfigParser()
-        parser.readfp(config_fp)
+        parser = configparser.SafeConfigParser(defaults=defaults,
+                                               allow_no_value=allow_no_value)
+        parser.readfp(config_fp, filename=filename)
 
         if parser.defaults():
             config["DEFAULT"] = container()
@@ -113,7 +119,7 @@ class IniConfigParser(Base.ConfigParser):
             return config
 
         logging.info("Loading config: " + config_path)
-        return load_impl(open(config_path), cls.container(), sep)
+        return load_impl(open(config_path), cls.container(), sep, **kwargs)
 
     @classmethod
     def dumps(cls, data, *args, **kwargs):
@@ -124,7 +130,7 @@ class IniConfigParser(Base.ConfigParser):
         return config_fp.getvalue()
 
     @classmethod
-    def dump(cls, data, config_path, *args, **kwargs):
+    def dump(cls, data, config_path, **kwargs):
         with open(config_path, 'w') as config_fp:
             for l in mk_lines_g(data):
                 config_fp.write(l)

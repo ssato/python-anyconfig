@@ -60,6 +60,7 @@ class XmlConfigParser(Base.ConfigParser):
 
     _type = "xml"
     _extensions = ["xml"]
+    _supported = SUPPORTED
 
     @classmethod
     def loads(cls, config_content, *args, **kwargs):

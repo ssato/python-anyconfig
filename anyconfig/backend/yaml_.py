@@ -33,6 +33,7 @@ class YamlConfigParser(Base.ConfigParser):
 
     _type = "yaml"
     _extensions = ("yaml", "yml")
+    _supported = SUPPORTED
 
     @classmethod
     def loads(cls, config_content, **kwargs):

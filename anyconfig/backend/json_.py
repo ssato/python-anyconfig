@@ -31,6 +31,7 @@ def dict_to_container(json_obj_dict):
 class JsonConfigParser(Base.ConfigParser):
     _type = "json"
     _extensions = ["json", "jsn"]
+    _supported = SUPPORTED
 
     @classmethod
     def loads(cls, config_content, **kwargs):

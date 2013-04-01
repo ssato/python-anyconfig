@@ -47,6 +47,7 @@ class PropertiesParser(Base.ConfigParser):
 
     _type = "properties"
     _extensions = ["properties"]
+    _supported = SUPPORTED
 
     #@classmethod
     #def loads(cls, config_content, *args, **kwargs):

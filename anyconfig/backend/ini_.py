@@ -61,7 +61,14 @@ def load_impl(config_fp, container, sep=_SEP, **kwargs):
     kwargs_1 = Base.mk_opt_args(("filename", ), kwargs)
 
     try:
-        parser = configparser.SafeConfigParser(**kwargs_0)
+        try:
+            parser = configparser.SafeConfigParser(**kwargs_0)
+        except TypeError:
+            # It seems ConfigPaser.*ConfigParser in python 2.6 does not support
+            # 'allow_no_value' option parameter, and TypeError will be thrown.
+            kwargs_0 = Base.mk_opt_args(("defaults", "dict_type"), kwargs)
+            parser = configparser.SafeConfigParser(**kwargs_0)
+
         parser.readfp(config_fp, **kwargs_1)
 
         if parser.defaults():

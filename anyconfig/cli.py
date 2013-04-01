@@ -3,6 +3,7 @@
 # License: MIT
 #
 import anyconfig.api as A
+import anyconfig.compat as C
 
 import codecs
 import locale
@@ -11,10 +12,18 @@ import optparse
 import sys
 
 
-__enc = locale.getdefaultlocale()[1]
-sys.stdout = codecs.getwriter(__enc)(sys.stdout)
-sys.stderr = codecs.getwriter(__enc)(sys.stderr)
+_encoding = locale.getdefaultlocale()[1]
 
+if C.IS_PYTHON_3:
+    import io
+
+    _encoding = _encoding.lower()
+
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=_encoding)
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=_encoding)
+else:
+    sys.stdout = codecs.getwriter(_encoding)(sys.stdout)
+    sys.stderr = codecs.getwriter(_encoding)(sys.stderr)
 
 DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
                 otype=None, atype=None, merge=A.MS_DICTS)

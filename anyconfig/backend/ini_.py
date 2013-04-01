@@ -59,15 +59,10 @@ def load_impl(config_fp, container, sep=_SEP, **kwargs):
     kwargs_0 = Base.mk_opt_args(("defaults", "dict_type", "allow_no_value"),
                                 kwargs)
     kwargs_1 = Base.mk_opt_args(("filename", ), kwargs)
-    experimental = False  # disabled until fix the issue.
 
     try:
-        if experimental:
-            parser = configparser.SafeConfigParser(**kwrags_0)
-            parser.readfp(config_fp, **kwrags_1)
-        else:
-            parser = configparser.SafeConfigParser()
-            parser.readfp(config_fp)
+        parser = configparser.SafeConfigParser(**kwargs_0)
+        parser.readfp(config_fp, **kwargs_1)
 
         if parser.defaults():
             config["DEFAULT"] = container()

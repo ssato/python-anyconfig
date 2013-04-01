@@ -110,6 +110,7 @@ def mk_lines_g(data):
 class IniConfigParser(Base.ConfigParser):
     _type = "ini"
     _extensions = ["ini"]
+    _supported = SUPPORTED
 
     @classmethod
     def loads(cls, config_content, sep=_SEP, **kwargs):

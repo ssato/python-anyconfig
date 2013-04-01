@@ -41,9 +41,12 @@ class ConfigParser(object):
         return cls._type
 
     @classmethod
-    def supports(cls, config_file):
-        return cls._supported and \
-            U.get_file_extension(config_file) in cls._extensions
+    def supports(cls, config_file=None):
+        if config_file is None:
+            return cls._supported
+        else:
+            return cls._supported and \
+                U.get_file_extension(config_file) in cls._extensions
 
     @classmethod
     def container(cls):

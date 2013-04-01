@@ -2,8 +2,8 @@
 # Copyright (C) 2011, 2012 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+from anyconfig.globals import LOGGER as logging
 import anyconfig.backend.base as Base
-import logging
 
 
 SUPPORTED = True
@@ -41,24 +41,34 @@ def etree_to_container(root, container):
 
 
 if SUPPORTED:
-    class XmlConfigParser(Base.ConfigParser):
+    def etree_getroot_fromstring(s):
+        return etree.fromstring(s).getroot()
 
-        _type = "xml"
-        _extensions = ["xml"]
+    def etree_getroot_fromfile(f):
+        return etree.parse(f).getroot()
+else:
+    def _dummy_fun(*args, **kwargs):
+        logging.warn(
+            "Return {} as no any XML modules used, are not available."
+        )
+        return {}
 
-        @classmethod
-        def loads(cls, config_content, *args, **kwargs):
-            tree = etree.fromstring(config_content)
-            root = tree.getroot()
+    etree_getroot_fromstring = etree_getroot_fromfile = _dummy_fun
 
-            return etree_to_container(root, cls.container())
 
-        @classmethod
-        def load(cls, config_path, *args, **kwargs):
-            tree = etree.parse(config_path)
-            root = tree.getroot()
+class XmlConfigParser(Base.ConfigParser):
 
-            return etree_to_container(root, cls.container())
+    _type = "xml"
+    _extensions = ["xml"]
 
+    @classmethod
+    def loads(cls, config_content, *args, **kwargs):
+        root = etree_getroot_fromstring(config_content)
+        return etree_to_container(root, cls.container())
+
+    @classmethod
+    def load(cls, config_path, *args, **kwargs):
+        root = etree_getroot_fromfile(config_path)
+        return etree_to_container(root, cls.container())
 
 # vim:sw=4:ts=4:et:

@@ -3,9 +3,9 @@
 # License: MIT
 #
 from anyconfig.compat import StringIO
+from anyconfig.globals import LOGGER as logging
 
 import anyconfig.backend.base as Base
-import logging
 
 SUPPORTED = False
 try:
@@ -18,39 +18,47 @@ except ImportError:
 _LOAD_OPTS = ["Loader"]
 _DUMP_TOPS = ["stream", "Dumper"]
 
-
 if SUPPORTED:
-    class YamlConfigParser(Base.ConfigParser):
+    yaml_load = yaml.load
+    yaml_dump = yaml.dump
+else:
+    def _dummy_fun(*args, **kwargs):
+        logging.warn("Does nothing as YAML module is not available.")
+        return
 
-        _type = "yaml"
-        _extensions = ("yaml", "yml")
+    yaml_load = yaml_dump = _dummy_fun
 
-        @classmethod
-        def loads(cls, config_content, **kwargs):
-            config_fp = StringIO(config_content)
-            create = cls.container().create
 
-            return create(yaml.load(config_fp,
-                                    **Base.mk_opt_args(_LOAD_OPTS, kwargs)))
+class YamlConfigParser(Base.ConfigParser):
 
-        @classmethod
-        def load(cls, config_path, **kwargs):
-            create = cls.container().create
+    _type = "yaml"
+    _extensions = ("yaml", "yml")
 
-            return create(yaml.load(open(config_path),
-                                    **Base.mk_opt_args(_LOAD_OPTS, kwargs)))
+    @classmethod
+    def loads(cls, config_content, **kwargs):
+        config_fp = StringIO(config_content)
+        create = cls.container().create
 
-        @classmethod
-        def dumps(cls, data, **kwargs):
-            convert_to = cls.container().convert_to
-            return yaml.dump(convert_to(data),
-                             **Base.mk_opt_args(_DUMP_TOPS, kwargs))
+        return create(yaml_load(config_fp,
+                                **Base.mk_opt_args(_LOAD_OPTS, kwargs)))
 
-        @classmethod
-        def dump(cls, data, config_path, **kwargs):
-            convert_to = cls.container().convert_to
-            yaml.dump(convert_to(data), open(config_path, "w"),
-                      **Base.mk_opt_args(_DUMP_TOPS, kwargs))
+    @classmethod
+    def load(cls, config_path, **kwargs):
+        create = cls.container().create
 
+        return create(yaml_load(open(config_path),
+                                **Base.mk_opt_args(_LOAD_OPTS, kwargs)))
+
+    @classmethod
+    def dumps(cls, data, **kwargs):
+        convert_to = cls.container().convert_to
+        return yaml_dump(convert_to(data),
+                         **Base.mk_opt_args(_DUMP_TOPS, kwargs))
+
+    @classmethod
+    def dump(cls, data, config_path, **kwargs):
+        convert_to = cls.container().convert_to
+        yaml_dump(convert_to(data), open(config_path, "w"),
+                  **Base.mk_opt_args(_DUMP_TOPS, kwargs))
 
 # vim:sw=4:ts=4:et:

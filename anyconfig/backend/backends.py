@@ -9,19 +9,9 @@ import anyconfig.backend.xml_ as BXML
 import anyconfig.backend.yaml_ as BYAML
 import anyconfig.backend.properties_ as BPROP
 
-_CPs = [
-    BINI.IniConfigParser,
-    BJSON.JsonConfigParser,
-]
-
-if BYAML.SUPPORTED:
-    _CPs.append(BYAML.YamlConfigParser)
-
-if BXML.SUPPORTED:
-    _CPs.append(BXML.XmlConfigParser)
-
-if BPROP.SUPPORTED:
-    _CPs.append(BPROP.PropertiesParser)
+_CPs = [p for p in [BINI.IniConfigParser, BJSON.JsonConfigParser,
+                    BYAML.YamlConfigParser, BXML.XmlConfigParser,
+                    BPROP.PropertiesParser] if p.supports()]
 
 
 def find_by_file(config_file, cps=_CPs):

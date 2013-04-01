@@ -8,24 +8,34 @@ import anyconfig.tests.common as C
 
 import os
 import os.path
+import subprocess
 import unittest
+
+
+def run(args=[]):
+    """
+    It will throw subprocess.CalledProcessError if something goes wrong.
+    """
+    args = ["python", os.path.join(C.selfdir(), "..", "cli.py")] + args
+    devnull = open('/dev/null', 'w')
+
+    subprocess.check_call(args, stdout=devnull, stderr=devnull)
 
 
 class Test_10_effectful_functions(unittest.TestCase):
 
     def setUp(self):
         self.workdir = C.setup_workdir()
+        self.script = os.path.join(C.selfdir(), "..", "cli.py")
 
     def tearDown(self):
         C.cleanup_workdir(self.workdir)
 
-    def test_10__no_args(self):
-        """FIXME: no args test case"""
-        pass
+    def test_10__show_usage(self):
+        run(["--help"])
 
     def test_20__list(self):
-        """FIXME: '--list' test case"""
-        pass
+        run(["--list"])
 
     def test_30_single_input(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))

@@ -54,17 +54,17 @@ class PropertiesParser(Base.ConfigParser):
     #    return load_impl(config_fp, cls.container())
 
     @classmethod
-    def load(cls, config_path, *args, **kwargs):
+    def load(cls, config_path, **kwargs):
         return load_impl(open(config_path), cls.container())
 
     @classmethod
-    def dumps(cls, data, *args, **kwargs):
+    def dumps(cls, data, **kwargs):
         config_fp = StringIO()
         dump_impl(data, config_fp)
         return config_fp.getvalue()
 
     @classmethod
-    def dump(cls, data, config_path, *args, **kwargs):
+    def dump(cls, data, config_path, **kwargs):
         """TODO: How to encode nested dicts?
         """
         dump_impl(data, open(config_path, 'w'))

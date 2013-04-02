@@ -1,28 +1,44 @@
-"""Generic interface to loaders and parsers for various config file formats.
+"""
+.. module:: anyconfig
+   :platform: Unix, Windows
+   :synopsis: Generic interface to loaders and parsers for various config file formats.
 
-Instead of
+Instead of::
 
     import json, yaml
     jd = json.load(open("foo.json"))
     yd = yaml.load(open("bar.yaml"))
+        ...
+    json.dump(open("foo-new.json", w))
+    yaml.dump(open("bar-new.yaml", w))
 
-use
+you can write like the following::
 
     import anyconfig
     jd = anyconfig.load("foo.json")
     yd = anyconfig.load("bar.yaml")
+        ...
+    anyconfig.dump(open("foo-new.json", w))
+    anyconfig.dump(open("bar-new.yaml", w))
+
+.. note::
+
+   It's possible to pass config loader specific option parameter to load and
+   dump methods for each type of ConfigParser,
+
+   ex. anyconfig.load("foo.json", parse_float=None)
 
 The returned object is an instance of anyconfig.mergeabledict.MergeableDict
 class, dict-based class supports recursive merge operations.
 
 You can also load multiple config files at once w/ anyconfig.multi_load or
 anyconfig.load (anyconfig.load does not distinguish between single and multiple
-config files):
+config files)::
 
     conf = anyconfig.multi_load(["foo.json", "bar.yaml"])
 
 or if path of config files can be specified w/ a glob pattern, you can use
-anyconfig.load instead such like:
+anyconfig.load instead such like::
 
     conf = anyconfig.load("/etc/xyz/conf.d/*.conf", "yaml")
 

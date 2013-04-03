@@ -47,9 +47,15 @@ To load single config file::
   # Same as above
   data4 = anyconfig.single_load("/path/to/foo/conf.d/b.conf", "yaml")
 
-It's possible to pass config loader specific option parameter to load and dump
-methods for each type of ConfigParser::
+It's possible to pass config loader specific option parameter to load and dump::
 
+  # from python -c "import json; help(json.load)":
+  # Help on function load in module json:
+  #
+  # load(fp, encoding=None, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, object_pairs_hook=None, **kw)
+  #    Deserialize ``fp`` (a ``.read()``-supporting file-like object containing
+  #    a JSON document) to a Python object.
+  #    ...
   data5 = anyconfig.load("foo.json", parse_float=None)
 
 .. note::

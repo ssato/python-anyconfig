@@ -107,9 +107,10 @@ rm -rf $RPM_BUILD_ROOT
 - Some fixes and enhancements around logging code
 - [anyconfig_cli] add -s/--silent and -v/--verbose option to control log level
   and removed -d/--debug option
-- Implement build time snapshot-versioning-mode
+- Allow swtich from/to build time snapshot-versioning-mode dynamically
 - Build also RPMs for python-3.x
 - Allow backend specific options passed to load*/dump* methods of some backends
+- Ensure dir to dump output created if that dir not exist
 
 * Wed Mar 13 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.8-1
 - Do not expose internal repr. of loaded data when dump them

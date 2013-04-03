@@ -47,6 +47,16 @@ To load single config file::
   # Same as above
   data4 = anyconfig.single_load("/path/to/foo/conf.d/b.conf", "yaml")
 
+It's possible to pass config loader specific option parameter to load and dump
+methods for each type of ConfigParser::
+
+  data5 = anyconfig.load("foo.json", parse_float=None)
+
+.. note::
+
+   The returned object is an instance of anyconfig.mergeabledict.MergeableDict
+   class by default to support recursive merge operations needed when loading
+   multiple config files.
 
 To load multiple config files::
 

@@ -28,11 +28,8 @@ you can write like the following::
 
    ex. anyconfig.load("foo.json", parse_float=None)
 
-The returned object is an instance of anyconfig.mergeabledict.MergeableDict
-class, dict-based class supports recursive merge operations.
-
 You can also load multiple config files at once w/ anyconfig.multi_load or
-anyconfig.load (anyconfig.load does not distinguish between single and multiple
+anyconfig.load (the later one does not distinguish between single and multiple
 config files)::
 
     conf = anyconfig.multi_load(["foo.json", "bar.yaml"])
@@ -41,6 +38,10 @@ or if path of config files can be specified w/ a glob pattern, you can use
 anyconfig.load instead such like::
 
     conf = anyconfig.load("/etc/xyz/conf.d/*.conf", "yaml")
+
+The returned object is an instance of anyconfig.mergeabledict.MergeableDict
+class by default to support recursive merge operations needed when loading
+multiple config files.
 
 On loading multiple config files, you can choose strategy to merge configs from
 the followings:

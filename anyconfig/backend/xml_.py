@@ -63,13 +63,21 @@ class XmlConfigParser(Base.ConfigParser):
     _supported = SUPPORTED
 
     @classmethod
-    def loads(cls, config_content, *args, **kwargs):
+    def loads(cls, config_content, **kwargs):
         root = etree_getroot_fromstring(config_content)
         return etree_to_container(root, cls.container())
 
     @classmethod
-    def load(cls, config_path, *args, **kwargs):
+    def load(cls, config_path, **kwargs):
         root = etree_getroot_fromfile(config_path)
         return etree_to_container(root, cls.container())
+
+    @classmethod
+    def dumps(cls, data, **kwargs):
+        raise NotImplementedError("XML dumper not implemented yet!")
+
+    @classmethod
+    def dump(cls, data, config_path, **kwargs):
+        raise NotImplementedError("XML dumper not implemented yet!")
 
 # vim:sw=4:ts=4:et:

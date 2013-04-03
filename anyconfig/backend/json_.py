@@ -49,6 +49,7 @@ class JsonConfigParser(Base.ConfigParser):
 
     @classmethod
     def dump(cls, data, config_path, **kwargs):
+        Base.mk_dump_dir_if_not_exist(config_path)
         json.dump(data, open(config_path, "w"),
                   **Base.mk_opt_args(_DUMP_OPTS, kwargs))
 

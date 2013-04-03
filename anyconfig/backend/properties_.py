@@ -68,6 +68,7 @@ class PropertiesParser(Base.ConfigParser):
     def dump(cls, data, config_path, **kwargs):
         """TODO: How to encode nested dicts?
         """
+        Base.mk_dump_dir_if_not_exist(config_path)
         dump_impl(data, open(config_path, 'w'))
 
 

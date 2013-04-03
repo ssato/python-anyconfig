@@ -2,9 +2,12 @@
 # Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+from anyconfig.globals import LOGGER as logging
+
 import anyconfig.mergeabledict as D
 import anyconfig.utils as U
-
+import os.path
+import os
 
 SUPPORTED = False
 
@@ -27,6 +30,19 @@ def mk_opt_args(keys, kwargs):
                 yield (k, kwargs[k])
 
     return dict((k, v) for k, v in filter_kwargs(kwargs))
+
+
+def mk_dump_dir_if_not_exist(f):
+    """
+    Make dir to dump f if that dir does not exist.
+
+    :param f: path of file to dump
+    """
+    dumpdir = os.path.dirname(f)
+
+    if not os.path.exists(dumpdir):
+        logging.debug("Creating output dir as it's not found: " + dumpdir)
+        os.makedirs(dumpdir)
 
 
 class ConfigParser(object):
@@ -85,6 +101,7 @@ class ConfigParser(object):
         :param data: Data to dump
         :param config_path: Dump destination file path
         """
+        mk_dump_dir_if_not_exist(config_path)
         open(config_path, "w").write(cls.dumps(data))
 
 # vim:sw=4:ts=4:et:

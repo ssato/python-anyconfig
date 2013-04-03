@@ -59,6 +59,7 @@ class YamlConfigParser(Base.ConfigParser):
     @classmethod
     def dump(cls, data, config_path, **kwargs):
         convert_to = cls.container().convert_to
+        Base.mk_dump_dir_if_not_exist(config_path)
         yaml_dump(convert_to(data), open(config_path, "w"),
                   **Base.mk_opt_args(_DUMP_TOPS, kwargs))
 

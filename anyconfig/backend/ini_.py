@@ -138,6 +138,7 @@ class IniConfigParser(Base.ConfigParser):
 
     @classmethod
     def dump(cls, data, config_path, **kwargs):
+        Base.mk_dump_dir_if_not_exist(config_path)
         with open(config_path, 'w') as config_fp:
             for l in mk_lines_g(data):
                 config_fp.write(l)

@@ -1,5 +1,6 @@
 include MANIFEST.in
 include README.*
+include LICENSE.MIT
 include python-anyconfig.spec*
 include aux/*
 include python-anyconfig.spec.in

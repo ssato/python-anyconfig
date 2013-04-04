@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011, 2012 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 from anyconfig.globals import LOGGER as logging
@@ -9,7 +9,7 @@ import anyconfig.backend.base as Base
 SUPPORTED = True
 try:
     # First, try lxml compatible with elementtree and looks faster a lot.
-    # see also: http://diveintopython3-ja.rdy.jp/xml.html:
+    # see also: http://getpython3.com/diveintopython3/xml.html
     from lxml import etree
 except ImportError:
     try:

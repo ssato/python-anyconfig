@@ -233,4 +233,13 @@ Test Status
    :target: https://travis-ci.org/ssato/python-anyconfig
    :alt: Test status
 
+TODO
+======
+
+* Make configuration (file) backend pluggable:
+
+  * use setuptools? ref. http://bit.ly/Y5ngrM
+
+* Allow users to select other containers for the tree of configuration objects
+
 .. vim:sw=2:ts=2:et:

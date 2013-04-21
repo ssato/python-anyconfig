@@ -42,7 +42,7 @@ To load single config file::
   data2 = anyconfig.single_load("/path/to/foo/conf.d/a.yml")
 
   # Or you can specify config type explicitly.
-  data3 = anyconfg.load("/path/to/foo/conf.d/b.conf", "yaml")
+  data3 = anyconfig.load("/path/to/foo/conf.d/b.conf", "yaml")
 
   # Same as above
   data4 = anyconfig.single_load("/path/to/foo/conf.d/b.conf", "yaml")
@@ -167,18 +167,18 @@ There is a CLI frontend 'anyconfig_cli' for its demonstration purpose.
 It can process various config files and output a merged config file::
 
   $ anyconfig_cli -h
-  Usage: anyconfg_cli [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
+  Usage: anyconfig_cli [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
 
   Examples:
-    anyconfg_cli --list
-    anyconfg_cli -I yaml /etc/xyz/conf.d/a.conf
-    anyconfg_cli -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
-    anyconfg_cli '/etc/xyz/conf.d/*.json' -o xyz.yml \
+    anyconfig_cli --list
+    anyconfig_cli -I yaml /etc/xyz/conf.d/a.conf
+    anyconfig_cli -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
+    anyconfig_cli '/etc/xyz/conf.d/*.json' -o xyz.yml \
       --atype json -A '{"obsoletes": "sysdata", "conflicts": "sysdata-old"}'
-    anyconfg_cli '/etc/xyz/conf.d/*.json' -o xyz.yml \
+    anyconfig_cli '/etc/xyz/conf.d/*.json' -o xyz.yml \
       -A obsoletes:sysdata;conflicts:sysdata-old
-    anyconfg_cli /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
-    anyconfg_cli '/etc/foo.d/*.json' -M noreplace
+    anyconfig_cli /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
+    anyconfig_cli '/etc/foo.d/*.json' -M noreplace
 
 
   Options:

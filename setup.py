@@ -1,3 +1,5 @@
+from setuptools import setup, Command, find_packages
+
 import datetime
 import glob
 import os
@@ -15,13 +17,6 @@ VERSION = anyconfig.VERSION
 if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
     import datetime
     VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
-
-if os.environ.get("_USE_SETUPTOOLS", None) is not None:
-    USE_SETUPTOOLS = True
-    from setuptools import setup, Command
-else:
-    USE_SETUPTOOLS = False
-    from distutils.core import setup, Command
 
 data_files = []
 
@@ -76,13 +71,6 @@ class RpmCommand(SrpmCommand):
     build_stage = "b"
 
 
-if USE_SETUPTOOLS:
-    eparams = dict(entry_points=open(os.path.join(curdir,
-                                                  "aux/entry_points.txt")).read())
-else:
-    eparams = dict(scripts=glob.glob("tools/*"), )
-
-
 setup(name=PACKAGE,
     version=VERSION,
     description="Generic access to configuration files in some formats",
@@ -108,18 +96,14 @@ setup(name=PACKAGE,
     #platform=
     #install_requires=[],
     #tests_require=['nose', 'pep8'],
-    packages=[
-        "anyconfig",
-        "anyconfig.tests",
-        "anyconfig.backend",
-        "anyconfig.backend.tests",
-    ],
-    data_files=data_files,
+    packages=find_packages(),
+    include_package_data=True,
+    scripts=glob.glob("tools/*"),
     cmdclass={
         "srpm": SrpmCommand,
         "rpm":  RpmCommand,
     },
-    **eparams
+    entry_points=open(os.path.join(curdir, "aux/entry_points.txt")).read(),
 )
 
 # vim:sw=4:ts=4:et:

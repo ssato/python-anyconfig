@@ -1,2 +1,3 @@
-[console_scripts]
-anyconfig_cli = anyconfig.cli:main
+# This does not work well in multi-versions-python env.
+#[console_scripts]
+#anyconfig_cli = anyconfig.cli:main

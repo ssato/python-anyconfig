@@ -80,8 +80,8 @@ popd
 %endif
 
 # Make egg-info not included in this package:
-rm -f $RPM_BUILD_ROOT%{python_sitelib}/python_*.egg-info
-rm -f $RPM_BUILD_ROOT%{python3_sitelib}/python_*.egg-info
+#rm -f $RPM_BUILD_ROOT%{python_sitelib}/python_*.egg-info
+#rm -f $RPM_BUILD_ROOT%{python3_sitelib}/python_*.egg-info
 
 
 %clean

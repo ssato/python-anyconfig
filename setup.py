@@ -95,7 +95,7 @@ setup(name=PACKAGE,
     ],
     #platform=
     #install_requires=[],
-    #tests_require=['nose', 'pep8'],
+    tests_require=['nose>=1.0', 'pep8'],
     packages=find_packages(),
     include_package_data=True,
     scripts=glob.glob("tools/*"),

@@ -103,8 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sun Apr 21 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.9.99-1
+* Mon Apr 22 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
 - Swtich to use setuptools instead of standard distutils
+- [anyconfig_cli] Fix a typo in its filename; s/anyconfg/anyconfig/g
 
 * Sun Mar 31 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.9-1
 - Some fixes and enhancements around logging code

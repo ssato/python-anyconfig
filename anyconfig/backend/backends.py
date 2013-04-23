@@ -62,7 +62,7 @@ def list_parsers_by_type(cps=_CPs):
     """
     :return: List (generator) of (config_type, [config_parser])
     """
-    return ((t, sorted(p, cmp=cmp_cps)) for t, p in
+    return ((t, sorted(p, key=methodcaller("priority"))) for t, p in
             groupby_key(cps, methodcaller("type")))
 
 
@@ -72,8 +72,8 @@ def list_parsers_by_extension(cps=_CPs):
     """
     cps_by_ext = U.concat(([(x, p) for x in p._extensions] for p in cps))
 
-    return ((x, sorted((snd(xp) for xp in xps), cmp=cmp_cps)) for x, xps in
-            groupby_key(cps_by_ext, fst))
+    return ((x, sorted((snd(xp) for xp in xps), key=methodcaller("priority"))) \
+            for x, xps in groupby_key(cps_by_ext, fst))
 
 
 def find_by_file(config_file, cps=_CPs):

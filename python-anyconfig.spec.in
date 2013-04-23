@@ -106,6 +106,7 @@ rm -rf $RPM_BUILD_ROOT
 - Swtich to use setuptools instead of standard distutils
 - [anyconfig_cli] Fix a typo in its filename; s/anyconfg/anyconfig/g
 - Fixed some build and runtime dependencies to PyYAML and setuptools
+- Implemented pluggable backend system w/ using setuptools
 
 * Sun Mar 31 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.9-1
 - Some fixes and enhancements around logging code

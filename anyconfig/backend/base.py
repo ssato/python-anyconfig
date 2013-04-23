@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 from anyconfig.globals import LOGGER as logging
@@ -48,6 +48,7 @@ def mk_dump_dir_if_not_exist(f):
 class ConfigParser(object):
 
     _type = None
+    _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
     _extensions = []
     _container = D.MergeableDict
     _supported = False
@@ -55,6 +56,14 @@ class ConfigParser(object):
     @classmethod
     def type(cls):
         return cls._type
+
+    @classmethod
+    def priority(cls):
+        return cls._priority
+
+    @classmethod
+    def extensions(cls):
+        return cls._extensions
 
     @classmethod
     def supports(cls, config_file=None):

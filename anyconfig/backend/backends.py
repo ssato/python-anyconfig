@@ -12,11 +12,14 @@ import anyconfig.backend.xml_ as BXML
 import anyconfig.backend.yaml_ as BYAML
 import anyconfig.backend.properties_ as BPROP
 import anyconfig.utils as U
+import pkg_resources
 
 
 _CPs = [p for p in [BINI.IniConfigParser, BJSON.JsonConfigParser,
                     BYAML.YamlConfigParser, BXML.XmlConfigParser,
-                    BPROP.PropertiesParser] if p.supports()]
+                    BPROP.PropertiesParser] if p.supports()] + \
+       [e.load() for e in
+        pkg_resources.iter_entry_points("anyconfig_backends")]
 
 
 def cmp_cps(lhs, rhs):
@@ -66,14 +69,17 @@ def list_parsers_by_type(cps=_CPs):
             groupby_key(cps, methodcaller("type")))
 
 
+def _list_xppairs(xps):
+    return sorted((snd(xp) for xp in xps), key=methodcaller("priority"))
+
+
 def list_parsers_by_extension(cps=_CPs):
     """
     :return: List (generator) of (config_ext, [config_parser])
     """
     cps_by_ext = U.concat(([(x, p) for x in p._extensions] for p in cps))
 
-    return ((x, sorted((snd(xp) for xp in xps), key=methodcaller("priority"))) \
-            for x, xps in groupby_key(cps_by_ext, fst))
+    return ((x, _list_xppairs(xps)) for x, xps in groupby_key(cps_by_ext, fst))
 
 
 def find_by_file(config_file, cps=_CPs):

@@ -3,8 +3,20 @@
 # License: MIT
 #
 import glob
+import itertools
 import os.path
 import types
+
+try:
+    chain_from_iterable = itertools.chain.from_iterable
+except AttributeError:
+    # Borrowed from library doc, 9.7.1 Itertools functions:
+    def _from_iterable(iterables):
+        for it in iterables:
+            for element in it:
+                yield element
+
+    chain_from_iterable = _from_iterable
 
 
 def get_file_extension(file_path):
@@ -51,5 +63,27 @@ def is_iterable(x):
     return isinstance(x, (list, tuple, types.GeneratorType)) or \
         (not isinstance(x, (int, str, dict)) and
          bool(getattr(x, "next", False)))
+
+
+def concat(xss):
+    """
+    Concatenates a list of lists.
+
+    >>> concat([[]])
+    []
+    >>> concat((()))
+    []
+    >>> concat([[1,2,3],[4,5]])
+    [1, 2, 3, 4, 5]
+    >>> concat([[1,2,3],[4,5,[6,7]]])
+    [1, 2, 3, 4, 5, [6, 7]]
+    >>> concat(((1,2,3),(4,5,[6,7])))
+    [1, 2, 3, 4, 5, [6, 7]]
+    >>> concat(((1,2,3),(4,5,[6,7])))
+    [1, 2, 3, 4, 5, [6, 7]]
+    >>> concat((i, i*2) for i in range(3))
+    [0, 0, 1, 2, 2, 4]
+    """
+    return list(chain_from_iterable(xs for xs in xss))
 
 # vim:sw=4:ts=4:et:

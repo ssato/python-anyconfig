@@ -23,6 +23,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python-setuptools
 Requires:       PyYAML
+Requires:       python-setuptools
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:       python-simplejson
 %endif
@@ -43,6 +44,8 @@ formats such like INI, JSON and YAML.
 %package -n python3-%{pkgname}
 Summary:        Generic access to configuration files in some formats
 Group:          Development/Libraries
+Requires:       python3-PyYAML
+Requires:       python3-setuptools
 
 %description -n python3-%{pkgname}
 Python library to provide generic access to configuration files in some
@@ -79,10 +82,6 @@ pushd %{py3dir}
 popd
 %endif
 
-# Make egg-info not included in this package:
-#rm -f $RPM_BUILD_ROOT%{python_sitelib}/python_*.egg-info
-#rm -f $RPM_BUILD_ROOT%{python3_sitelib}/python_*.egg-info
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -106,6 +105,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Apr 22 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
 - Swtich to use setuptools instead of standard distutils
 - [anyconfig_cli] Fix a typo in its filename; s/anyconfg/anyconfig/g
+- Fixed some build and runtime dependencies to PyYAML and setuptools
 
 * Sun Mar 31 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.9-1
 - Some fixes and enhancements around logging code

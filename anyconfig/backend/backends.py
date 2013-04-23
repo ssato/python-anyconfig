@@ -17,9 +17,13 @@ import pkg_resources
 
 _CPs = [p for p in [BINI.IniConfigParser, BJSON.JsonConfigParser,
                     BYAML.YamlConfigParser, BXML.XmlConfigParser,
-                    BPROP.PropertiesParser] if p.supports()] + \
-       [e.load() for e in
-        pkg_resources.iter_entry_points("anyconfig_backends")]
+                    BPROP.PropertiesParser] if p.supports()]
+
+for e in pkg_resources.iter_entry_points("anyconfig_backends"):
+    try:
+        _CPs.append(e.load())
+    except ImportError:
+        continue
 
 
 def cmp_cps(lhs, rhs):

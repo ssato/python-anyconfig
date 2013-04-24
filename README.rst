@@ -14,7 +14,13 @@ Current supported configuration file formats are:
 * YAML w/ PyYAML
 * Ini w/ configparser
 * XML w/ lxml or ElementTree (experimental)
-* Java properties file w/ pyjavaproperties if it's available (experimental)
+* Java properties file w/ pyjavaproperties (experimental):
+
+  * With backend plugin: https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
+
+* Ini file like format configobj supports (experimental):
+
+  * With backend plugin: https://github.com/ssato/python-anyconfig-configobj-backend
 
 Usage
 ======

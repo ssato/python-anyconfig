@@ -10,14 +10,13 @@ import anyconfig.backend.ini_ as BINI
 import anyconfig.backend.json_ as BJSON
 import anyconfig.backend.xml_ as BXML
 import anyconfig.backend.yaml_ as BYAML
-import anyconfig.backend.properties_ as BPROP
 import anyconfig.utils as U
 import pkg_resources
 
 
 _CPs = [p for p in [BINI.IniConfigParser, BJSON.JsonConfigParser,
                     BYAML.YamlConfigParser, BXML.XmlConfigParser,
-                    BPROP.PropertiesParser] if p.supports()]
+                    ] if p.supports()]
 
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):
     try:

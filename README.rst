@@ -245,5 +245,6 @@ TODO
     * XML ?
 
 * Allow users to select other containers for the tree of configuration objects
+* Implement the standard way to test external backend modules
 
 .. vim:sw=2:ts=2:et:

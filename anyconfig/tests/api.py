@@ -9,7 +9,6 @@ import anyconfig.backend.ini_ as BINI
 import anyconfig.backend.json_ as BJSON
 import anyconfig.backend.xml_ as BXML
 import anyconfig.backend.yaml_ as BYAML
-import anyconfig.backend.properties_ as BPROP
 
 import os
 import os.path
@@ -33,10 +32,6 @@ class Test_10_pure_functions(unittest.TestCase):
             self.assertEquals(A.find_loader(cpath, "xml"),
                               BXML.XmlConfigParser)
 
-        if BPROP.SUPPORTED:
-            self.assertEquals(A.find_loader(cpath, "properties"),
-                              BPROP.PropertiesParser)
-
     def test_20_find_loader__by_file(self):
         self.assertEquals(A.find_loader("dummy.ini"), BINI.IniConfigParser)
         self.assertEquals(A.find_loader("dummy.json"), BJSON.JsonConfigParser)
@@ -51,10 +46,6 @@ class Test_10_pure_functions(unittest.TestCase):
         if BXML.SUPPORTED:
             self.assertEquals(A.find_loader("dummy.xml"),
                               BXML.XmlConfigParser)
-
-        if BPROP.SUPPORTED:
-            self.assertEquals(A.find_loader("dummy.properties"),
-                              BPROP.PropertiesParser)
 
     def test_30_dumps_and_loads(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))

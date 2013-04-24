@@ -236,9 +236,13 @@ Test Status
 TODO
 ======
 
-* Make configuration (file) backend pluggable:
+* Make configuration (file) backend pluggable: Done
 
-  * use setuptools? ref. http://bit.ly/Y5ngrM
+  * use setuptools. ref. http://bit.ly/Y5ngrM
+  * Remove some backends support less major config formats:
+  
+    * Java properties file
+    * XML ?
 
 * Allow users to select other containers for the tree of configuration objects
 

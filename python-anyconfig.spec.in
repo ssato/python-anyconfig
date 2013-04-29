@@ -36,21 +36,6 @@ BuildRequires:  python3-setuptools
 Python library to provide generic access to configuration files in some
 formats such like INI, JSON and YAML.
 
-
-%package -n python-%{pkgname}-tools
-Summary:        Tools in python-%{pkgname} to convert supported config files
-Group:          Development/Tools
-Requires:       python-%{pkgname} = %{version}
-
-
-%description -n python-%{pkgname}-tools
-Anyconfig is a Python library to provide generic access to configuration files
-in some formats such like INI, JSON and YAML.
-
-This package contains tools such as anyconfig_cli can convert config files
-supported by anyconfig module.
-
-
 %if 0%{?with_python3}
 %package -n python3-%{pkgname}
 Summary:        Generic access to configuration files in some formats
@@ -61,18 +46,6 @@ Requires:       python3-setuptools
 %description -n python3-%{pkgname}
 Python library to provide generic access to configuration files in some
 formats such like INI, JSON and YAML.
-
-%package -n python3-%{pkgname}-tools
-Summary:        Tools in python3-%{pkgname} to convert supported config files
-Group:          Development/Tools
-Requires:       python3-%{pkgname} = %{version}
-
-%description -n python3-%{pkgname}-tools
-Anyconfig is a Python library to provide generic access to configuration files
-in some formats such like INI, JSON and YAML.
-
-This package contains tools such as anyconfig_cli can convert config files
-supported by anyconfig module.
 %endif
 
 
@@ -116,21 +89,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README.rst
 %{python_sitelib}/*
-
-
-%files -n python-%{pkgname}-tools
-%defattr(644,root,root,755)
 %{_bindir}/anyconfig_cli
-
 
 %if 0%{?with_python3}
 %files -n python3-%{pkgname}
 %defattr(644,root,root,755)
 %doc README.rst
 %{python3_sitelib}/*
-
-%files -n python3-%{pkgname}-tools
-%defattr(644,root,root,755)
 %{_bindir}/py3anyconfig_cli
 %endif
 
@@ -145,7 +110,6 @@ rm -rf $RPM_BUILD_ROOT
 - Fix some build and runtime dependencies to PyYAML and setuptools
 - Spin off java properties file backend into a separate project:
   https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
-- Split scripts in tools/ (anyconfig_cli) into 'tools' sub package
 
 * Sun Mar 31 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.9-1
 - Some fixes and enhancements around logging code

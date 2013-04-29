@@ -45,8 +45,7 @@ Examples:
   %prog '/etc/xyz/conf.d/*.json' -o xyz.yml \\
     -A obsoletes:sysdata;conflicts:sysdata-old
   %prog /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
-  %prog '/etc/foo.d/*.json' -M noreplace
-"""
+  %prog '/etc/foo.d/*.json' -M noreplace"""
 
 
 def to_log_level(level):

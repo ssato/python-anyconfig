@@ -102,11 +102,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Apr 22 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
-- Swtich to use setuptools instead of standard distutils
-- [anyconfig_cli] Fix a typo in its filename; s/anyconfg/anyconfig/g
-- Fixed some build and runtime dependencies to PyYAML and setuptools
-- Implemented pluggable backend system w/ using setuptools
+* Mon Apr 29 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
+- [anyconfig_cli] Fix a typo in its filename; s/anyconfg/anyconfig/g,
+  it's alsot pointed by jonathaneunice-san. Thanks a lot!
+- Swtich to use setuptools instead of standard distutils to allow writing
+  various pluggable backends
+- Implement pluggable backend system w/ using setuptools
+- Fix some build and runtime dependencies to PyYAML and setuptools
+- Spin off java properties file backend into a separate project:
+  https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
 
 * Sun Mar 31 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.9-1
 - Some fixes and enhancements around logging code

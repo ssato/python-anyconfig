@@ -46,14 +46,12 @@ def _to_s(v, sep=_SEP):
         return str(v)
 
 
-def load_impl(config_fp, container, sep=_SEP, **kwargs):
+def _load_impl(config_fp, sep=_SEP, **kwargs):
     """
     :param config_fp: File or file-like object provides ini-style conf
-    :param container: Object container to hold parsed objects
-
     :return: Dict or dict-like object represents config values
     """
-    config = container()
+    config = dict()
 
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = Base.mk_opt_args(("defaults", "dict_type", "allow_no_value"),
@@ -72,13 +70,13 @@ def load_impl(config_fp, container, sep=_SEP, **kwargs):
         parser.readfp(config_fp, **kwargs_1)
 
         if parser.defaults():
-            config["DEFAULT"] = container()
+            config["DEFAULT"] = dict()
 
             for k, v in iteritems(parser.defaults()):
                 config["DEFAULT"][k] = _parse(v, sep)
 
         for s in parser.sections():
-            config[s] = container()
+            config[s] = dict()
 
             for k, v in parser.items(s):
                 config[s][k] = _parse(v, sep)
@@ -112,35 +110,18 @@ class IniConfigParser(Base.ConfigParser):
     _extensions = ["ini"]
     _supported = SUPPORTED
 
-    @classmethod
-    def loads(cls, config_content, sep=_SEP, **kwargs):
-        config_fp = StringIO(config_content)
-        return load_impl(config_fp, cls.container(), sep)
+    _load_opts = ["defaults", "dict_type", "allow_no_value", "filename"]
 
     @classmethod
-    def load(cls, config_path, sep=_SEP, **kwargs):
-        config = cls.container()()
-
-        if not os.path.exists(config_path):
-            logging.warn("Not exist: " + config_path)
-            return config
-
-        logging.info("Loading config: " + config_path)
-        return load_impl(open(config_path), cls.container(), sep, **kwargs)
+    def load_impl(cls, config_fp, **kwargs):
+        """
+        :param config_fp:  Config file object
+        :return: dict object holding config parameters
+        """
+        return _load_impl(config_fp, sep=_SEP, **kwargs)
 
     @classmethod
-    def dumps(cls, data, *args, **kwargs):
-        config_fp = StringIO()
-        for l in mk_lines_g(data):
-            config_fp.write(l)
-
-        return config_fp.getvalue()
-
-    @classmethod
-    def dump(cls, data, config_path, **kwargs):
-        Base.mk_dump_dir_if_not_exist(config_path)
-        with open(config_path, 'w') as config_fp:
-            for l in mk_lines_g(data):
-                config_fp.write(l)
+    def dumps_impl(cls, data, **kwargs):
+        return '\n'.join(l for l in mk_lines_g(data))
 
 # vim:sw=4:ts=4:et:

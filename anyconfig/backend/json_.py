@@ -33,25 +33,29 @@ class JsonConfigParser(Base.ConfigParser):
     _extensions = ["json", "jsn"]
     _supported = SUPPORTED
 
+    _load_opts = _LOAD_OPTS
+    _dump_opts = _DUMP_OPTS
+
     @classmethod
     def loads(cls, config_content, **kwargs):
         return json.loads(config_content, object_hook=dict_to_container,
-                          **Base.mk_opt_args(_LOAD_OPTS, kwargs))
+                          **Base.mk_opt_args(cls._load_opts, kwargs))
 
     @classmethod
     def load(cls, config_path, **kwargs):
         return json.load(open(config_path), object_hook=dict_to_container,
-                         **Base.mk_opt_args(_LOAD_OPTS, kwargs))
+                         **Base.mk_opt_args(cls._load_opts, kwargs))
 
     @classmethod
-    def dumps(cls, data, **kwargs):
-        return json.dumps(data, **Base.mk_opt_args(_DUMP_OPTS, kwargs))
+    def dumps_impl(cls, data, **kwargs):
+        return json.dumps(data, **kwargs)
 
     @classmethod
-    def dump(cls, data, config_path, **kwargs):
-        Base.mk_dump_dir_if_not_exist(config_path)
-        json.dump(data, open(config_path, "w"),
-                  **Base.mk_opt_args(_DUMP_OPTS, kwargs))
-
+    def dump_impl(cls, data, config_path, **kwargs):
+        """
+        :param data: Data to dump :: dict
+        :param config_path: Dump destination file path
+        """
+        return json.dump(data, open(config_path, 'w'), **kwargs)
 
 # vim:sw=4:ts=4:et:

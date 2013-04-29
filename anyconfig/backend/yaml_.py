@@ -15,9 +15,6 @@ except ImportError:
     logging.warn("YAML module is not available. Disabled its support.")
 
 
-_LOAD_OPTS = ["Loader"]
-_DUMP_TOPS = ["stream", "Dumper"]
-
 if SUPPORTED:
     yaml_load = yaml.load
     yaml_dump = yaml.dump
@@ -35,32 +32,27 @@ class YamlConfigParser(Base.ConfigParser):
     _extensions = ("yaml", "yml")
     _supported = SUPPORTED
 
-    @classmethod
-    def loads(cls, config_content, **kwargs):
-        config_fp = StringIO(config_content)
-        create = cls.container().create
-
-        return create(yaml_load(config_fp,
-                                **Base.mk_opt_args(_LOAD_OPTS, kwargs)))
+    _load_opts = ["Loader"]
+    _dump_opts = ["stream", "Dumper"]
 
     @classmethod
-    def load(cls, config_path, **kwargs):
-        create = cls.container().create
-
-        return create(yaml_load(open(config_path),
-                                **Base.mk_opt_args(_LOAD_OPTS, kwargs)))
-
-    @classmethod
-    def dumps(cls, data, **kwargs):
-        convert_to = cls.container().convert_to
-        return yaml_dump(convert_to(data),
-                         **Base.mk_opt_args(_DUMP_TOPS, kwargs))
+    def load_impl(cls, config_fp, **kwargs):
+        """
+        :param config_fp:  Config file content
+        :return: dict object holding config parameters
+        """
+        return yaml_load(config_fp, **kwargs)
 
     @classmethod
-    def dump(cls, data, config_path, **kwargs):
-        convert_to = cls.container().convert_to
-        Base.mk_dump_dir_if_not_exist(config_path)
-        yaml_dump(convert_to(data), open(config_path, "w"),
-                  **Base.mk_opt_args(_DUMP_TOPS, kwargs))
+    def dumps_impl(cls, data, **kwargs):
+        return yaml_dump(data, **kwargs)
+
+    @classmethod
+    def dump_impl(cls, data, config_path, **kwargs):
+        """
+        :param data: Data to dump :: dict
+        :param config_path: Dump destination file path
+        """
+        return yaml_dump(data, open(config_path, 'w'), **kwargs)
 
 # vim:sw=4:ts=4:et:

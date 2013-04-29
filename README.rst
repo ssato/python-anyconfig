@@ -14,11 +14,19 @@ Current supported configuration file formats are:
 * YAML w/ PyYAML
 * Ini w/ configparser
 * XML w/ lxml or ElementTree (experimental)
+* Other formats some pluggale backends suports (see the next sub section)
+
+Other anyconfig backend modules
+---------------------------------
+
+Anyconfig module uses basic plugin mechanism setuptools provides and there are
+a few pluggable backend modules such as:
+
 * Java properties file w/ pyjavaproperties (experimental):
 
   * With backend plugin: https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
 
-* Ini file like format configobj supports (experimental):
+* Ini file like format which configobj supports (experimental):
 
   * With backend plugin: https://github.com/ssato/python-anyconfig-configobj-backend
 
@@ -185,7 +193,6 @@ It can process various config files and output a merged config file::
       -A obsoletes:sysdata;conflicts:sysdata-old
     anyconfig_cli /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
     anyconfig_cli '/etc/foo.d/*.json' -M noreplace
-
 
   Options:
     -h, --help            show this help message and exit

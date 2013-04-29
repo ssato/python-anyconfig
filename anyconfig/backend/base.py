@@ -2,6 +2,7 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+from anyconfig.compat import StringIO
 from anyconfig.globals import LOGGER as logging
 
 import anyconfig.mergeabledict as D
@@ -53,6 +54,9 @@ class ConfigParser(object):
     _container = D.MergeableDict
     _supported = False
 
+    _load_opts = []
+    _dump_opts = []
+
     @classmethod
     def type(cls):
         return cls._type
@@ -82,35 +86,67 @@ class ConfigParser(object):
         cls._container = container
 
     @classmethod
+    def load_impl(cls, config_fp, **kwargs):
+        """
+        :param config_fp:  Config file object
+        :return: dict object holding config parameters
+        """
+        raise NotImplementedError("Inherited class should implement this")
+
+    @classmethod
     def loads(cls, config_content, **kwargs):
         """
         :param config_content:  Config file content
         :return: cls.container object holding config parameters
         """
-        raise NotImplementedError("Inherited class MUST implement this")
+        config_fp = StringIO(config_content)
+        create = cls.container().create
+        return create(cls.load_impl(config_fp,
+                                    **mk_opt_args(cls._load_opts, kwargs)))
 
     @classmethod
-    def load(cls, config_file, **kwargs):
+    def load(cls, config_path, **kwargs):
         """
-        :param config_file:  Config file path
+        :param config_path:  Config file path
         :return: cls.container object holding config parameters
         """
-        raise NotImplementedError("Inherited class MUST implement this")
+        create = cls.container().create
+        return create(cls.load_impl(open(config_path),
+                                    **mk_opt_args(cls._load_opts, kwargs)))
+
+    @classmethod
+    def dumps_impl(cls, data, **kwargs):
+        """
+        :param data: Data to dump :: dict
+        """
+        raise NotImplementedError("Inherited class should implement this")
+
+    @classmethod
+    def dump_impl(cls, data, config_path, **kwargs):
+        """
+        :param data: Data to dump :: dict
+        :param config_path: Dump destination file path
+        """
+        open(config_path, "w").write(cls.dumps_impl(data, **kwargs))
 
     @classmethod
     def dumps(cls, data, **kwargs):
         """
-        :param data: Data to dump
+        :param data: Data to dump :: cls.container()
         """
-        return repr(data)  # or str(...) ?
+        convert_to = cls.container().convert_to
+        return cls.dumps_impl(convert_to(data),
+                              **mk_opt_args(cls._dump_opts, kwargs))
 
     @classmethod
     def dump(cls, data, config_path, **kwargs):
         """
-        :param data: Data to dump
+        :param data: Data to dump :: cls.container()
         :param config_path: Dump destination file path
         """
+        convert_to = cls.container().convert_to
         mk_dump_dir_if_not_exist(config_path)
-        open(config_path, "w").write(cls.dumps(data))
+        cls.dump_impl(convert_to(data), config_path,
+                      **mk_opt_args(cls._dump_opts, kwargs))
 
 # vim:sw=4:ts=4:et:

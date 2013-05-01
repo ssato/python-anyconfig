@@ -80,6 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 pushd %{py3dir}
 %{__python3} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%{_bindir}/anyconfig_cli $RPM_BUILD_ROOT%{_bindir}/py3anyconfig_cli
+# TODO: It does not look working well:
+#chmod +x $RPM_BUILD_ROOT%{_bindir}/py3anyconfig_cli
 popd
 %endif
 
@@ -101,12 +103,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.rst
 %{python3_sitelib}/*
-%{_bindir}/py3anyconfig_cli
+%attr(755,root,root) %{_bindir}/py3anyconfig_cli
 %endif
 
 
 %changelog
-* Mon Apr 29 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
+* Wed May  1 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
 - [anyconfig_cli] Fix a typo in its filename; s/anyconfg/anyconfig/g,
   it's alsot pointed by jonathaneunice-san. Thanks a lot!
 - Swtich to use setuptools instead of standard distutils to allow writing
@@ -115,6 +117,8 @@ rm -rf $RPM_BUILD_ROOT
 - Fix some build and runtime dependencies to PyYAML and setuptools
 - Spin off java properties file backend into a separate project:
   https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
+- Fix some type mismatches in methods of backend modules
+- Make cli frontend generated w/ setuptools' help and remove tools/*
 
 * Sun Mar 31 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.9-1
 - Some fixes and enhancements around logging code

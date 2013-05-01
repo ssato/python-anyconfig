@@ -89,6 +89,8 @@ class ConfigParser(object):
     def load_impl(cls, config_fp, **kwargs):
         """
         :param config_fp:  Config file object
+        :param kwargs: backend-specific optional keyword parameters :: dict
+
         :return: dict object holding config parameters
         """
         raise NotImplementedError("Inherited class should implement this")
@@ -97,6 +99,8 @@ class ConfigParser(object):
     def loads(cls, config_content, **kwargs):
         """
         :param config_content:  Config file content
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
         :return: cls.container object holding config parameters
         """
         config_fp = StringIO(config_content)
@@ -108,6 +112,8 @@ class ConfigParser(object):
     def load(cls, config_path, **kwargs):
         """
         :param config_path:  Config file path
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
         :return: cls.container object holding config parameters
         """
         create = cls.container().create
@@ -118,6 +124,9 @@ class ConfigParser(object):
     def dumps_impl(cls, data, **kwargs):
         """
         :param data: Data to dump :: dict
+        :param kwargs: backend-specific optional keyword parameters :: dict
+
+        :return: string represents the configuration
         """
         raise NotImplementedError("Inherited class should implement this")
 
@@ -126,6 +135,7 @@ class ConfigParser(object):
         """
         :param data: Data to dump :: dict
         :param config_path: Dump destination file path
+        :param kwargs: backend-specific optional keyword parameters :: dict
         """
         open(config_path, "w").write(cls.dumps_impl(data, **kwargs))
 
@@ -133,6 +143,9 @@ class ConfigParser(object):
     def dumps(cls, data, **kwargs):
         """
         :param data: Data to dump :: cls.container()
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
+        :return: string represents the configuration
         """
         convert_to = cls.container().convert_to
         return cls.dumps_impl(convert_to(data),
@@ -143,6 +156,7 @@ class ConfigParser(object):
         """
         :param data: Data to dump :: cls.container()
         :param config_path: Dump destination file path
+        :param kwargs: optional keyword parameters to be sanitized :: dict
         """
         convert_to = cls.container().convert_to
         mk_dump_dir_if_not_exist(config_path)

@@ -1,8 +1,0 @@
-#! /usr/bin/python
-#
-import anyconfig.cli as C
-import sys
-
-C.main(sys.argv)
-
-# vim:sw=4:ts=4:et:

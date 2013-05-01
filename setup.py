@@ -98,11 +98,11 @@ setup(name=PACKAGE,
     tests_require=['nose>=1.0', 'pep8'],
     packages=find_packages(),
     include_package_data=True,
-    scripts=glob.glob("tools/*"),
     cmdclass={
         "srpm": SrpmCommand,
         "rpm":  RpmCommand,
     },
+    #scripts=glob.glob("tools/*"),
     entry_points=open(os.path.join(curdir, "aux/entry_points.txt")).read(),
 )
 

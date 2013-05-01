@@ -101,7 +101,7 @@ class ConfigParser(object):
         :param config_content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: cls.container object holding config parameters
+        :return: cls.container() object holding config parameters
         """
         config_fp = StringIO(config_content)
         create = cls.container().create
@@ -114,7 +114,7 @@ class ConfigParser(object):
         :param config_path:  Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: cls.container object holding config parameters
+        :return: cls.container() object holding config parameters
         """
         create = cls.container().create
         return create(cls.load_impl(open(config_path),

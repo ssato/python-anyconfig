@@ -116,12 +116,21 @@ class IniConfigParser(Base.ConfigParser):
     def load_impl(cls, config_fp, **kwargs):
         """
         :param config_fp:  Config file object
+        :param kwargs: configparser specific optional keyword parameters
+
         :return: dict object holding config parameters
         """
         return _load_impl(config_fp, sep=_SEP, **kwargs)
 
     @classmethod
     def dumps_impl(cls, data, **kwargs):
+        """
+        :param data: Data to dump :: dict
+        :param config_path: Dump destination file path
+        :param kwargs: backend-specific optional keyword parameters :: dict
+
+        :return: string represents the configuration
+        """
         return '\n'.join(l for l in mk_lines_g(data))
 
 # vim:sw=4:ts=4:et:

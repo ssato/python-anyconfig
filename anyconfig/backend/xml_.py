@@ -64,20 +64,34 @@ class XmlConfigParser(Base.ConfigParser):
 
     @classmethod
     def loads(cls, config_content, **kwargs):
+        """
+        :param config_content:  Config file content
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
+        :return: cls.container() object holding config parameters
+        """
         root = etree_getroot_fromstring(config_content)
         return etree_to_container(root, cls.container())
 
     @classmethod
     def load(cls, config_path, **kwargs):
+        """
+        :param config_path:  Config file path
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
+        :return: cls.container() object holding config parameters
+        """
         root = etree_getroot_fromfile(config_path)
         return etree_to_container(root, cls.container())
 
     @classmethod
-    def dumps(cls, data, **kwargs):
-        raise NotImplementedError("XML dumper not implemented yet!")
+    def dumps_impl(cls, data, **kwargs):
+        """
+        :param data: Data to dump :: dict
+        :param kwargs: backend-specific optional keyword parameters :: dict
 
-    @classmethod
-    def dump(cls, data, config_path, **kwargs):
+        :return: string represents the configuration
+        """
         raise NotImplementedError("XML dumper not implemented yet!")
 
 # vim:sw=4:ts=4:et:

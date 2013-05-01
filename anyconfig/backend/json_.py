@@ -13,15 +13,7 @@ except ImportError:
     try:
         import simplejson as json
     except ImportError:
-        sys.stderr.write(
-            "JSON module is not available. Disabled its support.\n"
-        )
-        SUPPORTED = False
-
-
-_LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant"]
-_DUMP_OPTS = ["cls", "skipkeys", "ensure_ascii", "check_circular", "allow_nan",
-              "indent", "separators"]
+        raise RuntimeError("Necessary JSON module is not available!")
 
 
 def dict_to_container(json_obj_dict):
@@ -33,21 +25,40 @@ class JsonConfigParser(Base.ConfigParser):
     _extensions = ["json", "jsn"]
     _supported = SUPPORTED
 
-    _load_opts = _LOAD_OPTS
-    _dump_opts = _DUMP_OPTS
+    _load_opts = ["cls", "parse_float", "parse_int", "parse_constant"]
+    _dump_opts = ["cls", "skipkeys", "ensure_ascii", "check_circular",
+                  "allow_nan", "indent", "separators"]
 
     @classmethod
     def loads(cls, config_content, **kwargs):
+        """
+        :param config_content:  Config file content
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
+        :return: cls.container() object holding config parameters
+        """
         return json.loads(config_content, object_hook=dict_to_container,
                           **Base.mk_opt_args(cls._load_opts, kwargs))
 
     @classmethod
     def load(cls, config_path, **kwargs):
+        """
+        :param config_path:  Config file path
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
+        :return: cls.container() object holding config parameters
+        """
         return json.load(open(config_path), object_hook=dict_to_container,
                          **Base.mk_opt_args(cls._load_opts, kwargs))
 
     @classmethod
     def dumps_impl(cls, data, **kwargs):
+        """
+        :param data: Data to dump :: dict
+        :param kwargs: backend-specific optional keyword parameters :: dict
+
+        :return: string represents the configuration
+        """
         return json.dumps(data, **kwargs)
 
     @classmethod
@@ -55,7 +66,8 @@ class JsonConfigParser(Base.ConfigParser):
         """
         :param data: Data to dump :: dict
         :param config_path: Dump destination file path
+        :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        return json.dump(data, open(config_path, 'w'), **kwargs)
+        json.dump(data, open(config_path, 'w'), **kwargs)
 
 # vim:sw=4:ts=4:et:

@@ -39,12 +39,20 @@ class YamlConfigParser(Base.ConfigParser):
     def load_impl(cls, config_fp, **kwargs):
         """
         :param config_fp:  Config file content
+        :param kwargs: backend-specific optional keyword parameters :: dict
+
         :return: dict object holding config parameters
         """
         return yaml_load(config_fp, **kwargs)
 
     @classmethod
     def dumps_impl(cls, data, **kwargs):
+        """
+        :param data: Data to dump :: dict
+        :param kwargs: backend-specific optional keyword parameters :: dict
+
+        :return: string represents the configuration
+        """
         return yaml_dump(data, **kwargs)
 
     @classmethod
@@ -52,7 +60,8 @@ class YamlConfigParser(Base.ConfigParser):
         """
         :param data: Data to dump :: dict
         :param config_path: Dump destination file path
+        :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        return yaml_dump(data, open(config_path, 'w'), **kwargs)
+        yaml_dump(data, open(config_path, 'w'), **kwargs)
 
 # vim:sw=4:ts=4:et:

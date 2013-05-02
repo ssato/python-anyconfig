@@ -2,7 +2,7 @@
 python-anyconfig
 =================
 
-This is a python library called anyconfig provides generic access to
+This is a python library called 'anyconfig' [#]_  provides generic access to
 configuration files in any formats (to be in the future) with configuration
 merge / cascade / overlay support.
 
@@ -16,6 +16,8 @@ Current supported configuration file formats are:
 * Ini w/ configparser
 * XML w/ lxml or ElementTree (experimental)
 * Other formats some pluggale backends support (see the next sub section)
+
+.. [#] This name took an example from the 'anydbm' library in python dist,
 
 Other anyconfig backend modules
 ---------------------------------

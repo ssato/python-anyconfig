@@ -2,8 +2,9 @@
 python-anyconfig
 =================
 
-Generic access to configuration files in any formats (to be in the future) with
-configuration merge (or cascade, overlay) support.
+This is a python library called anyconfig provides generic access to
+configuration files in any formats (to be in the future) with configuration
+merge / cascade / overlay support.
 
 * Author: Satoru SATOH <ssato@redhat.com>
 * License: MIT
@@ -14,21 +15,30 @@ Current supported configuration file formats are:
 * YAML w/ PyYAML
 * Ini w/ configparser
 * XML w/ lxml or ElementTree (experimental)
-* Other formats some pluggale backends suports (see the next sub section)
+* Other formats some pluggale backends support (see the next sub section)
 
 Other anyconfig backend modules
 ---------------------------------
 
-Anyconfig module uses basic plugin mechanism setuptools provides and there are
-a few pluggable backend modules such as:
+Anyconfig utilizes plugin mechanism provided by setuptools [#]_ and 
+I wrote a few backend plugin modules as references:
 
 * Java properties file w/ pyjavaproperties (experimental):
 
-  * With backend plugin: https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
+  * https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
 
 * Ini file like format which configobj supports (experimental):
 
-  * With backend plugin: https://github.com/ssato/python-anyconfig-configobj-backend
+  * https://github.com/ssato/python-anyconfig-configobj-backend
+
+.. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
+
+Test status
+-------------
+
+.. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
+   :target: https://travis-ci.org/ssato/python-anyconfig
+   :alt: Test status
 
 Usage
 ======
@@ -61,7 +71,8 @@ To load single config file::
   # Same as above
   data4 = anyconfig.single_load("/path/to/foo/conf.d/b.conf", "yaml")
 
-It's possible to pass config loader specific option parameter to load and dump::
+Also, you can pass backend (config loader) specific optional parameters to
+these load and dump functions::
 
   # from python -c "import json; help(json.load)":
   # Help on function load in module json:
@@ -75,7 +86,7 @@ It's possible to pass config loader specific option parameter to load and dump::
 .. note::
 
    The returned object is an instance of anyconfig.mergeabledict.MergeableDict
-   class by default to support recursive merge operations needed when loading
+   class by default, to support recursive merge operations needed when loading
    multiple config files.
 
 To load multiple config files::
@@ -92,11 +103,11 @@ To load multiple config files::
   # overwritten by the later ones:
   data3 = anyconfig.load("/etc/foo.d/*.json", merge=anyconfig.MS_REPLACE)
 
-On loading multiple config files, you can choose strategy to merge configs from
-the followings:
+On loading multiple config files, you can choose 'strategy' to merge
+configurations from the followings:
 
-* anyconfig.MS_REPLACE: Replace all configuration parameters provided in former
-  config files are simply replaced w/ the ones in later config files.
+* anyconfig.MS_REPLACE: Replace all configuration parameter values provided in
+  former config files are simply replaced w/ the ones in later config files.
 
   For example, if a.yml and b.yml are like followings:
 
@@ -125,8 +136,8 @@ the followings:
 
     {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb"}}
 
-* anyconfig.MS_NO_REPLACE: Do not replace configuration parameters provided in
-  former config files.
+* anyconfig.MS_NO_REPLACE: Do not replace configuration parameter values
+  provided in former config files.
 
   For example, if a.yml and b.yml are like followings:
 
@@ -176,7 +187,7 @@ the followings:
 CLI frontend
 -------------
 
-There is a CLI frontend 'anyconfig_cli' for its demonstration purpose.
+There is a CLI frontend 'anyconfig_cli' to demonstrate the power of this library.
 
 It can process various config files and output a merged config file::
 
@@ -239,25 +250,17 @@ and install built RPMs.
 Otherwise, try usual ways to build and/or install python modules such like
 'easy_install anyconfig', 'python setup.py bdist', etc.
 
-Test Status
-=============
-
-.. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
-   :target: https://travis-ci.org/ssato/python-anyconfig
-   :alt: Test status
-
 TODO
 ======
 
-* Make configuration (file) backend pluggable: Done
+* Make configuration (file) backends pluggable: Done
 
-  * use setuptools. ref. http://bit.ly/Y5ngrM
-  * Remove some backends support less major config formats:
+  * Remove some backends to support the following configuration formats:
   
-    * Java properties file
+    * Java properties file: Done
     * XML ?
 
 * Allow users to select other containers for the tree of configuration objects
-* Implement the standard way to test external backend modules
+* Establish the way to test external backend modules
 
 .. vim:sw=2:ts=2:et:

@@ -108,7 +108,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed May  1 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
+* Thu May  2 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
 - [anyconfig_cli] Fix a typo in its filename; s/anyconfg/anyconfig/g,
   it's alsot pointed by jonathaneunice-san. Thanks a lot!
 - Swtich to use setuptools instead of standard distutils to allow writing

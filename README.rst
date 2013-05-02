@@ -33,13 +33,6 @@ I wrote a few backend plugin modules as references:
 
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
-Test status
--------------
-
-.. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
-   :target: https://travis-ci.org/ssato/python-anyconfig
-   :alt: Test status
-
 Usage
 ======
 
@@ -249,6 +242,33 @@ and install built RPMs.
 
 Otherwise, try usual ways to build and/or install python modules such like
 'easy_install anyconfig', 'python setup.py bdist', etc.
+
+How to hack
+==============
+
+How to write backend plugin modules
+-------------------------------------
+
+Backend class must inherit anyconfig.backend.ConfigParser and need some member
+variables and method ('load_impl' and 'dumps_impl' at minimum) implementations.
+
+JSON and YAML backend modules (anyconfig.backend.{json,yaml}_) should be good
+examples to write backend modules, I think.
+
+Also, please take a look at some example backend plugin modules mentioned in
+the `Other anyconfig backend modules`_ section.
+
+How to test
+-------------
+
+Try to run './aux/runtest.sh [path_to_python_code]'.
+
+Test status
+-------------
+
+.. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
+   :target: https://travis-ci.org/ssato/python-anyconfig
+   :alt: Test status
 
 TODO
 ======

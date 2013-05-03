@@ -25,6 +25,9 @@ logging = G.LOGGER
 
 
 def set_loglevel(level):
+    """
+    :param level: Log level, e.g. logging.INFO and logging.WARN.
+    """
     logging.setLevel(level)
 
 
@@ -32,6 +35,7 @@ def find_loader(config_path, forced_type=None):
     """
     :param config_path: Configuration file path
     :param forced_type: Forced configuration parser type
+    :return: ConfigParser-inherited class object
     """
     if forced_type is not None:
         cparser = Backends.find_by_type(forced_type)
@@ -60,6 +64,9 @@ def single_load(config_path, forced_type=None, **kwargs):
     :param forced_type: Forced configuration parser type
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+    :return: Dict-like object (instance of
+        anyconfig.mergeabledict.MergeableDict by default) supports merge
+        operations.
     """
     cparser = find_loader(config_path, forced_type)
     if cparser is None:
@@ -89,6 +96,9 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
     :param marker: Globbing markerer to detect paths patterns
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+    :return: Dict-like object (instance of
+        anyconfig.mergeabledict.MergeableDict by default) supports merge
+        operations.
     """
     assert merge in MERGE_STRATEGIES, "Invalid merge strategy: " + merge
 
@@ -119,6 +129,9 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
     :param marker: Globbing marker to detect paths patterns
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+    :return: Dict-like object (instance of
+        anyconfig.mergeabledict.MergeableDict by default) supports merge
+        operations.
     """
     if marker in path_specs or U.is_iterable(path_specs):
         return multi_load(path_specs, forced_type, merge, marker, **kwargs)
@@ -132,6 +145,9 @@ def loads(config_content, forced_type=None, **kwargs):
     :param forced_type: Forced configuration parser type
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+    :return: Dict-like object (instance of
+        anyconfig.mergeabledict.MergeableDict by default) supports merge
+        operations.
     """
     if forced_type is None:
         return P.parse(config_content)
@@ -149,6 +165,7 @@ def _find_dumper(config_path, forced_type=None):
 
     :param config_path: Output filename
     :param forced_type: Forced configuration parser type
+    :return: ConfigParser-inherited class object
     """
     cparser = find_loader(config_path, forced_type)
 
@@ -165,7 +182,8 @@ def dump(data, config_path, forced_type=None, **kwargs):
     """
     Save `data` as `config_path`.
 
-    :param data: Data object to dump
+    :param data: Config data object to dump ::
+        anyconfig.mergeabledict.MergeableDict by default
     :param config_path: Output filename
     :param forced_type: Forced configuration parser type
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
@@ -181,10 +199,12 @@ def dumps(data, forced_type, **kwargs):
     """
     Return string representation of `data` in forced type format.
 
-    :param data: Data object to dump
+    :param data: Config data object to dump ::
+        anyconfig.mergeabledict.MergeableDict by default
     :param forced_type: Forced configuration parser type
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+    :return: Backend-specific string representation for the given data
     """
     return _find_dumper(None, forced_type).dumps(data, **kwargs)
 

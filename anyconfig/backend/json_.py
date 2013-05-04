@@ -22,7 +22,7 @@ def dict_to_container(json_obj_dict):
 
 class JsonConfigParser(Base.ConfigParser):
     _type = "json"
-    _extensions = ["json", "jsn"]
+    _extensions = ["json", "jsn", "js"]
     _supported = SUPPORTED
 
     _load_opts = ["cls", "parse_float", "parse_int", "parse_constant"]

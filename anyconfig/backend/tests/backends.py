@@ -10,17 +10,21 @@ class Test_00_pure_functions(unittest.TestCase):
 
     def test_10_find_by_file(self):
         ini_cf = "/a/b/c.ini"
-        jsn_cf = "/a/b/c.jsn"
-        yml_cf = "/a/b/c.yml"
         unknown_cf = "/a/b/c.xyz"
+        jsn_cfs = ["/a/b/c.jsn", "/a/b/c.json", "/a/b/c.js"]
+        yml_cfs = ["/a/b/c.yml", "/a/b/c.yaml"]
 
         def instchk(cf, cls):
             isinstance(T.find_by_file(cf), cls)
 
         self.assertTrue(ini_cf, T.BINI.IniConfigParser)
-        self.assertTrue(jsn_cf, T.BJSON.JsonConfigParser)
-        self.assertTrue(yml_cf, T.BYAML.YamlConfigParser)
         self.assertTrue(T.find_by_file(unknown_cf) is None)
+
+        for f in jsn_cfs:
+            self.assertTrue(f, T.BJSON.JsonConfigParser)
+
+        for f in yml_cfs:
+            self.assertTrue(f, T.BYAML.YamlConfigParser)
 
     def test_20_find_by_type(self):
         ini_t = "ini"

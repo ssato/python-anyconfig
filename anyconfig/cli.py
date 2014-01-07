@@ -114,8 +114,6 @@ def main(argv=sys.argv):
     (options, args) = parser.parse_args(argv[1:])
 
     A.set_loglevel(to_log_level(options.loglevel))
-    logging.basicConfig(format="%(asctime)s %(name)s: [%(levelname)s] "
-                        "%(message)s")
 
     if not args:
         if options.list:

@@ -73,7 +73,7 @@ class Test_JsonConfigParser(unittest.TestCase):
         self.assertEquals(c['b'], "bbb", c)
         self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
 
-    def test_40_dump(self):
+    def test_50_dump_w_backend_specific_options(self):
         c = T.JsonConfigParser.loads(CONF_0)
         T.JsonConfigParser.dump(c, self.config_path, parse_int=None,
                                 indent=3)

@@ -10,7 +10,7 @@ import unittest
 
 
 CONF_0 = """<?xml version="1.0" encoding="UTF-8"?>
-<config>
+<config name='foo'>
   <a>0</a>
   <b>"bbb"</b>
   <sect0>
@@ -40,8 +40,9 @@ class Test_XmlConfigParser(unittest.TestCase):
 
         c = T.XmlConfigParser.loads(CONF_0)["config"]
 
-        self.assertEquals(c['a'], 0, str(c))
-        self.assertEquals(c['b'], "bbb", c)
+        self.assertEquals(c["children"][0]['a'], 0, str(c))
+        self.assertEquals(c["children"][0]['b'], "bbb", c)
+        self.assertEquals(c["attributes"][0]['name'], "foo", c)
 
         # FIXME: Needs to implement list parser ?
         #self.assertEquals(c.sect0.c, ['x', 'y', 'z'])

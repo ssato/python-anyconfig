@@ -14,9 +14,6 @@ class Test_00_pure_functions(unittest.TestCase):
         jsn_cfs = ["/a/b/c.jsn", "/a/b/c.json", "/a/b/c.js"]
         yml_cfs = ["/a/b/c.yml", "/a/b/c.yaml"]
 
-        def instchk(cf, cls):
-            isinstance(T.find_by_file(cf), cls)
-
         self.assertTrue(ini_cf, T.BINI.IniConfigParser)
         self.assertTrue(T.find_by_file(unknown_cf) is None)
 
@@ -31,9 +28,6 @@ class Test_00_pure_functions(unittest.TestCase):
         jsn_t = "json"
         yml_t = "yaml"
         unknown_t = "unknown_type"
-
-        def instchk(cf, ctype):
-            isinstance(T.find_by_type(ctype), cls)
 
         self.assertTrue(ini_t, T.BINI.IniConfigParser)
         self.assertTrue(jsn_t, T.BJSON.JsonConfigParser)

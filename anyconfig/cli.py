@@ -12,26 +12,23 @@ import optparse
 import sys
 
 
-_encoding = locale.getdefaultlocale()[1]
+_ENCODING = locale.getdefaultlocale()[1]
 
 if C.IS_PYTHON_3:
     import io
 
-    _encoding = _encoding.lower()
+    _ENCODING = _ENCODING.lower()
 
     # FIXME: Fix the error, "AttributeError: '_io.StringIO' object has no
     # attribute 'buffer'".
     try:
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=_encoding)
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=_encoding)
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=_ENCODING)
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=_ENCODING)
     except AttributeError:
         pass
 else:
-    sys.stdout = codecs.getwriter(_encoding)(sys.stdout)
-    sys.stderr = codecs.getwriter(_encoding)(sys.stderr)
-
-DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
-                otype=None, atype=None, merge=A.MS_DICTS)
+    sys.stdout = codecs.getwriter(_ENCODING)(sys.stdout)
+    sys.stderr = codecs.getwriter(_ENCODING)(sys.stderr)
 
 USAGE = """\
 %prog [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
@@ -49,11 +46,23 @@ Examples:
 
 
 def to_log_level(level):
+    """
+    :param level: Logging level in int = 0 .. 2
+    """
     assert level >= 0 and level < 3, "wrong log level passed: " + str(level)
     return [logging.WARN, logging.INFO, logging.DEBUG][level]
 
 
-def option_parser(defaults=DEFAULTS, usage=USAGE):
+def option_parser(defaults=None, usage=USAGE):
+    """
+    Make up an option and arguments parser.
+
+    :param defaults: Default option values
+    :param usage: Usage text
+    """
+    defaults = dict(loglevel=1, list=False, output=None, itype=None,
+                    otype=None, atype=None, merge=A.MS_DICTS)
+
     ctypes = A.list_types()
     ctypes_s = ", ".join(ctypes)
     type_help = "Select type of %s config files from " + \
@@ -71,47 +80,50 @@ If this option is not set, original parser is used: 'K:V' will become {K: V},
 become {K_0: V_0, K_1: V_1} (where the tyep of K is str, type of V is one of
 Int, str, etc.""" % ctypes_s
 
-    p = optparse.OptionParser(usage)
-    p.set_defaults(**defaults)
+    parser = optparse.OptionParser(usage)
+    parser.set_defaults(**defaults)
 
-    p.add_option("-L", "--list", help="List supported config types",
-                 action="store_true")
-    p.add_option("-o", "--output", help="Output file path")
-    p.add_option("-I", "--itype", choices=ctypes, help=(type_help % "Input"))
-    p.add_option("-O", "--otype", choices=ctypes, help=(type_help % "Output"))
-    p.add_option("-M", "--merge", choices=mts, help=mt_help)
+    parser.add_option("-L", "--list", help="List supported config types",
+                      action="store_true")
+    parser.add_option("-o", "--output", help="Output file path")
+    parser.add_option("-I", "--itype", choices=ctypes,
+                      help=(type_help % "Input"))
+    parser.add_option("-O", "--otype", choices=ctypes,
+                      help=(type_help % "Output"))
+    parser.add_option("-M", "--merge", choices=mts, help=mt_help)
 
-    p.add_option("-A", "--args", help="Argument configs to override")
-    p.add_option("", "--atype", choices=ctypes, help=af_help)
+    parser.add_option("-A", "--args", help="Argument configs to override")
+    parser.add_option("", "--atype", choices=ctypes, help=af_help)
 
-    p.add_option("-s", "--silent", action="store_const", dest="loglevel",
-                 const=0, help="Silent or quiet mode")
-    p.add_option("-q", "--quiet", action="store_const", dest="loglevel",
-                 const=0, help="Same as --silent option")
-    p.add_option("-v", "--verbose", action="store_const", dest="loglevel",
-                 const=2, help="Verbose mode")
+    parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
+                      const=0, help="Silent or quiet mode")
+    parser.add_option("-q", "--quiet", action="store_const", dest="loglevel",
+                      const=0, help="Same as --silent option")
+    parser.add_option("-v", "--verbose", action="store_const", dest="loglevel",
+                      const=2, help="Verbose mode")
 
-    return p
+    return parser
 
 
+# pylint: disable=W0102
 def main(argv=sys.argv):
-    p = option_parser()
-    (options, args) = p.parse_args(argv[1:])
+    """
+    :param argv: Argument list to parse [sys.argv]
+    """
+    parser = option_parser()
+    (options, args) = parser.parse_args(argv[1:])
 
     A.set_loglevel(to_log_level(options.loglevel))
-
-    # FIXME: customize loggging format
-    # fmt = "%(asctime)s %(levelname)-6s %(message)s"
-    # ...
+    logging.basicConfig(format="%(asctime)s %(name)s: [%(levelname)s] "
+                        "%(message)s")
 
     if not args:
         if options.list:
-            sys.stdout.write(
-                "Supported config types: " + ", ".join(A.list_types()) + "\n"
-            )
+            sys.stdout.write("Supported config types: "
+                             ", ".join(A.list_types()) + "\n")
             sys.exit(0)
         else:
-            p.print_usage()
+            parser.print_usage()
             sys.exit(-1)
 
     data = A.load(args, options.itype, options.merge)
@@ -121,18 +133,17 @@ def main(argv=sys.argv):
         data.update(diff, options.merge)
 
     if options.output:
-        cp = A.find_loader(options.output, options.otype)
-        cp.dump(data, options.output)
+        cparser = A.find_loader(options.output, options.otype)
+        cparser.dump(data, options.output)
     else:
         assert options.otype is not None, \
             "Please specify Output type w/ -O/--otype option"
 
-        cp = A.find_loader(None, options.otype)
-        sys.stdout.write(cp.dumps(data))
+        cparser = A.find_loader(None, options.otype)
+        sys.stdout.write(cparser.dumps(data))
 
 
 if __name__ == '__main__':
     main(sys.argv)
-
 
 # vim:sw=4:ts=4:et:

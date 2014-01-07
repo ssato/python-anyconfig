@@ -9,12 +9,13 @@ import anyconfig.backend.json_ as BJ
 import anyconfig.parser as P
 import anyconfig.utils as U
 
-import os.path
-
+# pylint: disable=W0611
 # Import some global constants will be re-exported:
 from anyconfig.mergeabledict import MS_REPLACE, MS_NO_REPLACE, \
     MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES
+# pylint: enable=W0611
 
+# pylint: disable=C0103
 # Re-export:
 list_types = Backends.list_types
 getLogger = G.getLogger
@@ -22,6 +23,7 @@ getLogger = G.getLogger
 # aliases:
 container = M.MergeableDict
 logging = G.LOGGER
+# pylint: enable=W0611
 
 
 def set_loglevel(level):
@@ -106,11 +108,12 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
         paths = U.sglob(paths)
 
     config = container()
-    for p in paths:
-        if marker in p:  # Nested pattern cases, e.g. ['*.yml', '/a/b/c.yml'].
-            conf_updates = multi_load(p, forced_type, merge, marker, **kwargs)
+    for path in paths:
+        if marker in path:  # Nested patterns like ['*.yml', '/a/b/c.yml'].
+            conf_updates = multi_load(path, forced_type, merge, marker,
+                                      **kwargs)
         else:
-            conf_updates = single_load(p, forced_type, **kwargs)
+            conf_updates = single_load(path, forced_type, **kwargs)
 
         config.update(conf_updates, merge)
 

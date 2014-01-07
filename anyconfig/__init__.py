@@ -1,7 +1,7 @@
 """
 .. module:: anyconfig
    :platform: Unix, Windows
-   :synopsis: Generic interface to loaders and parsers for various config file formats.
+   :synopsis: Generic interface to loaders for various config file formats.
 
 Instead of::
 

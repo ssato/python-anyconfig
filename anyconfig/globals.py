@@ -19,10 +19,10 @@ def getLogger(name="anyconfig", format=_LOGGING_FORMAT,
     logging.basicConfig(level=level, format=format)
     logger = logging.getLogger(name)
 
-    h = logging.StreamHandler()
-    h.setLevel(level)
-    h.setFormatter(logging.Formatter(format))
-    logger.addHandler(h)
+    handler = logging.StreamHandler()
+    handler.setLevel(level)
+    handler.setFormatter(logging.Formatter(format))
+    logger.addHandler()
 
     return logger
 

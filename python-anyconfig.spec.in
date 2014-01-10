@@ -108,6 +108,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 10 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.11-1
+- Just a maintenance update release
+- Add pylint checks and refactor test driver script
+- Fix some PEP8 and pylint errors and warnings
+
 * Thu May  2 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
 - [anyconfig_cli] Fix a typo in its filename; s/anyconfg/anyconfig/g,
   it's alsot pointed by jonathaneunice-san. Thanks a lot!

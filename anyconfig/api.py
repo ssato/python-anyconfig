@@ -18,7 +18,7 @@ from anyconfig.mergeabledict import MS_REPLACE, MS_NO_REPLACE, \
 # pylint: disable=C0103
 # Re-export:
 list_types = Backends.list_types
-getLogger = G.getLogger
+getLogger = G.get_logger
 
 # aliases:
 container = M.MergeableDict

@@ -2,6 +2,8 @@
 # Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+"""anyconfig globals.
+"""
 import logging
 
 
@@ -11,22 +13,22 @@ VERSION = "0.0.3.10"
 _LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
 
 
-def getLogger(name="anyconfig", format=_LOGGING_FORMAT,
-              level=logging.WARNING, **kwargs):
+def get_logger(name="anyconfig", log_format=_LOGGING_FORMAT,
+               level=logging.WARNING):
     """
     Initialize custom logger.
     """
-    logging.basicConfig(level=level, format=format)
+    logging.basicConfig(level=level, format=log_format)
     logger = logging.getLogger(name)
 
     handler = logging.StreamHandler()
     handler.setLevel(level)
-    handler.setFormatter(logging.Formatter(format))
-    logger.addHandler()
+    handler.setFormatter(logging.Formatter(log_format))
+    logger.addHandler(handler)
 
     return logger
 
 
-LOGGER = getLogger()
+LOGGER = get_logger()
 
 # vim:sw=4:ts=4:et:

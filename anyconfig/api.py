@@ -2,6 +2,8 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+"""Public APIs of anyconfig module.
+"""
 import anyconfig.globals as G
 import anyconfig.mergeabledict as M
 import anyconfig.backend.backends as Backends

@@ -13,6 +13,13 @@ import anyconfig.backend.yaml_ as BYAML
 import anyconfig.utils as U
 import pkg_resources
 
+# cmp is missing in python >= 3.0.
+try:
+    cmp
+except NameError:
+    def cmp(a, b):
+        return (a > b) - (a < b)
+
 
 _CPs = [p for p in [BINI.IniConfigParser, BJSON.JsonConfigParser,
                     BYAML.YamlConfigParser, BXML.XmlConfigParser,

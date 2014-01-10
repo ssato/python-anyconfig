@@ -50,7 +50,8 @@ def etree_to_container(root, container):
         # FIXME: Configuration item cannot have both attributes and
         # values (list) at the same time in current implementation:
         tree[root.tag] = container()
-        tree[root.tag]["children"] = [etree_to_container(c, container) for c in root]
+        tree[root.tag]["children"] = [etree_to_container(c, container) for c
+                                      in root]
         tree[root.tag]["attributes"] = container(**root.attrib)
 
         if root.text.strip():

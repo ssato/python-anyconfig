@@ -2,6 +2,8 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
+"""Merge-able dict.
+"""
 from anyconfig.compat import iteritems
 
 import anyconfig.utils as U
@@ -19,35 +21,50 @@ MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 
 
-def is_MergeableDict_or_dict(x):
-    return isinstance(x, (MergeableDict, dict))
+def is_mergeabledict_or_dict(obj):
+    """
+    :param obj: Any object may be an instance of MergeableDict or dict.
+
+    >>> is_mergeabledict_or_dict("a string")
+    False
+    >>> is_mergeabledict_or_dict({})
+    True
+    >>> is_mergeabledict_or_dict(create_from({}))
+    True
+    """
+    return isinstance(obj, (MergeableDict, dict))
 
 
-def convert_to(x):
+def convert_to(mdict):
     """
     Convert a MergeableDict instances to a dict object.
 
     Borrowed basic idea and implementation from bunch.unbunchify.
     (bunch is distributed under MIT license same as this module.)
+
+    :param mdict: A MergeableDict instance
+    :return: A dict
     """
-    if is_MergeableDict_or_dict(x):
-        return dict((k, convert_to(v)) for k, v in iteritems(x))
-    elif U.is_iterable(x):
-        return type(x)(convert_to(v) for v in x)
+    if is_mergeabledict_or_dict(mdict):
+        return dict((k, convert_to(v)) for k, v in iteritems(mdict))
+    elif U.is_iterable(mdict):
+        return type(mdict)(convert_to(v) for v in mdict)
     else:
-        return x
+        return mdict
 
 
-def create_from(x):
+def create_from(dic):
     """
     Try creating a MergeableDict instance[s] from a dict or any other objects.
+
+    :param dic: A dict instance
     """
-    if is_MergeableDict_or_dict(x):
-        return MergeableDict((k, create_from(v)) for k, v in iteritems(x))
-    elif U.is_iterable(x):
-        return type(x)(create_from(v) for v in x)
+    if is_mergeabledict_or_dict(dic):
+        return MergeableDict((k, create_from(v)) for k, v in iteritems(dic))
+    elif U.is_iterable(dic):
+        return type(dic)(create_from(v) for v in dic)
     else:
-        return x
+        return dic
 
 
 class MergeableDict(dict):
@@ -59,19 +76,24 @@ class MergeableDict(dict):
     strategy = MS_DICTS
 
     @classmethod
-    def create(cls, x):
+    def create(cls, obj):
         """Create an instance from any object."""
-        return create_from(x)
+        return create_from(obj)
 
     @classmethod
-    def convert_to(cls, x):
-        return convert_to(x)
+    def convert_to(cls, mdict):
+        """Create an object from MergeableDict instances"""
+        return convert_to(mdict)
 
     def get_strategy(self):
+        """Merge strategy"""
         return self.strategy
 
     def update(self, other, strategy=None):
         """Update members recursively based on given strategy.
+
+        :param other: Other MergeableDict instance to merge
+        :param strategy: Merge strategy
         """
         if strategy is None:
             strategy = self.get_strategy()
@@ -90,7 +112,7 @@ class MergeableDict(dict):
 
         :param other: object of which type is same as self's.
         """
-        if is_MergeableDict_or_dict(other):
+        if is_mergeabledict_or_dict(other):
             for k, v in iteritems(other):
                 self[k] = v
         else:
@@ -99,7 +121,7 @@ class MergeableDict(dict):
     def update_wo_replace(self, other):
         """Update self w/ other but never replace self w/ other.
         """
-        if is_MergeableDict_or_dict(other):
+        if is_mergeabledict_or_dict(other):
             for k, v in iteritems(other):
                 if k not in self:
                     self[k] = v
@@ -112,10 +134,10 @@ class MergeableDict(dict):
             [1, 2, 3], [3, 4] ==> [1, 2, 3, 4]
             [1, 2, 2], [2, 4] ==> [1, 2, 2, 4]
         """
-        if is_MergeableDict_or_dict(other):
+        if is_mergeabledict_or_dict(other):
             for k, v in iteritems(other):
-                if k in self and is_MergeableDict_or_dict(v) and \
-                        is_MergeableDict_or_dict(self[k]):
+                if k in self and is_mergeabledict_or_dict(v) and \
+                        is_mergeabledict_or_dict(self[k]):
                     # update recursively.
                     self[k].update_w_merge(v, merge_lists)
                 else:

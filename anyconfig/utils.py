@@ -2,21 +2,26 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+"""Misc utility routines for anyconfig module.
+"""
 import glob
 import itertools
 import os.path
 import types
 
 try:
-    chain_from_iterable = itertools.chain.from_iterable
+    CHAIN_FROM_ITR = itertools.chain.from_iterable
 except AttributeError:
     # Borrowed from library doc, 9.7.1 Itertools functions:
     def _from_iterable(iterables):
+        """
+        itertools.chain.from_iterable alternative.
+        """
         for it in iterables:
             for element in it:
                 yield element
 
-    chain_from_iterable = _from_iterable
+    CHAIN_FROM_ITR = _from_iterable
 
 
 def get_file_extension(file_path):
@@ -36,6 +41,9 @@ def get_file_extension(file_path):
 
 
 def sglob(files_pattern):
+    """
+    glob.glob alternative of which results sorted always.
+    """
     return sorted(glob.glob(files_pattern))
 
 
@@ -84,6 +92,6 @@ def concat(xss):
     >>> concat((i, i*2) for i in range(3))
     [0, 0, 1, 2, 2, 4]
     """
-    return list(chain_from_iterable(xs for xs in xss))
+    return list(CHAIN_FROM_ITR(xs for xs in xss))
 
 # vim:sw=4:ts=4:et:

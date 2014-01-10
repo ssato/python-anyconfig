@@ -2,6 +2,7 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+"""Misc parsers"""
 import re
 
 
@@ -133,6 +134,7 @@ def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):
 
 
 def parse(s, lsep=",", avsep=":", vssep=",", avssep=";"):
+    """Generic parser"""
     if avsep in s:
         return parse_attrlist(s, avsep, vssep, avssep)
     elif lsep in s:

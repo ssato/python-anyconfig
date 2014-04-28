@@ -95,7 +95,7 @@ setup(name=PACKAGE,
     ],
     #platform=
     #install_requires=[],
-    tests_require=['nose>=1.0', 'pep8'],
+    tests_require=['nose>=1.0', 'pep8', 'pylint'],
     packages=find_packages(),
     include_package_data=True,
     cmdclass={

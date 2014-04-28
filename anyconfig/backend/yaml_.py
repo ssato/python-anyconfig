@@ -18,12 +18,14 @@ except ImportError:
 if SUPPORTED:
     yaml_load = yaml.load
     yaml_dump = yaml.dump
+    yaml_safe_load = yaml.safe_load
+    yaml_safe_dump = yaml.safe_dump
 else:
     def _dummy_fun(*args, **kwargs):
         logging.warn("Does nothing as YAML module is not available.")
         return
 
-    yaml_load = yaml_dump = _dummy_fun
+    yaml_load = yaml_dump = yaml_safe_load = yaml_safe_dump = _dummy_fun
 
 
 class YamlConfigParser(Base.ConfigParser):
@@ -32,7 +34,7 @@ class YamlConfigParser(Base.ConfigParser):
     _extensions = ("yaml", "yml")
     _supported = SUPPORTED
 
-    _load_opts = ["Loader"]
+    _load_opts = ["Loader", "safe"]
     _dump_opts = ["stream", "Dumper"]
 
     @classmethod

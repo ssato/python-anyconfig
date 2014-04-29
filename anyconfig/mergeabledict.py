@@ -111,6 +111,12 @@ class MergeableDict(dict):
         """Update and replace self w/ other if both has same keys.
 
         :param other: object of which type is same as self's.
+
+        >>> md0 = MergeableDict.create(dict(a=1, b=[1, 3], c="abc"))
+        >>> md1 = MergeableDict.create(dict(a=2, b=[0, 1], c="xyz"))
+        >>> md0.update_w_replace(md1)
+        >>> all(md0[k] == md1[k] for k in ("a", "b", "c"))
+        True
         """
         if is_mergeabledict_or_dict(other):
             for k, v in iteritems(other):
@@ -120,6 +126,16 @@ class MergeableDict(dict):
 
     def update_wo_replace(self, other):
         """Update self w/ other but never replace self w/ other.
+
+        >>> md0 = md1 = MergeableDict.create(dict(a=1, b=[1, 3], c="abc"))
+        >>> md2 = MergeableDict.create(dict(a=2, b=[0, 1], c="xyz", d=None))
+        >>> md0.update_wo_replace(md2)
+        >>> all(md0[k] != md2[k] for k in ("a", "b", "c"))
+        True
+        >>> all(md0[k] == md1[k] for k in ("a", "b", "c"))
+        True
+        >>> md0["d"] == md2["d"]
+        True
         """
         if is_mergeabledict_or_dict(other):
             for k, v in iteritems(other):
@@ -133,6 +149,22 @@ class MergeableDict(dict):
 
             [1, 2, 3], [3, 4] ==> [1, 2, 3, 4]
             [1, 2, 2], [2, 4] ==> [1, 2, 2, 4]
+
+        >>> md0 = md1 = MergeableDict.create(dict(a=1, b=dict(c=2, d=3),
+        ...                                       e=[1, 2]))
+        >>> md2 = MergeableDict.create(dict(a=2, b=dict(d=4, f=5), e=[3, 4]))
+        >>> md0.update_w_merge(md2, False)
+        >>> md0["a"] == md2["a"]
+        True
+        >>> md0["b"]["d"] == md2["b"]["d"] and md0["b"]["f"] == md2["b"]["f"]
+        True
+        >>> md0["e"] == md2["e"]
+        True
+
+        # TODO:
+        # >>> md1.update_w_merge(md2, True)
+        # >>> md0["e"] == [1, 2, 3, 4]
+        # True
         """
         if is_mergeabledict_or_dict(other):
             for k, v in iteritems(other):

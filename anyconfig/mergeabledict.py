@@ -10,7 +10,7 @@ import anyconfig.utils as U
 import copy
 
 # TODO: Keep items' order:
-#from collections import OrderedDict as dict
+# from collections import OrderedDict as dict
 
 
 MS_REPLACE = "replace"

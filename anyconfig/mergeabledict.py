@@ -151,8 +151,9 @@ class MergeableDict(dict):
             [1, 2, 2], [2, 4] ==> [1, 2, 2, 4]
 
         >>> md0 = md1 = MergeableDict.create(dict(a=1, b=dict(c=2, d=3),
-        ...                                       e=[1, 2]))
-        >>> md2 = MergeableDict.create(dict(a=2, b=dict(d=4, f=5), e=[3, 4]))
+        ...                                       e=[1, 2, 2]))
+        >>> md2 = MergeableDict.create(dict(a=2, b=dict(d=4, f=5),
+        ...                                 e=[2, 3, 4]))
         >>> md0.update_w_merge(md2, False)
         >>> md0["a"] == md2["a"]
         True
@@ -162,9 +163,8 @@ class MergeableDict(dict):
         True
 
         # TODO:
-        # >>> md1.update_w_merge(md2, True)
-        # >>> md0["e"] == [1, 2, 3, 4]
-        # True
+        #>>> md1.update_w_merge(md2, True)
+        #>>> assert md1["e"] == [1, 2, 2, 3, 4], md1["e"]
         """
         if is_mergeabledict_or_dict(other):
             for k, v in iteritems(other):

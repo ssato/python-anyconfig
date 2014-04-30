@@ -234,7 +234,12 @@ It can process various config files and output a merged config file::
 Build & Install
 ================
 
-If you're Fedora or Red Hat Enterprise Linux user, try::
+If you're Fedora or Red Hat Enterprise Linux user, you can install experimental
+RPMs on http://copr.fedoraproject.org/coprs/ from:
+
+* http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
+
+or if you want to build yourself, then try::
 
   $ python setup.py srpm && mock dist/SRPMS/python-anyconfig-<ver_dist>.src.rpm
   
@@ -245,7 +250,8 @@ or::
 and install built RPMs. 
 
 Otherwise, try usual ways to build and/or install python modules such like
-'easy_install anyconfig', 'python setup.py bdist', etc.
+'pip install anyconfig', 'easy_install anyconfig', 'python setup.py bdist',
+etc.
 
 How to hack
 ==============

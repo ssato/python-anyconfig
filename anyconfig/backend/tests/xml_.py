@@ -45,7 +45,7 @@ class Test_XmlConfigParser(unittest.TestCase):
         self.assertEquals(c["attributes"][0]['name'], "foo", c)
 
         # FIXME: Needs to implement list parser ?
-        #self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+        # self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
 
     def test_20_load(self):
         """FIXME: Implement test cases for XmlConfigParser.load"""

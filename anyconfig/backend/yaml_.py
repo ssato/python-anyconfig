@@ -16,16 +16,28 @@ except ImportError:
 
 
 if SUPPORTED:
-    yaml_load = yaml.load
-    yaml_dump = yaml.dump
-    yaml_safe_load = yaml.safe_load
-    yaml_safe_dump = yaml.safe_dump
+    def filter_keys(keys, filter_key):
+        return [k for k in keys if k != filter_key]
+
+    def yaml_load(fp, **kwargs):
+        keys = filter_keys(kwargs.keys(), "safe")
+        if kwargs.get("safe", False):
+            return yaml.safe_load(fp, **Base.mk_opt_args(keys, kwargs))
+        else:
+            return yaml.load(fp, **kwargs)
+
+    def yaml_dump(data, fp, **kwargs):
+        keys = filter_keys(kwargs.keys(), "safe")
+        if kwargs.get("safe", False):
+            return yaml.safe_dump(data, fp, **Base.mk_opt_args(keys, kwargs))
+        else:
+            return yaml.dump(data, fp, **kwargs)
 else:
     def _dummy_fun(*args, **kwargs):
         logging.warn("Does nothing as YAML module is not available.")
         return
 
-    yaml_load = yaml_dump = yaml_safe_load = yaml_safe_dump = _dummy_fun
+    yaml_load = yaml_dump = _dummy_fun
 
 
 class YamlConfigParser(Base.ConfigParser):
@@ -55,7 +67,7 @@ class YamlConfigParser(Base.ConfigParser):
 
         :return: string represents the configuration
         """
-        return yaml_dump(data, **kwargs)
+        return yaml_dump(data, None, **kwargs)
 
     @classmethod
     def dump_impl(cls, data, config_path, **kwargs):

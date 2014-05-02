@@ -42,8 +42,22 @@ if T.SUPPORTED:
             self.assertEquals(c['b'], "bbb", c)
             self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
 
+        def test_12_loads__safe(self):
+            c = T.YamlConfigParser.loads(CONF_0, safe=True)
+
+            self.assertEquals(c['a'], 0, str(c))
+            self.assertEquals(c['b'], "bbb", c)
+            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+
         def test_20_load(self):
             c = T.YamlConfigParser.load(self.config_path)
+
+            self.assertEquals(c['a'], 0, str(c))
+            self.assertEquals(c['b'], "bbb", c)
+            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+
+        def test_22_load__safe(self):
+            c = T.YamlConfigParser.load(self.config_path, safe=True)
 
             self.assertEquals(c['a'], 0, str(c))
             self.assertEquals(c['b'], "bbb", c)
@@ -66,9 +80,27 @@ if T.SUPPORTED:
             self.assertEquals(c['b'], "bbb", c)
             self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
 
+        def test_32_dumps__safe(self):
+            c = T.YamlConfigParser.loads(CONF_0)
+            s = T.YamlConfigParser.dumps(c, safe=True)
+            c = T.YamlConfigParser.loads(s)
+
+            self.assertEquals(c['a'], 0, str(c))
+            self.assertEquals(c['b'], "bbb", c)
+            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+
         def test_40_dump(self):
             c = T.YamlConfigParser.loads(CONF_0)
             T.YamlConfigParser.dump(c, self.config_path)
+            c = T.YamlConfigParser.load(self.config_path)
+
+            self.assertEquals(c['a'], 0, str(c))
+            self.assertEquals(c['b'], "bbb", c)
+            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+
+        def test_42_dump__safe(self):
+            c = T.YamlConfigParser.loads(CONF_0)
+            T.YamlConfigParser.dump(c, self.config_path, safe=True)
             c = T.YamlConfigParser.load(self.config_path)
 
             self.assertEquals(c['a'], 0, str(c))

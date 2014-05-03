@@ -135,8 +135,14 @@ def main(argv=sys.argv):
         cparser = A.find_loader(options.output, options.otype)
         cparser.dump(data, options.output)
     else:
-        assert options.otype is not None, \
-            "Please specify Output type w/ -O/--otype option"
+        # TODO: Reuse input type automatically detected as it's impossible to
+        # detect output type w/o options.output.
+        if options.otype is None:
+            if options.itype is None:
+                raise RuntimeError("Please specify input and/or output type "
+                                   "with -I (--itype) or -O (--otype) option")
+            else:
+                options.otype = options.itype
 
         cparser = A.find_loader(None, options.otype)
         sys.stdout.write(cparser.dumps(data))

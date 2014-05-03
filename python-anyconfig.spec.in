@@ -108,6 +108,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat May  3 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.11.999-1
+- Support safe_{load,dump} in YAML backend by safe=True argument
+- Add some more keyword arguments support in JSON backend
+- Some PEP8 and pylint errors and warnings
+
 * Fri Jan 10 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.11-1
 - Just a maintenance update release
 - Add pylint checks and refactor test driver script

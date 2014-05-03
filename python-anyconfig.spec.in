@@ -110,10 +110,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat May  3 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.11.999-1
+* Sat May  3 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.12-1
 - Support safe_{load,dump} in YAML backend by safe=True argument
 - Add some more keyword arguments support in JSON backend
+- Add man page of anyconfig_cli
+- Misc fixes and enhancements in anyconfig_cli
 - Some PEP8 and pylint errors and warnings
+- Fix some rpmlint errors
 
 * Fri Jan 10 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.11-1
 - Just a maintenance update release

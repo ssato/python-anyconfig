@@ -36,7 +36,7 @@ USAGE = """\
 
 Examples:
   %prog --list
-  %prog -I yaml /etc/xyz/conf.d/a.conf
+  %prog -I yaml -O yaml /etc/xyz/conf.d/a.conf
   %prog -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
   %prog '/etc/xyz/conf.d/*.json' -o xyz.yml \\
     --atype json -A '{"obsoletes": "sysdata", "conflicts": "sysdata-old"}'

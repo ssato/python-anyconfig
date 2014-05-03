@@ -1,6 +1,8 @@
 #
-# Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2014 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
+#
+# Ref. python -c "import json; help(json)"
 #
 import anyconfig.backend.base as Base
 import sys
@@ -25,9 +27,11 @@ class JsonConfigParser(Base.ConfigParser):
     _extensions = ["json", "jsn", "js"]
     _supported = SUPPORTED
 
-    _load_opts = ["cls", "parse_float", "parse_int", "parse_constant"]
-    _dump_opts = ["cls", "skipkeys", "ensure_ascii", "check_circular",
-                  "allow_nan", "indent", "separators"]
+    _load_opts = ["encoding", "cls", "object_hook", "parse_float", "parse_int",
+                  "parse_constant", "object_pairs_hook"]
+    _dump_opts = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
+                  "cls", "indent", "separators", "encoding", "default",
+                  "sort_keys"]
 
     @classmethod
     def loads(cls, config_content, **kwargs):

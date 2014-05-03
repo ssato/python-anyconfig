@@ -193,20 +193,20 @@ class Test_20_effectful_functions(unittest.TestCase):
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, a_path, indent=2, encoding="utf-8")
+        A.dump(a, a_path, indent=2)
         self.assertTrue(os.path.exists(a_path))
 
-        A.dump(b, b_path, encoding="utf-8")
+        A.dump(b, b_path, indent=2)
         self.assertTrue(os.path.exists(b_path))
 
-        a1 = A.load(a_path, encoding="utf-8")
+        a1 = A.load(a_path, parse_int=int)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
-        a2 = A.load(os.path.join(self.workdir, '*.json'), encoding="utf-8")
+        a2 = A.load(os.path.join(self.workdir, '*.json'), parse_int=int)
 
         self.assertEquals(a2["name"],   a["name"])
         self.assertEquals(a2["a"],      b["a"])
@@ -214,7 +214,7 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
-        a3 = A.load([a_path, b_path], encoding="utf-8")
+        a3 = A.load([a_path, b_path], parse_int=int)
 
         self.assertEquals(a3["name"],   a["name"])
         self.assertEquals(a3["a"],      b["a"])

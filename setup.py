@@ -71,39 +71,37 @@ class RpmCommand(SrpmCommand):
     build_stage = "b"
 
 
+_CLASSIFIERS = ["Development Status :: 3 - Alpha",
+                "Intended Audience :: Developers",
+                "Programming Language :: Python",
+                "Programming Language :: Python :: 2.6",
+                "Programming Language :: Python :: 2.7",
+                "Programming Language :: Python :: 3",
+                "Environment :: Console",
+                "Operating System :: OS Independent",
+                "Topic :: Software Development :: Libraries :: Python Modules",
+                "Topic :: Text Processing :: Markup",
+                "Topic :: Utilities",
+                "License :: OSI Approved :: MIT License"]
+
+
 setup(name=PACKAGE,
-    version=VERSION,
-    description="Generic access to configuration files in some formats",
-    long_description=open("README.rst").read(),
-    author="Satoru SATOH",
-    author_email="ssato@redhat.com",
-    license="MIT",
-    url="https://github.com/ssato/python-anyconfig",
-    classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3",
-        "Environment :: Console",
-        "Operating System :: OS Independent",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        "Topic :: Text Processing :: Markup",
-        "Topic :: Utilities",
-        "License :: OSI Approved :: MIT License",
-    ],
-    #platform=
-    #install_requires=[],
-    tests_require=['nose>=1.0', 'pep8', 'pylint'],
-    packages=find_packages(),
-    include_package_data=True,
-    cmdclass={
-        "srpm": SrpmCommand,
-        "rpm":  RpmCommand,
-    },
-    #scripts=glob.glob("tools/*"),
-    entry_points=open(os.path.join(curdir, "aux/entry_points.txt")).read(),
-)
+      version=VERSION,
+      description="Generic access to configuration files in some formats",
+      long_description=open("README.rst").read(),
+      author="Satoru SATOH",
+      author_email="ssato@redhat.com",
+      license="MIT",
+      url="https://github.com/ssato/python-anyconfig",
+      classifiers=_CLASSIFIERS,
+      tests_require=['nose>=1.0', 'pep8', 'pylint'],
+      packages=find_packages(),
+      include_package_data=True,
+      cmdclass={
+          "srpm": SrpmCommand,
+          "rpm":  RpmCommand,
+      },
+      entry_points=open(os.path.join(curdir, "aux/entry_points.txt")).read(),
+      )
 
 # vim:sw=4:ts=4:et:

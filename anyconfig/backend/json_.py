@@ -5,6 +5,7 @@
 # Ref. python -c "import json; help(json)"
 #
 import anyconfig.backend.base as Base
+import anyconfig.compat as C
 import sys
 
 
@@ -22,16 +23,26 @@ def dict_to_container(json_obj_dict):
     return JsonConfigParser.container().create(json_obj_dict)
 
 
+_LOAD_OPTS = ["cls", "object_hook", "parse_float", "parse_int",
+              "parse_constant", "object_pairs_hook"]
+
+_DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
+              "cls", "indent", "separators", "default", "sort_keys"]
+
+# It seems that 'encoding' argument is not allowed in json.load[s] and
+# json.dump[s] in JSON module in python 3.x.
+if not C.IS_PYTHON_3:
+    _LOAD_OPTS.append("encoding")
+    _DUMP_OPTS.append("encoding")
+
+
 class JsonConfigParser(Base.ConfigParser):
     _type = "json"
     _extensions = ["json", "jsn", "js"]
     _supported = SUPPORTED
 
-    _load_opts = ["encoding", "cls", "object_hook", "parse_float", "parse_int",
-                  "parse_constant", "object_pairs_hook"]
-    _dump_opts = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
-                  "cls", "indent", "separators", "encoding", "default",
-                  "sort_keys"]
+    _load_opts = _LOAD_OPTS
+    _dump_opts = _DUMP_OPTS
 
     @classmethod
     def loads(cls, config_content, **kwargs):

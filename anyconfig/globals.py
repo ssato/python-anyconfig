@@ -8,7 +8,7 @@ import logging
 
 
 AUTHOR = 'Satoru SATOH <ssat@redhat.com>'
-VERSION = "0.0.3.11"
+VERSION = "0.0.3.12"
 
 _LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
 

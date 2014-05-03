@@ -4,6 +4,7 @@
 #
 import anyconfig.api as A
 import anyconfig.compat as C
+import anyconfig.globals as G
 
 import codecs
 import locale
@@ -80,7 +81,7 @@ If this option is not set, original parser is used: 'K:V' will become {K: V},
 become {K_0: V_0, K_1: V_1} (where the tyep of K is str, type of V is one of
 Int, str, etc.""" % ctypes_s
 
-    parser = optparse.OptionParser(usage)
+    parser = optparse.OptionParser(usage, version="%%prog %s" % G.VERSION)
     parser.set_defaults(**defaults)
 
     parser.add_option("-L", "--list", help="List supported config types",

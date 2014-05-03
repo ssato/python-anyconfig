@@ -118,8 +118,8 @@ def main(argv=sys.argv):
 
     if not args:
         if options.list:
-            sys.stdout.write("Supported config types: "
-                             ", ".join(A.list_types()) + "\n")
+            tlist = ", ".join(A.list_types()) + "\n"
+            sys.stdout.write("Supported config types: " + tlist)
             sys.exit(0)
         else:
             parser.print_usage()

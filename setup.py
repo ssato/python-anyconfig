@@ -2,8 +2,10 @@ from setuptools import setup, Command, find_packages
 
 import datetime
 import glob
+import os.path
 import os
 import sys
+
 
 curdir = os.getcwd()
 sys.path.append(curdir)
@@ -18,7 +20,12 @@ if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
     import datetime
     VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
-data_files = []
+
+def list_filepaths(tdir):
+    return [f for f in glob.glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
+
+
+data_files = [("share/man/man1", list_filepaths("docs/"))]
 
 
 class SrpmCommand(Command):
@@ -102,6 +109,7 @@ setup(name=PACKAGE,
           "rpm":  RpmCommand,
       },
       entry_points=open(os.path.join(curdir, "aux/entry_points.txt")).read(),
+      data_files=data_files,
       )
 
 # vim:sw=4:ts=4:et:

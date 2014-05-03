@@ -97,6 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.rst
 %{python_sitelib}/*
 %{_bindir}/anyconfig_cli
+%{_mandir}/*/*
 
 %if 0%{?with_python3}
 %files -n python3-%{pkgname}
@@ -104,6 +105,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.rst
 %{python3_sitelib}/*
 %attr(755,root,root) %{_bindir}/py3anyconfig_cli
+%{_mandir}/*/*
 %endif
 
 

@@ -72,6 +72,8 @@ def single_load(config_path, forced_type=None, **kwargs):
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
+    config_path = U.ensure_expandusr(config_path)
+
     cparser = find_loader(config_path, forced_type)
     if cparser is None:
         return None

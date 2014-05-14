@@ -94,4 +94,11 @@ def concat(xss):
     """
     return list(CHAIN_FROM_ITR(xs for xs in xss))
 
+
+def ensure_expandusr(path):
+    """
+    Ensure paths contain ~[user]/ expanded.
+    """
+    return os.path.expanduser(path) if '~' in path else path
+
 # vim:sw=4:ts=4:et:

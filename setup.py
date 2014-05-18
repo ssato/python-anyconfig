@@ -1,6 +1,5 @@
 from setuptools import setup, Command, find_packages
 
-import datetime
 import glob
 import os.path
 import os
@@ -101,7 +100,7 @@ setup(name=PACKAGE,
       license="MIT",
       url="https://github.com/ssato/python-anyconfig",
       classifiers=_CLASSIFIERS,
-      tests_require=['nose>=1.0', 'pep8', 'pylint'],
+      tests_require=['nose>=1.0', 'pep8', 'pylint', 'flake8'],
       packages=find_packages(),
       include_package_data=True,
       cmdclass={

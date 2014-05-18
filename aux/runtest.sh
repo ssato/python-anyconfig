@@ -13,12 +13,14 @@ function _pylint () {
 }
 
 which pep8 2>&1 > /dev/null && check_with_pep8=1 || check_with_pep8=0
+which flake8 2>&1 > /dev/null && { check_with_pep8=0; check_with_flake8=1;} || check_with_flake8=0
 which pylint 2>&1 > /dev/null && check_with_pylint=1 || check_with_pylint=0
 
 if test $# -gt 0; then
     if test $check_with_pep8 = 1; then
         for x in $@; do pep8 ${x%%:*}; done
     fi
+    test $check_with_flake8 = 1 && flake8 $@
     if test $check_with_pylint = 1; then
         for x in $@; do _pylint ${x%%:*}; done
     fi
@@ -40,6 +42,7 @@ else
             break
         fi
     done
+    test $check_with_flake8 = 1 && flake8 ${topdir}
 fi
 
 # vim:sw=4:ts=4:et:

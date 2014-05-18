@@ -5,7 +5,6 @@
 from itertools import groupby
 from operator import methodcaller
 
-import anyconfig.backend.base as Base
 import anyconfig.backend.ini_ as BINI
 import anyconfig.backend.json_ as BJSON
 import anyconfig.backend.xml_ as BXML

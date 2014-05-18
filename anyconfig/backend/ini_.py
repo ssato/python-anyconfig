@@ -2,13 +2,12 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-from anyconfig.compat import StringIO, configparser, iteritems
+from anyconfig.compat import configparser, iteritems
 from anyconfig.globals import LOGGER as logging
 
 import anyconfig.backend.base as Base
 import anyconfig.parser as P
 
-import os.path
 import sys
 
 

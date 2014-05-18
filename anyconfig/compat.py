@@ -9,18 +9,18 @@ import sys
 IS_PYTHON_3 = sys.version_info[0] == 3
 
 if IS_PYTHON_3:
-    import configparser
-    from io import StringIO
+    import configparser  # flake8: noqa
+    from io import StringIO  # flake8: noqa
 
     def iteritems(dic):
         """wrapper for dict.items()"""
         return dic.items()
 else:
-    import ConfigParser as configparser
+    import ConfigParser as configparser  # flake8: noqa
     try:
-        from cStringIO import StringIO
+        from cStringIO import StringIO  # flake8: noqa
     except ImportError:
-        from StringIO import StringIO
+        from StringIO import StringIO  # flake8: noqa
 
     def iteritems(dic):
         """wrapper for dict.iteritems()"""

@@ -2,7 +2,6 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-from anyconfig.compat import StringIO
 from anyconfig.globals import LOGGER as logging
 
 import anyconfig.backend.base as Base

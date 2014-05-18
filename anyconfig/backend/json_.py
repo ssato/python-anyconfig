@@ -6,7 +6,6 @@
 #
 import anyconfig.backend.base as Base
 import anyconfig.compat as C
-import sys
 
 
 SUPPORTED = True

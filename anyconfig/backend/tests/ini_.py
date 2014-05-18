@@ -66,7 +66,7 @@ class Test_IniConfigParser(unittest.TestCase):
     def test_40_dump(self):
 
         c = I.IniConfigParser.loads(CONF_0)
-        d = I.IniConfigParser.dump(c, self.config_path)
+        I.IniConfigParser.dump(c, self.config_path)
         c2 = I.IniConfigParser.load(self.config_path)
 
         self.assertEquals(c2["DEFAULT"]['a'], c["DEFAULT"]['a'], str(c2))

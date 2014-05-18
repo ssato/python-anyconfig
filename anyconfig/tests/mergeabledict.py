@@ -2,9 +2,6 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 #
 import anyconfig.mergeabledict as T
-import anyconfig.tests.common as C
-
-import os.path
 import unittest
 
 

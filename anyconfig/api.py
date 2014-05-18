@@ -12,15 +12,16 @@ import anyconfig.parser as P
 import anyconfig.utils as U
 
 # pylint: disable=W0611
+# pylint: disable=W0611
 # Import some global constants will be re-exported:
 from anyconfig.mergeabledict import MS_REPLACE, MS_NO_REPLACE, \
-    MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES
+    MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES  # flake8: noqa
 # pylint: enable=W0611
 
 # pylint: disable=C0103
 # Re-export:
-list_types = Backends.list_types
-getLogger = G.get_logger
+list_types = Backends.list_types  # flake8: noqa
+getLogger = G.get_logger  # flake8: noqa
 
 # aliases:
 container = M.MergeableDict

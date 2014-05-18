@@ -3,11 +3,6 @@
 # License: MIT
 #
 import anyconfig.parser as P
-
-import os
-import os.path
-import sys
-import tempfile
 import unittest
 
 
@@ -44,6 +39,5 @@ class Test_parser(unittest.TestCase):
 
     def test_03_parse(self):
         pass
-
 
 # vim:sw=4:ts=4:et:

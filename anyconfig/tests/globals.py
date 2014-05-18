@@ -3,12 +3,12 @@
 # License: MIT
 #
 import anyconfig.globals as TT
-import anyconfig.tests.common as C
-
 import unittest
 
 
 class Test_00(unittest.TestCase):
-    pass
+
+    def test_logger_instance(self):
+        self.assertTrue(isinstance(TT.LOGGER, TT.logging.Logger))
 
 # vim:sw=4:ts=4:et:

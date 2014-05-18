@@ -128,11 +128,11 @@ class Test_20_effectful_functions(unittest.TestCase):
 
         a3 = A.multi_load(os.path.join(self.workdir, "*.json"))
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      b["a"])
-        self.assertEquals(a1["b"]["b"], b["b"]["b"])
-        self.assertEquals(a1["b"]["c"], a["b"]["c"])
-        self.assertEquals(a1["b"]["d"], b["b"]["d"])
+        self.assertEquals(a3["name"],   a["name"])
+        self.assertEquals(a3["a"],      b["a"])
+        self.assertEquals(a3["b"]["b"], b["b"]["b"])
+        self.assertEquals(a3["b"]["c"], a["b"]["c"])
+        self.assertEquals(a3["b"]["d"], b["b"]["d"])
 
         a4 = A.multi_load([a_path, b_path], merge=A.MS_REPLACE)
 

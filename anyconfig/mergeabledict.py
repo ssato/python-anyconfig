@@ -4,9 +4,11 @@
 #
 """Merge-able dict.
 """
-from anyconfig.compat import iteritems
+from __future__ import absolute_import
 
-import anyconfig.utils as U
+from .compat import iteritems
+from . import utils as U
+
 import copy
 
 # TODO: Keep items' order:

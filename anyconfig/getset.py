@@ -44,64 +44,64 @@ def __str_path(keys):
     return '.'.join(keys)
 
 
-def __get(dic, path_keys=[], traversed_keys=[]):
+def _get_recur(dic, path_keys=[], traversed=[]):
     """
     :param dic: Dict or dict-like object
     :param path_keys: List of path keys
-    :param traversed_keys: Traversed keys
+    :param traversed: Traversed keys
 
     :return: (result, message) where result is a value or a dict/dict-like
         object pointed by `path_keys` or None means no result gotten or any
         error indicated by the message occured.
 
     >>> d = dict(a=dict(b=dict(c=0, d=1)))
-    >>> __get(d) == (d, '')
+    >>> _get_recur(d) == (d, '')
     True
-    >>> __get(d, ['a', 'b', 'c'])[0]
+    >>> _get_recur(d, ['a', 'b', 'c'])[0]
     0
-    >>> __get(d, ['a', 'b', 'd'])[0]
+    >>> _get_recur(d, ['a', 'b', 'd'])[0]
     1
-    >>> __get(d, ['a', 'b'])[0]
+    >>> _get_recur(d, ['a', 'b'])[0]
     {'c': 0, 'd': 1}
-    >>> __get(d, ['a', 'b', 'key_not_exist'])[0] is None
+    >>> _get_recur(d, ['a', 'b', 'key_not_exist'])[0] is None
     True
-    >>> __get('a str', ['a'])[0] is None
+    >>> _get_recur('a str', ['a'])[0] is None
     True
     """
     for key in path_keys:
         try:
             if key in dic:
-                return __get(dic[key], path_keys[1:], traversed_keys + [key])
+                return _get_recur(dic[key], path_keys[1:], traversed + [key])
             else:
-                path = __str_path(traversed_keys + [key])
+                path = __str_path(traversed + [key])
                 return (None, "Not found at: " + path)
 
         except TypeError as e:
-            path = __str_path(traversed_keys + [key])
+            path = __str_path(traversed + [key])
             return (None, "Not a dict at: {}, err={}".format(path, str(e)))
 
     return (dic, '')
 
 
-def __get_2(dic, path_keys=[], traversed_keys=[]):
+def _get_reduce(dic, path_keys=[]):
     """
-    Non recursive variant of __get.
+    Non recursive variant of _get_recur.
 
     :param dic: Dict or dict-like object
     :param path_keys: List of path keys
 
     >>> d = dict(a=dict(b=dict(c=0, d=1)))
-    >>> __get_2(d)[0] == d
+    >>> _get_reduce(d)[0] == d
     True
-    >>> __get_2(d, ['a', 'b', 'c'])[0]
+    >>> _get_reduce(d, ['a', 'b', 'c'])[0]
     0
-    >>> __get_2(d, ['a', 'b', 'd'])[0]
+    >>> _get_reduce(d, ['a', 'b', 'd'])[0]
     1
-    >>> __get_2(d, ['a', 'b'])[0]
+    >>> _get_reduce(d, ['a', 'b'])[0]
     {'c': 0, 'd': 1}
-    >>> __get_2(d, ['a', 'b', 'key_not_exist'])[0] is None
+    >>> _get_reduce(d, ['a', 'b', 'key_not_exist'])[0] is None
     True
-    >>> __get_2('a str', ['a'])[0] is None
+    >>> _get_reduce('a str', ['a'])[0] is None
     True
     """
     try:
@@ -110,12 +110,12 @@ def __get_2(dic, path_keys=[], traversed_keys=[]):
         return (None, str(e))
 
 
-def get(dic, path, sep='.'):
+def get(dic, path, sep='.', _get=_get_reduce):
     """
     :param dic: A dict or dict-like object to get result
     :param path: Path expression to point object wanted
     """
-    (res, msg) = __get(dic, __parse_path_exp(path, (sep, )))
+    (res, msg) = _get(dic, __parse_path_exp(path, (sep, )))
     return res
 
 # vim:sw=4:ts=4:et:

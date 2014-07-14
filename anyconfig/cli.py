@@ -5,6 +5,7 @@
 import anyconfig.api as A
 import anyconfig.compat as C
 import anyconfig.globals as G
+import anyconfig.getset as GS
 
 import codecs
 import locale
@@ -81,6 +82,10 @@ If this option is not set, original parser is used: 'K:V' will become {K: V},
 become {K_0: V_0, K_1: V_1} (where the tyep of K is str, type of V is one of
 Int, str, etc.""" % ctypes_s
 
+    get_help = ("Specify key path to get part of config, for example, if a "
+                "config {'a': {'b': {'c': 0, 'd': 1}}} '--get a.b.c' gives "
+                "0 and '--get a.b' gives {'c': 0, 'd': 1}.")
+
     parser = optparse.OptionParser(usage, version="%%prog %s" % G.VERSION)
     parser.set_defaults(**defaults)
 
@@ -95,6 +100,8 @@ Int, str, etc.""" % ctypes_s
 
     parser.add_option("-A", "--args", help="Argument configs to override")
     parser.add_option("", "--atype", choices=ctypes, help=af_help)
+
+    parser.add_option("", "--get", help=get_help)
 
     parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
                       const=0, help="Silent or quiet mode")
@@ -130,6 +137,9 @@ def main(argv=sys.argv):
     if options.args:
         diff = A.loads(options.args, options.atype)
         data.update(diff, options.merge)
+
+    if options.get:
+        data = GS.get(data, options.get, sep='.')
 
     if options.output:
         cparser = A.find_loader(options.output, options.otype)

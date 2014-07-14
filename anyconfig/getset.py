@@ -3,7 +3,6 @@
 # License: MIT
 #
 """Getter and setters of config objects loaded"""
-from .globals import LOGGER as logging
 import functools
 import operator
 
@@ -78,9 +77,8 @@ def __get(dic, path_keys=[], traversed_keys=[]):
                 return (None, "Not found at: " + path)
 
         except TypeError as e:
-            logging.error(str(e))
             path = __str_path(traversed_keys + [key])
-            return (None, "Not a dict at: " + path)
+            return (None, "Not a dict at: {}, err={}".format(path, str(e)))
 
     return (dic, '')
 
@@ -93,24 +91,23 @@ def __get_2(dic, path_keys=[], traversed_keys=[]):
     :param path_keys: List of path keys
 
     >>> d = dict(a=dict(b=dict(c=0, d=1)))
-    >>> __get_2(d) == d
+    >>> __get_2(d)[0] == d
     True
-    >>> __get_2(d, ['a', 'b', 'c'])
+    >>> __get_2(d, ['a', 'b', 'c'])[0]
     0
-    >>> __get_2(d, ['a', 'b', 'd'])
+    >>> __get_2(d, ['a', 'b', 'd'])[0]
     1
-    >>> __get_2(d, ['a', 'b'])
+    >>> __get_2(d, ['a', 'b'])[0]
     {'c': 0, 'd': 1}
-    >>> __get_2(d, ['a', 'b', 'key_not_exist']) is None
+    >>> __get_2(d, ['a', 'b', 'key_not_exist'])[0] is None
     True
-    >>> __get_2('a str', ['a']) is None
+    >>> __get_2('a str', ['a'])[0] is None
     True
     """
     try:
-        return functools.reduce(operator.getitem, path_keys, dic)
+        return (functools.reduce(operator.getitem, path_keys, dic), '')
     except (TypeError, KeyError) as e:
-        logging.error(str(e))
-        return None
+        return (None, str(e))
 
 
 def get(dic, path, sep='.'):

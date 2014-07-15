@@ -8,6 +8,9 @@ from __future__ import absolute_import
 
 from .compat import iteritems
 from . import utils as U
+# pylint: disable=C0103
+from .getset import get  # flake8: noqa
+# pylint: enable=C0103
 
 import copy
 

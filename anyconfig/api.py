@@ -25,7 +25,7 @@ getLogger = G.get_logger  # flake8: noqa
 # aliases:
 container = M.MergeableDict
 logging = G.LOGGER
-# pylint: enable=W0611
+# pylint: enable=C0103
 
 
 def set_loglevel(level):

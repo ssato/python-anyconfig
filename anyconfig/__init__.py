@@ -128,7 +128,7 @@ the followings:
 """
 from .globals import AUTHOR, VERSION
 from .api import single_load, multi_load, load, loads, dump, dumps, \
-    list_types, find_loader, container, logging, set_loglevel, \
+    list_types, find_loader, container, logging, set_loglevel, get, \
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 
 __author__ = AUTHOR
@@ -137,7 +137,7 @@ __version__ = VERSION
 __all__ = [
     "single_load", "multi_load", "load", "loads", "dump", "dumps",
     "list_types", "find_loader", "container", "logging", "set_loglevel",
-    "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
+    "get", "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
 ]
 
 # vim:sw=4:ts=4:et:

@@ -5,6 +5,7 @@
 """anyconfig globals.
 """
 import logging
+import os
 
 
 AUTHOR = 'Satoru SATOH <ssat@redhat.com>'
@@ -18,6 +19,9 @@ def get_logger(name="anyconfig", log_format=_LOGGING_FORMAT,
     """
     Initialize custom logger.
     """
+    if os.environ.get("ANYCONFIG_DEBUG", False):
+        level = logging.DEBUG
+
     logging.basicConfig(level=level, format=log_format)
     logger = logging.getLogger(name)
 

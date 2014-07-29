@@ -2,6 +2,22 @@
 python-anyconfig
 =================
 
+.. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
+   :target: https://travis-ci.org/ssato/python-anyconfig
+   :alt: Test status
+
+.. image:: https://pypip.in/download/anyconfig/badge.svg
+   :target: https://pypi.python.org/pypi/anyconfig/
+   :alt: Downloads
+
+.. image:: https://pypip.in/version/anyconfig/badge.svg
+   :target: https://pypi.python.org/pypi/anyconfig/
+   :alt: Latest Version
+
+.. image:: https://pypip.in/py_versions/anyconfig/badge.svg
+   :target: https://pypi.python.org/pypi/anyconfig/
+   :alt: Supported Python versions
+
 This is a python library called 'anyconfig' [#]_  provides generic access to
 configuration files in any formats (to be in the future) with configuration
 merge / cascade / overlay support.
@@ -272,13 +288,6 @@ How to test
 -------------
 
 Try to run './aux/runtest.sh [path_to_python_code]'.
-
-Test status
--------------
-
-.. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
-   :target: https://travis-ci.org/ssato/python-anyconfig
-   :alt: Test status
 
 TODO
 ======

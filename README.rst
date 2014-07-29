@@ -6,10 +6,6 @@ python-anyconfig
    :target: https://travis-ci.org/ssato/python-anyconfig
    :alt: Test status
 
-.. image:: https://pypip.in/download/anyconfig/badge.svg
-   :target: https://pypi.python.org/pypi/anyconfig/
-   :alt: Downloads
-
 .. image:: https://pypip.in/version/anyconfig/badge.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: Latest Version

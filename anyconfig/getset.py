@@ -78,7 +78,7 @@ def _get_recur(dic, path_keys=[], traversed=[]):
 
         except TypeError as e:
             path = __str_path(traversed + [key])
-            return (None, "Not a dict at: {}, err={}".format(path, str(e)))
+            return (None, "Not a dict at: {0}, err={1}".format(path, str(e)))
 
     return (dic, '')
 

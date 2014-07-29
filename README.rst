@@ -237,6 +237,9 @@ It can process various config files and output a merged config file::
                           'K_0:V_0;K_1:V_1' will become {K_0: V_0, K_1: V_1}
                           (where the tyep of K is str, type of V is one of Int,
                           str, etc.
+    --get=GET             Specify key path to get part of config, for example,
+                          if a config {'a': {'b': {'c': 0, 'd': 1}}} '--get
+                          a.b.c' gives 0 and '--get a.b' gives {'c': 0, 'd': 1}.
     -s, --silent          Silent or quiet mode
     -q, --quiet           Same as --silent option
     -v, --verbose         Verbose mode

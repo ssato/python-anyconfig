@@ -35,13 +35,12 @@ else
                 echo "[Info] Check $f..."
                 if test $check_with_pep8 = 1; then pep8 $f; fi
                 if test $check_with_pylint = 1; then _pylint $f; fi
-                PYTHONPATH=$topdir nosetests -c $curdir/nose.cfg \
-                        ${coverage_opts} $f
             done
 
             break
         fi
     done
+    PYTHONPATH=$topdir nosetests -c $curdir/nose.cfg ${coverage_opts} --all-modules
     test $check_with_flake8 = 1 && flake8 ${topdir}
 fi
 

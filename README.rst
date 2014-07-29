@@ -6,11 +6,11 @@ python-anyconfig
    :target: https://travis-ci.org/ssato/python-anyconfig
    :alt: Test status
 
-.. image:: https://pypip.in/version/anyconfig/badge.svg
+.. .. image:: https://pypip.in/version/anyconfig/badge.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: Latest Version
 
-.. image:: https://pypip.in/py_versions/anyconfig/badge.svg
+.. .. image:: https://pypip.in/py_versions/anyconfig/badge.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: Supported Python versions
 

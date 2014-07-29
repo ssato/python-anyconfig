@@ -112,6 +112,11 @@ rm -rf $RPM_BUILD_ROOT
 * Sun May 18 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.12.999-1
 - Enable flake8 (pyFlake + pep8) testing
 - Fix some minor errors like F401 (import-but-not-used eror) found by flake8
+- Introduce an environment variable ANYCONFIG_DEBUG to control module's log
+  level from outside world
+- Add anyconfig.getset module and --get option to anyconfig cli frontend to get
+  (extract) partial configuration[s] from loaded config files
+- Add python 3.4 support and also make it tested in CI process
 
 * Sat May  3 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.12-1
 - Support safe_{load,dump} in YAML backend by safe=True argument

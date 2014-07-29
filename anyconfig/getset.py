@@ -61,8 +61,8 @@ def _get_recur(dic, path_keys=[], traversed=[]):
     0
     >>> _get_recur(d, ['a', 'b', 'd'])[0]
     1
-    >>> _get_recur(d, ['a', 'b'])[0]
-    {'c': 0, 'd': 1}
+    >>> _get_recur(d, ['a', 'b'])[0] == {'c': 0, 'd': 1}
+    True
     >>> _get_recur(d, ['a', 'b', 'key_not_exist'])[0] is None
     True
     >>> _get_recur('a str', ['a'])[0] is None
@@ -97,8 +97,8 @@ def _get_reduce(dic, path_keys=[]):
     0
     >>> _get_reduce(d, ['a', 'b', 'd'])[0]
     1
-    >>> _get_reduce(d, ['a', 'b'])[0]
-    {'c': 0, 'd': 1}
+    >>> _get_reduce(d, ['a', 'b'])[0] == {'c': 0, 'd': 1}
+    True
     >>> _get_reduce(d, ['a', 'b', 'key_not_exist'])[0] is None
     True
     >>> _get_reduce('a str', ['a'])[0] is None

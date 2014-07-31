@@ -26,4 +26,6 @@ script:
     - "./aux/runtest.sh"
 notifications:
     email:
+        recipients:
+            - satoru.satoh+github@gmail.com
         on_failure: always

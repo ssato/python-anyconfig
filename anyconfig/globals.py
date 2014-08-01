@@ -9,7 +9,7 @@ import os
 
 
 AUTHOR = 'Satoru SATOH <ssat@redhat.com>'
-VERSION = "0.0.3.12"
+VERSION = "0.0.3.13"
 
 _LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
 

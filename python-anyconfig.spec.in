@@ -109,7 +109,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sun May 18 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.12.999-1
+* Fri Aug  1 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.13-1
 - Enable flake8 (pyFlake + pep8) testing
 - Fix some minor errors like F401 (import-but-not-used eror) found by flake8
 - Introduce an environment variable ANYCONFIG_DEBUG to control module's log

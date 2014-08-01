@@ -21,7 +21,7 @@ python:
 ##        - python: 3.2
 ##          env: LANG="en_US.utf-8"
 install:
-    - if [[ $TRAVIS_PYTHON_VERSION < '2.6' ]]; then pip install --use-mirrors simplejson PyYAML pep8 pylint flake8; else pip install --use-mirrors PyYAML pep8 pylint flake8; fi
+    - if [[ $TRAVIS_PYTHON_VERSION < '2.6' ]]; then pip install -r aux/test_requirements-py-2.6.txt; else pip install -r aux/test_requirements.txt; fi
 script:
     - "./aux/runtest.sh"
 notifications:

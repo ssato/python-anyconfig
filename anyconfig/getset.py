@@ -110,12 +110,28 @@ def _get_reduce(dic, path_keys=[]):
         return (None, str(e))
 
 
-def get(dic, path, sep='.', _get=_get_reduce):
+def get(dic, path, seps=('/', '.'), _get=_get_reduce):
     """
     :param dic: A dict or dict-like object to get result
     :param path: Path expression to point object wanted
+    :param seps: Separator char candidates.
+    :param _get: getter implementation to use
+
+    >>> d = dict(a=dict(b=dict(c=0, d=1)))
+    >>> get(d, '/') == d
+    True
+    >>> get(d, "/a/b/c")
+    0
+    >>> get(d, "a.b.d")
+    1
+    >>> get(d, "a.b") == {'c': 0, 'd': 1}
+    True
+    >>> get(d, "a.b.key_not_exist") is None
+    True
+    >>> get('a str', 'a') is None
+    True
     """
-    (res, msg) = _get(dic, __parse_path_exp(path, (sep, )))
+    (res, msg) = _get(dic, __parse_path_exp(path, seps))
     return res
 
 # vim:sw=4:ts=4:et:

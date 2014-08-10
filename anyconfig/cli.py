@@ -140,7 +140,7 @@ def main(argv=sys.argv):
         data.update(diff, options.merge)
 
     if options.get:
-        data = GS.get(data, options.get, sep='.')
+        data = GS.get(data, options.get, seps=GS.SEPS)
 
     if options.output:
         cparser = A.find_loader(options.output, options.otype)

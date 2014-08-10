@@ -7,7 +7,10 @@ import functools
 import operator
 
 
-def __parse_path_exp(path, seps=('/', '.')):
+SEPS = ('/', '.')
+
+
+def __parse_path_exp(path, seps=SEPS):
     """
     Parse path expression and return list of keys.
 
@@ -110,7 +113,7 @@ def _get_reduce(dic, path_keys=[]):
         return (None, str(e))
 
 
-def get(dic, path, seps=('/', '.'), _get=_get_reduce):
+def get(dic, path, seps=SEPS, _get=_get_reduce):
     """
     :param dic: A dict or dict-like object to get result
     :param path: Path expression to point object wanted

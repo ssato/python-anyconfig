@@ -26,56 +26,34 @@ MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 
 
-def _get_reduce(dic, path_keys=[]):
+def get(dic, path, seps=P.PATH_SEPS):
     """
-    Non recursive variant of _get_recur.
+    getter for nested dicts.
 
     :param dic: Dict or dict-like object
-    :param path_keys: List of path keys
+    :param path: Path expression to point object wanted
+    :param seps: Separator char candidates.
 
     >>> d = dict(a=dict(b=dict(c=0, d=1)))
-    >>> _get_reduce(d)[0] == d
+    >>> get(d, '/') == (d, '')
     True
-    >>> _get_reduce(d, ['a', 'b', 'c'])[0]
-    0
-    >>> _get_reduce(d, ['a', 'b', 'd'])[0]
-    1
-    >>> _get_reduce(d, ['a', 'b'])[0] == {'c': 0, 'd': 1}
+    >>> get(d, "/a/b/c")
+    (0, '')
+    >>> get(d, "a.b.d")
+    (1, '')
+    >>> get(d, "a.b") == ({'c': 0, 'd': 1}, '')
     True
-    >>> _get_reduce(d, ['a', 'b', 'key_not_exist'])[0] is None
+    >>> get(d, "a.b.key_not_exist")[0] is None
     True
-    >>> _get_reduce('a str', ['a'])[0] is None
+    >>> get('a str', 'a')[0] is None
     True
     """
     try:
-        return (functools.reduce(operator.getitem, path_keys, dic), '')
+        return (functools.reduce(operator.getitem, P.parse_path(path, seps),
+                                 dic),
+                '')
     except (TypeError, KeyError) as e:
         return (None, str(e))
-
-
-def get(dic, path, seps=P.PATH_SEPS, _get=_get_reduce):
-    """
-    :param dic: A dict or dict-like object to get result
-    :param path: Path expression to point object wanted
-    :param seps: Separator char candidates.
-    :param _get: getter implementation to use
-
-    >>> d = dict(a=dict(b=dict(c=0, d=1)))
-    >>> get(d, '/') == d
-    True
-    >>> get(d, "/a/b/c")
-    0
-    >>> get(d, "a.b.d")
-    1
-    >>> get(d, "a.b") == {'c': 0, 'd': 1}
-    True
-    >>> get(d, "a.b.key_not_exist") is None
-    True
-    >>> get('a str', 'a') is None
-    True
-    """
-    (res, msg) = _get(dic, P.parse_path(path, seps))
-    return res
 
 
 def _mk_nested_dic(path, val, seps=P.PATH_SEPS):

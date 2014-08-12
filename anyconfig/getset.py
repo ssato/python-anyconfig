@@ -137,4 +137,24 @@ def get(dic, path, seps=SEPS, _get=_get_reduce):
     (res, msg) = _get(dic, __parse_path_exp(path, seps))
     return res
 
+
+def _mk_nested_dic(path, val, seps=SEPS):
+    """
+    Make a nested dict iteratively.
+
+    :param path: Path expression to make a nested dict
+    :param val: Value to set
+    :param seps: Separator char candidates
+
+    >>> _mk_nested_dic("a.b.c", 1)
+    {'a': {'b': {'c': 1}}}
+    >>> _mk_nested_dic("/a/b/c", 1)
+    {'a': {'b': {'c': 1}}}
+    """
+    ret = None
+    for key in reversed(__parse_path_exp(path, seps)):
+        ret = {key: val if ret is None else ret.copy()}
+
+    return ret
+
 # vim:sw=4:ts=4:et:

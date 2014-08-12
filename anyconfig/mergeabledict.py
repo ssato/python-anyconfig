@@ -76,6 +76,24 @@ def _mk_nested_dic(path, val, seps=P.PATH_SEPS):
     return ret
 
 
+def set_(dic, path, val, seps=P.PATH_SEPS, strategy=None):
+    """
+    setter for nested dicts.
+
+    :param dic: MergeableDict instance or other dict-like objects support
+        recursive merge operations.
+    :param path: Path expression to point object wanted
+    :param seps: Separator char candidates.
+
+    >>> d = MergeableDict.create(dict(a=1, b=dict(c=2, )))
+    >>> set_(d, 'a.b.d', 3)
+    >>> d['a']['b']['d']
+    3
+    """
+    diff = _mk_nested_dic(path, val, seps)
+    dic.update(diff, strategy)
+
+
 def is_mergeabledict_or_dict(obj):
     """
     :param obj: Any object may be an instance of MergeableDict or dict.

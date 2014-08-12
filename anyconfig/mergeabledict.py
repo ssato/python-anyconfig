@@ -26,54 +26,6 @@ MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 
 
-def __str_path(keys):
-    """
-
-    >>> __str_path(['a', 'b', 'c', 'd'])
-    'a.b.c.d'
-    """
-    return '.'.join(keys)
-
-
-def _get_recur(dic, path_keys=[], traversed=[]):
-    """
-    :param dic: Dict or dict-like object
-    :param path_keys: List of path keys
-    :param traversed: Traversed keys
-
-    :return: (result, message) where result is a value or a dict/dict-like
-        object pointed by `path_keys` or None means no result gotten or any
-        error indicated by the message occured.
-
-    >>> d = dict(a=dict(b=dict(c=0, d=1)))
-    >>> _get_recur(d) == (d, '')
-    True
-    >>> _get_recur(d, ['a', 'b', 'c'])[0]
-    0
-    >>> _get_recur(d, ['a', 'b', 'd'])[0]
-    1
-    >>> _get_recur(d, ['a', 'b'])[0] == {'c': 0, 'd': 1}
-    True
-    >>> _get_recur(d, ['a', 'b', 'key_not_exist'])[0] is None
-    True
-    >>> _get_recur('a str', ['a'])[0] is None
-    True
-    """
-    for key in path_keys:
-        try:
-            if key in dic:
-                return _get_recur(dic[key], path_keys[1:], traversed + [key])
-            else:
-                path = __str_path(traversed + [key])
-                return (None, "Not found at: " + path)
-
-        except TypeError as e:
-            path = __str_path(traversed + [key])
-            return (None, "Not a dict at: {0}, err={1}".format(path, str(e)))
-
-    return (dic, '')
-
-
 def _get_reduce(dic, path_keys=[]):
     """
     Non recursive variant of _get_recur.

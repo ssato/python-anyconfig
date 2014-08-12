@@ -10,6 +10,8 @@ INT_PATTERN = re.compile(r"^(\d|([1-9]\d+))$")
 BOOL_PATTERN = re.compile(r"^(true|false)$", re.I)
 STR_PATTERN = re.compile(r"^['\"](.*)['\"]$")
 
+PATH_SEPS = ('/', '.')
+
 
 def parse_single(s):
     """
@@ -142,5 +144,32 @@ def parse(s, lsep=",", avsep=":", vssep=",", avssep=";"):
     else:
         return parse_single(s)
 
+
+def parse_path(path, seps=PATH_SEPS):
+    """
+    Parse path expression and return list of path items.
+
+    :param path: Path expression may contain separator chars.
+    :param seps: Separator char candidates.
+
+    :return: A list of keys to fetch object[s] later.
+
+    >>> parse_path('')
+    []
+    >>> parse_path('/a/b/c/d')
+    ['a', 'b', 'c', 'd']
+    >>> parse_path('a.b.c.d')
+    ['a', 'b', 'c', 'd']
+    >>> parse_path('abc')
+    ['abc']
+    """
+    if not path:
+        return []
+
+    for sep in seps:
+        if sep in path:
+            return [x for x in path.split(sep) if x]
+
+    return [path]
 
 # vim:sw=4:ts=4:et:

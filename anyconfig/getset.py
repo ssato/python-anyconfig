@@ -3,39 +3,11 @@
 # License: MIT
 #
 """Getter and setters of config objects loaded"""
+from __future__ import absolute_import
+from . import parser as P
+
 import functools
 import operator
-
-
-SEPS = ('/', '.')
-
-
-def __parse_path_exp(path, seps=SEPS):
-    """
-    Parse path expression and return list of keys.
-
-    :param path: Path expression may contain separator chars.
-    :param seps: Separator char candidates.
-
-    :return: A list of keys to fetch object[s] later.
-
-    >>> __parse_path_exp('')
-    []
-    >>> __parse_path_exp('/a/b/c/d')
-    ['a', 'b', 'c', 'd']
-    >>> __parse_path_exp('a.b.c.d')
-    ['a', 'b', 'c', 'd']
-    >>> __parse_path_exp('abc')
-    ['abc']
-    """
-    if not path:
-        return []
-
-    for sep in seps:
-        if sep in path:
-            return [x for x in path.split(sep) if x]
-
-    return [path]
 
 
 def __str_path(keys):
@@ -113,7 +85,7 @@ def _get_reduce(dic, path_keys=[]):
         return (None, str(e))
 
 
-def get(dic, path, seps=SEPS, _get=_get_reduce):
+def get(dic, path, seps=P.PATH_SEPS, _get=_get_reduce):
     """
     :param dic: A dict or dict-like object to get result
     :param path: Path expression to point object wanted
@@ -134,11 +106,11 @@ def get(dic, path, seps=SEPS, _get=_get_reduce):
     >>> get('a str', 'a') is None
     True
     """
-    (res, msg) = _get(dic, __parse_path_exp(path, seps))
+    (res, msg) = _get(dic, P.parse_path(path, seps))
     return res
 
 
-def _mk_nested_dic(path, val, seps=SEPS):
+def _mk_nested_dic(path, val, seps=P.PATH_SEPS):
     """
     Make a nested dict iteratively.
 
@@ -152,7 +124,7 @@ def _mk_nested_dic(path, val, seps=SEPS):
     {'a': {'b': {'c': 1}}}
     """
     ret = None
-    for key in reversed(__parse_path_exp(path, seps)):
+    for key in reversed(P.parse_path(path, seps)):
         ret = {key: val if ret is None else ret.copy()}
 
     return ret

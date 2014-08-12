@@ -139,7 +139,9 @@ def main(argv=sys.argv):
         data.update(diff, options.merge)
 
     if options.get:
-        data = A.get(data, options.get)
+        (data, err) = A.get(data, options.get)
+        if err:
+            raise RuntimeError(err)
 
     if options.output:
         cparser = A.find_loader(options.output, options.otype)

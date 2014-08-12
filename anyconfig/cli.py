@@ -5,7 +5,6 @@
 import anyconfig.api as A
 import anyconfig.compat as C
 import anyconfig.globals as G
-import anyconfig.getset as GS
 
 import codecs
 import locale
@@ -140,7 +139,7 @@ def main(argv=sys.argv):
         data.update(diff, options.merge)
 
     if options.get:
-        data = GS.get(data, options.get, seps=GS.SEPS)
+        data = A.get(data, options.get)
 
     if options.output:
         cparser = A.find_loader(options.output, options.otype)

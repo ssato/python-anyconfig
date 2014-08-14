@@ -4,15 +4,19 @@ set -e
 curdir=${0%/*}
 topdir=${curdir}/../
 nosetests_opts="-c ${curdir}/nose.cfg"
+nprocs=$(echo ${NOSE_PROCESSES})
 
 if `env | grep -q 'WITH_COVERAGE' 2>/dev/null`; then
-    nosetests_opts="${nosetests_opts} --with-coverage --cover-tests --cover-inclusive"
+    nosetests_opts="${nosetests_opts} --with-coverage --cover-tests"
+    nprocs=0  # It seems that coverage does not like parallel tests.
 fi
 
-if test -f /proc/cpuinfo; then
-    nprocs=$(sed -n '/^processor.*/p' /proc/cpuinfo | wc -l)
-    if test ${nprocs} -gt 0; then
-        nosetests_opts="${nosetests_opts} --processes=${nprocs}"
+if test "x${nprocs}" != "x0" ; then
+    if test -f /proc/cpuinfo; then
+        nprocs=$(sed -n '/^processor.*/p' /proc/cpuinfo | wc -l)
+        if test ${nprocs} -gt 0; then
+            nosetests_opts="${nosetests_opts} --processes=${nprocs}"
+        fi
     fi
 fi
 

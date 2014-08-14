@@ -44,7 +44,8 @@ Examples:
     -A obsoletes:sysdata;conflicts:sysdata-old
   %prog /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
   %prog '/etc/foo.d/*.json' -M noreplace
-  %prog '/etc/foo.d/*.json' --get a.b.c"""
+  %prog '/etc/foo.d/*.json' --get a.b.c
+  %prog '/etc/foo.d/*.json' --set a.b.c=1"""
 
 
 def to_log_level(level):
@@ -82,9 +83,13 @@ If this option is not set, original parser is used: 'K:V' will become {K: V},
 become {K_0: V_0, K_1: V_1} (where the tyep of K is str, type of V is one of
 Int, str, etc.""" % ctypes_s
 
-    get_help = ("Specify key path to get part of config, for example, if a "
-                "config {'a': {'b': {'c': 0, 'd': 1}}} '--get a.b.c' gives "
-                "0 and '--get a.b' gives {'c': 0, 'd': 1}.")
+    get_help = ("Specify key path to get part of config, for example, "
+                "'--get a.b.c' to config {'a': {'b': {'c': 0, 'd': 1}}} "
+                "gives 0 and '--get a.b' to the same config gives "
+                "{'c': 0, 'd': 1}.")
+    set_help = ("Specify key path to set (update) part of config, for "
+                "example, '--set a.b.c=1' to a config {'a': {'b': {'c': 0, "
+                "'d': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.")
 
     parser = optparse.OptionParser(usage, version="%%prog %s" % G.VERSION)
     parser.set_defaults(**defaults)
@@ -102,6 +107,7 @@ Int, str, etc.""" % ctypes_s
     parser.add_option("", "--atype", choices=ctypes, help=af_help)
 
     parser.add_option("", "--get", help=get_help)
+    parser.add_option("", "--set", help=set_help)
 
     parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
                       const=0, help="Silent or quiet mode")
@@ -142,6 +148,9 @@ def main(argv=sys.argv):
         (data, err) = A.get(data, options.get)
         if err:
             raise RuntimeError(err)
+
+    if options.set:
+        A.set_(data, *(options.set.split('=')))
 
     if options.output:
         cparser = A.find_loader(options.output, options.otype)

@@ -14,7 +14,9 @@ import anyconfig.utils as U
 # pylint: disable=W0611
 # Import some global constants will be re-exported:
 from anyconfig.mergeabledict import MS_REPLACE, MS_NO_REPLACE, \
-    MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES, get  # flake8: noqa
+    MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES, \
+    get, set_  # flake8: noqa
+from anyconfig.parser import PATH_SEPS
 # pylint: enable=W0611
 
 # pylint: disable=C0103

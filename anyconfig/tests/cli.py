@@ -64,6 +64,24 @@ class Test_10_effectful_functions(unittest.TestCase):
         x = A.load(output)
         self.assertEquals(x, d['a']['b'])
 
+    def test_34_single_input_w_set_option(self):
+        d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))
+
+        input = os.path.join(self.workdir, "a.json")
+        output = os.path.join(self.workdir, "b.json")
+
+        A.dump(d, input)
+        self.assertTrue(os.path.exists(input))
+
+        T.main(["dummy", "-o", output, "--set", "a.b.d=E", input])
+        self.assertTrue(os.path.exists(output))
+
+        ref = d.copy()
+        ref['a']['b']['d'] = 'E'
+
+        x = A.load(output)
+        self.assertEquals(x, ref)
+
     def test_40_multiple_inputs(self):
         xs = [dict(a=1, ),
               dict(b=dict(b=[1, 2], c="C")), ]

@@ -109,6 +109,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 19 2014 Satoru SATOH <ssato@redhat.com> - 0.0.4-1
+- Change the versioning scheme and bump up the version to fix the issue #3
+
 * Fri Aug  1 2014 Satoru SATOH <ssato@redhat.com> - 0.0.3.13-1
 - Enable flake8 (pyFlake + pep8) testing
 - Fix some minor errors like F401 (import-but-not-used eror) found by flake8

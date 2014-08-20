@@ -10,6 +10,7 @@ from .compat import iteritems
 from . import utils as U
 from . import parser as P
 
+import collections
 import copy
 import functools
 import operator
@@ -105,7 +106,7 @@ def is_mergeabledict_or_dict(obj):
     >>> is_mergeabledict_or_dict(create_from({}))
     True
     """
-    return isinstance(obj, (MergeableDict, dict))
+    return isinstance(obj, (MergeableDict, collections.Mapping))
 
 
 def convert_to(mdict):

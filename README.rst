@@ -265,7 +265,7 @@ or::
 and install built RPMs. 
 
 Otherwise, try usual ways to build and/or install python modules such like 'pip
-install anyconfig', 'python setup.py bdist', etc.
+install anyconfig', 'easy_install anyconfig' and 'python setup.py bdist', etc.
 
 How to hack
 ==============

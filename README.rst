@@ -14,6 +14,10 @@ python-anyconfig
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: Supported Python versions
 
+.. image:: https://landscape.io/github/ssato/python-anyconfig/master/landscape.png
+   :target: https://landscape.io/github/ssato/python-anyconfig/master
+   :alt: Code Health
+
 This is a python library called 'anyconfig' [#]_  provides generic access to
 configuration files in any formats (to be in the future) with configuration
 merge / cascade / overlay support.

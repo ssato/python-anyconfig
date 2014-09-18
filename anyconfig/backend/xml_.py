@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2014 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 from anyconfig.globals import LOGGER as logging

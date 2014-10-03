@@ -30,6 +30,10 @@ def parse_single(s):
     True
     >>> parse_single("a string")
     'a string'
+    >>> parse_single('"a string"')
+    'a string'
+    >>> parse_single("'a string'")
+    'a string'
     >>> parse_single("0.1")
     '0.1'
     >>> parse_single("    a string contains extra whitespaces     ")

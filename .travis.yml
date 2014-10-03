@@ -22,8 +22,12 @@ python:
 ##          env: LANG="en_US.utf-8"
 install:
     - if [[ $TRAVIS_PYTHON_VERSION < '2.6' ]]; then pip install -r aux/test_requirements-py-2.6.txt; else pip install -r aux/test_requirements.txt; fi
+env:
+  - WITH_COVERAGE=1
 script:
     - "./aux/runtest.sh"
+after_success:
+  - coveralls
 notifications:
     email:
         recipients:

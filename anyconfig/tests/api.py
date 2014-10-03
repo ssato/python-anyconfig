@@ -2,6 +2,7 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato at redhat.com>
 # License: MIT
 #
+from logging import CRITICAL
 import anyconfig.api as A
 import anyconfig.tests.common as C
 
@@ -32,6 +33,11 @@ class Test_10_pure_functions(unittest.TestCase):
             self.assertEquals(A.find_loader(cpath, "xml"),
                               BXML.XmlConfigParser)
 
+    def test_12_find_loader__w_forced_type__none(self):
+        A.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
+        cpath = "dummy.conf"
+        self.assertEquals(A.find_loader(cpath, "type_not_exist"), None)
+
     def test_20_find_loader__by_file(self):
         self.assertEquals(A.find_loader("dummy.ini"), BINI.IniConfigParser)
         self.assertEquals(A.find_loader("dummy.json"), BJSON.JsonConfigParser)
@@ -46,6 +52,11 @@ class Test_10_pure_functions(unittest.TestCase):
         if BXML.SUPPORTED:
             self.assertEquals(A.find_loader("dummy.xml"),
                               BXML.XmlConfigParser)
+
+    def test_22_find_loader__by_file__none(self):
+        # see self.test_12_find_loader__w_forced_type__none
+        A.set_loglevel(CRITICAL)
+        self.assertEquals(A.find_loader("dummy.ext_not_found"), None)
 
     def test_30_dumps_and_loads(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -65,11 +76,28 @@ class Test_10_pure_functions(unittest.TestCase):
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
+    def test_32_dumps_and_loads__w_options__no_dumper(self):
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        a1 = A.loads(A.dumps(a, "type_not_exist"), "json")
+
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+
     def test_40_loads_wo_type(self):
         a = dict(requires=["bash", "zsh"])
         a_s = "requires:bash,zsh"
 
         a1 = A.loads(a_s)
+
+        self.assertEquals(a1["requires"],   a["requires"])
+
+    def test_42_loads_w_type_not_exist(self):
+        a = dict(requires=["bash", "zsh"])
+        a_s = "requires:bash,zsh"
+
+        a1 = A.loads(a_s, "type_not_exist")
 
         self.assertEquals(a1["requires"],   a["requires"])
 
@@ -97,18 +125,37 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
+    def test_12_dump_and_single_load__no_parser(self):
+        self.assertEquals(A.single_load("dummy.ext_not_exist"), None)
+
     def test_20_dump_and_multi_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.json")
+        g_path = os.path.join(self.workdir, "*.json")
 
         A.dump(a, a_path)
         self.assertTrue(os.path.exists(a_path))
 
         A.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
+
+        a0 = A.multi_load(g_path, merge=A.MS_DICTS)
+        a02 = A.multi_load([g_path, b_path], merge=A.MS_DICTS)
+
+        self.assertEquals(a0["name"],   a["name"])
+        self.assertEquals(a0["a"],      b["a"])
+        self.assertEquals(a0["b"]["b"], b["b"]["b"])
+        self.assertEquals(a0["b"]["c"], a["b"]["c"])
+        self.assertEquals(a0["b"]["d"], b["b"]["d"])
+
+        self.assertEquals(a02["name"],   a["name"])
+        self.assertEquals(a02["a"],      b["a"])
+        self.assertEquals(a02["b"]["b"], b["b"]["b"])
+        self.assertEquals(a02["b"]["c"], a["b"]["c"])
+        self.assertEquals(a02["b"]["d"], b["b"]["d"])
 
         a1 = A.multi_load([a_path, b_path], merge=A.MS_DICTS)
 

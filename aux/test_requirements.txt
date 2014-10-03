@@ -1,4 +1,5 @@
 PyYAML
+coveralls
 flake8
 nose
 pep8

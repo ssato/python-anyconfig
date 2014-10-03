@@ -14,6 +14,10 @@ python-anyconfig
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: Supported Python versions
 
+.. image:: https://coveralls.io/repos/ssato/python-anyconfig/badge.png
+   :target: https://coveralls.io/r/ssato/python-anyconfig
+   :alt: Coverage Status
+
 .. image:: https://landscape.io/github/ssato/python-anyconfig/master/landscape.png
    :target: https://landscape.io/github/ssato/python-anyconfig/master
    :alt: Code Health

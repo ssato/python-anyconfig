@@ -36,11 +36,11 @@ class Test_10_MergeableDict(unittest.TestCase):
 
     def test_update__w_merge_dicts_and_lists(self):
         a = T.MergeableDict(name="a", a=1, b=T.MergeableDict(b=[1, 2], c="C"))
-        b = T.MergeableDict(a=2, b=T.MergeableDict(b=[3, 4, 5], d="D"))
+        b = T.MergeableDict(a=2, b=T.MergeableDict(b=[3, 4], d="D", e=[1, 2]))
 
         ref = T.MergeableDict(**a.copy())
         ref['a'] = 2
-        ref['b'] = T.MergeableDict(b=[1, 2, 3, 4, 5], c="C", d="D")
+        ref['b'] = T.MergeableDict(b=[1, 2, 3, 4], c="C", d="D", e=[1, 2])
 
         a.update(b, T.MS_DICTS_AND_LISTS)
 
@@ -56,8 +56,14 @@ class Test_10_MergeableDict(unittest.TestCase):
         ref['b']['c'] = a['b']['c']
 
         a.update(b, T.MS_REPLACE)
-
         self.assertEquals(a, ref)
+
+    def test_update__w_replace__not_a_dict(self):
+        a = T.MergeableDict()
+        a.update(1, T.MS_REPLACE)
+
+        # FIXME: It does not work.
+        # self.assertEquals(a, 1)
 
     def test_update__wo_replace(self):
         a = T.MergeableDict(a=1, b=T.MergeableDict(b=[1, 2], c="C"))

@@ -38,8 +38,9 @@ if test $# -gt 0; then
     fi
     PYTHONPATH=$topdir nosetests ${nosetests_opts} $@
 else
+    cd ${topdir}
     # Find out python package dir and run tests for .py files under it.
-    for d in ${topdir}/*; do
+    for d in ./*; do
         if test -d $d -a -f $d/__init__.py; then
             pypkgdir=$d
 
@@ -52,8 +53,8 @@ else
             break
         fi
     done
-    PYTHONPATH=$topdir nosetests ${nosetests_opts} --all-modules
-    test $check_with_flake8 = 1 && flake8 ${topdir}
+    PYTHONPATH=. nosetests ${nosetests_opts} --all-modules
+    test $check_with_flake8 = 1 && flake8 .
 fi
 
 # vim:sw=4:ts=4:et:

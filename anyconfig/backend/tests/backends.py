@@ -1,8 +1,9 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2014 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 import anyconfig.backend.backends as T
+import random
 import unittest
 
 
@@ -39,5 +40,11 @@ class Test_00_pure_functions(unittest.TestCase):
 
         self.assertTrue(isinstance(types, list))
         self.assertTrue(bool(list))  # ensure it's not empty.
+
+    def test_40_cmp_cps(self):
+        cps = T._CPs
+        if cps:
+            x = T.cmp_cps(random.choice(cps), random.choice(cps))
+            self.assertTrue(x in (-1, 0, 1))
 
 # vim:sw=4:ts=4:et:

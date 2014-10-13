@@ -55,13 +55,20 @@ class JsonConfigParser(Base.ConfigParser):
                           **Base.mk_opt_args(cls._load_opts, kwargs))
 
     @classmethod
-    def load(cls, config_path, **kwargs):
+    def load(cls, config_path, ignore_missing=False, **kwargs):
         """
         :param config_path:  Config file path
+        :param ignore_missing: Ignore just return empty result if given file
+            (``config_path``) does not exist
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: cls.container() object holding config parameters
         """
+        # NOTE: Hack. See also: :method:``load`` of the class
+        # :class:``anyconfig.backends.Base.ConfigParser``.
+        if ignore_missing and not cls.exists(config_path):
+            return cls.container()()
+
         return json.load(open(config_path), object_hook=dict_to_container,
                          **Base.mk_opt_args(cls._load_opts, kwargs))
 

@@ -64,7 +64,8 @@ def option_parser(defaults=None, usage=USAGE):
     :param usage: Usage text
     """
     defaults = dict(loglevel=1, list=False, output=None, itype=None,
-                    otype=None, atype=None, merge=A.MS_DICTS)
+                    otype=None, atype=None, merge=A.MS_DICTS,
+                    ignore_missing=False)
 
     ctypes = A.list_types()
     ctypes_s = ", ".join(ctypes)
@@ -109,6 +110,9 @@ Int, str, etc.""" % ctypes_s
     parser.add_option("", "--get", help=get_help)
     parser.add_option("", "--set", help=set_help)
 
+    parser.add_option("-x", "--ignore-missing", action="store_true",
+                      help="Ignore missing input files")
+
     parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
                       const=0, help="Silent or quiet mode")
     parser.add_option("-q", "--quiet", action="store_const", dest="loglevel",
@@ -138,7 +142,8 @@ def main(argv=sys.argv):
             parser.print_usage()
             sys.exit(-1)
 
-    data = A.load(args, options.itype, options.merge)
+    data = A.load(args, options.itype, options.merge,
+                  ignore_missing=options.ignore_missing)
 
     if options.args:
         diff = A.loads(options.args, options.atype)

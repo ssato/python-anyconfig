@@ -82,6 +82,14 @@ class Test_10_effectful_functions(unittest.TestCase):
         x = A.load(output)
         self.assertEquals(x, ref)
 
+    def test_36_single_input__ignore_missing(self):
+        # null_cntnr = A.container()
+        input = os.path.join(os.curdir, "conf_file_should_not_exist.json")
+        assert not os.path.exists(input)
+
+        T.main(["dummy", "-O", "json", "--ignore-missing",
+                input])
+
     def test_40_multiple_inputs(self):
         xs = [dict(a=1, ),
               dict(b=dict(b=[1, 2], c="C")), ]

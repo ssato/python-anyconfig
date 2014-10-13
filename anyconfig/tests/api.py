@@ -128,6 +128,15 @@ class Test_20_effectful_functions(unittest.TestCase):
     def test_12_dump_and_single_load__no_parser(self):
         self.assertEquals(A.single_load("dummy.ext_not_exist"), None)
 
+    def test_14_single_load__ignore_missing(self):
+        null_cntnr = A.container()
+        cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
+        assert not os.path.exists(cpath)
+
+        self.assertEquals(A.single_load(cpath, forced_type="ini",
+                                        ignore_missing=True),
+                          null_cntnr)
+
     def test_20_dump_and_multi_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
@@ -197,6 +206,15 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a5["b"]["c"], a["b"]["c"])
         self.assertFalse("d" in a5["b"])
 
+    def test_22_multi_load__ignore_missing(self):
+        null_cntnr = A.container()
+        cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
+        assert not os.path.exists(cpath)
+
+        self.assertEquals(A.multi_load([cpath], forced_type="ini",
+                                       ignore_missing=True),
+                          null_cntnr)
+
     def test_30_dump_and_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
@@ -233,7 +251,7 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a3["b"]["c"], a["b"]["c"])
         self.assertEquals(a3["b"]["d"], b["b"]["d"])
 
-    def test_30_dump_and_load__w_options(self):
+    def test_32_dump_and_load__w_options(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
@@ -268,5 +286,14 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a3["b"]["b"], [1, 2, 3, 4, 5])
         self.assertEquals(a3["b"]["c"], a["b"]["c"])
         self.assertEquals(a3["b"]["d"], b["b"]["d"])
+
+    def test_34_load__ignore_missing(self):
+        null_cntnr = A.container()
+        cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
+        assert not os.path.exists(cpath)
+
+        self.assertEquals(A.load([cpath], forced_type="ini",
+                                 ignore_missing=True),
+                          null_cntnr)
 
 # vim:sw=4:ts=4:et:

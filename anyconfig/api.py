@@ -62,12 +62,14 @@ def find_loader(config_path, forced_type=None):
     return cparser
 
 
-def single_load(config_path, forced_type=None, **kwargs):
+def single_load(config_path, forced_type=None, ignore_missing=False, **kwargs):
     """
     Load single config file.
 
     :param config_path: Configuration file path
     :param forced_type: Forced configuration parser type
+    :param ignore_missing: Ignore and just return empty result if given file
+        (``config_path``) does not exist
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -81,10 +83,11 @@ def single_load(config_path, forced_type=None, **kwargs):
         return None
 
     logging.info("Loading: " + config_path)
-    return cparser.load(config_path, **kwargs)
+    return cparser.load(config_path, ignore_missing=ignore_missing, **kwargs)
 
 
-def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
+def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
+               ignore_missing=False, **kwargs):
     """
     Load multiple config files.
 
@@ -102,6 +105,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
     :param merge: Strategy to merge config results of multiple config files
         loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
     :param marker: Globbing markerer to detect paths patterns
+    :param ignore_missing: Ignore missing config files
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -117,16 +121,18 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
     for path in paths:
         if marker in path:  # Nested patterns like ['*.yml', '/a/b/c.yml'].
             conf_updates = multi_load(path, forced_type, merge, marker,
-                                      **kwargs)
+                                      ignore_missing, **kwargs)
         else:
-            conf_updates = single_load(path, forced_type, **kwargs)
+            conf_updates = single_load(path, forced_type, ignore_missing,
+                                       **kwargs)
 
         config.update(conf_updates, merge)
 
     return config
 
 
-def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
+def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
+         ignore_missing=False, **kwargs):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -143,9 +149,10 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*', **kwargs):
         operations.
     """
     if marker in path_specs or U.is_iterable(path_specs):
-        return multi_load(path_specs, forced_type, merge, marker, **kwargs)
+        return multi_load(path_specs, forced_type, merge, marker,
+                          ignore_missing, **kwargs)
     else:
-        return single_load(path_specs, forced_type, **kwargs)
+        return single_load(path_specs, forced_type, ignore_missing, **kwargs)
 
 
 def loads(config_content, forced_type=None, **kwargs):

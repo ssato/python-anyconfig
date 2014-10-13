@@ -86,6 +86,10 @@ class ConfigParser(object):
         cls._container = container
 
     @classmethod
+    def exists(cls, config_path):
+        return os.path.exists(config_path)
+
+    @classmethod
     def load_impl(cls, config_fp, **kwargs):
         """
         :param config_fp:  Config file object
@@ -109,13 +113,18 @@ class ConfigParser(object):
                                     **mk_opt_args(cls._load_opts, kwargs)))
 
     @classmethod
-    def load(cls, config_path, **kwargs):
+    def load(cls, config_path, ignore_missing=False, **kwargs):
         """
         :param config_path:  Config file path
+        :param ignore_missing: Ignore and just return None if given file
+            (``config_path``) does not exist
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: cls.container() object holding config parameters
         """
+        if ignore_missing and not cls.exists(config_path):
+            return cls.container()()
+
         create = cls.container().create
         return create(cls.load_impl(open(config_path),
                                     **mk_opt_args(cls._load_opts, kwargs)))

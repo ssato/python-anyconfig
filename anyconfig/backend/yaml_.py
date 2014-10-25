@@ -33,8 +33,9 @@ if SUPPORTED:
             return yaml.dump(data, fp, **kwargs)
 else:
     def _dummy_fun(*args, **kwargs):
-        logging.warn("Does nothing as YAML module is not available.")
-        return
+        logging.warn("Return {} as YAML module is not available: "
+                     "args=%s, kwargs=%s" % (','.join(args), str(kwargs)))
+        return {}
 
     yaml_load = yaml_dump = _dummy_fun
 

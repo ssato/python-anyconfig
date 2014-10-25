@@ -3,7 +3,9 @@
 # License: MIT
 #
 from anyconfig.globals import LOGGER as logging
+
 import anyconfig.backend.base as Base
+import anyconfig.compat as AC
 
 
 SUPPORTED = True
@@ -50,25 +52,23 @@ def etree_to_container(root, container):
     """
     Convert XML ElementTree to a collection of container objects.
 
-    :param root: etree root object
+    :param root: etree root object or None
     :param container:
     """
     tree = container()
+    tree[root.tag] = container()
+
+    if root.attrib:
+        tree[root.tag]["attrs"] = container(AC.iteritems(root.attrib))
+
+    if root.text.strip():
+        tree[root.tag]["text"] = root.text.strip()
 
     if len(root):  # It has children.
         # FIXME: Configuration item cannot have both attributes and
         # values (list) at the same time in current implementation:
-        tree[root.tag] = container()
         tree[root.tag]["children"] = [etree_to_container(c, container) for c
                                       in root]
-        tree[root.tag]["attributes"] = container(**root.attrib)
-
-        if root.text.strip():
-            tree[root.tag]["text"] = root.text.strip()
-    else:
-        tree[root.tag]["attributes"] = container(**root.attrib)
-        if root.text.strip():
-            tree[root.tag]["text"] = root.text.strip()
 
     return tree
 

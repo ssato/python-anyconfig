@@ -2,7 +2,7 @@
 # Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.backend.xml_ as T
+import anyconfig.backend.xml_ as TT
 
 import os
 import tempfile
@@ -12,7 +12,7 @@ import unittest
 CONF_0 = """<?xml version="1.0" encoding="UTF-8"?>
 <config name='foo'>
   <a>0</a>
-  <b>"bbb"</b>
+  <b id="b0">bbb</b>
   <sect0>
     <c>x, y, z</c>
   </sect0>
@@ -31,27 +31,45 @@ class Test_XmlConfigParser(unittest.TestCase):
         os.remove(self.config_path)
 
     def test_00_supports(self):
-        self.assertFalse(T.XmlConfigParser.supports("/a/b/c/d.ini"))
-        self.assertTrue(T.XmlConfigParser.supports("/a/b/c/d.xml"))
+        self.assertFalse(TT.XmlConfigParser.supports("/a/b/c/d.ini"))
+        self.assertTrue(TT.XmlConfigParser.supports("/a/b/c/d.xml"))
 
     def test_10_loads(self):
         """FIXME: Implement test cases for XmlConfigParser.loads"""
-        return
+        c = TT.XmlConfigParser.loads(CONF_0)
+        # container = TT.XmlConfigParser.container()
 
-        c = T.XmlConfigParser.loads(CONF_0)["config"]
+        self.assertTrue("config" in c)
+        self.assertTrue("attrs" in c["config"])
+        self.assertTrue("name" in c["config"]["attrs"])
+        self.assertEquals(c["config"]["attrs"].get("name", None), "foo")
 
-        self.assertEquals(c["children"][0]['a'], 0, str(c))
-        self.assertEquals(c["children"][0]['b'], "bbb", c)
-        self.assertEquals(c["attributes"][0]['name'], "foo", c)
+        self.assertTrue(isinstance(c["config"]["children"], list))
+        self.assertNotEquals(c["config"]["children"], [])
 
-        # FIXME: Needs to implement list parser ?
-        # self.assertEquals(c.sect0.c, ['x', 'y', 'z'])
+        self.assertTrue('a' in c["config"]["children"][0])
+        self.assertTrue("text" in c["config"]["children"][0]['a'])
+        self.assertTrue("attrs" not in c["config"]["children"][0]['a'])
+        self.assertEquals(c["config"]["children"][0]['a']["text"], '0')
+
+        self.assertTrue('b' in c["config"]["children"][1])
+        self.assertTrue("text" in c["config"]["children"][1]['b'])
+        self.assertTrue("attrs" in c["config"]["children"][1]['b'])
+        self.assertEquals(c["config"]["children"][1]['b']["text"], "bbb")
+        self.assertTrue("id" in c["config"]["children"][1]['b']["attrs"])
+        self.assertEquals(c["config"]["children"][1]['b']["attrs"]["id"], "b0")
+
+        self.assertTrue('sect0' in c["config"]["children"][2])
+        self.assertTrue("text" not in c["config"]["children"][2]['sect0'])
+        self.assertTrue("attrs" not in c["config"]["children"][2]['sect0'])
+        self.assertTrue("children" in c["config"]["children"][2]['sect0'])
+        self.assertTrue(c["config"]["children"][2]['sect0']["children"])
 
     def test_20_load(self):
         """FIXME: Implement test cases for XmlConfigParser.load"""
         return
 
-        c = T.XmlConfigParser.load(self.config_path)["config"]
+        c = TT.XmlConfigParser.load(self.config_path)["config"]
 
         self.assertEquals(c['a'], 0, str(c))
         self.assertEquals(c['b'], "bbb", c)

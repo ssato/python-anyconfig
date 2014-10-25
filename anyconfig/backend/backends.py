@@ -86,7 +86,7 @@ def list_parsers_by_extension(cps=_CPs):
     """
     :return: List (generator) of (config_ext, [config_parser])
     """
-    cps_by_ext = U.concat(([(x, p) for x in p._extensions] for p in cps))
+    cps_by_ext = U.concat(([(x, p) for x in p.extensions()] for p in cps))
 
     return ((x, _list_xppairs(xps)) for x, xps in groupby_key(cps_by_ext, fst))
 

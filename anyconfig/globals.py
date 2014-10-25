@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2013, 2014 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """anyconfig globals.
@@ -9,7 +9,7 @@ import os
 
 
 AUTHOR = 'Satoru SATOH <ssat@redhat.com>'
-VERSION = "0.0.4"
+VERSION = "0.0.5"
 
 _LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
 

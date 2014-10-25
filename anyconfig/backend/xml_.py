@@ -18,9 +18,8 @@ except ImportError:
         try:
             import elementtree.ElementTree as etree
         except ImportError:
-            logging.warn(
-                "ElementTree module is not available. Disabled XML support."
-            )
+            logging.warn("ElementTree module is not available. Disabled "
+                         "XML support.")
             SUPPORTED = False
 
 
@@ -32,9 +31,8 @@ if SUPPORTED:
         return etree.parse(f).getroot()
 else:
     def _dummy_fun(*args, **kwargs):
-        logging.warn(
-            "Return {} as no any XML modules used, are not available."
-        )
+        logging.warn("Return {} as no any XML modules are not "
+                     "available.")
         return {}
 
     etree_getroot_fromstring = etree_getroot_fromfile = _dummy_fun

@@ -38,9 +38,9 @@ def _parse(v, sep=_SEP):
         return P.parse(v)
 
 
-def _to_s(v, sep=_SEP):
+def _to_s(v, sep=", "):
     if isinstance(v, list):
-        return ", ".join(x for x in v)
+        return sep.join(x for x in v)
     else:
         return str(v)
 

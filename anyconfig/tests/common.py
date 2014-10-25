@@ -33,10 +33,20 @@ class MaskedImportLoader(object):
     def __init__(self, *modules):
         """
         :param modules: A list of name of modules to mask
+
+        >>> ms = ["lxml", "yaml", "json"]
+        >>> mil = MaskedImportLoader(*ms)
+        >>> mil.masked == ms
+        True
         """
         self.masked = modules
 
     def find_module(self, fullname, path=None):
+        """
+        >>> mil = MaskedImportLoader("lxml", "yaml")
+        >>> mil.find_module("lxml.etree") is None
+        True
+        """
         if fullname in self.masked:
             return self
         return None
@@ -44,6 +54,14 @@ class MaskedImportLoader(object):
     def load_module(self, fullname):
         """
         :param fullname: Full name of the module to load
+
+        >>> mil = MaskedImportLoader("os.path")
+        >>> try:
+        ...     mil.load_module("os.path")
+        ... except ImportError:
+        ...     pass
+        >>> mil.load_module("os") is not None
+        >>> mil.load_module("platform") is not None
         """
         if fullname in self.masked:
             raise ImportError("Could not import %s as it's masked" % fullname)

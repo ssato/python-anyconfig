@@ -2,6 +2,7 @@
 # Copyright (C) 2011 - 2014 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=R0921
 from anyconfig.globals import LOGGER as logging
 
 import anyconfig.backend.base as Base
@@ -41,9 +42,9 @@ if SUPPORTED:
         return etree.parse(src).getroot()
 else:
     def _dummy_fun(*args, **kwargs):
-        logging.warn("Return {} as no any XML modules are not "
-                     "available.")
-        return {}
+        logging.warn("Return None as XML module is not available: "
+                     "args=%s, kwargs=%s" % (','.join(args), str(kwargs)))
+        return None
 
     etree_getroot_fromstring = etree_getroot_fromsrc = _dummy_fun
 
@@ -56,6 +57,9 @@ def etree_to_container(root, container):
     :param container:
     """
     tree = container()
+    if root is None:
+        return tree
+
     tree[root.tag] = container()
 
     if root.attrib:

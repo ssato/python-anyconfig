@@ -31,11 +31,26 @@ class Test_10_effectful_functions(unittest.TestCase):
     def tearDown(self):
         C.cleanup_workdir(self.workdir)
 
+    def run_and_check_exit_code(self, args=[], code=0, _not=False):
+        try:
+            T.main(["dummy"] + args)
+        except SystemExit as e:
+            if _not:
+                self.assertNotEquals(e.code, code)
+            else:
+                self.assertEquals(e.code, code)
+
     def test_10__show_usage(self):
         run(["--help"])
 
+    def test_12__wrong_option(self):
+        self.run_and_check_exit_code(["--wrong-option-xyz"], _not=True)
+
     def test_20__list(self):
         run(["--list"])
+
+    def test_22__list(self):
+        self.run_and_check_exit_code(["--list"])
 
     def test_30_single_input(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -131,5 +146,19 @@ class Test_10_effectful_functions(unittest.TestCase):
         self.assertEquals(x["name"], 'x')
         self.assertEquals(x["a"], 10)
         self.assertEquals(x["d"], [3, 4])
+
+    def test_60_output_wo_output_option_w_otype(self):
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        input = os.path.join(self.workdir, "a.json")
+        A.dump(a, input)
+
+        self.run_and_check_exit_code(["--otype", "json", input], 0)
+
+    def test_62_output_wo_output_option_and_otype_w_itype(self):
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        input = os.path.join(self.workdir, "a.json")
+        A.dump(a, input)
+
+        self.run_and_check_exit_code(["--itype", "json", input], 0)
 
 # vim:sw=4:ts=4:et:

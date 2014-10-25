@@ -43,7 +43,7 @@ if SUPPORTED:
 else:
     def _dummy_fun(*args, **kwargs):
         logging.warn("Return None as XML module is not available: "
-                     "args=%s, kwargs=%s" % (','.join(args), str(kwargs)))
+                     "args=%s, kwargs=%s", ','.join(args), str(kwargs))
         return None
 
     etree_getroot_fromstring = etree_getroot_fromsrc = _dummy_fun

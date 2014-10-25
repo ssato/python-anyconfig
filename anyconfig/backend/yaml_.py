@@ -34,7 +34,7 @@ if SUPPORTED:
 else:
     def _dummy_fun(*args, **kwargs):
         logging.warn("Return {} as YAML module is not available: "
-                     "args=%s, kwargs=%s" % (','.join(args), str(kwargs)))
+                     "args=%s, kwargs=%s", ','.join(args), str(kwargs))
         return {}
 
     yaml_load = yaml_dump = _dummy_fun

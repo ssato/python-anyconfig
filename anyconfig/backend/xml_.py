@@ -25,22 +25,33 @@ except ImportError:
 
 if SUPPORTED:
     def etree_getroot_fromstring(s):
+        """
+        :param s: A XML string
+        :return: etree object gotten by parsing ``s``
+        """
         return etree.ElementTree(etree.fromstring(s)).getroot()
 
-    def etree_getroot_fromfile(f):
-        return etree.parse(f).getroot()
+    def etree_getroot_fromsrc(src):
+        """
+        :param src: A file name/path or a file[-like] object or a URL
+        :return: etree object gotten by parsing ``s``
+        """
+        return etree.parse(src).getroot()
 else:
     def _dummy_fun(*args, **kwargs):
         logging.warn("Return {} as no any XML modules are not "
                      "available.")
         return {}
 
-    etree_getroot_fromstring = etree_getroot_fromfile = _dummy_fun
+    etree_getroot_fromstring = etree_getroot_fromsrc = _dummy_fun
 
 
 def etree_to_container(root, container):
     """
     Convert XML ElementTree to a collection of container objects.
+
+    :param root: etree root object
+    :param container:
     """
     tree = container()
 
@@ -87,7 +98,7 @@ class XmlConfigParser(Base.ConfigParser):
 
         :return: cls.container() object holding config parameters
         """
-        root = etree_getroot_fromfile(config_path)
+        root = etree_getroot_fromsrc(config_path)
         return etree_to_container(root, cls.container())
 
     @classmethod

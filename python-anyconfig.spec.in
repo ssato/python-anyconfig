@@ -36,7 +36,6 @@ BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 %endif
 
-
 %description
 Python library to provide generic access to configuration files in some
 formats such like INI, JSON and YAML.
@@ -53,7 +52,6 @@ Python library to provide generic access to configuration files in some
 formats such like INI, JSON and YAML.
 %endif
 
-
 %prep
 %setup -q -n %{pkgname}-%{version}
 
@@ -61,7 +59,6 @@ formats such like INI, JSON and YAML.
 rm -rf %{py3dir}
 cp -a . %{py3dir}
 %endif
-
 
 %build
 %{__python} setup.py build
@@ -71,7 +68,6 @@ pushd %{py3dir}
 %{__python3} setup.py build
 popd
 %endif
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -84,13 +80,10 @@ mv $RPM_BUILD_ROOT%{_bindir}/anyconfig_cli $RPM_BUILD_ROOT%{_bindir}/py3anyconfi
 #chmod +x $RPM_BUILD_ROOT%{_bindir}/py3anyconfig_cli
 popd
 %endif
-
 %{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
 
 %files
 %defattr(-,root,root,-)
@@ -107,8 +100,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/py3anyconfig_cli
 %endif
 
-
 %changelog
+* Sat Oct 25 2014 Satoru SATOH <ssato@redhat.com> - 0.0.4-99
+- start to monitor code coverage w/ using coveralls.io
+- start to do extra health check by landscape.io
+- introduce 'ignore_missing' optional parameter to ignore missing config
+  file[s] in anyconfig.apy.*load() originally suggested by chmac in issue#4
+- add -x/--ignore-missing option to allow ignoring missing files in anyconfig_cli
+- make xml backend loader worked although it nees a lot more work
+- some more minor bug fixes and enhancements
+
 * Tue Aug 19 2014 Satoru SATOH <ssato@redhat.com> - 0.0.4-1
 - Change the versioning scheme and bump up the version to fix the issue #3
 

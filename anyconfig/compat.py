@@ -22,6 +22,9 @@ else:
     except ImportError:
         from StringIO import StringIO  # flake8: noqa
 
+    assert configparser  # silence pyflakes
+    assert StringIO  # ditto
+
     def iteritems(dic):
         """wrapper for dict.iteritems()"""
         return dic.iteritems()

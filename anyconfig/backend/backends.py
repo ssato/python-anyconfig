@@ -2,6 +2,7 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=W0622
 from itertools import groupby
 from operator import methodcaller
 

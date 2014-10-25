@@ -14,9 +14,9 @@ import pkg_resources
 
 # cmp is missing in python >= 3.0.
 try:
-    _cmp = cmp
+    cmp
 except NameError:
-    def _cmp(a, b):
+    def cmp(a, b):
         return (a > b) - (a < b)
 
 
@@ -34,7 +34,7 @@ for e in pkg_resources.iter_entry_points("anyconfig_backends"):
 def cmp_cps(lhs, rhs):
     """Compare config parsers by these priorities.
     """
-    return _cmp(lhs.priority(), rhs.priority())
+    return cmp(lhs.priority(), rhs.priority())
 
 
 def fst(tpl):

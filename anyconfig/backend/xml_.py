@@ -8,8 +8,8 @@ import anyconfig.backend.base as Base
 
 SUPPORTED = True
 try:
-    # First, try lxml compatible with elementtree and looks faster a lot.
-    # see also: http://getpython3.com/diveintopython3/xml.html
+    # First, try lxml which is compatible with elementtree and looks faster a
+    # lot. See also: http://getpython3.com/diveintopython3/xml.html
     from lxml2 import etree
 except ImportError:
     try:

@@ -54,7 +54,7 @@ def etree_to_container(root, container):
     Convert XML ElementTree to a collection of container objects.
 
     :param root: etree root object or None
-    :param container:
+    :param container: A nested dict like objects
     """
     tree = container()
     if root is None:

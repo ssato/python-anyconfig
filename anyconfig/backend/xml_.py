@@ -65,7 +65,7 @@ def etree_to_container(root, container):
     if root.attrib:
         tree[root.tag]["attrs"] = container(AC.iteritems(root.attrib))
 
-    if root.text.strip():
+    if root.text:
         tree[root.tag]["text"] = root.text.strip()
 
     if len(root):  # It has children.

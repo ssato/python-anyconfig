@@ -46,6 +46,11 @@ class Test_IniConfigParser(unittest.TestCase):
         self.assertEquals(c["DEFAULT"]['b'], "bbb", c)
         self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
 
+    def test_should_show_error_on_invalid_ini(self):
+        invalid_ini = "key=name"
+        with self.assertRaises(Exception):
+            I.IniConfigParser.loads(invalid_ini)
+
     def test_20_load__w_options(self):
 
         c = I.IniConfigParser.load(self.config_path, allow_no_value=False)

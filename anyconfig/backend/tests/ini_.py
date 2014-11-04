@@ -48,8 +48,7 @@ class Test_IniConfigParser(unittest.TestCase):
 
     def test_should_show_error_on_invalid_ini(self):
         invalid_ini = "key=name"
-        with self.assertRaises(Exception):
-            I.IniConfigParser.loads(invalid_ini)
+        self.assertRaises(Exception, I.IniConfigParser.loads, invalid_ini)
 
     def test_20_load__w_options(self):
 

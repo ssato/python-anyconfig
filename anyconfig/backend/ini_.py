@@ -82,6 +82,7 @@ def _load_impl(config_fp, sep=_SEP, **kwargs):
 
     except Exception:
         logging.warn(sys.exc_info()[-1])
+        raise
 
     return config
 

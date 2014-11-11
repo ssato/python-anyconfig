@@ -265,6 +265,39 @@ It can process various config files and output a merged config file::
     -v, --verbose         Verbose mode
   ssato@localhost%
 
+Combination with other modules
+--------------------------------
+
+Anyconfig can be combined with other modules such as pyxdg and appdirs [#]_ .
+
+For example, you can utilize anyconfig and pyxdg or appdirs in you application
+software to load user config files like this:
+
+::
+
+  import anyconfig
+  import appdirs
+  import os.path
+  import xdg.BaseDirectory
+
+  APP_NAME = "foo"
+  APP_CONF_PATTERN = "*.yml"
+
+
+  def config_path_by_xdg(app=APP_NAME, pattern=APP_CONF_PATTERN):
+      return os.path.join(xdg.BaseDirectory.save_config_path(app), pattern)
+
+
+  def config_path_by_appdirs(app=APP_NAME, pattern=APP_CONF_PATTERN):
+      os.path.join(appdirs.user_config_dir(app), pattern)
+
+
+  def load_config(fun=config_path_by_xdg):
+      return anyconfig.load(fun())
+
+.. [#] http://freedesktop.org/wiki/Software/pyxdg/
+.. [#] https://pypi.python.org/pypi/appdirs/
+
 Build & Install
 ================
 

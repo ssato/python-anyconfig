@@ -16,7 +16,7 @@ build:
     # A step that executes You must give at least one requirement to install (see "pip help install") command.
     # :see: https://github.com/wercker/step-pip-install
     - pip-install:
-        requirements_file: aux/test_requirements.txt
+        requirements_file: pkg/test_requirements.txt
 
     # # This pip-install clears the local wheel cache
     # - pip-install:
@@ -26,5 +26,5 @@ build:
     # and the code value contains the command that get executed
     - script:
         name: run unit tests
-        code: ./aux/runtest.sh
+        code: ./pkg/runtest.sh
 

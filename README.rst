@@ -337,7 +337,7 @@ the `Other anyconfig backend modules`_ section.
 How to test
 -------------
 
-Try to run './aux/runtest.sh [path_to_python_code]'.
+Try to run './pkg/runtest.sh [path_to_python_code]'.
 
 TODO
 ======

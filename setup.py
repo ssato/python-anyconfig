@@ -111,7 +111,7 @@ setup(name=PACKAGE,
           "srpm": SrpmCommand,
           "rpm":  RpmCommand,
       },
-      entry_points=open(os.path.join(curdir, "aux/entry_points.txt")).read(),
+      entry_points=open(os.path.join(curdir, "pkg/entry_points.txt")).read(),
       data_files=data_files,
       )
 

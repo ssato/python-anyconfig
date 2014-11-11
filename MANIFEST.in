@@ -2,7 +2,7 @@ include MANIFEST.in
 include README.*
 include LICENSE.MIT
 include python-anyconfig.spec*
-include aux/*
+include pkg/*
 include python-anyconfig.spec.in
 include setup.py
 recursive-include anyconfig *.py

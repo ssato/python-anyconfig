@@ -241,7 +241,9 @@ CLI frontend
 
 There is a CLI frontend 'anyconfig_cli' to demonstrate the power of this library.
 
-It can process various config files and output a merged config file::
+It can process various config files and output a merged config file:
+
+.. code-block:: console
 
   ssato@localhost% anyconfig_cli -h
   Usage: anyconfig_cli [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
@@ -337,11 +339,15 @@ RPMs on http://copr.fedoraproject.org/coprs/ from:
 
 * http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
-or if you want to build yourself, then try::
+or if you want to build yourself, then try:
+
+.. code-block:: console
 
   $ python setup.py srpm && mock dist/SRPMS/python-anyconfig-<ver_dist>.src.rpm
   
-or::
+or:
+
+.. code-block:: console
 
   $ python setup.py rpm
 

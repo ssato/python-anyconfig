@@ -31,10 +31,10 @@ merge / cascade / overlay support.
 
 Current supported configuration file formats are:
 
-* JSON w/ json or simplejson
-* YAML w/ PyYAML
-* Ini w/ configparser
-* XML w/ lxml or ElementTree (experimental)
+* JSON with ``json`` or ``simplejson``
+* YAML with ``PyYAML``
+* Ini with ``configparser``
+* XML with ``lxml`` or ``ElementTree`` (experimental)
 * Other formats some pluggale backends support (see the next sub section)
 
 .. [#] This name took an example from the 'anydbm' library in python dist,
@@ -65,7 +65,9 @@ see also: output of `python -c "import anyconfig; help(anyconfig)"`
 anyconfig module
 -------------------
 
-To load single config file::
+To load single config file:
+
+.. code-block:: python
 
   import anyconfig
 
@@ -89,7 +91,9 @@ To load single config file::
   data4 = anyconfig.single_load("/path/to/foo/conf.d/b.conf", "yaml")
 
 Also, you can pass backend (config loader) specific optional parameters to
-these load and dump functions::
+these load and dump functions:
+
+.. code-block:: python
 
   # from python -c "import json; help(json.load)":
   # Help on function load in module json:
@@ -106,7 +110,9 @@ these load and dump functions::
    class by default, to support recursive merge operations needed when loading
    multiple config files.
 
-To load multiple config files::
+To load multiple config files:
+
+.. code-block:: python
 
   import anyconfig
 
@@ -132,7 +138,10 @@ configurations from the followings:
 
   For example, if a.yml and b.yml are like followings:
 
-  a.yml::
+  a.yml:
+
+
+  .. code-block:: yaml
 
     a: 1
     b:
@@ -142,18 +151,24 @@ configurations from the followings:
        e: "aaa"
        f: 3
 
-  b.yml::
+  b.yml:
+
+  .. code-block:: yaml
 
     b:
        - c: 3
     d:
        e: "bbb"
 
-  then::
+  then:
+
+  .. code-block:: python
 
     load(["a.yml", "b.yml"], merge=anyconfig.MS_REPLACE)
 
-  will give object such like::
+  will give object such like:
+  
+  .. code-block:: python
 
     {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb"}}
 
@@ -162,7 +177,9 @@ configurations from the followings:
 
   For example, if a.yml and b.yml are like followings:
 
-  a.yml::
+  a.yml:
+  
+  .. code-block:: yaml
 
     b:
        - c: 0
@@ -171,7 +188,9 @@ configurations from the followings:
        e: "aaa"
        f: 3
 
-  b.yml::
+  b.yml:
+  
+  .. code-block:: yaml
 
     a: 1
     b:
@@ -179,28 +198,40 @@ configurations from the followings:
     d:
        e: "bbb"
 
-  then::
+  then:
+  
+  .. code-block:: python
 
     load(["a.yml", "b.yml"], merge=anyconfig.MS_NO_REPLACE)
 
-  will give object such like::
+  will give object such like:
+
+  .. code-block:: python
 
     {'a': 1, 'b': [{'c': 0}, {'c': 2}], 'd': {'e': "bbb", 'f': 3}}
 
-* anyconfig.MS_DICTS: Merge dicts recursively. That is, the following::
+* anyconfig.MS_DICTS: Merge dicts recursively. That is, the following:
+
+  .. code-block:: python
 
     load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS)
 
-  will give object such like::
+  will give object such like:
+
+  .. code-block:: python
 
     {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb", 'f': 3}}
 
 * anyconfig.MS_DICTS_AND_LISTS: Merge dicts and lists recursively. That is, the
-  following::
+  following:
 
+  .. code-block:: python
+ 
     load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS_AND_LISTS)
 
-  will give object such like::
+  will give object such like:
+
+  .. code-block:: python
 
     {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
 
@@ -273,7 +304,7 @@ Anyconfig can be combined with other modules such as pyxdg and appdirs [#]_ .
 For example, you can utilize anyconfig and pyxdg or appdirs in you application
 software to load user config files like this:
 
-::
+.. code-block:: python
 
   import anyconfig
   import appdirs

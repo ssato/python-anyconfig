@@ -3,16 +3,12 @@ from setuptools import setup, Command, find_packages
 import glob
 import os.path
 import os
-import sys
 
 
 curdir = os.getcwd()
-sys.path.append(curdir)
-
-import anyconfig
 
 PACKAGE = "anyconfig"
-VERSION = anyconfig.VERSION
+VERSION = "0.0.5"  # see anyconfig.globals.VERSION
 
 # For daily snapshot versioning mode:
 if os.environ.get("_SNAPSHOT_BUILD", None) is not None:

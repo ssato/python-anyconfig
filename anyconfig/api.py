@@ -142,6 +142,7 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
     :param forced_type: Forced configuration parser type
     :param merge: Merging strategy to use
     :param marker: Globbing marker to detect paths patterns
+    :param ignore_missing: Ignore missing config files
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of

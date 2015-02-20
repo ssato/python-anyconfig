@@ -46,19 +46,15 @@ def find_loader(config_path, forced_type=None):
     if forced_type is not None:
         cparser = Backends.find_by_type(forced_type)
         if not cparser:
-            logging.error(
-                "No parser found for given type: " + forced_type
-            )
+            logging.error("No parser found for given type: %s", forced_type)
             return None
     else:
         cparser = Backends.find_by_file(config_path)
         if not cparser:
-            logging.error(
-                "No parser found for given file: " + config_path
-            )
+            logging.error("No parser found for given file: %s", config_path)
             return None
 
-    logging.debug("Using config parser of type: " + cparser.type())
+    logging.debug("Using config parser of type: %s", cparser.type())
     return cparser
 
 
@@ -82,7 +78,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False, **kwargs):
     if cparser is None:
         return None
 
-    logging.info("Loading: " + config_path)
+    logging.info("Loading: %s", config_path)
     return cparser.load(config_path, ignore_missing=ignore_missing, **kwargs)
 
 
@@ -187,9 +183,8 @@ def _find_dumper(config_path, forced_type=None):
     cparser = find_loader(config_path, forced_type)
 
     if cparser is None or not getattr(cparser, "dump", False):
-        logging.warn(
-            "Dump method not implemented. Fallback to JsonConfigParser"
-        )
+        logging.warn("Dump method not implemented. Fallback to "
+                     "JsonConfigParser")
         cparser = BJ.JsonConfigParser()
 
     return cparser
@@ -208,7 +203,7 @@ def dump(data, config_path, forced_type=None, **kwargs):
     """
     dumper = _find_dumper(config_path, forced_type)
 
-    logging.info("Dumping: " + config_path)
+    logging.info("Dumping: %s", config_path)
     dumper.dump(data, config_path, **kwargs)
 
 

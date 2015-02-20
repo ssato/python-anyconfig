@@ -42,7 +42,7 @@ def mk_dump_dir_if_not_exist(f):
     dumpdir = os.path.dirname(f)
 
     if not os.path.exists(dumpdir):
-        logging.debug("Creating output dir as it's not found: " + dumpdir)
+        logging.debug("Creating output dir as it's not found: %s", dumpdir)
         os.makedirs(dumpdir)
 
 

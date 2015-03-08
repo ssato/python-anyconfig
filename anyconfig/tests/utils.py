@@ -13,5 +13,4 @@ class Test_functions(unittest.TestCase):
         self.assertEquals(U.get_file_extension("/a/b.txt"), "txt")
         self.assertEquals(U.get_file_extension("/a/b/c.tar.xz"), "xz")
 
-
 # vim:sw=4:ts=4:et:

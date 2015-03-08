@@ -32,7 +32,7 @@ if test $# -gt 0; then
     if test $check_with_pep8 = 1; then
         for x in $@; do pep8 ${x%%:*}; done
     fi
-    test $check_with_flake8 = 1 && flake8 $@
+    test $check_with_flake8 = 1 && flake8 $@ || :
     if test $check_with_pylint = 1; then
         for x in $@; do _pylint ${x%%:*}; done
     fi
@@ -54,7 +54,7 @@ else
         fi
     done
     PYTHONPATH=. nosetests ${nosetests_opts} --all-modules
-    test $check_with_flake8 = 1 && flake8 .
+    test $check_with_flake8 = 1 && flake8 -v . || :
 fi
 
 # vim:sw=4:ts=4:et:

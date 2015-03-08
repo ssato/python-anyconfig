@@ -25,12 +25,22 @@ def _from_iterable(iterables):
 
 def py3_iteritems(dic):
     """wrapper for dict.items() in python 3.x.
+
+    >>> list(py3_iteritems({}))
+    []
+    >>> sorted(py3_iteritems(dict(a=1, b=2)))
+    [('a', 1), ('b', 2)]
     """
     return dic.items()
 
 
 def py_iteritems(dic):
     """wrapper for dict.iteritems() in python < 3.x
+
+    >>> list(py_iteritems({}))
+    []
+    >>> sorted(py_iteritems(dict(a=1, b=2)))
+    [('a', 1), ('b', 2)]
     """
     return dic.iteritems()
 

@@ -1,6 +1,6 @@
 PyYAML
 coveralls
-flake8
+# flake8  # disabled until 'pkg_resources.VersionConflict' error.
 nose
 pep8
 pylint

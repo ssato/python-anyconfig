@@ -2,6 +2,7 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+from anyconfig.compat import cmp
 # pylint: disable=W0622
 from itertools import groupby
 from operator import methodcaller
@@ -12,13 +13,6 @@ import anyconfig.backend.xml_ as BXML
 import anyconfig.backend.yaml_ as BYAML
 import anyconfig.utils as U
 import pkg_resources
-
-# cmp is missing in python >= 3.0.
-try:
-    cmp
-except NameError:
-    def cmp(a, b):
-        return (a > b) - (a < b)
 
 
 _CPs = [p for p in [BINI.IniConfigParser, BJSON.JsonConfigParser,

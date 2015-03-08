@@ -32,12 +32,15 @@ if SUPPORTED:
         else:
             return yaml.dump(data, fp, **kwargs)
 else:
-    def _dummy_fun(*args, **kwargs):
+    def yaml_load(*args, **kwargs):
         logging.warn("Return {} as YAML module is not available: "
                      "args=%s, kwargs=%s", ','.join(args), str(kwargs))
         return {}
 
-    yaml_load = yaml_dump = _dummy_fun
+    def yaml_dump(*args, **kwargs):
+        logging.warn("Do nothing as YAML module is not available: "
+                     "args=%s, kwargs=%s", ','.join(args), str(kwargs))
+        pass
 
 
 class YamlConfigParser(Base.ConfigParser):

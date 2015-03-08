@@ -5,6 +5,7 @@ import imp
 import os.path
 import sys
 import tempfile
+import unittest
 
 
 def selfdir():
@@ -33,35 +34,15 @@ class MaskedImportLoader(object):
     def __init__(self, *modules):
         """
         :param modules: A list of name of modules to mask
-
-        >>> ms = ["lxml", "yaml", "json"]
-        >>> mil = MaskedImportLoader(*ms)
-        >>> mil.masked == ms
-        True
         """
         self.masked = modules
 
     def find_module(self, fullname, path=None):
-        """
-        >>> mil = MaskedImportLoader("lxml", "yaml")
-        >>> mil.find_module("lxml.etree") is None
-        True
-        """
-        if fullname in self.masked:
-            return self
-        return None
+        return self if fullname in self.masked else None
 
     def load_module(self, fullname):
         """
         :param fullname: Full name of the module to load
-
-        >>> mil = MaskedImportLoader("os.path")
-        >>> try:
-        ...     mil.load_module("os.path")
-        ... except ImportError:
-        ...     pass
-        >>> mil.load_module("os") is not None
-        >>> mil.load_module("platform") is not None
         """
         if fullname in self.masked:
             raise ImportError("Could not import %s as it's masked" % fullname)
@@ -83,5 +64,50 @@ class MaskedImportLoader(object):
 
 def mask_modules(*modules):
     sys.meta_path.append(MaskedImportLoader(*modules))
+
+
+class Test_00_MaskedImportLoader(unittest.TestCase):
+
+    def test_00___init__(self):
+        ms = ("lxml", "yaml", "json")
+        mil = MaskedImportLoader(*ms)
+        self.assertEquals(mil.masked, ms)
+
+    def test_10_find_module(self):
+        mil = MaskedImportLoader("lxml", "yaml")
+        self.assertTrue(mil.find_module("lxml.etree") is None)
+
+    def test_20_load_module__basename(self):
+        mod = None
+        mil = MaskedImportLoader("platform")
+
+        try:
+            mod = mil.load_module("platform")
+        except ImportError:
+            pass
+
+        self.assertTrue(mod is None)
+
+    def test_22_load_module__fullname(self):
+        mod = None
+        mil = MaskedImportLoader("logging.config")
+
+        try:
+            mod = mil.load_module("logging.config")
+        except ImportError:
+            pass
+
+        self.assertTrue(mod is None)
+
+    def test_30_mask_modules__a_module(self):
+        platform = None
+        mask_modules("platform")
+
+        try:
+            import platform
+        except ImportError:
+            pass
+
+        self.assertTrue(platform is None)
 
 # vim:sw=4:ts=4:et:

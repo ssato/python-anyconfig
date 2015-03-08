@@ -119,15 +119,4 @@ if T.SUPPORTED:
             self.assertEquals(c['b'], "bbb", c)
             self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
 
-# TODO: Implement test cases if necessary modules are missing.
-#
-#    class Test_ImportError(unittest.TestCase):
-#        def test_00_ImportError(self):
-#            C.mask_modules("yaml")
-#
-#            del sys.modules[T.__name__]
-#
-#            import anyconfig.backend.yaml_ as X
-#            self.assertFalse(X.SUPPORTED)
-#
 # vim:sw=4:ts=4:et:

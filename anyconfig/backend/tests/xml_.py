@@ -67,12 +67,10 @@ class Test_XmlConfigParser(unittest.TestCase):
 
     def test_20_load(self):
         """FIXME: Implement test cases for XmlConfigParser.load"""
-        return
+        # c = TT.XmlConfigParser.load(self.config_path)["config"]
 
-        c = TT.XmlConfigParser.load(self.config_path)["config"]
-
-        self.assertEquals(c['a'], 0, str(c))
-        self.assertEquals(c['b'], "bbb", c)
-
+        # self.assertEquals(c['a'], 0, str(c))
+        # self.assertEquals(c['b'], "bbb", c)
+        pass
 
 # vim:sw=4:ts=4:et:

@@ -34,17 +34,6 @@ def py3_iteritems(dic):
     return dic.items()
 
 
-def py_iteritems(dic):
-    """wrapper for dict.iteritems() in python < 3.x
-
-    >>> list(py_iteritems({}))
-    []
-    >>> sorted(py_iteritems(dict(a=1, b=2)))
-    [('a', 1), ('b', 2)]
-    """
-    return dic.iteritems()
-
-
 def py3_cmp(a, b):
     """
     >>> py3_cmp(0, 2)
@@ -77,6 +66,16 @@ else:
 
     assert configparser  # silence pyflakes
     assert StringIO  # ditto
+
+    def py_iteritems(dic):
+        """wrapper for dict.iteritems() in python < 3.x
+
+        >>> list(py_iteritems({}))
+        []
+        >>> sorted(py_iteritems(dict(a=1, b=2)))
+        [('a', 1), ('b', 2)]
+        """
+        return dic.iteritems()
 
     iteritems = py_iteritems
     cmp = cmp

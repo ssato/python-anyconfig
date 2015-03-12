@@ -11,8 +11,10 @@ from anyconfig.globals import LOGGER
 import os.path
 import os
 
+TEMPLATE_SUPPORT = False
 try:
     import jinja2
+    TEMPLATE_SUPPORT = True
 
     def tmpl_env(paths):
         return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))

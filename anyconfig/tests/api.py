@@ -4,6 +4,7 @@
 #
 from logging import CRITICAL
 import anyconfig.api as A
+import anyconfig.template as AT
 import anyconfig.tests.common as C
 
 import anyconfig.backend.ini_ as BINI
@@ -101,6 +102,18 @@ class Test_10_pure_functions(unittest.TestCase):
 
         self.assertEquals(a1["requires"],   a["requires"])
 
+    def test_44_loads_w_type__template(self):
+        if not AT.TEMPLATE_SUPPORT:
+            return
+
+        a = dict(requires=["bash", "zsh"])
+        a_s = "requires: [{{ requires|join(', ') }}]"
+        ctx = dict(requires=["bash", "zsh"], )
+
+        a1 = A.loads(a_s, forced_type="yaml", template=True, ctx=ctx)
+
+        self.assertEquals(a1["requires"],   a["requires"])
+
 
 class Test_20_effectful_functions(unittest.TestCase):
 
@@ -136,6 +149,56 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(A.single_load(cpath, forced_type="ini",
                                         ignore_missing=True),
                           null_cntnr)
+
+    def test_16_single_load__template(self):
+        if not AT.TEMPLATE_SUPPORT:
+            return
+
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        a_path = os.path.join(self.workdir, "a.yaml")
+
+        open(a_path, 'w').write("""name: {{ name|default('a') }}
+a: {{ a }}
+b:
+    b:
+      {% for x in b.b -%}
+      - {{ x }}
+      {% endfor %}
+    c: {{ b.c }}
+""")
+
+        a1 = A.single_load(a_path, template=True, ctx=a)
+
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+
+    def test_18_single_load__templates(self):
+        if not AT.TEMPLATE_SUPPORT:
+            return
+
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        a_path = os.path.join(self.workdir, "a.yml")
+        b_path = os.path.join(self.workdir, "b.yml")
+
+        open(a_path, 'w').write("{% include 'b.yml' %}")
+        open(b_path, 'w').write("""name: {{ name|default('a') }}
+a: {{ a }}
+b:
+    b:
+      {% for x in b.b -%}
+      - {{ x }}
+      {% endfor %}
+    c: {{ b.c }}
+""")
+
+        a1 = A.single_load(a_path, template=True, ctx=a)
+
+        self.assertEquals(a1["name"],   a["name"])
+        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
     def test_20_dump_and_multi_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
@@ -214,6 +277,57 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(A.multi_load([cpath], forced_type="ini",
                                        ignore_missing=True),
                           null_cntnr)
+
+    def test_24_multi_load__templates(self):
+        if not AT.TEMPLATE_SUPPORT:
+            return
+
+        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+
+        ma = A.container.create(a)
+        ma.update(b, A.MS_DICTS)
+
+        a_path = os.path.join(self.workdir, "a.yml")
+        b_path = os.path.join(self.workdir, "b.yml")
+        g_path = os.path.join(self.workdir, "*.yml")
+
+        open(a_path, 'w').write("""\
+a: {{ a }}
+b:
+    b:
+        {% for x in b.b -%}
+        - {{ x }}
+        {% endfor %}
+    c: {{ b.c }}
+
+name: {{ name }}
+""")
+        open(b_path, 'w').write("""\
+a: {{ a }}
+b:
+    b:
+        {% for x in b.b -%}
+        - {{ x }}
+        {% endfor %}
+    d: {{ b.d }}
+""")
+
+        a0 = A.multi_load(g_path, merge=A.MS_DICTS, template=True, ctx=ma)
+        a02 = A.multi_load([g_path, b_path], merge=A.MS_DICTS,
+                           template=True, ctx=ma)
+
+        self.assertEquals(a0["name"],   a["name"])
+        self.assertEquals(a0["a"],      b["a"])
+        self.assertEquals(a0["b"]["b"], b["b"]["b"])
+        self.assertEquals(a0["b"]["c"], a["b"]["c"])
+        self.assertEquals(a0["b"]["d"], b["b"]["d"])
+
+        self.assertEquals(a02["name"],   a["name"])
+        self.assertEquals(a02["a"],      b["a"])
+        self.assertEquals(a02["b"]["b"], b["b"]["b"])
+        self.assertEquals(a02["b"]["c"], a["b"]["c"])
+        self.assertEquals(a02["b"]["d"], b["b"]["d"])
 
     def test_30_dump_and_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

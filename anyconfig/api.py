@@ -9,6 +9,7 @@ import anyconfig.mergeabledict as M
 import anyconfig.backend.backends as Backends
 import anyconfig.backend.json_ as BJ
 import anyconfig.parser as P
+import anyconfig.template as AT
 import anyconfig.utils as U
 
 # pylint: disable=W0611
@@ -58,7 +59,8 @@ def find_loader(config_path, forced_type=None):
     return cparser
 
 
-def single_load(config_path, forced_type=None, ignore_missing=False, **kwargs):
+def single_load(config_path, forced_type=None, ignore_missing=False,
+                template=True, ctx={}, **kwargs):
     """
     Load single config file.
 
@@ -66,6 +68,9 @@ def single_load(config_path, forced_type=None, ignore_missing=False, **kwargs):
     :param forced_type: Forced configuration parser type
     :param ignore_missing: Ignore and just return empty result if given file
         (``config_path``) does not exist
+    :param template: Assume configuration file may be a template file and try
+        to compile it AAR if True
+    :param ctx: Context dict to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -79,11 +84,22 @@ def single_load(config_path, forced_type=None, ignore_missing=False, **kwargs):
         return None
 
     logging.info("Loading: %s", config_path)
-    return cparser.load(config_path, ignore_missing=ignore_missing, **kwargs)
+    if template:
+        try:
+            logging.debug("Compiling: %s", config_path)
+            config_content = AT.render(config_path, ctx)
+            return cparser.loads(config_content, ignore_missing=ignore_missing,
+                                 **kwargs)
+        except:
+            logging.warn("Failed to compile %s, fallback to no template "
+                         "mode", config_path)
+
+    return cparser.load(config_path, ignore_missing=ignore_missing,
+                        **kwargs)
 
 
 def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
-               ignore_missing=False, **kwargs):
+               ignore_missing=False, template=True, ctx={}, **kwargs):
     """
     Load multiple config files.
 
@@ -102,6 +118,9 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
         loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
     :param marker: Globbing markerer to detect paths patterns
     :param ignore_missing: Ignore missing config files
+    :param template: Assume configuration file may be a template file and try
+        to compile it AAR if True
+    :param ctx: Context dict
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -113,14 +132,15 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
     if marker in paths:
         paths = U.sglob(paths)
 
-    config = container()
+    config = container.create(ctx) if ctx else container()
     for path in paths:
         if marker in path:  # Nested patterns like ['*.yml', '/a/b/c.yml'].
             conf_updates = multi_load(path, forced_type, merge, marker,
-                                      ignore_missing, **kwargs)
+                                      ignore_missing, template, config,
+                                      **kwargs)
         else:
             conf_updates = single_load(path, forced_type, ignore_missing,
-                                       **kwargs)
+                                       template, config, **kwargs)
 
         config.update(conf_updates, merge)
 
@@ -128,7 +148,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
 
 
 def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
-         ignore_missing=False, **kwargs):
+         ignore_missing=False, template=True, ctx={}, **kwargs):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -139,6 +159,9 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
     :param merge: Merging strategy to use
     :param marker: Globbing marker to detect paths patterns
     :param ignore_missing: Ignore missing config files
+    :param template: Assume configuration file may be a template file and try
+        to compile it AAR if True
+    :param ctx: Context dict to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -147,15 +170,20 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
     """
     if marker in path_specs or U.is_iterable(path_specs):
         return multi_load(path_specs, forced_type, merge, marker,
-                          ignore_missing, **kwargs)
+                          ignore_missing, template, ctx, **kwargs)
     else:
-        return single_load(path_specs, forced_type, ignore_missing, **kwargs)
+        return single_load(path_specs, forced_type, ignore_missing,
+                           template, ctx, **kwargs)
 
 
-def loads(config_content, forced_type=None, **kwargs):
+def loads(config_content, forced_type=None, template=True, ctx={}, **kwargs):
     """
     :param config_content: Configuration file's content
     :param forced_type: Forced configuration parser type
+    :param ignore_missing: Ignore missing config files
+    :param template: Assume configuration file may be a template file and try
+        to compile it AAR if True
+    :param ctx: Context dict to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -168,6 +196,14 @@ def loads(config_content, forced_type=None, **kwargs):
     cparser = find_loader(None, forced_type)
     if cparser is None:
         return P.parse(config_content)
+
+    if template:
+        try:
+            logging.debug("Compiling")
+            config_content = AT.render_s(config_content, ctx)
+        except:
+            logging.warn("Failed to compile and fallback to no template "
+                         "mode: '%s'", config_content[:50] + '...')
 
     return cparser.loads(config_content, **kwargs)
 

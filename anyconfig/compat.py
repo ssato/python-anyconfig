@@ -3,12 +3,14 @@
 # License: MIT
 #
 # pylint: disable=W0611,F0401,C0111
-import sys
+import codecs
 import itertools
+import locale
+import sys
 
 
 IS_PYTHON_3 = sys.version_info[0] == 3
-
+ENCODING = locale.getdefaultlocale()[1]
 
 # Borrowed from library doc, 9.7.1 Itertools functions:
 def _from_iterable(iterables):
@@ -46,12 +48,17 @@ def py3_cmp(a, b):
     return (a > b) - (a < b)
 
 
+def copen(filepath, flag='r', encoding=ENCODING):
+    return codecs.open(filepath, flag, encoding)
+
+
 if IS_PYTHON_3:
     import configparser  # flake8: noqa
     from io import StringIO  # flake8: noqa
     iteritems = py3_iteritems
     from_iterable = itertools.chain.from_iterable
     cmp = py3_cmp
+    raw_input = input
 else:
     import ConfigParser as configparser  # flake8: noqa
     try:
@@ -79,5 +86,6 @@ else:
 
     iteritems = py_iteritems
     cmp = cmp
+    raw_input = raw_input
 
 # vim:sw=4:ts=4:et:

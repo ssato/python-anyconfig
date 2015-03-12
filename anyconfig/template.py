@@ -18,8 +18,8 @@ try:
         return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
 
 except ImportError:
-    LOGGER.warn("Jinja2 is not available on your system. "
-                "Template support is disabled now.")
+    LOGGER.warn("Jinja2 is not available on your system, so "
+                "template support will be disabled.")
 
     def tmpl_env(paths):
         return None

@@ -105,13 +105,19 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Sat Oct 25 2014 Satoru SATOH <ssato@redhat.com> - 0.0.4-99
+* Fri Mar 13 2015 Satoru SATOH <ssato@redhat.com> - 0.0.5.99-1
+- show ini file structure erros by Kamil Chmielewski, closes PR#8
+- beautify README.rst by Florian Ludwig, closes PR#10
+- add support to load template config files
+
+* Sun Oct 26 2014 Satoru SATOH <ssato@redhat.com> - 0.0.5-1
 - start to monitor code coverage w/ using coveralls.io
 - start to do extra health check by landscape.io
 - introduce 'ignore_missing' optional parameter to ignore missing config
   file[s] in anyconfig.apy.*load() originally suggested by chmac in issue#4
 - add -x/--ignore-missing option to allow ignoring missing files in anyconfig_cli
 - make xml backend loader worked although it nees a lot more work
+- fix a typo in README.rst by Jonathan Eunice, closes PR#1
 - some more minor bug fixes and enhancements
 
 * Tue Aug 19 2014 Satoru SATOH <ssato@redhat.com> - 0.0.4-1

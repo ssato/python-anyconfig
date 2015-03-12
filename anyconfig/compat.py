@@ -49,6 +49,13 @@ def py3_cmp(a, b):
 
 
 def copen(filepath, flag='r', encoding=ENCODING):
+    """
+    FIXME: How to test this ?
+
+    >>> c = copen(__file__)
+    >>> c is not None
+    True
+    """
     return codecs.open(filepath, flag, encoding)
 
 

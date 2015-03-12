@@ -108,9 +108,9 @@ class Test_10_pure_functions(unittest.TestCase):
 
         a = dict(requires=["bash", "zsh"])
         a_s = "requires: [{{ requires|join(', ') }}]"
-        ctx = dict(requires=["bash", "zsh"], )
+        context = dict(requires=["bash", "zsh"], )
 
-        a1 = A.loads(a_s, forced_type="yaml", template=True, ctx=ctx)
+        a1 = A.loads(a_s, forced_type="yaml", template=True, context=context)
 
         self.assertEquals(a1["requires"],   a["requires"])
 
@@ -167,7 +167,7 @@ b:
     c: {{ b.c }}
 """)
 
-        a1 = A.single_load(a_path, template=True, ctx=a)
+        a1 = A.single_load(a_path, template=True, context=a)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -193,7 +193,7 @@ b:
     c: {{ b.c }}
 """)
 
-        a1 = A.single_load(a_path, template=True, ctx=a)
+        a1 = A.single_load(a_path, template=True, context=a)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -313,9 +313,9 @@ b:
     d: {{ b.d }}
 """)
 
-        a0 = A.multi_load(g_path, merge=A.MS_DICTS, template=True, ctx=ma)
+        a0 = A.multi_load(g_path, merge=A.MS_DICTS, template=True, context=ma)
         a02 = A.multi_load([g_path, b_path], merge=A.MS_DICTS,
-                           template=True, ctx=ma)
+                           template=True, context=ma)
 
         self.assertEquals(a0["name"],   a["name"])
         self.assertEquals(a0["a"],      b["a"])

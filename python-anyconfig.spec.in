@@ -27,6 +27,8 @@ BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
 Requires:       PyYAML
+# FIXME: How to add weak dependency ?
+#Requires:       python-jinja2
 Requires:       python-setuptools
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:       python-simplejson
@@ -45,6 +47,8 @@ formats such like INI, JSON and YAML.
 Summary:        Generic access to configuration files in some formats
 Group:          Development/Libraries
 Requires:       python3-PyYAML
+# FIXME: Likewise
+#Requires:       python3-jinja2
 Requires:       python3-setuptools
 
 %description -n python3-%{pkgname}

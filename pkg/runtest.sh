@@ -54,7 +54,7 @@ else
         fi
     done
     PYTHONPATH=. nosetests ${nosetests_opts} --all-modules
-    test $check_with_flake8 = 1 && flake8 -v . || :
+    test $check_with_flake8 = 1 && flake8 . || :
 fi
 
 # vim:sw=4:ts=4:et:

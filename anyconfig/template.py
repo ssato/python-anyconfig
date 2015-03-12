@@ -4,7 +4,6 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-from jinja2.exceptions import TemplateNotFound
 from anyconfig.compat import raw_input, copen
 from anyconfig.globals import LOGGER
 
@@ -14,6 +13,8 @@ import os
 TEMPLATE_SUPPORT = False
 try:
     import jinja2
+    from jinja2.exceptions import TemplateNotFound
+
     TEMPLATE_SUPPORT = True
 
     def tmpl_env(paths):
@@ -22,6 +23,9 @@ try:
 except ImportError:
     LOGGER.warn("Jinja2 is not available on your system, so "
                 "template support will be disabled.")
+
+    class TemplateNotFound(RuntimeError):
+        pass
 
     def tmpl_env(paths):
         return None
@@ -50,9 +54,15 @@ def render_s(tmpl_s, ctx={}, paths=[os.curdir]):
     :param paths: Template search paths
 
     >>> s = render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
-    >>> assert s == 'a = 1, b = "bbb"'
+    >>> if TEMPLATE_SUPPORT:
+    ...     assert s == 'a = 1, b = "bbb"'
     """
-    return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
+    env = tmpl_env(paths)
+
+    if env is None:
+        return tmpl_s
+    else:
+        return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
 
 
 def render_impl(template_file, ctx={}, paths=[]):

@@ -35,22 +35,25 @@ class Test_20_render_templates(unittest.TestCase):
         C.cleanup_workdir(self.workdir)
 
     def test_10_render_impl__wo_paths(self):
-        for fn, _s, c in self.templates:
-            f = os.path.join(self.workdir, fn)
-            c_r = TT.render_impl(f)
-            self.assertEquals(c_r, c)
+        if TT.TEMPLATE_SUPPORT:
+            for fn, _s, c in self.templates:
+                f = os.path.join(self.workdir, fn)
+                c_r = TT.render_impl(f)
+                self.assertEquals(c_r, c)
 
     def test_12_render_impl__w_paths(self):
-        for fn, _s, c in self.templates:
-            f = os.path.join(self.workdir, fn)
-            c_r = TT.render_impl(os.path.basename(f),
-                                 paths=[os.path.dirname(f)])
-            self.assertEquals(c_r, c)
+        if TT.TEMPLATE_SUPPORT:
+            for fn, _s, c in self.templates:
+                f = os.path.join(self.workdir, fn)
+                c_r = TT.render_impl(os.path.basename(f),
+                                     paths=[os.path.dirname(f)])
+                self.assertEquals(c_r, c)
 
     def test_20_render__wo_paths(self):
-        for fn, _s, c in self.templates:
-            f = os.path.join(self.workdir, fn)
-            c_r = TT.render(f)
-            self.assertEquals(c_r, c)
+        if TT.TEMPLATE_SUPPORT:
+            for fn, _s, c in self.templates:
+                f = os.path.join(self.workdir, fn)
+                c_r = TT.render(f)
+                self.assertEquals(c_r, c)
 
 # vim:sw=4:ts=4:et:

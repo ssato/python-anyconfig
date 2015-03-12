@@ -39,6 +39,20 @@ def make_template_paths(template_file, paths=[]):
     return paths + [tmpldir] if paths else [os.curdir, tmpldir]
 
 
+def render_s(tmpl_s, ctx={}, paths=[os.curdir]):
+    """
+    Compile and render given template string `tmpl_s` with context `context`.
+
+    :param tmpl_s: Template string
+    :param ctx: Context dict needed to instantiate templates
+    :param paths: Template search paths
+
+    >>> s = render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
+    >>> assert s == 'a = 1, b = "bbb"'
+    """
+    return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
+
+
 def render_impl(template_file, ctx={}, paths=[]):
     """
     :param template_file: Absolute or relative path to the template file

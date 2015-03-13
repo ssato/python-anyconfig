@@ -2,16 +2,18 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-from anyconfig.globals import LOGGER as logging
 
+import logging
 import anyconfig.backend.base as Base
+
+logger = logging.getLogger(__name__)
 
 SUPPORTED = False
 try:
     import yaml
     SUPPORTED = True
 except ImportError:
-    logging.warn("YAML module is not available. Disabled its support.")
+    logger.warn("YAML module is not available. Disabled its support.")
 
 
 if SUPPORTED:
@@ -33,13 +35,13 @@ if SUPPORTED:
             return yaml.dump(data, fp, **kwargs)
 else:
     def yaml_load(*args, **kwargs):
-        logging.warn("Return {} as YAML module is not available: "
-                     "args=%s, kwargs=%s", ','.join(args), str(kwargs))
+        logger.warn("Return {} as YAML module is not available: "
+                    "args=%s, kwargs=%s", ','.join(args), str(kwargs))
         return {}
 
     def yaml_dump(*args, **kwargs):
-        logging.warn("Do nothing as YAML module is not available: "
-                     "args=%s, kwargs=%s", ','.join(args), str(kwargs))
+        logger.warn("Do nothing as YAML module is not available: "
+                    "args=%s, kwargs=%s", ','.join(args), str(kwargs))
         pass
 
 

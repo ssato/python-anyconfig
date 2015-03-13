@@ -2,14 +2,16 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+
+import logging
+import sys
+
 from anyconfig.compat import configparser, iteritems
-from anyconfig.globals import LOGGER as logging
 
 import anyconfig.backend.base as Base
 import anyconfig.parser as P
 
-import sys
-
+logger = logging.getLogger(__name__)
 
 SUPPORTED = True  # It should be available w/ python dist always.
 
@@ -81,7 +83,7 @@ def _load_impl(config_fp, sep=_SEP, **kwargs):
                 config[s][k] = _parse(v, sep)
 
     except Exception:
-        logging.warn(sys.exc_info()[-1])
+        logger.warn(sys.exc_info()[-1])
         raise
 
     return config

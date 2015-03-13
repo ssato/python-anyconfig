@@ -1,0 +1,19 @@
+{# Template config example #}
+
+foo:
+    bar: "{{ foo.bar|default('foo.bar') }}"
+
+links:
+    {% for item in navigation if item.href and item.caption -%}
+    - href: "{{ item.href }}"
+      caption: "{{ item.caption }}"
+      no: {{ loop.index }}
+    {% else %}
+    - href: "http://www.example.com"
+      caption: "Example.com !"
+    {% endfor %}
+
+{% include "template-includee.yml" ignore missing %}
+
+{# vim:sw=4:ts=4:et:ft=django:
+#}

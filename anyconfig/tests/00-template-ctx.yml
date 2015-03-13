@@ -1,0 +1,10 @@
+{# Template context #}
+foo:
+    bar: "foo_bar_str"
+
+navigation:
+    - href: "https://www.google.com"
+      caption: Google
+    - href: "https://www.bing.com"
+      caption: Bing
+

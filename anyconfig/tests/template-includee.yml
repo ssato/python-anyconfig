@@ -1,0 +1,10 @@
+a: 0
+b: bbb
+
+sect0:
+  c: ["x", "y", "z"]
+  d:
+    - e: "ee"
+      f: 0
+    - e: "eeee"
+      f: 1

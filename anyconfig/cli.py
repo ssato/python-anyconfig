@@ -65,7 +65,7 @@ def option_parser(defaults=None, usage=USAGE):
     """
     defaults = dict(loglevel=1, list=False, output=None, itype=None,
                     otype=None, atype=None, merge=A.MS_DICTS,
-                    ignore_missing=False)
+                    ignore_missing=False, template=True)
 
     ctypes = A.list_types()
     ctypes_s = ", ".join(ctypes)
@@ -103,6 +103,9 @@ Int, str, etc.""" % ctypes_s
     parser.add_option("-O", "--otype", choices=ctypes,
                       help=(type_help % "Output"))
     parser.add_option("-M", "--merge", choices=mts, help=mt_help)
+    parser.add_option("", "--no-template", dest="template",
+                      action="store_false",
+                      help="Disable template config support")
 
     parser.add_option("-A", "--args", help="Argument configs to override")
     parser.add_option("", "--atype", choices=ctypes, help=af_help)
@@ -143,7 +146,8 @@ def main(argv=sys.argv):
             sys.exit(-1)
 
     data = A.load(args, options.itype, options.merge,
-                  ignore_missing=options.ignore_missing)
+                  ignore_missing=options.ignore_missing,
+                  template=options.template)
 
     if options.args:
         diff = A.loads(options.args, options.atype)

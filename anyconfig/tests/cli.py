@@ -2,8 +2,9 @@
 # Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.cli as T
+import anyconfig.cli as TT
 import anyconfig.api as A
+import anyconfig.template as AT
 import anyconfig.tests.common as C
 
 import os
@@ -33,7 +34,7 @@ class Test_10_effectful_functions(unittest.TestCase):
 
     def run_and_check_exit_code(self, args=[], code=0, _not=False):
         try:
-            T.main(["dummy"] + args)
+            TT.main(["dummy"] + args)
         except SystemExit as e:
             if _not:
                 self.assertNotEquals(e.code, code)
@@ -61,7 +62,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         A.dump(a, input)
         self.assertTrue(os.path.exists(input))
 
-        T.main(["dummy", "-o", output, input])
+        TT.main(["dummy", "-o", output, input])
         self.assertTrue(os.path.exists(output))
 
     def test_32_single_input_w_get_option(self):
@@ -73,7 +74,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         A.dump(d, input)
         self.assertTrue(os.path.exists(input))
 
-        T.main(["dummy", "-o", output, "--get", "a.b", input])
+        TT.main(["dummy", "-o", output, "--get", "a.b", input])
         self.assertTrue(os.path.exists(output))
 
         x = A.load(output)
@@ -88,7 +89,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         A.dump(d, input)
         self.assertTrue(os.path.exists(input))
 
-        T.main(["dummy", "-o", output, "--set", "a.b.d=E", input])
+        TT.main(["dummy", "-o", output, "--set", "a.b.d=E", input])
         self.assertTrue(os.path.exists(output))
 
         ref = d.copy()
@@ -102,7 +103,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         input = os.path.join(os.curdir, "conf_file_should_not_exist.json")
         assert not os.path.exists(input)
 
-        T.main(["dummy", "-O", "json", "--ignore-missing",
+        TT.main(["dummy", "-O", "json", "--ignore-missing",
                 input])
 
     def test_40_multiple_inputs(self):
@@ -122,7 +123,7 @@ class Test_10_effectful_functions(unittest.TestCase):
             A.dump(xs[i], input)
             self.assertTrue(os.path.exists(input))
 
-        T.main(["dummy", "-o", output] + inputs)
+        TT.main(["dummy", "-o", output] + inputs)
         self.assertTrue(os.path.exists(output))
 
     def test_50_single_input__w_arg_option(self):
@@ -134,7 +135,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         A.dump(a, input)
         self.assertTrue(os.path.exists(input))
 
-        T.main(["dummy", "-o", output, "-A", "a:10;name:x;d:3,4", input])
+        TT.main(["dummy", "-o", output, "-A", "a:10;name:x;d:3,4", input])
         self.assertTrue(os.path.exists(output))
 
         x = A.load(output)
@@ -160,5 +161,44 @@ class Test_10_effectful_functions(unittest.TestCase):
         A.dump(a, input)
 
         self.run_and_check_exit_code(["--itype", "json", input], 0)
+
+    def test_70_multi_inputs__w_template(self):
+        if not AT.TEMPLATE_SUPPORT:
+            return
+
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+
+        inputsdir = os.path.join(self.workdir, "in")
+        os.makedirs(inputsdir)
+
+        A.dump(a, os.path.join(inputsdir, "a0.yml"))
+        open(os.path.join(inputsdir, "a1.yml"), 'w').write("""\
+name: {{ name }}
+a: {{ a }}
+b:
+    b:
+        {% for x in b.b -%}
+        - {{ x }}
+        {% endfor %}
+    c: {{ b.c }}
+""")
+
+        output = os.path.join(self.workdir, "b.json")
+
+        TT.main(["dummy", "-o", output,
+                 os.path.join(inputsdir, "*.yml")])
+        self.assertTrue(os.path.exists(output))
+
+    def test_72_single_input__no_template(self):
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+
+        input = os.path.join(self.workdir, "a.json")
+        output = os.path.join(self.workdir, "b.json")
+
+        A.dump(a, input)
+        self.assertTrue(os.path.exists(input))
+
+        TT.main(["dummy", "--no-template", "-o", output, input])
+        self.assertTrue(os.path.exists(output))
 
 # vim:sw=4:ts=4:et:

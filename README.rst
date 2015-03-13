@@ -293,6 +293,7 @@ It can process various config files and output a merged config file:
                           example, '--set a.b.c=1' to a config {'a': {'b': {'c':
                           0, 'd': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.
     -x, --ignore-missing  Ignore missing input files
+    --no-template         Disable template config support
     -s, --silent          Silent or quiet mode
     -q, --quiet           Same as --silent option
     -v, --verbose         Verbose mode

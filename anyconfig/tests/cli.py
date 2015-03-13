@@ -201,4 +201,15 @@ b:
         TT.main(["dummy", "--no-template", "-o", output, input])
         self.assertTrue(os.path.exists(output))
 
+    def test_74_multi_inputs__w_template(self):
+        if not AT.TEMPLATE_SUPPORT:
+            return
+
+        curdir = C.selfdir()
+
+        input = os.path.join(curdir, "*template-c*.yml")
+        output = os.path.join(self.workdir, "output.yml")
+
+        TT.main(["dummy", "-o", output, input])
+
 # vim:sw=4:ts=4:et:

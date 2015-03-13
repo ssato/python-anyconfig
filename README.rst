@@ -65,6 +65,9 @@ see also: output of `python -c "import anyconfig; help(anyconfig)"`
 anyconfig module
 -------------------
 
+Loading single config file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 To load single config file:
 
 .. code-block:: python
@@ -109,6 +112,9 @@ these load and dump functions:
    The returned object is an instance of anyconfig.mergeabledict.MergeableDict
    class by default, to support recursive merge operations needed when loading
    multiple config files.
+
+Loading multiple config files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To load multiple config files:
 
@@ -235,6 +241,64 @@ configurations from the followings:
 
     {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
 
+Template config support
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Anyconfig module supports template config files since 0.0.6.
+That is, config files written in Jinja2 template [#]_ will be compiled before
+loading w/ backend module.
+
+Anyway, a picture is worth a thousand words. Here is an example of template
+config files.
+
+  .. code-block:: console
+
+    ssato@localhost% cat a.yml
+    a: 1
+    b:
+      {% for i in [1, 2, 3] -%}
+      - index: {{ i }}
+      {% endfor %}
+    {% include "b.yml" %}
+    ssato@localhost% cat b.yml
+    c:
+      d: "efg"
+    ssato@localhost% anyconfig_cli a.yml -O yaml -s
+    a: 1
+    b:
+    - {index: 1}
+    - {index: 2}
+    - {index: 3}
+    c: {d: efg}
+    ssato@localhost%
+
+And another one:
+
+  .. code-block:: console
+
+    In [1]: import anyconfig
+
+    In [2]: ls *.yml
+    a.yml  b.yml
+
+    In [3]: cat a.yml
+    a: {{ a }}
+    b:
+      {% for i in b -%}
+      - index: {{ i }}
+      {% endfor %}
+    {% include "b.yml" %}
+
+    In [4]: cat b.yml
+    c:
+      d: "efg"
+
+    In [5]: context = dict(a=1, b=[2, 4])
+
+    In [6]: anyconfig.load("*.yml", template=True, context=context)
+    Out[6]: {'a': 1, 'b': [{'index': 2}, {'index': 4}], 'c': {'d': 'efg'}}
+
+.. [#] Jinja2 template engine (http://jinja.pocoo.org) and its language (http://jinja.pocoo.org/docs/dev/)
 
 CLI frontend
 -------------

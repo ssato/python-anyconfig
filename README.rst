@@ -2,6 +2,9 @@
 python-anyconfig
 =================
 
+About
+========
+
 .. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
    :target: https://travis-ci.org/ssato/python-anyconfig
    :alt: Test status
@@ -301,7 +304,7 @@ And another one:
 .. [#] Jinja2 template engine (http://jinja.pocoo.org) and its language (http://jinja.pocoo.org/docs/dev/)
 
 CLI frontend
--------------
+---------------
 
 There is a CLI frontend 'anyconfig_cli' to demonstrate the power of this library.
 

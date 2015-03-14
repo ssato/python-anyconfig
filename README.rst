@@ -446,7 +446,7 @@ the `Other anyconfig backend modules`_ section.
 How to test
 -------------
 
-Try to run './pkg/runtest.sh [path_to_python_code]'.
+Try to run '[WITH_COVERAGE=1] ./pkg/runtest.sh [path_to_python_code]'.
 
 TODO
 ======

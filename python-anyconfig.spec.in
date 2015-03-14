@@ -109,6 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 - show ini file structure erros by Kamil Chmielewski, closes PR#8
 - beautify README.rst by Florian Ludwig, closes PR#10
 - add support to load template config files
+- removes all custom logging magic and changes the behaviour to the standard
+  way of logging for Python libraries by Wouter Bolsterlee, closed PR#11
 
 * Sun Oct 26 2014 Satoru SATOH <ssato@redhat.com> - 0.0.5-1
 - start to monitor code coverage w/ using coveralls.io

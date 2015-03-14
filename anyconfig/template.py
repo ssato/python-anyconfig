@@ -9,8 +9,7 @@ import os
 
 from anyconfig.compat import raw_input, copen
 
-logger = logging.getLogger(__name__)
-
+LOGGER = logging.getLogger(__name__)
 TEMPLATE_SUPPORT = False
 try:
     import jinja2
@@ -22,7 +21,7 @@ try:
         return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
 
 except ImportError:
-    logger.warn("Jinja2 is not available on your system, so "
+    LOGGER.warn("Jinja2 is not available on your system, so "
                 "template support will be disabled.")
 
     class TemplateNotFound(RuntimeError):

@@ -3,16 +3,14 @@
 # License: MIT
 #
 # pylint: disable=R0921
-
 import logging
 
 import anyconfig.backend.base as Base
 import anyconfig.compat
 
-logger = logging.getLogger(__name__)
 
+LOGGER = logging.getLogger(__name__)
 SUPPORTED = True
-
 try:
     # First, try lxml which is compatible with elementtree and looks faster a
     # lot. See also: http://getpython3.com/diveintopython3/xml.html
@@ -24,7 +22,7 @@ except ImportError:
         try:
             import elementtree.ElementTree as etree
         except ImportError:
-            logger.warn("ElementTree module is not available. Disabled "
+            LOGGER.warn("ElementTree module is not available. Disabled "
                         "XML support.")
             SUPPORTED = False
 
@@ -45,7 +43,7 @@ if SUPPORTED:
         return etree.parse(src).getroot()
 else:
     def _dummy_fun(*args, **kwargs):
-        logger.warn("Return None as XML module is not available: "
+        LOGGER.warn("Return None as XML module is not available: "
                     "args=%s, kwargs=%s", ','.join(args), str(kwargs))
         return None
 

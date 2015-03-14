@@ -9,9 +9,9 @@ import anyconfig.compat
 import anyconfig.mergeabledict
 import anyconfig.utils
 
-SUPPORTED = False
 
-logger = logging.getLogger(__name__)
+SUPPORTED = False
+LOGGER = logging.getLogger(__name__)
 
 
 def mk_opt_args(keys, kwargs):
@@ -43,7 +43,7 @@ def mk_dump_dir_if_not_exist(f):
     dumpdir = os.path.dirname(f)
 
     if not os.path.exists(dumpdir):
-        logger.debug("Creating output dir as it's not found: %s", dumpdir)
+        LOGGER.debug("Creating output dir as it's not found: %s", dumpdir)
         os.makedirs(dumpdir)
 
 

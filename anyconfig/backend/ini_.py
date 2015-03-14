@@ -10,10 +10,9 @@ import anyconfig.parser as P
 
 from anyconfig.compat import configparser, iteritems
 
-logger = logging.getLogger(__name__)
 
+LOGGER = logging.getLogger(__name__)
 SUPPORTED = True  # It should be available w/ python dist always.
-
 _SEP = ','
 
 
@@ -82,7 +81,7 @@ def _load_impl(config_fp, sep=_SEP, **kwargs):
                 config[s][k] = _parse(v, sep)
 
     except Exception:
-        logger.warn(sys.exc_info()[-1])
+        LOGGER.warn(sys.exc_info()[-1])
         raise
 
     return config

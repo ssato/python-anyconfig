@@ -5,14 +5,14 @@
 import logging
 import anyconfig.backend.base as Base
 
-logger = logging.getLogger(__name__)
 
+LOGGER = logging.getLogger(__name__)
 SUPPORTED = False
 try:
     import yaml
     SUPPORTED = True
 except ImportError:
-    logger.warn("YAML module is not available. Disabled its support.")
+    LOGGER.warn("YAML module is not available. Disabled its support.")
 
 
 if SUPPORTED:
@@ -34,12 +34,12 @@ if SUPPORTED:
             return yaml.dump(data, fp, **kwargs)
 else:
     def yaml_load(*args, **kwargs):
-        logger.warn("Return {} as YAML module is not available: "
+        LOGGER.warn("Return {} as YAML module is not available: "
                     "args=%s, kwargs=%s", ','.join(args), str(kwargs))
         return {}
 
     def yaml_dump(*args, **kwargs):
-        logger.warn("Do nothing as YAML module is not available: "
+        LOGGER.warn("Do nothing as YAML module is not available: "
                     "args=%s, kwargs=%s", ','.join(args), str(kwargs))
         pass
 

@@ -29,14 +29,14 @@ list_types = anyconfig.backend.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
 # pylint: enable=C0103
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 def set_loglevel(level):
     """
     :param level: Log level, e.g. logging.INFO and logging.WARN.
     """
-    logger.setLevel(level)
+    LOGGER.setLevel(level)
 
 
 def find_loader(config_path, forced_type=None):
@@ -48,15 +48,15 @@ def find_loader(config_path, forced_type=None):
     if forced_type is not None:
         cparser = anyconfig.backend.backends.find_by_type(forced_type)
         if not cparser:
-            logger.error("No parser found for given type: %s", forced_type)
+            LOGGER.error("No parser found for given type: %s", forced_type)
             return None
     else:
         cparser = anyconfig.backend.backends.find_by_file(config_path)
         if not cparser:
-            logger.error("No parser found for given file: %s", config_path)
+            LOGGER.error("No parser found for given file: %s", config_path)
             return None
 
-    logger.debug("Using config parser of type: %s", cparser.type())
+    LOGGER.debug("Using config parser of type: %s", cparser.type())
     return cparser
 
 
@@ -84,15 +84,15 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
     if cparser is None:
         return None
 
-    logger.info("Loading: %s", config_path)
+    LOGGER.info("Loading: %s", config_path)
     if template:
         try:
-            logger.debug("Compiling: %s", config_path)
+            LOGGER.debug("Compiling: %s", config_path)
             config_content = anyconfig.template.render(config_path, context)
             return cparser.loads(config_content, ignore_missing=ignore_missing,
                                  **kwargs)
         except:
-            logger.warn("Failed to compile %s, fallback to no template "
+            LOGGER.warn("Failed to compile %s, fallback to no template "
                          "mode", config_path)
 
     return cparser.load(config_path, ignore_missing=ignore_missing,
@@ -201,11 +201,11 @@ def loads(config_content, forced_type=None, template=True, context={},
 
     if template:
         try:
-            logger.debug("Compiling")
+            LOGGER.debug("Compiling")
             config_content = anyconfig.template.render_s(config_content,
                                                          context)
         except:
-            logger.warn("Failed to compile and fallback to no template "
+            LOGGER.warn("Failed to compile and fallback to no template "
                          "mode: '%s'", config_content[:50] + '...')
 
     return cparser.loads(config_content, **kwargs)
@@ -222,7 +222,7 @@ def _find_dumper(config_path, forced_type=None):
     cparser = find_loader(config_path, forced_type)
 
     if cparser is None or not getattr(cparser, "dump", False):
-        logger.warn("Dump method not implemented. Fallback to "
+        LOGGER.warn("Dump method not implemented. Fallback to "
                      "JsonConfigParser")
         cparser = anyconfig.backend.json_.JsonConfigParser()
 
@@ -242,7 +242,7 @@ def dump(data, config_path, forced_type=None, **kwargs):
     """
     dumper = _find_dumper(config_path, forced_type)
 
-    logger.info("Dumping: %s", config_path)
+    LOGGER.info("Dumping: %s", config_path)
     dumper.dump(data, config_path, **kwargs)
 
 

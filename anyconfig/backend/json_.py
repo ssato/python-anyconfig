@@ -1,11 +1,11 @@
 #
-# Copyright (C) 2011 - 2014 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Ref. python -c "import json; help(json)"
 #
 import anyconfig.backend.base as Base
-import anyconfig.compat as C
+import anyconfig.compat
 
 
 SUPPORTED = True
@@ -30,7 +30,7 @@ _DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
 
 # It seems that 'encoding' argument is not allowed in json.load[s] and
 # json.dump[s] in JSON module in python 3.x.
-if not C.IS_PYTHON_3:
+if not anyconfig.compat.IS_PYTHON_3:
     _LOAD_OPTS.append("encoding")
     _DUMP_OPTS.append("encoding")
 

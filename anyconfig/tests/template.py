@@ -2,11 +2,11 @@
 # Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.template as TT
-import anyconfig.tests.common as C
-
 import os.path
 import unittest
+
+import anyconfig.template as TT
+import anyconfig.tests.common
 
 
 C_1 = """A char is 'a'.
@@ -26,13 +26,13 @@ class Test_20_render_templates(unittest.TestCase):
     templates = TMPLS
 
     def setUp(self):
-        self.workdir = C.setup_workdir()
+        self.workdir = anyconfig.tests.common.setup_workdir()
         for fn, tmpl_s, _c in self.templates:
             f = os.path.join(self.workdir, fn)
             open(f, 'w').write(tmpl_s)
 
     def tearDown(self):
-        C.cleanup_workdir(self.workdir)
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_render_impl__wo_paths(self):
         if TT.TEMPLATE_SUPPORT:

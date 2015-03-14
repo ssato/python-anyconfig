@@ -1,23 +1,23 @@
 #
-# Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-from anyconfig.compat import cmp
-# pylint: disable=W0622
-from itertools import groupby
-from operator import methodcaller
-
-import anyconfig.backend.ini_ as BINI
-import anyconfig.backend.json_ as BJSON
-import anyconfig.backend.xml_ as BXML
-import anyconfig.backend.yaml_ as BYAML
-import anyconfig.utils as U
+import itertools
+import operator
 import pkg_resources
 
+import anyconfig.backend.ini_
+import anyconfig.backend.json_
+import anyconfig.backend.xml_
+import anyconfig.backend.yaml_
+import anyconfig.compat
+import anyconfig.utils
 
-_CPs = [p for p in [BINI.IniConfigParser, BJSON.JsonConfigParser,
-                    BYAML.YamlConfigParser, BXML.XmlConfigParser,
-                    ] if p.supports()]
+
+_CPs = [p for p in [anyconfig.backend.ini_.IniConfigParser,
+                    anyconfig.backend.json_.JsonConfigParser,
+                    anyconfig.backend.xml_.XmlConfigParser,
+                    anyconfig.backend.yaml_.YamlConfigParser] if p.supports()]
 
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):
     try:
@@ -29,7 +29,7 @@ for e in pkg_resources.iter_entry_points("anyconfig_backends"):
 def cmp_cps(lhs, rhs):
     """Compare config parsers by these priorities.
     """
-    return cmp(lhs.priority(), rhs.priority())
+    return anyconfig.compat.cmp(lhs.priority(), rhs.priority())
 
 
 def fst(tpl):
@@ -49,7 +49,7 @@ def snd(tpl):
 
 
 def groupby_key(xs, kf):
-    return groupby(sorted(xs, key=kf), key=kf)
+    return itertools.groupby(sorted(xs, key=kf), key=kf)
 
 
 def uniq(iterable):
@@ -69,19 +69,21 @@ def list_parsers_by_type(cps=_CPs):
     """
     :return: List (generator) of (config_type, [config_parser])
     """
-    return ((t, sorted(p, key=methodcaller("priority"))) for t, p in
-            groupby_key(cps, methodcaller("type")))
+    return ((t, sorted(p, key=operator.methodcaller("priority"))) for t, p
+            in groupby_key(cps, operator.methodcaller("type")))
 
 
 def _list_xppairs(xps):
-    return sorted((snd(xp) for xp in xps), key=methodcaller("priority"))
+    return sorted((snd(xp) for xp in xps),
+                  key=operator.methodcaller("priority"))
 
 
 def list_parsers_by_extension(cps=_CPs):
     """
     :return: List (generator) of (config_ext, [config_parser])
     """
-    cps_by_ext = U.concat(([(x, p) for x in p.extensions()] for p in cps))
+    cps_by_ext = anyconfig.utils.concat(([(x, p) for x in p.extensions()] for p
+                                         in cps))
 
     return ((x, _list_xppairs(xps)) for x, xps in groupby_key(cps_by_ext, fst))
 
@@ -92,7 +94,7 @@ def find_by_file(config_file, cps=_CPs):
 
     :param config_file: Config file path
     """
-    ext = U.get_file_extension(config_file)
+    ext = anyconfig.utils.get_file_extension(config_file)
     for x, ps in list_parsers_by_extension(cps):
         if x == ext:
             return ps[-1]

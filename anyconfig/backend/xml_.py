@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2014 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # pylint: disable=R0921
@@ -7,7 +7,7 @@
 import logging
 
 import anyconfig.backend.base as Base
-import anyconfig.compat as AC
+import anyconfig.compat
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +66,8 @@ def etree_to_container(root, container):
     tree[root.tag] = container()
 
     if root.attrib:
-        tree[root.tag]["attrs"] = container(AC.iteritems(root.attrib))
+        tree[root.tag]["attrs"] = \
+            container(anyconfig.compat.iteritems(root.attrib))
 
     if root.text and root.text.strip():
         tree[root.tag]["text"] = root.text.strip()

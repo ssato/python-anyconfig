@@ -4,16 +4,14 @@
 #
 """Public APIs of anyconfig module.
 """
-
 import logging
 
-import anyconfig.globals as G
-import anyconfig.mergeabledict as M
-import anyconfig.backend.backends as Backends
-import anyconfig.backend.json_ as BJ
-import anyconfig.parser as P
-import anyconfig.template as AT
-import anyconfig.utils as U
+import anyconfig.backend.backends
+import anyconfig.backend.json_
+import anyconfig.mergeabledict
+import anyconfig.parser
+import anyconfig.template
+import anyconfig.utils
 
 # pylint: disable=W0611
 # Import some global constants will be re-exported:
@@ -25,10 +23,10 @@ from anyconfig.parser import PATH_SEPS
 
 # pylint: disable=C0103
 # Re-export:
-list_types = Backends.list_types  # flake8: noqa
+list_types = anyconfig.backend.backends.list_types  # flake8: noqa
 
 # aliases:
-container = M.MergeableDict
+container = anyconfig.mergeabledict.MergeableDict
 # pylint: enable=C0103
 
 logger = logging.getLogger(__name__)
@@ -48,12 +46,12 @@ def find_loader(config_path, forced_type=None):
     :return: ConfigParser-inherited class object
     """
     if forced_type is not None:
-        cparser = Backends.find_by_type(forced_type)
+        cparser = anyconfig.backend.backends.find_by_type(forced_type)
         if not cparser:
             logger.error("No parser found for given type: %s", forced_type)
             return None
     else:
-        cparser = Backends.find_by_file(config_path)
+        cparser = anyconfig.backend.backends.find_by_file(config_path)
         if not cparser:
             logger.error("No parser found for given file: %s", config_path)
             return None
@@ -80,7 +78,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    config_path = U.ensure_expandusr(config_path)
+    config_path = anyconfig.utils.ensure_expandusr(config_path)
 
     cparser = find_loader(config_path, forced_type)
     if cparser is None:
@@ -90,7 +88,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
     if template:
         try:
             logger.debug("Compiling: %s", config_path)
-            config_content = AT.render(config_path, context)
+            config_content = anyconfig.template.render(config_path, context)
             return cparser.loads(config_content, ignore_missing=ignore_missing,
                                  **kwargs)
         except:
@@ -133,7 +131,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
     assert merge in MERGE_STRATEGIES, "Invalid merge strategy: " + merge
 
     if marker in paths:
-        paths = U.sglob(paths)
+        paths = anyconfig.utils.sglob(paths)
 
     config = container.create(context) if context else container()
     for path in paths:
@@ -171,7 +169,7 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    if marker in path_specs or U.is_iterable(path_specs):
+    if marker in path_specs or anyconfig.utils.is_iterable(path_specs):
         return multi_load(path_specs, forced_type, merge, marker,
                           ignore_missing, template, context, **kwargs)
     else:
@@ -195,16 +193,17 @@ def loads(config_content, forced_type=None, template=True, context={},
         operations.
     """
     if forced_type is None:
-        return P.parse(config_content)
+        return anyconfig.parser.parse(config_content)
 
     cparser = find_loader(None, forced_type)
     if cparser is None:
-        return P.parse(config_content)
+        return anyconfig.parser.parse(config_content)
 
     if template:
         try:
             logger.debug("Compiling")
-            config_content = AT.render_s(config_content, context)
+            config_content = anyconfig.template.render_s(config_content,
+                                                         context)
         except:
             logger.warn("Failed to compile and fallback to no template "
                          "mode: '%s'", config_content[:50] + '...')
@@ -225,7 +224,7 @@ def _find_dumper(config_path, forced_type=None):
     if cparser is None or not getattr(cparser, "dump", False):
         logger.warn("Dump method not implemented. Fallback to "
                      "JsonConfigParser")
-        cparser = BJ.JsonConfigParser()
+        cparser = anyconfig.backend.json_.JsonConfigParser()
 
     return cparser
 

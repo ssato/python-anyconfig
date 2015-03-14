@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2014 Red Hat, Inc.
+# Copyright (C) 2011 - 2015 Red Hat, Inc.
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
@@ -7,13 +7,15 @@
 """
 from __future__ import absolute_import
 from .compat import iteritems
-from . import utils as U
-from . import parser as P
+from .parser import PATH_SEPS
 
 import collections
 import copy
 import functools
 import operator
+
+import anyconfig.parser
+import anyconfig.utils
 
 # TODO: Keep items' order:
 # from collections import OrderedDict as dict
@@ -27,7 +29,7 @@ MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 
 
-def get(dic, path, seps=P.PATH_SEPS):
+def get(dic, path, seps=PATH_SEPS):
     """
     getter for nested dicts.
 
@@ -50,14 +52,15 @@ def get(dic, path, seps=P.PATH_SEPS):
     True
     """
     try:
-        return (functools.reduce(operator.getitem, P.parse_path(path, seps),
+        return (functools.reduce(operator.getitem,
+                                 anyconfig.parser.parse_path(path, seps),
                                  dic),
                 '')
     except (TypeError, KeyError) as e:
         return (None, str(e))
 
 
-def _mk_nested_dic(path, val, seps=P.PATH_SEPS):
+def _mk_nested_dic(path, val, seps=PATH_SEPS):
     """
     Make a nested dict iteratively.
 
@@ -71,13 +74,13 @@ def _mk_nested_dic(path, val, seps=P.PATH_SEPS):
     {'a': {'b': {'c': 1}}}
     """
     ret = None
-    for key in reversed(P.parse_path(path, seps)):
+    for key in reversed(anyconfig.parser.parse_path(path, seps)):
         ret = {key: val if ret is None else ret.copy()}
 
     return ret
 
 
-def set_(dic, path, val, seps=P.PATH_SEPS, strategy=None):
+def set_(dic, path, val, seps=PATH_SEPS, strategy=None):
     """
     setter for nested dicts.
 
@@ -121,7 +124,7 @@ def convert_to(mdict):
     """
     if is_mergeabledict_or_dict(mdict):
         return dict((k, convert_to(v)) for k, v in iteritems(mdict))
-    elif U.is_iterable(mdict):
+    elif anyconfig.utils.is_iterable(mdict):
         return type(mdict)(convert_to(v) for v in mdict)
     else:
         return mdict
@@ -135,7 +138,7 @@ def create_from(dic):
     """
     if is_mergeabledict_or_dict(dic):
         return MergeableDict((k, create_from(v)) for k, v in iteritems(dic))
-    elif U.is_iterable(dic):
+    elif anyconfig.utils.is_iterable(dic):
         return type(dic)(create_from(v) for v in dic)
     else:
         return dic
@@ -247,7 +250,7 @@ class MergeableDict(dict):
                     # update recursively.
                     self[k].update_w_merge(v, merge_lists)
                 else:
-                    if merge_lists and U.is_iterable(v):
+                    if merge_lists and anyconfig.utils.is_iterable(v):
                         v0 = self.get(k, None)
                         if v0 is None:
                             self[k] = [x for x in list(v)]

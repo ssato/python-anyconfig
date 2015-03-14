@@ -4,7 +4,6 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-
 import logging
 import os
 

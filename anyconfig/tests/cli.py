@@ -2,15 +2,15 @@
 # Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.cli as TT
-import anyconfig.api as A
-import anyconfig.template as AT
-import anyconfig.tests.common as C
-
 import os
 import os.path
 import subprocess
 import unittest
+
+import anyconfig.cli as TT
+import anyconfig.api as A
+import anyconfig.template
+import anyconfig.tests.common as C
 
 
 def run(args=[]):
@@ -163,7 +163,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         self.run_and_check_exit_code(["--itype", "json", input], 0)
 
     def test_70_multi_inputs__w_template(self):
-        if not AT.TEMPLATE_SUPPORT:
+        if not anyconfig.template.TEMPLATE_SUPPORT:
             return
 
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -202,7 +202,7 @@ b:
         self.assertTrue(os.path.exists(output))
 
     def test_74_multi_inputs__w_template(self):
-        if not AT.TEMPLATE_SUPPORT:
+        if not anyconfig.template.TEMPLATE_SUPPORT:
             return
 
         curdir = C.selfdir()

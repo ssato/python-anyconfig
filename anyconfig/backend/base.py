@@ -1,15 +1,13 @@
 #
-# Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-
 import logging
 import os
 
-from anyconfig.compat import StringIO
-
-import anyconfig.mergeabledict as D
-import anyconfig.utils as U
+import anyconfig.compat
+import anyconfig.mergeabledict
+import anyconfig.utils
 
 SUPPORTED = False
 
@@ -54,7 +52,7 @@ class ConfigParser(object):
     _type = None
     _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
     _extensions = []
-    _container = D.MergeableDict
+    _container = anyconfig.mergeabledict.MergeableDict
     _supported = False
 
     _load_opts = []
@@ -78,7 +76,8 @@ class ConfigParser(object):
             return cls._supported
         else:
             return cls._supported and \
-                U.get_file_extension(config_file) in cls._extensions
+                anyconfig.utils.get_file_extension(config_file) \
+                in cls._extensions
 
     @classmethod
     def container(cls):
@@ -110,7 +109,7 @@ class ConfigParser(object):
 
         :return: cls.container() object holding config parameters
         """
-        config_fp = StringIO(config_content)
+        config_fp = anyconfig.compat.StringIO(config_content)
         create = cls.container().create
         return create(cls.load_impl(config_fp,
                                     **mk_opt_args(cls._load_opts, kwargs)))

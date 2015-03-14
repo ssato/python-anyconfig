@@ -1,20 +1,23 @@
 #
-# Copyright (C) 2012 - 2014 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.tests.common as C
-import anyconfig.backend.base as TT  # stands for test target
 import os
 import os.path
 import unittest
+
+import anyconfig.backend.base as TT  # stands for test target
+import anyconfig.mergeabledict
+import anyconfig.tests.common
 
 
 class Test_00_ConfigParser(unittest.TestCase):
 
     def test_10_set_container(self):
-        TT.ConfigParser.set_container(dict)
-        self.assertEquals(TT.ConfigParser.container(), dict)
-        TT.ConfigParser.set_container(TT.D.MergeableDict)
+        cp = TT.ConfigParser
+        cp.set_container(dict)
+        self.assertEquals(cp.container(), dict)
+        cp.set_container(anyconfig.mergeabledict.MergeableDict)
 
     def test_10_type(self):
         self.assertEquals(TT.ConfigParser.type(), TT.ConfigParser._type)
@@ -53,10 +56,10 @@ class Test_00_ConfigParser(unittest.TestCase):
 class Test_10_effectful_functions(unittest.TestCase):
 
     def setUp(self):
-        self.workdir = C.setup_workdir()
+        self.workdir = anyconfig.tests.common.setup_workdir()
 
     def tearDown(self):
-        C.cleanup_workdir(self.workdir)
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_mk_dump_dir_if_not_exist(self):
         dumpdir = os.path.join(self.workdir, "dumpdir")

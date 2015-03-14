@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2014 Satoru SATOH <ssato at redhat.com>
+# Copyright (C) 2011 - 2015 Satoru SATOH <ssato at redhat.com>
 #
 import imp
 import os.path

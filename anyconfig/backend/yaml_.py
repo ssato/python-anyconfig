@@ -1,8 +1,7 @@
 #
-# Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-
 import logging
 import anyconfig.backend.base as Base
 

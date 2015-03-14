@@ -1,9 +1,9 @@
 #
-# Copyright (C) 2011, 2012 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-import anyconfig.parser as TT
 import unittest
+import anyconfig.parser as TT
 
 
 # format: input, expected_result

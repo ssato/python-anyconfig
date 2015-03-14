@@ -1,15 +1,14 @@
 #
-# Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-
 import logging
 import sys
 
-from anyconfig.compat import configparser, iteritems
-
 import anyconfig.backend.base as Base
 import anyconfig.parser as P
+
+from anyconfig.compat import configparser, iteritems
 
 logger = logging.getLogger(__name__)
 

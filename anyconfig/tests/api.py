@@ -3,7 +3,12 @@
 # License: MIT
 #
 from logging import CRITICAL
-import anyconfig.api as A
+
+import os
+import os.path
+import unittest
+
+import anyconfig.api as TT
 import anyconfig.template as AT
 import anyconfig.tests.common as C
 
@@ -12,10 +17,6 @@ import anyconfig.backend.json_ as BJSON
 import anyconfig.backend.xml_ as BXML
 import anyconfig.backend.yaml_ as BYAML
 
-import os
-import os.path
-import unittest
-
 
 class Test_10_pure_functions(unittest.TestCase):
 
@@ -23,45 +24,46 @@ class Test_10_pure_functions(unittest.TestCase):
         cpath = "dummy.conf"
 
         # These parsers should be supported.
-        self.assertEquals(A.find_loader(cpath, "ini"), BINI.IniConfigParser)
-        self.assertEquals(A.find_loader(cpath, "json"), BJSON.JsonConfigParser)
+        self.assertEquals(TT.find_loader(cpath, "ini"), BINI.IniConfigParser)
+        self.assertEquals(TT.find_loader(cpath, "json"),
+                          BJSON.JsonConfigParser)
 
         if BYAML.SUPPORTED:
-            self.assertEquals(A.find_loader(cpath, "yaml"),
+            self.assertEquals(TT.find_loader(cpath, "yaml"),
                               BYAML.YamlConfigParser)
 
         if BXML.SUPPORTED:
-            self.assertEquals(A.find_loader(cpath, "xml"),
+            self.assertEquals(TT.find_loader(cpath, "xml"),
                               BXML.XmlConfigParser)
 
     def test_12_find_loader__w_forced_type__none(self):
-        A.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
+        TT.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
         cpath = "dummy.conf"
-        self.assertEquals(A.find_loader(cpath, "type_not_exist"), None)
+        self.assertEquals(TT.find_loader(cpath, "type_not_exist"), None)
 
     def test_20_find_loader__by_file(self):
-        self.assertEquals(A.find_loader("dummy.ini"), BINI.IniConfigParser)
-        self.assertEquals(A.find_loader("dummy.json"), BJSON.JsonConfigParser)
-        self.assertEquals(A.find_loader("dummy.jsn"), BJSON.JsonConfigParser)
+        self.assertEquals(TT.find_loader("dummy.ini"), BINI.IniConfigParser)
+        self.assertEquals(TT.find_loader("dummy.json"), BJSON.JsonConfigParser)
+        self.assertEquals(TT.find_loader("dummy.jsn"), BJSON.JsonConfigParser)
 
         if BYAML.SUPPORTED:
-            self.assertEquals(A.find_loader("dummy.yaml"),
+            self.assertEquals(TT.find_loader("dummy.yaml"),
                               BYAML.YamlConfigParser)
-            self.assertEquals(A.find_loader("dummy.yml"),
+            self.assertEquals(TT.find_loader("dummy.yml"),
                               BYAML.YamlConfigParser)
 
         if BXML.SUPPORTED:
-            self.assertEquals(A.find_loader("dummy.xml"),
+            self.assertEquals(TT.find_loader("dummy.xml"),
                               BXML.XmlConfigParser)
 
     def test_22_find_loader__by_file__none(self):
         # see self.test_12_find_loader__w_forced_type__none
-        A.set_loglevel(CRITICAL)
-        self.assertEquals(A.find_loader("dummy.ext_not_found"), None)
+        TT.set_loglevel(CRITICAL)
+        self.assertEquals(TT.find_loader("dummy.ext_not_found"), None)
 
     def test_30_dumps_and_loads(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        a1 = A.loads(A.dumps(a, "json"), "json")
+        a1 = TT.loads(TT.dumps(a, "json"), "json")
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -70,7 +72,8 @@ class Test_10_pure_functions(unittest.TestCase):
 
     def test_30_dumps_and_loads__w_options(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        a1 = A.loads(A.dumps(a, "json", indent=2), "json", ensure_ascii=False)
+        a1 = TT.loads(TT.dumps(a, "json", indent=2), "json",
+                      ensure_ascii=False)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -79,7 +82,7 @@ class Test_10_pure_functions(unittest.TestCase):
 
     def test_32_dumps_and_loads__w_options__no_dumper(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        a1 = A.loads(A.dumps(a, "type_not_exist"), "json")
+        a1 = TT.loads(TT.dumps(a, "type_not_exist"), "json")
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -90,7 +93,7 @@ class Test_10_pure_functions(unittest.TestCase):
         a = dict(requires=["bash", "zsh"])
         a_s = "requires:bash,zsh"
 
-        a1 = A.loads(a_s)
+        a1 = TT.loads(a_s)
 
         self.assertEquals(a1["requires"],   a["requires"])
 
@@ -98,7 +101,7 @@ class Test_10_pure_functions(unittest.TestCase):
         a = dict(requires=["bash", "zsh"])
         a_s = "requires:bash,zsh"
 
-        a1 = A.loads(a_s, "type_not_exist")
+        a1 = TT.loads(a_s, "type_not_exist")
 
         self.assertEquals(a1["requires"],   a["requires"])
 
@@ -110,7 +113,7 @@ class Test_10_pure_functions(unittest.TestCase):
         a_s = "requires: [{{ requires|join(', ') }}]"
         context = dict(requires=["bash", "zsh"], )
 
-        a1 = A.loads(a_s, forced_type="yaml", template=True, context=context)
+        a1 = TT.loads(a_s, forced_type="yaml", template=True, context=context)
 
         self.assertEquals(a1["requires"],   a["requires"])
 
@@ -128,10 +131,10 @@ class Test_20_effectful_functions(unittest.TestCase):
 
         a_path = os.path.join(self.workdir, "a.json")
 
-        A.dump(a, a_path)
+        TT.dump(a, a_path)
         self.assertTrue(os.path.exists(a_path))
 
-        a1 = A.single_load(a_path)
+        a1 = TT.single_load(a_path)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -139,15 +142,15 @@ class Test_20_effectful_functions(unittest.TestCase):
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
     def test_12_dump_and_single_load__no_parser(self):
-        self.assertEquals(A.single_load("dummy.ext_not_exist"), None)
+        self.assertEquals(TT.single_load("dummy.ext_not_exist"), None)
 
     def test_14_single_load__ignore_missing(self):
-        null_cntnr = A.container()
+        null_cntnr = TT.container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(A.single_load(cpath, forced_type="ini",
-                                        ignore_missing=True),
+        self.assertEquals(TT.single_load(cpath, forced_type="ini",
+                                         ignore_missing=True),
                           null_cntnr)
 
     def test_16_single_load__template(self):
@@ -167,7 +170,7 @@ b:
     c: {{ b.c }}
 """)
 
-        a1 = A.single_load(a_path, template=True, context=a)
+        a1 = TT.single_load(a_path, template=True, context=a)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -193,7 +196,7 @@ b:
     c: {{ b.c }}
 """)
 
-        a1 = A.single_load(a_path, template=True, context=a)
+        a1 = TT.single_load(a_path, template=True, context=a)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -208,14 +211,14 @@ b:
         b_path = os.path.join(self.workdir, "b.json")
         g_path = os.path.join(self.workdir, "*.json")
 
-        A.dump(a, a_path)
+        TT.dump(a, a_path)
         self.assertTrue(os.path.exists(a_path))
 
-        A.dump(b, b_path)
+        TT.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        a0 = A.multi_load(g_path, merge=A.MS_DICTS)
-        a02 = A.multi_load([g_path, b_path], merge=A.MS_DICTS)
+        a0 = TT.multi_load(g_path, merge=TT.MS_DICTS)
+        a02 = TT.multi_load([g_path, b_path], merge=TT.MS_DICTS)
 
         self.assertEquals(a0["name"],   a["name"])
         self.assertEquals(a0["a"],      b["a"])
@@ -229,7 +232,7 @@ b:
         self.assertEquals(a02["b"]["c"], a["b"]["c"])
         self.assertEquals(a02["b"]["d"], b["b"]["d"])
 
-        a1 = A.multi_load([a_path, b_path], merge=A.MS_DICTS)
+        a1 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      b["a"])
@@ -237,7 +240,7 @@ b:
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
         self.assertEquals(a1["b"]["d"], b["b"]["d"])
 
-        a2 = A.multi_load([a_path, b_path], merge=A.MS_DICTS_AND_LISTS)
+        a2 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS_AND_LISTS)
 
         self.assertEquals(a2["name"],   a["name"])
         self.assertEquals(a2["a"],      b["a"])
@@ -245,7 +248,7 @@ b:
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
-        a3 = A.multi_load(os.path.join(self.workdir, "*.json"))
+        a3 = TT.multi_load(os.path.join(self.workdir, "*.json"))
 
         self.assertEquals(a3["name"],   a["name"])
         self.assertEquals(a3["a"],      b["a"])
@@ -253,7 +256,7 @@ b:
         self.assertEquals(a3["b"]["c"], a["b"]["c"])
         self.assertEquals(a3["b"]["d"], b["b"]["d"])
 
-        a4 = A.multi_load([a_path, b_path], merge=A.MS_REPLACE)
+        a4 = TT.multi_load([a_path, b_path], merge=TT.MS_REPLACE)
 
         self.assertEquals(a4["name"],   a["name"])
         self.assertEquals(a4["a"],      b["a"])
@@ -261,7 +264,7 @@ b:
         self.assertFalse("c" in a4["b"])
         self.assertEquals(a4["b"]["d"], b["b"]["d"])
 
-        a5 = A.multi_load([a_path, b_path], merge=A.MS_NO_REPLACE)
+        a5 = TT.multi_load([a_path, b_path], merge=TT.MS_NO_REPLACE)
 
         self.assertEquals(a5["name"],   a["name"])
         self.assertEquals(a5["a"],      a["a"])
@@ -270,12 +273,12 @@ b:
         self.assertFalse("d" in a5["b"])
 
     def test_22_multi_load__ignore_missing(self):
-        null_cntnr = A.container()
+        null_cntnr = TT.container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(A.multi_load([cpath], forced_type="ini",
-                                       ignore_missing=True),
+        self.assertEquals(TT.multi_load([cpath], forced_type="ini",
+                                        ignore_missing=True),
                           null_cntnr)
 
     def test_24_multi_load__templates(self):
@@ -285,8 +288,8 @@ b:
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
-        ma = A.container.create(a)
-        ma.update(b, A.MS_DICTS)
+        ma = TT.container.create(a)
+        ma.update(b, TT.MS_DICTS)
 
         a_path = os.path.join(self.workdir, "a.yml")
         b_path = os.path.join(self.workdir, "b.yml")
@@ -313,9 +316,10 @@ b:
     d: {{ b.d }}
 """)
 
-        a0 = A.multi_load(g_path, merge=A.MS_DICTS, template=True, context=ma)
-        a02 = A.multi_load([g_path, b_path], merge=A.MS_DICTS,
-                           template=True, context=ma)
+        a0 = TT.multi_load(g_path, merge=TT.MS_DICTS, template=True,
+                           context=ma)
+        a02 = TT.multi_load([g_path, b_path], merge=TT.MS_DICTS,
+                            template=True, context=ma)
 
         self.assertEquals(a0["name"],   a["name"])
         self.assertEquals(a0["a"],      b["a"])
@@ -336,20 +340,20 @@ b:
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, a_path)
+        TT.dump(a, a_path)
         self.assertTrue(os.path.exists(a_path))
 
-        A.dump(b, b_path)
+        TT.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        a1 = A.load(a_path)
+        a1 = TT.load(a_path)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
-        a2 = A.load(os.path.join(self.workdir, '*.json'))
+        a2 = TT.load(os.path.join(self.workdir, '*.json'))
 
         self.assertEquals(a2["name"],   a["name"])
         self.assertEquals(a2["a"],      b["a"])
@@ -357,7 +361,7 @@ b:
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
-        a3 = A.load([a_path, b_path])
+        a3 = TT.load([a_path, b_path])
 
         self.assertEquals(a3["name"],   a["name"])
         self.assertEquals(a3["a"],      b["a"])
@@ -372,20 +376,20 @@ b:
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, a_path, indent=2)
+        TT.dump(a, a_path, indent=2)
         self.assertTrue(os.path.exists(a_path))
 
-        A.dump(b, b_path, indent=2)
+        TT.dump(b, b_path, indent=2)
         self.assertTrue(os.path.exists(b_path))
 
-        a1 = A.load(a_path, parse_int=int)
+        a1 = TT.load(a_path, parse_int=int)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
-        a2 = A.load(os.path.join(self.workdir, '*.json'), parse_int=int)
+        a2 = TT.load(os.path.join(self.workdir, '*.json'), parse_int=int)
 
         self.assertEquals(a2["name"],   a["name"])
         self.assertEquals(a2["a"],      b["a"])
@@ -393,7 +397,7 @@ b:
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
-        a3 = A.load([a_path, b_path], parse_int=int)
+        a3 = TT.load([a_path, b_path], parse_int=int)
 
         self.assertEquals(a3["name"],   a["name"])
         self.assertEquals(a3["a"],      b["a"])
@@ -402,12 +406,12 @@ b:
         self.assertEquals(a3["b"]["d"], b["b"]["d"])
 
     def test_34_load__ignore_missing(self):
-        null_cntnr = A.container()
+        null_cntnr = TT.container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(A.load([cpath], forced_type="ini",
-                                 ignore_missing=True),
+        self.assertEquals(TT.load([cpath], forced_type="ini",
+                                  ignore_missing=True),
                           null_cntnr)
 
 # vim:sw=4:ts=4:et:

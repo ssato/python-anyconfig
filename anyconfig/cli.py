@@ -3,8 +3,8 @@
 # License: MIT
 #
 import anyconfig.api as A
-import anyconfig.compat as C
-import anyconfig.globals as G
+import anyconfig.compat
+import anyconfig.globals
 
 import codecs
 import locale
@@ -15,7 +15,7 @@ import sys
 
 _ENCODING = locale.getdefaultlocale()[1]
 
-if C.IS_PYTHON_3:
+if anyconfig.compat.IS_PYTHON_3:
     import io
 
     _ENCODING = _ENCODING.lower()
@@ -92,7 +92,8 @@ Int, str, etc.""" % ctypes_s
                 "example, '--set a.b.c=1' to a config {'a': {'b': {'c': 0, "
                 "'d': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.")
 
-    parser = optparse.OptionParser(usage, version="%%prog %s" % G.VERSION)
+    parser = optparse.OptionParser(usage, version="%%prog %s" %
+                                   anyconfig.globals.VERSION)
     parser.set_defaults(**defaults)
 
     parser.add_option("-L", "--list", help="List supported config types",

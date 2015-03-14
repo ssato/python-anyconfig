@@ -4,11 +4,11 @@
 #
 """Misc utility routines for anyconfig module.
 """
-import anyconfig.compat
-
 import glob
 import os.path
 import types
+
+import anyconfig.compat
 
 
 def get_file_extension(file_path):

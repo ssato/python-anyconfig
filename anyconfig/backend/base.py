@@ -2,15 +2,18 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+
+import logging
+import os
+
 from anyconfig.compat import StringIO
-from anyconfig.globals import LOGGER as logging
 
 import anyconfig.mergeabledict as D
 import anyconfig.utils as U
-import os.path
-import os
 
 SUPPORTED = False
+
+logger = logging.getLogger(__name__)
 
 
 def mk_opt_args(keys, kwargs):
@@ -42,7 +45,7 @@ def mk_dump_dir_if_not_exist(f):
     dumpdir = os.path.dirname(f)
 
     if not os.path.exists(dumpdir):
-        logging.debug("Creating output dir as it's not found: %s", dumpdir)
+        logger.debug("Creating output dir as it's not found: %s", dumpdir)
         os.makedirs(dumpdir)
 
 

@@ -4,11 +4,13 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-from anyconfig.compat import raw_input, copen
-from anyconfig.globals import LOGGER
 
-import os.path
+import logging
 import os
+
+from anyconfig.compat import raw_input, copen
+
+logger = logging.getLogger(__name__)
 
 TEMPLATE_SUPPORT = False
 try:
@@ -21,7 +23,7 @@ try:
         return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
 
 except ImportError:
-    LOGGER.warn("Jinja2 is not available on your system, so "
+    logger.warn("Jinja2 is not available on your system, so "
                 "template support will be disabled.")
 
     class TemplateNotFound(RuntimeError):

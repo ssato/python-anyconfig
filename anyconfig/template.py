@@ -27,11 +27,11 @@ except ImportError:
     class TemplateNotFound(RuntimeError):
         pass
 
-    def tmpl_env(paths):
+    def tmpl_env(*args):
         return None
 
 
-def make_template_paths(template_file, paths=[]):
+def make_template_paths(template_file, paths=None):
     """
     :param template_file: Absolute or relative path to the template file
     :param paths: A list of template search paths
@@ -42,10 +42,10 @@ def make_template_paths(template_file, paths=[]):
     ['/tmp', '.', '/path/to/a']
     """
     tmpldir = os.path.abspath(os.path.dirname(template_file))
-    return paths + [tmpldir] if paths else [os.curdir, tmpldir]
+    return [os.curdir, tmpldir] if paths is None else paths + [tmpldir]
 
 
-def render_s(tmpl_s, ctx={}, paths=[os.curdir]):
+def render_s(tmpl_s, ctx=None, paths=[os.curdir]):
     """
     Compile and render given template string `tmpl_s` with context `context`.
 
@@ -62,10 +62,13 @@ def render_s(tmpl_s, ctx={}, paths=[os.curdir]):
     if env is None:
         return tmpl_s
     else:
+        if ctx is None:
+            ctx = {}
+
         return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
 
 
-def render_impl(template_file, ctx={}, paths=[]):
+def render_impl(template_file, ctx=None, paths=None):
     """
     :param template_file: Absolute or relative path to the template file
     :param ctx: Context dict needed to instantiate templates
@@ -75,10 +78,13 @@ def render_impl(template_file, ctx={}, paths=[]):
     if env is None:
         return copen(template_file).read()
     else:
+        if ctx is None:
+            ctx = {}
+
         return env.get_template(os.path.basename(template_file)).render(**ctx)
 
 
-def render(filepath, ctx={}, paths=[], ask=False):
+def render(filepath, ctx=None, paths=None, ask=False):
     """
     Compile and render template and return the result as a string.
 

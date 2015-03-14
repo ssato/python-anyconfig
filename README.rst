@@ -17,6 +17,10 @@ About
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: Supported Python versions
 
+.. image:: https://pypip.in/license/anyconfig/badge.png
+   :target: https://pypi.python.org/pypi/anyconfig/
+   :alt: MIT License
+
 .. image:: https://coveralls.io/repos/ssato/python-anyconfig/badge.png
    :target: https://coveralls.io/r/ssato/python-anyconfig
    :alt: Coverage Status

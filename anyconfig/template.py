@@ -7,7 +7,7 @@
 import logging
 import os
 
-from anyconfig.compat import raw_input, copen
+import anyconfig.compat
 
 LOGGER = logging.getLogger(__name__)
 TEMPLATE_SUPPORT = False
@@ -76,7 +76,7 @@ def render_impl(template_file, ctx=None, paths=None):
     env = tmpl_env(make_template_paths(template_file, paths))
 
     if env is None:
-        return copen(template_file).read()
+        return anyconfig.compat.copen(template_file).read()
     else:
         if ctx is None:
             ctx = {}
@@ -99,10 +99,11 @@ def render(filepath, ctx=None, paths=None, ask=False):
         if not ask:
             raise RuntimeError("Template Not found: " + str(mtmpl))
 
-        usr_tmpl = raw_input("\n*** Missing template '%s'. "
-                             "Please enter absolute or relative path "
-                             "starting from '.' to the template "
-                             "file: " % mtmpl)
+        usr_tmpl = anyconfig.compat.raw_input("\n*** Missing template "
+                                              "'%s'. Please enter absolute "
+                                              "or relative path starting from "
+                                              "'.' to the template file: " %
+                                              mtmpl)
         usr_tmpl = os.path.normpath(usr_tmpl.strip())
         usr_tmpldir = os.path.dirname(usr_tmpl)
 

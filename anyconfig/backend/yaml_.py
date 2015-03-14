@@ -41,7 +41,6 @@ else:
     def yaml_dump(*args, **kwargs):
         LOGGER.warn("Do nothing as YAML module is not available: "
                     "args=%s, kwargs=%s", ','.join(args), str(kwargs))
-        pass
 
 
 class YamlConfigParser(Base.ConfigParser):

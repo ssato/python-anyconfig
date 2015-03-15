@@ -117,6 +117,16 @@ class Test_10_pure_functions(unittest.TestCase):
 
         self.assertEquals(a1["requires"],   a["requires"])
 
+    def test_46_loads_w_type__broken_template(self):
+        if not AT.TEMPLATE_SUPPORT:
+            return
+
+        a = dict(requires="{% }}", )
+        a_s = 'requires: "{% }}"'
+        a1 = TT.loads(a_s, forced_type="yaml", template=True, context={})
+
+        self.assertEquals(a1["requires"],   a["requires"])
+
 
 class Test_20_effectful_functions(unittest.TestCase):
 

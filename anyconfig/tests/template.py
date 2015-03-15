@@ -1,8 +1,9 @@
 #
-# Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 import os.path
+import mock
 import unittest
 
 import anyconfig.template as TT
@@ -55,5 +56,21 @@ class Test_20_render_templates(unittest.TestCase):
                 f = os.path.join(self.workdir, fn)
                 c_r = TT.render(f)
                 self.assertEquals(c_r, c)
+
+    def test_22_render__w_wrong_template_path(self):
+        if TT.TEMPLATE_SUPPORT:
+            mpt = "anyconfig.compat.raw_input"
+
+            ng_t = os.path.join(self.workdir, "ng.j2")
+            ok_t = os.path.join(self.workdir, "ok.j2")
+            ok_t_content = "a: {{ a }}"
+            ok_content = "a: aaa"
+            ctx = dict(a="aaa", )
+
+            open(ok_t, 'w').write(ok_t_content)
+
+            with mock.patch(mpt, return_value=ok_t):
+                c_r = TT.render(ng_t, ctx, ask=True)
+                self.assertEquals(c_r, ok_content)
 
 # vim:sw=4:ts=4:et:

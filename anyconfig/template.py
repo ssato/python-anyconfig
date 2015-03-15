@@ -105,8 +105,8 @@ def render(filepath, ctx=None, paths=None, ask=False):
                                               "'.' to the template file: " %
                                               mtmpl)
         usr_tmpl = os.path.normpath(usr_tmpl.strip())
-        usr_tmpldir = os.path.dirname(usr_tmpl)
+        paths = make_template_paths(usr_tmpl, paths)
 
-        return render_impl(usr_tmpl, ctx, paths + [usr_tmpldir])
+        return render_impl(usr_tmpl, ctx, paths)
 
 # vim:sw=4:ts=4:et:

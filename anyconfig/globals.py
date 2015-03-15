@@ -5,6 +5,6 @@
 """anyconfig globals.
 """
 AUTHOR = 'Satoru SATOH <ssat@redhat.com>'
-VERSION = "0.0.5"
+VERSION = "0.0.6"
 
 # vim:sw=4:ts=4:et:

@@ -163,6 +163,10 @@ def main(argv=sys.argv):
 
     if options.output:
         cparser = A.find_loader(options.output, options.otype)
+        if cparser is None:
+            raise RuntimeError("No suitable dumper was found for %s",
+                               options.output)
+
         cparser.dump(data, options.output)
     else:
         # TODO: Reuse input type automatically detected as it's impossible to

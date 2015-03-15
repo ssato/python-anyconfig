@@ -4,5 +4,7 @@ coveralls
 mock
 nose
 pep8
-pylint
+# :see: 2.4 What versions of Python is Pylint supporting? in
+# http://docs.pylint.org/faq.html#installation
+pylint<1.4
 simplejson

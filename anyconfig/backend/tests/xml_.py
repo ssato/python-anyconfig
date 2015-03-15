@@ -73,4 +73,12 @@ class Test_XmlConfigParser(unittest.TestCase):
         # self.assertEquals(c['b'], "bbb", c)
         pass
 
+    def test_30_dumps_impl(self):
+        try:
+            TT.XmlConfigParser.dumps_impl({})
+            raise RuntimeError("test_30_dumps_impl: "
+                               "NotImplementedError was not raised!")
+        except NotImplementedError:
+            pass
+
 # vim:sw=4:ts=4:et:

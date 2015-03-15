@@ -5,6 +5,7 @@
 import os
 import os.path
 import subprocess
+import sys
 import unittest
 
 import anyconfig.cli as TT
@@ -211,5 +212,23 @@ b:
         output = os.path.join(self.workdir, "output.yml")
 
         TT.main(["dummy", "-o", output, input])
+
+    def test_80_no_out_dumper(self):
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
+        input = os.path.join(self.workdir, "a.json")
+        A.dump(a, input)
+
+        try:
+            TT.main(["dummy", "-o", "out.txt", input])
+            sys.exit(-1)
+        except RuntimeError:
+            pass
+
+    def test_82_no_itype_and_otype(self):
+        try:
+            TT.main(["dummy", "-o", "out.txt", "in.txt"])
+            sys.exit(-1)
+        except RuntimeError:
+            pass
 
 # vim:sw=4:ts=4:et:

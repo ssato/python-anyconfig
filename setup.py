@@ -90,6 +90,9 @@ _CLASSIFIERS = ["Development Status :: 4 - Beta",
                 "Topic :: Utilities",
                 "License :: OSI Approved :: MIT License"]
 
+TESTS_REQ = [l.rstrip() for l in open("pkg/test_requirements.txt").readlines()
+             if l and not l.startswith('#')]
+
 
 setup(name=PACKAGE,
       version=VERSION,
@@ -100,7 +103,7 @@ setup(name=PACKAGE,
       license="MIT",
       url="https://github.com/ssato/python-anyconfig",
       classifiers=_CLASSIFIERS,
-      tests_require=['nose>=1.0', 'pep8', 'pylint', 'flake8'],
+      tests_require=TESTS_REQ,
       packages=find_packages(),
       include_package_data=True,
       cmdclass={

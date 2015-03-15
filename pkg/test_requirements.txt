@@ -2,6 +2,7 @@ PyYAML
 Jinja2
 coveralls
 # flake8  # disabled until 'pkg_resources.VersionConflict' error.
+mock
 nose
 pep8
 pylint

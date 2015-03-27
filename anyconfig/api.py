@@ -259,5 +259,4 @@ def dumps(data, forced_type, **kwargs):
     """
     return _find_dumper(None, forced_type).dumps(data, **kwargs)
 
-
 # vim:sw=4:ts=4:et:

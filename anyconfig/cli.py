@@ -14,6 +14,7 @@ import sys
 
 
 _ENCODING = locale.getdefaultlocale()[1]
+A.LOGGER.addHandler(logging.StreamHandler())
 
 if anyconfig.compat.IS_PYTHON_3:
     import io

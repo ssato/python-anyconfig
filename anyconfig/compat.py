@@ -8,6 +8,15 @@ import itertools
 import locale
 import sys
 
+try:
+    from logging import NullHandler
+except ImportError:  # python < 2.7 doesn't have it.
+    import logging
+
+    class NullHandler(logging.Handler):
+        def emit(self, record):
+            pass
+
 
 IS_PYTHON_3 = sys.version_info[0] == 3
 ENCODING = locale.getdefaultlocale()[1]

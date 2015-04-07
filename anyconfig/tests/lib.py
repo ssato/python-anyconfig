@@ -18,6 +18,12 @@ anyconfig.dump(c, "/dev/null", "yaml")
 """
 
 
+def check_output(cmd):
+    devnull = open('/dev/null', 'w')
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=devnull)
+    return proc.communicate()[0]
+
+
 class Test_00(unittest.TestCase):
 
     def setUp(self):
@@ -31,10 +37,7 @@ class Test_00(unittest.TestCase):
         with open(self.script, 'w') as f:
             f.write(SCRIPT_TO_USE_ANYCONFIG)
 
-            args = ["python", self.script]
-            devnull = open('/dev/null', 'w')
-
-            out = subprocess.check_output(args, stderr=devnull)
-            self.assertEquals(out, "")
+            out = check_output(["python", self.script])
+            self.assertTrue(out in (b'', ''))
 
 # vim:sw=4:ts=4:et:

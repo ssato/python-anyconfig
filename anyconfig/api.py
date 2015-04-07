@@ -8,6 +8,7 @@ import logging
 
 import anyconfig.backend.backends
 import anyconfig.backend.json_
+import anyconfig.compat
 import anyconfig.mergeabledict
 import anyconfig.parser
 import anyconfig.template
@@ -29,7 +30,10 @@ list_types = anyconfig.backend.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
 # pylint: enable=C0103
 
-LOGGER = logging.getLogger(__name__)
+# See: "Configuring Logging for a Library" in python standard logging howto,
+# e.g. https://docs.python.org/2/howto/logging.html#library-config.
+LOGGER = logging.getLogger("anyconfig")
+LOGGER.addHandler(anyconfig.compat.NullHandler())
 
 
 def set_loglevel(level):

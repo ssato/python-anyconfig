@@ -10,12 +10,12 @@ import os
 import anyconfig.compat
 
 LOGGER = logging.getLogger(__name__)
-TEMPLATE_SUPPORT = False
+SUPPORTED = False
 try:
     import jinja2
     from jinja2.exceptions import TemplateNotFound
 
-    TEMPLATE_SUPPORT = True
+    SUPPORTED = True
 
     def tmpl_env(paths):
         return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
@@ -54,7 +54,7 @@ def render_s(tmpl_s, ctx=None, paths=[os.curdir]):
     :param paths: Template search paths
 
     >>> s = render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
-    >>> if TEMPLATE_SUPPORT:
+    >>> if SUPPORTED:
     ...     assert s == 'a = 1, b = "bbb"'
     """
     env = tmpl_env(paths)

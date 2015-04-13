@@ -36,14 +36,14 @@ class Test_20_render_templates(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_render_impl__wo_paths(self):
-        if TT.TEMPLATE_SUPPORT:
+        if TT.SUPPORTED:
             for fn, _s, c in self.templates:
                 f = os.path.join(self.workdir, fn)
                 c_r = TT.render_impl(f)
                 self.assertEquals(c_r, c)
 
     def test_12_render_impl__w_paths(self):
-        if TT.TEMPLATE_SUPPORT:
+        if TT.SUPPORTED:
             for fn, _s, c in self.templates:
                 f = os.path.join(self.workdir, fn)
                 c_r = TT.render_impl(os.path.basename(f),
@@ -51,14 +51,14 @@ class Test_20_render_templates(unittest.TestCase):
                 self.assertEquals(c_r, c)
 
     def test_20_render__wo_paths(self):
-        if TT.TEMPLATE_SUPPORT:
+        if TT.SUPPORTED:
             for fn, _s, c in self.templates:
                 f = os.path.join(self.workdir, fn)
                 c_r = TT.render(f)
                 self.assertEquals(c_r, c)
 
     def test_22_render__w_wrong_template_path(self):
-        if TT.TEMPLATE_SUPPORT:
+        if TT.SUPPORTED:
             mpt = "anyconfig.compat.raw_input"
 
             ng_t = os.path.join(self.workdir, "ng.j2")

@@ -106,7 +106,7 @@ class Test_10_pure_functions(unittest.TestCase):
         self.assertEquals(a1["requires"],   a["requires"])
 
     def test_44_loads_w_type__template(self):
-        if not AT.TEMPLATE_SUPPORT:
+        if not AT.SUPPORTED:
             return
 
         a = dict(requires=["bash", "zsh"])
@@ -118,7 +118,7 @@ class Test_10_pure_functions(unittest.TestCase):
         self.assertEquals(a1["requires"],   a["requires"])
 
     def test_46_loads_w_type__broken_template(self):
-        if not AT.TEMPLATE_SUPPORT:
+        if not AT.SUPPORTED:
             return
 
         a = dict(requires="{% }}", )
@@ -164,7 +164,7 @@ class Test_20_effectful_functions(unittest.TestCase):
                           null_cntnr)
 
     def test_16_single_load__template(self):
-        if not AT.TEMPLATE_SUPPORT:
+        if not AT.SUPPORTED:
             return
 
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -188,7 +188,7 @@ b:
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
     def test_18_single_load__templates(self):
-        if not AT.TEMPLATE_SUPPORT:
+        if not AT.SUPPORTED:
             return
 
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -292,7 +292,7 @@ b:
                           null_cntnr)
 
     def test_24_multi_load__templates(self):
-        if not AT.TEMPLATE_SUPPORT:
+        if not AT.SUPPORTED:
             return
 
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

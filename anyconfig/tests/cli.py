@@ -164,7 +164,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         self.run_and_check_exit_code(["--itype", "json", input], 0)
 
     def test_70_multi_inputs__w_template(self):
-        if not anyconfig.template.TEMPLATE_SUPPORT:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -203,7 +203,7 @@ b:
         self.assertTrue(os.path.exists(output))
 
     def test_74_multi_inputs__w_template(self):
-        if not anyconfig.template.TEMPLATE_SUPPORT:
+        if not anyconfig.template.SUPPORTED:
             return
 
         curdir = C.selfdir()

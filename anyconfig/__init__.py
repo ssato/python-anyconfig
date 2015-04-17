@@ -106,7 +106,7 @@ the followings:
 
     {'a': 1, 'b': [{'c': 0}, {'c': 2}], 'd': {'e': "bbb", 'f': 3}}
 
-* anyconfig.MS_DICTS: Merge dicts recursively. That is, the following
+* anyconfig.MS_DICTS (default): Merge dicts recursively. That is, the following
 
   ::
 
@@ -115,6 +115,8 @@ the followings:
   will give object such like::
 
     {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb", 'f': 3}}
+
+  This is the merge strategy choosen by default.
 
 * anyconfig.MS_DICTS_AND_LISTS: Merge dicts and lists recursively. That is, the
   following::

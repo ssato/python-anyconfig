@@ -7,4 +7,7 @@
 AUTHOR = 'Satoru SATOH <ssat@redhat.com>'
 VERSION = "0.0.6"
 
+import anyconfig.init
+LOGGER = anyconfig.init.LOGGER
+
 # vim:sw=4:ts=4:et:

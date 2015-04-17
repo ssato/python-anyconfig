@@ -186,7 +186,7 @@ b:
 
         output = os.path.join(self.workdir, "b.json")
 
-        TT.main(["dummy", "-o", output,
+        TT.main(["dummy", "--template", "-o", output,
                  os.path.join(inputsdir, "*.yml")])
         self.assertTrue(os.path.exists(output))
 
@@ -199,7 +199,7 @@ b:
         A.dump(a, input)
         self.assertTrue(os.path.exists(input))
 
-        TT.main(["dummy", "--no-template", "-o", output, input])
+        TT.main(["dummy", "-o", output, input])
         self.assertTrue(os.path.exists(output))
 
     def test_74_multi_inputs__w_template(self):
@@ -211,7 +211,7 @@ b:
         input = os.path.join(curdir, "*template-c*.yml")
         output = os.path.join(self.workdir, "output.yml")
 
-        TT.main(["dummy", "-o", output, input])
+        TT.main(["dummy", "--template", "-o", output, input])
 
     def test_80_no_out_dumper(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])

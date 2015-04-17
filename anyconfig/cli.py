@@ -66,7 +66,7 @@ def option_parser(defaults=None, usage=USAGE):
     """
     defaults = dict(loglevel=1, list=False, output=None, itype=None,
                     otype=None, atype=None, merge=A.MS_DICTS,
-                    ignore_missing=False, template=True)
+                    ignore_missing=False, template=False)
 
     ctypes = A.list_types()
     ctypes_s = ", ".join(ctypes)
@@ -113,9 +113,8 @@ Int, str, etc.""" % ctypes_s
 
     parser.add_option("-x", "--ignore-missing", action="store_true",
                       help="Ignore missing input files")
-    parser.add_option("", "--no-template", dest="template",
-                      action="store_false",
-                      help="Disable template config support")
+    parser.add_option("", "--template", action="store_true",
+                      help="Enable template config support")
 
     parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
                       const=0, help="Silent or quiet mode")

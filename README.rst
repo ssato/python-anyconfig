@@ -257,6 +257,8 @@ Anyconfig module supports template config files since 0.0.6.
 That is, config files written in Jinja2 template [#]_ will be compiled before
 loading w/ backend module.
 
+.. note:: Template config support is disabled by default to avoid side effects when processing config files of jinja2 template or having some expressions similar to jinaj2 template syntax.
+
 Anyway, a picture is worth a thousand words. Here is an example of template
 config files.
 
@@ -272,7 +274,7 @@ config files.
     ssato@localhost% cat b.yml
     c:
       d: "efg"
-    ssato@localhost% anyconfig_cli a.yml -O yaml -s
+    ssato@localhost% anyconfig_cli a.yml --template -O yaml -s
     a: 1
     b:
     - {index: 1}
@@ -366,7 +368,7 @@ It can process various config files and output a merged config file:
                           example, '--set a.b.c=1' to a config {'a': {'b': {'c':
                           0, 'd': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.
     -x, --ignore-missing  Ignore missing input files
-    --no-template         Disable template config support
+    --template            Enable template config support
     -s, --silent          Silent or quiet mode
     -q, --quiet           Same as --silent option
     -v, --verbose         Verbose mode

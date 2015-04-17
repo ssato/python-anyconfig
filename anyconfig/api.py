@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """Public APIs of anyconfig module.

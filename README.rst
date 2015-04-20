@@ -306,7 +306,7 @@ And another one:
 
     In [5]: context = dict(a=1, b=[2, 4])
 
-    In [6]: anyconfig.load("*.yml", template=True, context=context)
+    In [6]: anyconfig.load("*.yml", ac_template=True, ac_context=context)
     Out[6]: {'a': 1, 'b': [{'index': 2}, {'index': 4}], 'c': {'d': 'efg'}}
 
 .. [#] Jinja2 template engine (http://jinja.pocoo.org) and its language (http://jinja.pocoo.org/docs/dev/)

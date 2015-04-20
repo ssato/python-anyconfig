@@ -60,7 +60,7 @@ def find_loader(config_path, forced_type=None):
 
 
 def single_load(config_path, forced_type=None, ignore_missing=False,
-                template=False, context={}, **kwargs):
+                ac_template=False, ac_context={}, **kwargs):
     """
     Load single config file.
 
@@ -68,9 +68,9 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
     :param forced_type: Forced configuration parser type
     :param ignore_missing: Ignore and just return empty result if given file
         (``config_path``) does not exist
-    :param template: Assume configuration file may be a template file and
+    :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
-    :param context: Context dict to instantiate template
+    :param ac_context: A dict presents context to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -84,10 +84,10 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
         return None
 
     LOGGER.info("Loading: %s", config_path)
-    if template:
+    if ac_template:
         try:
             LOGGER.debug("Compiling: %s", config_path)
-            config_content = anyconfig.template.render(config_path, context)
+            config_content = anyconfig.template.render(config_path, ac_context)
             return cparser.loads(config_content, ignore_missing=ignore_missing,
                                  **kwargs)
         except:
@@ -99,7 +99,8 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
 
 
 def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
-               ignore_missing=False, template=False, context={}, **kwargs):
+               ignore_missing=False, ac_template=False, ac_context={},
+               **kwargs):
     """
     Load multiple config files.
 
@@ -118,9 +119,9 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
         loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
     :param marker: Globbing markerer to detect paths patterns
     :param ignore_missing: Ignore missing config files
-    :param template: Assume configuration file may be a template file and
+    :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
-    :param context: Context dict
+    :param ac_context: A dict presents context to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -132,15 +133,15 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
     if marker in paths:
         paths = anyconfig.utils.sglob(paths)
 
-    config = container.create(context) if context else container()
+    config = container.create(ac_context) if ac_context else container()
     for path in paths:
         if marker in path:  # Nested patterns like ['*.yml', '/a/b/c.yml'].
             conf_updates = multi_load(path, forced_type, merge, marker,
-                                      ignore_missing, template, config,
+                                      ignore_missing, ac_template, config,
                                       **kwargs)
         else:
             conf_updates = single_load(path, forced_type, ignore_missing,
-                                       template, config, **kwargs)
+                                       ac_template, config, **kwargs)
 
         config.update(conf_updates, merge)
 
@@ -148,7 +149,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
 
 
 def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
-         ignore_missing=False, template=False, context={}, **kwargs):
+         ignore_missing=False, ac_template=False, ac_context={}, **kwargs):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -159,9 +160,9 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
     :param merge: Merging strategy to use
     :param marker: Globbing marker to detect paths patterns
     :param ignore_missing: Ignore missing config files
-    :param template: Assume configuration file may be a template file and
+    :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
-    :param context: Context dict to instantiate template
+    :param ac_context: A dict presents context to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -170,21 +171,21 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
     """
     if marker in path_specs or anyconfig.utils.is_iterable(path_specs):
         return multi_load(path_specs, forced_type, merge, marker,
-                          ignore_missing, template, context, **kwargs)
+                          ignore_missing, ac_template, ac_context, **kwargs)
     else:
         return single_load(path_specs, forced_type, ignore_missing,
-                           template, context, **kwargs)
+                           ac_template, ac_context, **kwargs)
 
 
-def loads(config_content, forced_type=None, template=False, context={},
+def loads(config_content, forced_type=None, ac_template=False, ac_context={},
           **kwargs):
     """
     :param config_content: Configuration file's content
     :param forced_type: Forced configuration parser type
     :param ignore_missing: Ignore missing config files
-    :param template: Assume configuration file may be a template file and
+    :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
-    :param context: Context dict to instantiate template
+    :param ac_context: Context dict to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     :return: Dict-like object (instance of
@@ -198,11 +199,11 @@ def loads(config_content, forced_type=None, template=False, context={},
     if cparser is None:
         return anyconfig.parser.parse(config_content)
 
-    if template:
+    if ac_template:
         try:
             LOGGER.debug("Compiling")
             config_content = anyconfig.template.render_s(config_content,
-                                                         context)
+                                                         ac_context)
         except:
             LOGGER.warn("Failed to compile and fallback to no template "
                          "mode: '%s'", config_content[:50] + '...')

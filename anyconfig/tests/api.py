@@ -113,7 +113,8 @@ class Test_10_pure_functions(unittest.TestCase):
         a_s = "requires: [{{ requires|join(', ') }}]"
         context = dict(requires=["bash", "zsh"], )
 
-        a1 = TT.loads(a_s, forced_type="yaml", template=True, context=context)
+        a1 = TT.loads(a_s, forced_type="yaml", ac_template=True,
+                      ac_context=context)
 
         self.assertEquals(a1["requires"],   a["requires"])
 
@@ -123,7 +124,8 @@ class Test_10_pure_functions(unittest.TestCase):
 
         a = dict(requires="{% }}", )
         a_s = 'requires: "{% }}"'
-        a1 = TT.loads(a_s, forced_type="yaml", template=True, context={})
+        a1 = TT.loads(a_s, forced_type="yaml", ac_template=True,
+                      ac_context={})
 
         self.assertEquals(a1["requires"],   a["requires"])
 
@@ -180,7 +182,7 @@ b:
     c: {{ b.c }}
 """)
 
-        a1 = TT.single_load(a_path, template=True, context=a)
+        a1 = TT.single_load(a_path, ac_template=True, ac_context=a)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -206,7 +208,7 @@ b:
     c: {{ b.c }}
 """)
 
-        a1 = TT.single_load(a_path, template=True, context=a)
+        a1 = TT.single_load(a_path, ac_template=True, ac_context=a)
 
         self.assertEquals(a1["name"],   a["name"])
         self.assertEquals(a1["a"],      a["a"])
@@ -326,10 +328,10 @@ b:
     d: {{ b.d }}
 """)
 
-        a0 = TT.multi_load(g_path, merge=TT.MS_DICTS, template=True,
-                           context=ma)
+        a0 = TT.multi_load(g_path, merge=TT.MS_DICTS, ac_template=True,
+                           ac_context=ma)
         a02 = TT.multi_load([g_path, b_path], merge=TT.MS_DICTS,
-                            template=True, context=ma)
+                            ac_template=True, ac_context=ma)
 
         self.assertEquals(a0["name"],   a["name"])
         self.assertEquals(a0["a"],      b["a"])

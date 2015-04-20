@@ -374,6 +374,9 @@ It can process various config files and output a merged config file:
     -v, --verbose         Verbose mode
   ssato@localhost%
 
+Tips
+======
+
 Combination with other modules
 --------------------------------
 
@@ -407,6 +410,25 @@ software to load user config files like this:
 .. [#] http://freedesktop.org/wiki/Software/pyxdg/
 .. [#] https://pypi.python.org/pypi/appdirs/
 
+Default config values
+------------------------
+
+Current implementation of anyconfig.\*load\*() do not provide a way to provide
+some sane default configuration values before/while loading config files.
+
+This should be accomplished by a few lines of code:
+
+.. code-block:: python
+
+   import anyconfig
+
+   conf = anyconfig.container(foo=0, bar='1', baz=[2, 3])  # Default values
+   conf_from_files = anyconfig.load("/path/to/config_files_dir/*.yml")
+
+   conf.update(**conf_from_files)
+
+   # Use `conf` ... 
+ 
 Build & Install
 ================
 

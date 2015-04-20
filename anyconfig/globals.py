@@ -5,7 +5,7 @@
 """anyconfig globals.
 """
 AUTHOR = 'Satoru SATOH <ssat@redhat.com>'
-VERSION = "0.0.6"
+VERSION = "0.0.7"
 
 import anyconfig.init
 LOGGER = anyconfig.init.LOGGER

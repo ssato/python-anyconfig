@@ -53,7 +53,9 @@ def to_log_level(level):
     """
     :param level: Logging level in int = 0 .. 2
     """
-    assert level >= 0 and level < 3, "wrong log level passed: " + str(level)
+    if not (level >= 0 and level < 3):
+        raise ValueError("wrong log level passed: " + str(level))
+
     return [logging.WARN, logging.INFO, logging.DEBUG][level]
 
 

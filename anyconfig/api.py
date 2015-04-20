@@ -128,7 +128,8 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    assert merge in MERGE_STRATEGIES, "Invalid merge strategy: " + merge
+    if merge not in MERGE_STRATEGIES:
+        raise ValueError("Invalid merge strategy: " + merge)
 
     if marker in paths:
         paths = anyconfig.utils.sglob(paths)

@@ -147,10 +147,11 @@ def main(argv=sys.argv):
 
     data = A.load(args, options.itype, options.merge,
                   ignore_missing=options.ignore_missing,
-                  template=options.template)
+                  ac_template=options.template)
 
     if options.args:
-        diff = A.loads(options.args, options.atype)
+        diff = A.loads(options.args, options.atype,
+                       ac_template=options.template, ac_context=data)
         data.update(diff, options.merge)
 
     if options.get:

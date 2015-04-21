@@ -422,13 +422,22 @@ This should be accomplished by a few lines of code:
 
    import anyconfig
 
-   conf = anyconfig.container(foo=0, bar='1', baz=[2, 3])  # Default values
+   default = dict(foo=0, bar='1', baz=[2, 3])  # Default values
+   conf = anyconfig.container(default)  # or: anyconfig.container(**default)
    conf_from_files = anyconfig.load("/path/to/config_files_dir/*.yml")
 
-   conf.update(**conf_from_files)
+   conf.update(conf_from_files)
 
    # Use `conf` ... 
- 
+
+or:
+
+.. code-block:: python
+
+   default = dict(foo=0, bar='1', baz=[2, 3])
+   conf = anyconfig.container(default)
+   conf.update(anyconfig.load("/path/to/config_files_dir/*.yml"))
+
 Build & Install
 ================
 

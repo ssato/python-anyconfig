@@ -42,6 +42,7 @@ def find_loader(config_path, forced_type=None):
     """
     :param config_path: Configuration file path
     :param forced_type: Forced configuration parser type
+
     :return: ConfigParser-inherited class object
     """
     if forced_type is not None:
@@ -73,6 +74,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
     :param ac_context: A dict presents context to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
@@ -124,6 +126,7 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
     :param ac_context: A dict presents context to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
@@ -166,6 +169,7 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
     :param ac_context: A dict presents context to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
@@ -189,6 +193,7 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context={},
     :param ac_context: Context dict to instantiate template
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
@@ -218,6 +223,7 @@ def _find_dumper(config_path, forced_type=None):
 
     :param config_path: Output filename
     :param forced_type: Forced configuration parser type
+
     :return: ConfigParser-inherited class object
     """
     cparser = find_loader(config_path, forced_type)
@@ -256,6 +262,7 @@ def dumps(data, forced_type, **kwargs):
     :param forced_type: Forced configuration parser type
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
+
     :return: Backend-specific string representation for the given data
     """
     return _find_dumper(None, forced_type).dumps(data, **kwargs)

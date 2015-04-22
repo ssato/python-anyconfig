@@ -438,6 +438,16 @@ or:
    conf = anyconfig.container(default)
    conf.update(anyconfig.load("/path/to/config_files_dir/*.yml"))
 
+Environment Variables
+------------------------
+
+It's a piece of cake to use environment variables like this:
+
+.. code-block:: python
+
+   conf = anyconfig.container(os.environ.copy())
+   conf.update(anyconfig.load("/path/to/config_files_dir/*.yml"))
+
 Build & Install
 ================
 

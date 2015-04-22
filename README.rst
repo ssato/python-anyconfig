@@ -414,9 +414,9 @@ Default config values
 ------------------------
 
 Current implementation of anyconfig.\*load\*() do not provide a way to provide
-some sane default configuration values before/while loading config files.
-
-This should be accomplished by a few lines of code:
+some sane default configuration values (as a dict parameter for example)
+before/while loading config files. Instead, you can accomplish that by a few
+lines of code like the followings:
 
 .. code-block:: python
 

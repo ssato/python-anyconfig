@@ -1,9 +1,8 @@
+include LICENSE.MIT
 include MANIFEST.in
 include README.*
-include LICENSE.MIT
+include docs/*
 include package.spec.in
 include pkg/*
-include python-anyconfig.spec.in
 include setup.py
 recursive-include anyconfig *.py
-include docs/*

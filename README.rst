@@ -439,7 +439,8 @@ or:
 Environment Variables
 ------------------------
 
-It's a piece of cake to use environment variables like this:
+It's a piece of cake to use environment variables as config default values like
+this:
 
 .. code-block:: python
 

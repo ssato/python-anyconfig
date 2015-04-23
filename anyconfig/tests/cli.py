@@ -231,4 +231,18 @@ b:
         except RuntimeError:
             pass
 
+    def test_90_no_inputs__w_env_option(self):
+        input = "/dev/null"
+        output = os.path.join(self.workdir, "out.yml")
+
+        if A.find_loader(input, "yaml") is None:
+            return
+
+        TT.main(["dummy", "--env", "-o", output, input])
+        data = A.load(output)
+
+        for env_var, env_val in os.environ.items():
+            self.assertTrue(env_var in data)
+            self.assertEquals(env_val, os.environ[env_var])
+
 # vim:sw=4:ts=4:et:

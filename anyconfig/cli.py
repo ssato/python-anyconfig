@@ -10,6 +10,7 @@ import codecs
 import locale
 import logging
 import optparse
+import os
 import sys
 
 
@@ -68,7 +69,7 @@ def option_parser(defaults=None, usage=USAGE):
     """
     defaults = dict(loglevel=1, list=False, output=None, itype=None,
                     otype=None, atype=None, merge=A.MS_DICTS,
-                    ignore_missing=False, template=False)
+                    ignore_missing=False, template=False, env=False)
 
     ctypes = A.list_types()
     ctypes_s = ", ".join(ctypes)
@@ -117,6 +118,9 @@ Int, str, etc.""" % ctypes_s
                       help="Ignore missing input files")
     parser.add_option("", "--template", action="store_true",
                       help="Enable template config support")
+    parser.add_option("", "--env", action="store_true",
+                      help="Load configuration defaults from "
+                           "environment values")
 
     parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
                       const=0, help="Silent or quiet mode")
@@ -147,8 +151,10 @@ def main(argv=sys.argv):
             parser.print_usage()
             sys.exit(-1)
 
-    data = A.load(args, options.itype, ignore_missing=options.ignore_missing,
+    data = data = os.environ.copy() if options.env else A.container()
+    diff = A.load(args, options.itype, ignore_missing=options.ignore_missing,
                   merge=options.merge, ac_template=options.template)
+    data.update(diff)
 
     if options.args:
         diff = A.loads(options.args, options.atype,

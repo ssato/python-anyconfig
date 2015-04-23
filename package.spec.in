@@ -105,11 +105,15 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Wed Apr 22 2015 Satoru SATOH <ssato@redhat.com> - 0.0.5.999-1
+* Thu Apr 23 2015 Satoru SATOH <ssato@redhat.com> - 0.0.7-1
 - module level logging fixes and improvements, may close issue#13 and issue#14
 - export anyconfig.api.set_ to public which was not exported
 - rename a few function parameters template and context passed to *load* to
   avoid conflicts with parameters intended to pass to backends
+- reorder some arguments passed to anyconfig.api.*load to keep consistency in
+  the order of arguments among them
+- add --env option to the CLI frontend to pass configuration default values
+  from envrionment variables
 - some more minor bug fixes and enhancements
 
 * Fri Mar 13 2015 Satoru SATOH <ssato@redhat.com> - 0.0.6-1

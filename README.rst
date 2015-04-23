@@ -114,11 +114,9 @@ these load and dump functions:
   #    ...
   data5 = anyconfig.load("foo.json", parse_float=None)
 
-.. note::
-
-   The returned object is an instance of anyconfig.mergeabledict.MergeableDict
-   class by default, to support recursive merge operations needed when loading
-   multiple config files.
+.. note:: The returned object is an instance of
+   anyconfig.mergeabledict.MergeableDict class by default, to support recursive
+   merge operations needed when loading multiple config files.
 
 Loading multiple config files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

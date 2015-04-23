@@ -5,10 +5,6 @@ python-anyconfig
 About
 ========
 
-.. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
-   :target: https://travis-ci.org/ssato/python-anyconfig
-   :alt: Test status
-
 .. image:: https://pypip.in/version/anyconfig/badge.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: Latest Version
@@ -21,6 +17,10 @@ About
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: MIT License
 
+.. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
+   :target: https://travis-ci.org/ssato/python-anyconfig
+   :alt: Test status
+
 .. image:: https://coveralls.io/repos/ssato/python-anyconfig/badge.png
    :target: https://coveralls.io/r/ssato/python-anyconfig
    :alt: Coverage Status
@@ -28,6 +28,10 @@ About
 .. image:: https://landscape.io/github/ssato/python-anyconfig/master/landscape.png
    :target: https://landscape.io/github/ssato/python-anyconfig/master
    :alt: Code Health
+
+.. image:: https://www.openhub.net/p/python-anyconfig/widgets/project_thin_badge.gif
+   :target: https://www.openhub.net/p/python-anyconfig
+   :alt: Open HUB
 
 This is a python library called 'anyconfig' [#]_  provides generic access to
 configuration files in any formats (to be in the future) with configuration

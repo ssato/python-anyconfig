@@ -371,6 +371,7 @@ It can process various config files and output a merged config file:
                           0, 'd': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.
     -x, --ignore-missing  Ignore missing input files
     --template            Enable template config support
+    --env                 Load configuration defaults from environment values
     -s, --silent          Silent or quiet mode
     -q, --quiet           Same as --silent option
     -v, --verbose         Verbose mode

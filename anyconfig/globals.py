@@ -4,7 +4,7 @@
 #
 """anyconfig globals.
 """
-AUTHOR = 'Satoru SATOH <ssat@redhat.com>'
+AUTHOR = "Satoru SATOH <ssat@redhat.com>"
 VERSION = "0.0.7"
 
 import anyconfig.init

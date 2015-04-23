@@ -100,8 +100,8 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
                         **kwargs)
 
 
-def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
-               ignore_missing=False, ac_template=False, ac_context={},
+def multi_load(paths, forced_type=None, ignore_missing=False,
+               merge=MS_DICTS, marker='*', ac_template=False, ac_context={},
                **kwargs):
     """
     Load multiple config files.
@@ -117,10 +117,10 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
 
     :param paths: List of config file paths or a glob pattern to list paths
     :param forced_type: Forced configuration parser type
+    :param ignore_missing: Ignore missing config files
     :param merge: Strategy to merge config results of multiple config files
         loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
     :param marker: Globbing markerer to detect paths patterns
-    :param ignore_missing: Ignore missing config files
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
@@ -140,8 +140,8 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
     config = container.create(ac_context) if ac_context else container()
     for path in paths:
         if marker in path:  # Nested patterns like ['*.yml', '/a/b/c.yml'].
-            conf_updates = multi_load(path, forced_type, merge, marker,
-                                      ignore_missing, ac_template, config,
+            conf_updates = multi_load(path, forced_type, ignore_missing,
+                                      merge, marker, ac_template, config,
                                       **kwargs)
         else:
             conf_updates = single_load(path, forced_type, ignore_missing,
@@ -152,8 +152,9 @@ def multi_load(paths, forced_type=None, merge=MS_DICTS, marker='*',
     return config
 
 
-def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
-         ignore_missing=False, ac_template=False, ac_context={}, **kwargs):
+def load(path_specs, forced_type=None, ignore_missing=False,
+         merge=MS_DICTS, marker='*', ac_template=False, ac_context={},
+         **kwargs):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -161,9 +162,9 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
     :param path_specs:
         Configuration file path or paths or its pattern such as '/a/b/*.json'
     :param forced_type: Forced configuration parser type
+    :param ignore_missing: Ignore missing config files
     :param merge: Merging strategy to use
     :param marker: Globbing marker to detect paths patterns
-    :param ignore_missing: Ignore missing config files
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
@@ -175,8 +176,8 @@ def load(path_specs, forced_type=None, merge=MS_DICTS, marker='*',
         operations.
     """
     if marker in path_specs or anyconfig.utils.is_iterable(path_specs):
-        return multi_load(path_specs, forced_type, merge, marker,
-                          ignore_missing, ac_template, ac_context, **kwargs)
+        return multi_load(path_specs, forced_type, ignore_missing,
+                          merge, marker, ac_template, ac_context, **kwargs)
     else:
         return single_load(path_specs, forced_type, ignore_missing,
                            ac_template, ac_context, **kwargs)

@@ -161,8 +161,7 @@ class Test_20_effectful_functions(unittest.TestCase):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(TT.single_load(cpath, forced_type="ini",
-                                         ignore_missing=True),
+        self.assertEquals(TT.single_load(cpath, "ini", ignore_missing=True),
                           null_cntnr)
 
     def test_16_single_load__template(self):

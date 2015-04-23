@@ -147,9 +147,8 @@ def main(argv=sys.argv):
             parser.print_usage()
             sys.exit(-1)
 
-    data = A.load(args, options.itype, options.merge,
-                  ignore_missing=options.ignore_missing,
-                  ac_template=options.template)
+    data = A.load(args, options.itype, ignore_missing=options.ignore_missing,
+                  merge=options.merge, ac_template=options.template)
 
     if options.args:
         diff = A.loads(options.args, options.atype,

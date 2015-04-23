@@ -30,7 +30,7 @@ class SrpmCommand(Command):
     build_stage = "s"
 
     curdir = os.path.abspath(os.curdir)
-    rpmspec = os.path.join(curdir, "python-%s.spec" % PACKAGE)
+    rpmspec = os.path.join(curdir, "package.spec")
 
     def initialize_options(self):
         pass

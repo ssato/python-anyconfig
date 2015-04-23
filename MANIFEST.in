@@ -1,7 +1,7 @@
 include MANIFEST.in
 include README.*
 include LICENSE.MIT
-include python-anyconfig.spec*
+include package.spec.in
 include pkg/*
 include python-anyconfig.spec.in
 include setup.py

@@ -21,7 +21,9 @@ if test "x${nprocs}" != "x0" ; then
 fi
 
 function _pylint () {
-    pylint --rcfile=$curdir/pylintrc --errors-only $@
+    test -f ${curdir}/pylintrc && \
+        local rcopt=--rcfile=$curdir/pylintrc || local rcopt=""
+    pylint ${rcopt} --errors-only $@
 }
 
 which pep8 2>&1 > /dev/null && check_with_pep8=1 || check_with_pep8=0

@@ -4,7 +4,6 @@
 #
 import os
 import os.path
-import subprocess
 import sys
 import unittest
 
@@ -12,16 +11,6 @@ import anyconfig.cli as TT
 import anyconfig.api as A
 import anyconfig.template
 import anyconfig.tests.common as C
-
-
-def run(args=[]):
-    """
-    It will throw subprocess.CalledProcessError if something goes wrong.
-    """
-    args = ["python", os.path.join(C.selfdir(), "..", "cli.py")] + args
-    devnull = open('/dev/null', 'w')
-
-    subprocess.check_call(args, stdout=devnull, stderr=devnull)
 
 
 class Test_10_effectful_functions(unittest.TestCase):
@@ -43,13 +32,13 @@ class Test_10_effectful_functions(unittest.TestCase):
                 self.assertEquals(e.code, code)
 
     def test_10__show_usage(self):
-        run(["--help"])
+        self.run_and_check_exit_code(["--help"])
 
     def test_12__wrong_option(self):
         self.run_and_check_exit_code(["--wrong-option-xyz"], _not=True)
 
     def test_20__list(self):
-        run(["--list"])
+        self.run_and_check_exit_code(["--list"])
 
     def test_22__list(self):
         self.run_and_check_exit_code(["--list"])

@@ -195,6 +195,7 @@ b:
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         a_path = os.path.join(self.workdir, "a.yml")
         b_path = os.path.join(self.workdir, "b.yml")
+        a2_path = os.path.join(self.workdir, "x/y/z", "a.yml")
 
         open(a_path, 'w').write("{% include 'b.yml' %}")
         open(b_path, 'w').write("""name: {{ name|default('a') }}
@@ -206,6 +207,8 @@ b:
       {% endfor %}
     c: {{ b.c }}
 """)
+        os.makedirs(os.path.dirname(a2_path))
+        open(a2_path, 'w').write("a: 'xyz'")
 
         a1 = TT.single_load(a_path, ac_template=True, ac_context=a)
 
@@ -213,6 +216,9 @@ b:
         self.assertEquals(a1["a"],      a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
+
+        a2 = TT.single_load(a2_path, ac_template=True)
+        self.assertEquals(a2["a"], "xyz")
 
     def test_20_dump_and_multi_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

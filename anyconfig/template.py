@@ -33,16 +33,28 @@ except ImportError:
 
 def make_template_paths(template_file, paths=None):
     """
+    Make up a list of template search paths from given `template_file`
+    (absolute or relative path to the template file) and/or `paths` (a list of
+    template search paths given by user).
+
+    NOTE: User-given `paths` will take higher priority over a dir of
+    template_file.
+
     :param template_file: Absolute or relative path to the template file
     :param paths: A list of template search paths
 
     >>> make_template_paths("/path/to/a/template")
-    ['.', '/path/to/a']
-    >>> make_template_paths("/path/to/a/template", ["/tmp", "."])
-    ['/tmp', '.', '/path/to/a']
+    ['/path/to/a']
+    >>> make_template_paths("/path/to/a/template", ["/tmp"])
+    ['/tmp', '/path/to/a']
+    >>> os.chdir("/tmp")
+    >>> make_template_paths("./path/to/a/template")
+    ['/tmp/path/to/a']
+    >>> make_template_paths("./path/to/a/template", ["/tmp"])
+    ['/tmp', '/tmp/path/to/a']
     """
     tmpldir = os.path.abspath(os.path.dirname(template_file))
-    return [os.curdir, tmpldir] if paths is None else paths + [tmpldir]
+    return [tmpldir] if paths is None else paths + [tmpldir]
 
 
 def render_s(tmpl_s, ctx=None, paths=[os.curdir]):

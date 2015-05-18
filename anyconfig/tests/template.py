@@ -3,6 +3,7 @@
 # License: MIT
 #
 import os.path
+import os
 import mock
 import unittest
 
@@ -72,5 +73,34 @@ class Test_20_render_templates(unittest.TestCase):
             with mock.patch(mpt, return_value=ok_t):
                 c_r = TT.render(ng_t, ctx, ask=True)
                 self.assertEquals(c_r, ok_content)
+
+    def test_24_render__wo_paths(self):
+        if TT.SUPPORTED:
+            fn = self.templates[0][0]
+            assert os.path.exists(os.path.join(self.workdir, fn))
+
+            subdir = os.path.join(self.workdir, "a/b/c")
+            os.makedirs(subdir)
+
+            tmpl = os.path.join(subdir, fn)
+            open(tmpl, 'w').write("{{ a|default('aaa') }}")
+
+            c_r = TT.render(tmpl)
+            self.assertEquals(c_r, "aaa")
+
+    def test_25_render__w_paths_of_higher_prio(self):
+        if TT.SUPPORTED:
+            fn = self.templates[0][0]
+            assert os.path.exists(os.path.join(self.workdir, fn))
+
+            subdir = os.path.join(self.workdir, "a/b/c")
+            os.makedirs(subdir)
+
+            tmpl = os.path.join(subdir, fn)
+            open(tmpl, 'w').write("{{ a|default('aaa') }}")
+
+            c_r = TT.render(tmpl, paths=[self.workdir])
+            self.assertNotEquals(c_r, "aaa")
+            self.assertEquals(c_r, self.templates[0][-1])
 
 # vim:sw=4:ts=4:et:

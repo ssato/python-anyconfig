@@ -1,5 +1,6 @@
 PyYAML
-Jinja2
+# Disabled until all errors during tests are resolved. 
+#Jinja2
 coveralls
 # flake8  # disabled until 'pkg_resources.VersionConflict' error.
 mock

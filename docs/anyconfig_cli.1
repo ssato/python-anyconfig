@@ -48,12 +48,19 @@ str, etc.
 Specify key path to get part of config, for example,
 if a config {'a': {'b': {'c': 0, 'd': 1}}} '--get
 a.b.c' gives 0 and '--get a.b' gives {'c': 0, 'd': 1}.
+\fB\-\-set\fR=\fIGET\fR
+Specify key path to set (update) part of config, for example, '--set a.b.c=1'
+to a config {'a': {'b': {'c': 0, 'd': 1}}} gives {'a': {'b': {'c': 1, 'd':
+1}}}.
 .TP
 \fB\-x\fR, \fB\-\-ignore\-missing\fR
 Ignore missing input files
 .TP
-\fB\-\-no\-template\fR
-Disable template config support
+\fB-\-template\fR
+Enable template config support
+.TP
+\fB\-\-env\fR
+Load configuration defaults from environment values
 .TP
 \fB\-s\fR, \fB\-\-silent\fR
 Silent or quiet mode

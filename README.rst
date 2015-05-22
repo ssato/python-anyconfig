@@ -13,7 +13,7 @@ About
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: Supported Python versions
 
-.. image:: https://pypip.in/license/anyconfig/badge.png
+.. .. image:: https://pypip.in/license/anyconfig/badge.png
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: MIT License
 

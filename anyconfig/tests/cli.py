@@ -2,7 +2,7 @@
 # Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name
 import os
 import os.path
 import sys
@@ -23,9 +23,9 @@ class Test_10_effectful_functions(unittest.TestCase):
     def tearDown(self):
         C.cleanup_workdir(self.workdir)
 
-    def run_and_check_exit_code(self, args=[], code=0, _not=False):
+    def run_and_check_exit_code(self, args=None, code=0, _not=False):
         try:
-            TT.main(["dummy"] + args)
+            TT.main(["dummy"] + ([] if args is None else args))
         except SystemExit as e:
             if _not:
                 self.assertNotEquals(e.code, code)
@@ -47,25 +47,25 @@ class Test_10_effectful_functions(unittest.TestCase):
     def test_30_single_input(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
-        input = os.path.join(self.workdir, "a.json")
+        infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, input)
-        self.assertTrue(os.path.exists(input))
+        A.dump(a, infile)
+        self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, input])
+        TT.main(["dummy", "-o", output, infile])
         self.assertTrue(os.path.exists(output))
 
     def test_32_single_input_w_get_option(self):
         d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))
 
-        input = os.path.join(self.workdir, "a.json")
+        infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(d, input)
-        self.assertTrue(os.path.exists(input))
+        A.dump(d, infile)
+        self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, "--get", "a.b", input])
+        TT.main(["dummy", "-o", output, "--get", "a.b", infile])
         self.assertTrue(os.path.exists(output))
 
         x = A.load(output)
@@ -74,13 +74,13 @@ class Test_10_effectful_functions(unittest.TestCase):
     def test_34_single_input_w_set_option(self):
         d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))
 
-        input = os.path.join(self.workdir, "a.json")
+        infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(d, input)
-        self.assertTrue(os.path.exists(input))
+        A.dump(d, infile)
+        self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, "--set", "a.b.d=E", input])
+        TT.main(["dummy", "-o", output, "--set", "a.b.d=E", infile])
         self.assertTrue(os.path.exists(output))
 
         ref = d.copy()
@@ -91,11 +91,10 @@ class Test_10_effectful_functions(unittest.TestCase):
 
     def test_36_single_input__ignore_missing(self):
         # null_cntnr = A.container()
-        input = os.path.join(os.curdir, "conf_file_should_not_exist.json")
-        assert not os.path.exists(input)
+        infile = os.path.join(os.curdir, "conf_file_should_not_exist.json")
+        assert not os.path.exists(infile)
 
-        TT.main(["dummy", "-O", "json", "--ignore-missing",
-                input])
+        TT.main(["dummy", "-O", "json", "--ignore-missing", infile])
 
     def test_40_multiple_inputs(self):
         xs = [dict(a=1, ),
@@ -108,11 +107,11 @@ class Test_10_effectful_functions(unittest.TestCase):
 
         inputs = []
         for i in [0, 1]:
-            input = os.path.join(self.workdir, "a%d.json" % i)
-            inputs.append(input)
+            infile = os.path.join(self.workdir, "a%d.json" % i)
+            inputs.append(infile)
 
-            A.dump(xs[i], input)
-            self.assertTrue(os.path.exists(input))
+            A.dump(xs[i], infile)
+            self.assertTrue(os.path.exists(infile))
 
         TT.main(["dummy", "-o", output] + inputs)
         self.assertTrue(os.path.exists(output))
@@ -120,13 +119,13 @@ class Test_10_effectful_functions(unittest.TestCase):
     def test_50_single_input__w_arg_option(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
 
-        input = os.path.join(self.workdir, "a.json")
+        infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, input)
-        self.assertTrue(os.path.exists(input))
+        A.dump(a, infile)
+        self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, "-A", "a:10;name:x;d:3,4", input])
+        TT.main(["dummy", "-o", output, "-A", "a:10;name:x;d:3,4", infile])
         self.assertTrue(os.path.exists(output))
 
         x = A.load(output)
@@ -141,17 +140,17 @@ class Test_10_effectful_functions(unittest.TestCase):
 
     def test_60_output_wo_output_option_w_otype(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        input = os.path.join(self.workdir, "a.json")
-        A.dump(a, input)
+        infile = os.path.join(self.workdir, "a.json")
+        A.dump(a, infile)
 
-        self.run_and_check_exit_code(["--otype", "json", input], 0)
+        self.run_and_check_exit_code(["--otype", "json", infile], 0)
 
     def test_62_output_wo_output_option_and_otype_w_itype(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        input = os.path.join(self.workdir, "a.json")
-        A.dump(a, input)
+        infile = os.path.join(self.workdir, "a.json")
+        A.dump(a, infile)
 
-        self.run_and_check_exit_code(["--itype", "json", input], 0)
+        self.run_and_check_exit_code(["--itype", "json", infile], 0)
 
     def test_70_multi_inputs__w_template(self):
         if not anyconfig.template.SUPPORTED:
@@ -183,13 +182,13 @@ b:
     def test_72_single_input__no_template(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
-        input = os.path.join(self.workdir, "a.json")
+        infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, input)
-        self.assertTrue(os.path.exists(input))
+        A.dump(a, infile)
+        self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, input])
+        TT.main(["dummy", "-o", output, infile])
         self.assertTrue(os.path.exists(output))
 
     def test_74_multi_inputs__w_template(self):
@@ -198,18 +197,18 @@ b:
 
         curdir = C.selfdir()
 
-        input = os.path.join(curdir, "*template-c*.yml")
+        infile = os.path.join(curdir, "*template-c*.yml")
         output = os.path.join(self.workdir, "output.yml")
 
-        TT.main(["dummy", "--template", "-o", output, input])
+        TT.main(["dummy", "--template", "-o", output, infile])
 
     def test_80_no_out_dumper(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
-        input = os.path.join(self.workdir, "a.json")
-        A.dump(a, input)
+        infile = os.path.join(self.workdir, "a.json")
+        A.dump(a, infile)
 
         try:
-            TT.main(["dummy", "-o", "out.txt", input])
+            TT.main(["dummy", "-o", "out.txt", infile])
             sys.exit(-1)
         except RuntimeError:
             pass
@@ -222,13 +221,13 @@ b:
             pass
 
     def test_90_no_inputs__w_env_option(self):
-        input = "/dev/null"
+        infile = "/dev/null"
         output = os.path.join(self.workdir, "out.yml")
 
-        if A.find_loader(input, "yaml") is None:
+        if A.find_loader(infile, "yaml") is None:
             return
 
-        TT.main(["dummy", "--env", "-o", output, input])
+        TT.main(["dummy", "--env", "-o", output, infile])
         data = A.load(output)
 
         for env_var, env_val in os.environ.items():

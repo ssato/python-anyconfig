@@ -94,7 +94,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
                                  **kwargs)
         except:
             LOGGER.warn("Failed to compile %s, fallback to no template "
-                         "mode", config_path)
+                        "mode", config_path)
 
     return cparser.load(config_path, ignore_missing=ignore_missing,
                         **kwargs)
@@ -217,7 +217,7 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context={},
                                                          ac_context)
         except:
             LOGGER.warn("Failed to compile and fallback to no template "
-                         "mode: '%s'", config_content[:50] + '...')
+                        "mode: '%s'", config_content[:50] + '...')
 
     return cparser.loads(config_content, **kwargs)
 
@@ -235,7 +235,7 @@ def _find_dumper(config_path, forced_type=None):
 
     if cparser is None or not getattr(cparser, "dump", False):
         LOGGER.warn("Dump method not implemented. Fallback to "
-                     "JsonConfigParser")
+                    "JsonConfigParser")
         cparser = anyconfig.backend.json_.JsonConfigParser()
 
     return cparser

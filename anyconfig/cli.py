@@ -2,6 +2,8 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
+"""CLI frontend module for anyconfig.
+"""
 import anyconfig.api as A
 import anyconfig.compat
 import anyconfig.globals
@@ -132,11 +134,13 @@ Int, str, etc.""" % ctypes_s
     return parser
 
 
-# pylint: disable=W0102
-def main(argv=sys.argv):
+def main(argv=None):
     """
-    :param argv: Argument list to parse [sys.argv]
+    :param argv: Argument list to parse or None (sys.argv will be set).
     """
+    if argv is None:
+        argv = sys.argv
+
     parser = option_parser()
     (options, args) = parser.parse_args(argv[1:])
 
@@ -177,7 +181,7 @@ def main(argv=sys.argv):
 
         cparser.dump(data, options.output)
     else:
-        # TODO: Reuse input type automatically detected as it's impossible to
+        # NOTE: Reuse input type automatically detected as it's impossible to
         # detect output type w/o options.output.
         if options.otype is None:
             if options.itype is None:

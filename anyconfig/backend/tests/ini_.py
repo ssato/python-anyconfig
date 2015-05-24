@@ -2,6 +2,7 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=missing-docstring
 import anyconfig.backend.ini_ as I
 
 import os

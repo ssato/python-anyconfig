@@ -2,6 +2,7 @@
 # Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=missing-docstring
 import os
 import os.path
 import sys

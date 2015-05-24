@@ -40,6 +40,11 @@ def parse_single(s):
     'a string contains extra whitespaces'
     """
     def matched(pat, s):
+        """
+        :param pat: Regex pattern string
+        :param s: String to try match
+        :return: True if `pat` matches `s`
+        """
         return pat.match(s) is not None
 
     if s is None:
@@ -108,6 +113,9 @@ def parse_attrlist_0(s, avs_sep=":", vs_sep=",", as_sep=";"):
     [('obsoletes', 'sysdata'), ('conflicts', 'sysdata-old')]
     """
     def attr_and_values(s):
+        """
+        :param s: String represents a list of pairs of attribute and value
+        """
         for rel in parse_list(s, as_sep):
             if avs_sep not in rel or rel.endswith(avs_sep):
                 continue

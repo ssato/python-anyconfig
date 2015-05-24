@@ -2,6 +2,8 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+"""Ini file parser backend
+"""
 import logging
 import sys
 
@@ -39,6 +41,8 @@ def _parse(v, sep=_SEP):
 
 
 def _to_s(v, sep=", "):
+    """Convert any to string.
+    """
     if isinstance(v, list):
         return sep.join(x for x in v)
     else:
@@ -88,9 +92,14 @@ def _load_impl(config_fp, sep=_SEP, **kwargs):
 
 
 def mk_lines_g(data):
+    """
+    """
     has_default = "DEFAULT" in data
 
     def is_inherited_from_default(k, v):
+        """
+        :return: True if (k, v) pair in defaults.
+        """
         return has_default and data["DEFAULT"].get(k, None) == v
 
     for sect, params in iteritems(data):
@@ -106,6 +115,9 @@ def mk_lines_g(data):
 
 
 class IniConfigParser(Base.ConfigParser):
+    """
+    Init config files parser.
+    """
     _type = "ini"
     _extensions = ["ini"]
     _supported = SUPPORTED

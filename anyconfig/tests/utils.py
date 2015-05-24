@@ -2,6 +2,7 @@
 # Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=missing-docstring
 import unittest
 import anyconfig.utils as TT
 

@@ -2,6 +2,8 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+"""YAML files parser backend
+"""
 import logging
 import anyconfig.backend.base as Base
 
@@ -17,9 +19,14 @@ except ImportError:
 
 if SUPPORTED:
     def filter_keys(keys, filter_key):
+        """
+        """
         return [k for k in keys if k != filter_key]
 
     def yaml_load(fp, **kwargs):
+        """
+        An wrapper of yaml.{safe_,}load
+        """
         keys = filter_keys(kwargs.keys(), "safe")
         if kwargs.get("safe", False):
             return yaml.safe_load(fp, **Base.mk_opt_args(keys, kwargs))
@@ -27,6 +34,9 @@ if SUPPORTED:
             return yaml.load(fp, **kwargs)
 
     def yaml_dump(data, fp, **kwargs):
+        """
+        An wrapper of yaml.{safe_,}dump
+        """
         keys = filter_keys(kwargs.keys(), "safe")
         if kwargs.get("safe", False):
             return yaml.safe_dump(data, fp, **Base.mk_opt_args(keys, kwargs))
@@ -44,6 +54,9 @@ else:
 
 
 class YamlConfigParser(Base.ConfigParser):
+    """
+    YAML files parser
+    """
 
     _type = "yaml"
     _extensions = ("yaml", "yml")

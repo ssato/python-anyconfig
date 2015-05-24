@@ -4,6 +4,8 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
+"""Template rendering module for jinja2-based template config files.
+"""
 import logging
 import os
 
@@ -18,6 +20,9 @@ try:
     SUPPORTED = True
 
     def tmpl_env(paths):
+        """
+        :param paths: A list of template search paths
+        """
         return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
 
 except ImportError:
@@ -25,9 +30,11 @@ except ImportError:
                 "template support will be disabled.")
 
     class TemplateNotFound(RuntimeError):
+        """Dummy exception"""
         pass
 
     def tmpl_env(*args):
+        """Dummy function"""
         return None
 
 

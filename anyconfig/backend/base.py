@@ -2,6 +2,8 @@
 # Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+"""Abstract implementation of backend modules.
+"""
 import logging
 import os
 
@@ -48,6 +50,9 @@ def mk_dump_dir_if_not_exist(f):
 
 
 class ConfigParser(object):
+    """
+    Abstract class of config files parsers
+    """
 
     _type = None
     _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
@@ -60,18 +65,30 @@ class ConfigParser(object):
 
     @classmethod
     def type(cls):
+        """
+        Parser's type
+        """
         return cls._type
 
     @classmethod
     def priority(cls):
+        """
+        Parser's priority
+        """
         return cls._priority
 
     @classmethod
     def extensions(cls):
+        """
+        File extensions which this parser can process
+        """
         return cls._extensions
 
     @classmethod
     def supports(cls, config_file=None):
+        """
+        :return: True if this parser can process given file or is supported.
+        """
         if config_file is None:
             return cls._supported
         else:
@@ -81,14 +98,23 @@ class ConfigParser(object):
 
     @classmethod
     def container(cls):
+        """
+        :return: Container object used in this class
+        """
         return cls._container
 
     @classmethod
     def set_container(cls, container):
+        """
+        Setter of container of this class
+        """
         cls._container = container
 
     @classmethod
     def exists(cls, config_path):
+        """
+        :return: True if given file `config_path` exists
+        """
         return os.path.exists(config_path)
 
     @classmethod

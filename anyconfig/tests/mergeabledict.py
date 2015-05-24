@@ -1,6 +1,7 @@
 #
-# Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 #
+# pylint: disable=missing-docstring
 import unittest
 import anyconfig.mergeabledict as TT
 

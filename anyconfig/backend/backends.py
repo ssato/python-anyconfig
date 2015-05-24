@@ -2,6 +2,8 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+"""A module to aggregate config parser (loader/dumper) backends.
+"""
 import itertools
 import operator
 import pkg_resources
@@ -49,6 +51,8 @@ def snd(tpl):
 
 
 def groupby_key(xs, kf):
+    """An wrapper around itertools.groupby
+    """
     return itertools.groupby(sorted(xs, key=kf), key=kf)
 
 
@@ -74,6 +78,8 @@ def list_parsers_by_type(cps=_CPs):
 
 
 def _list_xppairs(xps):
+    """List config parsers by priority.
+    """
     return sorted((snd(xp) for xp in xps),
                   key=operator.methodcaller("priority"))
 

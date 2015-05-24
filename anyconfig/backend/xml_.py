@@ -3,6 +3,8 @@
 # License: MIT
 #
 # pylint: disable=R0921
+"""XML files parser backend.
+"""
 import logging
 
 import anyconfig.backend.base as Base
@@ -80,6 +82,9 @@ def etree_to_container(root, container):
 
 
 class XmlConfigParser(Base.ConfigParser):
+    """
+    XML files parser
+    """
 
     _type = "xml"
     _extensions = ["xml"]

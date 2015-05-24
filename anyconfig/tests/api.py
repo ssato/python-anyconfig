@@ -2,6 +2,7 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato at redhat.com>
 # License: MIT
 #
+# pylint: disable=missing-docstring
 from logging import CRITICAL
 
 import os

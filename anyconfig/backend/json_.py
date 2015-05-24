@@ -4,6 +4,8 @@
 #
 # Ref. python -c "import json; help(json)"
 #
+"""JSON file parser backend.
+"""
 import anyconfig.backend.base as Base
 import anyconfig.compat
 
@@ -19,6 +21,8 @@ except ImportError:
 
 
 def dict_to_container(json_obj_dict):
+    """Convert dict to container.
+    """
     return JsonConfigParser.container().create(json_obj_dict)
 
 
@@ -36,6 +40,9 @@ if not anyconfig.compat.IS_PYTHON_3:
 
 
 class JsonConfigParser(Base.ConfigParser):
+    """
+    JSON files parser.
+    """
     _type = "json"
     _extensions = ["json", "jsn", "js"]
     _supported = SUPPORTED

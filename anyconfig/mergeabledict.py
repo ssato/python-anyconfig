@@ -149,7 +149,6 @@ class MergeableDict(dict):
     Dict based object supports 'merge' operation.
     """
 
-    # TODO: Which strategy should be choosen for default?
     strategy = MS_DICTS
 
     @classmethod
@@ -239,9 +238,11 @@ class MergeableDict(dict):
         >>> md0["e"] == md2["e"]
         True
 
-        # TODO:
-        #>>> md1.update_w_merge(md2, True)
-        #>>> assert md1["e"] == [1, 2, 2, 3, 4], md1["e"]
+        >>> md3 = MergeableDict.create(dict(aaa=[1, 2, 3], ))
+        >>> md4 = MergeableDict.create(dict(aaa=[4, 4, 5], ))
+        >>> md3.update_w_merge(md4, True)
+        >>> md3["aaa"] == [1, 2, 3, 4, 4, 5]
+        True
         """
         if is_mergeabledict_or_dict(other):
             for k, v in iteritems(other):

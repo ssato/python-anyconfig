@@ -21,6 +21,7 @@ except ImportError:  # python < 2.7 doesn't have it.
 IS_PYTHON_3 = sys.version_info[0] == 3
 ENCODING = locale.getdefaultlocale()[1]
 
+
 # Borrowed from library doc, 9.7.1 Itertools functions:
 def _from_iterable(iterables):
     """
@@ -29,8 +30,8 @@ def _from_iterable(iterables):
     >>> list(_from_iterable([[1, 2], [3, 4]]))
     [1, 2, 3, 4]
     """
-    for it in iterables:
-        for element in it:
+    for itr in iterables:
+        for element in itr:
             yield element
 
 
@@ -68,6 +69,7 @@ def copen(filepath, flag='r', encoding=ENCODING):
     return codecs.open(filepath, flag, encoding)
 
 
+# pylint: disable=redefined-builtin
 if IS_PYTHON_3:
     import configparser  # flake8: noqa
     from io import StringIO  # flake8: noqa

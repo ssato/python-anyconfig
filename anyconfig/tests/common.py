@@ -1,6 +1,7 @@
 #
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato at redhat.com>
 #
+# pylint: disable=missing-docstring
 import imp
 import os.path
 import sys

@@ -29,6 +29,9 @@ def mk_opt_args(keys, kwargs):
     {}
     """
     def filter_kwargs(kwargs):
+        """
+        Filter keyword arguments
+        """
         for k in keys:
             if k in kwargs:
                 yield (k, kwargs[k])

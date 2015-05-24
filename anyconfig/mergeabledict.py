@@ -56,8 +56,8 @@ def get(dic, path, seps=PATH_SEPS):
                                  anyconfig.parser.parse_path(path, seps),
                                  dic),
                 '')
-    except (TypeError, KeyError) as e:
-        return (None, str(e))
+    except (TypeError, KeyError) as exc:
+        return (None, str(exc))
 
 
 def _mk_nested_dic(path, val, seps=PATH_SEPS):
@@ -195,8 +195,8 @@ class MergeableDict(dict):
         True
         """
         if is_mergeabledict_or_dict(other):
-            for k, v in iteritems(other):
-                self[k] = v
+            for key, val in iteritems(other):
+                self[key] = val
         else:
             self = copy.copy(other)
 
@@ -214,9 +214,9 @@ class MergeableDict(dict):
         True
         """
         if is_mergeabledict_or_dict(other):
-            for k, v in iteritems(other):
-                if k not in self:
-                    self[k] = v
+            for key, val in iteritems(other):
+                if key not in self:
+                    self[key] = val
 
     def update_w_merge(self, other, merge_lists=False):
         """Merge members recursively.
@@ -245,19 +245,20 @@ class MergeableDict(dict):
         True
         """
         if is_mergeabledict_or_dict(other):
-            for k, v in iteritems(other):
-                if k in self and is_mergeabledict_or_dict(v) and \
-                        is_mergeabledict_or_dict(self[k]):
-                    # update recursively.
-                    self[k].update_w_merge(v, merge_lists)
+            for key, val in iteritems(other):
+                if key in self and is_mergeabledict_or_dict(val) and \
+                        is_mergeabledict_or_dict(self[key]):
+                    # update recursivalely.
+                    self[key].update_w_merge(val, merge_lists)
                 else:
-                    if merge_lists and anyconfig.utils.is_iterable(v):
-                        v0 = self.get(k, None)
-                        if v0 is None:
-                            self[k] = [x for x in list(v)]
+                    if merge_lists and anyconfig.utils.is_iterable(val):
+                        val0 = self.get(key, None)
+                        if val0 is None:
+                            self[key] = [x for x in list(val)]
                         else:
-                            self[k] += [x for x in list(v) if x not in v0]
+                            self[key] += [x for x in list(val) if x not in
+                                          val0]
                     else:
-                        self[k] = v
+                        self[key] = val
 
 # vim:sw=4:ts=4:et:

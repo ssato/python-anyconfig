@@ -34,9 +34,8 @@ def sglob(files_pattern):
     return sorted(glob.glob(files_pattern))
 
 
-def is_iterable(x):
+def is_iterable(obj):
     """
-
     >>> is_iterable([])
     True
     >>> is_iterable(())
@@ -55,9 +54,9 @@ def is_iterable(x):
     >>> is_iterable({})
     False
     """
-    return isinstance(x, (list, tuple, types.GeneratorType)) or \
-        (not isinstance(x, (int, str, dict)) and
-         bool(getattr(x, "next", False)))
+    return isinstance(obj, (list, tuple, types.GeneratorType)) or \
+        (not isinstance(obj, (int, str, dict)) and
+         bool(getattr(obj, "next", False)))
 
 
 def concat(xss):

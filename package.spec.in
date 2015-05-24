@@ -105,6 +105,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun May 24 2015 Satoru SATOH <ssato@redhat.com> - 0.0.8-1
+- remove os.curdir from a list of default template search paths, may close #18
+- some more minor bug fixes and enhancements
+
 * Thu Apr 23 2015 Satoru SATOH <ssato@redhat.com> - 0.0.7-1
 - module level logging fixes and improvements, may close issue#13 and issue#14
 - export anyconfig.api.set_ to public which was not exported

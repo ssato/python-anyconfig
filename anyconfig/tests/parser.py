@@ -2,7 +2,7 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name
 import unittest
 import anyconfig.parser as TT
 
@@ -15,29 +15,23 @@ CASES = dict(single_0=[("", "")],
                      ("a string", "a string"),
                      ("0.1", "0.1"),
                      ("    a string contains extra whitespaces     ",
-                      "a string contains extra whitespaces"),
-                     ],
+                      "a string contains extra whitespaces")],
              list=[("a,b", ["a", "b"]),
                    ("1,2", [1, 2]),
-                   ("a,b,", ["a", "b"]),
-                   ],
+                   ("a,b,", ["a", "b"])],
              attrlist_0=[("requires:bash,zsh",
                           [('requires', ['bash', 'zsh']), ]),
                          ("obsoletes:sysdata;conflicts:sysdata-old",
                           [('obsoletes', 'sysdata'),
-                           ('conflicts', 'sysdata-old')]),
-                         ],
+                           ('conflicts', 'sysdata-old')])],
              path_empty=[("", [])],
              path_single=[("", []), ("a", ['a']), ("/a", ['a']),
-                          (".a", ['a']), ("a.", ['a']),
-                          ],
+                          (".a", ['a']), ("a.", ['a'])],
              path_multi=[("/a/b/c/d", ['a', 'b', 'c', 'd']),
-                         ("a.b.c.d", ['a', 'b', 'c', 'd']),
-                         ],
-             )
+                         ("a.b.c.d", ['a', 'b', 'c', 'd'])])
 
 
-class Test_00_parse(unittest.TestCase):
+class Test_00(unittest.TestCase):
 
     testcases = CASES
 

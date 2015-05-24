@@ -5,6 +5,7 @@
 """A module to aggregate config parser (loader/dumper) backends.
 """
 import itertools
+import logging
 import operator
 import pkg_resources
 
@@ -13,6 +14,8 @@ import anyconfig.utils
 
 import anyconfig.backend.ini_
 PARSERS = [anyconfig.backend.ini_.IniConfigParser]  # It should be supported.
+
+LOGGER = logging.getLogger(__name__)
 
 try:
     import anyconfig.backend.json_
@@ -29,9 +32,9 @@ except ImportError:
 
 try:
     import anyconfig.backend.yaml_
-    if anyconfig.backend.yaml_.YamlConfigParser.supports():
-        PARSERS.append(anyconfig.backend.yaml_.YamlConfigParser)
+    PARSERS.append(anyconfig.backend.yaml_.YamlConfigParser)
 except ImportError:
+    LOGGER.warn("YAML module is not available. Disabled its support.")
     pass
 
 

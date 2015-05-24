@@ -61,7 +61,7 @@ def find_loader(config_path, forced_type=None):
 
 
 def single_load(config_path, forced_type=None, ignore_missing=False,
-                ac_template=False, ac_context={}, **kwargs):
+                ac_template=False, ac_context=None, **kwargs):
     """
     Load single config file.
 
@@ -101,7 +101,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
 
 
 def multi_load(paths, forced_type=None, ignore_missing=False,
-               merge=MS_DICTS, marker='*', ac_template=False, ac_context={},
+               merge=MS_DICTS, marker='*', ac_template=False, ac_context=None,
                **kwargs):
     """
     Load multiple config files.
@@ -157,7 +157,7 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
 
 
 def load(path_specs, forced_type=None, ignore_missing=False,
-         merge=MS_DICTS, marker='*', ac_template=False, ac_context={},
+         merge=MS_DICTS, marker='*', ac_template=False, ac_context=None,
          **kwargs):
     """
     Load single or multiple config files or multiple config files specified in
@@ -187,7 +187,7 @@ def load(path_specs, forced_type=None, ignore_missing=False,
                            ac_template, ac_context, **kwargs)
 
 
-def loads(config_content, forced_type=None, ac_template=False, ac_context={},
+def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
           **kwargs):
     """
     :param config_content: Configuration file's content

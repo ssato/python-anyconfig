@@ -9,21 +9,35 @@ import operator
 import pkg_resources
 
 import anyconfig.backend.ini_
-import anyconfig.backend.json_
-import anyconfig.backend.xml_
-import anyconfig.backend.yaml_
+PARSERS = [anyconfig.backend.ini_.IniConfigParser]  # It should be supported.
+
+try:
+    import anyconfig.backend.json_
+    PARSERS.append(anyconfig.backend.json_.JsonConfigParser)
+except ImportError:
+    pass
+
+try:
+    import anyconfig.backend.xml_
+    if anyconfig.backend.xml_.XmlConfigParser.supports():
+        PARSERS.append(anyconfig.backend.xml_.XmlConfigParser)
+except ImportError:
+    pass
+
+try:
+    import anyconfig.backend.yaml_
+    if anyconfig.backend.yaml_.YamlConfigParser.supports():
+        PARSERS.append(anyconfig.backend.yaml_.YamlConfigParser)
+except ImportError:
+    pass
+
 import anyconfig.compat
 import anyconfig.utils
 
 
-_CPs = [p for p in [anyconfig.backend.ini_.IniConfigParser,
-                    anyconfig.backend.json_.JsonConfigParser,
-                    anyconfig.backend.xml_.XmlConfigParser,
-                    anyconfig.backend.yaml_.YamlConfigParser] if p.supports()]
-
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):
     try:
-        _CPs.append(e.load())
+        PARSERS.append(e.load())
     except ImportError:
         continue
 
@@ -69,7 +83,7 @@ def uniq(iterable):
     return acc
 
 
-def list_parsers_by_type(cps=_CPs):
+def list_parsers_by_type(cps=PARSERS):
     """
     :return: List (generator) of (config_type, [config_parser])
     """
@@ -84,7 +98,7 @@ def _list_xppairs(xps):
                   key=operator.methodcaller("priority"))
 
 
-def list_parsers_by_extension(cps=_CPs):
+def list_parsers_by_extension(cps=PARSERS):
     """
     :return: List (generator) of (config_ext, [config_parser])
     """
@@ -94,7 +108,7 @@ def list_parsers_by_extension(cps=_CPs):
     return ((x, _list_xppairs(xps)) for x, xps in groupby_key(cps_by_ext, fst))
 
 
-def find_by_file(config_file, cps=_CPs):
+def find_by_file(config_file, cps=PARSERS):
     """
     Find config parser by file's extension.
 
@@ -108,7 +122,7 @@ def find_by_file(config_file, cps=_CPs):
     return None
 
 
-def find_by_type(cptype, cps=_CPs):
+def find_by_type(cptype, cps=PARSERS):
     """
     Find config parser by file's extension.
 
@@ -121,7 +135,7 @@ def find_by_type(cptype, cps=_CPs):
     return None
 
 
-def list_types(cps=_CPs):
+def list_types(cps=PARSERS):
     """List available config types.
     """
     return sorted(uniq(t for t, ps in list_parsers_by_type(cps)))

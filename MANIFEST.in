@@ -2,7 +2,6 @@ include LICENSE.MIT
 include MANIFEST.in
 include README.*
 include docs/*
-include package.spec.in
 include pkg/*
 include setup.py
-recursive-include anyconfig *.py
+recursive-include anyconfig *.py *.yml *.txt

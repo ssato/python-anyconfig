@@ -47,7 +47,7 @@ class Test_00_pure_functions(unittest.TestCase):
         self.assertTrue(bool(list))  # ensure it's not empty.
 
     def test_40_cmp_cps(self):
-        cps = TT._CPs
+        cps = TT.PARSERS
         if cps:
             x = TT.cmp_cps(random.choice(cps), random.choice(cps))
             self.assertTrue(x in (-1, 0, 1))

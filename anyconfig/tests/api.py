@@ -2,7 +2,7 @@
 # Copyright (C) 2012, 2013 Satoru SATOH <ssato at redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name
 from logging import CRITICAL
 
 import os
@@ -66,8 +66,8 @@ class Test_10_pure_functions(unittest.TestCase):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         a1 = TT.loads(TT.dumps(a, "json"), "json")
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
@@ -76,8 +76,8 @@ class Test_10_pure_functions(unittest.TestCase):
         a1 = TT.loads(TT.dumps(a, "json", indent=2), "json",
                       ensure_ascii=False)
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
@@ -85,8 +85,8 @@ class Test_10_pure_functions(unittest.TestCase):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         a1 = TT.loads(TT.dumps(a, "type_not_exist"), "json")
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
@@ -95,16 +95,14 @@ class Test_10_pure_functions(unittest.TestCase):
         a_s = "requires:bash,zsh"
 
         a1 = TT.loads(a_s)
-
-        self.assertEquals(a1["requires"],   a["requires"])
+        self.assertEquals(a1["requires"], a["requires"])
 
     def test_42_loads_w_type_not_exist(self):
         a = dict(requires=["bash", "zsh"])
         a_s = "requires:bash,zsh"
 
         a1 = TT.loads(a_s, "type_not_exist")
-
-        self.assertEquals(a1["requires"],   a["requires"])
+        self.assertEquals(a1["requires"], a["requires"])
 
     def test_44_loads_w_type__template(self):
         if not AT.SUPPORTED:
@@ -117,7 +115,7 @@ class Test_10_pure_functions(unittest.TestCase):
         a1 = TT.loads(a_s, forced_type="yaml", ac_template=True,
                       ac_context=context)
 
-        self.assertEquals(a1["requires"],   a["requires"])
+        self.assertEquals(a1["requires"], a["requires"])
 
     def test_46_loads_w_type__broken_template(self):
         if not AT.SUPPORTED:
@@ -128,7 +126,7 @@ class Test_10_pure_functions(unittest.TestCase):
         a1 = TT.loads(a_s, forced_type="yaml", ac_template=True,
                       ac_context={})
 
-        self.assertEquals(a1["requires"],   a["requires"])
+        self.assertEquals(a1["requires"], a["requires"])
 
 
 class Test_20_effectful_functions(unittest.TestCase):
@@ -149,8 +147,8 @@ class Test_20_effectful_functions(unittest.TestCase):
 
         a1 = TT.single_load(a_path)
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
@@ -184,8 +182,8 @@ b:
 
         a1 = TT.single_load(a_path, ac_template=True, ac_context=a)
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
@@ -213,8 +211,8 @@ b:
 
         a1 = TT.single_load(a_path, ac_template=True, ac_context=a)
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
@@ -238,54 +236,54 @@ b:
         a0 = TT.multi_load(g_path, merge=TT.MS_DICTS)
         a02 = TT.multi_load([g_path, b_path], merge=TT.MS_DICTS)
 
-        self.assertEquals(a0["name"],   a["name"])
-        self.assertEquals(a0["a"],      b["a"])
+        self.assertEquals(a0["name"], a["name"])
+        self.assertEquals(a0["a"], b["a"])
         self.assertEquals(a0["b"]["b"], b["b"]["b"])
         self.assertEquals(a0["b"]["c"], a["b"]["c"])
         self.assertEquals(a0["b"]["d"], b["b"]["d"])
 
-        self.assertEquals(a02["name"],   a["name"])
-        self.assertEquals(a02["a"],      b["a"])
+        self.assertEquals(a02["name"], a["name"])
+        self.assertEquals(a02["a"], b["a"])
         self.assertEquals(a02["b"]["b"], b["b"]["b"])
         self.assertEquals(a02["b"]["c"], a["b"]["c"])
         self.assertEquals(a02["b"]["d"], b["b"]["d"])
 
         a1 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS)
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      b["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], b["a"])
         self.assertEquals(a1["b"]["b"], b["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
         self.assertEquals(a1["b"]["d"], b["b"]["d"])
 
         a2 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS_AND_LISTS)
 
-        self.assertEquals(a2["name"],   a["name"])
-        self.assertEquals(a2["a"],      b["a"])
+        self.assertEquals(a2["name"], a["name"])
+        self.assertEquals(a2["a"], b["a"])
         self.assertEquals(a2["b"]["b"], [0, 1, 2, 3, 4, 5])
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
         a3 = TT.multi_load(os.path.join(self.workdir, "*.json"))
 
-        self.assertEquals(a3["name"],   a["name"])
-        self.assertEquals(a3["a"],      b["a"])
+        self.assertEquals(a3["name"], a["name"])
+        self.assertEquals(a3["a"], b["a"])
         self.assertEquals(a3["b"]["b"], b["b"]["b"])
         self.assertEquals(a3["b"]["c"], a["b"]["c"])
         self.assertEquals(a3["b"]["d"], b["b"]["d"])
 
         a4 = TT.multi_load([a_path, b_path], merge=TT.MS_REPLACE)
 
-        self.assertEquals(a4["name"],   a["name"])
-        self.assertEquals(a4["a"],      b["a"])
+        self.assertEquals(a4["name"], a["name"])
+        self.assertEquals(a4["a"], b["a"])
         self.assertEquals(a4["b"]["b"], b["b"]["b"])
         self.assertFalse("c" in a4["b"])
         self.assertEquals(a4["b"]["d"], b["b"]["d"])
 
         a5 = TT.multi_load([a_path, b_path], merge=TT.MS_NO_REPLACE)
 
-        self.assertEquals(a5["name"],   a["name"])
-        self.assertEquals(a5["a"],      a["a"])
+        self.assertEquals(a5["name"], a["name"])
+        self.assertEquals(a5["a"], a["a"])
         self.assertEquals(a5["b"]["b"], a["b"]["b"])
         self.assertEquals(a5["b"]["c"], a["b"]["c"])
         self.assertFalse("d" in a5["b"])
@@ -339,14 +337,14 @@ b:
         a02 = TT.multi_load([g_path, b_path], merge=TT.MS_DICTS,
                             ac_template=True, ac_context=ma)
 
-        self.assertEquals(a0["name"],   a["name"])
-        self.assertEquals(a0["a"],      b["a"])
+        self.assertEquals(a0["name"], a["name"])
+        self.assertEquals(a0["a"], b["a"])
         self.assertEquals(a0["b"]["b"], b["b"]["b"])
         self.assertEquals(a0["b"]["c"], a["b"]["c"])
         self.assertEquals(a0["b"]["d"], b["b"]["d"])
 
-        self.assertEquals(a02["name"],   a["name"])
-        self.assertEquals(a02["a"],      b["a"])
+        self.assertEquals(a02["name"], a["name"])
+        self.assertEquals(a02["a"], b["a"])
         self.assertEquals(a02["b"]["b"], b["b"]["b"])
         self.assertEquals(a02["b"]["c"], a["b"]["c"])
         self.assertEquals(a02["b"]["d"], b["b"]["d"])
@@ -366,23 +364,23 @@ b:
 
         a1 = TT.load(a_path)
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
         a2 = TT.load(os.path.join(self.workdir, '*.json'))
 
-        self.assertEquals(a2["name"],   a["name"])
-        self.assertEquals(a2["a"],      b["a"])
+        self.assertEquals(a2["name"], a["name"])
+        self.assertEquals(a2["a"], b["a"])
         self.assertEquals(a2["b"]["b"], [1, 2, 3, 4, 5])
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
         a3 = TT.load([a_path, b_path])
 
-        self.assertEquals(a3["name"],   a["name"])
-        self.assertEquals(a3["a"],      b["a"])
+        self.assertEquals(a3["name"], a["name"])
+        self.assertEquals(a3["a"], b["a"])
         self.assertEquals(a3["b"]["b"], [1, 2, 3, 4, 5])
         self.assertEquals(a3["b"]["c"], a["b"]["c"])
         self.assertEquals(a3["b"]["d"], b["b"]["d"])
@@ -402,23 +400,23 @@ b:
 
         a1 = TT.load(a_path, parse_int=int)
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
         a2 = TT.load(os.path.join(self.workdir, '*.json'), parse_int=int)
 
-        self.assertEquals(a2["name"],   a["name"])
-        self.assertEquals(a2["a"],      b["a"])
+        self.assertEquals(a2["name"], a["name"])
+        self.assertEquals(a2["a"], b["a"])
         self.assertEquals(a2["b"]["b"], [1, 2, 3, 4, 5])
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
         a3 = TT.load([a_path, b_path], parse_int=int)
 
-        self.assertEquals(a3["name"],   a["name"])
-        self.assertEquals(a3["a"],      b["a"])
+        self.assertEquals(a3["name"], a["name"])
+        self.assertEquals(a3["a"], b["a"])
         self.assertEquals(a3["b"]["b"], [1, 2, 3, 4, 5])
         self.assertEquals(a3["b"]["c"], a["b"]["c"])
         self.assertEquals(a3["b"]["d"], b["b"]["d"])

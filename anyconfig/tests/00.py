@@ -29,8 +29,8 @@ class Test_10_effectful_functions(unittest.TestCase):
         a1 = A.load(a_path)
 
         # FIXME: Too verbose
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      a["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
@@ -49,16 +49,16 @@ class Test_10_effectful_functions(unittest.TestCase):
 
         a1 = A.multi_load([a_path, b_path], merge=A.MS_DICTS)
 
-        self.assertEquals(a1["name"],   a["name"])
-        self.assertEquals(a1["a"],      b["a"])
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], b["a"])
         self.assertEquals(a1["b"]["b"], b["b"]["b"])
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
         self.assertEquals(a1["b"]["d"], b["b"]["d"])
 
         a2 = A.multi_load([a_path, b_path], merge=A.MS_DICTS_AND_LISTS)
 
-        self.assertEquals(a2["name"],   a["name"])
-        self.assertEquals(a2["a"],      b["a"])
+        self.assertEquals(a2["name"], a["name"])
+        self.assertEquals(a2["a"], b["a"])
         self.assertEquals(a2["b"]["b"], [0, 1, 2, 3, 4, 5])
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])

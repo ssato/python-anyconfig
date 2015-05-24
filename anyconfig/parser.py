@@ -13,11 +13,11 @@ STR_PATTERN = re.compile(r"^['\"](.*)['\"]$")
 PATH_SEPS = ('/', '.')
 
 
-def parse_single(s):
+def parse_single(str_):
     """
     Very simple parser to parse expressions represent some single values.
 
-    :param s: a string to parse
+    :param str_: a string to parse
     :return: Int | Bool | String
 
     >>> parse_single(None)
@@ -39,39 +39,39 @@ def parse_single(s):
     >>> parse_single("    a string contains extra whitespaces     ")
     'a string contains extra whitespaces'
     """
-    def matched(pat, s):
+    def matched(pat, str_):
         """
         :param pat: Regex pattern string
-        :param s: String to try match
-        :return: True if `pat` matches `s`
+        :param str_: String to try match
+        :return: True if `pat` matches `str_`
         """
-        return pat.match(s) is not None
+        return pat.match(str_) is not None
 
-    if s is None:
+    if str_ is None:
         return ''
 
-    s = s.strip()
+    str_ = str_.strip()
 
-    if not s:
+    if not str_:
         return ''
 
-    if matched(BOOL_PATTERN, s):
-        return bool(s)
+    if matched(BOOL_PATTERN, str_):
+        return bool(str_)
 
-    if matched(INT_PATTERN, s):
-        return int(s)
+    if matched(INT_PATTERN, str_):
+        return int(str_)
 
-    if matched(STR_PATTERN, s):
-        return s[1:-1]
+    if matched(STR_PATTERN, str_):
+        return str_[1:-1]
 
-    return s
+    return str_
 
 
-def parse_list(s, sep=","):
+def parse_list(str_, sep=","):
     """
     Simple parser to parse expressions reprensent some list values.
 
-    :param s: a string to parse
+    :param str_: a string to parse
     :param sep: Char to separate items of list
     :return: [Int | Bool | String]
 
@@ -86,15 +86,15 @@ def parse_list(s, sep=","):
     >>> parse_list("a,b,")
     ['a', 'b']
     """
-    return [parse_single(x) for x in s.split(sep) if x]
+    return [parse_single(x) for x in str_.split(sep) if x]
 
 
-def parse_attrlist_0(s, avs_sep=":", vs_sep=",", as_sep=";"):
+def parse_attrlist_0(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     """
     Simple parser to parse expressions in the form of
     [ATTR1:VAL0,VAL1,...;ATTR2:VAL0,VAL2,..].
 
-    :param s: input string
+    :param str_: input string
     :param avs_sep:  char to separate attribute and values
     :param vs_sep:  char to separate values
     :param as_sep:  char to separate attributes
@@ -112,11 +112,11 @@ def parse_attrlist_0(s, avs_sep=":", vs_sep=",", as_sep=";"):
     >>> parse_attrlist_0("obsoletes:sysdata;conflicts:sysdata-old")
     [('obsoletes', 'sysdata'), ('conflicts', 'sysdata-old')]
     """
-    def attr_and_values(s):
+    def attr_and_values(str_):
         """
-        :param s: String represents a list of pairs of attribute and value
+        :param str_: String represents a list of pairs of attribute and value
         """
-        for rel in parse_list(s, as_sep):
+        for rel in parse_list(str_, as_sep):
             if avs_sep not in rel or rel.endswith(avs_sep):
                 continue
 
@@ -128,15 +128,15 @@ def parse_attrlist_0(s, avs_sep=":", vs_sep=",", as_sep=";"):
             if _values:
                 yield (_attr, _values)
 
-    return [(a, vs) for a, vs in attr_and_values(s)]
+    return [(a, vs) for a, vs in attr_and_values(str_)]
 
 
-def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):
+def parse_attrlist(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     """
     Simple parser to parse expressions in the form of
     [ATTR1:VAL0,VAL1,...;ATTR2:VAL0,VAL2,..].
 
-    :param s: input string
+    :param str_: input string
     :param avs_sep:  char to separate attribute and values
     :param vs_sep:  char to separate values
     :param as_sep:  char to separate attributes
@@ -144,17 +144,17 @@ def parse_attrlist(s, avs_sep=":", vs_sep=",", as_sep=";"):
     >>> parse_attrlist("requires:bash,zsh")
     {'requires': ['bash', 'zsh']}
     """
-    return dict(parse_attrlist_0(s, avs_sep, vs_sep, as_sep))
+    return dict(parse_attrlist_0(str_, avs_sep, vs_sep, as_sep))
 
 
-def parse(s, lsep=",", avsep=":", vssep=",", avssep=";"):
+def parse(str_, lsep=",", avsep=":", vssep=",", avssep=";"):
     """Generic parser"""
-    if avsep in s:
-        return parse_attrlist(s, avsep, vssep, avssep)
-    elif lsep in s:
-        return parse_list(s, lsep)
+    if avsep in str_:
+        return parse_attrlist(str_, avsep, vssep, avssep)
+    elif lsep in str_:
+        return parse_list(str_, lsep)
     else:
-        return parse_single(s)
+        return parse_single(str_)
 
 
 def parse_path(path, seps=PATH_SEPS):

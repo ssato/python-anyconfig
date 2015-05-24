@@ -2,7 +2,10 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-# pylint: disable=W0611,F0401,C0111
+# pylint: disable=unused-import,import-error,invalid-name
+"""
+Compatiblity module
+"""
 import codecs
 import itertools
 import locale
@@ -14,6 +17,9 @@ except ImportError:  # python < 2.7 doesn't have it.
     import logging
 
     class NullHandler(logging.Handler):
+        """
+        Logging handler does nothing.
+        """
         def emit(self, record):
             pass
 

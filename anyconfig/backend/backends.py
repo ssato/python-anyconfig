@@ -8,6 +8,9 @@ import itertools
 import operator
 import pkg_resources
 
+import anyconfig.compat
+import anyconfig.utils
+
 import anyconfig.backend.ini_
 PARSERS = [anyconfig.backend.ini_.IniConfigParser]  # It should be supported.
 
@@ -30,9 +33,6 @@ try:
         PARSERS.append(anyconfig.backend.yaml_.YamlConfigParser)
 except ImportError:
     pass
-
-import anyconfig.compat
-import anyconfig.utils
 
 
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):

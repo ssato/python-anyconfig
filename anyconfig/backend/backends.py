@@ -75,10 +75,13 @@ def uniq(iterable):
     return acc
 
 
-def list_parsers_by_type(cps=PARSERS):
+def list_parsers_by_type(cps=None):
     """
     :return: List (generator) of (config_type, [config_parser])
     """
+    if cps is None:
+        cps = PARSERS
+
     return ((t, sorted(p, key=operator.methodcaller("priority"))) for t, p
             in groupby_key(cps, operator.methodcaller("type")))
 
@@ -90,22 +93,28 @@ def _list_xppairs(xps):
                   key=operator.methodcaller("priority"))
 
 
-def list_parsers_by_extension(cps=PARSERS):
+def list_parsers_by_extension(cps=None):
     """
     :return: List (generator) of (config_ext, [config_parser])
     """
+    if cps is None:
+        cps = PARSERS
+
     cps_by_ext = anyconfig.utils.concat(([(x, p) for x in p.extensions()] for p
                                          in cps))
 
     return ((x, _list_xppairs(xps)) for x, xps in groupby_key(cps_by_ext, fst))
 
 
-def find_by_file(config_file, cps=PARSERS):
+def find_by_file(config_file, cps=None):
     """
     Find config parser by file's extension.
 
     :param config_file: Config file path
     """
+    if cps is None:
+        cps = PARSERS
+
     ext = anyconfig.utils.get_file_extension(config_file)
     for x, ps in list_parsers_by_extension(cps):
         if x == ext:
@@ -114,12 +123,15 @@ def find_by_file(config_file, cps=PARSERS):
     return None
 
 
-def find_by_type(cptype, cps=PARSERS):
+def find_by_type(cptype, cps=None):
     """
     Find config parser by file's extension.
 
     :param cptype: Config file's type
     """
+    if cps is None:
+        cps = PARSERS
+
     for t, ps in list_parsers_by_type(cps):
         if t == cptype:
             return ps[-1]
@@ -127,9 +139,12 @@ def find_by_type(cptype, cps=PARSERS):
     return None
 
 
-def list_types(cps=PARSERS):
+def list_types(cps=None):
     """List available config types.
     """
+    if cps is None:
+        cps = PARSERS
+
     return sorted(uniq(t for t, ps in list_parsers_by_type(cps)))
 
 # vim:sw=4:ts=4:et:

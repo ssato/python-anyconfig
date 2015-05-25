@@ -2,7 +2,7 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""Ini file parser backend
+"""Ini file parser backend, should be available always.
 """
 import logging
 import sys
@@ -14,11 +14,10 @@ from anyconfig.compat import configparser, iteritems
 
 
 LOGGER = logging.getLogger(__name__)
-SUPPORTED = True  # It should be available w/ python dist always.
 _SEP = ','
 
 
-# FIXME: Ugly
+# FIXME: May be too naive implementation.
 def _parse(v, sep=_SEP):
     """
     :param v: A string represents some value to parse
@@ -120,8 +119,6 @@ class IniConfigParser(Base.ConfigParser):
     """
     _type = "ini"
     _extensions = ["ini"]
-    _supported = SUPPORTED
-
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename"]
 
     @classmethod

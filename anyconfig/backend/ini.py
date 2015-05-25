@@ -4,6 +4,8 @@
 #
 """Ini file parser backend, should be available always.
 """
+from __future__ import absolute_import
+
 import logging
 import sys
 

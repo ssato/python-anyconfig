@@ -9,8 +9,6 @@
 import anyconfig.backend.base as Base
 import anyconfig.compat
 
-
-SUPPORTED = True
 try:
     import json
 except ImportError:
@@ -41,7 +39,13 @@ if not anyconfig.compat.IS_PYTHON_3:
 
 class JsonConfigParser(Base.ConfigParser):
     """
-    JSON files parser.
+    Parser for JSON files.
+
+    - Backend: standard json lib (>= python 2.6) or simplejson
+    - Limitations: None obvious
+    - Special options:
+
+      - All options of json.load{s,} and json.dump{s,} should work.
     """
     _type = "json"
     _extensions = ["json", "jsn", "js"]

@@ -49,8 +49,6 @@ class JsonConfigParser(Base.ConfigParser):
     """
     _type = "json"
     _extensions = ["json", "jsn", "js"]
-    _supported = SUPPORTED
-
     _load_opts = _LOAD_OPTS
     _dump_opts = _DUMP_OPTS
 

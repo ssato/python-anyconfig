@@ -12,7 +12,6 @@ import anyconfig.mergeabledict
 import anyconfig.utils
 
 
-SUPPORTED = False
 LOGGER = logging.getLogger(__name__)
 
 
@@ -61,7 +60,6 @@ class ConfigParser(object):
     _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
     _extensions = []
     _container = anyconfig.mergeabledict.MergeableDict
-    _supported = False
 
     _load_opts = []
     _dump_opts = []
@@ -93,11 +91,10 @@ class ConfigParser(object):
         :return: True if this parser can process given file or is supported.
         """
         if config_file is None:
-            return cls._supported
-        else:
-            return cls._supported and \
-                anyconfig.utils.get_file_extension(config_file) \
-                in cls._extensions
+            return True
+
+        return anyconfig.utils.get_file_extension(config_file) \
+            in cls._extensions
 
     @classmethod
     def container(cls):

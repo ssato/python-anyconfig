@@ -6,6 +6,8 @@
 #
 """JSON file parser backend.
 """
+from __future__ import absolute_import
+
 import anyconfig.backend.base as Base
 import anyconfig.compat
 

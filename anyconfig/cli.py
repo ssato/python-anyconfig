@@ -4,6 +4,8 @@
 #
 """CLI frontend module for anyconfig.
 """
+from __future__ import absolute_import
+
 import anyconfig.api as A
 import anyconfig.compat
 import anyconfig.globals

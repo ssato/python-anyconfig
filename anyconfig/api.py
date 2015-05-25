@@ -4,6 +4,7 @@
 #
 """Public APIs of anyconfig module.
 """
+from __future__ import absolute_import
 from anyconfig.globals import LOGGER
 
 import anyconfig.backend.backends

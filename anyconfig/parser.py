@@ -2,7 +2,10 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""Misc parsers"""
+"""Misc parsers
+"""
+from __future__ import absolute_import
+
 import re
 
 

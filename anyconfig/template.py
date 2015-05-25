@@ -6,6 +6,8 @@
 #
 """Template rendering module for jinja2-based template config files.
 """
+from __future__ import absolute_import
+
 import logging
 import os
 

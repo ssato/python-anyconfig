@@ -4,6 +4,8 @@
 #
 """YAML files parser backend
 """
+from __future__ import absolute_import
+
 import yaml
 import anyconfig.backend.base as Base
 

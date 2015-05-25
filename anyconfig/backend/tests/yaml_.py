@@ -3,11 +3,15 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import os
-import tempfile
+import os.path
 import unittest
 
-import anyconfig.backend.yaml_ as TT
+try:
+    import anyconfig.backend.yaml_ as TT
+except ImportError:
+    TT = None
+
+import anyconfig.tests.common
 
 
 CONF_0 = """
@@ -18,18 +22,18 @@ sect0:
   c: ["x", "y", "z"]
 """
 
-if TT.SUPPORTED:
+if TT is not None:
     import yaml
 
-    class Test_YamlConfigParser(unittest.TestCase):
+    class Test(unittest.TestCase):
 
         def setUp(self):
-            (_, conf) = tempfile.mkstemp(prefix="ac-test-")
-            open(conf, 'w').write(CONF_0)
-            self.config_path = conf
+            self.workdir = anyconfig.tests.common.setup_workdir()
+            self.cpath = os.path.join(self.workdir, "test0.yml")
+            open(self.cpath, 'w').write(CONF_0)
 
         def tearDown(self):
-            os.remove(self.config_path)
+            anyconfig.tests.common.cleanup_workdir(self.workdir)
 
         def test_00_supports(self):
             self.assertFalse(TT.YamlConfigParser.supports("/a/b/c/d.ini"))
@@ -37,85 +41,84 @@ if TT.SUPPORTED:
             self.assertTrue(TT.YamlConfigParser.supports("/a/b/c/d.yml"))
 
         def test_10_loads(self):
-            c = TT.YamlConfigParser.loads(CONF_0)
+            cfg = TT.YamlConfigParser.loads(CONF_0)
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_12_loads__safe(self):
-            c = TT.YamlConfigParser.loads(CONF_0, safe=True)
+            cfg = TT.YamlConfigParser.loads(CONF_0, safe=True)
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_20_load(self):
-            c = TT.YamlConfigParser.load(self.config_path)
+            cfg = TT.YamlConfigParser.load(self.cpath)
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_22_load__safe(self):
-            c = TT.YamlConfigParser.load(self.config_path, safe=True)
+            cfg = TT.YamlConfigParser.load(self.cpath, safe=True)
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_20_load__w_options(self):
-            c = TT.YamlConfigParser.load(self.config_path,
-                                         Loader=yaml.loader.Loader)
+            cfg = TT.YamlConfigParser.load(self.cpath,
+                                           Loader=yaml.loader.Loader)
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_30_dumps(self):
-            c = TT.YamlConfigParser.loads(CONF_0)
-            s = TT.YamlConfigParser.dumps(c)
-            c = TT.YamlConfigParser.loads(s)
+            cfg = TT.YamlConfigParser.loads(CONF_0)
+            cfg = TT.YamlConfigParser.loads(TT.YamlConfigParser.dumps(cfg))
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_32_dumps__safe(self):
-            c = TT.YamlConfigParser.loads(CONF_0)
-            s = TT.YamlConfigParser.dumps(c, safe=True)
-            c = TT.YamlConfigParser.loads(s)
+            cfg = TT.YamlConfigParser.loads(CONF_0)
+            res = TT.YamlConfigParser.dumps(cfg, safe=True)
+            cfg = TT.YamlConfigParser.loads(res)
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_40_dump(self):
-            c = TT.YamlConfigParser.loads(CONF_0)
-            TT.YamlConfigParser.dump(c, self.config_path)
-            c = TT.YamlConfigParser.load(self.config_path)
+            cfg = TT.YamlConfigParser.loads(CONF_0)
+            TT.YamlConfigParser.dump(cfg, self.cpath)
+            cfg = TT.YamlConfigParser.load(self.cpath)
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_42_dump__safe(self):
-            c = TT.YamlConfigParser.loads(CONF_0)
-            TT.YamlConfigParser.dump(c, self.config_path, safe=True)
-            c = TT.YamlConfigParser.load(self.config_path)
+            cfg = TT.YamlConfigParser.loads(CONF_0)
+            TT.YamlConfigParser.dump(cfg, self.cpath, safe=True)
+            cfg = TT.YamlConfigParser.load(self.cpath)
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_40_dump__w_options(self):
-            c = TT.YamlConfigParser.loads(CONF_0)
-            TT.YamlConfigParser.dump(c, self.config_path,
+            cfg = TT.YamlConfigParser.loads(CONF_0)
+            TT.YamlConfigParser.dump(cfg, self.cpath,
                                      Dumper=yaml.dumper.Dumper)
-            c = TT.YamlConfigParser.load(self.config_path)
+            cfg = TT.YamlConfigParser.load(self.cpath)
 
-            self.assertEquals(c['a'], 0, str(c))
-            self.assertEquals(c['b'], "bbb", c)
-            self.assertEquals(c["sect0"]['c'], ['x', 'y', 'z'])
+            self.assertEquals(cfg['a'], 0, str(cfg))
+            self.assertEquals(cfg['b'], "bbb", cfg)
+            self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
 # vim:sw=4:ts=4:et:

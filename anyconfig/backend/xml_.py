@@ -2,31 +2,30 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=R0921
+# Some of XML backend modules may be missing:
+# pylint: disable=import-error
 """XML files parser backend, should be available always.
 """
-import logging
-
 import anyconfig.backend.base as Base
 import anyconfig.compat
 
 try:
     # First, try lxml which is compatible with elementtree and looks faster a
     # lot. See also: http://getpython3.com/diveintopython3/xml.html
-    from lxml2 import etree
+    from lxml2 import etree as ET
 except ImportError:
     try:
-        import xml.etree.ElementTree as etree
+        import xml.etree.ElementTree as ET
     except ImportError:
-        import elementtree.ElementTree as etree
+        import elementtree.ElementTree as ET
 
 
-def etree_getroot_fromstring(s):
+def etree_getroot_fromstring(str_):
     """
     :param s: A XML string
-    :return: etree object gotten by parsing ``s``
+    :return: etree object gotten by parsing `str_`
     """
-    return etree.ElementTree(etree.fromstring(s)).getroot()
+    return ET.ElementTree(ET.fromstring(str_)).getroot()
 
 
 def etree_getroot_fromsrc(src):
@@ -34,7 +33,7 @@ def etree_getroot_fromsrc(src):
     :param src: A file name/path or a file[-like] object or a URL
     :return: etree object gotten by parsing ``s``
     """
-    return etree.parse(src).getroot()
+    return ET.parse(src).getroot()
 
 
 def etree_to_container(root, container):

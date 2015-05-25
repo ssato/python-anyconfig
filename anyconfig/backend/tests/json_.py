@@ -3,11 +3,11 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import os
-import tempfile
+import os.path
 import unittest
 
 import anyconfig.backend.json_ as TT
+import anyconfig.tests.common
 
 
 CONF_0 = """{
@@ -21,67 +21,66 @@ CONF_0 = """{
 """
 
 
-class Test_JsonConfigParser(unittest.TestCase):
+class Test(unittest.TestCase):
 
     def setUp(self):
-        (_, conf) = tempfile.mkstemp(prefix="ac-test-")
-        open(conf, 'w').write(CONF_0)
-        self.config_path = conf
+        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.cpath = os.path.join(self.workdir, "test0.json")
+        open(self.cpath, 'w').write(CONF_0)
 
     def tearDown(self):
-        os.remove(self.config_path)
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_00_supports(self):
         self.assertFalse(TT.JsonConfigParser.supports("/a/b/c/d.ini"))
         self.assertTrue(TT.JsonConfigParser.supports("/a/b/c/d.json"))
 
     def test_10_loads(self):
-        c = TT.JsonConfigParser.loads(CONF_0)
+        cfg = TT.JsonConfigParser.loads(CONF_0)
 
-        self.assertEquals(c['a'], 0, str(c))
-        self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
+        self.assertEquals(cfg['a'], 0, str(cfg))
+        self.assertEquals(cfg['b'], "bbb", cfg)
+        self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
     def test_20_load(self):
-        c = TT.JsonConfigParser.load(self.config_path)
+        cfg = TT.JsonConfigParser.load(self.cpath)
 
-        self.assertEquals(c['a'], 0, str(c))
-        self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
+        self.assertEquals(cfg['a'], 0, str(cfg))
+        self.assertEquals(cfg['b'], "bbb", cfg)
+        self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
     def test_20_load__optional_kwargs(self):
-        c = TT.JsonConfigParser.load(self.config_path, parse_int=None)
+        cfg = TT.JsonConfigParser.load(self.cpath, parse_int=None)
 
-        self.assertEquals(c['a'], 0, str(c))
-        self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
+        self.assertEquals(cfg['a'], 0, str(cfg))
+        self.assertEquals(cfg['b'], "bbb", cfg)
+        self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
     def test_30_dumps(self):
-        c = TT.JsonConfigParser.loads(CONF_0)
-        s = TT.JsonConfigParser.dumps(c)
-        c = TT.JsonConfigParser.loads(s)
+        cfg = TT.JsonConfigParser.loads(CONF_0)
+        cfg2 = TT.JsonConfigParser.loads(TT.JsonConfigParser.dumps(cfg))
 
-        self.assertEquals(c['a'], 0, str(c))
-        self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
+        self.assertEquals(cfg2['a'], 0, str(cfg))
+        self.assertEquals(cfg2['b'], "bbb", cfg)
+        self.assertEquals(cfg2['sect0']['c'], ['x', 'y', 'z'])
 
     def test_40_dump(self):
-        c = TT.JsonConfigParser.loads(CONF_0)
-        TT.JsonConfigParser.dump(c, self.config_path)
-        c = TT.JsonConfigParser.load(self.config_path)
+        cfg = TT.JsonConfigParser.loads(CONF_0)
+        TT.JsonConfigParser.dump(cfg, self.cpath)
+        cfg = TT.JsonConfigParser.load(self.cpath)
 
-        self.assertEquals(c['a'], 0, str(c))
-        self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
+        self.assertEquals(cfg['a'], 0, str(cfg))
+        self.assertEquals(cfg['b'], "bbb", cfg)
+        self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
-    def test_50_dump_w_backend_specific_options(self):
-        c = TT.JsonConfigParser.loads(CONF_0)
-        TT.JsonConfigParser.dump(c, self.config_path, parse_int=None,
+    def test_50_dump_w_special_option(self):
+        cfg = TT.JsonConfigParser.loads(CONF_0)
+        TT.JsonConfigParser.dump(cfg, self.cpath, parse_int=None,
                                  indent=3)
-        c = TT.JsonConfigParser.load(self.config_path)
+        cfg = TT.JsonConfigParser.load(self.cpath)
 
-        self.assertEquals(c['a'], 0, str(c))
-        self.assertEquals(c['b'], "bbb", c)
-        self.assertEquals(c['sect0']['c'], ['x', 'y', 'z'])
+        self.assertEquals(cfg['a'], 0, str(cfg))
+        self.assertEquals(cfg['b'], "bbb", cfg)
+        self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
 # vim:sw=4:ts=4:et:

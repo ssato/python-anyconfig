@@ -12,10 +12,7 @@ import anyconfig.compat
 try:
     import json
 except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        raise RuntimeError("Necessary JSON module is not available!")
+    import simplejson as json
 
 
 def dict_to_container(json_obj_dict):
@@ -24,8 +21,8 @@ def dict_to_container(json_obj_dict):
     return JsonConfigParser.container().create(json_obj_dict)
 
 
-_LOAD_OPTS = ["cls", "object_hook", "parse_float", "parse_int",
-              "parse_constant", "object_pairs_hook"]
+_LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant",
+              "object_pairs_hook"]
 
 _DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
               "cls", "indent", "separators", "default", "sort_keys"]
@@ -45,7 +42,8 @@ class JsonConfigParser(Base.ConfigParser):
     - Limitations: None obvious
     - Special options:
 
-      - All options of json.load{s,} and json.dump{s,} should work.
+      - All options of json.load{s,} and json.dump{s,} except object_hook
+        should work.
     """
     _type = "json"
     _extensions = ["json", "jsn", "js"]
@@ -64,22 +62,14 @@ class JsonConfigParser(Base.ConfigParser):
                           **Base.mk_opt_args(cls._load_opts, kwargs))
 
     @classmethod
-    def load(cls, config_path, ignore_missing=False, **kwargs):
+    def load_impl(cls, config_fp, **kwargs):
         """
-        :param config_path:  Config file path
-        :param ignore_missing: Ignore just return empty result if given file
-            (``config_path``) does not exist
+        :param config_fp:  Config file object
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: cls.container() object holding config parameters
         """
-        # NOTE: Hack. See also: :method:``load`` of the class
-        # :class:``anyconfig.backends.Base.ConfigParser``.
-        if ignore_missing and not cls.exists(config_path):
-            return cls.container()()
-
-        return json.load(open(config_path), object_hook=dict_to_container,
-                         **Base.mk_opt_args(cls._load_opts, kwargs))
+        return json.load(config_fp, object_hook=dict_to_container, **kwargs)
 
     @classmethod
     def dumps_impl(cls, data, **kwargs):

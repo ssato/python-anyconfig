@@ -23,8 +23,8 @@ PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json.Parser,
            anyconfig.backend.xml.Parser]
 
 try:
-    import anyconfig.backend.yaml_
-    PARSERS.append(anyconfig.backend.yaml_.Parser)
+    import anyconfig.backend.yaml
+    PARSERS.append(anyconfig.backend.yaml.Parser)
 except ImportError:
     LOGGER.warn("YAML module is not available. Disabled its support.")
 

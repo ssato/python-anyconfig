@@ -20,7 +20,7 @@ import anyconfig.backend.json
 import anyconfig.backend.xml
 
 try:
-    import anyconfig.backend.yaml_ as BYAML
+    import anyconfig.backend.yaml as BYAML
 except ImportError:
     BYAML = None
 

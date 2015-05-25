@@ -3,6 +3,8 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name
+from __future__ import absolute_import
+
 from logging import CRITICAL
 
 import os
@@ -15,7 +17,7 @@ import anyconfig.tests.common
 
 import anyconfig.backend.ini
 import anyconfig.backend.json_
-import anyconfig.backend.xml_
+import anyconfig.backend.xml
 
 try:
     import anyconfig.backend.yaml_ as BYAML
@@ -34,7 +36,7 @@ class Test10(unittest.TestCase):
         self.assertEquals(TT.find_loader(cpath, "json"),
                           anyconfig.backend.json_.Parser)
         self.assertEquals(TT.find_loader(cpath, "xml"),
-                          anyconfig.backend.xml_.Parser)
+                          anyconfig.backend.xml.Parser)
 
         if BYAML is not None:
             self.assertEquals(TT.find_loader(cpath, "yaml"), BYAML.Parser)
@@ -52,7 +54,7 @@ class Test10(unittest.TestCase):
         self.assertEquals(TT.find_loader("dummy.jsn"),
                           anyconfig.backend.json_.Parser)
         self.assertEquals(TT.find_loader("dummy.xml"),
-                          anyconfig.backend.xml_.Parser)
+                          anyconfig.backend.xml.Parser)
 
         if BYAML is not None:
             self.assertEquals(TT.find_loader("dummy.yaml"), BYAML.Parser)

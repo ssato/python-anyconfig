@@ -64,7 +64,7 @@ def make_template_paths(template_file, paths=None):
     return [tmpldir] if paths is None else paths + [tmpldir]
 
 
-def render_s(tmpl_s, ctx=None, paths=[os.curdir]):
+def render_s(tmpl_s, ctx=None, paths=None):
     """
     Compile and render given template string `tmpl_s` with context `context`.
 
@@ -76,6 +76,9 @@ def render_s(tmpl_s, ctx=None, paths=[os.curdir]):
     >>> if SUPPORTED:
     ...     assert s == 'a = 1, b = "bbb"'
     """
+    if paths is None:
+        paths = [os.curdir]
+
     env = tmpl_env(paths)
 
     if env is None:

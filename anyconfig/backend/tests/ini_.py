@@ -6,7 +6,7 @@
 import os.path
 import unittest
 
-import anyconfig.backend.ini_ as TT
+import anyconfig.backend.ini as TT
 import anyconfig.tests.common
 
 

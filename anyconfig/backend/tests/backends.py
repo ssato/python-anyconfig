@@ -7,7 +7,7 @@ import random
 import unittest
 
 import anyconfig.backend.backends as TT
-import anyconfig.backend.ini_
+import anyconfig.backend.ini
 import anyconfig.backend.json_
 
 try:
@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
 
         self.assertTrue(TT.find_by_file(unknown_cf) is None)
         self.assertEquals(TT.find_by_file(ini_cf),
-                          anyconfig.backend.ini_.Parser)
+                          anyconfig.backend.ini.Parser)
 
         for cfg in jsn_cfs:
             self.assertEquals(TT.find_by_file(cfg),
@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
 
         self.assertTrue(TT.find_by_type(unknown_t) is None)
         self.assertEquals(TT.find_by_type(ini_t),
-                          anyconfig.backend.ini_.Parser)
+                          anyconfig.backend.ini.Parser)
         self.assertEquals(TT.find_by_type(jsn_t),
                           anyconfig.backend.json_.Parser)
 

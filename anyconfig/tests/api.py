@@ -13,7 +13,7 @@ import anyconfig.api as TT
 import anyconfig.template
 import anyconfig.tests.common
 
-import anyconfig.backend.ini_
+import anyconfig.backend.ini
 import anyconfig.backend.json_
 import anyconfig.backend.xml_
 
@@ -30,7 +30,7 @@ class Test10(unittest.TestCase):
 
         # These parsers should work for python >= 2.6.
         self.assertEquals(TT.find_loader(cpath, "ini"),
-                          anyconfig.backend.ini_.Parser)
+                          anyconfig.backend.ini.Parser)
         self.assertEquals(TT.find_loader(cpath, "json"),
                           anyconfig.backend.json_.Parser)
         self.assertEquals(TT.find_loader(cpath, "xml"),
@@ -46,7 +46,7 @@ class Test10(unittest.TestCase):
 
     def test_20_find_loader__by_file(self):
         self.assertEquals(TT.find_loader("dummy.ini"),
-                          anyconfig.backend.ini_.Parser)
+                          anyconfig.backend.ini.Parser)
         self.assertEquals(TT.find_loader("dummy.json"),
                           anyconfig.backend.json_.Parser)
         self.assertEquals(TT.find_loader("dummy.jsn"),

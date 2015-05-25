@@ -4,6 +4,8 @@
 #
 """A module to aggregate config parser (loader/dumper) backends.
 """
+from __future__ import absolute_import
+
 import itertools
 import logging
 import operator
@@ -12,12 +14,12 @@ import pkg_resources
 import anyconfig.compat
 import anyconfig.utils
 
-import anyconfig.backend.ini_
+import anyconfig.backend.ini
 import anyconfig.backend.json_
 import anyconfig.backend.xml_
 
 LOGGER = logging.getLogger(__name__)
-PARSERS = [anyconfig.backend.ini_.Parser, anyconfig.backend.json_.Parser,
+PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json_.Parser,
            anyconfig.backend.xml_.Parser]
 
 try:

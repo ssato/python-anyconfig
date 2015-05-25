@@ -24,7 +24,7 @@ class Test_10_pure_functions(unittest.TestCase):
     def test_10_find_loader__w_forced_type(self):
         cpath = "dummy.conf"
 
-        # These parsers should be supported.
+        # These parsers should work for python >= 2.6.
         self.assertEquals(TT.find_loader(cpath, "ini"), BINI.IniConfigParser)
         self.assertEquals(TT.find_loader(cpath, "json"),
                           BJSON.JsonConfigParser)

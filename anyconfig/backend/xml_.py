@@ -3,16 +3,13 @@
 # License: MIT
 #
 # pylint: disable=R0921
-"""XML files parser backend.
+"""XML files parser backend, should be available always.
 """
 import logging
 
 import anyconfig.backend.base as Base
 import anyconfig.compat
 
-
-LOGGER = logging.getLogger(__name__)
-SUPPORTED = True
 try:
     # First, try lxml which is compatible with elementtree and looks faster a
     # lot. See also: http://getpython3.com/diveintopython3/xml.html
@@ -21,35 +18,23 @@ except ImportError:
     try:
         import xml.etree.ElementTree as etree
     except ImportError:
-        try:
-            import elementtree.ElementTree as etree
-        except ImportError:
-            LOGGER.warn("ElementTree module is not available. Disabled "
-                        "XML support.")
-            SUPPORTED = False
+        import elementtree.ElementTree as etree
 
 
-if SUPPORTED:
-    def etree_getroot_fromstring(s):
-        """
-        :param s: A XML string
-        :return: etree object gotten by parsing ``s``
-        """
-        return etree.ElementTree(etree.fromstring(s)).getroot()
+def etree_getroot_fromstring(s):
+    """
+    :param s: A XML string
+    :return: etree object gotten by parsing ``s``
+    """
+    return etree.ElementTree(etree.fromstring(s)).getroot()
 
-    def etree_getroot_fromsrc(src):
-        """
-        :param src: A file name/path or a file[-like] object or a URL
-        :return: etree object gotten by parsing ``s``
-        """
-        return etree.parse(src).getroot()
-else:
-    def _dummy_fun(*args, **kwargs):
-        LOGGER.warn("Return None as XML module is not available: "
-                    "args=%s, kwargs=%s", ','.join(args), str(kwargs))
-        return None
 
-    etree_getroot_fromstring = etree_getroot_fromsrc = _dummy_fun
+def etree_getroot_fromsrc(src):
+    """
+    :param src: A file name/path or a file[-like] object or a URL
+    :return: etree object gotten by parsing ``s``
+    """
+    return etree.parse(src).getroot()
 
 
 def etree_to_container(root, container):
@@ -83,12 +68,28 @@ def etree_to_container(root, container):
 
 class XmlConfigParser(Base.ConfigParser):
     """
-    XML files parser
-    """
+    Parser for XML files.
 
+    - Backend: one of the followings
+
+      - lxml2.etree if available
+      - xml.etree.ElementTree in standard lib if python >= 2.5
+      - elementtree.ElementTree (otherwise)
+
+    - Limitations:
+
+      - 'attrs', 'text' and 'children' are used as special keyword to keep XML
+        structure of config data so that these are not allowed to used in
+        config files.
+
+      - Some data or structures of original XML file may be lost if make it
+        backed to XML file;
+        XML file - (anyconfig.load) -> config - (anyconfig.dump) -> XML file
+
+    - Special Options: None supported
+    """
     _type = "xml"
     _extensions = ["xml"]
-    _supported = SUPPORTED
 
     @classmethod
     def loads(cls, config_content, **kwargs):

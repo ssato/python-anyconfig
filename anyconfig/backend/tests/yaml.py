@@ -3,11 +3,13 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
+from __future__ import absolute_import
+
 import os.path
 import unittest
 
 try:
-    import anyconfig.backend.yaml_ as TT
+    import anyconfig.backend.yaml as TT
 except ImportError:
     TT = None
 

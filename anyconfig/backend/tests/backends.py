@@ -27,16 +27,16 @@ class Test(unittest.TestCase):
 
         self.assertTrue(TT.find_by_file(unknown_cf) is None)
         self.assertEquals(TT.find_by_file(ini_cf),
-                          anyconfig.backend.ini_.IniConfigParser)
+                          anyconfig.backend.ini_.Parser)
 
         for cfg in jsn_cfs:
             self.assertEquals(TT.find_by_file(cfg),
-                              anyconfig.backend.json_.JsonConfigParser)
+                              anyconfig.backend.json_.Parser)
 
         if YAML_FOUND:
             for cfg in yml_cfs:
                 self.assertEquals(TT.find_by_file(cfg),
-                                  anyconfig.backend.yaml_.YamlConfigParser)
+                                  anyconfig.backend.yaml_.Parser)
 
     def test_20_find_by_type(self):
         ini_t = "ini"
@@ -46,13 +46,13 @@ class Test(unittest.TestCase):
 
         self.assertTrue(TT.find_by_type(unknown_t) is None)
         self.assertEquals(TT.find_by_type(ini_t),
-                          anyconfig.backend.ini_.IniConfigParser)
+                          anyconfig.backend.ini_.Parser)
         self.assertEquals(TT.find_by_type(jsn_t),
-                          anyconfig.backend.json_.JsonConfigParser)
+                          anyconfig.backend.json_.Parser)
 
         if YAML_FOUND:
             self.assertEquals(TT.find_by_type(yml_t),
-                              anyconfig.backend.yaml_.YamlConfigParser)
+                              anyconfig.backend.yaml_.Parser)
 
     def test_30_list_types(self):
         types = TT.list_types()

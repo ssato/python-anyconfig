@@ -18,7 +18,7 @@ except ImportError:
 def dict_to_container(json_obj_dict):
     """Convert dict to container.
     """
-    return JsonConfigParser.container().create(json_obj_dict)
+    return Parser.container().create(json_obj_dict)
 
 
 _LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant",
@@ -34,7 +34,7 @@ if not anyconfig.compat.IS_PYTHON_3:
     _DUMP_OPTS.append("encoding")
 
 
-class JsonConfigParser(Base.ConfigParser):
+class Parser(Base.Parser):
     """
     Parser for JSON files.
 

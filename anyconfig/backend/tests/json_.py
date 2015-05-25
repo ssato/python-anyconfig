@@ -32,52 +32,51 @@ class Test(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_00_supports(self):
-        self.assertFalse(TT.JsonConfigParser.supports("/a/b/c/d.ini"))
-        self.assertTrue(TT.JsonConfigParser.supports("/a/b/c/d.json"))
+        self.assertFalse(TT.Parser.supports("/a/b/c/d.ini"))
+        self.assertTrue(TT.Parser.supports("/a/b/c/d.json"))
 
     def test_10_loads(self):
-        cfg = TT.JsonConfigParser.loads(CONF_0)
+        cfg = TT.Parser.loads(CONF_0)
 
         self.assertEquals(cfg['a'], 0, str(cfg))
         self.assertEquals(cfg['b'], "bbb", cfg)
         self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
     def test_20_load(self):
-        cfg = TT.JsonConfigParser.load(self.cpath)
+        cfg = TT.Parser.load(self.cpath)
 
         self.assertEquals(cfg['a'], 0, str(cfg))
         self.assertEquals(cfg['b'], "bbb", cfg)
         self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
     def test_20_load__optional_kwargs(self):
-        cfg = TT.JsonConfigParser.load(self.cpath, parse_int=None)
+        cfg = TT.Parser.load(self.cpath, parse_int=None)
 
         self.assertEquals(cfg['a'], 0, str(cfg))
         self.assertEquals(cfg['b'], "bbb", cfg)
         self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
     def test_30_dumps(self):
-        cfg = TT.JsonConfigParser.loads(CONF_0)
-        cfg2 = TT.JsonConfigParser.loads(TT.JsonConfigParser.dumps(cfg))
+        cfg = TT.Parser.loads(CONF_0)
+        cfg2 = TT.Parser.loads(TT.Parser.dumps(cfg))
 
         self.assertEquals(cfg2['a'], 0, str(cfg))
         self.assertEquals(cfg2['b'], "bbb", cfg)
         self.assertEquals(cfg2['sect0']['c'], ['x', 'y', 'z'])
 
     def test_40_dump(self):
-        cfg = TT.JsonConfigParser.loads(CONF_0)
-        TT.JsonConfigParser.dump(cfg, self.cpath)
-        cfg = TT.JsonConfigParser.load(self.cpath)
+        cfg = TT.Parser.loads(CONF_0)
+        TT.Parser.dump(cfg, self.cpath)
+        cfg = TT.Parser.load(self.cpath)
 
         self.assertEquals(cfg['a'], 0, str(cfg))
         self.assertEquals(cfg['b'], "bbb", cfg)
         self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
     def test_50_dump_w_special_option(self):
-        cfg = TT.JsonConfigParser.loads(CONF_0)
-        TT.JsonConfigParser.dump(cfg, self.cpath, parse_int=None,
-                                 indent=3)
-        cfg = TT.JsonConfigParser.load(self.cpath)
+        cfg = TT.Parser.loads(CONF_0)
+        TT.Parser.dump(cfg, self.cpath, parse_int=None, indent=3)
+        cfg = TT.Parser.load(self.cpath)
 
         self.assertEquals(cfg['a'], 0, str(cfg))
         self.assertEquals(cfg['b'], "bbb", cfg)

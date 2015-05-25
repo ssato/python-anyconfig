@@ -32,11 +32,11 @@ class Test(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_00_supports(self):
-        self.assertFalse(TT.XmlConfigParser.supports("/a/b/c/d.ini"))
-        self.assertTrue(TT.XmlConfigParser.supports("/a/b/c/d.xml"))
+        self.assertFalse(TT.Parser.supports("/a/b/c/d.ini"))
+        self.assertTrue(TT.Parser.supports("/a/b/c/d.xml"))
 
     def test_10_loads(self):
-        cfg = TT.XmlConfigParser.loads(CONF_0)
+        cfg = TT.Parser.loads(CONF_0)
 
         self.assertTrue("config" in cfg)
         self.assertTrue("attrs" in cfg["config"])
@@ -66,8 +66,8 @@ class Test(unittest.TestCase):
         self.assertTrue(cfg["config"]["children"][2]['sect0']["children"])
 
     def test_20_load(self):
-        """FIXME: Implement test cases for XmlConfigParser.load"""
-        # c = TT.XmlConfigParser.load(self.cpath)["config"]
+        """FIXME: Implement test cases for Parser.load"""
+        # c = TT.Parser.load(self.cpath)["config"]
 
         # self.assertEquals(c['a'], 0, str(c))
         # self.assertEquals(c['b'], "bbb", c)
@@ -75,7 +75,7 @@ class Test(unittest.TestCase):
 
     def test_30_dumps_impl(self):
         try:
-            TT.XmlConfigParser.dumps_impl({})
+            TT.Parser.dumps_impl({})
             raise RuntimeError("test_30_dumps_impl: "
                                "NotImplementedError was not raised!")
         except NotImplementedError:

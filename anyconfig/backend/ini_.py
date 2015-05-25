@@ -113,7 +113,7 @@ def mk_lines_g(data):
         yield "\n"  # put an empty line just after each sections.
 
 
-class IniConfigParser(Base.ConfigParser):
+class Parser(Base.Parser):
     """
     Init config files parser.
     """

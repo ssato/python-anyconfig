@@ -43,7 +43,7 @@ def mk_dump_dir_if_not_exist(f):
         os.makedirs(dumpdir)
 
 
-class ConfigParser(object):
+class Parser(object):
     """
     Abstract class of config files parsers
     """

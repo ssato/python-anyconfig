@@ -483,7 +483,7 @@ How to hack
 How to write backend plugin modules
 -------------------------------------
 
-Backend class must inherit anyconfig.backend.ConfigParser and need some member
+Backend class must inherit anyconfig.backend.Parser and need some member
 variables and method ('load_impl' and 'dumps_impl' at minimum) implementations.
 
 JSON and YAML backend modules (anyconfig.backend.{json,yaml}_) should be good

@@ -13,29 +13,18 @@ import anyconfig.compat
 import anyconfig.utils
 
 import anyconfig.backend.ini_
-PARSERS = [anyconfig.backend.ini_.IniConfigParser]  # It should be supported.
+import anyconfig.backend.json_
+import anyconfig.backend.xml_
 
 LOGGER = logging.getLogger(__name__)
-
-try:
-    import anyconfig.backend.json_
-    PARSERS.append(anyconfig.backend.json_.JsonConfigParser)
-except ImportError:
-    pass
-
-try:
-    import anyconfig.backend.xml_
-    if anyconfig.backend.xml_.XmlConfigParser.supports():
-        PARSERS.append(anyconfig.backend.xml_.XmlConfigParser)
-except ImportError:
-    pass
+PARSERS = [anyconfig.backend.ini_.Parser, anyconfig.backend.json_.Parser,
+           anyconfig.backend.xml_.Parser]
 
 try:
     import anyconfig.backend.yaml_
-    PARSERS.append(anyconfig.backend.yaml_.YamlConfigParser)
+    PARSERS.append(anyconfig.backend.yaml_.Parser)
 except ImportError:
     LOGGER.warn("YAML module is not available. Disabled its support.")
-    pass
 
 
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):

@@ -30,15 +30,14 @@ class Test_10_pure_functions(unittest.TestCase):
 
         # These parsers should work for python >= 2.6.
         self.assertEquals(TT.find_loader(cpath, "ini"),
-                          anyconfig.backend.ini_.IniConfigParser)
+                          anyconfig.backend.ini_.Parser)
         self.assertEquals(TT.find_loader(cpath, "json"),
-                          anyconfig.backend.json_.JsonConfigParser)
+                          anyconfig.backend.json_.Parser)
         self.assertEquals(TT.find_loader(cpath, "xml"),
-                          anyconfig.backend.xml_.XmlConfigParser)
+                          anyconfig.backend.xml_.Parser)
 
         if BYAML is not None:
-            self.assertEquals(TT.find_loader(cpath, "yaml"),
-                              BYAML.YamlConfigParser)
+            self.assertEquals(TT.find_loader(cpath, "yaml"), BYAML.Parser)
 
     def test_12_find_loader__w_forced_type__none(self):
         TT.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
@@ -47,19 +46,17 @@ class Test_10_pure_functions(unittest.TestCase):
 
     def test_20_find_loader__by_file(self):
         self.assertEquals(TT.find_loader("dummy.ini"),
-                          anyconfig.backend.ini_.IniConfigParser)
+                          anyconfig.backend.ini_.Parser)
         self.assertEquals(TT.find_loader("dummy.json"),
-                          anyconfig.backend.json_.JsonConfigParser)
+                          anyconfig.backend.json_.Parser)
         self.assertEquals(TT.find_loader("dummy.jsn"),
-                          anyconfig.backend.json_.JsonConfigParser)
+                          anyconfig.backend.json_.Parser)
         self.assertEquals(TT.find_loader("dummy.xml"),
-                          anyconfig.backend.xml_.XmlConfigParser)
+                          anyconfig.backend.xml_.Parser)
 
         if BYAML is not None:
-            self.assertEquals(TT.find_loader("dummy.yaml"),
-                              BYAML.YamlConfigParser)
-            self.assertEquals(TT.find_loader("dummy.yml"),
-                              BYAML.YamlConfigParser)
+            self.assertEquals(TT.find_loader("dummy.yaml"), BYAML.Parser)
+            self.assertEquals(TT.find_loader("dummy.yml"), BYAML.Parser)
 
     def test_22_find_loader__by_file__none(self):
         # see self.test_12_find_loader__w_forced_type__none

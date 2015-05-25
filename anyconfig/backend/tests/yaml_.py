@@ -36,86 +36,84 @@ if TT is not None:
             anyconfig.tests.common.cleanup_workdir(self.workdir)
 
         def test_00_supports(self):
-            self.assertFalse(TT.YamlConfigParser.supports("/a/b/c/d.ini"))
-            self.assertFalse(TT.YamlConfigParser.supports("/a/b/c/d.json"))
-            self.assertTrue(TT.YamlConfigParser.supports("/a/b/c/d.yml"))
+            self.assertFalse(TT.Parser.supports("/a/b/c/d.ini"))
+            self.assertFalse(TT.Parser.supports("/a/b/c/d.json"))
+            self.assertTrue(TT.Parser.supports("/a/b/c/d.yml"))
 
         def test_10_loads(self):
-            cfg = TT.YamlConfigParser.loads(CONF_0)
+            cfg = TT.Parser.loads(CONF_0)
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)
             self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_12_loads__safe(self):
-            cfg = TT.YamlConfigParser.loads(CONF_0, safe=True)
+            cfg = TT.Parser.loads(CONF_0, safe=True)
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)
             self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_20_load(self):
-            cfg = TT.YamlConfigParser.load(self.cpath)
+            cfg = TT.Parser.load(self.cpath)
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)
             self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_22_load__safe(self):
-            cfg = TT.YamlConfigParser.load(self.cpath, safe=True)
+            cfg = TT.Parser.load(self.cpath, safe=True)
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)
             self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_20_load__w_options(self):
-            cfg = TT.YamlConfigParser.load(self.cpath,
-                                           Loader=yaml.loader.Loader)
+            cfg = TT.Parser.load(self.cpath, Loader=yaml.loader.Loader)
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)
             self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_30_dumps(self):
-            cfg = TT.YamlConfigParser.loads(CONF_0)
-            cfg = TT.YamlConfigParser.loads(TT.YamlConfigParser.dumps(cfg))
+            cfg = TT.Parser.loads(CONF_0)
+            cfg = TT.Parser.loads(TT.Parser.dumps(cfg))
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)
             self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_32_dumps__safe(self):
-            cfg = TT.YamlConfigParser.loads(CONF_0)
-            res = TT.YamlConfigParser.dumps(cfg, safe=True)
-            cfg = TT.YamlConfigParser.loads(res)
+            cfg = TT.Parser.loads(CONF_0)
+            res = TT.Parser.dumps(cfg, safe=True)
+            cfg = TT.Parser.loads(res)
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)
             self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_40_dump(self):
-            cfg = TT.YamlConfigParser.loads(CONF_0)
-            TT.YamlConfigParser.dump(cfg, self.cpath)
-            cfg = TT.YamlConfigParser.load(self.cpath)
+            cfg = TT.Parser.loads(CONF_0)
+            TT.Parser.dump(cfg, self.cpath)
+            cfg = TT.Parser.load(self.cpath)
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)
             self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_42_dump__safe(self):
-            cfg = TT.YamlConfigParser.loads(CONF_0)
-            TT.YamlConfigParser.dump(cfg, self.cpath, safe=True)
-            cfg = TT.YamlConfigParser.load(self.cpath)
+            cfg = TT.Parser.loads(CONF_0)
+            TT.Parser.dump(cfg, self.cpath, safe=True)
+            cfg = TT.Parser.load(self.cpath)
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)
             self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
         def test_40_dump__w_options(self):
-            cfg = TT.YamlConfigParser.loads(CONF_0)
-            TT.YamlConfigParser.dump(cfg, self.cpath,
-                                     Dumper=yaml.dumper.Dumper)
-            cfg = TT.YamlConfigParser.load(self.cpath)
+            cfg = TT.Parser.loads(CONF_0)
+            TT.Parser.dump(cfg, self.cpath, Dumper=yaml.dumper.Dumper)
+            cfg = TT.Parser.load(self.cpath)
 
             self.assertEquals(cfg['a'], 0, str(cfg))
             self.assertEquals(cfg['b'], "bbb", cfg)

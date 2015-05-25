@@ -43,7 +43,7 @@ def find_loader(config_path, forced_type=None):
     :param config_path: Configuration file path
     :param forced_type: Forced configuration parser type
 
-    :return: ConfigParser-inherited class object
+    :return: Parser-inherited class object
     """
     if forced_type is not None:
         cparser = anyconfig.backend.backends.find_by_type(forced_type)
@@ -229,14 +229,13 @@ def _find_dumper(config_path, forced_type=None):
     :param config_path: Output filename
     :param forced_type: Forced configuration parser type
 
-    :return: ConfigParser-inherited class object
+    :return: Parser-inherited class object
     """
     cparser = find_loader(config_path, forced_type)
 
     if cparser is None or not getattr(cparser, "dump", False):
-        LOGGER.warn("Dump method not implemented. Fallback to "
-                    "JsonConfigParser")
-        cparser = anyconfig.backend.json_.JsonConfigParser()
+        LOGGER.warn("Dump method not implemented. Fallback to json.Parser")
+        cparser = anyconfig.backend.json_.Parser()
 
     return cparser
 

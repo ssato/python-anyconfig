@@ -24,7 +24,7 @@ you can write like the following::
 .. note::
 
    It's possible to pass config loader specific option parameter to load and
-   dump methods for each type of ConfigParser,
+   dump methods for each type of Parser,
 
    ex. anyconfig.load("foo.json", parse_float=None)
 

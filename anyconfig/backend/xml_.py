@@ -6,7 +6,7 @@
 # pylint: disable=import-error
 """XML files parser backend, should be available always.
 """
-import anyconfig.backend.base as Base
+import anyconfig.backend.base
 import anyconfig.compat
 
 try:
@@ -65,7 +65,7 @@ def etree_to_container(root, container):
     return tree
 
 
-class XmlConfigParser(Base.ConfigParser):
+class Parser(anyconfig.backend.base.Parser):
     """
     Parser for XML files.
 

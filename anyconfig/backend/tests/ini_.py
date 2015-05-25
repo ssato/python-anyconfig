@@ -30,39 +30,39 @@ class Test(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_loads(self):
-        cfg = TT.IniConfigParser.loads(CONF_0)
+        cfg = TT.Parser.loads(CONF_0)
         self.assertEquals(cfg["DEFAULT"]['a'], 0, str(cfg))
         self.assertEquals(cfg["DEFAULT"]['b'], "bbb", cfg)
         self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
     def test_20_load(self):
-        cfg = TT.IniConfigParser.load(self.cpath)
+        cfg = TT.Parser.load(self.cpath)
         self.assertEquals(cfg["DEFAULT"]['a'], 0, str(cfg))
         self.assertEquals(cfg["DEFAULT"]['b'], "bbb", cfg)
         self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
     def test_22_load__invalid_ini(self):
         invalid_ini = "key=name"
-        self.assertRaises(Exception, TT.IniConfigParser.loads, invalid_ini)
+        self.assertRaises(Exception, TT.Parser.loads, invalid_ini)
 
     def test_20_load__w_options(self):
-        cfg = TT.IniConfigParser.load(self.cpath, allow_no_value=False)
+        cfg = TT.Parser.load(self.cpath, allow_no_value=False)
         self.assertEquals(cfg["DEFAULT"]['a'], 0, str(cfg))
         self.assertEquals(cfg["DEFAULT"]['b'], "bbb", cfg)
         self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
 
     def test_30_dumps(self):
-        cfg = TT.IniConfigParser.loads(CONF_0)
-        cfg2 = TT.IniConfigParser.loads(TT.IniConfigParser.dumps(cfg))
+        cfg = TT.Parser.loads(CONF_0)
+        cfg2 = TT.Parser.loads(TT.Parser.dumps(cfg))
 
         self.assertEquals(cfg2["DEFAULT"]['a'], cfg["DEFAULT"]['a'], str(cfg2))
         self.assertEquals(cfg2["DEFAULT"]['b'], cfg["DEFAULT"]['b'], str(cfg2))
         self.assertEquals(cfg2["sect0"]['c'], cfg["sect0"]['c'], str(cfg2))
 
     def test_40_dump(self):
-        cfg = TT.IniConfigParser.loads(CONF_0)
-        TT.IniConfigParser.dump(cfg, self.cpath)
-        cfg2 = TT.IniConfigParser.load(self.cpath)
+        cfg = TT.Parser.loads(CONF_0)
+        TT.Parser.dump(cfg, self.cpath)
+        cfg2 = TT.Parser.load(self.cpath)
 
         self.assertEquals(cfg2["DEFAULT"]['a'], cfg["DEFAULT"]['a'], str(cfg2))
         self.assertEquals(cfg2["DEFAULT"]['b'], cfg["DEFAULT"]['b'], str(cfg2))

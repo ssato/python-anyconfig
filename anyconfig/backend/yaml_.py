@@ -39,7 +39,7 @@ def yaml_dump(data, fpath, **kwargs):
         return yaml.dump(data, fpath, **kwargs)
 
 
-class YamlConfigParser(Base.ConfigParser):
+class Parser(Base.Parser):
     """
     Parser for YAML files.
 

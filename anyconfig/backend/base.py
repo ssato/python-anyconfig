@@ -27,15 +27,7 @@ def mk_opt_args(keys, kwargs):
     >>> mk_opt_args(("aaa", ), dict(bbb=2))
     {}
     """
-    def filter_kwargs(kwargs):
-        """
-        Filter keyword arguments
-        """
-        for k in keys:
-            if k in kwargs:
-                yield (k, kwargs[k])
-
-    return dict((k, v) for k, v in filter_kwargs(kwargs))
+    return dict((k, kwargs[k]) for k in keys if k in kwargs)
 
 
 def mk_dump_dir_if_not_exist(f):

@@ -41,7 +41,15 @@ def yaml_dump(data, fpath, **kwargs):
 
 class YamlConfigParser(Base.ConfigParser):
     """
-    YAML files parser
+    Parser for YAML files.
+
+    - Backend: PyYAML (yaml)
+    - Limitations: None obvious
+    - Special options:
+
+      - All options of yaml.{safe_,}load and yaml.{safe_,}dump should work.
+      - Use 'safe' boolean keyword option if you prefer yaml.safe_{load,dump}
+        instead of yaml.{load,dump}
     """
 
     _type = "yaml"

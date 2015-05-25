@@ -7,7 +7,7 @@ import os.path
 import subprocess
 import unittest
 
-import anyconfig.tests.common as C
+import anyconfig.tests.common
 
 
 SCRIPT_TO_USE_ANYCONFIG = """\
@@ -25,14 +25,14 @@ def check_output(cmd):
     return proc.communicate()[0]
 
 
-class Test_00(unittest.TestCase):
+class Test(unittest.TestCase):
 
     def setUp(self):
-        self.workdir = C.setup_workdir()
+        self.workdir = anyconfig.tests.common.setup_workdir()
         self.script = os.path.join(self.workdir, "a.py")
 
     def tearDown(self):
-        C.cleanup_workdir(self.workdir)
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_00_run_script(self):
         with open(self.script, 'w') as f:

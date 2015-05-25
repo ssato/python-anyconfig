@@ -7,7 +7,7 @@ import unittest
 import anyconfig.utils as TT
 
 
-class Test_functions(unittest.TestCase):
+class Test(unittest.TestCase):
 
     def test_00_get_file_extension(self):
         self.assertEquals(TT.get_file_extension("/a/b/c"), '')

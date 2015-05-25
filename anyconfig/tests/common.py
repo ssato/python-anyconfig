@@ -67,7 +67,7 @@ def mask_modules(*modules):
     sys.meta_path.append(MaskedImportLoader(*modules))
 
 
-class Test_00_MaskedImportLoader(unittest.TestCase):
+class Test(unittest.TestCase):
 
     def test_00___init__(self):
         ms = ("lxml", "yaml", "json")

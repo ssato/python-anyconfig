@@ -2,7 +2,7 @@
 # Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring,invalid-name
+# pylint: disable=missing-docstring, invalid-name, too-many-public-methods
 import os
 import os.path
 import sys
@@ -14,7 +14,7 @@ import anyconfig.template
 import anyconfig.tests.common as C
 
 
-class Test_10_effectful_functions(unittest.TestCase):
+class Test(unittest.TestCase):
 
     def setUp(self):
         self.workdir = C.setup_workdir()

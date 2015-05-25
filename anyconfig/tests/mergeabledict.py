@@ -6,7 +6,7 @@ import unittest
 import anyconfig.mergeabledict as TT
 
 
-class Test_00_utility_functions(unittest.TestCase):
+class Test00(unittest.TestCase):
 
     def test_create_from__convert_to(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), e=[3, 4])
@@ -18,7 +18,7 @@ class Test_00_utility_functions(unittest.TestCase):
         self.assertFalse(isinstance(c, TT.MergeableDict))
 
 
-class Test_10_MergeableDict(unittest.TestCase):
+class Test10(unittest.TestCase):
 
     def test_update__w_merge_dicts(self):
         a = TT.MergeableDict(name="a", a=1,

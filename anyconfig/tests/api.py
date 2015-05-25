@@ -23,7 +23,7 @@ except ImportError:
     BYAML = None
 
 
-class Test_10_pure_functions(unittest.TestCase):
+class Test10(unittest.TestCase):
 
     def test_10_find_loader__w_forced_type(self):
         cpath = "dummy.conf"
@@ -130,7 +130,7 @@ class Test_10_pure_functions(unittest.TestCase):
         self.assertEquals(a1["requires"], a["requires"])
 
 
-class Test_20_effectful_functions(unittest.TestCase):
+class Test20(unittest.TestCase):
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()

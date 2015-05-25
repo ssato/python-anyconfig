@@ -31,7 +31,7 @@ CASES = dict(single_0=[("", "")],
                          ("a.b.c.d", ['a', 'b', 'c', 'd'])])
 
 
-class Test_00(unittest.TestCase):
+class Test(unittest.TestCase):
 
     testcases = CASES
 

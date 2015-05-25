@@ -1,34 +1,33 @@
 #
-# Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import anyconfig as A
-import anyconfig.tests.common as C
-
 import os.path
 import unittest
 
+import anyconfig as TT
+import anyconfig.tests.common
 
-class Test_10_effectful_functions(unittest.TestCase):
+
+class Test(unittest.TestCase):
 
     def setUp(self):
-        self.workdir = C.setup_workdir()
+        self.workdir = anyconfig.tests.common.setup_workdir()
 
     def tearDown(self):
-        C.cleanup_workdir(self.workdir)
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_dump_and_load(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
         a_path = os.path.join(self.workdir, "a.json")
 
-        A.dump(a, a_path)
+        TT.dump(a, a_path)
         self.assertTrue(os.path.exists(a_path))
 
-        a1 = A.load(a_path)
+        a1 = TT.load(a_path)
 
-        # FIXME: Too verbose
         self.assertEquals(a1["name"], a["name"])
         self.assertEquals(a1["a"], a["a"])
         self.assertEquals(a1["b"]["b"], a["b"]["b"])
@@ -41,13 +40,13 @@ class Test_10_effectful_functions(unittest.TestCase):
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, a_path)
+        TT.dump(a, a_path)
         self.assertTrue(os.path.exists(a_path))
 
-        A.dump(b, b_path)
+        TT.dump(b, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        a1 = A.multi_load([a_path, b_path], merge=A.MS_DICTS)
+        a1 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS)
 
         self.assertEquals(a1["name"], a["name"])
         self.assertEquals(a1["a"], b["a"])
@@ -55,7 +54,7 @@ class Test_10_effectful_functions(unittest.TestCase):
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
         self.assertEquals(a1["b"]["d"], b["b"]["d"])
 
-        a2 = A.multi_load([a_path, b_path], merge=A.MS_DICTS_AND_LISTS)
+        a2 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS_AND_LISTS)
 
         self.assertEquals(a2["name"], a["name"])
         self.assertEquals(a2["a"], b["a"])

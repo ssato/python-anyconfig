@@ -92,6 +92,7 @@ def _load_impl(config_fp, sep=_SEP, **kwargs):
 
 def mk_lines_g(data):
     """
+    Make lines from given `data`
     """
     has_default = "DEFAULT" in data
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012, 2013 Satoru SATOH <ssato at redhat.com>
+# Copyright (C) 2012, 2013 Satoru Sanyconfig.templateOH <ssato at redhat.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name
@@ -10,13 +10,17 @@ import os.path
 import unittest
 
 import anyconfig.api as TT
-import anyconfig.template as AT
-import anyconfig.tests.common as C
+import anyconfig.template
+import anyconfig.tests.common
 
-import anyconfig.backend.ini_ as BINI
-import anyconfig.backend.json_ as BJSON
-import anyconfig.backend.xml_ as BXML
-import anyconfig.backend.yaml_ as BYAML
+import anyconfig.backend.ini_
+import anyconfig.backend.json_
+import anyconfig.backend.xml_
+
+try:
+    import anyconfig.backend.yaml_ as BYAML
+except ImportError:
+    BYAML = None
 
 
 class Test_10_pure_functions(unittest.TestCase):
@@ -25,17 +29,16 @@ class Test_10_pure_functions(unittest.TestCase):
         cpath = "dummy.conf"
 
         # These parsers should work for python >= 2.6.
-        self.assertEquals(TT.find_loader(cpath, "ini"), BINI.IniConfigParser)
+        self.assertEquals(TT.find_loader(cpath, "ini"),
+                          anyconfig.backend.ini_.IniConfigParser)
         self.assertEquals(TT.find_loader(cpath, "json"),
-                          BJSON.JsonConfigParser)
+                          anyconfig.backend.json_.JsonConfigParser)
+        self.assertEquals(TT.find_loader(cpath, "xml"),
+                          anyconfig.backend.xml_.XmlConfigParser)
 
-        if BYAML.SUPPORTED:
+        if BYAML is not None:
             self.assertEquals(TT.find_loader(cpath, "yaml"),
                               BYAML.YamlConfigParser)
-
-        if BXML.SUPPORTED:
-            self.assertEquals(TT.find_loader(cpath, "xml"),
-                              BXML.XmlConfigParser)
 
     def test_12_find_loader__w_forced_type__none(self):
         TT.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
@@ -43,19 +46,20 @@ class Test_10_pure_functions(unittest.TestCase):
         self.assertEquals(TT.find_loader(cpath, "type_not_exist"), None)
 
     def test_20_find_loader__by_file(self):
-        self.assertEquals(TT.find_loader("dummy.ini"), BINI.IniConfigParser)
-        self.assertEquals(TT.find_loader("dummy.json"), BJSON.JsonConfigParser)
-        self.assertEquals(TT.find_loader("dummy.jsn"), BJSON.JsonConfigParser)
+        self.assertEquals(TT.find_loader("dummy.ini"),
+                          anyconfig.backend.ini_.IniConfigParser)
+        self.assertEquals(TT.find_loader("dummy.json"),
+                          anyconfig.backend.json_.JsonConfigParser)
+        self.assertEquals(TT.find_loader("dummy.jsn"),
+                          anyconfig.backend.json_.JsonConfigParser)
+        self.assertEquals(TT.find_loader("dummy.xml"),
+                          anyconfig.backend.xml_.XmlConfigParser)
 
-        if BYAML.SUPPORTED:
+        if BYAML is not None:
             self.assertEquals(TT.find_loader("dummy.yaml"),
                               BYAML.YamlConfigParser)
             self.assertEquals(TT.find_loader("dummy.yml"),
                               BYAML.YamlConfigParser)
-
-        if BXML.SUPPORTED:
-            self.assertEquals(TT.find_loader("dummy.xml"),
-                              BXML.XmlConfigParser)
 
     def test_22_find_loader__by_file__none(self):
         # see self.test_12_find_loader__w_forced_type__none
@@ -105,7 +109,7 @@ class Test_10_pure_functions(unittest.TestCase):
         self.assertEquals(a1["requires"], a["requires"])
 
     def test_44_loads_w_type__template(self):
-        if not AT.SUPPORTED:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(requires=["bash", "zsh"])
@@ -118,7 +122,7 @@ class Test_10_pure_functions(unittest.TestCase):
         self.assertEquals(a1["requires"], a["requires"])
 
     def test_46_loads_w_type__broken_template(self):
-        if not AT.SUPPORTED:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(requires="{% }}", )
@@ -132,10 +136,10 @@ class Test_10_pure_functions(unittest.TestCase):
 class Test_20_effectful_functions(unittest.TestCase):
 
     def setUp(self):
-        self.workdir = C.setup_workdir()
+        self.workdir = anyconfig.tests.common.setup_workdir()
 
     def tearDown(self):
-        C.cleanup_workdir(self.workdir)
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_dump_and_single_load(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -164,7 +168,7 @@ class Test_20_effectful_functions(unittest.TestCase):
                           null_cntnr)
 
     def test_16_single_load__template(self):
-        if not AT.SUPPORTED:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -188,7 +192,7 @@ b:
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
     def test_18_single_load__templates(self):
-        if not AT.SUPPORTED:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -298,7 +302,7 @@ b:
                           null_cntnr)
 
     def test_24_multi_load__templates(self):
-        if not AT.SUPPORTED:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

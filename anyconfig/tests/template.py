@@ -2,7 +2,7 @@
 # Copyright (C) 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring, unused-variable
 import os.path
 import os
 import mock
@@ -24,42 +24,42 @@ A char is '{{ c }}'.
 """, C_1)]
 
 
-class Test_20_render_templates(unittest.TestCase):
+class Test(unittest.TestCase):
 
     templates = TMPLS
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
-        for fn, tmpl_s, _c in self.templates:
-            f = os.path.join(self.workdir, fn)
-            open(f, 'w').write(tmpl_s)
+        for fname, tmpl_s, _ctx in self.templates:
+            fpath = os.path.join(self.workdir, fname)
+            open(fpath, 'w').write(tmpl_s)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_render_impl__wo_paths(self):
         if TT.SUPPORTED:
-            for fn, _s, c in self.templates:
-                f = os.path.join(self.workdir, fn)
-                c_r = TT.render_impl(f)
-                self.assertEquals(c_r, c)
+            for fname, _str, ctx in self.templates:
+                fpath = os.path.join(self.workdir, fname)
+                c_r = TT.render_impl(fpath)
+                self.assertEquals(c_r, ctx)
 
     def test_12_render_impl__w_paths(self):
         if TT.SUPPORTED:
-            for fn, _s, c in self.templates:
-                f = os.path.join(self.workdir, fn)
-                c_r = TT.render_impl(os.path.basename(f),
-                                     paths=[os.path.dirname(f)])
-                self.assertEquals(c_r, c)
+            for fname, _str, ctx in self.templates:
+                fpath = os.path.join(self.workdir, fname)
+                c_r = TT.render_impl(os.path.basename(fpath),
+                                     paths=[os.path.dirname(fpath)])
+                self.assertEquals(c_r, ctx)
 
     def test_20_render__wo_paths(self):
         if TT.SUPPORTED:
-            for fn, _s, c in self.templates:
-                f = os.path.join(self.workdir, fn)
-                c_r = TT.render(f)
-                self.assertEquals(c_r, c)
+            for fname, _str, ctx in self.templates:
+                fpath = os.path.join(self.workdir, fname)
+                c_r = TT.render(fpath)
+                self.assertEquals(c_r, ctx)
 
-    def test_22_render__w_wrong_template_path(self):
+    def test_22_render__w_wrong_tpath(self):
         if TT.SUPPORTED:
             mpt = "anyconfig.compat.raw_input"
 
@@ -77,27 +77,27 @@ class Test_20_render_templates(unittest.TestCase):
 
     def test_24_render__wo_paths(self):
         if TT.SUPPORTED:
-            fn = self.templates[0][0]
-            assert os.path.exists(os.path.join(self.workdir, fn))
+            fname = self.templates[0][0]
+            assert os.path.exists(os.path.join(self.workdir, fname))
 
             subdir = os.path.join(self.workdir, "a/b/c")
             os.makedirs(subdir)
 
-            tmpl = os.path.join(subdir, fn)
+            tmpl = os.path.join(subdir, fname)
             open(tmpl, 'w').write("{{ a|default('aaa') }}")
 
             c_r = TT.render(tmpl)
             self.assertEquals(c_r, "aaa")
 
-    def test_25_render__w_paths_of_higher_prio(self):
+    def test_25_render__w_prefer_paths(self):
         if TT.SUPPORTED:
-            fn = self.templates[0][0]
-            assert os.path.exists(os.path.join(self.workdir, fn))
+            fname = self.templates[0][0]
+            assert os.path.exists(os.path.join(self.workdir, fname))
 
             subdir = os.path.join(self.workdir, "a/b/c")
             os.makedirs(subdir)
 
-            tmpl = os.path.join(subdir, fn)
+            tmpl = os.path.join(subdir, fname)
             open(tmpl, 'w').write("{{ a|default('aaa') }}")
 
             c_r = TT.render(tmpl, paths=[self.workdir])

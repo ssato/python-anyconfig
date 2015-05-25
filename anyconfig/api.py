@@ -8,7 +8,7 @@ from __future__ import absolute_import
 from anyconfig.globals import LOGGER
 
 import anyconfig.backend.backends
-import anyconfig.backend.json_
+import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.mergeabledict
 import anyconfig.parser
@@ -236,7 +236,7 @@ def _find_dumper(config_path, forced_type=None):
 
     if cparser is None or not getattr(cparser, "dump", False):
         LOGGER.warn("Dump method not implemented. Fallback to json.Parser")
-        cparser = anyconfig.backend.json_.Parser()
+        cparser = anyconfig.backend.json.Parser()
 
     return cparser
 

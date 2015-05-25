@@ -15,11 +15,11 @@ import anyconfig.compat
 import anyconfig.utils
 
 import anyconfig.backend.ini
-import anyconfig.backend.json_
+import anyconfig.backend.json
 import anyconfig.backend.xml
 
 LOGGER = logging.getLogger(__name__)
-PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json_.Parser,
+PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json.Parser,
            anyconfig.backend.xml.Parser]
 
 try:

@@ -16,7 +16,7 @@ import anyconfig.template
 import anyconfig.tests.common
 
 import anyconfig.backend.ini
-import anyconfig.backend.json_
+import anyconfig.backend.json
 import anyconfig.backend.xml
 
 try:
@@ -34,7 +34,7 @@ class Test10(unittest.TestCase):
         self.assertEquals(TT.find_loader(cpath, "ini"),
                           anyconfig.backend.ini.Parser)
         self.assertEquals(TT.find_loader(cpath, "json"),
-                          anyconfig.backend.json_.Parser)
+                          anyconfig.backend.json.Parser)
         self.assertEquals(TT.find_loader(cpath, "xml"),
                           anyconfig.backend.xml.Parser)
 
@@ -50,9 +50,9 @@ class Test10(unittest.TestCase):
         self.assertEquals(TT.find_loader("dummy.ini"),
                           anyconfig.backend.ini.Parser)
         self.assertEquals(TT.find_loader("dummy.json"),
-                          anyconfig.backend.json_.Parser)
+                          anyconfig.backend.json.Parser)
         self.assertEquals(TT.find_loader("dummy.jsn"),
-                          anyconfig.backend.json_.Parser)
+                          anyconfig.backend.json.Parser)
         self.assertEquals(TT.find_loader("dummy.xml"),
                           anyconfig.backend.xml.Parser)
 

@@ -8,7 +8,7 @@ import unittest
 
 import anyconfig.backend.backends as TT
 import anyconfig.backend.ini
-import anyconfig.backend.json_
+import anyconfig.backend.json
 
 try:
     import anyconfig.backend.yaml_
@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
 
         for cfg in jsn_cfs:
             self.assertEquals(TT.find_by_file(cfg),
-                              anyconfig.backend.json_.Parser)
+                              anyconfig.backend.json.Parser)
 
         if YAML_FOUND:
             for cfg in yml_cfs:
@@ -48,7 +48,7 @@ class Test(unittest.TestCase):
         self.assertEquals(TT.find_by_type(ini_t),
                           anyconfig.backend.ini.Parser)
         self.assertEquals(TT.find_by_type(jsn_t),
-                          anyconfig.backend.json_.Parser)
+                          anyconfig.backend.json.Parser)
 
         if YAML_FOUND:
             self.assertEquals(TT.find_by_type(yml_t),

@@ -6,7 +6,7 @@
 import os.path
 import unittest
 
-import anyconfig.backend.json_ as TT
+import anyconfig.backend.json as TT
 import anyconfig.tests.common
 
 

@@ -3,11 +3,11 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import anyconfig.backend.xml_ as TT
-
-import os
-import tempfile
+import os.path
 import unittest
+
+import anyconfig.backend.xml_ as TT
+import anyconfig.tests.common
 
 
 CONF_0 = """<?xml version="1.0" encoding="UTF-8"?>
@@ -21,54 +21,53 @@ CONF_0 = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 
-class Test_XmlConfigParser(unittest.TestCase):
+class Test(unittest.TestCase):
 
     def setUp(self):
-        (_, conf) = tempfile.mkstemp(prefix="ac-test-")
-        open(conf, 'w').write(CONF_0)
-        self.config_path = conf
+        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.cpath = os.path.join(self.workdir, "test0.xml")
+        open(self.cpath, 'w').write(CONF_0)
 
     def tearDown(self):
-        os.remove(self.config_path)
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_00_supports(self):
         self.assertFalse(TT.XmlConfigParser.supports("/a/b/c/d.ini"))
         self.assertTrue(TT.XmlConfigParser.supports("/a/b/c/d.xml"))
 
     def test_10_loads(self):
-        """FIXME: Implement test cases for XmlConfigParser.loads"""
-        c = TT.XmlConfigParser.loads(CONF_0)
-        # container = TT.XmlConfigParser.container()
+        cfg = TT.XmlConfigParser.loads(CONF_0)
 
-        self.assertTrue("config" in c)
-        self.assertTrue("attrs" in c["config"])
-        self.assertTrue("name" in c["config"]["attrs"])
-        self.assertEquals(c["config"]["attrs"].get("name", None), "foo")
+        self.assertTrue("config" in cfg)
+        self.assertTrue("attrs" in cfg["config"])
+        self.assertTrue("name" in cfg["config"]["attrs"])
+        self.assertEquals(cfg["config"]["attrs"].get("name", None), "foo")
 
-        self.assertTrue(isinstance(c["config"]["children"], list))
-        self.assertNotEquals(c["config"]["children"], [])
+        self.assertTrue(isinstance(cfg["config"]["children"], list))
+        self.assertNotEquals(cfg["config"]["children"], [])
 
-        self.assertTrue('a' in c["config"]["children"][0])
-        self.assertTrue("text" in c["config"]["children"][0]['a'])
-        self.assertTrue("attrs" not in c["config"]["children"][0]['a'])
-        self.assertEquals(c["config"]["children"][0]['a']["text"], '0')
+        self.assertTrue('a' in cfg["config"]["children"][0])
+        self.assertTrue("text" in cfg["config"]["children"][0]['a'])
+        self.assertTrue("attrs" not in cfg["config"]["children"][0]['a'])
+        self.assertEquals(cfg["config"]["children"][0]['a']["text"], '0')
 
-        self.assertTrue('b' in c["config"]["children"][1])
-        self.assertTrue("text" in c["config"]["children"][1]['b'])
-        self.assertTrue("attrs" in c["config"]["children"][1]['b'])
-        self.assertEquals(c["config"]["children"][1]['b']["text"], "bbb")
-        self.assertTrue("id" in c["config"]["children"][1]['b']["attrs"])
-        self.assertEquals(c["config"]["children"][1]['b']["attrs"]["id"], "b0")
+        self.assertTrue('b' in cfg["config"]["children"][1])
+        self.assertTrue("text" in cfg["config"]["children"][1]['b'])
+        self.assertTrue("attrs" in cfg["config"]["children"][1]['b'])
+        self.assertEquals(cfg["config"]["children"][1]['b']["text"], "bbb")
+        self.assertTrue("id" in cfg["config"]["children"][1]['b']["attrs"])
+        self.assertEquals(cfg["config"]["children"][1]['b']["attrs"]["id"],
+                          "b0")
 
-        self.assertTrue('sect0' in c["config"]["children"][2])
-        self.assertTrue("text" not in c["config"]["children"][2]['sect0'])
-        self.assertTrue("attrs" not in c["config"]["children"][2]['sect0'])
-        self.assertTrue("children" in c["config"]["children"][2]['sect0'])
-        self.assertTrue(c["config"]["children"][2]['sect0']["children"])
+        self.assertTrue('sect0' in cfg["config"]["children"][2])
+        self.assertTrue("text" not in cfg["config"]["children"][2]['sect0'])
+        self.assertTrue("attrs" not in cfg["config"]["children"][2]['sect0'])
+        self.assertTrue("children" in cfg["config"]["children"][2]['sect0'])
+        self.assertTrue(cfg["config"]["children"][2]['sect0']["children"])
 
     def test_20_load(self):
         """FIXME: Implement test cases for XmlConfigParser.load"""
-        # c = TT.XmlConfigParser.load(self.config_path)["config"]
+        # c = TT.XmlConfigParser.load(self.cpath)["config"]
 
         # self.assertEquals(c['a'], 0, str(c))
         # self.assertEquals(c['b'], "bbb", c)

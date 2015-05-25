@@ -3,10 +3,12 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
+from __future__ import absolute_import
+
 import os.path
 import unittest
 
-import anyconfig.backend.xml_ as TT
+import anyconfig.backend.xml as TT
 import anyconfig.tests.common
 
 

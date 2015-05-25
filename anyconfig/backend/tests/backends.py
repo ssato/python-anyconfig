@@ -7,12 +7,17 @@ import random
 import unittest
 
 import anyconfig.backend.backends as TT
-import anyconfig.backend.ini_ as BINI
-import anyconfig.backend.json_ as BJSON
-import anyconfig.backend.yaml_ as BYAML
+import anyconfig.backend.ini_
+import anyconfig.backend.json_
+
+try:
+    import anyconfig.backend.yaml_
+    YAML_FOUND = True
+except ImportError:
+    YAML_FOUND = False
 
 
-class Test_00_pure_functions(unittest.TestCase):
+class Test(unittest.TestCase):
 
     def test_10_find_by_file(self):
         ini_cf = "/a/b/c.ini"
@@ -20,14 +25,18 @@ class Test_00_pure_functions(unittest.TestCase):
         jsn_cfs = ["/a/b/c.jsn", "/a/b/c.json", "/a/b/c.js"]
         yml_cfs = ["/a/b/c.yml", "/a/b/c.yaml"]
 
-        self.assertTrue(ini_cf, BINI.IniConfigParser)
         self.assertTrue(TT.find_by_file(unknown_cf) is None)
+        self.assertEquals(TT.find_by_file(ini_cf),
+                          anyconfig.backend.ini_.IniConfigParser)
 
-        for f in jsn_cfs:
-            self.assertTrue(f, BJSON.JsonConfigParser)
+        for cfg in jsn_cfs:
+            self.assertEquals(TT.find_by_file(cfg),
+                              anyconfig.backend.json_.JsonConfigParser)
 
-        for f in yml_cfs:
-            self.assertTrue(f, BYAML.YamlConfigParser)
+        if YAML_FOUND:
+            for cfg in yml_cfs:
+                self.assertEquals(TT.find_by_file(cfg),
+                                  anyconfig.backend.yaml_.YamlConfigParser)
 
     def test_20_find_by_type(self):
         ini_t = "ini"
@@ -35,10 +44,15 @@ class Test_00_pure_functions(unittest.TestCase):
         yml_t = "yaml"
         unknown_t = "unknown_type"
 
-        self.assertTrue(ini_t, BINI.IniConfigParser)
-        self.assertTrue(jsn_t, BJSON.JsonConfigParser)
-        self.assertTrue(yml_t, BYAML.YamlConfigParser)
         self.assertTrue(TT.find_by_type(unknown_t) is None)
+        self.assertEquals(TT.find_by_type(ini_t),
+                          anyconfig.backend.ini_.IniConfigParser)
+        self.assertEquals(TT.find_by_type(jsn_t),
+                          anyconfig.backend.json_.JsonConfigParser)
+
+        if YAML_FOUND:
+            self.assertEquals(TT.find_by_type(yml_t),
+                              anyconfig.backend.yaml_.YamlConfigParser)
 
     def test_30_list_types(self):
         types = TT.list_types()
@@ -49,7 +63,7 @@ class Test_00_pure_functions(unittest.TestCase):
     def test_40_cmp_cps(self):
         cps = TT.PARSERS
         if cps:
-            x = TT.cmp_cps(random.choice(cps), random.choice(cps))
-            self.assertTrue(x in (-1, 0, 1))
+            res = TT.cmp_cps(random.choice(cps), random.choice(cps))
+            self.assertTrue(res in (-1, 0, 1))
 
 # vim:sw=4:ts=4:et:

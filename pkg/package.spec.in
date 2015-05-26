@@ -105,8 +105,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Sun May 24 2015 Satoru SATOH <ssato@redhat.com> - 0.0.8-1
+* Tue May 26 2015 Satoru SATOH <ssato@redhat.com> - 0.0.8-1
 - remove os.curdir from a list of default template search paths, may close #18
+- remove a global, SUPPORTED and import-error hack around it completely; now
+  implementation of backends are simplified a lot
+- fix a lot of pylint and flake8 warnings
 - some more minor bug fixes and enhancements
 
 * Thu Apr 23 2015 Satoru SATOH <ssato@redhat.com> - 0.0.7-1

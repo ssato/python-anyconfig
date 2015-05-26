@@ -183,12 +183,15 @@ def main(argv=None):
 
         cparser.dump(data, options.output)
     else:
-        # NOTE: Reuse input type automatically detected as it's impossible to
-        # detect output type w/o options.output.
         if options.otype is None:
             if options.itype is None:
-                raise RuntimeError("Please specify input and/or output type "
-                                   "with -I (--itype) or -O (--otype) option")
+                psr = A.find_loader(args[0])
+                if psr is not None:
+                    options.otype = psr.type()  # Reuse detected input type
+                else:
+                    raise RuntimeError("Please specify input and/or output "
+                                       "type with -I (--itype) or -O "
+                                       "(--otype) option")
             else:
                 options.otype = options.itype
 

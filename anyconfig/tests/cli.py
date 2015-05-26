@@ -90,11 +90,11 @@ class Test(unittest.TestCase):
         self.assertEquals(x, ref)
 
     def test_36_single_input__ignore_missing(self):
-        # null_cntnr = A.container()
         infile = os.path.join(os.curdir, "conf_file_should_not_exist.json")
         assert not os.path.exists(infile)
 
-        TT.main(["dummy", "-O", "json", "--ignore-missing", infile])
+        self.assertFalse(TT.main(["dummy", "-O", "json",
+                                  "--ignore-missing", infile]))
 
     def test_40_multiple_inputs(self):
         xs = [dict(a=1, ),
@@ -214,11 +214,14 @@ b:
             pass
 
     def test_82_no_itype_and_otype(self):
+        raised = False
         try:
             TT.main(["dummy", "-o", "out.txt", "in.txt"])
             sys.exit(-1)
         except RuntimeError:
-            pass
+            raised = True
+
+        self.assertTrue(raised)
 
     def test_90_no_inputs__w_env_option(self):
         infile = "/dev/null"

@@ -33,9 +33,9 @@ About
    :target: https://www.openhub.net/p/python-anyconfig
    :alt: Open HUB
 
-This is a python library called 'anyconfig' [#]_  provides generic access to
-configuration files in any formats (to be in the future) with configuration
-merge / cascade / overlay support.
+'anyconfig' [#]_ is a python library provides generic access to configuration
+files in any formats (to be in the future) with configuration merge / cascade /
+overlay and template config support.
 
 * Author: Satoru SATOH <ssato@redhat.com>
 * License: MIT
@@ -48,10 +48,32 @@ Current supported configuration file formats are:
 * XML with ``lxml`` or ``ElementTree`` (experimental)
 * Other formats some pluggale backends support (see the next sub section)
 
-.. [#] This name took an example from the 'anydbm' library in python dist,
+.. [#] This name took an example from the 'anydbm' python standard library.
 
-Other anyconfig backend modules
----------------------------------
+Features
+=========
+
+- Provides very simple and unified APIs for various configuration files:
+
+  - anyconfig.load() to load configuration files
+  - anyconfig.loads() to load a string represents the content of configuration file
+  - anyconfig.dump() to dump a dict or dict-like object represents some configurations to configuration files
+  - anyconfig.dumps() to return a dict or dict-like object represents some configurations
+
+- Can process jinja2-based template config files
+- Provides a CLI tool called anyconfig_cli to process configuration files:
+
+  - Convert a/multiple configuration file[s] to another configuration files in different format
+  - Get configuration value in a/multiple configuration file[s]
+
+Supported configuration formats
+--------------------------------
+
+* JSON with ``json`` or ``simplejson``
+* YAML with ``PyYAML``
+* Ini with ``configparser``
+* XML with ``lxml`` or ``ElementTree`` (experimental)
+* Other formats some pluggale backends support (see the next sub section)
 
 Anyconfig utilizes plugin mechanism provided by setuptools [#]_ and 
 I wrote a few backend plugin modules as references:

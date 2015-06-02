@@ -26,7 +26,7 @@ if anyconfig.compat.IS_PYTHON_3:
 
     _ENCODING = _ENCODING.lower()
 
-    # FIXME: Fix the error, "AttributeError: '_io.StringIO' object has no
+    # TODO: Fix the error, "AttributeError: '_io.StringIO' object has no
     # attribute 'buffer'".
     try:
         sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=_ENCODING)

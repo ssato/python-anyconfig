@@ -11,7 +11,7 @@ About
 
 .. image:: https://pypip.in/py_versions/anyconfig/badge.svg
    :target: https://pypi.python.org/pypi/anyconfig/
-   :alt: [Supported Python versions]
+   :alt: [Python versions]
 
 .. .. image:: https://pypip.in/license/anyconfig/badge.png
    :target: https://pypi.python.org/pypi/anyconfig/

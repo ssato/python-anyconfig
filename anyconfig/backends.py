@@ -28,6 +28,12 @@ try:
 except ImportError:
     LOGGER.warn("YAML module is not available. Disabled its support.")
 
+try:
+    import anyconfig.backend.configobj
+    PARSERS.append(anyconfig.backend.configobj.Parser)
+except ImportError:
+    LOGGER.warn("ConfigObj module is not available. Disabled its support.")
+
 
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):
     try:

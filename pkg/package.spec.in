@@ -105,6 +105,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Jun  2 2015 Satoru SATOH <ssato@redhat.com> - 0.0.8.999-1
+- merge configobj backend
+- some more minor possible bug fixes found by pylint and flake8
+
 * Tue May 26 2015 Satoru SATOH <ssato@redhat.com> - 0.0.8-1
 - remove os.curdir from a list of default template search paths, may close #18
 - remove a global, SUPPORTED and import-error hack around it completely; now

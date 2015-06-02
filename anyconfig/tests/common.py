@@ -10,17 +10,40 @@ import unittest
 
 
 def selfdir():
+    """
+    >>> os.path.exists(selfdir())
+    True
+    """
     return os.path.dirname(__file__)
 
 
 def setup_workdir():
+    """
+    >>> workdir = setup_workdir()
+    >>> assert workdir != '.'
+    >>> assert workdir != '/'
+    >>> os.path.exists(workdir)
+    True
+    >>> os.rmdir(workdir)
+    """
     return tempfile.mkdtemp(dir="/tmp", prefix="python-anyconfig-tests-")
 
 
 def cleanup_workdir(workdir):
     """
     FIXME: Danger!
+
+    >>> workdir = setup_workdir()
+    >>> os.path.exists(workdir)
+    True
+    >>> open(os.path.join(workdir, "workdir.stamp"), 'w').write("OK!\n")
+    >>> cleanup_workdir(workdir)
+    >>> os.path.exists(workdir)
+    False
     """
+    assert workdir != '/'
+    assert workdir != '.'
+
     os.system("rm -rf " + workdir)
 
 

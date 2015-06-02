@@ -69,10 +69,11 @@ Features
 Supported configuration formats
 --------------------------------
 
-* JSON with ``json`` or ``simplejson``
-* YAML with ``PyYAML``
+* JSON with ``json`` (standard lib) or ``simplejson`` [#]_
+* YAML with ``PyYAML`` [#]_
 * Ini with ``configparser``
-* XML with ``lxml`` or ``ElementTree`` (experimental)
+* ConifgObj with ``configobj`` [#]_
+* XML with ``lxml`` [#]_ or ``ElementTree`` (experimental)
 * Other formats some pluggale backends support (see the next sub section)
 
 Anyconfig utilizes plugin mechanism provided by setuptools [#]_ and 
@@ -82,13 +83,12 @@ I wrote a few backend plugin modules as references:
 
   * https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
 
-* Ini file like format which configobj [#]_ supports (experimental):
-
-  * https://github.com/ssato/python-anyconfig-configobj-backend
-
+.. [#] https://pypi.python.org/pypi/simplejson
+.. [#] https://pypi.python.org/pypi/PyYAML
+.. [#] https://pypi.python.org/pypi/configobj
+.. [#] https://pypi.python.org/pypi/lxml
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 .. [#] https://pypi.python.org/pypi/pyjavaproperties
-.. [#] https://pypi.python.org/pypi/configobj
 
 Usage
 ======

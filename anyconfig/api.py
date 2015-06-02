@@ -2,6 +2,7 @@
 # Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=unused-import,import-error,invalid-name
 """Public APIs of anyconfig module.
 """
 from __future__ import absolute_import
@@ -15,21 +16,16 @@ import anyconfig.parser
 import anyconfig.template
 import anyconfig.utils
 
-# pylint: disable=W0611
 # Import some global constants will be re-exported:
 from anyconfig.mergeabledict import MS_REPLACE, MS_NO_REPLACE, \
     MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES, \
     get, set_  # flake8: noqa
 from anyconfig.parser import PATH_SEPS
-# pylint: enable=W0611
 
-# pylint: disable=C0103
-# Re-export:
+
+# Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
-
-# aliases:
 container = anyconfig.mergeabledict.MergeableDict
-# pylint: enable=C0103
 
 
 def set_loglevel(level):

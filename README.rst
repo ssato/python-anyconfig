@@ -45,6 +45,7 @@ Current supported configuration file formats are:
 * JSON with ``json`` or ``simplejson``
 * YAML with ``PyYAML``
 * Ini with ``configparser``
+* ConifgObj with ``configobj``
 * XML with ``lxml`` or ``ElementTree`` (experimental)
 * Other formats some pluggale backends support (see the next sub section)
 
@@ -76,8 +77,8 @@ Supported configuration formats
 * XML with ``lxml`` [#]_ or ``ElementTree`` (experimental)
 * Other formats some pluggale backends support (see the next sub section)
 
-Anyconfig utilizes plugin mechanism provided by setuptools [#]_ and 
-I wrote a few backend plugin modules as references:
+And anyconfig utilizes plugin mechanism provided by setuptools [#]_ and I wrote
+a few backend plugin modules as references:
 
 * Java properties file w/ pyjavaproperties [#]_ (experimental):
 

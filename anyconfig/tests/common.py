@@ -38,7 +38,7 @@ class MaskedImportLoader(object):
         """
         self.masked = modules
 
-    def find_module(self, fullname, path=None):
+    def find_module(self, fullname):
         return self if fullname in self.masked else None
 
     def load_module(self, fullname):
@@ -70,9 +70,9 @@ def mask_modules(*modules):
 class Test(unittest.TestCase):
 
     def test_00___init__(self):
-        ms = ("lxml", "yaml", "json")
-        mil = MaskedImportLoader(*ms)
-        self.assertEquals(mil.masked, ms)
+        mods = ("lxml", "yaml", "json")
+        mil = MaskedImportLoader(*mods)
+        self.assertEquals(mil.masked, mods)
 
     def test_10_find_module(self):
         mil = MaskedImportLoader("lxml", "yaml")

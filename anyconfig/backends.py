@@ -79,9 +79,9 @@ def uniq(iterable):
     [1, 2, 3]
     """
     acc = []
-    for x in iterable:
-        if x not in acc:
-            acc.append(x)
+    for obj in iterable:
+        if obj not in acc:
+            acc.append(obj)
 
     return acc
 

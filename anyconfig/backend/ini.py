@@ -76,14 +76,14 @@ def _load_impl(config_fp, sep=_SEP, **kwargs):
         if parser.defaults():
             config["DEFAULT"] = dict()
 
-            for k, v in iteritems(parser.defaults()):
-                config["DEFAULT"][k] = _parse(v, sep)
+            for key, val in iteritems(parser.defaults()):
+                config["DEFAULT"][key] = _parse(val, sep)
 
-        for s in parser.sections():
-            config[s] = dict()
+        for sect in parser.sections():
+            config[sect] = dict()
 
-            for k, v in parser.items(s):
-                config[s][k] = _parse(v, sep)
+            for key, val in parser.items(sect):
+                config[sect][key] = _parse(val, sep)
 
     except Exception:
         LOGGER.warn(sys.exc_info()[-1])

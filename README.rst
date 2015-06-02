@@ -7,11 +7,11 @@ About
 
 .. image:: https://pypip.in/version/anyconfig/badge.svg
    :target: https://pypi.python.org/pypi/anyconfig/
-   :alt: Latest Version
+   :alt: [Latest Version]
 
 .. image:: https://pypip.in/py_versions/anyconfig/badge.svg
    :target: https://pypi.python.org/pypi/anyconfig/
-   :alt: Supported Python versions
+   :alt: [Supported Python versions]
 
 .. .. image:: https://pypip.in/license/anyconfig/badge.png
    :target: https://pypi.python.org/pypi/anyconfig/
@@ -19,19 +19,19 @@ About
 
 .. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
    :target: https://travis-ci.org/ssato/python-anyconfig
-   :alt: Test status
+   :alt: [Test status]
 
 .. image:: https://coveralls.io/repos/ssato/python-anyconfig/badge.png
    :target: https://coveralls.io/r/ssato/python-anyconfig
-   :alt: Coverage Status
+   :alt: [Coverage Status]
 
 .. image:: https://landscape.io/github/ssato/python-anyconfig/master/landscape.png
    :target: https://landscape.io/github/ssato/python-anyconfig/master
-   :alt: Code Health
+   :alt: [Code Health]
 
 .. image:: https://www.openhub.net/p/python-anyconfig/widgets/project_thin_badge.gif
    :target: https://www.openhub.net/p/python-anyconfig
-   :alt: Open HUB
+   :alt: [Open HUB]
 
 'anyconfig' [#]_ is a python library provides generic access to configuration
 files in any formats (to be in the future) with configuration merge / cascade /

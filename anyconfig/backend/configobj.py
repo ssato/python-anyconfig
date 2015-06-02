@@ -63,6 +63,6 @@ class Parser(anyconfig.backend.base.Parser):
         conf = configobj.ConfigObj(**kwargs)
         conf.update(data)
 
-        conf.write(open(config_path, 'w'))
+        conf.write(open(config_path, 'wb'))
 
 # vim:sw=4:ts=4:et:

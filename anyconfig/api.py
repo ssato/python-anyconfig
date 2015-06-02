@@ -7,7 +7,7 @@
 from __future__ import absolute_import
 from anyconfig.globals import LOGGER
 
-import anyconfig.backend.backends
+import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.mergeabledict
@@ -25,7 +25,7 @@ from anyconfig.parser import PATH_SEPS
 
 # pylint: disable=C0103
 # Re-export:
-list_types = anyconfig.backend.backends.list_types  # flake8: noqa
+list_types = anyconfig.backends.list_types  # flake8: noqa
 
 # aliases:
 container = anyconfig.mergeabledict.MergeableDict
@@ -47,12 +47,12 @@ def find_loader(config_path, forced_type=None):
     :return: Parser-inherited class object
     """
     if forced_type is not None:
-        cparser = anyconfig.backend.backends.find_by_type(forced_type)
+        cparser = anyconfig.backends.find_by_type(forced_type)
         if not cparser:
             LOGGER.error("No parser found for given type: %s", forced_type)
             return None
     else:
-        cparser = anyconfig.backend.backends.find_by_file(config_path)
+        cparser = anyconfig.backends.find_by_file(config_path)
         if not cparser:
             LOGGER.error("No parser found for given file: %s", config_path)
             return None

@@ -8,7 +8,7 @@ from __future__ import absolute_import
 import random
 import unittest
 
-import anyconfig.backend.backends as TT
+import anyconfig.backends as TT
 import anyconfig.backend.ini
 import anyconfig.backend.json
 

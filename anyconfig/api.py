@@ -89,7 +89,8 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
             config_content = anyconfig.template.render(config_path, ac_context)
             return cparser.loads(config_content, ignore_missing=ignore_missing,
                                  **kwargs)
-        except:
+        except Exception as exc:
+            LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile %s, fallback to no template "
                         "mode", config_path)
 
@@ -212,7 +213,8 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
             LOGGER.debug("Compiling")
             config_content = anyconfig.template.render_s(config_content,
                                                          ac_context)
-        except:
+        except Exception as exc:
+            LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile and fallback to no template "
                         "mode: '%s'", config_content[:50] + '...')
 

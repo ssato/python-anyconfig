@@ -11,6 +11,7 @@ import sys
 
 import anyconfig.backend.base as Base
 import anyconfig.parser as P
+import anyconfig.utils
 
 from anyconfig.compat import configparser, iteritems
 
@@ -41,16 +42,21 @@ def _parse(val_s, sep=_SEP):
         return P.parse(val_s)
 
 
-def _to_s(val_s, sep=", "):
+def _to_s(val, sep=", "):
     """Convert any to string.
 
-    :param val_s: A string represents some value to parse
+    :param val: An object
     :param sep: separator between values
+
+    >>> _to_s([1, 2, 3])
+    '1, 2, 3'
+    >>> _to_s("aaa")
+    'aaa'
     """
-    if isinstance(val_s, list):
-        return sep.join(x for x in val_s)
+    if anyconfig.utils.is_iterable(val):
+        return sep.join(str(x) for x in val)
     else:
-        return str(val_s)
+        return str(val)
 
 
 def _load_impl(config_fp, sep=_SEP, **kwargs):

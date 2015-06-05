@@ -32,17 +32,17 @@ def mk_opt_args(keys, kwargs):
     return dict((k, kwargs[k]) for k in keys if k in kwargs)
 
 
-def mk_dump_dir_if_not_exist(filepath):
+def ensure_outdir_exists(filepath):
     """
     Make dir to dump `filepath` if that dir does not exist.
 
     :param filepath: path of file to dump
     """
-    dumpdir = os.path.dirname(filepath)
+    outdir = os.path.dirname(filepath)
 
-    if not os.path.exists(dumpdir):
-        LOGGER.debug("Creating output dir as it's not found: %s", dumpdir)
-        os.makedirs(dumpdir)
+    if not os.path.exists(outdir):
+        LOGGER.debug("Making output dir: %s", outdir)
+        os.makedirs(outdir)
 
 
 class Parser(object):
@@ -190,7 +190,7 @@ class Parser(object):
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
         convert_to = cls.container().convert_to
-        mk_dump_dir_if_not_exist(config_path)
+        ensure_outdir_exists(config_path)
         cls.dump_impl(convert_to(data), config_path,
                       **mk_opt_args(cls._dump_opts, kwargs))
 

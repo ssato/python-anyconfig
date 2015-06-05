@@ -62,12 +62,12 @@ class Test10(unittest.TestCase):
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
-    def test_10_mk_dump_dir_if_not_exist(self):
-        dumpdir = os.path.join(self.workdir, "dumpdir")
-        dumpfile = os.path.join(dumpdir, "a.txt")
+    def test_10_ensure_outdir_exists(self):
+        outdir = os.path.join(self.workdir, "outdir")
+        outfile = os.path.join(outdir, "a.txt")
 
-        TT.mk_dump_dir_if_not_exist(dumpfile)
+        TT.ensure_outdir_exists(outfile)
 
-        self.assertTrue(os.path.exists(dumpdir))
+        self.assertTrue(os.path.exists(outdir))
 
 # vim:sw=4:ts=4:et:

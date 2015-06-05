@@ -6,8 +6,6 @@ import os
 import subprocess
 
 
-curdir = os.getcwd()
-
 PACKAGE = "anyconfig"
 VERSION = "0.0.8"  # see anyconfig.globals.VERSION
 
@@ -98,7 +96,7 @@ setup(name=PACKAGE,
           "srpm": SrpmCommand,
           "rpm":  RpmCommand,
       },
-      entry_points=open(os.path.join(curdir, "pkg/entry_points.txt")).read(),
+      entry_points=open(os.path.join(os.curdir, "pkg/entry_points.txt")).read(),
       data_files=data_files,
       )
 

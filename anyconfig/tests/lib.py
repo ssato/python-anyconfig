@@ -35,8 +35,8 @@ class Test(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_00_run_script(self):
-        with open(self.script, 'w') as f:
-            f.write(SCRIPT_TO_USE_ANYCONFIG)
+        with open(self.script, 'w') as fileobj:
+            fileobj.write(SCRIPT_TO_USE_ANYCONFIG)
 
             out = check_output(["python", self.script])
             self.assertTrue(out in (b'', ''))

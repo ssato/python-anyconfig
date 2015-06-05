@@ -20,9 +20,9 @@ _SEP = ','
 
 
 # FIXME: May be too naive implementation.
-def _parse(v, sep=_SEP):
+def _parse(val_s, sep=_SEP):
     """
-    :param v: A string represents some value to parse
+    :param val_s: A string represents some value to parse
     :param sep: separator between values
 
     >>> _parse(r'"foo string"')
@@ -32,22 +32,25 @@ def _parse(v, sep=_SEP):
     >>> _parse("aaa")
     'aaa'
     """
-    if (v.startswith('"') and v.endswith('"')) or \
-            (v.startswith("'") and v.endswith("'")):
-        return v[1:-1]
-    elif sep in v:
-        return [P.parse(x) for x in P.parse_list(v)]
+    if (val_s.startswith('"') and val_s.endswith('"')) or \
+            (val_s.startswith("'") and val_s.endswith("'")):
+        return val_s[1:-1]
+    elif sep in val_s:
+        return [P.parse(x) for x in P.parse_list(val_s)]
     else:
-        return P.parse(v)
+        return P.parse(val_s)
 
 
-def _to_s(v, sep=", "):
+def _to_s(val_s, sep=", "):
     """Convert any to string.
+
+    :param val_s: A string represents some value to parse
+    :param sep: separator between values
     """
-    if isinstance(v, list):
-        return sep.join(x for x in v)
+    if isinstance(val_s, list):
+        return sep.join(x for x in val_s)
     else:
-        return str(v)
+        return str(val_s)
 
 
 def _load_impl(config_fp, sep=_SEP, **kwargs):
@@ -98,20 +101,20 @@ def mk_lines_g(data):
     """
     has_default = "DEFAULT" in data
 
-    def is_inherited_from_default(k, v):
+    def is_inherited_from_default(key, val):
         """
-        :return: True if (k, v) pair in defaults.
+        :return: True if (key, val) pair in defaults.
         """
-        return has_default and data["DEFAULT"].get(k, None) == v
+        return has_default and data["DEFAULT"].get(key, None) == val
 
     for sect, params in iteritems(data):
         yield "[%s]\n" % sect
 
-        for k, v in iteritems(params):
-            if sect != "DEFAULT" and is_inherited_from_default(k, v):
+        for key, val in iteritems(params):
+            if sect != "DEFAULT" and is_inherited_from_default(key, val):
                 continue
 
-            yield "%s = %s\n" % (k, _to_s(v))
+            yield "%s = %s\n" % (key, _to_s(val))
 
         yield "\n"  # put an empty line just after each sections.
 

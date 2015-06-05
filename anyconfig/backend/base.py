@@ -32,13 +32,13 @@ def mk_opt_args(keys, kwargs):
     return dict((k, kwargs[k]) for k in keys if k in kwargs)
 
 
-def mk_dump_dir_if_not_exist(f):
+def mk_dump_dir_if_not_exist(filepath):
     """
-    Make dir to dump f if that dir does not exist.
+    Make dir to dump `filepath` if that dir does not exist.
 
-    :param f: path of file to dump
+    :param filepath: path of file to dump
     """
-    dumpdir = os.path.dirname(f)
+    dumpdir = os.path.dirname(filepath)
 
     if not os.path.exists(dumpdir):
         LOGGER.debug("Creating output dir as it's not found: %s", dumpdir)

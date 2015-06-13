@@ -475,6 +475,25 @@ this:
    conf = anyconfig.container(os.environ.copy())
    conf.update(anyconfig.load("/path/to/config_files_dir/*.yml"))
 
+Convert from/to bunch objects
+--------------------------------
+
+It's easy to convert result conf object from/to bunch objects [#]_ as
+anyconfig.load{s,} return a dict-like object:
+
+.. code-block:: python
+
+   import anyconfig
+   import bunch
+
+   conf = anyconfig.load("/path/to/some/config/files/*.yml")
+   bconf = bunch.bunchify(conf)
+   bconf.akey = ...  # Overwrite a config parameter.
+      ...
+   anyconfig.dump(bconf.toDict(), "/tmp/all.yml")
+
+.. [#] bunch: https://pypi.python.org/pypi/bunch/
+
 Build & Install
 ================
 

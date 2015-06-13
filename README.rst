@@ -532,7 +532,7 @@ JSON and YAML backend modules (anyconfig.backend.{json,yaml}_) should be good
 examples to write backend modules, I think.
 
 Also, please take a look at some example backend plugin modules mentioned in
-the `Other anyconfig backend modules`_ section.
+the `Supported configuration formats`_ section.
 
 How to test
 -------------

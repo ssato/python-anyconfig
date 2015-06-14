@@ -2,8 +2,8 @@
 python-anyconfig
 =================
 
-About
-========
+Overview
+==========
 
 .. image:: https://pypip.in/version/anyconfig/badge.svg
    :target: https://pypi.python.org/pypi/anyconfig/

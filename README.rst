@@ -60,12 +60,15 @@ Features
 
 - Provides very simple and unified APIs for various configuration files:
 
-  - anyconfig.load() to load configuration files
-  - anyconfig.loads() to load a string represents the content of configuration file
-  - anyconfig.dump() to dump a dict or dict-like object represents some configurations to configuration files
-  - anyconfig.dumps() to return a dict or dict-like object represents some configurations
+  - anyconfig.load() to load configuration files and it will return a dict-like object represents configuration loaded
+  - anyconfig.loads() to load a configuration string and ...
+  - anyconfig.dump() to dump a configuration file from a dict or dict-like object represents some configurations
+  - anyconfig.dumps() to dump a configuration string from ...
 
-- Can process jinja2-based template config files
+- Can process jinja2-based template config files:
+
+  - You can add include feature in config files for your applications with using jinja2's include directive
+
 - Provides a CLI tool called anyconfig_cli to process configuration files:
 
   - Convert a/multiple configuration file[s] to another configuration files in different format

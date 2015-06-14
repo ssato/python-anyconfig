@@ -105,7 +105,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Tue Jun  2 2015 Satoru SATOH <ssato@redhat.com> - 0.0.8.999-1
+* Sun Jun 14 2015 Satoru SATOH <ssato@redhat.com> - 0.0.9-1
 - merge configobj backend
 - some more minor possible bug fixes found by pylint and flake8
 - minor expression updates and fixes in README.rst

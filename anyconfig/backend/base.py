@@ -16,6 +16,8 @@ import anyconfig.utils
 
 LOGGER = logging.getLogger(__name__)
 
+VALIDATE_SUCCESS = (True, '')
+
 
 def mk_opt_args(keys, kwargs):
     """
@@ -193,5 +195,48 @@ class Parser(object):
         ensure_outdir_exists(config_path)
         cls.dump_impl(convert_to(data), config_path,
                       **mk_opt_args(cls._dump_opts, kwargs))
+
+    @classmethod
+    def validates_impl(cls, config_path, schema_content=None, **kwargs):
+        """
+        The children classes have to implement this!
+
+        :param config_path: Config file path
+        :param schema_content: Schema string
+        :param kwargs: optional keyword parameters
+        """
+        return VALIDATE_SUCCESS
+
+    @classmethod
+    def validate_impl(cls, config_path, schema_file=None, **kwargs):
+        """
+        The children classes have to implement this!
+
+        :param config_path: Config file path
+        :param schema_path: Schema file path
+        :param kwargs: optional keyword parameters
+        """
+        return VALIDATE_SUCCESS
+
+    @classmethod
+    def validate(cls, config_path, schema_content=None, schema_path=None,
+                 **kwargs):
+        """
+        :param config_path: Config file path
+        :param schema_content: Schema string
+        :param schema_path: Schema file path
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
+        :return: A tuple of (validated? : bool, error_messages : str)
+        """
+        if schema_content is None:
+            if schema_path is None:
+                LOGGER.warn("Neither schema string nor file path are given. "
+                            "Schema validation is not performed")
+                return VALIDATE_SUCCESS
+            else:
+                return cls.validate_impl(config_path, schema_path, **kwargs)
+        else:
+            return cls.validates_impl(config_path, schema_path, **kwargs)
 
 # vim:sw=4:ts=4:et:

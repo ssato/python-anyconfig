@@ -17,6 +17,8 @@ import anyconfig.utils
 LOGGER = logging.getLogger(__name__)
 
 VALIDATE_SUCCESS = (True, '')
+VALIDATE_FAILURE = (False, "Failed to validate")
+VALIDATE_NOT_IMPL = (True, "Validation is not implemented for this backend")
 
 
 def mk_opt_args(keys, kwargs):
@@ -205,7 +207,7 @@ class Parser(object):
         :param schema_content: Schema string
         :param kwargs: optional keyword parameters
         """
-        return VALIDATE_SUCCESS
+        return VALIDATE_NOT_IMPL
 
     @classmethod
     def validate_impl(cls, config_path, schema_file=None, **kwargs):
@@ -216,7 +218,7 @@ class Parser(object):
         :param schema_path: Schema file path
         :param kwargs: optional keyword parameters
         """
-        return VALIDATE_SUCCESS
+        return VALIDATE_NOT_IMPL
 
     @classmethod
     def validate(cls, config_path, schema_content=None, schema_path=None,
@@ -233,7 +235,7 @@ class Parser(object):
             if schema_path is None:
                 LOGGER.warn("Neither schema string nor file path are given. "
                             "Schema validation is not performed")
-                return VALIDATE_SUCCESS
+                return VALIDATE_NOT_IMPL
             else:
                 return cls.validate_impl(config_path, schema_path, **kwargs)
         else:

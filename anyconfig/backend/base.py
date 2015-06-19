@@ -61,6 +61,7 @@ class Parser(object):
 
     _load_opts = []
     _dump_opts = []
+    _validate_opts = []
 
     @classmethod
     def type(cls):
@@ -199,46 +200,49 @@ class Parser(object):
                       **mk_opt_args(cls._dump_opts, kwargs))
 
     @classmethod
-    def validates_impl(cls, config_path, schema_content=None, **kwargs):
+    def validates_impl(cls, config_content, schema_content, **kwargs):
         """
         The children classes have to implement this!
 
-        :param config_path: Config file path
+        :param config_content:  Config file content
         :param schema_content: Schema string
         :param kwargs: optional keyword parameters
         """
         return VALIDATE_NOT_IMPL
 
     @classmethod
-    def validate_impl(cls, config_path, schema_file=None, **kwargs):
+    def validate_impl(cls, config_path, schema_path, **kwargs):
         """
         The children classes have to implement this!
 
         :param config_path: Config file path
         :param schema_path: Schema file path
-        :param kwargs: optional keyword parameters
+        :param kwargs: optional keyword parameters for validation
         """
         return VALIDATE_NOT_IMPL
 
     @classmethod
-    def validate(cls, config_path, schema_content=None, schema_path=None,
-                 **kwargs):
+    def validates(cls, config_content, schema_content, **kwargs):
         """
-        :param config_path: Config file path
+        :param config_content:  Config file content
         :param schema_content: Schema string
-        :param schema_path: Schema file path
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param kwargs: optional keyword parameters for validation
 
         :return: A tuple of (validated? : bool, error_messages : str)
         """
-        if schema_content is None:
-            if schema_path is None:
-                LOGGER.warn("Neither schema string nor file path are given. "
-                            "Schema validation is not performed")
-                return VALIDATE_NOT_IMPL
-            else:
-                return cls.validate_impl(config_path, schema_path, **kwargs)
-        else:
-            return cls.validates_impl(config_path, schema_path, **kwargs)
+        vopts = mk_opt_args(cls._validate_opts, kwargs)
+        return cls.validates_impl(config_content, schema_content, **vopts)
+
+    @classmethod
+    def validate(cls, config_path, schema_path, **kwargs):
+        """
+        :param config_path: Config file path
+        :param schema_path: Schema file path
+        :param kwargs: optional keyword parameters for validation
+
+        :return: A tuple of (validated? : bool, error_messages : str)
+        """
+        vopts = mk_opt_args(cls._validate_opts, kwargs)
+        return cls.validate_impl(config_path, schema_path, **vopts)
 
 # vim:sw=4:ts=4:et:

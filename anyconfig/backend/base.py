@@ -16,10 +16,6 @@ import anyconfig.utils
 
 LOGGER = logging.getLogger(__name__)
 
-VALIDATE_SUCCESS = (True, '')
-VALIDATE_FAILURE = (False, "Failed to validate")
-VALIDATE_NOT_IMPL = (True, "Validation is not implemented for this backend")
-
 
 def mk_opt_args(keys, kwargs):
     """
@@ -61,7 +57,6 @@ class Parser(object):
 
     _load_opts = []
     _dump_opts = []
-    _validate_opts = []
 
     @classmethod
     def type(cls):
@@ -198,51 +193,5 @@ class Parser(object):
         ensure_outdir_exists(config_path)
         cls.dump_impl(convert_to(data), config_path,
                       **mk_opt_args(cls._dump_opts, kwargs))
-
-    @classmethod
-    def validates_impl(cls, config_content, schema_content, **kwargs):
-        """
-        The children classes have to implement this!
-
-        :param config_content:  Config file content
-        :param schema_content: Schema string
-        :param kwargs: optional keyword parameters
-        """
-        return VALIDATE_NOT_IMPL
-
-    @classmethod
-    def validate_impl(cls, config_path, schema_path, **kwargs):
-        """
-        The children classes have to implement this!
-
-        :param config_path: Config file path
-        :param schema_path: Schema file path
-        :param kwargs: optional keyword parameters for validation
-        """
-        return VALIDATE_NOT_IMPL
-
-    @classmethod
-    def validates(cls, config_content, schema_content, **kwargs):
-        """
-        :param config_content:  Config file content
-        :param schema_content: Schema string
-        :param kwargs: optional keyword parameters for validation
-
-        :return: A tuple of (validated? : bool, error_messages : str)
-        """
-        vopts = mk_opt_args(cls._validate_opts, kwargs)
-        return cls.validates_impl(config_content, schema_content, **vopts)
-
-    @classmethod
-    def validate(cls, config_path, schema_path, **kwargs):
-        """
-        :param config_path: Config file path
-        :param schema_path: Schema file path
-        :param kwargs: optional keyword parameters for validation
-
-        :return: A tuple of (validated? : bool, error_messages : str)
-        """
-        vopts = mk_opt_args(cls._validate_opts, kwargs)
-        return cls.validate_impl(config_path, schema_path, **vopts)
 
 # vim:sw=4:ts=4:et:

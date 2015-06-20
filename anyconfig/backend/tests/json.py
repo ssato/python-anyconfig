@@ -49,7 +49,7 @@ class Test(unittest.TestCase):
         self.assertEquals(cfg['b'], "bbb", cfg)
         self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
-    def test_20_load__optional_kwargs(self):
+    def test_22_load__optional_kwargs(self):
         cfg = TT.Parser.load(self.cpath, parse_int=None)
 
         self.assertEquals(cfg['a'], 0, str(cfg))
@@ -73,7 +73,7 @@ class Test(unittest.TestCase):
         self.assertEquals(cfg['b'], "bbb", cfg)
         self.assertEquals(cfg['sect0']['c'], ['x', 'y', 'z'])
 
-    def test_50_dump_w_special_option(self):
+    def test_42_dump_w_special_option(self):
         cfg = TT.Parser.loads(CONF_0)
         TT.Parser.dump(cfg, self.cpath, parse_int=None, indent=3)
         cfg = TT.Parser.load(self.cpath)

@@ -65,6 +65,7 @@ Features
   - anyconfig.dump() to dump a configuration file from a dict or dict-like object represents some configurations
   - anyconfig.dumps() to dump a configuration string from ...
 
+- Can validate config files in any formats supported with JSON schema [#]_ in any formats supported and can represent the schema with jsonschema [#]_ 's help
 - Can process jinja2-based template config files:
 
   - You can add include feature in config files for your applications with using jinja2's include directive
@@ -73,6 +74,9 @@ Features
 
   - Convert a/multiple configuration file[s] to another configuration files in different format
   - Get configuration value in a/multiple configuration file[s]
+
+.. [#] http://json-schema.org
+.. [#] https://pypi.python.org/pypi/jsonschema
 
 Supported configuration formats
 --------------------------------
@@ -281,6 +285,39 @@ configurations from the followings:
   .. code-block:: python
 
     {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
+
+Validation
+^^^^^^^^^^^^^
+
+If you have jsonschema [#]_ installed, you can validate config files with using
+anyconfig.validate().
+
+.. code-block:: python
+
+  # Validate a JSON config file (conf.json) with JSON schema (schema.json).
+  # If validatation suceeds, `rc` -> True, `err` -> ''.
+  conf1 = anyconfig.load("/path/to/conf.json")
+  schema1 = anyconfig.load("/path/to/schema.json")
+  (rc, err) = anyconfig.validate(conf1, schema1)
+
+  # Similar to the above but both config and schema files are in YAML.
+  conf2 = anyconfig.load("/path/to/conf.yml")
+  schema2 = anyconfig.load("/path/to/schema.yml")
+  (rc, err) = anyconfig.validate(conf2, schema2)
+
+It's also possible to validate config files during load:
+
+.. code-block:: python
+
+  # Validate a config file (conf.yml) with JSON schema (schema.yml) while
+  # loading the config file.
+  conf1 = anyconfig.load("/a/b/c/conf.yml", ac_schema="/c/d/e/schema.yml")
+
+  # Validate config loaded from multiple config files with JSON schema
+  # (schema.json) while loading them.
+  conf2 = anyconfig.load("conf.d/*.yml", ac_schema="/c/d/e/schema.json")
+
+.. [#] https://pypi.python.org/pypi/jsonschema
 
 Template config support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

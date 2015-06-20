@@ -1,6 +1,8 @@
 %if 0%{?rhel} && 0%{?rhel} < 5
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %{!?python_version: %global python_version %(%{__python} -c "import sys ; print sys.version[:3]")}
+%else
+%global with_jsonschema 1
 %endif
 
 %{!?python3_version: %global python3_version %(%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])")}
@@ -30,6 +32,9 @@ Requires:       PyYAML
 # FIXME: How to add weak dependency ?
 #Requires:       python-jinja2
 Requires:       python-setuptools
+%if 0%{?with_jsonschema}
+Requires:       python-jsonschema
+%endif
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:       python-simplejson
 %endif
@@ -50,6 +55,9 @@ Requires:       python3-PyYAML
 # FIXME: Likewise
 #Requires:       python3-jinja2
 Requires:       python3-setuptools
+%if 0%{?with_jsonschema}
+Requires:       python3-jsonschema
+%endif
 
 %description -n python3-%{pkgname}
 Python library to provide generic access to configuration files in some
@@ -105,6 +113,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Jun 21 2015 Satoru SATOH <ssato@redhat.com> - 0.0.9.99-1
+- add new API 'validate' to validate config files with json schema
+- some more minor possible bug fixes found by pylint and flake8
+
 * Sun Jun 14 2015 Satoru SATOH <ssato@redhat.com> - 0.0.9-1
 - merge configobj backend
 - some more minor possible bug fixes found by pylint and flake8

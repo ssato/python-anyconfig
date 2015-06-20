@@ -1,8 +1,8 @@
 #
-# Copyright (C) 2012, 2013 Satoru Sanyconfig.templateOH <ssato at redhat.com>
+# Copyright (C) 2012 - 2015 Satoru SATOH <ssato at redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring,invalid-name
+# pylint: disable=missing-docstring, invalid-name
 from __future__ import absolute_import
 
 from logging import CRITICAL
@@ -23,6 +23,17 @@ try:
     import anyconfig.backend.yaml as BYAML
 except ImportError:
     BYAML = None
+
+
+CNF_0 = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+SCM_0 = {"type": "object",
+         "properties": {
+             "name": {"type": "string"},
+             "a": {"type": "integer"},
+             "b": {"type": "object",
+                   "properties": {
+                       "b": {"type": "array",
+                             "items": {"type": "integer"}}}}}}
 
 
 class Test10(unittest.TestCase):
@@ -130,6 +141,39 @@ class Test10(unittest.TestCase):
                       ac_context={})
 
         self.assertEquals(a1["requires"], a["requires"])
+
+    def test_48_loads_w_validation(self):
+        cnf_s = TT.dumps(CNF_0, "json")
+        scm_s = TT.dumps(SCM_0, "json")
+        cnf_2 = TT.loads(cnf_s, forced_type="json", ac_context={},
+                         ac_validate=scm_s)
+
+        self.assertEquals(cnf_2["name"], CNF_0["name"])
+        self.assertEquals(cnf_2["a"], CNF_0["a"])
+        self.assertEquals(cnf_2["b"]["b"], CNF_0["b"]["b"])
+        self.assertEquals(cnf_2["b"]["c"], CNF_0["b"]["c"])
+
+    def test_50_validate(self):
+        (rc, msg) = TT.validate({'a': 1},
+                                {"type": "object",
+                                 "properties": {"a": {"type": "integer"}}})
+        try:
+            TT.jsonschema
+            self.assertTrue(rc, msg)
+            self.assertFalse(msg, msg)
+        except NameError:
+            self.assertFalse(rc, msg)
+
+    def test_52_validate__ng(self):
+        (rc, msg) = TT.validate({'a': "aaa"},
+                                {"type": "object",
+                                 "properties": {"a": {"type": "integer"}}})
+        try:
+            TT.jsonschema
+            self.assertFalse(rc, msg)  # Validation should fail.
+            self.assertTrue(msg)
+        except NameError:
+            self.assertFalse(rc, msg)
 
 
 class Test20(unittest.TestCase):
@@ -432,5 +476,45 @@ b:
         self.assertEquals(TT.load([cpath], forced_type="ini",
                                   ignore_missing=True),
                           null_cntnr)
+
+    def test_36_load_w_validation(self):
+        cnf_path = os.path.join(self.workdir, "cnf.json")
+        scm_path = os.path.join(self.workdir, "scm.json")
+        TT.dump(CNF_0, cnf_path)
+        TT.dump(SCM_0, scm_path)
+
+        cnf_2 = TT.load(cnf_path, ac_context={}, ac_validate=scm_path)
+
+        self.assertEquals(cnf_2["name"], CNF_0["name"])
+        self.assertEquals(cnf_2["a"], CNF_0["a"])
+        self.assertEquals(cnf_2["b"]["b"], CNF_0["b"]["b"])
+        self.assertEquals(cnf_2["b"]["c"], CNF_0["b"]["c"])
+
+    def test_38_load_w_validation_yaml(self):
+        cnf_path = os.path.join(self.workdir, "cnf.yml")
+        scm_path = os.path.join(self.workdir, "scm.yml")
+        TT.dump(CNF_0, cnf_path)
+        TT.dump(SCM_0, scm_path)
+
+        cnf_2 = TT.load(cnf_path, ac_context={}, ac_validate=scm_path)
+
+        self.assertEquals(cnf_2["name"], CNF_0["name"])
+        self.assertEquals(cnf_2["a"], CNF_0["a"])
+        self.assertEquals(cnf_2["b"]["b"], CNF_0["b"]["b"])
+        self.assertEquals(cnf_2["b"]["c"], CNF_0["b"]["c"])
+
+    def test_50_validate(self):
+        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        a_path = os.path.join(self.workdir, "a.json")
+
+        TT.dump(a, a_path)
+        self.assertTrue(os.path.exists(a_path))
+
+        a1 = TT.single_load(a_path)
+
+        self.assertEquals(a1["name"], a["name"])
+        self.assertEquals(a1["a"], a["a"])
+        self.assertEquals(a1["b"]["b"], a["b"]["b"])
+        self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
 # vim:sw=4:ts=4:et:

@@ -6,8 +6,13 @@
 """Public APIs of anyconfig module.
 """
 from __future__ import absolute_import
-from anyconfig.globals import LOGGER
 
+try:
+    import jsonschema
+except ImportError:
+    pass
+
+from anyconfig.globals import LOGGER
 import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
@@ -22,10 +27,13 @@ from anyconfig.mergeabledict import MS_REPLACE, MS_NO_REPLACE, \
     get, set_  # flake8: noqa
 from anyconfig.parser import PATH_SEPS
 
-
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
+
+
+class ValidationError(Exception):
+    pass
 
 
 def set_loglevel(level):
@@ -57,8 +65,60 @@ def find_loader(config_path, forced_type=None):
     return cparser
 
 
+def validate(config, schema, format_checker=None):
+    """
+    Validate config object with given schema object, loaded from JSON schema.
+
+    See also: https://python-jsonschema.readthedocs.org/en/latest/validate/
+
+    :param config: Config object (a dict or a dict-like object) to validate
+    :param schema: Schema object (a dict or a dict-like object)
+        instantiated from schema JSON file or schema JSON string
+    :param format_checker: A format property checker object of which class is
+        inherited from jsonschema.FormatChecker, it's default if None given.
+
+    :return: (True if validation succeeded else False, error message)
+    """
+    try:
+        if format_checker is None:
+            format_checker = jsonschema.FormatChecker()  # :throw: NameError
+        try:
+            jsonschema.validate(config, schema, format_checker=format_checker)
+        except (jsonschema.ValidationError, jsonschema.SchemaError) as exc:
+            return (False, str(exc))
+
+    except NameError:
+        return (True, "Validation module (jsonschema) is not available")
+
+    return (True, '')
+
+
+def _validate(config, schema, format_checker=None):
+    """
+    Validate config object with given schema object, loaded from JSON schema.
+
+    See also: https://python-jsonschema.readthedocs.org/en/latest/validate/
+
+    :param config: Config object (a dict or a dict-like object) to validate
+    :param schema: Schema object (a dict or a dict-like object)
+        instantiated from schema JSON file or schema JSON string
+    :param format_checker: A format property checker object of which class is
+        inherited from jsonschema.FormatChecker, it's default if None given.
+
+    :return: True if validation succeeded else False
+    """
+    (rc, msg) = validate(config, schema, format_checker)
+    if msg:
+        LOGGER.warn(msg)
+    if not rc:
+        raise ValidationError(msg)
+
+    return True
+
+
 def single_load(config_path, forced_type=None, ignore_missing=False,
-                ac_template=False, ac_context=None, **kwargs):
+                ac_template=False, ac_context=None, ac_schema=None,
+                **kwargs):
     """
     Load single config file.
 
@@ -69,6 +129,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
+    :param ac_schema: JSON schema file path to validate given config file
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
 
@@ -82,25 +143,43 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
     if cparser is None:
         return None
 
+    if ac_schema is not None:
+        kwargs["forced_type"] = "json"
+        kwargs["ac_schema"] = None  # Avoid infinit loop
+        format_checker = kwargs.get("format_checker", None)
+        schema = load(ac_schema, **kwargs)
+
     LOGGER.info("Loading: %s", config_path)
     if ac_template:
         try:
             LOGGER.debug("Compiling: %s", config_path)
             config_content = anyconfig.template.render(config_path, ac_context)
-            return cparser.loads(config_content, ignore_missing=ignore_missing,
+            config = cparser.loads(config_content, ignore_missing=ignore_missing,
                                  **kwargs)
+            if ac_schema is not None:
+                if _validate(config, schema, format_checker):
+                    return config
+
+            return config
+
         except Exception as exc:
             LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile %s, fallback to no template "
                         "mode", config_path)
 
-    return cparser.load(config_path, ignore_missing=ignore_missing,
-                        **kwargs)
+    config = cparser.load(config_path, ignore_missing=ignore_missing,
+                          **kwargs)
+
+    if ac_schema is not None:
+        if _validate(config, schema, format_checker):
+            return config
+
+    return config
 
 
 def multi_load(paths, forced_type=None, ignore_missing=False,
                merge=MS_DICTS, marker='*', ac_template=False, ac_context=None,
-               **kwargs):
+               ac_schema=None, **kwargs):
     """
     Load multiple config files.
 
@@ -122,6 +201,7 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
+    :param ac_schema: JSON schema file path to validate given config file
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
 
@@ -134,6 +214,12 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
 
     if marker in paths:
         paths = anyconfig.utils.sglob(paths)
+
+    if ac_schema is not None:
+        kwargs["forced_type"] = "json"
+        kwargs["ac_schema"] = None  # Avoid infinit loop
+        format_checker = kwargs.get("format_checker", None)
+        schema = load(ac_schema, **kwargs)
 
     config = container.create(ac_context) if ac_context else container()
     for path in paths:
@@ -151,12 +237,16 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
 
         config.update(conf_updates, merge)
 
+    if ac_schema is not None:
+        if _validate(config, schema, format_checker):
+            return config
+
     return config
 
 
 def load(path_specs, forced_type=None, ignore_missing=False,
          merge=MS_DICTS, marker='*', ac_template=False, ac_context=None,
-         **kwargs):
+         ac_schema=None, **kwargs):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -170,6 +260,7 @@ def load(path_specs, forced_type=None, ignore_missing=False,
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
+    :param ac_schema: JSON schema file path to validate given config file
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
 
@@ -179,14 +270,15 @@ def load(path_specs, forced_type=None, ignore_missing=False,
     """
     if marker in path_specs or anyconfig.utils.is_iterable(path_specs):
         return multi_load(path_specs, forced_type, ignore_missing,
-                          merge, marker, ac_template, ac_context, **kwargs)
+                          merge, marker, ac_template, ac_context, ac_schema,
+                          **kwargs)
     else:
         return single_load(path_specs, forced_type, ignore_missing,
-                           ac_template, ac_context, **kwargs)
+                           ac_template, ac_context, ac_schema, **kwargs)
 
 
 def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
-          **kwargs):
+          ac_schema=None, **kwargs):
     """
     :param config_content: Configuration file's content
     :param forced_type: Forced configuration parser type
@@ -194,6 +286,7 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: Context dict to instantiate template
+    :param ac_schema: JSON schema content to validate given config file
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
 
@@ -208,6 +301,12 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
     if cparser is None:
         return anyconfig.parser.parse(config_content)
 
+    if ac_schema is not None:
+        kwargs["forced_type"] = "json"
+        kwargs["ac_schema"] = None  # Avoid infinit loop
+        format_checker = kwargs.get("format_checker", None)
+        schema = loads(ac_schema, **kwargs)
+
     if ac_template:
         try:
             LOGGER.debug("Compiling")
@@ -218,7 +317,13 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
             LOGGER.warn("Failed to compile and fallback to no template "
                         "mode: '%s'", config_content[:50] + '...')
 
-    return cparser.loads(config_content, **kwargs)
+    config = cparser.loads(config_content, **kwargs)
+
+    if ac_schema is not None:
+        if _validate(config, schema, format_checker):
+            return config
+
+    return config
 
 
 def _find_dumper(config_path, forced_type=None):

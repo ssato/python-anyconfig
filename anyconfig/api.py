@@ -144,10 +144,10 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
         return None
 
     if ac_schema is not None:
-        kwargs["forced_type"] = "json"
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
-        schema = load(ac_schema, **kwargs)
+        schema = load(ac_schema, forced_type, ignore_missing, ac_template,
+                      ac_context, **kwargs)
 
     LOGGER.info("Loading: %s", config_path)
     if ac_template:
@@ -216,10 +216,10 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
         paths = anyconfig.utils.sglob(paths)
 
     if ac_schema is not None:
-        kwargs["forced_type"] = "json"
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
-        schema = load(ac_schema, **kwargs)
+        schema = load(ac_schema, forced_type, ignore_missing, merge,
+                      marker, ac_template, ac_context, **kwargs)
 
     config = container.create(ac_context) if ac_context else container()
     for path in paths:
@@ -302,10 +302,10 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
         return anyconfig.parser.parse(config_content)
 
     if ac_schema is not None:
-        kwargs["forced_type"] = "json"
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
-        schema = loads(ac_schema, **kwargs)
+        schema = loads(ac_schema, forced_type, ac_template, ac_context,
+                       **kwargs)
 
     if ac_template:
         try:

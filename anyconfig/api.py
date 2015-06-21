@@ -157,8 +157,8 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
         try:
             LOGGER.debug("Compiling: %s", config_path)
             config_content = anyconfig.template.render(config_path, ac_context)
-            config = cparser.loads(config_content, ignore_missing=ignore_missing,
-                                   **kwargs)
+            config = cparser.loads(config_content,
+                                   ignore_missing=ignore_missing, **kwargs)
             if ac_schema is not None:
                 if _validate(config, schema, format_checker):
                     return config

@@ -129,7 +129,8 @@ Int, str, etc.""" % ctypes_s
     parser.add_option("-S", "--schema", help="Specify Schema file[s] path")
     parser.add_option("-V", "--validate", action="store_true",
                       help="Only validate input files and do not output. "
-                           "You must specify schema file with -S/--schema option.")
+                           "You must specify schema file with -S/--schema "
+                           "option.")
 
     parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
                       const=0, help="Silent or quiet mode")
@@ -168,7 +169,8 @@ def main(argv=None):
 
     data = data = os.environ.copy() if options.env else A.container()
     try:
-        diff = A.load(args, options.itype, ignore_missing=options.ignore_missing,
+        diff = A.load(args, options.itype,
+                      ignore_missing=options.ignore_missing,
                       merge=options.merge, ac_template=options.template,
                       ac_schema=options.schema)
     except A.ValidationError as exc:

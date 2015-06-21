@@ -1,5 +1,5 @@
-a: aaa
+a: 1
 b:
   b: [1, 2]
   c: C
-name: a
+name: aaa

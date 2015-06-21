@@ -117,11 +117,12 @@ class Test(unittest.TestCase):
         self.run_and_check_exit_code(["--schema", scmfile, "-o", output,
                                       infile], 0)
 
+        infile2 = os.path.join(self.workdir, "input.yml")
         cnf = CNF_0.copy()
         cnf["a"] = "aaa"  # Validation should fail.
-        A.dump(cnf, infile)
+        A.dump(cnf, infile2)
         self.run_and_check_exit_code(["--schema", scmfile, "--validate",
-                                      infile], 1)
+                                      infile2], 1)
 
     def test_40_multiple_inputs(self):
         xs = [dict(a=1, ),

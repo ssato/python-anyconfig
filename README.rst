@@ -81,15 +81,31 @@ Features
 Supported configuration formats
 --------------------------------
 
-* JSON with ``json`` (standard lib) or ``simplejson`` [#]_
-* YAML with ``PyYAML`` [#]_
-* Ini with ``configparser``
-* ConifgObj with ``configobj`` [#]_
-* XML with ``lxml`` [#]_ or ``ElementTree`` (experimental)
-* Other formats some pluggale backends support (see the next sub section)
+anyconfig supports various configuration file formats if the required module is
+available and the corresponding backend is ready:
 
-And anyconfig utilizes plugin mechanism provided by setuptools [#]_ and I wrote
-a few backend plugin modules as references:
+.. csv-table::
+   :header: "Format", "Type", "Required", "Notes"
+   :widths: 10, 10, 30, 40
+
+   JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
+   Ini-like, ini, ``configparser`` (standard lib), Enabled by default.
+   YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the requirement is satisfied.
+   XML, xml, ``lxml`` [#]_ or ``ElementTree`` (experimental), Likewise.
+   ConifgObj, configobj, ``configobj`` [#]_, Likewise.
+
+You can check the supported formats (types) on your system by 'anyconfig_cli
+-L' easily like this.
+
+.. code-block:: console
+
+  $ anyconfig_cli -L
+  Supported config types: configobj, ini, json, xml, yaml
+  $
+
+And anyconfig utilizes plugin mechanism provided by setuptools [#]_ and
+other formats may be supported by corresponding pluggale backends (see the next
+sub section also) like Java properties format.
 
 * Java properties file w/ pyjavaproperties [#]_ (experimental):
 

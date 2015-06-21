@@ -73,7 +73,8 @@ def option_parser(defaults=None, usage=USAGE):
     """
     defaults = dict(loglevel=1, list=False, output=None, itype=None,
                     otype=None, atype=None, merge=A.MS_DICTS,
-                    ignore_missing=False, template=False, env=False)
+                    ignore_missing=False, template=False, env=False,
+                    schema=None, validate=False)
 
     ctypes = A.list_types()
     ctypes_s = ", ".join(ctypes)
@@ -125,6 +126,10 @@ Int, str, etc.""" % ctypes_s
     parser.add_option("", "--env", action="store_true",
                       help="Load configuration defaults from "
                            "environment values")
+    parser.add_option("-S", "--schema", help="Specify Schema file[s] path")
+    parser.add_option("-V", "--validate", action="store_true",
+                      help="Only validate input files and do not output. "
+                           "You must specify schema file with -S/--schema option.")
 
     parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
                       const=0, help="Silent or quiet mode")
@@ -157,15 +162,29 @@ def main(argv=None):
             parser.print_usage()
             sys.exit(-1)
 
+    if options.validate and options.schema is None:
+        sys.stderr.write("--validate option requires --scheme option")
+        sys.exit(-1)
+
     data = data = os.environ.copy() if options.env else A.container()
-    diff = A.load(args, options.itype, ignore_missing=options.ignore_missing,
-                  merge=options.merge, ac_template=options.template)
+    try:
+        diff = A.load(args, options.itype, ignore_missing=options.ignore_missing,
+                      merge=options.merge, ac_template=options.template,
+                      ac_schema=options.schema)
+    except A.ValidationError as exc:
+        sys.stderr.write("Validation failed: " + str(exc))
+        sys.exit(1)
+
     data.update(diff)
 
     if options.args:
         diff = A.loads(options.args, options.atype,
                        ac_template=options.template, ac_context=data)
         data.update(diff, options.merge)
+
+    if options.validate:
+        A.LOGGER.info("Validation succeeds")
+        sys.exit(0)
 
     if options.get:
         (data, err) = A.get(data, options.get)

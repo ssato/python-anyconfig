@@ -113,6 +113,8 @@ def _validate(config, schema, format_checker=None):
     (rc, msg) = validate(config, schema, format_checker)
     if msg:
         LOGGER.warn(msg)
+    else:
+        LOGGER.info("Validation succeeds")
     if not rc:
         raise ValidationError(msg)
 

@@ -306,7 +306,7 @@ Validation
 ^^^^^^^^^^^^^
 
 If you have jsonschema [#]_ installed, you can validate config files with using
-anyconfig.validate() since 0.1.0.
+anyconfig.validate() since 0.0.10.
 
 .. code-block:: python
 

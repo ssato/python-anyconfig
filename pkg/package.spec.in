@@ -113,7 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Sun Jun 21 2015 Satoru SATOH <ssato@redhat.com> - 0.0.9.99-1
+* Sun Jun 21 2015 Satoru SATOH <ssato@redhat.com> - 0.0.10-1
 - add new API 'validate' to validate config files with json schema
 - some more minor possible bug fixes found by pylint and flake8
 

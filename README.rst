@@ -5,11 +5,11 @@ python-anyconfig
 Overview
 ==========
 
-.. image:: https://pypip.in/version/anyconfig/badge.svg
+.. image:: https://img.shields.io/pypi/v/anyconfig.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: [Latest Version]
 
-.. image:: https://pypip.in/py_versions/anyconfig/badge.svg
+.. image:: https://img.shields.io/pypi/pyversions/anyconfig.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: [Python versions]
 

@@ -33,7 +33,7 @@ Overview
    :target: https://scrutinizer-ci.com/g/ssato/python-anyconfig
    :alt: [Code Quality]
 
-.. image:: https://www.openhub.net/p/python-anyconfig/widgets/project_thin_badge.gif
+.. .. image:: https://www.openhub.net/p/python-anyconfig/widgets/project_thin_badge.gif
    :target: https://www.openhub.net/p/python-anyconfig
    :alt: [Open HUB]
 

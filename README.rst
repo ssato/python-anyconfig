@@ -455,6 +455,10 @@ It can process various config files and output a merged config file:
     -x, --ignore-missing  Ignore missing input files
     --template            Enable template config support
     --env                 Load configuration defaults from environment values
+    -S SCHEMA, --schema=SCHEMA
+                          Specify Schema file[s] path
+    -V, --validate        Only validate input files and do not output. You must
+                          specify schema file with -S/--schema option.
     -s, --silent          Silent or quiet mode
     -q, --quiet           Same as --silent option
     -v, --verbose         Verbose mode

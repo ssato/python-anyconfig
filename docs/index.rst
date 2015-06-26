@@ -7,7 +7,7 @@ python-anyconfig
 
     introduction
     usage
-    api
+    api/index
     cli
 
 Indices and tables

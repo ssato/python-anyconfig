@@ -2,6 +2,11 @@ APIs
 ======
 
 :mod:`anyconfig`
+-----------------
 
-:mod:`anyconfig.api`
+.. automodule:: anyconfig
+
+.. toctree::
+
+    anyconfig.api
 

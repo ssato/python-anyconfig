@@ -10,6 +10,8 @@ python-anyconfig
     api/index
     cli
 
+..    APIs <api/anyconfig>
+
 Indices and tables
 ==================
 

@@ -1,9 +1,15 @@
 API Details
 =============
 
-.. automodule:: anyconfig
-
 .. toctree::
 
     anyconfig.api
+    anyconfig.backends
+    anyconfig.backend
+    anyconfig.mergeabledict
+
+:mod:`anyconfig`
+-----------------
+
+.. automodule:: anyconfig
 

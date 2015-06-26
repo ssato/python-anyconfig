@@ -19,3 +19,5 @@ release = version
 exclude_patterns = []
 
 html_theme = 'default'
+
+autodoc_member_order = 'bysource'

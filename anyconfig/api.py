@@ -84,7 +84,7 @@ def validate(config, schema, format_checker=None):
     """
     try:
         if format_checker is None:
-            format_checker = jsonschema.FormatChecker()  # :throw: NameError
+            format_checker = jsonschema.FormatChecker()  # :raises: NameError
         try:
             jsonschema.validate(config, schema, format_checker=format_checker)
         except (jsonschema.ValidationError, jsonschema.SchemaError) as exc:

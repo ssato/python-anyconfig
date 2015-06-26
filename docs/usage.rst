@@ -1,5 +1,5 @@
-API Usage
-============
+API Usage Examples
+===================
 
 Loading single config file
 ----------------------------

@@ -1,7 +1,0 @@
-APIs
-======
-
-.. toctree::
-
-   anyconfig
-

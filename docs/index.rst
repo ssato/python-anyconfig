@@ -188,4 +188,24 @@ There is a couple of ways to install python-anyconfig:
 
 - Build from source: Of course you can build and/or install python modules in usual way such like 'python setup.py bdist', 'pip install git+https://github.com/ssato/python-anyconfig/' and so on.
 
+Hack
+=======
+
+How to write backend plugin modules
+-------------------------------------
+
+Backend class must inherit anyconfig.backend.Parser and need some member
+variables and method ('load_impl' and 'dumps_impl' at minimum) implementations.
+
+JSON and YAML backend modules (anyconfig.backend.{json,yaml}_) should be good
+examples to write backend modules, I think.
+
+Also, please take a look at some example backend plugin modules mentioned in
+the `Supported configuration formats`_ section.
+
+How to test
+-------------
+
+Try to run '[WITH_COVERAGE=1] ./pkg/runtest.sh [path_to_python_code]'.
+
 .. vim:sw=2:ts=2:et:

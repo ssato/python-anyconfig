@@ -48,8 +48,7 @@ files:
 - anyconfig.loads() to load a configuration string and ...
 - anyconfig.dump() to dump a configuration file from a dict or dict-like object represents some configurations
 - anyconfig.dumps() to dump a configuration string from ...
-- anyconfig.validate() to validate configuration files with JSON schema [#]_ with a python module jsonschema's help [#]_ . Both configuration files and schema files can be written in any formats anyconfig suppo
-rts.
+- anyconfig.validate() to validate configuration files with JSON schema [#]_ with a python module jsonschema's help [#]_ . Both configuration files and schema files can be written in any formats anyconfig supports.
 
 Using anyconfig, you can load configuration files in various formats in the
 same way, without taking care of each file format in some cases, like the

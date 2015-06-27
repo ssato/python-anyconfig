@@ -2,6 +2,9 @@
 python-anyconfig
 =================
 
+Overview
+==========
+
 .. image:: https://img.shields.io/pypi/v/anyconfig.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: [Latest Version]
@@ -37,6 +40,56 @@ python-anyconfig
 Anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_ python
 library provides generic access to configuration files in various formats with
 configuration merge / cascade / overlay and template config support.
+
+Anyconfig provides very simple and unified APIs for various configuration
+files:
+
+- anyconfig.load() to load configuration files and it will return a dict-like object represents configuration loaded
+- anyconfig.loads() to load a configuration string and ...
+- anyconfig.dump() to dump a configuration file from a dict or dict-like object represents some configurations
+- anyconfig.dumps() to dump a configuration string from ...
+- anyconfig.validate() to validate configuration files with JSON schema [#]_ with a python module jsonschema's help [#]_ . Both configuration files and schema files can be written in any formats anyconfig suppo
+rts.
+
+Using anyconfig, you can load configuration files in various formats in the
+same way, without taking care of each file format in some cases, like the
+followings:
+
+.. code-block:: python
+
+  import anyconfig
+
+  # Config type (format) is automatically detected by filename (file
+  # extension) in some cases.
+  conf1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
+
+  # Loaded config data is a dict-like object, for example:
+  #
+  #   conf1["a"] => 1
+  #   conf1["b"]["b1"] => "xyz"
+  #   conf1["c"]["c1"]["c13"] => [1, 2, 3]
+
+  # Or you can specify the format (config type) explicitly if automatic
+  # detection may not work.
+  conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", "yaml")
+
+  # Specify multiple config files by the list of paths. Configurations of each
+  # files are merged.
+  conf3 = anyconfig.load(["/etc/foo.d/a.json", "/etc/foo.d/b.json"])
+
+  # Similar to the above but all or one of config file[s] is/are missing:
+  conf4 = anyconfig.load(["/etc/foo.d/a.json", "/etc/foo.d/b.json"],
+                         ignore_missing=True)
+
+  # Specify config files by glob path pattern:
+  conf5 = anyconfig.load("/etc/foo.d/*.json")
+
+  # Similar to the above, but parameters in the former config file will be simply
+  # overwritten by the later ones:
+  conf6 = anyconfig.load("/etc/foo.d/*.json", merge=anyconfig.MS_REPLACE)
+
+Documentation
+===============
 
 The `documentation <http://python-anyconfig.readthedocs.org/en/latest/>`_ is
 available on the Read the Docs web site. Also it can be built locally:

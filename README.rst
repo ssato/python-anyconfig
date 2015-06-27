@@ -39,7 +39,7 @@ library provides generic access to configuration files in various formats with
 configuration merge / cascade / overlay and template config support.
 
 The `documentation <http://python-anyconfig.readthedocs.org/en/latest/>`_ is
-available on the Read the Docs web site, or can be built locally:
+available on the Read the Docs web site. Also it can be built locally:
 
 .. code-block:: console
 

@@ -2,9 +2,6 @@
 python-anyconfig
 =================
 
-Overview
-==========
-
 .. image:: https://img.shields.io/pypi/v/anyconfig.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: [Latest Version]
@@ -87,11 +84,9 @@ followings:
   # overwritten by the later ones:
   conf6 = anyconfig.load("/etc/foo.d/*.json", merge=anyconfig.MS_REPLACE)
 
-Documentation
-===============
-
-The `documentation <http://python-anyconfig.readthedocs.org/en/latest/>`_ is
-available on the Read the Docs web site. Also it can be built locally:
+For more details, please take a look at the `documentation
+<http://python-anyconfig.readthedocs.org/en/latest/>`_ is available on the Read
+the Docs web site, which is also can be built locally:
 
 .. code-block:: console
 

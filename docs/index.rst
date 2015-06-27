@@ -29,8 +29,6 @@ Using anyconfig, you can load configuration files in various formats in the
 same way, without taking care of each file format in some cases, like the
 followings:
 
-::
-
 .. code-block:: python
 
   import anyconfig

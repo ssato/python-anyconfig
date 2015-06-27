@@ -39,7 +39,12 @@ library provides generic access to configuration files in various formats with
 configuration merge / cascade / overlay and template config support.
 
 The `documentation <http://python-anyconfig.readthedocs.org/en/latest/>`_ is
-available on the Read the Docs web site.
+available on the Read the Docs web site, or can be built locally:
+
+.. code-block:: console
+
+   $ git clone https://github.com/ssato/python-anyconfig.git
+   $ make -C python-anyconfig/docs
 
 .. [#] This name took an example from the 'anydbm' python standard library.
 

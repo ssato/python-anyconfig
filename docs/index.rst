@@ -12,19 +12,12 @@ python-anyconfig
 Introduction
 =============
 
-anyconfig [#]_ is a python library provides generic access to configuration
-files in any formats (to be in the future) with configuration merge / cascade /
-overlay and template config support.
+Anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_ python
+library provides generic access to configuration files in various formats with
+configuration merge / cascade / overlay and template config support.
 
-- Author: Satoru SATOH <ssato@redhat.com>
-- License: MIT
-
-.. [#] This name took an example from the 'anydbm' python standard library.
-
-Basic features
-----------------
-
-anyconfig provides very simple and unified APIs for various configuration files:
+Anyconfig provides very simple and unified APIs for various configuration
+files:
 
 - anyconfig.load() to load configuration files and it will return a dict-like object represents configuration loaded
 - anyconfig.loads() to load a configuration string and ...
@@ -32,17 +25,95 @@ anyconfig provides very simple and unified APIs for various configuration files:
 - anyconfig.dumps() to dump a configuration string from ...
 - anyconfig.validate() to validate configuration files with JSON schema [#]_ with a python module jsonschema's help [#]_ . Both configuration files and schema files can be written in any formats anyconfig supports.
 
-anyconfig can process jinja2-based template config files:
+Using anyconfig, you can load configuration files in various formats in the
+same way, without taking care of each file format in some cases, like the
+followings:
+
+::
+
+.. code-block:: python
+
+  import anyconfig
+
+  # Config type (format) is automatically detected by filename (file
+  # extension) in some cases.
+  conf1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
+
+  # Loaded config data is a dict-like object, for example:
+  #
+  #   conf1["a"] => 1
+  #   conf1["b"]["b1"] => "xyz"
+  #   conf1["c"]["c1"]["c13"] => [1, 2, 3]
+
+  # Or you can specify the format (config type) explicitly if automatic
+  # detection may not work.
+  conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", "yaml")
+
+  # Specify multiple config files by the list of paths. Configurations of each
+  # files are merged.
+  conf3 = anyconfig.load(["/etc/foo.d/a.json", "/etc/foo.d/b.json"])
+
+  # Similar to the above but all or one of config file[s] is/are missing:
+  conf4 = anyconfig.load(["/etc/foo.d/a.json", "/etc/foo.d/b.json"],
+                         ignore_missing=True)
+
+  # Specify config files by glob path pattern:
+  conf5 = anyconfig.load("/etc/foo.d/*.json")
+
+  # Similar to the above, but parameters in the former config file will be simply
+  # overwritten by the later ones:
+  conf6 = anyconfig.load("/etc/foo.d/*.json", merge=anyconfig.MS_REPLACE)
+
+Also, anyconfig can process configuration files which are actually
+`jinja2-based template <http://jinja.pocoo.org>`_ files:
 
 - It's possible to prepare half-baked config files later rendered to.
-- You can add include feature in config files for your applications with using jinja2's include directive
+- You can 'include' config files from config files for your applications with using jinja2's 'include' directive.
 
-anyconfig provides a CLI tool called anyconfig_cli to process configuration files:
+.. code-block:: console
 
-- Convert a/multiple configuration file[s] to another configuration files in different format
+  In [1]: import anyconfig
+
+  In [2]: open("/tmp/a.yml", 'w').write("{{ a|default('aaa') }}\n")
+
+  In [3]: anyconfig.load("/tmp/a.yml", ac_template=True)
+  Out[3]: 'aaa'
+
+  In [4]: anyconfig.load("/tmp/a.yml", ac_template=True, ac_context=dict(a='bbb'))
+  Out[4]: 'bbb'
+
+  In [5]: open("/tmp/b.yml", 'w').write("{% include 'a.yml' %}\n")  # 'include'
+
+  In [6]: anyconfig.load("/tmp/b.yml", ac_template=True, ac_context=dict(a='ccc'))
+  Out[6]: 'ccc'
+
+And with using anyconfig, you can validate configuration files in various
+format with using JSON schema like the followings:
+
+.. code-block:: python
+
+  # Validate a JSON config file (conf.json) with JSON schema (schema.yaml).
+  # If validatation suceeds, `rc` -> True, `err` -> ''.
+  conf1 = anyconfig.load("/path/to/conf.json")
+  schema1 = anyconfig.load("/path/to/schema.yaml")
+  (rc, err) = anyconfig.validate(conf1, schema1)  # err should be empty if success (rc == 0)
+
+  # Validate a config file (conf.yml) with JSON schema (schema.yml) while
+  # loading the config file.
+  conf2 = anyconfig.load("/a/b/c/conf.yml", ac_schema="/c/d/e/schema.yml")
+
+  # Validate config loaded from multiple config files with JSON schema
+  # (schema.json) while loading them.
+  conf3 = anyconfig.load("conf.d/*.yml", ac_schema="/c/d/e/schema.json")
+
+And in the last place, anyconfig provides a CLI tool called anyconfig_cli to
+process configuration files:
+
+- Convert a/multiple configuration file[s] to another configuration files in different formats
 - Get configuration value in a/multiple configuration file[s]
 - Validate configuration file[s] with JSON shcmea
 
+.. [#] This name took an example from the 'anydbm' python standard library.
 .. [#] http://json-schema.org
 .. [#] https://pypi.python.org/pypi/jsonschema
 
@@ -94,9 +165,8 @@ There is a couple of ways to install python-anyconfig:
 - Binary RPMs:
 
   If you're Fedora or Red Hat Enterprise Linux user, you can install
-  experimental RPMs on http://copr.fedoraproject.org/coprs/ from:
-
-  - http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
+  RPMs from the copr repository,
+  http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/.
 
 - PyPI: You can install python-anyconfig from PyPI with using pip:
 

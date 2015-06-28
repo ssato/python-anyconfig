@@ -86,7 +86,7 @@ followings:
 
 For more details of anyconfig, please take a look at the `documentation
 <http://python-anyconfig.readthedocs.org/en/latest/>`_ is available on the Read
-the Docs web site, which is also can be built locally:
+the Docs web site, which is also able to be built locally:
 
 .. code-block:: console
 

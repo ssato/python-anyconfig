@@ -72,18 +72,18 @@ Also, anyconfig can process configuration files which are actually
 
   In [1]: import anyconfig
 
-  In [2]: open("/tmp/a.yml", 'w').write("{{ a|default('aaa') }}\n")
+  In [2]: open("/tmp/a.yml", 'w').write("a: {{ a|default('aaa') }}\n")
 
   In [3]: anyconfig.load("/tmp/a.yml", ac_template=True)
-  Out[3]: 'aaa'
+  Out[3]: {'a': 'aaa'}
 
   In [4]: anyconfig.load("/tmp/a.yml", ac_template=True, ac_context=dict(a='bbb'))
-  Out[4]: 'bbb'
+  Out[4]: {'a': 'bbb'}
 
   In [5]: open("/tmp/b.yml", 'w').write("{% include 'a.yml' %}\n")  # 'include'
 
   In [6]: anyconfig.load("/tmp/b.yml", ac_template=True, ac_context=dict(a='ccc'))
-  Out[6]: 'ccc'
+  Out[6]: {'a': 'ccc'}
 
 And with using anyconfig, you can validate configuration files in various
 format with using JSON schema like the followings:
@@ -132,13 +132,22 @@ available and the corresponding backend is ready to use:
    ConifgObj, configobj, ``configobj`` [#]_, Likewise.
 
 You can check the supported formats (types) on your system by 'anyconfig_cli
--L' easily like this.
+-L' easily like this:
 
 .. code-block:: console
 
   $ anyconfig_cli -L
   Supported config types: configobj, ini, json, xml, yaml
   $
+
+or with the API 'anyconfig.list_types()':
+
+.. code-block:: console
+
+   In [8]: anyconfig.list_types()
+   Out[8]: ['configobj', 'ini', 'json', 'xml', 'yaml']
+
+   In [9]:
 
 And anyconfig utilizes plugin mechanism provided by setuptools [#]_ and
 other formats may be supported by corresponding pluggale backends (see the next

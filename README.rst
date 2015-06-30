@@ -94,5 +94,7 @@ the Docs web site, which is also able to be built locally:
    $ make -C python-anyconfig/docs
 
 .. [#] This name took an example from the 'anydbm' python standard library.
+.. [#] http://json-schema.org
+.. [#] https://pypi.python.org/pypi/jsonschema
 
 .. vim:sw=2:ts=2:et:

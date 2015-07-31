@@ -27,7 +27,7 @@ from anyconfig.mergeabledict import (
     get, set_  # flake8: noqa
 )
 from anyconfig.parser import PATH_SEPS
-from anyconfig.schema import validate, gen_schema
+from anyconfig.schema import validate, gen_schema, ValidationError
 
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa

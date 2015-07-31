@@ -8,3 +8,4 @@ mock
 nose
 pep8
 pylint
+msgpack-python

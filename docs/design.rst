@@ -2,7 +2,7 @@ Philosophy and design principles of anyconfig
 ==============================================
 
 Philosophy behind anyconfig
-=============================
+-----------------------------
 
 The reason I made anyconfig is aimed to eliminate the need of manual edit of
 configuration files, which application developers provide in the applications
@@ -24,7 +24,7 @@ default ones.
 .. [#] I saw openstack provides such tool, openstack-config; IMHO, the problem should be resolved not by such tools but application design itself, that is, openstack should provide the way to override the default by some configuration files users created newly.
 
 Design principle of anyconfig
-===============================
+-------------------------------
 
 I try to make anyconfig as thin as possible, that is , it works as a thin
 wrapper for the backends acutally does configuration load and dump. Thus,

@@ -75,12 +75,12 @@ def validate(obj, schema, format_checker=None):
 
     :return: True if validation succeeded else False
     """
-    (rc, msg) = _validate(obj, schema, format_checker)
+    (ret, msg) = _validate(obj, schema, format_checker)
     if msg:
         LOGGER.warn(msg)
     else:
         LOGGER.info("Validation succeeds")
-    if not rc:
+    if not ret:
         raise ValidationError(msg)
 
     return True

@@ -36,22 +36,6 @@ def dict_to_container(json_obj_dict):
     return Parser.container().create(json_obj_dict)
 
 
-def loads(config_content, fun=json.loads, object_hook=dict_to_container,
-          load_opts=None, **kwargs):
-    """
-    :param config_content:  Config file content
-    :param fun: Load function
-    :param kwargs: optional keyword parameters to be sanitized :: dict
-
-    :return: cls.container() object holding config parameters
-    """
-    if load_opts is None:
-        load_opts = _LOAD_OPTS
-
-    return fun(config_content, object_hook=object_hook,
-               **Base.mk_opt_args(load_opts, kwargs))
-
-
 class Parser(Base.Parser):
     """
     Parser for JSON files.
@@ -68,6 +52,9 @@ class Parser(Base.Parser):
     _load_opts = _LOAD_OPTS
     _dump_opts = _DUMP_OPTS
 
+    _funcs = dict(loads=json.loads, load=json.load,
+                  dumps=json.dumps, dump=json.dump)
+
     @classmethod
     def loads(cls, config_content, **kwargs):
         """
@@ -76,7 +63,9 @@ class Parser(Base.Parser):
 
         :return: cls.container() object holding config parameters
         """
-        return loads(config_content, load_opts=cls._load_opts, **kwargs)
+        func = cls._funcs["loads"]
+        return func(config_content, object_hook=dict_to_container,
+                    **Base.mk_opt_args(cls._load_opts, kwargs))
 
     @classmethod
     def load_impl(cls, config_fp, **kwargs):
@@ -86,7 +75,8 @@ class Parser(Base.Parser):
 
         :return: cls.container() object holding config parameters
         """
-        return json.load(config_fp, object_hook=dict_to_container, **kwargs)
+        func = cls._funcs["load"]
+        return func(config_fp, object_hook=dict_to_container, **kwargs)
 
     @classmethod
     def dumps_impl(cls, data, **kwargs):
@@ -96,7 +86,7 @@ class Parser(Base.Parser):
 
         :return: string represents the configuration
         """
-        return json.dumps(data, **kwargs)
+        return cls._funcs["dumps"](data, **kwargs)
 
     @classmethod
     def dump_impl(cls, data, config_path, **kwargs):
@@ -105,6 +95,6 @@ class Parser(Base.Parser):
         :param config_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        json.dump(data, open(config_path, 'w'), **kwargs)
+        cls._funcs["dump"](data, open(config_path, 'w'), **kwargs)
 
 # vim:sw=4:ts=4:et:

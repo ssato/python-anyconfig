@@ -51,6 +51,16 @@ class Test(unittest.TestCase):
     schema = {"type": "object",
               "properties": {"a": {"type": "integer"}}}
 
+    obj2 = dict(a=1, b=[1, 2], c=dict(d="aaa", e=0.1))
+    ref_scm = {'properties': {'a': {'type': 'integer'},
+                              'b': {'items': {'type': 'integer'},
+                                    'type': 'array'},
+                              'c': {'properties': {'d': {'type': 'string'},
+                                                   'e': {'type':
+                                                         'number'}},
+                                    'type': 'object'}},
+               'type': 'object'}
+
     def test_10__validate(self):
         self.assertTrue(TT.validate(self.obj, self.schema))
 
@@ -73,16 +83,16 @@ class Test(unittest.TestCase):
         ref_scm = {'properties': {'a': {'type': 'integer'}}, 'type': 'object'}
         self.assertTrue(dicts_equal(scm, ref_scm))
 
-    def test_42_gen_schema__complex_types(self):
-        scm = TT.gen_schema(dict(a=1, b=[1, 2], c=dict(d="aaa", e=0.1)))
-        ref_scm = {'properties': {'a': {'type': 'integer'},
-                                  'b': {'items': {'type': 'integer'},
-                                        'type': 'array'},
-                                  'c': {'properties': {'d': {'type': 'string'},
-                                                       'e': {'type':
-                                                             'number'}},
-                                        'type': 'object'}},
-                   'type': 'object'}
-        self.assertTrue(dicts_equal(scm, ref_scm))
+    def test_42_gen_schema_and_validate(self):
+        scm = TT.gen_schema(self.obj)
+        self.assertTrue(TT.validate(self.obj, scm))
+
+    def test_44_gen_schema__complex_types(self):
+        scm = TT.gen_schema(self.obj2)
+        self.assertTrue(dicts_equal(scm, self.ref_scm))
+
+    def test_46_gen_schema_and_validate__complex_types(self):
+        scm = TT.gen_schema(self.obj2)
+        self.assertTrue(TT.validate(self.obj2, scm))
 
 # vim:sw=4:ts=4:et:

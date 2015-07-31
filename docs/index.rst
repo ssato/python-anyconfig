@@ -130,6 +130,7 @@ available and the corresponding backend is ready to use:
    YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the requirement is satisfied.
    XML, xml, ``lxml`` [#]_ or ``ElementTree`` (experimental), Likewise.
    ConifgObj, configobj, ``configobj`` [#]_, Likewise.
+   MessagePack, msgpack, ``msgpack-python`` [#]_, Likewise.
 
 You can check the supported formats (types) on your system by 'anyconfig_cli
 -L' easily like this:
@@ -163,6 +164,7 @@ sub section also) like Java properties format.
 .. [#] https://pypi.python.org/pypi/lxml
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 .. [#] https://pypi.python.org/pypi/pyjavaproperties
+.. [#] https://pypi.python.org/pypi/msgpack-python
 
 Installation
 -------------

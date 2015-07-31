@@ -19,7 +19,12 @@ _SIMPLETYPE_MAP = {list: "array", tuple: "array",
                    bool: "boolean",
                    int: "integer", float: "number",
                    dict: "object",
-                   str: "string", unicode: "string"}
+                   str: "string"}
+_SIMPLE_TYPES = (bool, int, float, str)
+
+if not anyconfig.compat.IS_PYTHON_3:
+    _SIMPLETYPE_MAP[unicode] = "string"
+    _SIMPLE_TYPES = (bool, int, float, str, unicode)
 
 
 class ValidationError(Exception):
@@ -135,7 +140,7 @@ def gen_schema(node, typemap=None):
 
     _type = type(node)
 
-    if _type in (bool, int, float, str, unicode):
+    if _type in _SIMPLE_TYPES:
         return dict(type=typemap[_type])
 
     elif isinstance(node, dict):

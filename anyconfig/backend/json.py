@@ -95,6 +95,7 @@ class Parser(Base.Parser):
         :param config_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        cls._funcs["dump"](data, open(config_path, 'w'), **kwargs)
+        cls._funcs["dump"](data, open(config_path, cls._open_flags[1]),
+                           **kwargs)
 
 # vim:sw=4:ts=4:et:

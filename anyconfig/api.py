@@ -27,16 +27,11 @@ from anyconfig.mergeabledict import (
     get, set_  # flake8: noqa
 )
 from anyconfig.parser import PATH_SEPS
+from anyconfig.schema import validate, gen_schema
 
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
-
-
-class ValidationError(Exception):
-    """Generised validation error
-    """
-    pass
 
 
 def set_loglevel(level):
@@ -66,59 +61,6 @@ def find_loader(config_path, forced_type=None):
 
     LOGGER.debug("Using config parser of type: %s", cparser.type())
     return cparser
-
-
-def validate(config, schema, format_checker=None):
-    """
-    Validate config object with given schema object, loaded from JSON schema.
-
-    See also: https://python-jsonschema.readthedocs.org/en/latest/validate/
-
-    :param config: Config object (a dict or a dict-like object) to validate
-    :param schema: Schema object (a dict or a dict-like object)
-        instantiated from schema JSON file or schema JSON string
-    :param format_checker: A format property checker object of which class is
-        inherited from jsonschema.FormatChecker, it's default if None given.
-
-    :return: (True if validation succeeded else False, error message)
-    """
-    try:
-        if format_checker is None:
-            format_checker = jsonschema.FormatChecker()  # :raises: NameError
-        try:
-            jsonschema.validate(config, schema, format_checker=format_checker)
-        except (jsonschema.ValidationError, jsonschema.SchemaError) as exc:
-            return (False, str(exc))
-
-    except NameError:
-        return (True, "Validation module (jsonschema) is not available")
-
-    return (True, '')
-
-
-def _validate(config, schema, format_checker=None):
-    """
-    Validate config object with given schema object, loaded from JSON schema.
-
-    See also: https://python-jsonschema.readthedocs.org/en/latest/validate/
-
-    :param config: Config object (a dict or a dict-like object) to validate
-    :param schema: Schema object (a dict or a dict-like object)
-        instantiated from schema JSON file or schema JSON string
-    :param format_checker: A format property checker object of which class is
-        inherited from jsonschema.FormatChecker, it's default if None given.
-
-    :return: True if validation succeeded else False
-    """
-    (rc, msg) = validate(config, schema, format_checker)
-    if msg:
-        LOGGER.warn(msg)
-    else:
-        LOGGER.info("Validation succeeds")
-    if not rc:
-        raise ValidationError(msg)
-
-    return True
 
 
 def single_load(config_path, forced_type=None, ignore_missing=False,
@@ -162,7 +104,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
             config = cparser.loads(config_content,
                                    ignore_missing=ignore_missing, **kwargs)
             if ac_schema is not None:
-                if _validate(config, schema, format_checker):
+                if validate(config, schema, format_checker):
                     return config
 
             return config
@@ -176,7 +118,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
                           **kwargs)
 
     if ac_schema is not None:
-        if _validate(config, schema, format_checker):
+        if validate(config, schema, format_checker):
             return config
 
     return config
@@ -243,7 +185,7 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
         config.update(conf_updates, merge)
 
     if ac_schema is not None:
-        if _validate(config, schema, format_checker):
+        if validate(config, schema, format_checker):
             return config
 
     return config
@@ -325,7 +267,7 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
     config = cparser.loads(config_content, **kwargs)
 
     if ac_schema is not None:
-        if _validate(config, schema, format_checker):
+        if validate(config, schema, format_checker):
             return config
 
     return config

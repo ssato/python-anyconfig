@@ -34,12 +34,20 @@ try:
 except ImportError:
     LOGGER.warn("ConfigObj module is not available. Disabled its support.")
 
+try:
+    import anyconfig.backend.msgpack
+    PARSERS.append(anyconfig.backend.msgpack.Parser)
+except ImportError:
+    LOGGER.warn("msgpack module is not available. Disabled its support.")
 
+
+# pylint: disable=no-member
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):
     try:
         PARSERS.append(e.load())
     except ImportError:
         continue
+# pylint: enable=no-member
 
 
 def cmp_cps(lhs, rhs):

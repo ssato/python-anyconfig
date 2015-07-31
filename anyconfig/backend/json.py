@@ -17,12 +17,6 @@ except ImportError:
     import simplejson as json
 
 
-def dict_to_container(json_obj_dict):
-    """Convert dict to container.
-    """
-    return Parser.container().create(json_obj_dict)
-
-
 _LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant",
               "object_pairs_hook"]
 
@@ -34,6 +28,28 @@ _DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
 if not anyconfig.compat.IS_PYTHON_3:
     _LOAD_OPTS.append("encoding")
     _DUMP_OPTS.append("encoding")
+
+
+def dict_to_container(json_obj_dict):
+    """Convert dict to container.
+    """
+    return Parser.container().create(json_obj_dict)
+
+
+def loads(config_content, fun=json.loads, object_hook=dict_to_container,
+          load_opts=None, **kwargs):
+    """
+    :param config_content:  Config file content
+    :param fun: Load function
+    :param kwargs: optional keyword parameters to be sanitized :: dict
+
+    :return: cls.container() object holding config parameters
+    """
+    if load_opts is None:
+        load_opts = _LOAD_OPTS
+
+    return fun(config_content, object_hook=object_hook,
+               **Base.mk_opt_args(load_opts, kwargs))
 
 
 class Parser(Base.Parser):
@@ -60,8 +76,7 @@ class Parser(Base.Parser):
 
         :return: cls.container() object holding config parameters
         """
-        return json.loads(config_content, object_hook=dict_to_container,
-                          **Base.mk_opt_args(cls._load_opts, kwargs))
+        return loads(config_content, load_opts=cls._load_opts, **kwargs)
 
     @classmethod
     def load_impl(cls, config_fp, **kwargs):

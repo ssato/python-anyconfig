@@ -5,6 +5,9 @@
 %global with_jsonschema 1
 %endif
 
+# TODO:
+%global with_msgpack 0
+
 %{!?python3_version: %global python3_version %(%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])")}
 
 %if 0%{?fedora}
@@ -35,6 +38,9 @@ Requires:       python-setuptools
 %if 0%{?with_jsonschema}
 Requires:       python-jsonschema
 %endif
+%if 0%{?with_msgpack}
+Requires:       python-msgpack
+%endif
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:       python-simplejson
 %endif
@@ -57,6 +63,9 @@ Requires:       python3-PyYAML
 Requires:       python3-setuptools
 %if 0%{?with_jsonschema}
 Requires:       python3-jsonschema
+%endif
+%if 0%{?with_msgpack}
+Requires:       python3-msgpack
 %endif
 
 %description -n python3-%{pkgname}

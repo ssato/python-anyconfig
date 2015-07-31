@@ -4,6 +4,7 @@
 #
 # Ref. python -c "import json; help(json)"
 #
+# pylint: disable=import-error
 """JSON file parser backend.
 """
 from __future__ import absolute_import

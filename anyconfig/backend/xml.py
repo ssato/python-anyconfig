@@ -59,8 +59,8 @@ def etree_to_container(root, container):
         tree[root.tag]["text"] = root.text.strip()
 
     if len(root):  # It has children.
-        # FIXME: Configuration item cannot have both attributes and
-        # values (list) at the same time in current implementation:
+        # Note: Configuration item cannot have both attributes and values
+        # (list) at the same time in current implementation:
         tree[root.tag]["children"] = [etree_to_container(c, container) for c
                                       in root]
 

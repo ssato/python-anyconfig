@@ -74,7 +74,7 @@ def option_parser(defaults=None, usage=USAGE):
     defaults = dict(loglevel=1, list=False, output=None, itype=None,
                     otype=None, atype=None, merge=A.MS_DICTS,
                     ignore_missing=False, template=False, env=False,
-                    schema=None, validate=False)
+                    schema=None, validate=False, gen_schema=False)
 
     ctypes = A.list_types()
     ctypes_s = ", ".join(ctypes)
@@ -131,6 +131,9 @@ Int, str, etc.""" % ctypes_s
                       help="Only validate input files and do not output. "
                            "You must specify schema file with -S/--schema "
                            "option.")
+    parser.add_option("-G", "--gen-schema", action="store_true",
+                      help="Generate JSON schema for givne config file[s] "
+                           "and output it")
 
     parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
                       const=0, help="Silent or quiet mode")
@@ -187,6 +190,9 @@ def main(argv=None):
     if options.validate:
         A.LOGGER.info("Validation succeeds")
         sys.exit(0)
+
+    if options.gen_schema:
+        data = A.gen_schema(data)
 
     if options.get:
         (data, err) = A.get(data, options.get)

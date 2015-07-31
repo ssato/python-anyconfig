@@ -153,28 +153,6 @@ class Test10(unittest.TestCase):
         self.assertEquals(cnf_2["b"]["b"], CNF_0["b"]["b"])
         self.assertEquals(cnf_2["b"]["c"], CNF_0["b"]["c"])
 
-    def test_50_validate(self):
-        (rc, msg) = TT.validate({'a': 1},
-                                {"type": "object",
-                                 "properties": {"a": {"type": "integer"}}})
-        try:
-            TT.jsonschema
-            self.assertTrue(rc, msg)
-            self.assertFalse(msg, msg)
-        except NameError:
-            self.assertFalse(rc, msg)
-
-    def test_52_validate__ng(self):
-        (rc, msg) = TT.validate({'a': "aaa"},
-                                {"type": "object",
-                                 "properties": {"a": {"type": "integer"}}})
-        try:
-            TT.jsonschema
-            self.assertFalse(rc, msg)  # Validation should fail.
-            self.assertTrue(msg)
-        except NameError:
-            self.assertFalse(rc, msg)
-
 
 class Test20(unittest.TestCase):
 

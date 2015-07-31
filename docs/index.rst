@@ -161,11 +161,11 @@ sub section also) like Java properties format.
 
 .. [#] https://pypi.python.org/pypi/simplejson
 .. [#] https://pypi.python.org/pypi/PyYAML
-.. [#] https://pypi.python.org/pypi/configobj
 .. [#] https://pypi.python.org/pypi/lxml
+.. [#] https://pypi.python.org/pypi/configobj
+.. [#] https://pypi.python.org/pypi/msgpack-python
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 .. [#] https://pypi.python.org/pypi/pyjavaproperties
-.. [#] https://pypi.python.org/pypi/msgpack-python
 
 Installation
 -------------

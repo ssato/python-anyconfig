@@ -14,11 +14,15 @@ python-anyconfig
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: MIT License
 
-.. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
+.. .. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
+
+.. image:: https://img.shields.io/travis/ssato/python-anyconfig.svg
    :target: https://travis-ci.org/ssato/python-anyconfig
    :alt: [Test status]
 
-.. image:: https://coveralls.io/repos/ssato/python-anyconfig/badge.png
+.. .. image:: https://coveralls.io/repos/ssato/python-anyconfig/badge.png
+
+.. image:: https://img.shields.io/coveralls/ssato/python-anyconfig.svg
    :target: https://coveralls.io/r/ssato/python-anyconfig
    :alt: [Coverage Status]
 

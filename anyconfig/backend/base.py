@@ -58,6 +58,8 @@ class Parser(object):
     _load_opts = []
     _dump_opts = []
 
+    _open_flags = ('r', 'w')
+
     @classmethod
     def type(cls):
         """
@@ -148,7 +150,7 @@ class Parser(object):
             return cls.container()()
 
         create = cls.container().create
-        return create(cls.load_impl(open(config_path),
+        return create(cls.load_impl(open(config_path, cls._open_flags[0]),
                                     **mk_opt_args(cls._load_opts, kwargs)))
 
     @classmethod
@@ -168,7 +170,8 @@ class Parser(object):
         :param config_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        open(config_path, "w").write(cls.dumps_impl(data, **kwargs))
+        with open(config_path, cls._open_flags[1]) as out:
+            out.write(cls.dumps_impl(data, **kwargs))
 
     @classmethod
     def dumps(cls, data, **kwargs):

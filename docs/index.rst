@@ -7,6 +7,7 @@ python-anyconfig
 
     usage
     api/index
+    design
     cli
 
 Introduction

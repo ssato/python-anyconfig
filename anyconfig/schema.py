@@ -86,7 +86,7 @@ def validate(obj, schema, format_checker=None):
     return True
 
 
-def _array_to_schema_node(arr, typemap=None):
+def array_to_schema_node(arr, typemap=None):
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -105,7 +105,7 @@ def _array_to_schema_node(arr, typemap=None):
         return gen_schema("str", typemap)
 
 
-def _object_to_schema_nodes_iter(obj, typemap=None):
+def object_to_schema_nodes_iter(obj, typemap=None):
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -135,8 +135,10 @@ def gen_schema(node, typemap=None):
     if typemap is None:
         typemap = _SIMPLETYPE_MAP
 
+    default = dict(type="null")
+
     if node is None:
-        return dict(type="null")
+        return default
 
     _type = type(node)
 
@@ -144,13 +146,13 @@ def gen_schema(node, typemap=None):
         return dict(type=typemap[_type])
 
     elif isinstance(node, dict):
-        props = _object_to_schema_nodes_iter(node, typemap)
+        props = object_to_schema_nodes_iter(node, typemap)
         return dict(type=typemap[dict], properties=dict(props))
 
     elif _type in (list, tuple) or hasattr(node, "__iter__"):
         return dict(type=typemap[list],
-                    items=_array_to_schema_node(node, typemap))
+                    items=array_to_schema_node(node, typemap))
 
-    return dict(type="null")  # Default.
+    return default  # Default.
 
 # vim:sw=4:ts=4:et:

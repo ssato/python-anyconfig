@@ -13,18 +13,11 @@ import anyconfig.api as A
 import anyconfig.template
 import anyconfig.tests.common as C
 
+from anyconfig.tests.common import CNF_0
+
 
 CNF_0_PATH = os.path.join(C.selfdir(), "00-cnf.yml")
 SCM_0_PATH = os.path.join(C.selfdir(), "00-scm.yml")
-CNF_0 = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-SCM_0 = {"type": "object",
-         "properties": {
-             "name": {"type": "string"},
-             "a": {"type": "integer"},
-             "b": {"type": "object",
-                   "properties": {
-                       "b": {"type": "array",
-                             "items": {"type": "integer"}}}}}}
 
 
 class Test(unittest.TestCase):

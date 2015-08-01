@@ -4,7 +4,6 @@
 #
 # pylint: disable=missing-docstring, invalid-name
 from __future__ import absolute_import
-
 from logging import CRITICAL
 
 import os
@@ -15,6 +14,8 @@ import anyconfig.api as TT
 import anyconfig.template
 import anyconfig.tests.common
 
+from anyconfig.tests.common import CNF_0, SCM_0
+
 import anyconfig.backend.ini
 import anyconfig.backend.json
 import anyconfig.backend.xml
@@ -23,17 +24,6 @@ try:
     import anyconfig.backend.yaml as BYAML
 except ImportError:
     BYAML = None
-
-
-CNF_0 = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-SCM_0 = {"type": "object",
-         "properties": {
-             "name": {"type": "string"},
-             "a": {"type": "integer"},
-             "b": {"type": "object",
-                   "properties": {
-                       "b": {"type": "array",
-                             "items": {"type": "integer"}}}}}}
 
 
 class Test10(unittest.TestCase):

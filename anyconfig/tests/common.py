@@ -9,6 +9,17 @@ import tempfile
 import unittest
 
 
+CNF_0 = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+SCM_0 = {"type": "object",
+         "properties": {
+             "name": {"type": "string"},
+             "a": {"type": "integer"},
+             "b": {"type": "object",
+                   "properties": {
+                       "b": {"type": "array",
+                             "items": {"type": "integer"}}}}}}
+
+
 def selfdir():
     """
     >>> os.path.exists(selfdir())

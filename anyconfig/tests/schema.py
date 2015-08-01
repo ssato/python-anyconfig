@@ -60,7 +60,23 @@ class Test(unittest.TestCase):
         except TT.ValidationError:  # Validation should fail.
             pass
 
+    def test_20_array_to_schema_node(self):
+        scm = TT.array_to_schema_node([1])
+        ref_scm = {'type': 'integer'}
+        self.assertTrue(dicts_equal(scm, ref_scm), scm)
+
+    def test_22_array_to_schema_node__empty_array(self):
+        scm = TT.array_to_schema_node([])
+        ref_scm = {'type': 'string'}
+        self.assertTrue(dicts_equal(scm, ref_scm), scm)
+
+    def test_30_object_to_schema_nodes_iter(self):
+        nscm = list(TT.object_to_schema_nodes_iter({'a': 1}))[0]
+        ref_nscm = ('a', {'type': 'integer'})
+        self.assertTrue(nscm, ref_nscm)
+
     def test_40_gen_schema__primitive_types(self):
+        self.assertEquals(TT.gen_schema(None), {'type': 'null'})
         self.assertEquals(TT.gen_schema(0), {'type': 'integer'})
         self.assertEquals(TT.gen_schema("aaa"), {'type': 'string'})
 

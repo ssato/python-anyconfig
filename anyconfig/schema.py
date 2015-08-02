@@ -14,7 +14,6 @@ except ImportError:
     pass
 
 
-LOGGER = logging.getLogger(__name__)
 _SIMPLETYPE_MAP = {list: "array", tuple: "array",
                    bool: "boolean",
                    int: "integer", float: "number",
@@ -27,13 +26,7 @@ if not anyconfig.compat.IS_PYTHON_3:
     _SIMPLE_TYPES = (bool, int, float, str, unicode)
 
 
-class ValidationError(Exception):
-    """Generised validation error
-    """
-    pass
-
-
-def _validate(obj, schema, format_checker=None):
+def validate(obj, schema, format_checker=None, safe=True):
     """
     Validate target object with given schema object, loaded from JSON schema.
 
@@ -44,6 +37,9 @@ def _validate(obj, schema, format_checker=None):
         instantiated from schema JSON file or schema JSON string
     :param format_checker: A format property checker object of which class is
         inherited from jsonschema.FormatChecker, it's default if None given.
+    :param safe: Exception (jsonschema.ValidationError or
+        jsonschema.SchemaError) will be thrown if it's True and any validation
+        error occurs.
 
     :return: (True if validation succeeded else False, error message)
     """
@@ -53,37 +49,15 @@ def _validate(obj, schema, format_checker=None):
         try:
             jsonschema.validate(obj, schema, format_checker=format_checker)
         except (jsonschema.ValidationError, jsonschema.SchemaError) as exc:
-            return (False, str(exc))
+            if safe:
+                return (False, str(exc))
+            else:
+                raise
 
     except NameError:
         return (True, "Validation module (jsonschema) is not available")
 
     return (True, '')
-
-
-def validate(obj, schema, format_checker=None):
-    """
-    Validate target object with given schema object, loaded from JSON schema.
-
-    See also: https://python-jsonschema.readthedocs.org/en/latest/validate/
-
-    :param obj: Object (a dict or a dict-like object) to validate
-    :param schema: Schema object (a dict or a dict-like object)
-        instantiated from schema JSON file or schema JSON string
-    :param format_checker: A format property checker object of which class is
-        inherited from jsonschema.FormatChecker, it's default if None given.
-
-    :return: True if validation succeeded else False
-    """
-    (ret, msg) = _validate(obj, schema, format_checker)
-    if msg:
-        LOGGER.warn(msg)
-    else:
-        LOGGER.info("Validation succeeds")
-    if not ret:
-        raise ValidationError(msg)
-
-    return True
 
 
 def array_to_schema_node(arr, typemap=None):

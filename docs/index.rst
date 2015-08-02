@@ -86,7 +86,7 @@ Also, anyconfig can process configuration files which are actually
   In [6]: anyconfig.load("/tmp/b.yml", ac_template=True, ac_context=dict(a='ccc'))
   Out[6]: {'a': 'ccc'}
 
-And with using anyconfig, you can validate configuration files in various
+And anyconfig also can be used to validate configuration files in various
 format with using JSON schema like the followings:
 
 .. code-block:: python
@@ -105,12 +105,18 @@ format with using JSON schema like the followings:
   # (schema.json) while loading them.
   conf3 = anyconfig.load("conf.d/*.yml", ac_schema="/c/d/e/schema.json")
 
+  # Generate jsonschema object from config files loaded.
+  conf4 = anyconfig.load("conf.d/*.yml")
+  scm4 = anyconfig.gen_schema(conf4)
+  scm4_s = anyconfig.dumps(scm4, "json")
+
 And in the last place, anyconfig provides a CLI tool called anyconfig_cli to
 process configuration files:
 
 - Convert a/multiple configuration file[s] to another configuration files in different formats
 - Get configuration value in a/multiple configuration file[s]
-- Validate configuration file[s] with JSON shcmea
+- Validate configuration file[s] with JSON schema
+- Generate JSON schema from given configuration file[s]
 
 .. [#] This name took an example from the 'anydbm' python standard library.
 .. [#] http://json-schema.org

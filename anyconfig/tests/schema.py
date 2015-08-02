@@ -50,15 +50,15 @@ class Test(unittest.TestCase):
                                     'type': 'object'}},
                'type': 'object'}
 
-    def test_10__validate(self):
-        self.assertTrue(TT.validate(self.obj, self.schema))
+    def test_10_validate(self):
+        (ret, msg) = TT.validate(self.obj, self.schema)
+        self.assertFalse(msg)
+        self.assertTrue(ret)
 
-    def test_12__validate__ng(self):
-        try:
-            TT.validate({'a': "aaa"}, self.schema)
-            assert False
-        except TT.ValidationError:  # Validation should fail.
-            pass
+    def test_12_validate__ng(self):
+        (ret, msg) = TT.validate({'a': "aaa"}, self.schema)
+        self.assertTrue(msg)
+        self.assertFalse(ret)
 
     def test_20_array_to_schema_node(self):
         scm = TT.array_to_schema_node([1])

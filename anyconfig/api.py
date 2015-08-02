@@ -27,11 +27,29 @@ from anyconfig.mergeabledict import (
     get, set_  # flake8: noqa
 )
 from anyconfig.parser import PATH_SEPS
-from anyconfig.schema import validate, gen_schema, ValidationError
+from anyconfig.schema import validate, gen_schema
 
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
+
+
+def _validate(config, schema, format_checker=None):
+    """
+    Wrapper function for anyconfig.schema.vaildate.
+
+    :param config: Configuration object :: container
+    :param schema: JSON schema object :: container
+    :param format_checker: A format property checker object of which class is
+        inherited from jsonschema.FormatChecker, it's default if None given.
+
+    :return: True if validation suceeds or jsonschema module is not available.
+    """
+    (ret, msg) = validate(config, schema, format_checker, True)
+    if msg:
+        LOGGER.warn(msg)
+
+    return ret
 
 
 def set_loglevel(level):
@@ -104,8 +122,8 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
             config = cparser.loads(config_content,
                                    ignore_missing=ignore_missing, **kwargs)
             if ac_schema is not None:
-                if validate(config, schema, format_checker):
-                    return config
+                if not _validate(config, schema, format_checker):
+                    return None
 
             return config
 
@@ -118,8 +136,8 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
                           **kwargs)
 
     if ac_schema is not None:
-        if validate(config, schema, format_checker):
-            return config
+        if not _validate(config, schema, format_checker):
+            return None
 
     return config
 
@@ -185,8 +203,8 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
         config.update(conf_updates, merge)
 
     if ac_schema is not None:
-        if validate(config, schema, format_checker):
-            return config
+        if not _validate(config, schema, format_checker):
+            return None
 
     return config
 
@@ -267,8 +285,11 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
     config = cparser.loads(config_content, **kwargs)
 
     if ac_schema is not None:
-        if validate(config, schema, format_checker):
-            return config
+        try:
+            validate_with_exc(config, schema, format_checker)
+        except ValidationError as exc:
+            LOGGER.warn(exc)
+            return None
 
     return config
 

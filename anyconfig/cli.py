@@ -171,13 +171,13 @@ def main(argv=None):
         sys.exit(-1)
 
     data = data = os.environ.copy() if options.env else A.container()
-    try:
-        diff = A.load(args, options.itype,
-                      ignore_missing=options.ignore_missing,
-                      merge=options.merge, ac_template=options.template,
-                      ac_schema=options.schema)
-    except A.ValidationError as exc:
-        sys.stderr.write("Validation failed: " + str(exc))
+    diff = A.load(args, options.itype,
+                  ignore_missing=options.ignore_missing,
+                  merge=options.merge, ac_template=options.template,
+                  ac_schema=options.schema)
+
+    if diff is None:
+        sys.stderr.write("Validation failed")
         sys.exit(1)
 
     data.update(diff)

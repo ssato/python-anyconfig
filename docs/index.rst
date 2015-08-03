@@ -24,7 +24,8 @@ files:
 - anyconfig.loads() to load a configuration string and ...
 - anyconfig.dump() to dump a configuration file from a dict or dict-like object represents some configurations
 - anyconfig.dumps() to dump a configuration string from ...
-- anyconfig.validate() to validate configuration files with JSON schema [#]_ with a python module jsonschema's help [#]_ . Both configuration files and schema files can be written in any formats anyconfig supports.
+- anyconfig.validate() to validate configuration files with JSON schema [#]_ . Both configuration files and schema files can be written in any formats anyconfig supports.
+- anyconfig.gen_schema() to generate a dict-like object represents JSON schema for given configuration file[s] to validate it/them.
 
 Using anyconfig, you can load configuration files in various formats in the
 same way, without taking care of each file format in some cases, like the
@@ -120,15 +121,14 @@ process configuration files:
 
 .. [#] This name took an example from the 'anydbm' python standard library.
 .. [#] http://json-schema.org
-.. [#] https://pypi.python.org/pypi/jsonschema
 
 Supported configuration formats
 --------------------------------
 
-anyconfig supports various configuration file formats if the required module is
-available and the corresponding backend is ready to use:
+anyconfig supports various (configuration) file formats if the required module
+is available and the corresponding backend is ready to use:
 
-.. csv-table::
+.. csv-table:: Supported formats
    :header: "Format", "Type", "Required", "Notes"
    :widths: 10, 10, 30, 40
 
@@ -175,6 +175,31 @@ sub section also) like Java properties format.
 
 Installation
 -------------
+
+Requirements
+^^^^^^^^^^^^^^
+
+Many runtime dependencies are resolved dynamically and python-anyconfig just
+disable specific features if dependencies are not satisfied. Therefore, only
+python standard library is required to install and use python-anyconfig at
+minimum.
+
+The followings need to be installed along with python-anycofig to enable the
+features.
+
+.. csv-table::
+   :header: "Feature", "Requirements", "Notes"
+   :widths: 20, 10, 25
+
+   YAML load/dump, PyYAML, none
+   ConifgObj load/dump, configobj, none
+   MessagePack load/dump, msgpack, none
+   Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
+
+.. [#] https://pypi.python.org/pypi/jsonschema
+
+How to install
+^^^^^^^^^^^^^^^^
 
 There is a couple of ways to install python-anyconfig:
 

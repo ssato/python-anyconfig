@@ -255,6 +255,7 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
         operations.
     """
     if forced_type is None:
+        LOGGER.warn("No config type was given. Try to parse...")
         return anyconfig.parser.parse(config_content)
 
     cparser = find_loader(None, forced_type)

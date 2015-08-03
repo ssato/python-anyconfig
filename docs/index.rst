@@ -13,22 +13,23 @@ python-anyconfig
 Introduction
 =============
 
-Anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_ python
-library provides generic access to configuration files in various formats with
-configuration merge / cascade / overlay and template config support.
+python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
+python library provides generic access to configuration files in various
+formats with configuration merge along with config template and schema
+validation/generation support.
 
-Anyconfig provides very simple and unified APIs for various configuration
-files:
+python-anyconfig provides very simple and unified APIs for various
+configuration files:
 
 - anyconfig.load() to load configuration files and it will return a dict-like object represents configuration loaded
 - anyconfig.loads() to load a configuration string and ...
 - anyconfig.dump() to dump a configuration file from a dict or dict-like object represents some configurations
 - anyconfig.dumps() to dump a configuration string from ...
 - anyconfig.validate() to validate configuration files with JSON schema [#]_ . Both configuration files and schema files can be written in any formats anyconfig supports.
-- anyconfig.gen_schema() to generate a dict-like object represents JSON schema for given configuration file[s] to validate it/them.
+- anyconfig.gen_schema() to generate a object represents JSON schema for given configuration file[s] to validate it/them later.
 
-Using anyconfig, you can load configuration files in various formats in the
-same way, without taking care of each file format in some cases, like the
+python-anyconfig enables to load configuration files in various formats in the
+same manner without taking care of each file format in some cases like the
 followings:
 
 .. code-block:: python
@@ -64,11 +65,11 @@ followings:
   # overwritten by the later ones:
   conf6 = anyconfig.load("/etc/foo.d/*.json", merge=anyconfig.MS_REPLACE)
 
-Also, anyconfig can process configuration files which are actually
+Also, python-anyconfig can process configuration files which are actually
 `jinja2-based template <http://jinja.pocoo.org>`_ files:
 
-- It's possible to prepare half-baked config files later rendered to.
-- You can 'include' config files from config files for your applications with using jinja2's 'include' directive.
+- Can generate an actual configuration from prepared half-baked config files template with given context to render the template later.
+- It's possible to 'include' config files from given config files your applications with using jinja2's 'include' directive.
 
 .. code-block:: console
 
@@ -87,7 +88,7 @@ Also, anyconfig can process configuration files which are actually
   In [6]: anyconfig.load("/tmp/b.yml", ac_template=True, ac_context=dict(a='ccc'))
   Out[6]: {'a': 'ccc'}
 
-And anyconfig also can be used to validate configuration files in various
+And python-anyconfig also enables to validate configuration files in various
 format with using JSON schema like the followings:
 
 .. code-block:: python
@@ -111,8 +112,8 @@ format with using JSON schema like the followings:
   scm4 = anyconfig.gen_schema(conf4)
   scm4_s = anyconfig.dumps(scm4, "json")
 
-And in the last place, anyconfig provides a CLI tool called anyconfig_cli to
-process configuration files:
+And in the last place, python-anyconfig provides a CLI tool called
+anyconfig_cli to process configuration files and:
 
 - Convert a/multiple configuration file[s] to another configuration files in different formats
 - Get configuration value in a/multiple configuration file[s]
@@ -125,8 +126,8 @@ process configuration files:
 Supported configuration formats
 --------------------------------
 
-anyconfig supports various (configuration) file formats if the required module
-is available and the corresponding backend is ready to use:
+python-anyconfig supports various (configuration) file formats if the required
+module is available and the corresponding backend is ready to use:
 
 .. csv-table:: Supported formats
    :header: "Format", "Type", "Required", "Notes"
@@ -139,8 +140,8 @@ is available and the corresponding backend is ready to use:
    ConifgObj, configobj, ``configobj`` [#]_, Likewise.
    MessagePack, msgpack, ``msgpack-python`` [#]_, Likewise.
 
-You can check the supported formats (types) on your system by 'anyconfig_cli
--L' easily like this:
+The supported formats (types) of python-anyconfig on your system is able to be
+listed by 'anyconfig_cli -L' like this:
 
 .. code-block:: console
 
@@ -148,7 +149,7 @@ You can check the supported formats (types) on your system by 'anyconfig_cli
   Supported config types: configobj, ini, json, xml, yaml
   $
 
-or with the API 'anyconfig.list_types()':
+or with the API 'anyconfig.list_types()' will show them: 
 
 .. code-block:: console
 
@@ -157,13 +158,13 @@ or with the API 'anyconfig.list_types()':
 
    In [9]:
 
-And anyconfig utilizes plugin mechanism provided by setuptools [#]_ and
+python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and
 other formats may be supported by corresponding pluggale backends (see the next
 sub section also) like Java properties format.
 
-* Java properties file w/ pyjavaproperties [#]_ (experimental):
+- Java properties file w/ pyjavaproperties [#]_ (experimental):
 
-  * https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
+  - https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
 
 .. [#] https://pypi.python.org/pypi/simplejson
 .. [#] https://pypi.python.org/pypi/PyYAML
@@ -180,12 +181,12 @@ Requirements
 ^^^^^^^^^^^^^^
 
 Many runtime dependencies are resolved dynamically and python-anyconfig just
-disable specific features if dependencies are not satisfied. Therefore, only
-python standard library is required to install and use python-anyconfig at
-minimum.
+disables specific features if required dependencies are not satisfied.
+Therefore, only python standard library is required to install and use
+python-anyconfig at minimum.
 
-The followings need to be installed along with python-anycofig to enable the
-features.
+The following packages need to be installed along with python-anycofig to
+enable the features.
 
 .. csv-table::
    :header: "Feature", "Requirements", "Notes"
@@ -250,5 +251,7 @@ How to test
 -------------
 
 Try to run '[WITH_COVERAGE=1] ./pkg/runtest.sh [path_to_python_code]'.
+
+About test-time requirements, please take a look at pkg/test_requirements.txt.
 
 .. vim:sw=2:ts=2:et:

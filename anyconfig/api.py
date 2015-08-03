@@ -106,8 +106,9 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
-        schema = load(ac_schema, forced_type, ignore_missing, ac_template,
-                      ac_context, **kwargs)
+        schema = load(ac_schema, forced_type=forced_type,
+                      ignore_missing=ignore_missing, ac_template=ac_template,
+                      ac_context=ac_context, **kwargs)
 
     LOGGER.info("Loading: %s", config_path)
     if ac_template:
@@ -127,8 +128,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
             LOGGER.warn("Failed to compile %s, fallback to no template "
                         "mode", config_path)
 
-    config = cparser.load(config_path, ignore_missing=ignore_missing,
-                          **kwargs)
+    config = cparser.load(config_path, ignore_missing=ignore_missing, **kwargs)
 
     if ac_schema is not None:
         if not _validate(config, schema, format_checker):
@@ -178,8 +178,10 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
-        schema = load(ac_schema, forced_type, ignore_missing, merge,
-                      marker, ac_template, ac_context, **kwargs)
+        schema = load(ac_schema, forced_type=forced_type,
+                      ignore_missing=ignore_missing, merge=merge,
+                      marker=marker, ac_template=ac_template,
+                      ac_context=ac_context, **kwargs)
 
     config = container.create(ac_context) if ac_context else container()
     for path in paths:
@@ -229,12 +231,15 @@ def load(path_specs, forced_type=None, ignore_missing=False,
         operations.
     """
     if marker in path_specs or anyconfig.utils.is_iterable(path_specs):
-        return multi_load(path_specs, forced_type, ignore_missing,
-                          merge, marker, ac_template, ac_context, ac_schema,
-                          **kwargs)
+        return multi_load(path_specs, forced_type=forced_type,
+                          ignore_missing=ignore_missing, merge=merge,
+                          marker=marker, ac_template=ac_template,
+                          ac_context=ac_context, ac_schema=ac_schema, **kwargs)
     else:
-        return single_load(path_specs, forced_type, ignore_missing,
-                           ac_template, ac_context, ac_schema, **kwargs)
+        return single_load(path_specs, forced_type=forced_type,
+                           ignore_missing=ignore_missing,
+                           ac_template=ac_template, ac_context=ac_context,
+                           ac_schema=ac_schema, **kwargs)
 
 
 def loads(config_content, forced_type=None, ac_template=False, ac_context=None,

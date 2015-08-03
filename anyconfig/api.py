@@ -7,11 +7,6 @@
 """
 from __future__ import absolute_import
 
-try:
-    import jsonschema
-except ImportError:
-    pass
-
 from anyconfig.globals import LOGGER
 import anyconfig.backends
 import anyconfig.backend.json
@@ -285,10 +280,8 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
     config = cparser.loads(config_content, **kwargs)
 
     if ac_schema is not None:
-        try:
-            validate_with_exc(config, schema, format_checker)
-        except ValidationError as exc:
-            LOGGER.warn(exc)
+        if not _validate(config, schema, format_checker):
+            LOGGER.warn("Validation failed: schema=%s", schema)
             return None
 
     return config

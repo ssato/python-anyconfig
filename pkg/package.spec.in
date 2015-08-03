@@ -31,6 +31,9 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
+BuildRequires:  python-docutils
+BuildRequires:  python-sphinx
+BuildRequires:  make
 Requires:       PyYAML
 # FIXME: How to add weak dependency ?
 #Requires:       python-jinja2
@@ -83,6 +86,7 @@ cp -a . %{py3dir}
 
 %build
 %{__python} setup.py build
+make -C docs/ html
 
 %if 0%{?with_python3}
 pushd %{py3dir}
@@ -109,6 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc README.rst
+%doc docs/build/html
 %{python_sitelib}/*
 %{_bindir}/anyconfig_cli
 %{_mandir}/*/*

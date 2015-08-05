@@ -57,6 +57,14 @@ Examples:
 def to_log_level(level):
     """
     :param level: Logging level in int = 0 .. 2
+
+    >>> to_log_level(0) == logging.WARN
+    True
+    >>> to_log_level(5)  # doctest: +IGNORE_EXCEPTION_DETAIL, +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    ValueError: wrong log level passed: 5
+    >>>
     """
     if not (level >= 0 and level < 3):
         raise ValueError("wrong log level passed: " + str(level))

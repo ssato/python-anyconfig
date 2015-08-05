@@ -127,6 +127,15 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Aug  5 2015 Satoru SATOH <ssato@redhat.com> - 0.0.11-1
+- add MessagePack load/dump support
+- add new API 'gen_schema' to generate JSON schema for given configs
+- fix some bugs around JSON schema validation while loading configs
+- add HTML doc in a package
+- simplify README.rst a lot and just left a reference to
+  http://python-anyconfig.readthedocs.org provides online HTML doc
+- some more minor possible bug fixes found by pylint and flake8
+
 * Sun Jun 21 2015 Satoru SATOH <ssato@redhat.com> - 0.0.10-1
 - add new API 'validate' to validate config files with json schema
 - some more minor possible bug fixes found by pylint and flake8

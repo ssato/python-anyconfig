@@ -194,7 +194,7 @@ enable the features.
 
    YAML load/dump, PyYAML, none
    ConifgObj load/dump, configobj, none
-   MessagePack load/dump, msgpack, none
+   MessagePack load/dump, msgpack-python, none
    Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
 
 .. [#] https://pypi.python.org/pypi/jsonschema

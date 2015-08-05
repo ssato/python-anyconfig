@@ -14,7 +14,7 @@ import anyconfig.api as TT
 import anyconfig.template
 import anyconfig.tests.common
 
-from anyconfig.tests.common import CNF_0, SCM_0
+from anyconfig.tests.common import CNF_0, SCM_0, dicts_equal
 
 import anyconfig.backend.ini
 import anyconfig.backend.json
@@ -143,6 +143,12 @@ class Test10(unittest.TestCase):
         self.assertEquals(cnf_2["b"]["b"], CNF_0["b"]["b"])
         self.assertEquals(cnf_2["b"]["c"], CNF_0["b"]["c"])
 
+    def test_49_loads_w_validation_error(self):
+        cnf_s = """{"a": "aaa"}"""
+        scm_s = TT.dumps(SCM_0, "json")
+        cnf_2 = TT.loads(cnf_s, forced_type="json", ac_schema=scm_s)
+        self.assertTrue(cnf_2 is None, cnf_2)
+
 
 class Test20(unittest.TestCase):
 
@@ -233,6 +239,32 @@ b:
 
         a2 = TT.single_load(a2_path, ac_template=True)
         self.assertEquals(a2["a"], "xyz")
+
+    def test_19_dump_and_single_load_with_validation(self):
+        cnf = CNF_0
+        scm = SCM_0
+
+        cnf_path = os.path.join(self.workdir, "cnf_19.json")
+        scm_path = os.path.join(self.workdir, "scm_19.json")
+
+        TT.dump(cnf, cnf_path)
+        TT.dump(scm, scm_path)
+        self.assertTrue(os.path.exists(cnf_path))
+        self.assertTrue(os.path.exists(scm_path))
+
+        cnf_1 = TT.single_load(cnf_path, ac_schema=scm_path)
+
+        self.assertFalse(cnf_1 is None)  # Validation should succeed.
+        self.assertTrue(dicts_equal(cnf_1, cnf), cnf_1)
+
+        cnf_2 = cnf.copy()
+        cnf_2["a"] = "aaa"  # It's type should be integer not string.
+        cnf_2_path = os.path.join(self.workdir, "cnf_19_2.json")
+        TT.dump(cnf_2, cnf_2_path)
+        self.assertTrue(os.path.exists(cnf_2_path))
+
+        cnf_3 = TT.single_load(cnf_2_path, ac_schema=scm_path)
+        self.assertTrue(cnf_3 is None)  # Validation should fail.
 
     def test_20_dump_and_multi_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

@@ -106,6 +106,7 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
+        LOGGER.info("Loading schema: %s", ac_schema)
         schema = load(ac_schema, forced_type=forced_type,
                       ignore_missing=ignore_missing, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)

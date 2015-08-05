@@ -47,7 +47,9 @@ def validate(obj, schema, format_checker=None, safe=True):
             format_checker = jsonschema.FormatChecker()  # :raises: NameError
         try:
             jsonschema.validate(obj, schema, format_checker=format_checker)
-        except (jsonschema.ValidationError, jsonschema.SchemaError) as exc:
+            return (True, '')
+        except (jsonschema.ValidationError, jsonschema.SchemaError,
+                Exception) as exc:
             if safe:
                 return (False, str(exc))
             else:

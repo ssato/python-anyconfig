@@ -172,11 +172,11 @@ def main(argv=None):
             sys.exit(0)
         else:
             parser.print_usage()
-            sys.exit(-1)
+            sys.exit(1)
 
     if options.validate and options.schema is None:
         sys.stderr.write("--validate option requires --scheme option")
-        sys.exit(-1)
+        sys.exit(1)
 
     data = data = os.environ.copy() if options.env else A.container()
     diff = A.load(args, options.itype,

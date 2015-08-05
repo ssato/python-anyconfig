@@ -236,6 +236,20 @@ There is a couple of ways to install python-anyconfig:
 Hack
 =======
 
+Help wanted!
+--------------
+
+These areas are still insufficient, I guess.
+
+- Make python-anyconfig robust for invalid inputs
+- Documentation:
+
+  - Especially API docs need more love! CLI doc is non-fulfilling.
+  - English is not my native lang and there are many wrong and hard-to-understand expressions.
+
+Any feedbacks, helps, suggestions are welcome! Please open issues on github.com
+site if you have any problems on anyconfig!
+
 How to write backend plugin modules
 -------------------------------------
 
@@ -251,7 +265,7 @@ the `Supported configuration formats`_ section.
 How to test
 -------------
 
-Try to run '[WITH_COVERAGE=1] ./pkg/runtest.sh [path_to_python_code]'.
+Try to run '[WITH_COVERAGE=1] ./pkg/runtest.sh [path_to_python_code]' or 'tox'.
 
 About test-time requirements, please take a look at pkg/test_requirements.txt.
 

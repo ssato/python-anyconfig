@@ -8,6 +8,8 @@ import sys
 import tempfile
 import unittest
 
+import anyconfig.compat
+
 
 CNF_0 = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 SCM_0 = {"type": "object",
@@ -56,6 +58,30 @@ def cleanup_workdir(workdir):
     assert workdir != '.'
 
     os.system("rm -rf " + workdir)
+
+
+def dicts_equal(lhs, rhs):
+    """
+    >>> dicts_equal({}, {})
+    True
+    >>> dicts_equal({}, {'a': 1})
+    False
+    >>> d0 = {'a': 1}; dicts_equal(d0, d0)
+    True
+    >>> d1 = {'a': [1, 2, 3]}; dicts_equal(d1, d1)
+    True
+    >>> dicts_equal(d0, d1)
+    False
+    """
+    if len(lhs.keys()) != len(rhs.keys()):
+        return False
+
+    for key, val in anyconfig.compat.iteritems(rhs):
+        val_ref = lhs.get(key, None)
+        if val != val_ref:
+            return False
+
+    return True
 
 
 class MaskedImportLoader(object):

@@ -7,31 +7,8 @@ from __future__ import absolute_import
 
 import unittest
 import anyconfig.schema as TT
-import anyconfig.compat
 
-
-def dicts_equal(lhs, rhs):
-    """
-    >>> dicts_equal({}, {})
-    True
-    >>> dicts_equal({}, {'a': 1})
-    False
-    >>> d0 = {'a': 1}; dicts_equal(d0, d0)
-    True
-    >>> d1 = {'a': [1, 2, 3]}; dicts_equal(d1, d1)
-    True
-    >>> dicts_equal(d0, d1)
-    False
-    """
-    if len(lhs.keys()) != len(rhs.keys()):
-        return False
-
-    for key, val in anyconfig.compat.iteritems(rhs):
-        val_ref = lhs.get(key, None)
-        if val != val_ref:
-            return False
-
-    return True
+from anyconfig.tests.common import dicts_equal
 
 
 class Test(unittest.TestCase):

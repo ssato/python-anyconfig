@@ -32,11 +32,11 @@ class Test(unittest.TestCase):
     def run_and_check_exit_code(self, args=None, code=0, _not=False):
         try:
             TT.main(["dummy"] + ([] if args is None else args))
-        except SystemExit as e:
+        except SystemExit as exc:
             if _not:
-                self.assertNotEquals(e.code, code)
+                self.assertNotEquals(exc.code, code)
             else:
-                self.assertEquals(e.code, code)
+                self.assertEquals(exc.code, code)
 
     def test_10__show_usage(self):
         self.run_and_check_exit_code(["--help"])
@@ -116,6 +116,9 @@ class Test(unittest.TestCase):
         A.dump(cnf, infile2)
         self.run_and_check_exit_code(["--schema", scmfile, "--validate",
                                       infile2], 1)
+
+    def test_39_single_input_wo_schema(self):
+        self.run_and_check_exit_code(["--validate", CNF_0_PATH], 1)
 
     def test_40_multiple_inputs(self):
         xs = [dict(a=1, ),

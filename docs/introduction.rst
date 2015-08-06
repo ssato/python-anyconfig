@@ -1,15 +1,3 @@
-=================
-python-anyconfig
-=================
-
-.. toctree::
-    :maxdepth: 1
-
-    usage
-    api/index
-    design
-    cli
-
 Introduction
 =============
 

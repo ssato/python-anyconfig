@@ -127,6 +127,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Aug 10 2015 Satoru SATOH <ssato@redhat.com> - 0.0.13-1
+- fix up broken PyPI description page
+
 * Mon Aug 10 2015 Satoru SATOH <ssato@redhat.com> - 0.0.12-1
 - add some usage examples of the CLI frontend in the doc
 - fix some trivial bugs in the CLI frontend

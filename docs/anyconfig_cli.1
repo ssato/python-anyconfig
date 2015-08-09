@@ -69,6 +69,9 @@ Specify Schema file[s] path
 Only validate input files and do not output. You must specify schema file with
 \fR\-S\fR/\fR\-\-schema\fR option.
 .TP
+\fB\-G\fR, \fR\-\-gen\-schema\fR
+Generate JSON schema for givne config file[s] and output it.
+.TP
 \fB\-s\fR, \fB\-\-silent\fR
 Silent or quiet mode
 .TP
@@ -105,3 +108,14 @@ Same as the previous example.
 Load multiple JSON files with merge strategy 'noreplace'.
 .PP
     anyconfig_cli -O json '/etc/foo.d/*.json' \-M noreplace
+.SH "NOTES"
+.IP " 1." 4
+python-anyconfig (anyconfig_cli) home page
+.RS 4
+\%https://github.com/ssato/python-anyconfig
+.RE
+.IP " 2." 4
+python-anyconfig (anyconfig_cli) Online Doc
+.RS 4
+\%http://python-anyconfig.readthedocs.org/en/latest/
+.RE

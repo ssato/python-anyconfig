@@ -6,16 +6,16 @@
 """
 from __future__ import absolute_import
 
-import anyconfig.api as A
-import anyconfig.compat
-import anyconfig.globals
-
 import codecs
 import locale
 import logging
 import optparse
 import os
 import sys
+
+import anyconfig.api as A
+import anyconfig.compat
+import anyconfig.globals
 
 
 _ENCODING = locale.getdefaultlocale()[1]

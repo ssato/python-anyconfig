@@ -17,6 +17,7 @@ import anyconfig.api as A
 import anyconfig.compat
 import anyconfig.globals
 import anyconfig.mergeabledict
+import anyconfig.parser
 
 
 _ENCODING = locale.getdefaultlocale()[1]
@@ -223,7 +224,8 @@ def main(argv=None):
             return
 
     if options.set:
-        A.set_(data, *(options.set.split('=')))
+        (key, val) = options.set.split('=')
+        A.set_(data, key, anyconfig.parser.parse(val))
 
     if options.output:
         cparser = A.find_loader(options.output, options.otype)

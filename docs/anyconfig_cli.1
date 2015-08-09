@@ -56,10 +56,10 @@ to a config {'a': {'b': {'c': 0, 'd': 1}}} gives {'a': {'b': {'c': 1, 'd':
 \fB\-x\fR, \fB\-\-ignore\-missing\fR
 Ignore missing input files
 .TP
-\fB-\-template\fR
+\fB\-T\fR, \fB-\-template\fR
 Enable template config support
 .TP
-\fB\-\-env\fR
+\fB\-E\fR, \fB\-\-env\fR
 Load configuration defaults from environment values
 .TP
 \fB\-S\fR SCHEMA, \fR\-\-schema=\fISCHEMA\fR
@@ -69,7 +69,7 @@ Specify Schema file[s] path
 Only validate input files and do not output. You must specify schema file with
 \fR\-S\fR/\fR\-\-schema\fR option.
 .TP
-\fB\-G\fR, \fR\-\-gen\-schema\fR
+\fR\-\-gen\-schema\fR
 Generate JSON schema for givne config file[s] and output it.
 .TP
 \fB\-s\fR, \fB\-\-silent\fR

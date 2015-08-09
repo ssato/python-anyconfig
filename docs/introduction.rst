@@ -11,6 +11,8 @@ validation/generation support.
 - PyPI: https://pypi.python.org/pypi/anyconfig
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
+.. [#] This name took an example from the 'anydbm' python standard library.
+
 Features
 ----------
 
@@ -116,7 +118,6 @@ anyconfig_cli to process configuration files and:
 - Validate configuration file[s] with JSON schema
 - Generate JSON schema for given configuration file[s]
 
-.. [#] This name took an example from the 'anydbm' python standard library.
 .. [#] http://json-schema.org
 
 Supported configuration formats

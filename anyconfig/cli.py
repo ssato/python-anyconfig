@@ -246,7 +246,7 @@ def main(argv=None):
                 options.otype = options.itype
 
         cparser = A.find_loader(None, options.otype)
-        sys.stdout.write(cparser.dumps(data))
+        sys.stdout.write(cparser.dumps(data) + '\n')
 
 
 if __name__ == '__main__':

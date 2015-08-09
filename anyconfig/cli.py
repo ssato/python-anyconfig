@@ -113,8 +113,26 @@ Int, str, etc.""" % ctypes_s
                                    anyconfig.globals.VERSION)
     parser.set_defaults(**defaults)
 
-    parser.add_option("-L", "--list", help="List supported config types",
-                      action="store_true")
+    lpog = optparse.OptionGroup(parser, "List specific options")
+    lpog.add_option("-L", "--list", help="List supported config types",
+                    action="store_true")
+    parser.add_option_group(lpog)
+
+    spog = optparse.OptionGroup(parser, "Schema specific options")
+    spog.add_option("", "--validate", action="store_true",
+                    help="Only validate input files and do not output. "
+                         "You must specify schema file with -S/--schema "
+                         "option.")
+    spog.add_option("", "--gen-schema", action="store_true",
+                    help="Generate JSON schema for givne config file[s] "
+                         "and output it instead of (merged) configuration.")
+    parser.add_option_group(spog)
+
+    gspog = optparse.OptionGroup(parser, "Get/set options")
+    gspog.add_option("", "--get", help=get_help)
+    gspog.add_option("", "--set", help=set_help)
+    parser.add_option_group(gspog)
+
     parser.add_option("-o", "--output", help="Output file path")
     parser.add_option("-I", "--itype", choices=ctypes,
                       help=(type_help % "Input"))
@@ -124,9 +142,6 @@ Int, str, etc.""" % ctypes_s
     parser.add_option("-A", "--args", help="Argument configs to override")
     parser.add_option("", "--atype", choices=ctypes, help=af_help)
 
-    parser.add_option("", "--get", help=get_help)
-    parser.add_option("", "--set", help=set_help)
-
     parser.add_option("-x", "--ignore-missing", action="store_true",
                       help="Ignore missing input files")
     parser.add_option("", "--template", action="store_true",
@@ -135,14 +150,6 @@ Int, str, etc.""" % ctypes_s
                       help="Load configuration defaults from "
                            "environment values")
     parser.add_option("-S", "--schema", help="Specify Schema file[s] path")
-    parser.add_option("-V", "--validate", action="store_true",
-                      help="Only validate input files and do not output. "
-                           "You must specify schema file with -S/--schema "
-                           "option.")
-    parser.add_option("-G", "--gen-schema", action="store_true",
-                      help="Generate JSON schema for givne config file[s] "
-                           "and output it")
-
     parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
                       const=0, help="Silent or quiet mode")
     parser.add_option("-q", "--quiet", action="store_const", dest="loglevel",

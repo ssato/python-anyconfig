@@ -127,6 +127,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Aug 10 2015 Satoru SATOH <ssato@redhat.com> - 0.0.12-1
+- add some usage examples of the CLI frontend in the doc
+- fix some trivial bugs in the CLI frontend
+- make the contents of README and the doc consistent
+- make the doc included in RPM packages
+
 * Wed Aug  5 2015 Satoru SATOH <ssato@redhat.com> - 0.0.11-1
 - add MessagePack load/dump support
 - add new API 'gen_schema' to generate JSON schema for given configs

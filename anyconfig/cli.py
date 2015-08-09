@@ -144,9 +144,9 @@ Int, str, etc.""" % ctypes_s
 
     parser.add_option("-x", "--ignore-missing", action="store_true",
                       help="Ignore missing input files")
-    parser.add_option("", "--template", action="store_true",
+    parser.add_option("-T", "--template", action="store_true",
                       help="Enable template config support")
-    parser.add_option("", "--env", action="store_true",
+    parser.add_option("-E", "--env", action="store_true",
                       help="Load configuration defaults from "
                            "environment values")
     parser.add_option("-S", "--schema", help="Specify Schema file[s] path")

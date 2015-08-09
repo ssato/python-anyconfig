@@ -16,6 +16,7 @@ import sys
 import anyconfig.api as A
 import anyconfig.compat
 import anyconfig.globals
+import anyconfig.mergeabledict
 
 
 _ENCODING = locale.getdefaultlocale()[1]
@@ -215,6 +216,11 @@ def main(argv=None):
         (data, err) = A.get(data, options.get)
         if err:
             raise RuntimeError(err)
+
+        # Output primitive types as it is.
+        if not anyconfig.mergeabledict.is_mergeabledict_or_dict(data):
+            sys.stdout.write(str(data) + '\n')
+            return
 
     if options.set:
         A.set_(data, *(options.set.split('=')))

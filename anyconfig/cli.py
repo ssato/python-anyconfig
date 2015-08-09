@@ -41,7 +41,8 @@ USAGE = """\
 %prog [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
 
 Examples:
-  %prog --list
+  %prog --list  # -> Supported config types: configobj, ini, json, ...
+  # Merge and/or convert input config to output config [file]
   %prog -I yaml -O yaml /etc/xyz/conf.d/a.conf
   %prog -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
   %prog '/etc/xyz/conf.d/*.json' -o xyz.yml \\
@@ -50,6 +51,7 @@ Examples:
     -A obsoletes:sysdata;conflicts:sysdata-old
   %prog /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
   %prog '/etc/foo.d/*.json' -M noreplace
+  # Get/set part of input config
   %prog '/etc/foo.d/*.json' --get a.b.c
   %prog '/etc/foo.d/*.json' --set a.b.c=1"""
 

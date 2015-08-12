@@ -8,6 +8,7 @@
    anyconfig.backend.ini
    anyconfig.backend.json
    anyconfig.backend.msgpack
+   anyconfig.backend.toml
    anyconfig.backend.yaml
    anyconfig.backend.xml
 

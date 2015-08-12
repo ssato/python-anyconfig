@@ -40,6 +40,12 @@ try:
 except ImportError:
     LOGGER.warn("msgpack module is not available. Disabled its support.")
 
+try:
+    import anyconfig.backend.toml
+    PARSERS.append(anyconfig.backend.toml.Parser)
+except ImportError:
+    LOGGER.warn("toml module is not available. Disabled TOML support.")
+
 
 # pylint: disable=no-member
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):

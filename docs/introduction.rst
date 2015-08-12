@@ -16,8 +16,8 @@ validation/generation support.
 Features
 ----------
 
-python-anyconfig provides very simple and unified APIs for configuration files
-in various formats:
+python-anyconfig provides very simple and unified APIs to process configuration
+files in various formats:
 
 - anyconfig.load() to load configuration files and return a dict-like object represents configuration itself loaded
 - anyconfig.loads() to load configuration from a string just like json.loads does

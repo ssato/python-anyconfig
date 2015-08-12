@@ -26,7 +26,7 @@ try:
     import anyconfig.backend.yaml
     PARSERS.append(anyconfig.backend.yaml.Parser)
 except ImportError:
-    LOGGER.warn("YAML module is not available. Disabled its support.")
+    LOGGER.warn("yaml module is not available. Disabled YAML support.")
 
 try:
     import anyconfig.backend.configobj
@@ -38,7 +38,8 @@ try:
     import anyconfig.backend.msgpack
     PARSERS.append(anyconfig.backend.msgpack.Parser)
 except ImportError:
-    LOGGER.warn("msgpack module is not available. Disabled its support.")
+    LOGGER.warn("msgpack module is not available. "
+                "Disabled MessagePack support.")
 
 try:
     import anyconfig.backend.toml

@@ -136,6 +136,7 @@ module is available and the corresponding backend is ready to use:
    XML, xml, ``lxml`` [#]_ or ``ElementTree`` (experimental), Likewise.
    ConifgObj, configobj, ``configobj`` [#]_, Likewise.
    MessagePack, msgpack, ``msgpack-python`` [#]_, Likewise.
+   TOML, toml, ``toml`` [#]_, Likewise.
 
 The supported formats of python-anyconfig on your system is able to be listed
 by 'anyconfig_cli -L' like this:
@@ -168,6 +169,7 @@ like Java properties format.
 .. [#] https://pypi.python.org/pypi/lxml
 .. [#] https://pypi.python.org/pypi/configobj
 .. [#] https://pypi.python.org/pypi/msgpack-python
+.. [#] https://pypi.python.org/pypi/toml
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 .. [#] https://pypi.python.org/pypi/pyjavaproperties
 
@@ -192,6 +194,7 @@ enable the features.
    YAML load/dump, PyYAML, none
    ConifgObj load/dump, configobj, none
    MessagePack load/dump, msgpack-python, none
+   TOML load/dump, toml, none
    Template config, Jinja2, none
    Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
 

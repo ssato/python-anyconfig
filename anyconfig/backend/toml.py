@@ -4,6 +4,7 @@
 #
 # Ref. python -c "import toml; help(toml); ..."
 #
+# pylint: disable=unused-argument
 """TOML backend.
 
 - TOML: https://github.com/toml-lang/toml

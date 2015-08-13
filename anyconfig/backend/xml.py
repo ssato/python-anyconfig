@@ -5,6 +5,25 @@
 # Some of XML backend modules may be missing:
 # pylint: disable=import-error
 """XML files parser backend, should be available always.
+
+- Format to support: XML, e.g. http://www.w3.org/TR/xml11/
+- Requirements: one of the followings
+
+  - lxml2.etree if available
+  - xml.etree.ElementTree in standard lib if python >= 2.5
+  - elementtree.ElementTree (otherwise)
+
+- Limitations:
+
+  - 'attrs', 'text' and 'children' are used as special keyword to keep XML
+    structure of config data so that these are not allowed to used in config
+    files.
+
+  - Some data or structures of original XML file may be lost if make it backed
+    to XML file; XML file - (anyconfig.load) -> config - (anyconfig.dump) ->
+    XML file
+
+- Special Options: None supported
 """
 from __future__ import absolute_import
 
@@ -70,24 +89,6 @@ def etree_to_container(root, container):
 class Parser(anyconfig.backend.base.Parser):
     """
     Parser for XML files.
-
-    - Backend: one of the followings
-
-      - lxml2.etree if available
-      - xml.etree.ElementTree in standard lib if python >= 2.5
-      - elementtree.ElementTree (otherwise)
-
-    - Limitations:
-
-      - 'attrs', 'text' and 'children' are used as special keyword to keep XML
-        structure of config data so that these are not allowed to used in
-        config files.
-
-      - Some data or structures of original XML file may be lost if make it
-        backed to XML file;
-        XML file - (anyconfig.load) -> config - (anyconfig.dump) -> XML file
-
-    - Special Options: None supported
     """
     _type = "xml"
     _extensions = ["xml"]

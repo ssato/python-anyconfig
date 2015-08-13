@@ -2,7 +2,17 @@
 # Copyright (C) 2013 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""configobj backend for anyconfig.
+"""configobj backend.
+
+- Format to support: configobj, http://goo.gl/JbP2Kp (readthedocs.org)
+- Requirements: configobj (https://pypi.python.org/pypi/configobj/)
+- Limitations: None obvious
+- Special options:
+
+  - All options except for 'infile' passed to configobj.ConfigObj.__init__
+    should work.
+
+  - See also: http://goo.gl/LcVOzZ (readthedocs.org)
 """
 from __future__ import absolute_import
 
@@ -13,12 +23,6 @@ import anyconfig.backend.base
 class Parser(anyconfig.backend.base.Parser):
     """
     Parser for Ini-like config files which configobj supports.
-
-    - Backend: configobj (https://pypi.python.org/pypi/configobj/)
-    - Limitations: None obvious
-    - Special options:
-
-      - All options passed to configobj.ConfigObj.__init__ should work.
     """
     _type = "configobj"
     _priority = 10

@@ -5,6 +5,16 @@
 # Ref. python -c "import msgpack; help(msgpack.Unpacker); help(msgpack.Packer)"
 #
 """MessagePack file backend.
+
+- Format to support: MessagePack, http://msgpack.org
+- Requirements: msgpack-python (https://pypi.python.org/pypi/msgpack-python)
+- Limitations: None obvious
+- Special options:
+
+  - All options of msgpack.load{s,} and msgpack.dump{s,} except object_hook
+    and file_like should work.
+
+  - See also: http://pythonhosted.org/msgpack-python/api.html
 """
 from __future__ import absolute_import
 
@@ -24,13 +34,6 @@ _DUMP_OPTS = ["default", "encoding", "unicode_errors", "use_single_float",
 class Parser(anyconfig.backend.json.Parser):
     """
     Loader/Dumper for MessagePack files.
-
-    - Backend: python-msgpack (msgpack)
-    - Limitations: None obvious
-    - Special options:
-
-      - All options of msgpack.load{s,} and msgpack.dump{s,} except object_hook
-        and file_like should work.
     """
     _type = "msgpack"
     _extensions = []

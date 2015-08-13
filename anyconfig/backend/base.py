@@ -3,6 +3,10 @@
 # License: MIT
 #
 """Abstract implementation of backend modules.
+
+Backend module must implement a parser class inherits :class:`Parser` of this
+module and override some of its methods, :method:`load_impl` and
+:method:`dumps_impl` at least.
 """
 from __future__ import absolute_import
 

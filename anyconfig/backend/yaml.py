@@ -2,7 +2,19 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""YAML files parser backend
+"""YAML backend.
+
+- Format to support: YAML, http://yaml.org
+- Requirements: PyYAML (yaml), http://pyyaml.org
+- Limitations: None obvious
+- Special options:
+
+  - All keyword options of yaml.{safe_,}load and yaml.{safe_,}dump should work.
+
+  - Use 'safe' boolean keyword option if you prefer to call
+    yaml.safe_{load,dump} instead of yaml.{load,dump}
+
+  - See also: http://pyyaml.org/wiki/PyYAMLDocumentation
 """
 from __future__ import absolute_import
 
@@ -44,14 +56,6 @@ def yaml_dump(data, fpath, **kwargs):
 class Parser(Base.Parser):
     """
     Parser for YAML files.
-
-    - Backend: PyYAML (yaml)
-    - Limitations: None obvious
-    - Special options:
-
-      - All options of yaml.{safe_,}load and yaml.{safe_,}dump should work.
-      - Use 'safe' boolean keyword option if you prefer yaml.safe_{load,dump}
-        instead of yaml.{load,dump}
     """
 
     _type = "yaml"

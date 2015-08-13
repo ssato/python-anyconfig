@@ -2,7 +2,19 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""Ini file parser backend, should be available always.
+"""INI or INI like config files backend.
+
+- Format to support: INI or INI like ones
+- Requirements: It should be available always.
+
+  - ConfigParser in python 2 standard library:
+    https://docs.python.org/2.7/library/configparser.html
+
+  - configparser in python 3 standard library:
+    https://docs.python.org/3/library/configparser.html
+
+- Limitations: None obvious
+- Special options: None Obvious
 """
 from __future__ import absolute_import
 

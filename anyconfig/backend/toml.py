@@ -7,8 +7,13 @@
 # pylint: disable=unused-argument
 """TOML backend.
 
-- TOML: https://github.com/toml-lang/toml
-- (python) toml module: https://github.com/uiri/toml
+- Format to support: TOML, https://github.com/toml-lang/toml
+- Requirements: (python) toml module, https://github.com/uiri/toml
+- Limitations: None obvious
+- Special options:
+
+  - toml.{load{s,},dump{s,}} only accept '_dict' keyword option but it's not
+    supported and will be ignored.
 """
 from __future__ import absolute_import
 
@@ -37,11 +42,7 @@ def call_with_no_kwargs(func):
 
 class Parser(anyconfig.backend.json.Parser):
     """
-    Loader/Dumper for TOML configs:
-
-    - Backend: toml (https://github.com/uiri/toml)
-    - Limitations: None obvious
-    - Special options: None (_dict is not supported)
+    TOML parser.
     """
     _type = "toml"
     _extensions = ["toml"]

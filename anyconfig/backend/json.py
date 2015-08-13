@@ -5,7 +5,19 @@
 # Ref. python -c "import json; help(json)"
 #
 # pylint: disable=import-error
-"""JSON file parser backend.
+"""JSON file backend.
+
+- Format to support: JSON, http://www.json.org
+- Requirements: json in python standard library (>= python 2.6) or simplejson
+- Limitations: None obvious
+- Special options:
+
+  - All options of json.load{s,} and json.dump{s,} except object_hook
+    should work.
+
+  - See also: https://docs.python.org/3/library/json.html or
+    https://docs.python.org/2/library/json.html dependent on the python version
+    to use.
 """
 from __future__ import absolute_import
 
@@ -40,13 +52,6 @@ def dict_to_container(json_obj_dict):
 class Parser(Base.Parser):
     """
     Parser for JSON files.
-
-    - Backend: standard json lib (>= python 2.6) or simplejson
-    - Limitations: None obvious
-    - Special options:
-
-      - All options of json.load{s,} and json.dump{s,} except object_hook
-        should work.
     """
     _type = "json"
     _extensions = ["json", "jsn", "js"]

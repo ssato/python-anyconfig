@@ -23,12 +23,14 @@ CNF_0_S = """<?xml version="1.0" encoding="UTF-8"?>
 </config>
 """
 
-CNF_0 = {'config': {'attrs': {'name': 'foo'},
-                    'children': [{'a': {'text': '0'}},
-                                 {'b': {'attrs': {'id': 'b0'}, 'text': 'bbb'}},
-                                 {'sect0': {
-                                     'children': [{'c': {'text': 'x, y, z'}}]
-                                 }}]}}
+CNF_0 = {'config': {'@attrs': {'name': 'foo'},
+                    '@children': [{'a': {'@text': '0'}},
+                                  {'b': {'@attrs': {'id': 'b0'},
+                                         '@text': 'bbb'}},
+                                  {'sect0': {
+                                      '@children': [{'c': {
+                                          '@text': 'x, y, z'
+                                      }}]}}]}}
 
 
 class Test(unittest.TestCase):

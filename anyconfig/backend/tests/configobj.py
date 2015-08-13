@@ -56,15 +56,10 @@ CNF_0 = {'keyword 2': 'value 2',
          'section 2': {'keyword8': 'value 9', 'keyword9': 'value10'}}
 
 
-class Test(unittest.TestCase):
+class Test10(unittest.TestCase):
 
-    def setUp(self):
-        (self.cnf_s, self.cnf) = (CNF_0_S, CNF_0)
-        (_, self.cpath) = tempfile.mkstemp(prefix="ac-bc-test-")
-        open(self.cpath, 'w').write(self.cnf_s)
-
-    def tearDown(self):
-        os.remove(self.cpath)
+    cnf = CNF_0
+    cnf_s = CNF_0_S
 
     def test_00_supports(self):
         self.assertFalse(TT.Parser.supports("/a/b/c/d.json"))
@@ -73,13 +68,26 @@ class Test(unittest.TestCase):
         cnf = TT.Parser.loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_20_load(self):
-        cnf = TT.Parser.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
     def test_30_dumps(self):
         cnf_s = TT.Parser.dumps(self.cnf)
         cnf = TT.Parser.loads(cnf_s)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+
+class Test20(unittest.TestCase):
+
+    cnf = CNF_0
+    cnf_s = CNF_0_S
+
+    def setUp(self):
+        (_, self.cpath) = tempfile.mkstemp(prefix="ac-bc-test-")
+        open(self.cpath, 'w').write(self.cnf_s)
+
+    def tearDown(self):
+        os.remove(self.cpath)
+
+    def test_20_load(self):
+        cnf = TT.Parser.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_40_dump(self):

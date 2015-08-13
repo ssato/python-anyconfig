@@ -9,8 +9,10 @@ import unittest
 import anyconfig.backend.ini as TT
 import anyconfig.tests.common
 
+from anyconfig.tests.common import dicts_equal
 
-CONF_0 = """[DEFAULT]
+
+CNF_0_S = """[DEFAULT]
 a: 0
 b: bbb
 
@@ -18,54 +20,52 @@ b: bbb
 c: x,y,z
 """
 
+CNF_0 = {'DEFAULT': {'a': 0, 'b': 'bbb'},
+         'sect0': {'a': 0, 'b': 'bbb', 'c': ['x', 'y', 'z']}}
 
-class Test(unittest.TestCase):
+
+class Test10(unittest.TestCase):
+
+    cnf = CNF_0
+    cnf_s = CNF_0_S
+
+    def test_10_loads(self):
+        cnf = TT.Parser.loads(self.cnf_s)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_12_loads__invalid_input(self):
+        invalid_ini = "key=name"
+        self.assertRaises(Exception, TT.Parser.loads, invalid_ini)
+
+    def test_14_loads__w_options(self):
+        cnf = TT.Parser.loads(self.cnf_s, allow_no_value=False)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_20_dumps(self):
+        cnf = TT.Parser.loads(TT.Parser.dumps(self.cnf))
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+
+class Test20(unittest.TestCase):
+
+    cnf = CNF_0
+    cnf_s = CNF_0_S
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
         self.cpath = os.path.join(self.workdir, "conf0.ini")
-        open(self.cpath, 'w').write(CONF_0)
+        open(self.cpath, 'w').write(self.cnf_s)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
-    def test_10_loads(self):
-        cfg = TT.Parser.loads(CONF_0)
-        self.assertEquals(cfg["DEFAULT"]['a'], 0, str(cfg))
-        self.assertEquals(cfg["DEFAULT"]['b'], "bbb", cfg)
-        self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
+    def test_10_load(self):
+        cnf = TT.Parser.load(self.cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_20_load(self):
-        cfg = TT.Parser.load(self.cpath)
-        self.assertEquals(cfg["DEFAULT"]['a'], 0, str(cfg))
-        self.assertEquals(cfg["DEFAULT"]['b'], "bbb", cfg)
-        self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
-
-    def test_22_load__invalid_ini(self):
-        invalid_ini = "key=name"
-        self.assertRaises(Exception, TT.Parser.loads, invalid_ini)
-
-    def test_20_load__w_options(self):
-        cfg = TT.Parser.load(self.cpath, allow_no_value=False)
-        self.assertEquals(cfg["DEFAULT"]['a'], 0, str(cfg))
-        self.assertEquals(cfg["DEFAULT"]['b'], "bbb", cfg)
-        self.assertEquals(cfg["sect0"]['c'], ['x', 'y', 'z'])
-
-    def test_30_dumps(self):
-        cfg = TT.Parser.loads(CONF_0)
-        cfg2 = TT.Parser.loads(TT.Parser.dumps(cfg))
-
-        self.assertEquals(cfg2["DEFAULT"]['a'], cfg["DEFAULT"]['a'], str(cfg2))
-        self.assertEquals(cfg2["DEFAULT"]['b'], cfg["DEFAULT"]['b'], str(cfg2))
-        self.assertEquals(cfg2["sect0"]['c'], cfg["sect0"]['c'], str(cfg2))
-
-    def test_40_dump(self):
-        cfg = TT.Parser.loads(CONF_0)
-        TT.Parser.dump(cfg, self.cpath)
-        cfg2 = TT.Parser.load(self.cpath)
-
-        self.assertEquals(cfg2["DEFAULT"]['a'], cfg["DEFAULT"]['a'], str(cfg2))
-        self.assertEquals(cfg2["DEFAULT"]['b'], cfg["DEFAULT"]['b'], str(cfg2))
-        self.assertEquals(cfg2["sect0"]['c'], cfg["sect0"]['c'], str(cfg2))
+    def test_20_dump(self):
+        TT.Parser.dump(self.cnf, self.cpath)
+        cnf = TT.Parser.load(self.cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

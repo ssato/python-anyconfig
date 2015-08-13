@@ -3,13 +3,15 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import anyconfig.backend.configobj as TT
 import os
 import tempfile
 import unittest
 
+import anyconfig.backend.configobj as TT
+from anyconfig.tests.common import dicts_equal
 
-CONF_0 = """\
+
+CNF_0_S = """\
 # This is the 'initial_comment'
 # Which may be several lines
 keyword1 = value1
@@ -39,106 +41,50 @@ keyword9 = value10     # an inline comment
 # Which also may be several lines
 """
 
+_ML_0 = """A multiline value,
+that spans more than one line :-)
+The line breaks are included in the value."""
+
+CNF_0 = {'keyword 2': 'value 2',
+         'keyword1': 'value1',
+         'section 1': {'keyword 3': 'value 3',
+                       'keyword 4': ['value4', 'value 5', 'value 6'],
+                       'sub-section': {'keyword 5': 'value 7',
+                                       'keyword 6': _ML_0,
+                                       'sub-sub-section': {
+                                           'keyword 7': 'value 8'}}},
+         'section 2': {'keyword8': 'value 9', 'keyword9': 'value10'}}
+
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        (_, conf) = tempfile.mkstemp(prefix="ac-bc-test-")
-        open(conf, 'w').write(CONF_0)
-        self.config_path = conf
+        (self.cnf_s, self.cnf) = (CNF_0_S, CNF_0)
+        (_, self.cpath) = tempfile.mkstemp(prefix="ac-bc-test-")
+        open(self.cpath, 'w').write(self.cnf_s)
 
     def tearDown(self):
-        os.remove(self.config_path)
+        os.remove(self.cpath)
 
     def test_00_supports(self):
         self.assertFalse(TT.Parser.supports("/a/b/c/d.json"))
 
     def test_10_loads(self):
-        conf = TT.Parser.loads(CONF_0)
-
-        self.assertEquals(conf['keyword1'], 'value1')
-        self.assertEquals(conf['keyword 2'], 'value 2')
-        self.assertEquals(conf['section 1']['keyword 3'], 'value 3')
-        self.assertEquals(conf['section 1']['keyword 4'],
-                          ['value4', 'value 5', 'value 6'])
-        self.assertEquals(conf['section 1']['sub-section']['keyword 5'],
-                          'value 7')
-        self.assertEquals(conf['section 1']['sub-section']['keyword 6'],
-                          """A multiline value,
-that spans more than one line :-)
-The line breaks are included in the value.""")
-        self.assertEquals(
-            conf['section 1']['sub-section']['sub-sub-section']['keyword 7'],
-            'value 8'
-        )
-        self.assertEquals(conf['section 2']['keyword8'], 'value 9')
-        self.assertEquals(conf['section 2']['keyword9'], 'value10')
+        cnf = TT.Parser.loads(self.cnf_s)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_20_load(self):
-        conf = TT.Parser.load(self.config_path)
-
-        self.assertEquals(conf['keyword1'], 'value1')
-        self.assertEquals(conf['keyword 2'], 'value 2')
-        self.assertEquals(conf['section 1']['keyword 3'], 'value 3')
-        self.assertEquals(conf['section 1']['keyword 4'],
-                          ['value4', 'value 5', 'value 6'])
-        self.assertEquals(conf['section 1']['sub-section']['keyword 5'],
-                          'value 7')
-        self.assertEquals(conf['section 1']['sub-section']['keyword 6'],
-                          """A multiline value,
-that spans more than one line :-)
-The line breaks are included in the value.""")
-        self.assertEquals(
-            conf['section 1']['sub-section']['sub-sub-section']['keyword 7'],
-            'value 8'
-        )
-        self.assertEquals(conf['section 2']['keyword8'], 'value 9')
-        self.assertEquals(conf['section 2']['keyword9'], 'value10')
+        cnf = TT.Parser.load(self.cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_30_dumps(self):
-        conf = TT.Parser.loads(CONF_0)
-        conf_s = TT.Parser.dumps(conf)
-        conf = TT.Parser.loads(conf_s)
-
-        self.assertEquals(conf['keyword1'], 'value1')
-        self.assertEquals(conf['keyword 2'], 'value 2')
-        self.assertEquals(conf['section 1']['keyword 3'], 'value 3')
-        self.assertEquals(conf['section 1']['keyword 4'],
-                          ['value4', 'value 5', 'value 6'])
-        self.assertEquals(conf['section 1']['sub-section']['keyword 5'],
-                          'value 7')
-        self.assertEquals(conf['section 1']['sub-section']['keyword 6'],
-                          """A multiline value,
-that spans more than one line :-)
-The line breaks are included in the value.""")
-        self.assertEquals(
-            conf['section 1']['sub-section']['sub-sub-section']['keyword 7'],
-            'value 8'
-        )
-        self.assertEquals(conf['section 2']['keyword8'], 'value 9')
-        self.assertEquals(conf['section 2']['keyword9'], 'value10')
+        cnf_s = TT.Parser.dumps(self.cnf)
+        cnf = TT.Parser.loads(cnf_s)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_40_dump(self):
-        conf = TT.Parser.loads(CONF_0)
-        TT.Parser.dump(conf, self.config_path)
-        conf = TT.Parser.load(self.config_path)
-
-        self.assertEquals(conf['keyword1'], 'value1')
-        self.assertEquals(conf['keyword 2'], 'value 2')
-        self.assertEquals(conf['section 1']['keyword 3'], 'value 3')
-        self.assertEquals(conf['section 1']['keyword 4'],
-                          ['value4', 'value 5', 'value 6'])
-        self.assertEquals(conf['section 1']['sub-section']['keyword 5'],
-                          'value 7')
-        self.assertEquals(conf['section 1']['sub-section']['keyword 6'],
-                          """A multiline value,
-that spans more than one line :-)
-The line breaks are included in the value.""")
-        self.assertEquals(
-            conf['section 1']['sub-section']['sub-sub-section']['keyword 7'],
-            'value 8'
-        )
-        self.assertEquals(conf['section 2']['keyword8'], 'value 9')
-        self.assertEquals(conf['section 2']['keyword9'], 'value10')
+        TT.Parser.dump(self.cnf, self.cpath)  # Overwrite it.
+        cnf = TT.Parser.load(self.cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

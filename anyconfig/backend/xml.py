@@ -57,22 +57,21 @@ def etree_getroot_fromsrc(src):
     return ET.parse(src).getroot()
 
 
-def etree_to_container(root, container):
+def etree_to_container(root, cls):
     """
     Convert XML ElementTree to a collection of container objects.
 
     :param root: etree root object or None
-    :param container: A nested dict like objects
+    :param cls: Container class
     """
-    tree = container()
+    tree = cls()
     if root is None:
         return tree
 
-    tree[root.tag] = container()
+    tree[root.tag] = cls()
 
     if root.attrib:
-        tree[root.tag]["attrs"] = \
-            container(anyconfig.compat.iteritems(root.attrib))
+        tree[root.tag]["attrs"] = cls(anyconfig.compat.iteritems(root.attrib))
 
     if root.text and root.text.strip():
         tree[root.tag]["text"] = root.text.strip()
@@ -80,8 +79,7 @@ def etree_to_container(root, container):
     if len(root):  # It has children.
         # Note: Configuration item cannot have both attributes and values
         # (list) at the same time in current implementation:
-        tree[root.tag]["children"] = [etree_to_container(c, container) for c
-                                      in root]
+        tree[root.tag]["children"] = [etree_to_container(c, cls) for c in root]
 
     return tree
 

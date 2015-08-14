@@ -23,6 +23,8 @@
     to XML file; XML file - (anyconfig.load) -> config - (anyconfig.dump) ->
     XML file
 
+  - XML specific features (namespace, etc.) may not be processed correctly.
+
 - Special Options: None supported
 """
 from __future__ import absolute_import

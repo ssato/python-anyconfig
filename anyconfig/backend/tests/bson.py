@@ -18,41 +18,47 @@ CNF_0 = {"a": 0.1,
          "sect0": {"c": [_bytes("x"), _bytes("y"), _bytes("z")]}}
 
 
-class Test(unittest.TestCase):
+class Test10(unittest.TestCase):
 
     def setUp(self):
         self.cnf = CNF_0
-        self.workdir = anyconfig.tests.common.setup_workdir()
-        self.cpath = os.path.join(self.workdir, "test0.bson")
         self.cnf_s = TT.bson.BSON.encode(self.cnf)
-        open(self.cpath, 'wb').write(self.cnf_s)
-
-    def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_loads(self):
         cnf = TT.Parser.loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_20_load(self):
-        cnf = TT.Parser.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_22_load__optional_kwargs(self):
-        cnf = TT.Parser.load(self.cpath, as_class=dict)
+    def test_12_loads__optional_kwargs(self):
+        cnf = TT.Parser.loads(self.cnf_s, as_class=dict)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_30_dumps(self):
         cnf = TT.Parser.loads(TT.Parser.dumps(self.cnf))
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_40_dump(self):
-        TT.Parser.dump(self.cnf, self.cpath)
+    def test_32_dump_w_special_option(self):
+        cnf = TT.Parser.loads(TT.Parser.dumps(self.cnf, check_keys=True))
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+
+class Test20(unittest.TestCase):
+
+    def setUp(self):
+        self.cnf = CNF_0
+        self.cnf_s = TT.bson.BSON.encode(self.cnf)
+        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.cpath = os.path.join(self.workdir, "test0.bson")
+        open(self.cpath, 'wb').write(self.cnf_s)
+
+    def tearDown(self):
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
+
+    def test_20_load(self):
         cnf = TT.Parser.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_42_dump_w_special_option(self):
-        TT.Parser.dump(self.cnf, self.cpath, check_keys=True)
+    def test_40_dump(self):
+        TT.Parser.dump(self.cnf, self.cpath)
         cnf = TT.Parser.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 

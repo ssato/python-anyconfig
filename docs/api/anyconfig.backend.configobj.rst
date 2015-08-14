@@ -1,5 +1,5 @@
 :mod:`anyconfig.backend.configobj`
-==================================
+===================================
 
 .. automodule:: anyconfig.backend.configobj
     :members:

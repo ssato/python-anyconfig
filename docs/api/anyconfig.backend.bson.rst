@@ -1,5 +1,5 @@
 :mod:`anyconfig.backend.bson`
-=================================
+==============================
 
 .. automodule:: anyconfig.backend.bson
     :members:

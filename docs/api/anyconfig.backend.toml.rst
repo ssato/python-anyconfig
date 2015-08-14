@@ -1,5 +1,5 @@
 :mod:`anyconfig.backend.toml`
-=================================
+==============================
 
 .. automodule:: anyconfig.backend.toml
     :members:
@@ -7,4 +7,3 @@
     :private-members:
     :undoc-members:
     :show-inheritance:
-

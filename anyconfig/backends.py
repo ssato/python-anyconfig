@@ -47,6 +47,12 @@ try:
 except ImportError:
     LOGGER.warn("toml module is not available. Disabled TOML support.")
 
+try:
+    import anyconfig.backend.bson
+    PARSERS.append(anyconfig.backend.bson.Parser)
+except ImportError:
+    LOGGER.warn("bson module in pymongo package is not available. "
+                "Disabled BSON support.")
 
 # pylint: disable=no-member
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):

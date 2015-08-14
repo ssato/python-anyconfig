@@ -20,7 +20,6 @@ try:
 except ImportError:  # That is, jinja2 module is not available.
     LOGGER.warn("Jinja2 is not available on your system, so template support "
                 "will be disabled.")
-
     def _render_s(content, *args, **kwargs):
         """Fallback function of anyconfig.template.render_s does nothing.
         """

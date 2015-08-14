@@ -31,26 +31,26 @@ def filter_keys(keys, filter_key):
     return [k for k in keys if k != filter_key]
 
 
-def yaml_load(fpath, **kwargs):
+def yaml_load(stream, **kwargs):
     """
     An wrapper of yaml.{safe_,}load
     """
     keys = filter_keys(kwargs.keys(), "safe")
     if kwargs.get("safe", False):
-        return yaml.safe_load(fpath, **Base.mk_opt_args(keys, kwargs))
+        return yaml.safe_load(stream, **Base.mk_opt_args(keys, kwargs))
     else:
-        return yaml.load(fpath, **kwargs)
+        return yaml.load(stream, **kwargs)
 
 
-def yaml_dump(data, fpath, **kwargs):
+def yaml_dump(data, stream, **kwargs):
     """
     An wrapper of yaml.{safe_,}dump
     """
     keys = filter_keys(kwargs.keys(), "safe")
     if kwargs.get("safe", False):
-        return yaml.safe_dump(data, fpath, **Base.mk_opt_args(keys, kwargs))
+        return yaml.safe_dump(data, stream, **Base.mk_opt_args(keys, kwargs))
     else:
-        return yaml.dump(data, fpath, **kwargs)
+        return yaml.dump(data, stream, **kwargs)
 
 
 class Parser(Base.Parser):
@@ -64,14 +64,14 @@ class Parser(Base.Parser):
     _dump_opts = ["stream", "Dumper"]
 
     @classmethod
-    def load_impl(cls, config_content, **kwargs):
+    def load_impl(cls, config_fp, **kwargs):
         """
-        :param config_content:  Config file content
+        :param config_fp:  Config file object
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: dict object holding config parameters
         """
-        return yaml_load(config_content, **kwargs)
+        return yaml_load(config_fp, **kwargs)
 
     @classmethod
     def dumps_impl(cls, data, **kwargs):

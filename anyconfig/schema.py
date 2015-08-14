@@ -116,24 +116,24 @@ def gen_schema(node, typemap=None):
     if typemap is None:
         typemap = _SIMPLETYPE_MAP
 
-    default = dict(type="null")
+    ret = dict(type="null")
 
     if node is None:
-        return default
+        return ret
 
     _type = type(node)
 
     if _type in _SIMPLE_TYPES:
-        return dict(type=typemap[_type])
+        ret = dict(type=typemap[_type])
 
     elif isinstance(node, dict):
         props = object_to_schema_nodes_iter(node, typemap)
-        return dict(type=typemap[dict], properties=dict(props))
+        ret = dict(type=typemap[dict], properties=dict(props))
 
     elif _type in (list, tuple) or hasattr(node, "__iter__"):
-        return dict(type=typemap[list],
-                    items=array_to_schema_node(node, typemap))
+        ret = dict(type=typemap[list],
+                   items=array_to_schema_node(node, typemap))
 
-    return default  # Default.
+    return ret
 
 # vim:sw=4:ts=4:et:

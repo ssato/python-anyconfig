@@ -54,22 +54,6 @@ _PARAM_PREFIX = "@"
 _IS_OLDER_PYTHON = sys.version_info[0] < 3 and sys.version_info[1] < 7
 
 
-def etree_getroot_fromstring(str_):
-    """
-    :param s: A XML string
-    :return: etree object gotten by parsing `str_`
-    """
-    return ET.ElementTree(ET.fromstring(str_)).getroot()
-
-
-def etree_getroot_fromsrc(src):
-    """
-    :param src: A file name/path or a file[-like] object or a URL
-    :return: etree object gotten by parsing ``s``
-    """
-    return ET.parse(src).getroot()
-
-
 def etree_to_container(root, cls, pprefix=_PARAM_PREFIX):
     """
     Convert XML ElementTree to a collection of container objects.
@@ -179,7 +163,7 @@ class Parser(anyconfig.backend.base.Parser):
 
         :return: cls.container() object holding config parameters
         """
-        root = etree_getroot_fromstring(config_content)
+        root = ET.ElementTree(ET.fromstring(config_content)).getroot()
         return etree_to_container(root, cls.container())
 
     @classmethod
@@ -190,7 +174,7 @@ class Parser(anyconfig.backend.base.Parser):
 
         :return: cls.container() object holding config parameters
         """
-        root = etree_getroot_fromsrc(config_path)
+        root = ET.parse(config_path).getroot()
         return etree_to_container(root, cls.container())
 
     @classmethod

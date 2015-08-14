@@ -3,6 +3,12 @@
 # License: MIT
 #
 """anyconfig.schema module.
+
+.. versionadded:: 0.0.11
+   Added new API :function:`gen_schema` to generate schema object
+
+.. versionadded:: 0.0.10
+   Added new API :function:`validate` to validate config with JSON schema
 """
 from __future__ import absolute_import
 import anyconfig.compat

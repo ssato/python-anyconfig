@@ -6,6 +6,8 @@
 #
 """MessagePack file backend.
 
+.. versionadded:: 0.0.11
+
 - Format to support: MessagePack, http://msgpack.org
 - Requirements: msgpack-python (https://pypi.python.org/pypi/msgpack-python)
 - Limitations: None obvious

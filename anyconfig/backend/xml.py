@@ -6,6 +6,9 @@
 # pylint: disable=import-error, abstract-method
 """XML files parser backend, should be available always.
 
+.. versionchanged:: 0.1.0
+   Added XML dump support.
+
 - Format to support: XML, e.g. http://www.w3.org/TR/xml11/
 - Requirements: one of the followings
 

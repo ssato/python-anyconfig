@@ -7,6 +7,8 @@
 # pylint: disable=unused-argument
 """TOML backend.
 
+.. versionadded:: 0.1.0
+
 - Format to support: TOML, https://github.com/toml-lang/toml
 - Requirements: (python) toml module, https://github.com/uiri/toml
 - Limitations: None obvious

@@ -126,8 +126,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README.rst
 %if 0%{?with_doc}
-%endif
 %doc docs/build/html
+%endif
 %{python_sitelib}/*
 %{_bindir}/anyconfig_cli
 %{_mandir}/*/*

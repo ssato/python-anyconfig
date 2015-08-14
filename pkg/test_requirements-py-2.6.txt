@@ -1,6 +1,6 @@
 PyYAML
 # Disabled until all errors during tests are resolved. 
-#Jinja2
+Jinja2
 configobj
 jsonschema
 coveralls

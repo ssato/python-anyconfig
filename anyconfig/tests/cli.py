@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
         try:
             TT.main(["dummy"] + ([] if args is None else args))
         except exc_cls as exc:
-            ecode = getattr(exc, "code", 1 if _not else 0)
+            ecode = getattr(exc, "code", -1)
             (self.assertNotEquals if _not else self.assertEquals)(ecode, code)
 
     def test_10__show_usage(self):

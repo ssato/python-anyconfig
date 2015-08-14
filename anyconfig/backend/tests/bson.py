@@ -13,10 +13,9 @@ import anyconfig.compat
 from anyconfig.tests.common import dicts_equal, to_bytes as _bytes
 
 
-CNF_0 = {_bytes("a"): 0.1,
-         _bytes("b"): _bytes("bbb"),
-         _bytes("sect0"): {_bytes("c"): [_bytes("x"), _bytes("y"),
-                                         _bytes("z")]}}
+CNF_0 = {"a": 0.1,
+         "b": _bytes("bbb"),
+         "sect0": {"c": [_bytes("x"), _bytes("y"), _bytes("z")]}}
 
 
 class Test(unittest.TestCase):

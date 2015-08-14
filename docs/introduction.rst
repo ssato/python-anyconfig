@@ -95,7 +95,7 @@ with using JSON schema like the followings:
   # If validatation suceeds, `rc` -> True, `err` -> ''.
   conf1 = anyconfig.load("/path/to/conf.json")
   schema1 = anyconfig.load("/path/to/schema.yaml")
-  (rc, err) = anyconfig.validate(conf1, schema1)  # err should be empty if success (rc == 0)
+  (rc, err) = anyconfig.validate(conf1, schema1)  # err is empty if success, rc == 0
 
   # Validate a config file (conf.yml) with JSON schema (schema.yml) while
   # loading the config file.
@@ -105,7 +105,8 @@ with using JSON schema like the followings:
   # (schema.json) while loading them.
   conf3 = anyconfig.load("conf.d/*.yml", ac_schema="/c/d/e/schema.json")
 
-  # Generate jsonschema object from config files loaded.
+  # Generate jsonschema object from config files loaded and get string
+  # representation.
   conf4 = anyconfig.load("conf.d/*.yml")
   scm4 = anyconfig.gen_schema(conf4)
   scm4_s = anyconfig.dumps(scm4, "json")
@@ -133,10 +134,10 @@ module is available and the corresponding backend is ready to use:
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
    Ini-like, ini, ``configparser`` (standard lib), Enabled by default.
    YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the requirement is satisfied.
-   XML, xml, ``lxml`` [#]_ or ``ElementTree`` (experimental), Likewise.
-   ConifgObj, configobj, ``configobj`` [#]_, Likewise.
-   MessagePack, msgpack, ``msgpack-python`` [#]_, Likewise.
-   TOML, toml, ``toml`` [#]_, Likewise.
+   XML, xml, ``lxml`` [#]_ or ``ElementTree``, Ditto.
+   ConifgObj, configobj, ``configobj`` [#]_, Ditto.
+   MessagePack, msgpack, ``msgpack-python`` [#]_, Ditto.
+   TOML, toml, ``toml`` [#]_, Ditto.
 
 The supported formats of python-anyconfig on your system is able to be listed
 by 'anyconfig_cli -L' like this:
@@ -144,7 +145,7 @@ by 'anyconfig_cli -L' like this:
 .. code-block:: console
 
   $ anyconfig_cli -L
-  Supported config types: configobj, ini, json, xml, yaml
+  Supported config types: configobj, ini, json, msgpack, toml, xml, yaml
   $
 
 or with the API 'anyconfig.list_types()' will show them: 
@@ -152,7 +153,7 @@ or with the API 'anyconfig.list_types()' will show them:
 .. code-block:: console
 
    In [8]: anyconfig.list_types()
-   Out[8]: ['configobj', 'ini', 'json', 'xml', 'yaml']
+   Out[8]: ['configobj', 'ini', 'json', 'msgpack', 'toml', 'xml', 'yaml']
 
    In [9]:
 

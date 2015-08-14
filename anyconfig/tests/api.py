@@ -11,6 +11,7 @@ import os.path
 import unittest
 
 import anyconfig.api as TT
+import anyconfig.template
 import anyconfig.tests.common
 
 from anyconfig.tests.common import CNF_0, SCM_0, dicts_equal
@@ -18,12 +19,6 @@ from anyconfig.tests.common import CNF_0, SCM_0, dicts_equal
 import anyconfig.backend.ini
 import anyconfig.backend.json
 import anyconfig.backend.xml
-
-try:
-    import anyconfig.template
-    TEMPLATE_SUPPORT = True
-except ImportError:
-    TEMPLATE_SUPPORT = False
 
 try:
     import anyconfig.backend.yaml as BYAML
@@ -114,7 +109,7 @@ class Test10(unittest.TestCase):
         self.assertEquals(a1["requires"], a["requires"])
 
     def test_44_loads_w_type__template(self):
-        if not TEMPLATE_SUPPORT:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(requires=["bash", "zsh"])
@@ -127,7 +122,7 @@ class Test10(unittest.TestCase):
         self.assertEquals(a1["requires"], a["requires"])
 
     def test_46_loads_w_type__broken_template(self):
-        if not TEMPLATE_SUPPORT:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(requires="{% }}", )
@@ -190,7 +185,7 @@ class Test20(unittest.TestCase):
                           null_cntnr)
 
     def test_16_single_load__template(self):
-        if not TEMPLATE_SUPPORT:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -214,7 +209,7 @@ b:
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
 
     def test_18_single_load__templates(self):
-        if not TEMPLATE_SUPPORT:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -350,7 +345,7 @@ b:
                           null_cntnr)
 
     def test_24_multi_load__templates(self):
-        if not TEMPLATE_SUPPORT:
+        if not anyconfig.template.SUPPORTED:
             return
 
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

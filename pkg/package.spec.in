@@ -127,7 +127,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Fri Aug 14 2015 Satoru SATOH <ssato@redhat.com> - 0.1.0-1
+* Sat Aug 15 2015 Satoru SATOH <ssato@redhat.com> - 0.1.0-1
 - add BSON support
 - add TOML support
 - fix XML load and dump functions

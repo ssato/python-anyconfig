@@ -4,6 +4,7 @@
 .. toctree::
 
    anyconfig.backend.base
+   anyconfig.backend.bson
    anyconfig.backend.configobj
    anyconfig.backend.ini
    anyconfig.backend.json

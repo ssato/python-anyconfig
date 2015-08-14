@@ -15,9 +15,10 @@
 
 - Limitations:
 
-  - 'attrs', 'text' and 'children' are used as special keyword to keep XML
-    structure of config data so that these are not allowed to used in config
-    files.
+  - '<prefix>attrs', '<prefix>text' and '<prefix>children' are used as special
+    parameter to keep XML structure of original data. You have to cusomize
+    <prefix> (default: '@') if any config parameters conflict with some of
+    them.
 
   - Some data or structures of original XML file may be lost if make it backed
     to XML file; XML file - (anyconfig.load) -> config - (anyconfig.dump) ->
@@ -43,6 +44,9 @@ except ImportError:
         import elementtree.ElementTree as ET
 
 
+_PARAM_PREFIX = "@"
+
+
 def etree_getroot_fromstring(str_):
     """
     :param s: A XML string
@@ -59,17 +63,16 @@ def etree_getroot_fromsrc(src):
     return ET.parse(src).getroot()
 
 
-def etree_to_container(root, cls, attrs="@attrs", text="@text",
-                       children="@children"):
+def etree_to_container(root, cls, pprefix=_PARAM_PREFIX):
     """
     Convert XML ElementTree to a collection of container objects.
 
     :param root: etree root object or None
     :param cls: Container class
-    :param attrs: Key name for XML attributes
-    :param text: Key name for XML text elements
-    :param children: Key name for XML child elements
+    :param pprefix: Special parameter name prefix
     """
+    (attrs, text, children) = [pprefix + x for x in ("attrs", "text",
+                                                     "children")]
     tree = cls()
     if root is None:
         return tree
@@ -85,23 +88,20 @@ def etree_to_container(root, cls, attrs="@attrs", text="@text",
     if len(root):  # It has children.
         # Note: Configuration item cannot have both attributes and values
         # (list) at the same time in current implementation:
-        tree[root.tag][children] = [etree_to_container(c, cls, attrs, text,
-                                                       children) for c in root]
+        tree[root.tag][children] = [etree_to_container(c, cls, pprefix)
+                                    for c in root]
 
     return tree
 
 
-def container_to_etree(obj, cls, parent=None, attrs="@attrs", text="@text",
-                       children="@children"):
+def container_to_etree(obj, cls, parent=None, pprefix=_PARAM_PREFIX):
     """
     Convert a container object to XML ElementTree.
 
     :param obj: Container instance to convert to
     :param cls: Container class
     :param parent: XML ElementTree parent node object or None
-    :param attrs: Key name for XML attributes
-    :param text: Key name for XML text elements
-    :param children: Key name for XML child elements
+    :param pprefix: Special parameter name prefix
 
     >>> obj = {'config': {'@attrs': {'name': 'foo'},
     ...                   '@children': [{'a': {'@text': '0'}},
@@ -117,6 +117,8 @@ def container_to_etree(obj, cls, parent=None, attrs="@attrs", text="@text",
     if not isinstance(obj, (cls, dict)):
         return  # All attributes and text should be set already.
 
+    (attrs, text, children) = [pprefix + x for x in ("attrs", "text",
+                                                     "children")]
     for key, val in anyconfig.compat.iteritems(obj):
         if key == attrs:
             for attr, aval in anyconfig.compat.iteritems(val):
@@ -127,11 +129,11 @@ def container_to_etree(obj, cls, parent=None, attrs="@attrs", text="@text",
             for child in val:  # child should be a dict-like object.
                 for ckey, cval in anyconfig.compat.iteritems(child):
                     celem = ET.Element(ckey)
-                    container_to_etree(cval, cls, celem, attrs, text, children)
+                    container_to_etree(cval, cls, celem, pprefix)
                     parent.append(celem)
         else:
             elem = ET.Element(key)
-            container_to_etree(val, cls, elem, attrs, text, children)
+            container_to_etree(val, cls, elem, pprefix)
             return ET.ElementTree(elem)
 
 

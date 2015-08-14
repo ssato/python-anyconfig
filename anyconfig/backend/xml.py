@@ -2,8 +2,8 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# Some of XML backend modules may be missing:
-# pylint: disable=import-error
+# Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
+# pylint: disable=import-error, abstract-method
 """XML files parser backend, should be available always.
 
 - Format to support: XML, e.g. http://www.w3.org/TR/xml11/
@@ -31,6 +31,8 @@
 from __future__ import absolute_import
 from io import BytesIO
 
+import sys
+
 import anyconfig.backend.base
 import anyconfig.compat
 
@@ -46,6 +48,10 @@ except ImportError:
 
 
 _PARAM_PREFIX = "@"
+
+# It seems that ET.ElementTree.write() cannot process a parameter
+# 'xml_declaration' in older python < 2.7:
+_IS_OLDER_PYTHON = sys.version_info[0] < 3 and sys.version_info[1] < 7
 
 
 def etree_getroot_fromstring(str_):
@@ -144,6 +150,19 @@ def container_to_etree(obj, cls, parent=None, pprefix=_PARAM_PREFIX):
             return ET.ElementTree(elem)
 
 
+def etree_write(tree, stream):
+    """
+    Write XML ElementTree `root` content into `stream`.
+
+    :param tree: XML ElementTree object
+    :param stream: File or file-like object can write to
+    """
+    if _IS_OLDER_PYTHON:
+        tree.write(stream, encoding='UTF-8')
+    else:
+        tree.write(stream, encoding='UTF-8', xml_declaration=True)
+
+
 class Parser(anyconfig.backend.base.Parser):
     """
     Parser for XML files.
@@ -182,9 +201,9 @@ class Parser(anyconfig.backend.base.Parser):
 
         :return: string represents the configuration
         """
-        root = container_to_etree(obj, cls.container())
+        tree = container_to_etree(obj, cls.container())
         buf = BytesIO()
-        root.write(buf, encoding='UTF-8', xml_declaration=True)
+        etree_write(tree, buf)
         return buf.getvalue()
 
     @classmethod
@@ -194,8 +213,8 @@ class Parser(anyconfig.backend.base.Parser):
         :param config_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        root = container_to_etree(obj, cls.container())
+        tree = container_to_etree(obj, cls.container())
         with open(config_path, cls._open_flags[1]) as out:
-            root.write(out, encoding='UTF-8', xml_declaration=True)
+            etree_write(tree, out)
 
 # vim:sw=4:ts=4:et:

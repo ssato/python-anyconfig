@@ -10,3 +10,4 @@ pep8
 pylint
 msgpack-python
 toml
+pymongo

@@ -29,17 +29,19 @@ class Test(unittest.TestCase):
     def tearDown(self):
         C.cleanup_workdir(self.workdir)
 
-    def run_and_check_exit_code(self, args=None, code=0, _not=False):
+    def run_and_check_exit_code(self, args=None, code=0, _not=False,
+                                exc_cls=SystemExit):
         try:
             TT.main(["dummy"] + ([] if args is None else args))
-        except SystemExit as exc:
-            if _not:
-                self.assertNotEquals(exc.code, code)
-            else:
-                self.assertEquals(exc.code, code)
+        except exc_cls as exc:
+            ecode = getattr(exc, "code", 1 if _not else 0)
+            (self.assertNotEquals if _not else self.assertEquals)(ecode, code)
 
     def test_10__show_usage(self):
         self.run_and_check_exit_code(["--help"])
+
+    def test_11__wo_args(self):
+        self.run_and_check_exit_code(_not=True)
 
     def test_12__wrong_option(self):
         self.run_and_check_exit_code(["--wrong-option-xyz"], _not=True)
@@ -61,6 +63,10 @@ class Test(unittest.TestCase):
 
         TT.main(["dummy", "-o", output, infile])
         self.assertTrue(os.path.exists(output))
+
+    def test_31__single_input_wo_input_type(self):
+        self.run_and_check_exit_code(["a.conf"], _not=True,
+                                     exc_cls=RuntimeError)
 
     def test_32_single_input_w_get_option(self):
         d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))

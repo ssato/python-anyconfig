@@ -84,6 +84,13 @@ def dicts_equal(lhs, rhs):
     return True
 
 
+def to_bytes(astr):
+    """
+    Convert a string to bytes. Do nothing in python 2.6.
+    """
+    return bytes(astr, 'utf-8') if anyconfig.compat.IS_PYTHON_3 else astr
+
+
 class MaskedImportLoader(object):
     """
     Mask specified module[s] and block importing that module / these modules to

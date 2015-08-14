@@ -11,11 +11,7 @@ import anyconfig.backend.msgpack as TT
 import anyconfig.tests.common
 import anyconfig.compat
 
-from anyconfig.tests.common import dicts_equal
-
-
-def _bytes(astr):
-    return bytes(astr, 'utf-8') if anyconfig.compat.IS_PYTHON_3 else astr
+from anyconfig.tests.common import dicts_equal, to_bytes as _bytes
 
 
 CNF_0 = {_bytes("a"): 0.1,

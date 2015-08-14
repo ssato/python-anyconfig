@@ -29,6 +29,7 @@
 - Special Options: None supported
 """
 from __future__ import absolute_import
+from io import BytesIO
 
 import anyconfig.backend.base
 import anyconfig.compat
@@ -108,10 +109,16 @@ def container_to_etree(obj, cls, parent=None, pprefix=_PARAM_PREFIX):
     ...                                 {'b': {'@attrs': {'id': 'b0'},
     ...                                        '@text': 'bbb'}}]}}
     >>> tree = container_to_etree(obj, Parser.container())
-    >>> buf = anyconfig.compat.StringIO()
+    >>> buf = BytesIO()
     >>> tree.write(buf)
-    >>> buf.getvalue()
-    '<config name="foo"><a>0</a><b id="b0">bbb</b></config>'
+    >>> def b(s):
+    ...     if anyconfig.compat.IS_PYTHON_3:
+    ...         return bytes(s, 'utf-8')
+    ...     else:
+    ...         return s  # Do nothing with it.
+    >>> ref = b('<config name="foo"><a>0</a><b id="b0">bbb</b></config>')
+    >>> buf.getvalue() == ref
+    True
     >>>
     """
     if not isinstance(obj, (cls, dict)):
@@ -143,6 +150,7 @@ class Parser(anyconfig.backend.base.Parser):
     """
     _type = "xml"
     _extensions = ["xml"]
+    _open_flags = ('rb', 'wb')
 
     @classmethod
     def loads(cls, config_content, **kwargs):
@@ -175,7 +183,7 @@ class Parser(anyconfig.backend.base.Parser):
         :return: string represents the configuration
         """
         root = container_to_etree(obj, cls.container())
-        buf = anyconfig.compat.StringIO()
+        buf = BytesIO()
         root.write(buf, encoding='UTF-8', xml_declaration=True)
         return buf.getvalue()
 

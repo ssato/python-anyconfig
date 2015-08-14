@@ -10,11 +10,15 @@ import unittest
 
 import anyconfig.cli as TT
 import anyconfig.api as A
-import anyconfig.template
 import anyconfig.tests.common as C
 
 from anyconfig.tests.common import CNF_0
 
+try:
+    import anyconfig.template  # unused-import.
+    TEMPLATE_SUPPORT = bool(anyconfig.template.render)
+except ImportError:
+    TEMPLATE_SUPPORT = False
 
 CNF_0_PATH = os.path.join(C.selfdir(), "00-cnf.yml")
 SCM_0_PATH = os.path.join(C.selfdir(), "00-scm.yml")
@@ -183,7 +187,7 @@ class Test(unittest.TestCase):
         self.run_and_check_exit_code(["--itype", "json", infile], 0)
 
     def test_70_multi_inputs__w_template(self):
-        if not anyconfig.template.SUPPORTED:
+        if not TEMPLATE_SUPPORT:
             return
 
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -222,7 +226,7 @@ b:
         self.assertTrue(os.path.exists(output))
 
     def test_74_multi_inputs__w_template(self):
-        if not anyconfig.template.SUPPORTED:
+        if not TEMPLATE_SUPPORT:
             return
 
         curdir = C.selfdir()

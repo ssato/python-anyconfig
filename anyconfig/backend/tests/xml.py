@@ -55,19 +55,16 @@ class Test(unittest.TestCase):
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_20_load(self):
-        """FIXME: Implement test cases for Parser.load"""
-        # c = TT.Parser.load(self.cpath)["config"]
+        cnf = TT.Parser.load(self.cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-        # self.assertEquals(c['a'], 0, str(c))
-        # self.assertEquals(c['b'], "bbb", c)
-        pass
+    def test_30_dumps(self):
+        cnf = TT.Parser.loads(TT.Parser.dumps(self.cnf))
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_30_dumps_impl(self):
-        try:
-            TT.Parser.dumps_impl({})
-            raise RuntimeError("test_30_dumps_impl: "
-                               "NotImplementedError was not raised!")
-        except NotImplementedError:
-            pass
+    def test_40_dump(self):
+        TT.Parser.dump(self.cnf, self.cpath)
+        cnf = TT.Parser.load(self.cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

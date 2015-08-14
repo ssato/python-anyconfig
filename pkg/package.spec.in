@@ -127,6 +127,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Aug 14 2015 Satoru SATOH <ssato@redhat.com> - 0.1.0-1
+- add BSON support
+- add TOML support
+- fix XML load and dump functions
+- clean up test cases
+- some more minor possible bug fixes found by pylint and flake8
+
 * Mon Aug 10 2015 Satoru SATOH <ssato@redhat.com> - 0.0.13-1
 - fix up broken PyPI description page
 

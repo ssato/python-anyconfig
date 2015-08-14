@@ -13,15 +13,8 @@ import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.mergeabledict
 import anyconfig.parser
+import anyconfig.template
 import anyconfig.utils
-
-try:
-    from anyconfig.template import render as _render, render_s as _render_s
-except ImportError:  # That is, jinja2 module is not available.
-    LOGGER.warn("Jinja2 is not available on your system, so template support "
-                "will be disabled.")
-    _render_s = lambda content, *args, **kwargs: content
-    _render = lambda cpath, *args, **kws: anyconfig.compat.copen(cpath).read()
 
 # Import some global constants will be re-exported:
 from anyconfig.mergeabledict import (
@@ -122,7 +115,8 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
     if ac_template:
         try:
             LOGGER.debug("Compiling: %s", config_path)
-            config = cparser.loads(_render(config_path, ac_context),
+            config_content = anyconfig.template.render(config_path, ac_context)
+            config = cparser.loads(config_content,
                                    ignore_missing=ignore_missing, **kwargs)
             if ac_schema is not None:
                 if not _validate(config, schema, format_checker):
@@ -283,7 +277,8 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
     if ac_template:
         try:
             LOGGER.debug("Compiling")
-            config_content = _render_s(config_content, ac_context)
+            config_content = anyconfig.template.render_s(config_content,
+                                                         ac_context)
         except Exception as exc:
             LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile and fallback to no template "

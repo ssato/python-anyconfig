@@ -24,10 +24,13 @@ import bson
 import anyconfig.backend.base
 
 
-if bson._use_c:
-    _LOAD_OPTS = []  # No keyword args are permitted for decode_all().
-else:
-    _LOAD_OPTS = ["as_class", "tz_aware", "uuid_subtype"]
+try:
+    if bson._use_c:
+        _LOAD_OPTS = []  # No keyword args are permitted for decode_all().
+    else:
+        _LOAD_OPTS = ["as_class", "tz_aware", "uuid_subtype"]
+except AttributeError:  # _use_c looks missing in python 3 version.
+    _LOAD_OPTS = []  # Keep it empty until making sure valid options.
 
 
 class Parser(anyconfig.backend.base.Parser):

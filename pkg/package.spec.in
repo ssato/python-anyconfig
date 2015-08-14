@@ -1,18 +1,21 @@
 %if 0%{?rhel} && 0%{?rhel} < 5
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %{!?python_version: %global python_version %(%{__python} -c "import sys ; print sys.version[:3]")}
-%else
-%global with_jsonschema 1
 %endif
-
-# TODO:
-%global with_msgpack 0
 
 %{!?python3_version: %global python3_version %(%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])")}
 
 %if 0%{?fedora}
 %global with_python3 1
+%global with_doc 1
+%global with_extras 1
+%else
+%global with_python3 0
+%global with_doc 0
+%global with_extras 0
 %endif
+
+%global with_optionals 0
 
 # disable debuginfo
 %define debug_package %{nil}
@@ -31,21 +34,25 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
+%if 0%{?with_doc}
 BuildRequires:  python-docutils
 BuildRequires:  python-sphinx
 BuildRequires:  make
+%endif
 Requires:       PyYAML
-# FIXME: How to add weak dependency ?
-#Requires:       python-jinja2
 Requires:       python-setuptools
-%if 0%{?with_jsonschema}
-Requires:       python-jsonschema
-%endif
-%if 0%{?with_msgpack}
-Requires:       python-msgpack
-%endif
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:       python-simplejson
+%endif
+%if 0%{?with_extras}
+Requires:       python-jinja2
+Requires:       python-jsonschema
+%endif
+%if 0%{?with_optionals}
+Requires:       python-bson
+Requires:       python-configobj
+Requires:       python-msgpack
+Requires:       python-toml
 %endif
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
@@ -61,14 +68,17 @@ formats such like INI, JSON and YAML.
 Summary:        Generic access to configuration files in some formats
 Group:          Development/Libraries
 Requires:       python3-PyYAML
-# FIXME: Likewise
-#Requires:       python3-jinja2
 Requires:       python3-setuptools
-%if 0%{?with_jsonschema}
+%if 0%{?with_extras}
+Requires:       python3-jinja2
 Requires:       python3-jsonschema
 %endif
-%if 0%{?with_msgpack}
+%if 0%{?with_optionals}
 Requires:       python3-msgpack
+Requires:       python3-bson
+Requires:       python3-configobj
+Requires:       python3-msgpack
+Requires:       python3-toml
 %endif
 
 %description -n python3-%{pkgname}
@@ -86,7 +96,9 @@ cp -a . %{py3dir}
 
 %build
 %{__python} setup.py build
+%if 0%{?with_doc}
 make -C docs/ html
+%endif
 
 %if 0%{?with_python3}
 pushd %{py3dir}
@@ -113,6 +125,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc README.rst
+%if 0%{?with_doc}
+%endif
 %doc docs/build/html
 %{python_sitelib}/*
 %{_bindir}/anyconfig_cli
@@ -131,6 +145,8 @@ rm -rf $RPM_BUILD_ROOT
 - add BSON support
 - add TOML support
 - fix XML load and dump functions
+- only build HTML doc for fedora
+- clean up the RPM SPEC to sort out requirements
 - clean up test cases
 - some more minor possible bug fixes found by pylint and flake8
 

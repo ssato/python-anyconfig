@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=unused-import, import-error, invalid-name, unused-argument
+# pylint: disable=unused-import,import-error,invalid-name
 """Public APIs of anyconfig module.
 """
 from __future__ import absolute_import
@@ -20,17 +20,8 @@ try:
 except ImportError:  # That is, jinja2 module is not available.
     LOGGER.warn("Jinja2 is not available on your system, so template support "
                 "will be disabled.")
-    def _render_s(content, *args, **kwargs):
-        """Fallback function of anyconfig.template.render_s does nothing.
-        """
-        return content
-
-    def _render(cpath, *args, **kwargs):
-        """
-        Fallback function of anyconfig.template.render just reads the content
-        of given file and returns it.
-        """
-        return anyconfig.compat.copen(cpath).read()
+    _render_s = lambda content, *args, **kwargs: content
+    _render = lambda cpath, *args, **kws: anyconfig.compat.copen(cpath).read()
 
 # Import some global constants will be re-exported:
 from anyconfig.mergeabledict import (

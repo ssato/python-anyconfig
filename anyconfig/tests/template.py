@@ -8,12 +8,8 @@ import os
 import mock
 import unittest
 
+import anyconfig.template as TT
 import anyconfig.tests.common
-
-try:
-    import anyconfig.template as TT
-except ImportError:
-    TT = None
 
 
 C_1 = """A char is 'a'.
@@ -27,40 +23,44 @@ A char is '{{ c }}'.
 {% endfor %}
 """, C_1)]
 
-if TT is not None:
-    class Test(unittest.TestCase):
 
-        templates = TMPLS
+class Test(unittest.TestCase):
 
-        def setUp(self):
-            self.workdir = anyconfig.tests.common.setup_workdir()
-            for fname, tmpl_s, _ctx in self.templates:
-                fpath = os.path.join(self.workdir, fname)
-                open(fpath, 'w').write(tmpl_s)
+    templates = TMPLS
 
-        def tearDown(self):
-            anyconfig.tests.common.cleanup_workdir(self.workdir)
+    def setUp(self):
+        self.workdir = anyconfig.tests.common.setup_workdir()
+        for fname, tmpl_s, _ctx in self.templates:
+            fpath = os.path.join(self.workdir, fname)
+            open(fpath, 'w').write(tmpl_s)
 
-        def test_10_render_impl__wo_paths(self):
+    def tearDown(self):
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
+
+    def test_10_render_impl__wo_paths(self):
+        if TT.SUPPORTED:
             for fname, _str, ctx in self.templates:
                 fpath = os.path.join(self.workdir, fname)
                 c_r = TT.render_impl(fpath)
                 self.assertEquals(c_r, ctx)
 
-        def test_12_render_impl__w_paths(self):
+    def test_12_render_impl__w_paths(self):
+        if TT.SUPPORTED:
             for fname, _str, ctx in self.templates:
                 fpath = os.path.join(self.workdir, fname)
                 c_r = TT.render_impl(os.path.basename(fpath),
                                      paths=[os.path.dirname(fpath)])
                 self.assertEquals(c_r, ctx)
 
-        def test_20_render__wo_paths(self):
+    def test_20_render__wo_paths(self):
+        if TT.SUPPORTED:
             for fname, _str, ctx in self.templates:
                 fpath = os.path.join(self.workdir, fname)
                 c_r = TT.render(fpath)
                 self.assertEquals(c_r, ctx)
 
-        def test_22_render__w_wrong_tpath(self):
+    def test_22_render__w_wrong_tpath(self):
+        if TT.SUPPORTED:
             mpt = "anyconfig.compat.raw_input"
 
             ng_t = os.path.join(self.workdir, "ng.j2")
@@ -75,7 +75,8 @@ if TT is not None:
                 c_r = TT.render(ng_t, ctx, ask=True)
                 self.assertEquals(c_r, ok_content)
 
-        def test_24_render__wo_paths(self):
+    def test_24_render__wo_paths(self):
+        if TT.SUPPORTED:
             fname = self.templates[0][0]
             assert os.path.exists(os.path.join(self.workdir, fname))
 
@@ -88,7 +89,8 @@ if TT is not None:
             c_r = TT.render(tmpl)
             self.assertEquals(c_r, "aaa")
 
-        def test_25_render__w_prefer_paths(self):
+    def test_25_render__w_prefer_paths(self):
+        if TT.SUPPORTED:
             fname = self.templates[0][0]
             assert os.path.exists(os.path.join(self.workdir, fname))
 

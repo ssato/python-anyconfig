@@ -8,17 +8,36 @@
 """
 from __future__ import absolute_import
 
-import jinja2
+import logging
 import os
 
 import anyconfig.compat
 
+LOGGER = logging.getLogger(__name__)
+SUPPORTED = False
+try:
+    import jinja2
+    from jinja2.exceptions import TemplateNotFound
 
-def tmpl_env(paths):
-    """
-    :param paths: A list of template search paths
-    """
-    return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
+    SUPPORTED = True
+
+    def tmpl_env(paths):
+        """
+        :param paths: A list of template search paths
+        """
+        return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
+
+except ImportError:
+    LOGGER.warn("Jinja2 is not available on your system, so "
+                "template support will be disabled.")
+
+    class TemplateNotFound(RuntimeError):
+        """Dummy exception"""
+        pass
+
+    def tmpl_env(*args):
+        """Dummy function"""
+        return None
 
 
 def make_template_paths(template_file, paths=None):
@@ -56,8 +75,8 @@ def render_s(tmpl_s, ctx=None, paths=None):
     :param paths: Template search paths
 
     >>> s = render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
-    >>> s == 'a = 1, b = "bbb"'
-    True
+    >>> if SUPPORTED:
+    ...     assert s == 'a = 1, b = "bbb"'
     """
     if paths is None:
         paths = [os.curdir]
@@ -100,7 +119,7 @@ def render(filepath, ctx=None, paths=None, ask=False):
     """
     try:
         return render_impl(filepath, ctx, paths)
-    except jinja2.TemplateNotFound as mtmpl:
+    except TemplateNotFound as mtmpl:
         if not ask:
             raise RuntimeError("Template Not found: " + str(mtmpl))
 

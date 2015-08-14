@@ -4,6 +4,7 @@ PyYAML
 configobj
 jsonschema
 coveralls
+lxml
 # flake8  # disabled until 'pkg_resources.VersionConflict' error.
 mock
 nose

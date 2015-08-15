@@ -74,6 +74,11 @@ class Test(unittest.TestCase):
             with mock.patch(mpt, return_value=ok_t):
                 c_r = TT.render(ng_t, ctx, ask=True)
                 self.assertEquals(c_r, ok_content)
+            try:
+                TT.render(ng_t, ctx, ask=False)
+                assert False  # force raising an exception.
+            except RuntimeError:
+                pass
 
     def test_24_render__wo_paths(self):
         if TT.SUPPORTED:

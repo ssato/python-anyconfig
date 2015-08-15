@@ -2,7 +2,7 @@
 # Copyright (C) 2012 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring, invalid-name
 from __future__ import absolute_import
 
 import copy
@@ -57,7 +57,11 @@ class Test00(unittest.TestCase):
         cnf = TT.etree_to_container(self.root, TT.Parser.container())
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_20_container_to_etree(self):
+    def test_20_container_to_etree__empty(self):
+        # This should not happen but just in case.
+        self.assertTrue(TT.container_to_etree("aaa", dict) is None)
+
+    def test_22_container_to_etree(self):
         tree = TT.container_to_etree(self.cnf, TT.Parser.container())
         buf = TT.BytesIO()
         tree.write(buf)

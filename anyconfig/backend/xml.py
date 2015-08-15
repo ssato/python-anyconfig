@@ -96,23 +96,6 @@ def container_to_etree(obj, cls, parent=None, pprefix=_PARAM_PREFIX):
     :param cls: Container class
     :param parent: XML ElementTree parent node object or None
     :param pprefix: Special parameter name prefix
-
-    >>> obj = {'config': {'@attrs': {'name': 'foo'},
-    ...                   '@children': [{'a': {'@text': '0'}},
-    ...                                 {'b': {'@attrs': {'id': 'b0'},
-    ...                                        '@text': 'bbb'}}]}}
-    >>> tree = container_to_etree(obj, Parser.container())
-    >>> buf = BytesIO()
-    >>> tree.write(buf)
-    >>> def b(s):
-    ...     if anyconfig.compat.IS_PYTHON_3:
-    ...         return bytes(s, 'utf-8')
-    ...     else:
-    ...         return s  # Do nothing with it.
-    >>> ref = b('<config name="foo"><a>0</a><b id="b0">bbb</b></config>')
-    >>> buf.getvalue() == ref
-    True
-    >>>
     """
     if not isinstance(obj, (cls, dict)):
         return  # All attributes and text should be set already.

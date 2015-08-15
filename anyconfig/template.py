@@ -88,11 +88,11 @@ def render_s(tmpl_s, ctx=None, paths=None):
 
     if env is None:
         return tmpl_s
-    else:
-        if ctx is None:
-            ctx = {}
 
-        return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
+    if ctx is None:
+        ctx = {}
+
+    return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
 
 
 def render_impl(template_file, ctx=None, paths=None):
@@ -104,11 +104,11 @@ def render_impl(template_file, ctx=None, paths=None):
 
     if env is None:
         return anyconfig.compat.copen(template_file).read()
-    else:
-        if ctx is None:
-            ctx = {}
 
-        return env.get_template(os.path.basename(template_file)).render(**ctx)
+    if ctx is None:
+        ctx = {}
+
+    return env.get_template(os.path.basename(template_file)).render(**ctx)
 
 
 def render(filepath, ctx=None, paths=None, ask=False):

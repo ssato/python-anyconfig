@@ -125,8 +125,8 @@ class Test(unittest.TestCase):
 
     def test_38_single_input__gen_schema_and_validate_with_it(self):
         cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        infile = os.path.join(os.curdir, "cnf.json")
-        output = os.path.join(os.curdir, "out.yaml")
+        infile = os.path.join(self.workdir, "cnf.json")
+        output = os.path.join(self.workdir, "out.yaml")
         A.dump(cnf, infile)
 
         self.run_and_check_exit_code(["--gen-schema", "-o", output, infile], 0)

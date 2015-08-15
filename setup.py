@@ -7,7 +7,7 @@ import subprocess
 
 
 PACKAGE = "anyconfig"
-VERSION = "0.0.13"  # see anyconfig.globals.VERSION
+VERSION = "0.1.0"  # see anyconfig.globals.VERSION
 
 # For daily snapshot versioning mode:
 if os.environ.get("_SNAPSHOT_BUILD", None) is not None:

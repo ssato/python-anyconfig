@@ -26,7 +26,7 @@ except ImportError:
     BYAML = None
 
 
-class Test10(unittest.TestCase):
+class Test_10_find_loader(unittest.TestCase):
 
     def test_10_find_loader__w_forced_type(self):
         cpath = "dummy.conf"
@@ -66,33 +66,23 @@ class Test10(unittest.TestCase):
         TT.set_loglevel(CRITICAL)
         self.assertEquals(TT.find_loader("dummy.ext_not_found"), None)
 
-    def test_30_dumps_and_loads(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        a1 = TT.loads(TT.dumps(a, "json"), "json")
 
-        self.assertEquals(a1["name"], a["name"])
-        self.assertEquals(a1["a"], a["a"])
-        self.assertEquals(a1["b"]["b"], a["b"]["b"])
-        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+class Test_20_dumps_and_loads(unittest.TestCase):
+
+    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+
+    def test_30_dumps_and_loads(self):
+        cnf = TT.loads(TT.dumps(self.cnf, "json"), "json")
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_30_dumps_and_loads__w_options(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        a1 = TT.loads(TT.dumps(a, "json", indent=2), "json",
-                      ensure_ascii=False)
-
-        self.assertEquals(a1["name"], a["name"])
-        self.assertEquals(a1["a"], a["a"])
-        self.assertEquals(a1["b"]["b"], a["b"]["b"])
-        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+        cnf = TT.loads(TT.dumps(self.cnf, "json", indent=2), "json",
+                       ensure_ascii=False)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_32_dumps_and_loads__w_options__no_dumper(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        a1 = TT.loads(TT.dumps(a, "type_not_exist"), "json")
-
-        self.assertEquals(a1["name"], a["name"])
-        self.assertEquals(a1["a"], a["a"])
-        self.assertEquals(a1["b"]["b"], a["b"]["b"])
-        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+        cnf = TT.loads(TT.dumps(self.cnf, "type_not_exist"), "json")
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_40_loads_wo_type(self):
         a = dict(requires=["bash", "zsh"])
@@ -150,7 +140,9 @@ class Test10(unittest.TestCase):
         self.assertTrue(cnf_2 is None, cnf_2)
 
 
-class Test20(unittest.TestCase):
+class Test30(unittest.TestCase):
+
+    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
@@ -159,19 +151,13 @@ class Test20(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_dump_and_single_load(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        cpath = os.path.join(self.workdir, "a.json")
 
-        a_path = os.path.join(self.workdir, "a.json")
+        TT.dump(self.cnf, cpath)
+        self.assertTrue(os.path.exists(cpath))
+        cnf1 = TT.single_load(cpath)
 
-        TT.dump(a, a_path)
-        self.assertTrue(os.path.exists(a_path))
-
-        a1 = TT.single_load(a_path)
-
-        self.assertEquals(a1["name"], a["name"])
-        self.assertEquals(a1["a"], a["a"])
-        self.assertEquals(a1["b"]["b"], a["b"]["b"])
-        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+        self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
 
     def test_12_dump_and_single_load__no_parser(self):
         self.assertEquals(TT.single_load("dummy.ext_not_exist"), None)
@@ -184,14 +170,23 @@ class Test20(unittest.TestCase):
         self.assertEquals(TT.single_load(cpath, "ini", ignore_missing=True),
                           null_cntnr)
 
+    def test_15_single_load__fail_to_render_template(self):
+        if not anyconfig.template.SUPPORTED:
+            return
+
+        cnf_s = "name: '{{ name'"  # Should cause template renering error.
+        cpath = os.path.join(self.workdir, "a.yaml")
+        open(cpath, 'w').write(cnf_s)
+
+        cnf = TT.single_load(cpath, ac_template=True, ac_context=dict(a=1))
+        self.assertEquals(cnf["name"], "{{ name")
+
     def test_16_single_load__template(self):
         if not anyconfig.template.SUPPORTED:
             return
 
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        a_path = os.path.join(self.workdir, "a.yaml")
-
-        open(a_path, 'w').write("""name: {{ name|default('a') }}
+        cpath = os.path.join(self.workdir, "a.yaml")
+        open(cpath, 'w').write("""name: {{ name|default('a') }}
 a: {{ a }}
 b:
     b:
@@ -201,18 +196,20 @@ b:
     c: {{ b.c }}
 """)
 
-        a1 = TT.single_load(a_path, ac_template=True, ac_context=a)
+        cnf = TT.single_load(cpath, ac_template=True, ac_context=self.cnf)
+        self.assertTrue(dicts_equal(self.cnf, cnf), str(cnf))
 
-        self.assertEquals(a1["name"], a["name"])
-        self.assertEquals(a1["a"], a["a"])
-        self.assertEquals(a1["b"]["b"], a["b"]["b"])
-        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+        spath = os.path.join(self.workdir, "scm.json")
+        TT.dump(dict(type="integer"), spath)  # Validation should fail.
+
+        cnf2 = TT.single_load(cpath, ac_template=True, ac_context=self.cnf,
+                              ac_schema=spath)
+        self.assertTrue(cnf2 is None)
 
     def test_18_single_load__templates(self):
         if not anyconfig.template.SUPPORTED:
             return
 
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         a_path = os.path.join(self.workdir, "a.yml")
         b_path = os.path.join(self.workdir, "b.yml")
         a2_path = os.path.join(self.workdir, "x/y/z", "a.yml")
@@ -230,15 +227,11 @@ b:
         os.makedirs(os.path.dirname(a2_path))
         open(a2_path, 'w').write("a: 'xyz'")
 
-        a1 = TT.single_load(a_path, ac_template=True, ac_context=a)
+        cnf1 = TT.single_load(a_path, ac_template=True, ac_context=self.cnf)
+        self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
 
-        self.assertEquals(a1["name"], a["name"])
-        self.assertEquals(a1["a"], a["a"])
-        self.assertEquals(a1["b"]["b"], a["b"]["b"])
-        self.assertEquals(a1["b"]["c"], a["b"]["c"])
-
-        a2 = TT.single_load(a2_path, ac_template=True)
-        self.assertEquals(a2["a"], "xyz")
+        cnf2 = TT.single_load(a2_path, ac_template=True)
+        self.assertEquals(cnf2["a"], "xyz")
 
     def test_19_dump_and_single_load_with_validation(self):
         cnf = CNF_0
@@ -334,6 +327,13 @@ b:
         self.assertEquals(a5["b"]["b"], a["b"]["b"])
         self.assertEquals(a5["b"]["c"], a["b"]["c"])
         self.assertFalse("d" in a5["b"])
+
+    def test_21_multi_load__wrong_merge_strategy(self):
+        try:
+            TT.multi_load("/dummy/*.json", merge="merge_st_not_exist")
+            raise RuntimeError("Wrong merge strategy was not handled!")
+        except ValueError:
+            self.assertTrue(1 == 1)  # To suppress warn of pylint.
 
     def test_22_multi_load__ignore_missing(self):
         null_cntnr = TT.container()
@@ -503,18 +503,15 @@ b:
         self.assertEquals(cnf_2["b"]["b"], CNF_0["b"]["b"])
         self.assertEquals(cnf_2["b"]["c"], CNF_0["b"]["c"])
 
-    def test_50_validate(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        a_path = os.path.join(self.workdir, "a.json")
+    def test_39_single_load__w_validation(self):
+        (cnf, scm) = (CNF_0, SCM_0)
+        cpath = os.path.join(self.workdir, "cnf.json")
+        spath = os.path.join(self.workdir, "scm.json")
 
-        TT.dump(a, a_path)
-        self.assertTrue(os.path.exists(a_path))
+        TT.dump(cnf, cpath)
+        TT.dump(scm, spath)
 
-        a1 = TT.single_load(a_path)
-
-        self.assertEquals(a1["name"], a["name"])
-        self.assertEquals(a1["a"], a["a"])
-        self.assertEquals(a1["b"]["b"], a["b"]["b"])
-        self.assertEquals(a1["b"]["c"], a["b"]["c"])
+        cnf1 = TT.single_load(cpath, ac_schema=spath)
+        self.assertTrue(dicts_equal(cnf, cnf1), str(cnf1))
 
 # vim:sw=4:ts=4:et:

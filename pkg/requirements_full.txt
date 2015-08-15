@@ -1,0 +1,7 @@
+Jinja2
+PyYAML
+configobj
+jsonschema
+msgpack-python
+pymongo
+toml

@@ -1,13 +1,6 @@
-PyYAML
-Jinja2
-configobj
-jsonschema
 coveralls
 # flake8  # disabled until 'pkg_resources.VersionConflict' error.
 mock
 nose
 pep8
 pylint
-msgpack-python
-toml
-pymongo

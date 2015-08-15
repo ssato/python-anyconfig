@@ -4,6 +4,7 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
+# pylint: disable=unused-argument
 """Template rendering module for jinja2-based template config files.
 """
 from __future__ import absolute_import
@@ -74,6 +75,8 @@ def render_s(tmpl_s, ctx=None, paths=None):
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
 
+    >>> render_s("aaa") == "aaa"
+    True
     >>> s = render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
     >>> if SUPPORTED:
     ...     assert s == 'a = 1, b = "bbb"'

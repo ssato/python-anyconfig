@@ -145,9 +145,10 @@ rm -rf $RPM_BUILD_ROOT
 - add BSON support
 - add TOML support
 - fix XML load and dump functions
-- only build HTML doc for fedora
+- add some more corner test cases to improve test coverage
+- clean up and refactor some test cases
 - clean up the RPM SPEC to sort out requirements
-- clean up test cases
+- make HTML doc built for fedora only
 - some more minor possible bug fixes found by pylint and flake8
 
 * Mon Aug 10 2015 Satoru SATOH <ssato@redhat.com> - 0.0.13-1

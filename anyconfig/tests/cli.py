@@ -108,7 +108,7 @@ class Test(unittest.TestCase):
         self.assertFalse(TT.main(["dummy", "-O", "json",
                                   "--ignore-missing", infile]))
 
-    def test_38_single_input_w_schema(self):
+    def test_37_single_input_w_schema(self):
         (infile, scmfile) = (CNF_0_PATH, SCM_0_PATH)
         output = os.path.join(self.workdir, "output.json")
         self.run_and_check_exit_code(["--schema", scmfile, "--validate",
@@ -122,6 +122,17 @@ class Test(unittest.TestCase):
         A.dump(cnf, infile2)
         self.run_and_check_exit_code(["--schema", scmfile, "--validate",
                                       infile2], 1)
+
+    def test_38_single_input__gen_schema_and_validate_with_it(self):
+        cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        infile = os.path.join(os.curdir, "cnf.json")
+        output = os.path.join(os.curdir, "out.yaml")
+        A.dump(cnf, infile)
+
+        self.run_and_check_exit_code(["--gen-schema", "-o", output, infile], 0)
+        self.assertTrue(os.path.exists(output))
+        self.run_and_check_exit_code(["--schema", output, "--validate",
+                                      infile], 0)
 
     def test_39_single_input_wo_schema(self):
         self.run_and_check_exit_code(["--validate", CNF_0_PATH], 1)

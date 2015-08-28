@@ -11,7 +11,11 @@ validation/generation support.
 - PyPI: https://pypi.python.org/pypi/anyconfig
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
+I, Satoru SATOH <ssato redhat.com>, originally developed and keep maintain it
+with others' help [#]_ .
+
 .. [#] This name took an example from the 'anydbm' python standard library.
+.. [#] see the output of `git log --pretty=format:"%an %ae" | grep -vE "Satoru SATOH" | sort| uniq`
 
 Features
 ----------
@@ -19,16 +23,16 @@ Features
 python-anyconfig provides very simple and unified APIs to process configuration
 files in various formats:
 
-- anyconfig.load() to load configuration files and return a dict-like object represents configuration itself loaded
+- anyconfig.load() to load configuration files and return a dict-like object represents loaded configuration
 - anyconfig.loads() to load configuration from a string just like json.loads does
 - anyconfig.dump() to dump a configuration file from a dict or dict-like object represents configuration
 - anyconfig.dumps() to dump a configuration string from a dict or dict-like object represents configuration
 - anyconfig.validate() to validate configuration loaded with anyconfig.load() with JSON schema [#]_ (object) also loaded with anyconfig.load(). anyconfig.load() may help loading JSON schema file[s] in any formats anyconfig supports.
-- anyconfig.gen_schema() to generate a JSON schema object for given configuration file[s] to validate it/them later.
+- anyconfig.gen_schema() to generate a minimum JSON schema object to validate given configuration file[s] later.
 
-It enables to load a configuration file and configuration files in various
-formats in the same manner, and in some cases, even there is no need to take
-care of the actual format of configuration file[s] like the followings:
+It enables to load configuration file[s] in various formats in the same manner,
+and in some cases, even there is no need to take care of the actual format of
+configuration file[s] like the followings:
 
 .. code-block:: python
 
@@ -114,10 +118,10 @@ with using JSON schema like the followings:
 And in the last place, python-anyconfig provides a CLI tool called
 anyconfig_cli to process configuration files and:
 
-- Convert a/multiple configuration file[s] to another configuration files in different formats
+- Convert a/multiple configuration file[s] to another configuration files in different format
 - Get configuration value in a/multiple configuration file[s]
 - Validate configuration file[s] with JSON schema
-- Generate JSON schema for given configuration file[s]
+- Generate minimum JSON schema file to validate given configuration file[s]
 
 .. [#] http://json-schema.org
 
@@ -159,8 +163,8 @@ or with the API 'anyconfig.list_types()' will show them:
    In [9]:
 
 It utilizes plugin mechanism provided by setuptools [#]_ and other formats may
-be supported by corresponding pluggale backends (see the next sub section also)
-like Java properties format.
+be supported by corresponding pluggale backends (see `How to write backend
+plugin modules` section also) like Java properties format.
 
 - Java properties file w/ pyjavaproperties [#]_ (experimental):
 
@@ -212,8 +216,8 @@ There is a couple of ways to install python-anyconfig:
 
 - Binary RPMs:
 
-  If you're Fedora or Red Hat Enterprise Linux user, you can install
-  RPMs from the copr repository,
+  If you're Fedora or Red Hat Enterprise Linux user, you can install RPMs from
+  the copr repository,
   http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/.
 
 - PyPI: You can install python-anyconfig from PyPI with using pip:

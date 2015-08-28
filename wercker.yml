@@ -16,7 +16,8 @@ build:
     # A step that executes You must give at least one requirement to install (see "pip help install") command.
     # :see: https://github.com/wercker/step-pip-install
     - pip-install:
-        requirements_file: pkg/test_requirements.txt
+        requirements_file: "pkg/requirements_full.txt"
+        packages_list: "coveralls flake8 mock nose pep8 pylint"
 
     # # This pip-install clears the local wheel cache
     # - pip-install:

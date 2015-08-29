@@ -74,10 +74,6 @@ class Test10(unittest.TestCase):
     cnf = CNF_0
     cnf_s = CNF_0_S
 
-    def test_10_supports(self):
-        self.assertFalse(TT.Parser.supports("/a/b/c/d.ini"))
-        self.assertTrue(TT.Parser.supports("/a/b/c/d.xml"))
-
     def test_20_loads(self):
         cnf = TT.Parser.loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))

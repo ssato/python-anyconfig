@@ -44,11 +44,6 @@ if TT is not None:
         def tearDown(self):
             anyconfig.tests.common.cleanup_workdir(self.workdir)
 
-        def test_00_supports(self):
-            self.assertFalse(TT.Parser.supports("/a/b/c/d.ini"))
-            self.assertFalse(TT.Parser.supports("/a/b/c/d.json"))
-            self.assertTrue(TT.Parser.supports("/a/b/c/d.yml"))
-
         def test_10_loads(self):
             cnf = TT.Parser.loads(self.cnf_s)
             self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))

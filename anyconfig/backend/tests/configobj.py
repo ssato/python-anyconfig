@@ -61,9 +61,6 @@ class Test10(unittest.TestCase):
     cnf = CNF_0
     cnf_s = CNF_0_S
 
-    def test_00_supports(self):
-        self.assertFalse(TT.Parser.supports("/a/b/c/d.json"))
-
     def test_10_loads(self):
         cnf = TT.Parser.loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))

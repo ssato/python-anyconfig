@@ -86,17 +86,6 @@ class Parser(object):
         return cls._extensions
 
     @classmethod
-    def supports(cls, config_file=None):
-        """
-        :return: True if this parser can process given file or is supported.
-        """
-        if config_file is None:
-            return True
-
-        return anyconfig.utils.get_file_extension(config_file) \
-            in cls._extensions
-
-    @classmethod
     def container(cls):
         """
         :return: Container object used in this class

@@ -53,15 +53,12 @@ class Parser(object):
     """
     Abstract class of config files parsers
     """
-
     _type = None
     _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
     _extensions = []
     _container = anyconfig.mergeabledict.MergeableDict
-
     _load_opts = []
     _dump_opts = []
-
     _open_flags = ('r', 'w')
 
     @classmethod

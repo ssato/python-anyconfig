@@ -95,41 +95,40 @@ class Parser(object):
         """
         self._container = container
 
-    def load_impl(self, config_fp, **kwargs):
+    def load_impl(self, cnf_fp, **kwargs):
         """
-        :param config_fp:  Config file object
+        :param cnf_fp:  Config file object
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: dict object holding config parameters
         """
         raise NotImplementedError("Inherited class should implement this")
 
-    def loads(self, config_content, **kwargs):
+    def loads(self, cnf_content, **kwargs):
         """
-        :param config_content:  Config file content
+        :param cnf_content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: self.container object holding config parameters
         """
-        config_fp = anyconfig.compat.StringIO(config_content)
         create = self.container.create
-        return create(self.load_impl(config_fp,
+        return create(self.load_impl(anyconfig.compat.StringIO(cnf_content),
                                      **mk_opt_args(self._load_opts, kwargs)))
 
-    def load(self, config_path, ignore_missing=False, **kwargs):
+    def load(self, cnf_path, ignore_missing=False, **kwargs):
         """
-        :param config_path:  Config file path
-        :param ignore_missing: Ignore and just return None if given file
-            (``config_path``) does not exist
+        :param cnf_path:  Config file path
+        :param ignore_missing:
+            Ignore and just return None if given file `cnf_path` does not exist
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: self.container object holding config parameters
         """
-        if ignore_missing and not os.path.exists(config_path):
+        if ignore_missing and not os.path.exists(cnf_path):
             return self.container()
 
         create = self.container.create
-        return create(self.load_impl(open(config_path, self._open_flags[0]),
+        return create(self.load_impl(open(cnf_path, self._open_flags[0]),
                                      **mk_opt_args(self._load_opts, kwargs)))
 
     def dumps_impl(self, data, **kwargs):
@@ -141,13 +140,13 @@ class Parser(object):
         """
         raise NotImplementedError("Inherited class should implement this")
 
-    def dump_impl(self, data, config_path, **kwargs):
+    def dump_impl(self, data, cnf_path, **kwargs):
         """
         :param data: Data to dump :: dict
-        :param config_path: Dump destination file path
+        :param cnf_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        with open(config_path, self._open_flags[1]) as out:
+        with open(cnf_path, self._open_flags[1]) as out:
             out.write(self.dumps_impl(data, **kwargs))
 
     def dumps(self, data, **kwargs):
@@ -161,15 +160,15 @@ class Parser(object):
         return self.dumps_impl(convert_to(data),
                                **mk_opt_args(self._dump_opts, kwargs))
 
-    def dump(self, data, config_path, **kwargs):
+    def dump(self, data, cnf_path, **kwargs):
         """
         :param data: Data to dump :: self.container
-        :param config_path: Dump destination file path
+        :param cnf_path: Dump destination file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
         convert_to = self.container.convert_to
-        ensure_outdir_exists(config_path)
-        self.dump_impl(convert_to(data), config_path,
+        ensure_outdir_exists(cnf_path)
+        self.dump_impl(convert_to(data), cnf_path,
                        **mk_opt_args(self._dump_opts, kwargs))
 
 # vim:sw=4:ts=4:et:

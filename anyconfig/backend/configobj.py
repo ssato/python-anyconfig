@@ -33,14 +33,14 @@ class Parser(anyconfig.backend.base.Parser):
     _dump_opts = ["cls", "encoding", "list_values", "indent_type",
                   "default_encoding", "unrepr", "write_empty_values", ]
 
-    def load_impl(self, config_fp, **kwargs):
+    def load_impl(self, cnf_fp, **kwargs):
         """
-        :param config_fp:  Config file object
+        :param cnf_fp:  Config file object
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: dict object holding config parameters
         """
-        return configobj.ConfigObj(config_fp, **kwargs)
+        return configobj.ConfigObj(cnf_fp, **kwargs)
 
     def dumps_impl(self, data, **kwargs):
         """
@@ -55,15 +55,15 @@ class Parser(anyconfig.backend.base.Parser):
 
         return '\n'.join(conf.write())
 
-    def dump_impl(self, data, config_path, **kwargs):
+    def dump_impl(self, data, cnf_path, **kwargs):
         """
         :param data: Data to dump :: dict
-        :param config_path: Dump destination file path
+        :param cnf_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        conf = configobj.ConfigObj(**kwargs)
-        conf.update(data)
+        cnf = configobj.ConfigObj(**kwargs)
+        cnf.update(data)
 
-        conf.write(open(config_path, 'wb'))
+        cnf.write(open(cnf_path, 'wb'))
 
 # vim:sw=4:ts=4:et:

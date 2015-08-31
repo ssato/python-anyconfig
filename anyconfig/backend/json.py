@@ -61,28 +61,28 @@ class Parser(Base.Parser):
         :param json_obj_dict: A dict or dict-like JSON object
         :return: A Parser.container object
         """
-        return self.container().create(json_obj_dict)
+        return self.container.create(json_obj_dict)
 
-    def loads(self, config_content, **kwargs):
+    def loads(self, cnf_content, **kwargs):
         """
-        :param config_content:  Config file content
+        :param cnf_content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container() object holding config parameters
+        :return: self.container object holding config parameters
         """
         func = self._funcs["loads"]
-        return func(config_content, object_hook=self.dict_to_container,
+        return func(cnf_content, object_hook=self.dict_to_container,
                     **Base.mk_opt_args(self._load_opts, kwargs))
 
-    def load_impl(self, config_fp, **kwargs):
+    def load_impl(self, cnf_fp, **kwargs):
         """
-        :param config_fp:  Config file object
+        :param cnf_fp:  Config file object
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container() object holding config parameters
+        :return: self.container object holding config parameters
         """
         func = self._funcs["load"]
-        return func(config_fp, object_hook=self.dict_to_container, **kwargs)
+        return func(cnf_fp, object_hook=self.dict_to_container, **kwargs)
 
     def dumps_impl(self, data, **kwargs):
         """
@@ -93,13 +93,13 @@ class Parser(Base.Parser):
         """
         return self._funcs["dumps"](data, **kwargs)
 
-    def dump_impl(self, data, config_path, **kwargs):
+    def dump_impl(self, data, cnf_path, **kwargs):
         """
         :param data: Data to dump :: dict
-        :param config_path: Dump destination file path
+        :param cnf_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        self._funcs["dump"](data, open(config_path, self._open_flags[1]),
+        self._funcs["dump"](data, open(cnf_path, self._open_flags[1]),
                             **kwargs)
 
 # vim:sw=4:ts=4:et:

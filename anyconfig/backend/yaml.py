@@ -63,14 +63,14 @@ class Parser(Base.Parser):
     _load_opts = ["Loader", "safe"]
     _dump_opts = ["stream", "Dumper"]
 
-    def load_impl(self, config_fp, **kwargs):
+    def load_impl(self, cnf_fp, **kwargs):
         """
-        :param config_fp:  Config file object
+        :param cnf_fp:  Config file object
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: dict object holding config parameters
         """
-        return yaml_load(config_fp, **kwargs)
+        return yaml_load(cnf_fp, **kwargs)
 
     def dumps_impl(self, data, **kwargs):
         """
@@ -81,12 +81,12 @@ class Parser(Base.Parser):
         """
         return yaml_dump(data, None, **kwargs)
 
-    def dump_impl(self, data, config_path, **kwargs):
+    def dump_impl(self, data, cnf_path, **kwargs):
         """
         :param data: Data to dump :: dict
-        :param config_path: Dump destination file path
+        :param cnf_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        yaml_dump(data, open(config_path, 'w'), **kwargs)
+        yaml_dump(data, open(cnf_path, 'w'), **kwargs)
 
 # vim:sw=4:ts=4:et:

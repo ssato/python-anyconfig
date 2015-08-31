@@ -141,24 +141,24 @@ class Parser(anyconfig.backend.base.Parser):
     _extensions = ["xml"]
     _open_flags = ('rb', 'wb')
 
-    def loads(self, config_content, **kwargs):
+    def loads(self, cnf_content, **kwargs):
         """
-        :param config_content:  Config file content
+        :param cnf_content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: self.container object holding config parameters
         """
-        root = ET.ElementTree(ET.fromstring(config_content)).getroot()
+        root = ET.ElementTree(ET.fromstring(cnf_content)).getroot()
         return etree_to_container(root, self.container)
 
-    def load(self, config_path, **kwargs):
+    def load(self, cnf_path, **kwargs):
         """
-        :param config_path:  Config file path
+        :param cnf_path:  Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: self.container object holding config parameters
         """
-        root = ET.parse(config_path).getroot()
+        root = ET.parse(cnf_path).getroot()
         return etree_to_container(root, self.container)
 
     def dumps(self, obj, **kwargs):
@@ -173,14 +173,14 @@ class Parser(anyconfig.backend.base.Parser):
         etree_write(tree, buf)
         return buf.getvalue()
 
-    def dump_impl(self, obj, config_path, **kwargs):
+    def dump_impl(self, obj, cnf_path, **kwargs):
         """
         :param obj: Data to dump :: dict
-        :param config_path: Dump destination file path
+        :param cnf_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         tree = container_to_etree(obj, self.container)
-        with open(config_path, self._open_flags[1]) as out:
+        with open(cnf_path, self._open_flags[1]) as out:
             etree_write(tree, out)
 
 # vim:sw=4:ts=4:et:

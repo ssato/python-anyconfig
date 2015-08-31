@@ -72,9 +72,9 @@ def _to_s(val, sep=", "):
         return str(val)
 
 
-def _load_impl(config_fp, sep=_SEP, **kwargs):
+def _load_impl(cnf_fp, sep=_SEP, **kwargs):
     """
-    :param config_fp: File or file-like object provides ini-style conf
+    :param cnf_fp: File or file-like object provides ini-style conf
     :return: Dict or dict-like object represents config values
     """
     config = dict()
@@ -93,7 +93,7 @@ def _load_impl(config_fp, sep=_SEP, **kwargs):
             kwargs_0 = Base.mk_opt_args(("defaults", "dict_type"), kwargs)
             parser = configparser.SafeConfigParser(**kwargs_0)
 
-        parser.readfp(config_fp, **kwargs_1)
+        parser.readfp(cnf_fp, **kwargs_1)
 
         if parser.defaults():
             config["DEFAULT"] = dict()
@@ -146,14 +146,14 @@ class Parser(Base.Parser):
     _extensions = ["ini"]
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename"]
 
-    def load_impl(self, config_fp, **kwargs):
+    def load_impl(self, cnf_fp, **kwargs):
         """
-        :param config_fp:  Config file object
+        :param cnf_fp:  Config file object
         :param kwargs: configparser specific optional keyword parameters
 
         :return: dict object holding config parameters
         """
-        return _load_impl(config_fp, sep=_SEP, **kwargs)
+        return _load_impl(cnf_fp, sep=_SEP, **kwargs)
 
     def dumps_impl(self, data, **kwargs):
         """

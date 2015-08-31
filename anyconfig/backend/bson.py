@@ -45,25 +45,25 @@ class Parser(anyconfig.backend.base.Parser):
     _dump_opts = ["check_keys", "uuid_subtype"]
     _open_flags = ('rb', 'wb')
 
-    def loads(self, config_s, **kwargs):
+    def loads(self, cnf_content, **kwargs):
         """
-        :param config_s: Config content in bytes data string
+        :param cnf_content: Config content in bytes data string
         :param kwargs: optional keyword parameters
 
         :return: self.container() object holding config parameters
         """
         kwargs = anyconfig.backend.base.mk_opt_args(self._load_opts, kwargs)
-        objs = bson.decode_all(config_s, **kwargs)
-        return None if not objs else self.container().create(objs[0])
+        objs = bson.decode_all(cnf_content, **kwargs)
+        return None if not objs else self.container.create(objs[0])
 
-    def load_impl(self, config_fp, **kwargs):
+    def load_impl(self, cnf_fp, **kwargs):
         """
-        :param config_fp: Config file object
+        :param cnf_fp: Config file object
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: dict-like object holding config parameters
         """
-        return self.loads(config_fp.read(), **kwargs)
+        return self.loads(cnf_fp.read(), **kwargs)
 
     def dumps_impl(self, obj, **kwargs):
         """

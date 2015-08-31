@@ -33,32 +33,32 @@ class Test(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_loads(self):
-        cnf = TT.Parser.loads(self.packed)
+        cnf = TT.Parser().loads(self.packed)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_20_load(self):
-        cnf = TT.Parser.load(self.cpath)
+        cnf = TT.Parser().load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_22_load__optional_kwargs(self):
-        cnf = TT.Parser.load(self.cpath, use_list=False)
+        cnf = TT.Parser().load(self.cpath, use_list=False)
         ref = copy.deepcopy(self.cnf)
         ref[_bytes("sect0")][_bytes("c")] = (_bytes("x"), _bytes("y"),
                                              _bytes("z"))
         self.assertTrue(dicts_equal(cnf, ref), str(cnf))
 
     def test_30_dumps(self):
-        cnf = TT.Parser.loads(TT.Parser.dumps(self.cnf))
+        cnf = TT.Parser().loads(TT.Parser().dumps(self.cnf))
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_40_dump(self):
-        TT.Parser.dump(self.cnf, self.cpath)
-        cnf = TT.Parser.load(self.cpath)
+        TT.Parser().dump(self.cnf, self.cpath)
+        cnf = TT.Parser().load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_42_dump_w_special_option(self):
-        TT.Parser.dump(self.cnf, self.cpath, use_single_float=True)
-        cnf = TT.Parser.load(self.cpath)
+        TT.Parser().dump(self.cnf, self.cpath, use_single_float=True)
+        cnf = TT.Parser().load(self.cpath)
         ref = copy.deepcopy(self.cnf)
         ref[_bytes("a")] = cnf[_bytes("a")]  # single float value.
         self.assertFalse(dicts_equal(cnf, self.cnf), str(cnf))

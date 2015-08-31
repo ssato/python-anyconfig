@@ -45,30 +45,27 @@ class Parser(anyconfig.backend.base.Parser):
     _dump_opts = ["check_keys", "uuid_subtype"]
     _open_flags = ('rb', 'wb')
 
-    @classmethod
-    def loads(cls, config_s, **kwargs):
+    def loads(self, config_s, **kwargs):
         """
         :param config_s: Config content in bytes data string
         :param kwargs: optional keyword parameters
 
-        :return: cls.container() object holding config parameters
+        :return: self.container() object holding config parameters
         """
-        kwargs = anyconfig.backend.base.mk_opt_args(cls._load_opts, kwargs)
+        kwargs = anyconfig.backend.base.mk_opt_args(self._load_opts, kwargs)
         objs = bson.decode_all(config_s, **kwargs)
-        return None if not objs else cls.container().create(objs[0])
+        return None if not objs else self.container().create(objs[0])
 
-    @classmethod
-    def load_impl(cls, config_fp, **kwargs):
+    def load_impl(self, config_fp, **kwargs):
         """
         :param config_fp: Config file object
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: dict-like object holding config parameters
         """
-        return cls.loads(config_fp.read(), **kwargs)
+        return self.loads(config_fp.read(), **kwargs)
 
-    @classmethod
-    def dumps_impl(cls, obj, **kwargs):
+    def dumps_impl(self, obj, **kwargs):
         """
         :param obj: A dict or dict-like object to dump
         :param kwargs: Optional keyword parameters

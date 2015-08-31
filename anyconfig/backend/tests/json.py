@@ -31,11 +31,11 @@ class Test10(unittest.TestCase):
     cnf_s = CNF_0_S
 
     def test_10_loads(self):
-        cnf = TT.Parser.loads(self.cnf_s)
+        cnf = TT.Parser().loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_30_dumps(self):
-        cnf = TT.Parser.loads(TT.Parser.dumps(self.cnf))
+        cnf = TT.Parser().loads(TT.Parser().dumps(self.cnf))
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 
@@ -53,21 +53,21 @@ class Test20(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_20_load(self):
-        cnf = TT.Parser.load(self.cpath)
+        cnf = TT.Parser().load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_22_load__optional_kwargs(self):
-        cnf = TT.Parser.load(self.cpath, parse_int=None)
+        cnf = TT.Parser().load(self.cpath, parse_int=None)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_40_dump(self):
-        TT.Parser.dump(self.cnf, self.cpath)
-        cnf = TT.Parser.load(self.cpath)
+        TT.Parser().dump(self.cnf, self.cpath)
+        cnf = TT.Parser().load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_42_dump_w_special_option(self):
-        TT.Parser.dump(self.cnf, self.cpath, parse_int=None, indent=3)
-        cnf = TT.Parser.load(self.cpath)
+        TT.Parser().dump(self.cnf, self.cpath, parse_int=None, indent=3)
+        cnf = TT.Parser().load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

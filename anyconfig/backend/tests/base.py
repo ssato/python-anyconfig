@@ -14,31 +14,29 @@ import anyconfig.tests.common
 
 class Test00(unittest.TestCase):
 
+    def setUp(self):
+        self.psr = TT.Parser()
+
     def test_10_set_container(self):
-        psr = TT.Parser
-        psr.set_container(dict)
-        self.assertEquals(psr.container(), dict)
-        psr.set_container(anyconfig.mergeabledict.MergeableDict)
+        self.psr.set_container(dict)
+        self.assertEquals(self.psr.container(), dict)
+        self.psr.set_container(anyconfig.mergeabledict.MergeableDict)
 
     def test_10_type(self):
-        self.assertEquals(TT.Parser.type(), TT.Parser._type)
-
-    def test_10_type__force_set(self):
-        TT.Parser._type = 1
-        self.assertEquals(TT.Parser.type(), 1)
+        self.assertEquals(self.psr.type(), TT.Parser._type)
 
     def test_20__load__ignore_missing(self):
-        null_cntnr = TT.Parser.container()()
+        null_cntnr = self.psr.container()()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(TT.Parser.load(cpath, ignore_missing=True),
+        self.assertEquals(self.psr.load(cpath, ignore_missing=True),
                           null_cntnr)
 
     def test_50_load_impl(self):
         raised = False
         try:
-            TT.Parser.load_impl("/file/not/exist")
+            self.psr.load_impl("/file/not/exist")
         except NotImplementedError:
             raised = True
 
@@ -47,7 +45,7 @@ class Test00(unittest.TestCase):
     def test_50_dumps_impl(self):
         raised = False
         try:
-            TT.Parser.dumps_impl({})
+            self.psr.dumps_impl({})
         except NotImplementedError:
             raised = True
 

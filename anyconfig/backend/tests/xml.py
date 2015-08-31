@@ -54,7 +54,7 @@ class Test00(unittest.TestCase):
         self.assertEquals(TT.etree_to_container(None, dict), {})
 
     def test_12_etree_to_container(self):
-        cnf = TT.etree_to_container(self.root, TT.Parser.container())
+        cnf = TT.etree_to_container(self.root, TT.Parser().container())
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_20_container_to_etree__empty(self):
@@ -62,7 +62,7 @@ class Test00(unittest.TestCase):
         self.assertTrue(TT.container_to_etree("aaa", dict) is None)
 
     def test_22_container_to_etree(self):
-        tree = TT.container_to_etree(self.cnf, TT.Parser.container())
+        tree = TT.container_to_etree(self.cnf, TT.Parser().container())
         buf = TT.BytesIO()
         tree.write(buf)
         cnf_s = buf.getvalue()
@@ -75,11 +75,11 @@ class Test10(unittest.TestCase):
     cnf_s = CNF_0_S
 
     def test_20_loads(self):
-        cnf = TT.Parser.loads(self.cnf_s)
+        cnf = TT.Parser().loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_30_dumps(self):
-        cnf = TT.Parser.loads(TT.Parser.dumps(self.cnf))
+        cnf = TT.Parser().loads(TT.Parser().dumps(self.cnf))
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 
@@ -97,12 +97,12 @@ class Test20(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_load(self):
-        cnf = TT.Parser.load(self.cpath)
+        cnf = TT.Parser().load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_20_dump(self):
-        TT.Parser.dump(self.cnf, self.cpath)
-        cnf = TT.Parser.load(self.cpath)
+        TT.Parser().dump(self.cnf, self.cpath)
+        cnf = TT.Parser().load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

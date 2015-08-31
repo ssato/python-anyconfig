@@ -28,19 +28,22 @@ except ImportError:
 
 class Test_10_find_loader(unittest.TestCase):
 
+    def __isinstance(self, obj, *cls):
+        self.assertTrue(isinstance(obj, cls))
+
     def test_10_find_loader__w_forced_type(self):
         cpath = "dummy.conf"
 
         # These parsers should work for python >= 2.6.
-        self.assertEquals(TT.find_loader(cpath, "ini"),
+        self.__isinstance(TT.find_loader(cpath, "ini"),
                           anyconfig.backend.ini.Parser)
-        self.assertEquals(TT.find_loader(cpath, "json"),
+        self.__isinstance(TT.find_loader(cpath, "json"),
                           anyconfig.backend.json.Parser)
-        self.assertEquals(TT.find_loader(cpath, "xml"),
+        self.__isinstance(TT.find_loader(cpath, "xml"),
                           anyconfig.backend.xml.Parser)
 
         if BYAML is not None:
-            self.assertEquals(TT.find_loader(cpath, "yaml"), BYAML.Parser)
+            self.__isinstance(TT.find_loader(cpath, "yaml"), BYAML.Parser)
 
     def test_12_find_loader__w_forced_type__none(self):
         TT.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
@@ -48,18 +51,18 @@ class Test_10_find_loader(unittest.TestCase):
         self.assertEquals(TT.find_loader(cpath, "type_not_exist"), None)
 
     def test_20_find_loader__by_file(self):
-        self.assertEquals(TT.find_loader("dummy.ini"),
+        self.__isinstance(TT.find_loader("dummy.ini"),
                           anyconfig.backend.ini.Parser)
-        self.assertEquals(TT.find_loader("dummy.json"),
+        self.__isinstance(TT.find_loader("dummy.json"),
                           anyconfig.backend.json.Parser)
-        self.assertEquals(TT.find_loader("dummy.jsn"),
+        self.__isinstance(TT.find_loader("dummy.jsn"),
                           anyconfig.backend.json.Parser)
-        self.assertEquals(TT.find_loader("dummy.xml"),
+        self.__isinstance(TT.find_loader("dummy.xml"),
                           anyconfig.backend.xml.Parser)
 
         if BYAML is not None:
-            self.assertEquals(TT.find_loader("dummy.yaml"), BYAML.Parser)
-            self.assertEquals(TT.find_loader("dummy.yml"), BYAML.Parser)
+            self.__isinstance(TT.find_loader("dummy.yaml"), BYAML.Parser)
+            self.__isinstance(TT.find_loader("dummy.yml"), BYAML.Parser)
 
     def test_22_find_loader__by_file__none(self):
         # see self.test_12_find_loader__w_forced_type__none

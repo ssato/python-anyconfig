@@ -32,9 +32,10 @@ LOGGER = logging.getLogger(__name__)
 _SEP = ','
 
 
-# FIXME: May be too naive implementation.
 def _parse(val_s, sep=_SEP):
     """
+    FIXME: May be too naive implementation.
+
     :param val_s: A string represents some value to parse
     :param sep: separator between values
 
@@ -145,8 +146,7 @@ class Parser(Base.Parser):
     _extensions = ["ini"]
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename"]
 
-    @classmethod
-    def load_impl(cls, config_fp, **kwargs):
+    def load_impl(self, config_fp, **kwargs):
         """
         :param config_fp:  Config file object
         :param kwargs: configparser specific optional keyword parameters
@@ -155,8 +155,7 @@ class Parser(Base.Parser):
         """
         return _load_impl(config_fp, sep=_SEP, **kwargs)
 
-    @classmethod
-    def dumps_impl(cls, data, **kwargs):
+    def dumps_impl(self, data, **kwargs):
         """
         :param data: Data to dump :: dict
         :param config_path: Dump destination file path

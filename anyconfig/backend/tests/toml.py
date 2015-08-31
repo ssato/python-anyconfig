@@ -72,22 +72,24 @@ class Test(unittest.TestCase):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_loads(self):
-        cnf = TT.Parser.loads(self.cnf_s)
+        cnf = TT.Parser().loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_20_load(self):
-        cnf = TT.Parser.load(self.cpath)
+        cnf = TT.Parser().load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_30_dumps(self):
-        cnf = TT.Parser.loads(self.cnf_s)
-        cnf2 = TT.Parser.loads(TT.Parser.dumps(cnf))
+        psr = TT.Parser()
+        cnf = psr.loads(self.cnf_s)
+        cnf2 = psr.loads(psr.dumps(cnf))
         self.assertTrue(dicts_equal(cnf2, cnf), str(cnf2))
 
     def test_40_dump(self):
-        cnf = TT.Parser.loads(self.cnf_s)
-        TT.Parser.dump(cnf, self.cpath)
-        cnf = TT.Parser.load(self.cpath)
+        psr = TT.Parser()
+        cnf = psr.loads(self.cnf_s)
+        psr.dump(cnf, self.cpath)
+        cnf = psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

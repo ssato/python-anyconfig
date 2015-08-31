@@ -141,50 +141,46 @@ class Parser(anyconfig.backend.base.Parser):
     _extensions = ["xml"]
     _open_flags = ('rb', 'wb')
 
-    @classmethod
-    def loads(cls, config_content, **kwargs):
+    def loads(self, config_content, **kwargs):
         """
         :param config_content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: cls.container() object holding config parameters
+        :return: self.container() object holding config parameters
         """
         root = ET.ElementTree(ET.fromstring(config_content)).getroot()
-        return etree_to_container(root, cls.container())
+        return etree_to_container(root, self.container())
 
-    @classmethod
-    def load(cls, config_path, **kwargs):
+    def load(self, config_path, **kwargs):
         """
         :param config_path:  Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: cls.container() object holding config parameters
+        :return: self.container() object holding config parameters
         """
         root = ET.parse(config_path).getroot()
-        return etree_to_container(root, cls.container())
+        return etree_to_container(root, self.container())
 
-    @classmethod
-    def dumps(cls, obj, **kwargs):
+    def dumps(self, obj, **kwargs):
         """
         :param obj: Data to dump :: dict
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: string represents the configuration
         """
-        tree = container_to_etree(obj, cls.container())
+        tree = container_to_etree(obj, self.container())
         buf = BytesIO()
         etree_write(tree, buf)
         return buf.getvalue()
 
-    @classmethod
-    def dump_impl(cls, obj, config_path, **kwargs):
+    def dump_impl(self, obj, config_path, **kwargs):
         """
         :param obj: Data to dump :: dict
         :param config_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        tree = container_to_etree(obj, cls.container())
-        with open(config_path, cls._open_flags[1]) as out:
+        tree = container_to_etree(obj, self.container())
+        with open(config_path, self._open_flags[1]) as out:
             etree_write(tree, out)
 
 # vim:sw=4:ts=4:et:

@@ -43,12 +43,6 @@ if not anyconfig.compat.IS_PYTHON_3:
     _DUMP_OPTS.append("encoding")
 
 
-def dict_to_container(json_obj_dict):
-    """Convert dict to container.
-    """
-    return Parser.container().create(json_obj_dict)
-
-
 class Parser(Base.Parser):
     """
     Parser for JSON files.
@@ -61,47 +55,51 @@ class Parser(Base.Parser):
     _funcs = dict(loads=json.loads, load=json.load,
                   dumps=json.dumps, dump=json.dump)
 
-    @classmethod
-    def loads(cls, config_content, **kwargs):
+    def dict_to_container(self, json_obj_dict):
+        """Convert dict to container.
+
+        :param json_obj_dict: A dict or dict-like JSON object
+        :return: A Parser.container object
+        """
+        return self.container().create(json_obj_dict)
+
+    def loads(self, config_content, **kwargs):
         """
         :param config_content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: cls.container() object holding config parameters
+        :return: self.container() object holding config parameters
         """
-        func = cls._funcs["loads"]
-        return func(config_content, object_hook=dict_to_container,
-                    **Base.mk_opt_args(cls._load_opts, kwargs))
+        func = self._funcs["loads"]
+        return func(config_content, object_hook=self.dict_to_container,
+                    **Base.mk_opt_args(self._load_opts, kwargs))
 
-    @classmethod
-    def load_impl(cls, config_fp, **kwargs):
+    def load_impl(self, config_fp, **kwargs):
         """
         :param config_fp:  Config file object
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: cls.container() object holding config parameters
+        :return: self.container() object holding config parameters
         """
-        func = cls._funcs["load"]
-        return func(config_fp, object_hook=dict_to_container, **kwargs)
+        func = self._funcs["load"]
+        return func(config_fp, object_hook=self.dict_to_container, **kwargs)
 
-    @classmethod
-    def dumps_impl(cls, data, **kwargs):
+    def dumps_impl(self, data, **kwargs):
         """
         :param data: Data to dump :: dict
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: string represents the configuration
         """
-        return cls._funcs["dumps"](data, **kwargs)
+        return self._funcs["dumps"](data, **kwargs)
 
-    @classmethod
-    def dump_impl(cls, data, config_path, **kwargs):
+    def dump_impl(self, data, config_path, **kwargs):
         """
         :param data: Data to dump :: dict
         :param config_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        cls._funcs["dump"](data, open(config_path, cls._open_flags[1]),
-                           **kwargs)
+        self._funcs["dump"](data, open(config_path, self._open_flags[1]),
+                            **kwargs)
 
 # vim:sw=4:ts=4:et:

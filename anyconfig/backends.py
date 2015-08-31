@@ -149,6 +149,7 @@ def find_by_file(config_file, cps=None):
     Find config parser by file's extension.
 
     :param config_file: Config file path
+    :return: Config Parser class found
 
     >>> find_by_file("a.missing_cnf_ext") is None
     True
@@ -169,6 +170,7 @@ def find_by_type(cptype, cps=None):
     Find config parser by file's extension.
 
     :param cptype: Config file's type
+    :return: Config Parser class found
 
     >>> find_by_type("missing_type") is None
     True

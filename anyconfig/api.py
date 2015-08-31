@@ -59,7 +59,7 @@ def find_loader(config_path, forced_type=None):
     :param config_path: Configuration file path
     :param forced_type: Forced configuration parser type
 
-    :return: Parser-inherited class object
+    :return: Config parser instance or None
     """
     if forced_type is not None:
         cparser = anyconfig.backends.find_by_type(forced_type)
@@ -73,7 +73,7 @@ def find_loader(config_path, forced_type=None):
             return None
 
     LOGGER.debug("Using config parser of type: %s", cparser.type())
-    return cparser
+    return cparser()
 
 
 def single_load(config_path, forced_type=None, ignore_missing=False,

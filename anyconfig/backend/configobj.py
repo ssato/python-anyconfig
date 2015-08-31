@@ -33,8 +33,7 @@ class Parser(anyconfig.backend.base.Parser):
     _dump_opts = ["cls", "encoding", "list_values", "indent_type",
                   "default_encoding", "unrepr", "write_empty_values", ]
 
-    @classmethod
-    def load_impl(cls, config_fp, **kwargs):
+    def load_impl(self, config_fp, **kwargs):
         """
         :param config_fp:  Config file object
         :param kwargs: backend-specific optional keyword parameters :: dict
@@ -43,8 +42,7 @@ class Parser(anyconfig.backend.base.Parser):
         """
         return configobj.ConfigObj(config_fp, **kwargs)
 
-    @classmethod
-    def dumps_impl(cls, data, **kwargs):
+    def dumps_impl(self, data, **kwargs):
         """
         :param data: Data to dump :: dict
         :param kwargs: backend-specific optional keyword parameters :: dict
@@ -57,8 +55,7 @@ class Parser(anyconfig.backend.base.Parser):
 
         return '\n'.join(conf.write())
 
-    @classmethod
-    def dump_impl(cls, data, config_path, **kwargs):
+    def dump_impl(self, data, config_path, **kwargs):
         """
         :param data: Data to dump :: dict
         :param config_path: Dump destination file path

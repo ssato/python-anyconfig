@@ -82,15 +82,16 @@ class Parser(object):
         """
         return cls._extensions
 
+    @property
     def container(self):
         """
         :return: Container object used in this class
         """
         return self._container
 
-    def set_container(self, container):
-        """
-        Setter of container of this class
+    @container.setter
+    def container(self, container):
+        """Setter of container of this class
         """
         self._container = container
 
@@ -108,10 +109,10 @@ class Parser(object):
         :param config_content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container() object holding config parameters
+        :return: self.container object holding config parameters
         """
         config_fp = anyconfig.compat.StringIO(config_content)
-        create = self.container().create
+        create = self.container.create
         return create(self.load_impl(config_fp,
                                      **mk_opt_args(self._load_opts, kwargs)))
 
@@ -122,12 +123,12 @@ class Parser(object):
             (``config_path``) does not exist
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container() object holding config parameters
+        :return: self.container object holding config parameters
         """
         if ignore_missing and not os.path.exists(config_path):
-            return self.container()()
+            return self.container()
 
-        create = self.container().create
+        create = self.container.create
         return create(self.load_impl(open(config_path, self._open_flags[0]),
                                      **mk_opt_args(self._load_opts, kwargs)))
 
@@ -151,22 +152,22 @@ class Parser(object):
 
     def dumps(self, data, **kwargs):
         """
-        :param data: Data to dump :: self.container()
+        :param data: Data to dump :: self.container
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: string represents the configuration
         """
-        convert_to = self.container().convert_to
+        convert_to = self.container.convert_to
         return self.dumps_impl(convert_to(data),
                                **mk_opt_args(self._dump_opts, kwargs))
 
     def dump(self, data, config_path, **kwargs):
         """
-        :param data: Data to dump :: self.container()
+        :param data: Data to dump :: self.container
         :param config_path: Dump destination file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
-        convert_to = self.container().convert_to
+        convert_to = self.container.convert_to
         ensure_outdir_exists(config_path)
         self.dump_impl(convert_to(data), config_path,
                        **mk_opt_args(self._dump_opts, kwargs))

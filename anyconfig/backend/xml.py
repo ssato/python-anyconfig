@@ -146,20 +146,20 @@ class Parser(anyconfig.backend.base.Parser):
         :param config_content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container() object holding config parameters
+        :return: self.container object holding config parameters
         """
         root = ET.ElementTree(ET.fromstring(config_content)).getroot()
-        return etree_to_container(root, self.container())
+        return etree_to_container(root, self.container)
 
     def load(self, config_path, **kwargs):
         """
         :param config_path:  Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container() object holding config parameters
+        :return: self.container object holding config parameters
         """
         root = ET.parse(config_path).getroot()
-        return etree_to_container(root, self.container())
+        return etree_to_container(root, self.container)
 
     def dumps(self, obj, **kwargs):
         """
@@ -168,7 +168,7 @@ class Parser(anyconfig.backend.base.Parser):
 
         :return: string represents the configuration
         """
-        tree = container_to_etree(obj, self.container())
+        tree = container_to_etree(obj, self.container)
         buf = BytesIO()
         etree_write(tree, buf)
         return buf.getvalue()
@@ -179,7 +179,7 @@ class Parser(anyconfig.backend.base.Parser):
         :param config_path: Dump destination file path
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        tree = container_to_etree(obj, self.container())
+        tree = container_to_etree(obj, self.container)
         with open(config_path, self._open_flags[1]) as out:
             etree_write(tree, out)
 

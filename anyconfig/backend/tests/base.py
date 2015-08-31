@@ -18,15 +18,15 @@ class Test00(unittest.TestCase):
         self.psr = TT.Parser()
 
     def test_10_set_container(self):
-        self.psr.set_container(dict)
-        self.assertEquals(self.psr.container(), dict)
-        self.psr.set_container(anyconfig.mergeabledict.MergeableDict)
+        self.psr.container = dict
+        self.assertEquals(self.psr.container, dict)
+        self.psr.container = anyconfig.mergeabledict.MergeableDict
 
     def test_10_type(self):
         self.assertEquals(self.psr.type(), TT.Parser._type)
 
     def test_20__load__ignore_missing(self):
-        null_cntnr = self.psr.container()()
+        null_cntnr = self.psr.container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 

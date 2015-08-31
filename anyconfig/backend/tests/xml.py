@@ -54,7 +54,7 @@ class Test00(unittest.TestCase):
         self.assertEquals(TT.etree_to_container(None, dict), {})
 
     def test_12_etree_to_container(self):
-        cnf = TT.etree_to_container(self.root, TT.Parser().container())
+        cnf = TT.etree_to_container(self.root, TT.Parser().container)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_20_container_to_etree__empty(self):
@@ -62,7 +62,7 @@ class Test00(unittest.TestCase):
         self.assertTrue(TT.container_to_etree("aaa", dict) is None)
 
     def test_22_container_to_etree(self):
-        tree = TT.container_to_etree(self.cnf, TT.Parser().container())
+        tree = TT.container_to_etree(self.cnf, TT.Parser().container)
         buf = TT.BytesIO()
         tree.write(buf)
         cnf_s = buf.getvalue()

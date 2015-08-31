@@ -29,18 +29,18 @@ list_types = anyconfig.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
 
 
-def _validate(config, schema, format_checker=None):
+def _validate(cnf, schema, format_checker=None):
     """
-    Wrapper function for anyconfig.schema.vaildate.
+    Wrapper function for anycnf.schema.vaildate.
 
-    :param config: Configuration object :: container
+    :param cnf: Configuration object :: container
     :param schema: JSON schema object :: container
     :param format_checker: A format property checker object of which class is
         inherited from jsonschema.FormatChecker, it's default if None given.
 
     :return: True if validation suceeds or jsonschema module is not available.
     """
-    (ret, msg) = validate(config, schema, format_checker, True)
+    (ret, msg) = validate(cnf, schema, format_checker, True)
     if msg:
         LOGGER.warn(msg)
 
@@ -54,9 +54,9 @@ def set_loglevel(level):
     LOGGER.setLevel(level)
 
 
-def find_loader(config_path, forced_type=None):
+def find_loader(cnf_path, forced_type=None):
     """
-    :param config_path: Configuration file path
+    :param cnf_path: Configuration file path
     :param forced_type: Forced configuration parser type
 
     :return: Config parser instance or None
@@ -67,25 +67,25 @@ def find_loader(config_path, forced_type=None):
             LOGGER.error("No parser found for given type: %s", forced_type)
             return None
     else:
-        cparser = anyconfig.backends.find_by_file(config_path)
+        cparser = anyconfig.backends.find_by_file(cnf_path)
         if not cparser:
-            LOGGER.error("No parser found for given file: %s", config_path)
+            LOGGER.error("No parser found for given file: %s", cnf_path)
             return None
 
     LOGGER.debug("Using config parser of type: %s", cparser.type())
     return cparser()
 
 
-def single_load(config_path, forced_type=None, ignore_missing=False,
+def single_load(cnf_path, forced_type=None, ignore_missing=False,
                 ac_template=False, ac_context=None, ac_schema=None,
                 **kwargs):
     """
     Load single config file.
 
-    :param config_path: Configuration file path
+    :param cnf_path: Configuration file path
     :param forced_type: Forced configuration parser type
     :param ignore_missing: Ignore and just return empty result if given file
-        (``config_path``) does not exist
+        (``cnf_path``) does not exist
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
@@ -97,9 +97,9 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    config_path = anyconfig.utils.ensure_expandusr(config_path)
+    cnf_path = anyconfig.utils.ensure_expandusr(cnf_path)
 
-    cparser = find_loader(config_path, forced_type)
+    cparser = find_loader(cnf_path, forced_type)
     if cparser is None:
         return None
 
@@ -111,12 +111,12 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
                       ignore_missing=ignore_missing, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
 
-    LOGGER.info("Loading: %s", config_path)
+    LOGGER.info("Loading: %s", cnf_path)
     if ac_template:
         try:
-            LOGGER.debug("Compiling: %s", config_path)
-            config_content = anyconfig.template.render(config_path, ac_context)
-            config = cparser.loads(config_content,
+            LOGGER.debug("Compiling: %s", cnf_path)
+            cnf_content = anyconfig.template.render(cnf_path, ac_context)
+            config = cparser.loads(cnf_content,
                                    ignore_missing=ignore_missing, **kwargs)
             if ac_schema is not None:
                 if not _validate(config, schema, format_checker):
@@ -127,9 +127,9 @@ def single_load(config_path, forced_type=None, ignore_missing=False,
         except Exception as exc:
             LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile %s, fallback to no template "
-                        "mode", config_path)
+                        "mode", cnf_path)
 
-    config = cparser.load(config_path, ignore_missing=ignore_missing, **kwargs)
+    config = cparser.load(cnf_path, ignore_missing=ignore_missing, **kwargs)
 
     if ac_schema is not None:
         if not _validate(config, schema, format_checker):
@@ -243,10 +243,10 @@ def load(path_specs, forced_type=None, ignore_missing=False,
                            ac_schema=ac_schema, **kwargs)
 
 
-def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
+def loads(cnf_content, forced_type=None, ac_template=False, ac_context=None,
           ac_schema=None, **kwargs):
     """
-    :param config_content: Configuration file's content
+    :param cnf_content: Configuration file's content
     :param forced_type: Forced configuration parser type
     :param ignore_missing: Ignore missing config files
     :param ac_template: Assume configuration file may be a template file and
@@ -262,11 +262,11 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
     """
     if forced_type is None:
         LOGGER.warn("No config type was given. Try to parse...")
-        return anyconfig.parser.parse(config_content)
+        return anyconfig.parser.parse(cnf_content)
 
     cparser = find_loader(None, forced_type)
     if cparser is None:
-        return anyconfig.parser.parse(config_content)
+        return anyconfig.parser.parse(cnf_content)
 
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
@@ -277,33 +277,33 @@ def loads(config_content, forced_type=None, ac_template=False, ac_context=None,
     if ac_template:
         try:
             LOGGER.debug("Compiling")
-            config_content = anyconfig.template.render_s(config_content,
+            cnf_content = anyconfig.template.render_s(cnf_content,
                                                          ac_context)
         except Exception as exc:
             LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile and fallback to no template "
-                        "mode: '%s'", config_content[:50] + '...')
+                        "mode: '%s'", cnf_content[:50] + '...')
 
-    config = cparser.loads(config_content, **kwargs)
+    cnf = cparser.loads(cnf_content, **kwargs)
 
     if ac_schema is not None:
-        if not _validate(config, schema, format_checker):
+        if not _validate(cnf, schema, format_checker):
             LOGGER.warn("Validation failed: schema=%s", schema)
             return None
 
-    return config
+    return cnf
 
 
-def _find_dumper(config_path, forced_type=None):
+def _find_dumper(cnf_path, forced_type=None):
     """
     Find configuration parser to dump data.
 
-    :param config_path: Output filename
+    :param cnf_path: Output filename
     :param forced_type: Forced configuration parser type
 
     :return: Parser-inherited class object
     """
-    cparser = find_loader(config_path, forced_type)
+    cparser = find_loader(cnf_path, forced_type)
 
     if cparser is None or not getattr(cparser, "dump", False):
         LOGGER.warn("Dump method not implemented. Fallback to json.Parser")
@@ -312,21 +312,21 @@ def _find_dumper(config_path, forced_type=None):
     return cparser
 
 
-def dump(data, config_path, forced_type=None, **kwargs):
+def dump(data, cnf_path, forced_type=None, **kwargs):
     """
-    Save `data` as `config_path`.
+    Save `data` as `cnf_path`.
 
     :param data: Config data object to dump ::
         anyconfig.mergeabledict.MergeableDict by default
-    :param config_path: Output filename
+    :param cnf_path: Output filename
     :param forced_type: Forced configuration parser type
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     """
-    dumper = _find_dumper(config_path, forced_type)
+    dumper = _find_dumper(cnf_path, forced_type)
 
-    LOGGER.info("Dumping: %s", config_path)
-    dumper.dump(data, config_path, **kwargs)
+    LOGGER.info("Dumping: %s", cnf_path)
+    dumper.dump(data, cnf_path, **kwargs)
 
 
 def dumps(data, forced_type, **kwargs):

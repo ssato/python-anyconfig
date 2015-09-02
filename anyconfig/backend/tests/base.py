@@ -17,39 +17,21 @@ class Test00(unittest.TestCase):
     def setUp(self):
         self.psr = TT.Parser()
 
-    def test_10_set_container(self):
-        self.psr.container = dict
-        self.assertEquals(self.psr.container, dict)
-        self.psr.container = anyconfig.mergeabledict.MergeableDict
-
     def test_10_type(self):
         self.assertEquals(self.psr.type(), TT.Parser._type)
 
-    def test_20__load__ignore_missing(self):
-        null_cntnr = self.psr.container()
+    def test_20_loads__null_content(self):
+        cnf = self.psr.loads('')
+        self.assertEquals(cnf, self.psr.container())
+        self.assertTrue(isinstance(cnf, self.psr.container))
+
+    def test_30_load__ignore_missing(self):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(self.psr.load(cpath, ignore_missing=True),
-                          null_cntnr)
-
-    def test_50_load_impl(self):
-        raised = False
-        try:
-            self.psr.load_impl("/file/not/exist")
-        except NotImplementedError:
-            raised = True
-
-        self.assertTrue(raised)
-
-    def test_50_dumps_impl(self):
-        raised = False
-        try:
-            self.psr.dumps_impl({})
-        except NotImplementedError:
-            raised = True
-
-        self.assertTrue(raised)
+        cnf = self.psr.load(cpath, ignore_missing=True)
+        self.assertEquals(cnf, self.psr.container())
+        self.assertTrue(isinstance(cnf, self.psr.container))
 
 
 class Test10(unittest.TestCase):

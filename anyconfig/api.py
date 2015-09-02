@@ -165,7 +165,8 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
             LOGGER.warn("Failed to compile %s, fallback to no template "
                         "mode", path_or_stream)
 
-    config = cparser.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
+    config = cparser.load(path_or_stream, ignore_missing=ignore_missing,
+                          **kwargs)
 
     if ac_schema is not None:
         if not _validate(config, schema, format_checker):

@@ -27,6 +27,7 @@ from anyconfig.schema import validate, gen_schema
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
+to_container = container.create
 
 
 def _validate(cnf, schema, format_checker=None):
@@ -184,7 +185,7 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
                       marker=marker, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
 
-    config = container(ac_context) if ac_context else container()
+    config = to_container(ac_context) if ac_context else container()
     for path in paths:
         if marker in path:  # Nested patterns like ['*.yml', '/a/b/c.yml'].
             conf_updates = multi_load(path, forced_type=forced_type,

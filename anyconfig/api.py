@@ -277,8 +277,7 @@ def loads(cnf_content, forced_type=None, ac_template=False, ac_context=None,
     if ac_template:
         try:
             LOGGER.debug("Compiling")
-            cnf_content = anyconfig.template.render_s(cnf_content,
-                                                         ac_context)
+            cnf_content = anyconfig.template.render_s(cnf_content, ac_context)
         except Exception as exc:
             LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile and fallback to no template "

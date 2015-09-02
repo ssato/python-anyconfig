@@ -60,7 +60,7 @@ class Test20(unittest.TestCase):
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_30_load__from_stream(self):
-        with open(self.cpath) as stream:
+        with open(self.cpath, 'rb') as stream:
             cnf = self.psr.load(stream)
 
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
@@ -70,8 +70,8 @@ class Test20(unittest.TestCase):
         cnf = self.psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_50_dump(self):
-        with open(self.cpath, 'w') as stream:
+    def test_50_dump__to_stream(self):
+        with open(self.cpath, 'wb') as stream:
             self.psr.dump(self.cnf, stream)
 
         cnf = self.psr.load(self.cpath)

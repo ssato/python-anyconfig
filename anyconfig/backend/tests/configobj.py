@@ -90,7 +90,7 @@ class Test20(unittest.TestCase):
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_30_load__from_stream(self):
-        with open(self.cpath) as stream:
+        with open(self.cpath, 'rb') as stream:
             cnf = self.psr.load(stream)
 
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
@@ -103,7 +103,7 @@ class Test20(unittest.TestCase):
 
     def test_50_dump__to_stream(self):
         cpath = self.cpath + ".new.2"
-        with open(cpath, 'w') as stream:
+        with open(cpath, 'wb') as stream:
             self.psr.dump(self.cnf, stream)
 
         cnf = self.psr.load(cpath)

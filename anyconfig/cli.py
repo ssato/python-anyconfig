@@ -48,9 +48,9 @@ Examples:
   %prog -I yaml -O yaml /etc/xyz/conf.d/a.conf
   %prog -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
   %prog '/etc/xyz/conf.d/*.json' -o xyz.yml \\
-    --atype json -A '{"obsoletes": "sysdata", "conflicts": "sysdata-old"}'
+    --atype json -A '{"obsoletes": "syscnf", "conflicts": "syscnf-old"}'
   %prog '/etc/xyz/conf.d/*.json' -o xyz.yml \\
-    -A obsoletes:sysdata;conflicts:sysdata-old
+    -A obsoletes:syscnf;conflicts:syscnf-old
   %prog /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
   %prog '/etc/foo.d/*.json' -M noreplace
   # Get/set part of input config
@@ -189,7 +189,7 @@ def main(argv=None):
         sys.stderr.write("--validate option requires --scheme option")
         sys.exit(1)
 
-    data = data = os.environ.copy() if options.env else A.container()
+    cnf = A.container(os.environ.copy()) if options.env else A.container()
     diff = A.load(args, options.itype,
                   ignore_missing=options.ignore_missing,
                   merge=options.merge, ac_template=options.template,
@@ -199,33 +199,33 @@ def main(argv=None):
         sys.stderr.write("Validation failed")
         sys.exit(1)
 
-    data.update(diff)
+    cnf.update(diff)
 
     if options.args:
         diff = A.loads(options.args, options.atype,
-                       ac_template=options.template, ac_context=data)
-        data.update(diff, options.merge)
+                       ac_template=options.template, ac_context=cnf)
+        cnf.update(diff, options.merge)
 
     if options.validate:
         A.LOGGER.info("Validation succeeds")
         sys.exit(0)
 
     if options.gen_schema:
-        data = A.gen_schema(data)
+        cnf = A.gen_schema(cnf)
 
     if options.get:
-        (data, err) = A.get(data, options.get)
+        (cnf, err) = A.get(cnf, options.get)
         if err:
             raise RuntimeError(err)
 
         # Output primitive types as it is.
-        if not anyconfig.mergeabledict.is_mergeabledict_or_dict(data):
-            sys.stdout.write(str(data) + '\n')
+        if not anyconfig.mergeabledict.is_mergeabledict_or_dict(cnf):
+            sys.stdout.write(str(cnf) + '\n')
             return
 
     if options.set:
         (key, val) = options.set.split('=')
-        A.set_(data, key, anyconfig.parser.parse(val))
+        A.set_(cnf, key, anyconfig.parser.parse(val))
 
     if options.output:
         cparser = A.find_loader(options.output, options.otype)
@@ -233,7 +233,7 @@ def main(argv=None):
             raise RuntimeError("No suitable dumper was found for %s",
                                options.output)
 
-        cparser.dump(data, options.output)
+        cparser.dump(cnf, options.output)
     else:
         if options.otype is None:
             if options.itype is None:
@@ -248,7 +248,7 @@ def main(argv=None):
                 options.otype = options.itype
 
         cparser = A.find_loader(None, options.otype)
-        sys.stdout.write(cparser.dumps(data) + '\n')
+        sys.stdout.write(cparser.dumps(cnf) + '\n')
 
 
 if __name__ == '__main__':

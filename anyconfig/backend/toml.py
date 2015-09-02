@@ -19,38 +19,21 @@
 """
 from __future__ import absolute_import
 
-import functools
 import toml
-import anyconfig.backend.json
+import anyconfig.backend.base
+from anyconfig.backend.base import to_method
 
 
-def call_with_no_kwargs(func):
-    """
-    Call :func:`func` without given keyword args
-
-    :param func: Any callable object
-
-    >>> call_with_no_kwargs(len)([], kwarg0_ignored=True)
-    0
-    """
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        """Wrapper function.
-        """
-        return func(*args)
-
-    return wrapper
-
-
-class Parser(anyconfig.backend.json.Parser):
+class Parser(anyconfig.backend.base.L2Parser, anyconfig.backend.base.D2Parser):
     """
     TOML parser.
     """
     _type = "toml"
     _extensions = ["toml"]
-    _funcs = dict(loads=call_with_no_kwargs(toml.loads),
-                  load=call_with_no_kwargs(toml.load),
-                  dumps=call_with_no_kwargs(toml.dumps),
-                  dump=call_with_no_kwargs(toml.dump))
+
+    load_from_string = to_method(toml.loads)
+    load_from_stream = to_method(toml.load)
+    dump_to_string = to_method(toml.dumps)
+    dump_to_stream = to_method(toml.dump)
 
 # vim:sw=4:ts=4:et:

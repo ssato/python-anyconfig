@@ -18,9 +18,6 @@
 """
 from __future__ import absolute_import
 
-import logging
-import sys
-
 import anyconfig.backend.base as Base
 import anyconfig.parser as P
 import anyconfig.utils
@@ -28,7 +25,6 @@ import anyconfig.utils
 from anyconfig.compat import configparser, iteritems
 
 
-LOGGER = logging.getLogger(__name__)
 _SEP = ','
 
 
@@ -72,12 +68,19 @@ def _to_s(val, sep=", "):
         return str(val)
 
 
-def _load_impl(cnf_fp, sep=_SEP, **kwargs):
+def _load(filepath=None, stream=None, sep=_SEP, cls=dict, **kwargs):
     """
-    :param cnf_fp: File or file-like object provides ini-style conf
+    :param filepath: Config file path
+    :param stream: File or file-like object provides ini-style conf
+    :param sep: Seprator string
+    :param cls: Container class
+
     :return: Dict or dict-like object represents config values
     """
-    config = dict()
+    if filepath is None and stream is None:
+        raise ValueError("filepath or stream must be some value "
+                         "other than None")
+    cnf = cls()
 
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = Base.mk_opt_args(("defaults", "dict_type", "allow_no_value"),
@@ -85,33 +88,31 @@ def _load_impl(cnf_fp, sep=_SEP, **kwargs):
     kwargs_1 = Base.mk_opt_args(("filename", ), kwargs)
 
     try:
-        try:
-            parser = configparser.SafeConfigParser(**kwargs_0)
-        except TypeError:
-            # It seems ConfigPaser.*ConfigParser in python 2.6 does not support
-            # 'allow_no_value' option parameter, and TypeError will be thrown.
-            kwargs_0 = Base.mk_opt_args(("defaults", "dict_type"), kwargs)
-            parser = configparser.SafeConfigParser(**kwargs_0)
+        parser = configparser.SafeConfigParser(**kwargs_0)
+    except TypeError:
+        # It seems ConfigPaser.*ConfigParser in python 2.6 does not support
+        # 'allow_no_value' option parameter, and TypeError will be thrown.
+        kwargs_0 = Base.mk_opt_args(("defaults", "dict_type"), kwargs)
+        parser = configparser.SafeConfigParser(**kwargs_0)
 
-        parser.readfp(cnf_fp, **kwargs_1)
+    if filepath is None:
+        parser.readfp(stream, **kwargs_1)
+    else:
+        parser.read(filepath, **kwargs_1)
 
-        if parser.defaults():
-            config["DEFAULT"] = dict()
+    if parser.defaults():
+        cnf["DEFAULT"] = cls()
 
-            for key, val in iteritems(parser.defaults()):
-                config["DEFAULT"][key] = _parse(val, sep)
+        for key, val in iteritems(parser.defaults()):
+            cnf["DEFAULT"][key] = _parse(val, sep)
 
-        for sect in parser.sections():
-            config[sect] = dict()
+    for sect in parser.sections():
+        cnf[sect] = cls()
 
-            for key, val in parser.items(sect):
-                config[sect][key] = _parse(val, sep)
+        for key, val in parser.items(sect):
+            cnf[sect][key] = _parse(val, sep)
 
-    except Exception:
-        LOGGER.warn(sys.exc_info()[-1])
-        raise
-
-    return config
+    return cnf
 
 
 def mk_lines_g(data):
@@ -138,31 +139,45 @@ def mk_lines_g(data):
         yield "\n"  # put an empty line just after each sections.
 
 
-class Parser(Base.Parser):
+class Parser(Base.LParser):
     """
-    Init config files parser.
+    Ini config files parser.
     """
     _type = "ini"
     _extensions = ["ini"]
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename"]
 
-    def load_impl(self, cnf_fp, **kwargs):
+    def load_from_path(self, filepath, **kwargs):
         """
-        :param cnf_fp:  Config file object
+        Load config from given file path `filepath`.
+
+        :param filepath: Config file path
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
+        :return: self.container object holding config parameters
+        """
+        return _load(filepath=filepath, sep=_SEP, cls=self.container, **kwargs)
+
+    def load_from_stream(self, stream, **kwargs):
+        """
+        Load INI config from given file or file-like object `stream`.
+
+        :param stream: Config file or file-like object
         :param kwargs: configparser specific optional keyword parameters
 
         :return: dict object holding config parameters
         """
-        return _load_impl(cnf_fp, sep=_SEP, **kwargs)
+        return _load(stream=stream, sep=_SEP, cls=self.container, **kwargs)
 
-    def dumps_impl(self, data, **kwargs):
+    def dump_to_string(self, cnf, **kwargs):
         """
-        :param data: Data to dump :: dict
-        :param config_path: Dump destination file path
-        :param kwargs: backend-specific optional keyword parameters :: dict
+        Dump INI config `cnf` to a string.
+
+        :param cnf: Configuration data to dump :: self.container
+        :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: string represents the configuration
         """
-        return '\n'.join(l for l in mk_lines_g(data))
+        return '\n'.join(l for l in mk_lines_g(cnf))
 
 # vim:sw=4:ts=4:et:

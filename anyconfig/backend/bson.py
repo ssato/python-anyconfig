@@ -35,9 +35,9 @@ except AttributeError:  # _use_c looks missing in python 3 version.
     _LOAD_OPTS = []  # Keep it empty until making sure valid options.
 
 
-class Parser(anyconfig.backend.base.Parser):
+class Parser(anyconfig.backend.base.L2Parser, anyconfig.backend.base.DParser):
     """
-    Loader/Dumper for MessagePack files.
+    Loader/Dumper of BSON files.
     """
     _type = "bson"
     _extensions = [".bson", ".bsn"]  # Temporary.
@@ -45,33 +45,29 @@ class Parser(anyconfig.backend.base.Parser):
     _dump_opts = ["check_keys", "uuid_subtype"]
     _open_flags = ('rb', 'wb')
 
-    def loads(self, cnf_content, **kwargs):
+    dump_to_string = anyconfig.backend.base.to_method(bson.BSON.encode)
+
+    def load_from_string(self, content, **kwargs):
         """
-        :param cnf_content: Config content in bytes data string
+        Load BSON config from given string `content`.
+
+        :param content: BSON config content in bytes data string
         :param kwargs: optional keyword parameters
 
         :return: self.container() object holding config parameters
         """
-        kwargs = anyconfig.backend.base.mk_opt_args(self._load_opts, kwargs)
-        objs = bson.decode_all(cnf_content, **kwargs)
+        objs = bson.decode_all(content, **kwargs)
         return None if not objs else self.container.create(objs[0])
 
-    def load_impl(self, cnf_fp, **kwargs):
+    def load_from_stream(self, stream, **kwargs):
         """
-        :param cnf_fp: Config file object
+        Load BSON config from given file or file-like object `stream`.
+
+        :param stream: Config file or file-like object
         :param kwargs: backend-specific optional keyword parameters :: dict
 
-        :return: dict-like object holding config parameters
+        :return: self.container() object holding config parameters
         """
-        return self.loads(cnf_fp.read(), **kwargs)
-
-    def dumps_impl(self, obj, **kwargs):
-        """
-        :param obj: A dict or dict-like object to dump
-        :param kwargs: Optional keyword parameters
-
-        :return: string represents the configuration
-        """
-        return bson.BSON.encode(obj, **kwargs)
+        return self.load_from_string(stream.read(), **kwargs)
 
 # vim:sw=4:ts=4:et:

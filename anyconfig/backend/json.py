@@ -21,7 +21,7 @@
 """
 from __future__ import absolute_import
 
-import anyconfig.backend.base as Base
+import anyconfig.backend.base
 import anyconfig.compat
 
 try:
@@ -43,7 +43,7 @@ if not anyconfig.compat.IS_PYTHON_3:
     _DUMP_OPTS.append("encoding")
 
 
-class Parser(Base.Parser):
+class Parser(anyconfig.backend.base.L2Parser, anyconfig.backend.base.D2Parser):
     """
     Parser for JSON files.
     """
@@ -52,54 +52,29 @@ class Parser(Base.Parser):
     _load_opts = _LOAD_OPTS
     _dump_opts = _DUMP_OPTS
 
-    _funcs = dict(loads=json.loads, load=json.load,
-                  dumps=json.dumps, dump=json.dump)
+    dump_to_string = anyconfig.backend.base.to_method(json.dumps)
+    dump_to_stream = anyconfig.backend.base.to_method(json.dump)
 
-    def dict_to_container(self, json_obj_dict):
-        """Convert dict to container.
+    def load_from_string(self, content, **kwargs):
+        """
+        Load JSON config from given string `content`.
 
-        :param json_obj_dict: A dict or dict-like JSON object
-        :return: A Parser.container object
-        """
-        return self.container.create(json_obj_dict)
+        :param content: JSON config content string
+        :param kwargs: optional keyword parameters passed to json.loads
 
-    def loads(self, cnf_content, **kwargs):
+        :return: self.container object holding configuration
         """
-        :param cnf_content:  Config file content
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        return json.loads(content, object_hook=self.container, **kwargs)
 
-        :return: self.container object holding config parameters
+    def load_from_stream(self, stream, **kwargs):
         """
-        func = self._funcs["loads"]
-        return func(cnf_content, object_hook=self.dict_to_container,
-                    **Base.mk_opt_args(self._load_opts, kwargs))
+        Load JSON config from given file or file-like object `stream`.
 
-    def load_impl(self, cnf_fp, **kwargs):
-        """
-        :param cnf_fp:  Config file object
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param stream: JSON file or file-like object
+        :param kwargs: optional keyword parameters passed to json.load
 
-        :return: self.container object holding config parameters
+        :return: self.container object holding configuration
         """
-        func = self._funcs["load"]
-        return func(cnf_fp, object_hook=self.dict_to_container, **kwargs)
-
-    def dumps_impl(self, data, **kwargs):
-        """
-        :param data: Data to dump :: dict
-        :param kwargs: backend-specific optional keyword parameters :: dict
-
-        :return: string represents the configuration
-        """
-        return self._funcs["dumps"](data, **kwargs)
-
-    def dump_impl(self, data, cnf_path, **kwargs):
-        """
-        :param data: Data to dump :: dict
-        :param cnf_path: Dump destination file path
-        :param kwargs: backend-specific optional keyword parameters :: dict
-        """
-        self._funcs["dump"](data, open(cnf_path, self._open_flags[1]),
-                            **kwargs)
+        return json.load(stream, object_hook=self.container, **kwargs)
 
 # vim:sw=4:ts=4:et:

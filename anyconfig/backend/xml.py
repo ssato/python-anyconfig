@@ -3,7 +3,7 @@
 # License: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
-# pylint: disable=import-error, abstract-method
+# pylint: disable=import-error
 """XML files parser backend, should be available always.
 
 .. versionchanged:: 0.1.0
@@ -133,7 +133,7 @@ def etree_write(tree, stream):
         tree.write(stream, encoding='UTF-8', xml_declaration=True)
 
 
-class Parser(anyconfig.backend.base.Parser):
+class Parser(anyconfig.backend.base.D2Parser):
     """
     Parser for XML files.
     """
@@ -141,46 +141,56 @@ class Parser(anyconfig.backend.base.Parser):
     _extensions = ["xml"]
     _open_flags = ('rb', 'wb')
 
-    def loads(self, cnf_content, **kwargs):
+    def load_from_string(self, content, **kwargs):
         """
-        :param cnf_content:  Config file content
+        Load config from XML snippet (a string `content`).
+
+        :param content: XML snippet (a string)
+        :param kwargs: optional keyword parameters passed to
+
+        :return: self.container object holding config parameters
+        """
+        root = ET.ElementTree(ET.fromstring(content)).getroot()
+        return etree_to_container(root, self.container)
+
+    def load_from_path(self, filepath, **kwargs):
+        """
+        :param filepath: XML file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: self.container object holding config parameters
         """
-        root = ET.ElementTree(ET.fromstring(cnf_content)).getroot()
+        root = ET.parse(filepath).getroot()
         return etree_to_container(root, self.container)
 
-    def load(self, cnf_path, **kwargs):
+    def load_from_stream(self, stream, **kwargs):
         """
-        :param cnf_path:  Config file path
+        :param stream: XML file or file-like object
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: self.container object holding config parameters
         """
-        root = ET.parse(cnf_path).getroot()
-        return etree_to_container(root, self.container)
+        return self.load_from_path(stream, **kwargs)
 
-    def dumps(self, obj, **kwargs):
+    def dump_to_string(self, cnf, **kwargs):
         """
-        :param obj: Data to dump :: dict
-        :param kwargs: backend-specific optional keyword parameters :: dict
+        :param cnf: Configuration data to dump :: self.container
+        :param kwargs: optional keyword parameters
 
         :return: string represents the configuration
         """
-        tree = container_to_etree(obj, self.container)
+        tree = container_to_etree(cnf, self.container)
         buf = BytesIO()
         etree_write(tree, buf)
         return buf.getvalue()
 
-    def dump_impl(self, obj, cnf_path, **kwargs):
+    def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        :param obj: Data to dump :: dict
-        :param cnf_path: Dump destination file path
-        :param kwargs: backend-specific optional keyword parameters :: dict
+        :param cnf: Configuration data to dump :: self.container
+        :param stream: Config file or file like object write to
+        :param kwargs: optional keyword parameters
         """
-        tree = container_to_etree(obj, self.container)
-        with open(cnf_path, self._open_flags[1]) as out:
-            etree_write(tree, out)
+        tree = container_to_etree(cnf, self.container)
+        etree_write(tree, stream)
 
 # vim:sw=4:ts=4:et:

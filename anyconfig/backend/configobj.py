@@ -20,7 +20,22 @@ import configobj
 import anyconfig.backend.base
 
 
-class Parser(anyconfig.backend.base.Parser):
+def make_configobj(cnf, **kwargs):
+    """
+    Make a configobj.ConfigObj initalized with given config `cnf`.
+
+    :param cnf: Configuration data :: Parser.container
+    :param kwargs: optional keyword parameters passed to ConfigObj.__init__
+
+    :return: An initialized configobj.ConfigObj instance
+    """
+    cobj = configobj.ConfigObj(**kwargs)
+    cobj.update(cnf)
+
+    return cobj
+
+
+class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.D2Parser):
     """
     Parser for Ini-like config files which configobj supports.
     """
@@ -32,38 +47,28 @@ class Parser(anyconfig.backend.base.Parser):
                   "_inspec", ]
     _dump_opts = ["cls", "encoding", "list_values", "indent_type",
                   "default_encoding", "unrepr", "write_empty_values", ]
+    _open_flags = ('rb', 'wb')
 
-    def load_impl(self, cnf_fp, **kwargs):
-        """
-        :param cnf_fp:  Config file object
-        :param kwargs: backend-specific optional keyword parameters :: dict
+    load_from_path = anyconfig.backend.base.to_method(configobj.ConfigObj)
+    load_from_stream = anyconfig.backend.base.to_method(configobj.ConfigObj)
 
-        :return: dict object holding config parameters
+    def dump_to_string(self, cnf, **kwargs):
         """
-        return configobj.ConfigObj(cnf_fp, **kwargs)
+        Dump config `cnf` to a string.
 
-    def dumps_impl(self, data, **kwargs):
-        """
-        :param data: Data to dump :: dict
+        :param cnf: Configuration data to dump :: self.container
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: string represents the configuration
         """
-        conf = configobj.ConfigObj(**kwargs)
-        conf.update(data)
-        conf.filename = None
+        return '\n'.join(make_configobj(cnf, **kwargs).write())
 
-        return '\n'.join(conf.write())
-
-    def dump_impl(self, data, cnf_path, **kwargs):
+    def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        :param data: Data to dump :: dict
-        :param cnf_path: Dump destination file path
+        :param cnf: Configuration data to dump :: self.container
+        :param stream: Config file or file-like object
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        cnf = configobj.ConfigObj(**kwargs)
-        cnf.update(data)
-
-        cnf.write(open(cnf_path, 'wb'))
+        make_configobj(cnf, **kwargs).write(stream)
 
 # vim:sw=4:ts=4:et:

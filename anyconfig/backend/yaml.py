@@ -42,51 +42,27 @@ def yaml_load(stream, **kwargs):
         return yaml.load(stream, **kwargs)
 
 
-def yaml_dump(data, stream, **kwargs):
+def yaml_dump(cnf, stream, **kwargs):
     """
     An wrapper of yaml.{safe_,}dump
     """
     keys = filter_keys(kwargs.keys(), "safe")
     if kwargs.get("safe", False):
-        return yaml.safe_dump(data, stream, **Base.mk_opt_args(keys, kwargs))
+        return yaml.safe_dump(cnf, stream, **Base.mk_opt_args(keys, kwargs))
     else:
-        return yaml.dump(data, stream, **kwargs)
+        return yaml.dump(cnf, stream, **kwargs)
 
 
-class Parser(Base.Parser):
+class Parser(Base.LParser, Base.L2Parser, Base.D2Parser):
     """
     Parser for YAML files.
     """
-
     _type = "yaml"
     _extensions = ("yaml", "yml")
     _load_opts = ["Loader", "safe"]
     _dump_opts = ["stream", "Dumper"]
 
-    def load_impl(self, cnf_fp, **kwargs):
-        """
-        :param cnf_fp:  Config file object
-        :param kwargs: backend-specific optional keyword parameters :: dict
-
-        :return: dict object holding config parameters
-        """
-        return yaml_load(cnf_fp, **kwargs)
-
-    def dumps_impl(self, data, **kwargs):
-        """
-        :param data: Data to dump :: dict
-        :param kwargs: backend-specific optional keyword parameters :: dict
-
-        :return: string represents the configuration
-        """
-        return yaml_dump(data, None, **kwargs)
-
-    def dump_impl(self, data, cnf_path, **kwargs):
-        """
-        :param data: Data to dump :: dict
-        :param cnf_path: Dump destination file path
-        :param kwargs: backend-specific optional keyword parameters :: dict
-        """
-        yaml_dump(data, open(cnf_path, 'w'), **kwargs)
+    load_from_stream = Base.to_method(yaml_load)
+    dump_to_stream = Base.to_method(yaml_dump)
 
 # vim:sw=4:ts=4:et:

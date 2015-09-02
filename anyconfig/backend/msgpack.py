@@ -21,10 +21,11 @@
 from __future__ import absolute_import
 
 import msgpack
-import anyconfig.backend.json
+import anyconfig.backend.base
+from anyconfig.backend.base import to_method
 
 
-class Parser(anyconfig.backend.json.Parser):
+class Parser(anyconfig.backend.base.L2Parser, anyconfig.backend.base.D2Parser):
     """
     Loader/Dumper for MessagePack files.
     """
@@ -37,7 +38,10 @@ class Parser(anyconfig.backend.json.Parser):
     _dump_opts = ["default", "encoding", "unicode_errors", "use_single_float",
                   "autoreset", "use_bin_type"]
     _open_flags = ('rb', 'wb')
-    _funcs = dict(loads=msgpack.unpackb, load=msgpack.unpack,
-                  dumps=msgpack.packb, dump=msgpack.pack)
+
+    load_from_string = to_method(msgpack.unpackb)
+    load_from_stream = to_method(msgpack.unpack)
+    dump_to_string = to_method(msgpack.packb)
+    dump_to_stream = to_method(msgpack.pack)
 
 # vim:sw=4:ts=4:et:

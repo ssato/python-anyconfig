@@ -152,27 +152,26 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
         try:
             LOGGER.debug("Compiling: %s", filepath)
             content = anyconfig.template.render(filepath, ac_context)
-            config = cparser.loads(content, ignore_missing=ignore_missing,
-                                   **kwargs)
+            cnf = cparser.loads(content, ignore_missing=ignore_missing,
+                                **kwargs)
             if ac_schema is not None:
-                if not _validate(config, schema, format_checker):
+                if not _validate(cnf, schema, format_checker):
                     return None
 
-            return config
+            return cnf
 
         except Exception as exc:
             LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile %s, fallback to no template "
                         "mode", path_or_stream)
 
-    config = cparser.load(path_or_stream, ignore_missing=ignore_missing,
-                          **kwargs)
+    cnf = cparser.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
 
     if ac_schema is not None:
-        if not _validate(config, schema, format_checker):
+        if not _validate(cnf, schema, format_checker):
             return None
 
-    return config
+    return cnf
 
 
 def multi_load(paths, forced_type=None, ignore_missing=False,
@@ -221,7 +220,7 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
                       marker=marker, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
 
-    config = to_container(ac_context) if ac_context else container()
+    cnf = to_container(ac_context) if ac_context else container()
 
     if _is_path(paths) and marker in paths:
         paths = anyconfig.utils.sglob(paths)
@@ -233,20 +232,20 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
                                       ignore_missing=ignore_missing,
                                       merge=merge, marker=marker,
                                       ac_template=ac_template,
-                                      ac_context=config, **kwargs)
+                                      ac_context=cnf, **kwargs)
         else:
             conf_updates = single_load(path, forced_type=forced_type,
                                        ignore_missing=ignore_missing,
                                        ac_template=ac_template,
-                                       ac_context=config, **kwargs)
+                                       ac_context=cnf, **kwargs)
 
-        config.update(conf_updates, merge)
+        cnf.update(conf_updates, merge)
 
     if ac_schema is not None:
-        if not _validate(config, schema, format_checker):
+        if not _validate(cnf, schema, format_checker):
             return None
 
-    return config
+    return cnf
 
 
 def load(path_specs, forced_type=None, ignore_missing=False,

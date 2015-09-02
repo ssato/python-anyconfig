@@ -162,10 +162,10 @@ class Test30(unittest.TestCase):
 
         self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
 
-    def test_11_dump_and_single_load__from_stream(self):
+    def test_11_dump_and_single_load__to_from_stream(self):
         cpath = os.path.join(self.workdir, "a.json")
 
-        TT.dump(self.cnf, cpath)
+        TT.dump(self.cnf, open(cpath, 'w'))
         self.assertTrue(os.path.exists(cpath))
         cnf1 = TT.single_load(open(cpath))
 
@@ -340,15 +340,15 @@ b:
         self.assertEquals(a5["b"]["c"], a["b"]["c"])
         self.assertFalse("d" in a5["b"])
 
-    def test_21_dump_and_multi_load__from_stream(self):
+    def test_21_dump_and_multi_load__to_from_stream(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.json")
 
-        TT.dump(a, a_path)
-        TT.dump(b, b_path)
+        TT.dump(a, open(a_path, 'w'))
+        TT.dump(b, open(b_path, 'w'))
         self.assertTrue(os.path.exists(a_path))
         self.assertTrue(os.path.exists(b_path))
 

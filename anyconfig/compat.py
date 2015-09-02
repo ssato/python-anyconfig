@@ -85,6 +85,7 @@ if IS_PYTHON_3:
     from_iterable = itertools.chain.from_iterable
     cmp = py3_cmp
     raw_input = input
+    STR_TYPES = (str, )
 else:
     import ConfigParser as configparser  # flake8: noqa
     try:
@@ -113,5 +114,6 @@ else:
     iteritems = py_iteritems
     cmp = cmp
     raw_input = raw_input
+    STR_TYPES = (str, unicode)
 
 # vim:sw=4:ts=4:et:

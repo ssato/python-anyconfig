@@ -136,39 +136,44 @@ class Parser(object):
         """
         return self.container()
 
-    def loads(self, cnf_content, **kwargs):
+    def loads(self, content, **kwargs):
         """
-        Load config from given string `cnf_content` after some checks.
+        Load config from given string `content` after some checks.
 
-        :param cnf_content:  Config file content
+        :param content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: self.container object holding config parameters
         """
-        if not cnf_content or cnf_content is None:
+        if not content or content is None:
             return self.container()
 
         kwargs = mk_opt_args(self._load_opts, kwargs)
-        return self.to_container(self.load_from_string(cnf_content, **kwargs))
+        return self.to_container(self.load_from_string(content, **kwargs))
 
-    def load(self, cnf_path_or_stream, ignore_missing=False, **kwargs):
+    def load(self, path_or_stream, ignore_missing=False, **kwargs):
         """
-        :param cnf_path_or_stream: Config file path or file{,-like} object
+        Load config from a file path or a file / file-like object
+        `path_or_stream` after some checks.
+
+        :param path_or_stream: Config file path or file{,-like} object
         :param ignore_missing:
-            Ignore and just return None if given file `cnf_path` does not exist
+            Ignore and just return None if given `path_or_stream` is not a file
+            / file-like object (thus, it should be a file path) and does not
+            exist in actual
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: self.container object holding config parameters
         """
         kwargs = mk_opt_args(self._load_opts, kwargs)
 
-        if isinstance(cnf_path_or_stream, anyconfig.compat.STR_TYPES):
-            if ignore_missing and not os.path.exists(cnf_path_or_stream):
+        if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
+            if ignore_missing and not os.path.exists(path_or_stream):
                 return self.container()
 
-            cnf = self.load_from_path(cnf_path_or_stream, **kwargs)
+            cnf = self.load_from_path(path_or_stream, **kwargs)
         else:
-            cnf = self.load_from_stream(cnf_path_or_stream, **kwargs)
+            cnf = self.load_from_stream(path_or_stream, **kwargs)
 
         return self.to_container(cnf)
 
@@ -218,24 +223,24 @@ class Parser(object):
         cnf = self.container.convert_to(cnf)
         return self.dump_to_string(cnf, **kwargs)
 
-    def dump(self, cnf, cnf_path_or_stream, **kwargs):
+    def dump(self, cnf, path_or_stream, **kwargs):
         """
         Dump config `cnf` to a filepath or file-like object
-        `cnf_path_or_stream`.
+        `path_or_stream`.
 
         :param cnf: Configuration data to dump :: self.container
-        :param cnf_path_or_stream: Config file path or file{,-like} object
+        :param path_or_stream: Config file path or file{,-like} object
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
         """
         kwargs = mk_opt_args(self._dump_opts, kwargs)
         cnf = self.container.convert_to(cnf)
 
-        if isinstance(cnf_path_or_stream, anyconfig.compat.STR_TYPES):
-            ensure_outdir_exists(cnf_path_or_stream)
-            self.dump_to_path(cnf, cnf_path_or_stream, **kwargs)
+        if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
+            ensure_outdir_exists(path_or_stream)
+            self.dump_to_path(cnf, path_or_stream, **kwargs)
         else:
-            self.dump_to_stream(cnf, cnf_path_or_stream, **kwargs)
+            self.dump_to_stream(cnf, path_or_stream, **kwargs)
 
 
 class LParser(Parser):

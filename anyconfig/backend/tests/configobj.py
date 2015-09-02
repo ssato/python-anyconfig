@@ -58,21 +58,23 @@ CNF_0 = {'keyword 2': 'value 2',
 
 class Test10(unittest.TestCase):
 
+    psr = TT.Parser()
     cnf = CNF_0
     cnf_s = CNF_0_S
 
     def test_10_loads(self):
-        cnf = TT.Parser().loads(self.cnf_s)
+        cnf = self.psr.loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_30_dumps(self):
-        cnf_s = TT.Parser().dumps(self.cnf)
-        cnf = TT.Parser().loads(cnf_s)
+        cnf_s = self.psr.dumps(self.cnf)
+        cnf = self.psr.loads(cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 
 class Test20(unittest.TestCase):
 
+    psr = TT.Parser()
     cnf = CNF_0
     cnf_s = CNF_0_S
 
@@ -84,12 +86,27 @@ class Test20(unittest.TestCase):
         os.remove(self.cpath)
 
     def test_20_load(self):
-        cnf = TT.Parser().load(self.cpath)
+        cnf = self.psr.load(self.cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_30_load__from_stream(self):
+        with open(self.cpath) as stream:
+            cnf = self.psr.load(stream)
+
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_40_dump(self):
-        TT.Parser().dump(self.cnf, self.cpath)  # Overwrite it.
-        cnf = TT.Parser().load(self.cpath)
+        cpath = self.cpath + ".new"
+        self.psr.dump(self.cnf, cpath)
+        cnf = self.psr.load(cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_50_dump__to_stream(self):
+        cpath = self.cpath + ".new.2"
+        with open(cpath, 'w') as stream:
+            self.psr.dump(self.cnf, stream)
+
+        cnf = self.psr.load(cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

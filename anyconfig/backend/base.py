@@ -80,6 +80,7 @@ class Parser(object):
     _open_flags = ('r', 'w')
 
     container = anyconfig.mergeabledict.MergeableDict
+    to_container = container.create
 
     @classmethod
     def type(cls):
@@ -148,7 +149,7 @@ class Parser(object):
             return self.container()
 
         kwargs = mk_opt_args(self._load_opts, kwargs)
-        return self.container(self.load_from_string(cnf_content, **kwargs))
+        return self.to_container(self.load_from_string(cnf_content, **kwargs))
 
     def load(self, cnf_path_or_stream, ignore_missing=False, **kwargs):
         """
@@ -169,7 +170,7 @@ class Parser(object):
         else:
             cnf = self.load_from_stream(cnf_path_or_stream, **kwargs)
 
-        return self.container(cnf)
+        return self.to_container(cnf)
 
     def dump_to_string(self, cnf, **kwargs):
         """

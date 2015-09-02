@@ -184,7 +184,7 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
                       marker=marker, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
 
-    config = container.create(ac_context) if ac_context else container()
+    config = container(ac_context) if ac_context else container()
     for path in paths:
         if marker in path:  # Nested patterns like ['*.yml', '/a/b/c.yml'].
             conf_updates = multi_load(path, forced_type=forced_type,

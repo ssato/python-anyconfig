@@ -119,8 +119,8 @@ def single_load(filepath, forced_type=None, ignore_missing=False,
     if ac_template:
         try:
             LOGGER.debug("Compiling: %s", filepath)
-            cnf_content = anyconfig.template.render(filepath, ac_context)
-            config = cparser.loads(cnf_content,
+            content = anyconfig.template.render(filepath, ac_context)
+            config = cparser.loads(content,
                                    ignore_missing=ignore_missing, **kwargs)
             if ac_schema is not None:
                 if not _validate(config, schema, format_checker):
@@ -247,10 +247,10 @@ def load(path_specs, forced_type=None, ignore_missing=False,
                            ac_schema=ac_schema, **kwargs)
 
 
-def loads(cnf_content, forced_type=None, ac_template=False, ac_context=None,
+def loads(content, forced_type=None, ac_template=False, ac_context=None,
           ac_schema=None, **kwargs):
     """
-    :param cnf_content: Configuration file's content
+    :param content: Configuration file's content
     :param forced_type: Forced configuration parser type
     :param ignore_missing: Ignore missing config files
     :param ac_template: Assume configuration file may be a template file and
@@ -266,11 +266,11 @@ def loads(cnf_content, forced_type=None, ac_template=False, ac_context=None,
     """
     if forced_type is None:
         LOGGER.warn("No config type was given. Try to parse...")
-        return anyconfig.parser.parse(cnf_content)
+        return anyconfig.parser.parse(content)
 
     cparser = find_loader(None, forced_type)
     if cparser is None:
-        return anyconfig.parser.parse(cnf_content)
+        return anyconfig.parser.parse(content)
 
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
@@ -281,13 +281,13 @@ def loads(cnf_content, forced_type=None, ac_template=False, ac_context=None,
     if ac_template:
         try:
             LOGGER.debug("Compiling")
-            cnf_content = anyconfig.template.render_s(cnf_content, ac_context)
+            content = anyconfig.template.render_s(content, ac_context)
         except Exception as exc:
             LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile and fallback to no template "
-                        "mode: '%s'", cnf_content[:50] + '...')
+                        "mode: '%s'", content[:50] + '...')
 
-    cnf = cparser.loads(cnf_content, **kwargs)
+    cnf = cparser.loads(content, **kwargs)
 
     if ac_schema is not None:
         if not _validate(cnf, schema, format_checker):

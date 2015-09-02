@@ -10,6 +10,8 @@
 """
 from __future__ import absolute_import
 
+import os.path
+
 from anyconfig.globals import LOGGER
 import anyconfig.backends
 import anyconfig.backend.json
@@ -31,6 +33,24 @@ from anyconfig.schema import validate, gen_schema
 list_types = anyconfig.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
 to_container = container.create
+
+
+def _is_path(path_or_stream):
+    """
+    Is given object `path_or_stream` a file path?
+    """
+    return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
+
+
+def _get_path_from_stream(stream):
+    """
+    Try to get file path from given stream `stream`.
+    """
+    maybe_path = getattr(stream, "name", None)
+    if maybe_path is not None:
+        maybe_path = os.path.abspath(maybe_path)
+
+    return maybe_path
 
 
 def _validate(cnf, schema, format_checker=None):
@@ -58,9 +78,12 @@ def set_loglevel(level):
     LOGGER.setLevel(level)
 
 
-def find_loader(filepath, forced_type=None):
+def find_loader(path_or_stream, forced_type=None):
     """
-    :param filepath: Configuration file path
+    Find out config parser object appropriate to load from a file of given path
+    or file/file-like object.
+
+    :param path_or_stream: Configuration file path or file / file-like object
     :param forced_type: Forced configuration parser type
 
     :return: Config parser instance or None
@@ -71,25 +94,30 @@ def find_loader(filepath, forced_type=None):
             LOGGER.error("No parser found for given type: %s", forced_type)
             return None
     else:
-        cparser = anyconfig.backends.find_by_file(filepath)
+        if not _is_path(path_or_stream):
+            path_or_stream = _get_path_from_stream(path_or_stream)
+            if path_or_stream is None:
+                return None  # No way to detect filename.
+
+        cparser = anyconfig.backends.find_by_file(path_or_stream)
         if not cparser:
-            LOGGER.error("No parser found for given file: %s", filepath)
+            LOGGER.error("No parser found for given file: %s", path_or_stream)
             return None
 
     LOGGER.debug("Using config parser of type: %s", cparser.type())
     return cparser()
 
 
-def single_load(filepath, forced_type=None, ignore_missing=False,
+def single_load(path_or_stream, forced_type=None, ignore_missing=False,
                 ac_template=False, ac_context=None, ac_schema=None,
                 **kwargs):
     """
     Load single config file.
 
-    :param filepath: Configuration file path
+    :param path_or_stream: Configuration file path or file / file-like object
     :param forced_type: Forced configuration parser type
     :param ignore_missing: Ignore and just return empty result if given file
-        (``filepath``) does not exist
+        (``path_or_stream``) does not exist
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
@@ -101,9 +129,13 @@ def single_load(filepath, forced_type=None, ignore_missing=False,
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    filepath = anyconfig.utils.ensure_expandusr(filepath)
+    if _is_path(path_or_stream):
+        path_or_stream = anyconfig.utils.ensure_expandusr(path_or_stream)
+        filepath = path_or_stream
+    else:
+        filepath = _get_path_from_stream(path_or_stream)
 
-    cparser = find_loader(filepath, forced_type)
+    cparser = find_loader(path_or_stream, forced_type)
     if cparser is None:
         return None
 
@@ -116,12 +148,12 @@ def single_load(filepath, forced_type=None, ignore_missing=False,
                       ac_context=ac_context, **kwargs)
 
     LOGGER.info("Loading: %s", filepath)
-    if ac_template:
+    if ac_template and filepath is not None:
         try:
             LOGGER.debug("Compiling: %s", filepath)
             content = anyconfig.template.render(filepath, ac_context)
-            config = cparser.loads(content,
-                                   ignore_missing=ignore_missing, **kwargs)
+            config = cparser.loads(content, ignore_missing=ignore_missing,
+                                   **kwargs)
             if ac_schema is not None:
                 if not _validate(config, schema, format_checker):
                     return None
@@ -131,9 +163,9 @@ def single_load(filepath, forced_type=None, ignore_missing=False,
         except Exception as exc:
             LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile %s, fallback to no template "
-                        "mode", filepath)
+                        "mode", path_or_stream)
 
-    config = cparser.load(filepath, ignore_missing=ignore_missing, **kwargs)
+    config = cparser.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
 
     if ac_schema is not None:
         if not _validate(config, schema, format_checker):
@@ -177,8 +209,8 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
     if merge not in MERGE_STRATEGIES:
         raise ValueError("Invalid merge strategy: " + merge)
 
-    if marker in paths:
-        paths = anyconfig.utils.sglob(paths)
+    if not paths:
+        return container()
 
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
@@ -189,8 +221,13 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
                       ac_context=ac_context, **kwargs)
 
     config = to_container(ac_context) if ac_context else container()
+
+    if _is_path(paths) and marker in paths:
+        paths = anyconfig.utils.sglob(paths)
+
     for path in paths:
-        if marker in path:  # Nested patterns like ['*.yml', '/a/b/c.yml'].
+        # Nested patterns like ['*.yml', '/a/b/c.yml'].
+        if _is_path(path) and marker in path:
             conf_updates = multi_load(path, forced_type=forced_type,
                                       ignore_missing=ignore_missing,
                                       merge=merge, marker=marker,
@@ -235,7 +272,8 @@ def load(path_specs, forced_type=None, ignore_missing=False,
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    if marker in path_specs or anyconfig.utils.is_iterable(path_specs):
+    if (_is_path(path_specs) and marker in path_specs) or \
+        anyconfig.utils.is_iterable(path_specs):
         return multi_load(path_specs, forced_type=forced_type,
                           ignore_missing=ignore_missing, merge=merge,
                           marker=marker, ac_template=ac_template,

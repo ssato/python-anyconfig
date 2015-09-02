@@ -4,6 +4,9 @@
 #
 # pylint: disable=unused-import,import-error,invalid-name
 """Public APIs of anyconfig module.
+
+.. versionadded:: 0.2
+   Export factory method (create) of anyconfig.mergeabledict.MergeableDict
 """
 from __future__ import absolute_import
 

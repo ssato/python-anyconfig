@@ -335,16 +335,16 @@ def loads(content, forced_type=None, ac_template=False, ac_context=None,
     return cnf
 
 
-def _find_dumper(filepath, forced_type=None):
+def _find_dumper(path_or_stream, forced_type=None):
     """
     Find configuration parser to dump data.
 
-    :param filepath: Output filename
+    :param path_or_stream: Output file path or file / file-like object
     :param forced_type: Forced configuration parser type
 
     :return: Parser-inherited class object
     """
-    cparser = find_loader(filepath, forced_type)
+    cparser = find_loader(path_or_stream, forced_type)
 
     if cparser is None or not getattr(cparser, "dump", False):
         LOGGER.warn("Dump method not implemented. Fallback to json.Parser")
@@ -353,21 +353,25 @@ def _find_dumper(filepath, forced_type=None):
     return cparser
 
 
-def dump(data, filepath, forced_type=None, **kwargs):
+def dump(data, path_or_stream, forced_type=None, **kwargs):
     """
-    Save `data` as `filepath`.
+    Save `data` as `path_or_stream`.
 
     :param data: Config data object to dump ::
         anyconfig.mergeabledict.MergeableDict by default
-    :param filepath: Output filename
+    :param path_or_stream: Output file path or file / file-like object
     :param forced_type: Forced configuration parser type
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     """
-    dumper = _find_dumper(filepath, forced_type)
+    dumper = _find_dumper(path_or_stream, forced_type)
 
-    LOGGER.info("Dumping: %s", filepath)
-    dumper.dump(data, filepath, **kwargs)
+    if _is_path(path_or_stream):
+        LOGGER.info("Dumping: %s", path_or_stream)
+    else:
+        LOGGER.info("Dumping: %s", _get_path_from_stream(path_or_stream))
+
+    dumper.dump(data, path_or_stream, **kwargs)
 
 
 def dumps(data, forced_type, **kwargs):

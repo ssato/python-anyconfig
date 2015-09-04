@@ -60,7 +60,7 @@ def get(dic, path, seps=PATH_SEPS):
         return (None, str(exc))
 
 
-def _mk_nested_dic(path, val, seps=PATH_SEPS):
+def mk_nested_dic(path, val, seps=PATH_SEPS):
     """
     Make a nested dict iteratively.
 
@@ -68,9 +68,9 @@ def _mk_nested_dic(path, val, seps=PATH_SEPS):
     :param val: Value to set
     :param seps: Separator char candidates
 
-    >>> _mk_nested_dic("a.b.c", 1)
+    >>> mk_nested_dic("a.b.c", 1)
     {'a': {'b': {'c': 1}}}
-    >>> _mk_nested_dic("/a/b/c", 1)
+    >>> mk_nested_dic("/a/b/c", 1)
     {'a': {'b': {'c': 1}}}
     """
     ret = None
@@ -94,7 +94,7 @@ def set_(dic, path, val, seps=PATH_SEPS, strategy=None):
     >>> d['a']['b']['d']
     3
     """
-    diff = _mk_nested_dic(path, val, seps)
+    diff = mk_nested_dic(path, val, seps)
     dic.update(diff, strategy)
 
 

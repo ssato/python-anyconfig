@@ -19,41 +19,42 @@
 from __future__ import absolute_import
 
 import yaml
-import anyconfig.backend.base as Base
+import anyconfig.backend.base
 
 
-def filter_keys(keys, filter_key):
+def _yml_fnc(action, *args, **kwargs):
+    """An wrapper of yaml.{safe_,}(load|dump).
+
+    :param action: "load" (default) or "dump"
+    :param args: [stream] for load or [cnf, stream] for dump
+    :param kwargs: keyword args may contain "safe" to load/dump safely
     """
-    :param keys: Original keys list
-    :param filter_key: Key to filter out from `keys`
-    :return: A list of keys given `filter_key` is not contained
+    act = "dump" if action == "dump" else "load"
+    fnc = getattr(yaml, "safe_" + act if kwargs.get("safe", False) else act)
+    kwargs = anyconfig.backend.base.mk_opt_args([k for k in kwargs.keys()
+                                                 if k != "safe"], kwargs)
+    return fnc(*args, **kwargs)
+
+
+def yml_load(stream, **kwargs):
+    """An wrapper of yaml.{safe_,}load.
+
+    :param stream: a file or file-like object to load YAML content
     """
-    return [k for k in keys if k != filter_key]
+    return _yml_fnc("load", stream, **kwargs)
 
 
-def yaml_load(stream, **kwargs):
+def yml_dump(cnf, stream, **kwargs):
+    """An wrapper of yaml.{safe_,}dump.
+
+    :param cnf: Configuration data (dict-like object) to dump
+    :param stream: a file or file-like object to load YAML content
     """
-    An wrapper of yaml.{safe_,}load
-    """
-    keys = filter_keys(kwargs.keys(), "safe")
-    if kwargs.get("safe", False):
-        return yaml.safe_load(stream, **Base.mk_opt_args(keys, kwargs))
-    else:
-        return yaml.load(stream, **kwargs)
+    return _yml_fnc("dump", cnf, stream, **kwargs)
 
 
-def yaml_dump(cnf, stream, **kwargs):
-    """
-    An wrapper of yaml.{safe_,}dump
-    """
-    keys = filter_keys(kwargs.keys(), "safe")
-    if kwargs.get("safe", False):
-        return yaml.safe_dump(cnf, stream, **Base.mk_opt_args(keys, kwargs))
-    else:
-        return yaml.dump(cnf, stream, **kwargs)
-
-
-class Parser(Base.LParser, Base.L2Parser, Base.D2Parser):
+class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.L2Parser,
+             anyconfig.backend.base.D2Parser):
     """
     Parser for YAML files.
     """
@@ -62,7 +63,7 @@ class Parser(Base.LParser, Base.L2Parser, Base.D2Parser):
     _load_opts = ["Loader", "safe"]
     _dump_opts = ["stream", "Dumper"]
 
-    load_from_stream = Base.to_method(yaml_load)
-    dump_to_stream = Base.to_method(yaml_dump)
+    load_from_stream = anyconfig.backend.base.to_method(yml_load)
+    dump_to_stream = anyconfig.backend.base.to_method(yml_dump)
 
 # vim:sw=4:ts=4:et:

@@ -89,4 +89,24 @@ def ensure_expandusr(path):
     """
     return os.path.expanduser(path) if '~' in path else path
 
+
+def get_path_from_stream(stream):
+    """
+    Try to get file path from given stream `stream`.
+
+    :param stream: A file or file-like object
+    :return: Path of given file or file-like object or None
+
+    >>> __file__ == get_path_from_stream(open(__file__, 'r'))
+    True
+    >>> strm = anyconfig.compat.StringIO()
+    >>> get_path_from_stream(strm) is None
+    True
+    """
+    maybe_path = getattr(stream, "name", None)
+    if maybe_path is not None:
+        maybe_path = os.path.abspath(maybe_path)
+
+    return maybe_path
+
 # vim:sw=4:ts=4:et:

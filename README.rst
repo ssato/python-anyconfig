@@ -38,6 +38,9 @@ python-anyconfig
    :target: https://www.openhub.net/p/python-anyconfig
    :alt: [Open HUB]
 
+Introduction
+=============
+
 python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
 python library provides generic access to configuration files in various
 formats with configuration merge along with config template and schema
@@ -48,7 +51,11 @@ validation/generation support.
 - PyPI: https://pypi.python.org/pypi/anyconfig
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
+I, Satoru SATOH <ssato redhat.com>, originally developed and keep maintain it
+with others' help [#]_ .
+
 .. [#] This name took an example from the 'anydbm' python standard library.
+.. [#] see the output of `git log --pretty=format:"%an %ae" | grep -vE "Satoru SATOH" | sort| uniq`
 
 Features
 ----------
@@ -56,16 +63,16 @@ Features
 python-anyconfig provides very simple and unified APIs to process configuration
 files in various formats:
 
-- anyconfig.load() to load configuration files and return a dict-like object represents configuration itself loaded
+- anyconfig.load() to load configuration files and return a dict-like object represents loaded configuration
 - anyconfig.loads() to load configuration from a string just like json.loads does
 - anyconfig.dump() to dump a configuration file from a dict or dict-like object represents configuration
 - anyconfig.dumps() to dump a configuration string from a dict or dict-like object represents configuration
 - anyconfig.validate() to validate configuration loaded with anyconfig.load() with JSON schema [#]_ (object) also loaded with anyconfig.load(). anyconfig.load() may help loading JSON schema file[s] in any formats anyconfig supports.
-- anyconfig.gen_schema() to generate a JSON schema object for given configuration file[s] to validate it/them later.
+- anyconfig.gen_schema() to generate a minimum JSON schema object to validate given configuration file[s] later.
 
-It enables to load a configuration file and configuration files in various
-formats in the same manner, and in some cases, even there is no need to take
-care of the actual format of configuration file[s] like the followings:
+It enables to load configuration file[s] in various formats in the same manner,
+and in some cases, even there is no need to take care of the actual format of
+configuration file[s] like the followings:
 
 .. code-block:: python
 
@@ -151,10 +158,10 @@ with using JSON schema like the followings:
 And in the last place, python-anyconfig provides a CLI tool called
 anyconfig_cli to process configuration files and:
 
-- Convert a/multiple configuration file[s] to another configuration files in different formats
+- Convert a/multiple configuration file[s] to another configuration files in different format
 - Get configuration value in a/multiple configuration file[s]
 - Validate configuration file[s] with JSON schema
-- Generate JSON schema for given configuration file[s]
+- Generate minimum JSON schema file to validate given configuration file[s]
 
 .. [#] http://json-schema.org
 
@@ -165,12 +172,13 @@ python-anyconfig supports various (configuration) file formats if the required
 module is available and the corresponding backend is ready to use:
 
 .. csv-table:: Supported formats
-   :header: "Format", "Type", "Required", "Notes"
+   :header: "Format", "Type", "Requirement", "Notes"
    :widths: 10, 10, 30, 40
 
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
-   Ini-like, ini, ``configparser`` (standard lib), Enabled by default.
-   YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the requirement is satisfied.
+   Ini-like, ini, ``configparser`` (standard lib), Ditto.
+   Java properties [#]_ , properties, None (native implementation with standard lib), Ditto.
+   YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.
    XML, xml, ``lxml`` [#]_ or ``ElementTree``, Ditto.
    ConifgObj, configobj, ``configobj`` [#]_, Ditto.
    MessagePack, msgpack, ``msgpack-python`` [#]_, Ditto.
@@ -196,14 +204,16 @@ or with the API 'anyconfig.list_types()' will show them:
    In [9]:
 
 It utilizes plugin mechanism provided by setuptools [#]_ and other formats may
-be supported by corresponding pluggale backends (see the next sub section also)
-like Java properties format.
+be supported by corresponding pluggale backends like the following:
 
-- Java properties file w/ pyjavaproperties [#]_ (experimental):
+- Java properties backend utilizes pyjavaproperties [#]_ (just an example implementation):
 
   - https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
 
+See also `How to write backend plugin modules` section about writing plugins.
+
 .. [#] https://pypi.python.org/pypi/simplejson
+.. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
 .. [#] https://pypi.python.org/pypi/PyYAML
 .. [#] https://pypi.python.org/pypi/lxml
 .. [#] https://pypi.python.org/pypi/configobj
@@ -249,8 +259,8 @@ There is a couple of ways to install python-anyconfig:
 
 - Binary RPMs:
 
-  If you're Fedora or Red Hat Enterprise Linux user, you can install
-  RPMs from the copr repository,
+  If you're Fedora or Red Hat Enterprise Linux user, you can install RPMs from
+  the copr repository,
   http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/.
 
 - PyPI: You can install python-anyconfig from PyPI with using pip:
@@ -307,8 +317,10 @@ About test-time requirements, please take a look at pkg/test_requirements.txt.
 How to write backend plugin modules
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Backend class must inherit anyconfig.backend.Parser and need some member
-variables and method ('load_impl' and 'dumps_impl' at minimum) implementations.
+Backend class must inherit anyconfig.backend.base.Parser or its children in
+anyconfig.backend.base module and need some members and methods such as
+:meth:`load_from_string`, :meth:`load_from_path`, :meth:`load_from_stream`,
+:meth:`dump_to_string`, :meth:`dump_to_path` and :meth:`dump_to_stream`.
 
 JSON and YAML backend modules (anyconfig.backend.{json,yaml}_) should be good
 examples to write backend modules, I think.

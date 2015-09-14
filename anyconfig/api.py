@@ -5,6 +5,11 @@
 # pylint: disable=unused-import,import-error,invalid-name
 """Public APIs of anyconfig module.
 
+.. versionchanged:: 0.2
+   Now APIs :func:`find_loader`, :func:`single_load`, :func:`multi_load`,
+   :func:`load` and :func:`dump` can process a file/file-like object or a list
+   offile/file-like objects instead of a file path or a list of file paths.
+
 .. versionadded:: 0.2
    Export factory method (create) of anyconfig.mergeabledict.MergeableDict
 """
@@ -179,7 +184,8 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
 
       multi_load("/etc/foo/conf.d/*.yml")
 
-    :param paths: List of config file paths or a glob pattern to list paths
+    :param paths: List of config file paths or a glob pattern to list paths, or
+        a list of file/file-like objects
     :param forced_type: Forced configuration parser type
     :param ignore_missing: Ignore missing config files
     :param merge: Strategy to merge config results of multiple config files
@@ -245,8 +251,8 @@ def load(path_specs, forced_type=None, ignore_missing=False,
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
 
-    :param path_specs:
-        Configuration file path or paths or its pattern such as '/a/b/*.json'
+    :param path_specs: Configuration file path or paths or its pattern such as
+        '/a/b/*.json' or a list of files/file-like objects
     :param forced_type: Forced configuration parser type
     :param ignore_missing: Ignore missing config files
     :param merge: Merging strategy to use

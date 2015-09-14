@@ -28,6 +28,7 @@ from anyconfig.mergeabledict import (
 )
 from anyconfig.parser import PATH_SEPS
 from anyconfig.schema import validate, gen_schema
+from anyconfig.utils import get_path_from_stream
 
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
@@ -40,17 +41,6 @@ def _is_path(path_or_stream):
     Is given object `path_or_stream` a file path?
     """
     return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
-
-
-def _get_path_from_stream(stream):
-    """
-    Try to get file path from given stream `stream`.
-    """
-    maybe_path = getattr(stream, "name", None)
-    if maybe_path is not None:
-        maybe_path = os.path.abspath(maybe_path)
-
-    return maybe_path
 
 
 def _validate(cnf, schema, format_checker=None):
@@ -95,7 +85,7 @@ def find_loader(path_or_stream, forced_type=None):
             return None
     else:
         if not _is_path(path_or_stream):
-            path_or_stream = _get_path_from_stream(path_or_stream)
+            path_or_stream = get_path_from_stream(path_or_stream)
             if path_or_stream is None:
                 return None  # No way to detect filename.
 
@@ -133,7 +123,7 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
         path_or_stream = anyconfig.utils.ensure_expandusr(path_or_stream)
         filepath = path_or_stream
     else:
-        filepath = _get_path_from_stream(path_or_stream)
+        filepath = get_path_from_stream(path_or_stream)
 
     cparser = find_loader(path_or_stream, forced_type)
     if cparser is None:
@@ -369,7 +359,7 @@ def dump(data, path_or_stream, forced_type=None, **kwargs):
     if _is_path(path_or_stream):
         LOGGER.info("Dumping: %s", path_or_stream)
     else:
-        LOGGER.info("Dumping: %s", _get_path_from_stream(path_or_stream))
+        LOGGER.info("Dumping: %s", get_path_from_stream(path_or_stream))
 
     dumper.dump(data, path_or_stream, **kwargs)
 

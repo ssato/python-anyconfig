@@ -132,12 +132,13 @@ python-anyconfig supports various (configuration) file formats if the required
 module is available and the corresponding backend is ready to use:
 
 .. csv-table:: Supported formats
-   :header: "Format", "Type", "Required", "Notes"
+   :header: "Format", "Type", "Requirement", "Notes"
    :widths: 10, 10, 30, 40
 
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
-   Ini-like, ini, ``configparser`` (standard lib), Enabled by default.
-   YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the requirement is satisfied.
+   Ini-like, ini, ``configparser`` (standard lib), Ditto.
+   Java properties [#]_ , properties, None (native implementation with standard lib), Ditto.
+   YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.
    XML, xml, ``lxml`` [#]_ or ``ElementTree``, Ditto.
    ConifgObj, configobj, ``configobj`` [#]_, Ditto.
    MessagePack, msgpack, ``msgpack-python`` [#]_, Ditto.
@@ -163,14 +164,16 @@ or with the API 'anyconfig.list_types()' will show them:
    In [9]:
 
 It utilizes plugin mechanism provided by setuptools [#]_ and other formats may
-be supported by corresponding pluggale backends (see `How to write backend
-plugin modules` section also) like Java properties format.
+be supported by corresponding pluggale backends like the following:
 
-- Java properties file w/ pyjavaproperties [#]_ (experimental):
+- Java properties backend utilizes pyjavaproperties [#]_ (just an example implementation):
 
   - https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
 
+See also `How to write backend plugin modules` section about writing plugins.
+
 .. [#] https://pypi.python.org/pypi/simplejson
+.. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
 .. [#] https://pypi.python.org/pypi/PyYAML
 .. [#] https://pypi.python.org/pypi/lxml
 .. [#] https://pypi.python.org/pypi/configobj
@@ -274,8 +277,10 @@ About test-time requirements, please take a look at pkg/test_requirements.txt.
 How to write backend plugin modules
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Backend class must inherit anyconfig.backend.Parser and need some member
-variables and method ('load_impl' and 'dumps_impl' at minimum) implementations.
+Backend class must inherit anyconfig.backend.base.Parser or its children in
+anyconfig.backend.base module and need some members and methods such as
+:meth:`load_from_string`, :meth:`load_from_path`, :meth:`load_from_stream`,
+:meth:`dump_to_string`, :meth:`dump_to_path` and :meth:`dump_to_stream`.
 
 JSON and YAML backend modules (anyconfig.backend.{json,yaml}_) should be good
 examples to write backend modules, I think.

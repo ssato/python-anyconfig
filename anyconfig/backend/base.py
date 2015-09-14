@@ -5,9 +5,21 @@
 # pylint: disable=unused-argument
 """Abstract implementation of backend modules.
 
-Backend module must implement a parser class inherits :class:`Parser` of this
-module and override some of its methods, :method:`load_impl` and
-:method:`dumps_impl` at least.
+.. versionchanged:: 0.2
+   The methods :meth:`load_impl`, :meth:`dump_impl` are deprecated and replaced
+   with :meth:`load_from_stream` and :meth:`load_from_path`,
+   :meth:`dump_to_string` and :meth:`dump_to_path` respectively.
+
+Backend module must implement a parser class inherits :class:`Parser` or its
+children classes of this module and override all or some of the methods as
+needed:
+
+  - :meth:`load_from_string`: Load config from string
+  - :meth:`load_from_stream`: Load config from a file or file-like object
+  - :meth:`load_from_path`: Load config from file of given path
+  - :meth:`dump_to_string`: Dump config as a string
+  - :meth:`dump_to_stream`: Dump config to a file or file-like object
+  - :meth:`dump_to_path`: Dump config to a file of given path
 """
 from __future__ import absolute_import
 
@@ -247,6 +259,9 @@ class LParser(Parser):
     """
     Abstract config parser provides a method to load configuration from string
     content to help implement parser of which backend lacks of such function.
+
+    Parser classes inherit this class have to override the method
+    :meth:`load_from_stream` at least.
     """
     def load_from_string(self, content, **kwargs):
         """
@@ -265,6 +280,9 @@ class L2Parser(Parser):
     Abstract config parser provides a method to load configuration from a file
     or file-like object (stream) to help implement parser of which backend
     lacks of such function.
+
+    Parser classes inherit this class have to override the method
+    :meth:`load_from_stream` at least.
     """
     def load_from_path(self, filepath, **kwargs):
         """
@@ -284,6 +302,9 @@ class DParser(Parser):
     Abstract config parser provides a method to dump configuration to a file or
     file-like object (stream) and a file of given path to help implement parser
     of which backend lacks of such functions.
+
+    Parser classes inherit this class have to override the method
+    :meth:`dump_to_string` at least.
     """
     def dump_to_path(self, cnf, filepath, **kwargs):
         """
@@ -314,6 +335,9 @@ class D2Parser(Parser):
     Abstract config parser provides methods to dump configuration to a string
     content or a file of given path to help implement parser of which backend
     lacks of such functions.
+
+    Parser classes inherit this class have to override the method
+    :meth:`dump_to_stream` at least.
     """
     to_stream = to_method(anyconfig.compat.StringIO)
 

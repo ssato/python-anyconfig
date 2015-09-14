@@ -16,11 +16,12 @@ import anyconfig.utils
 
 import anyconfig.backend.ini
 import anyconfig.backend.json
+import anyconfig.backend.properties
 import anyconfig.backend.xml
 
 LOGGER = logging.getLogger(__name__)
 PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json.Parser,
-           anyconfig.backend.xml.Parser]
+           anyconfig.backend.properties.Parser, anyconfig.backend.xml.Parser]
 
 try:
     import anyconfig.backend.yaml
@@ -53,13 +54,6 @@ try:
 except ImportError:
     LOGGER.warn("bson module in pymongo package is not available. "
                 "Disabled BSON support.")
-
-try:
-    import anyconfig.backend.properties
-    PARSERS.append(anyconfig.backend.properties.Parser)
-except ImportError:
-    LOGGER.warn("pyjavaproperties module is not available. Disabled "
-                "Java proeperties file support.")
 
 # pylint: disable=no-member
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):

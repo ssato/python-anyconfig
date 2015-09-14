@@ -141,6 +141,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Sep 15 2015 Satoru SATOH <ssato@redhat.com> - 0.1.0-99
+- new API anyconfig.to_container, factory method to create container objects
+- enale processing of stream in anyconfig.*load and anyconfig.*dump
+- add a native implementation of Java properties file backend
+- misc doc updates about new backend, APIs, etc.
+- some more minor possible bug fixes found by pylint and flake8
+
 * Sat Aug 15 2015 Satoru SATOH <ssato@redhat.com> - 0.1.0-1
 - add BSON support
 - add TOML support

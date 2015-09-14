@@ -5,6 +5,10 @@
 """
 Java properties file support.
 
+.. versionadded:: 0.2
+   Added native Java properties parser instead of a plugin utilizes
+   pyjavaproperties module.
+
 - Format to support: Java Properties file, e.g.
   http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html
 - Requirements: None (built-in)

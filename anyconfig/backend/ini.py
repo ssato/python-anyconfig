@@ -139,7 +139,7 @@ def mk_lines_g(data):
         yield "\n"  # put an empty line just after each sections.
 
 
-class Parser(Base.LParser):
+class Parser(Base.LParser, Base.DParser):
     """
     Ini config files parser.
     """

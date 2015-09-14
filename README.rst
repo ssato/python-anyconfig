@@ -51,11 +51,11 @@ validation/generation support.
 - PyPI: https://pypi.python.org/pypi/anyconfig
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
-I, Satoru SATOH <ssato redhat.com>, originally developed and keep maintain it
+I, Satoru SATOH <ssato@redhat.com>, originally developed and keep maintain it
 with others' help [#]_ .
 
 .. [#] This name took an example from the 'anydbm' python standard library.
-.. [#] see the output of `git log --pretty=format:"%an %ae" | grep -vE "Satoru SATOH" | sort| uniq`
+.. [#] see the output of `git log --pretty=format:"%an %ae" | grep -vE "Satoru SATOH" | sort | uniq`.
 
 Features
 ----------
@@ -178,8 +178,8 @@ module is available and the corresponding backend is ready to use:
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
    Ini-like, ini, ``configparser`` (standard lib), Ditto.
    Java properties [#]_ , properties, None (native implementation with standard lib), Ditto.
-   YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.
    XML, xml, ``lxml`` [#]_ or ``ElementTree``, Ditto.
+   YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.
    ConifgObj, configobj, ``configobj`` [#]_, Ditto.
    MessagePack, msgpack, ``msgpack-python`` [#]_, Ditto.
    TOML, toml, ``toml`` [#]_, Ditto.
@@ -246,10 +246,11 @@ enable the features.
    MessagePack load/dump, msgpack-python, none
    TOML load/dump, toml, none
    BSON load/dump, bson, bson from pymongo package may work and bson [#]_ does not
-   Template config, Jinja2, none
+   Template config, Jinja2 [#]_ , none
    Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
 
 .. [#] https://pypi.python.org/pypi/bson/
+.. [#] https://pypi.python.org/pypi/Jinja2/
 .. [#] https://pypi.python.org/pypi/jsonschema/
 
 How to install

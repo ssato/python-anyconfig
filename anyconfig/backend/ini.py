@@ -18,11 +18,12 @@
 """
 from __future__ import absolute_import
 
-import anyconfig.backend.base as Base
+import anyconfig.backend.base
 import anyconfig.parser as P
 import anyconfig.utils
 
 from anyconfig.compat import configparser, iteritems
+from anyconfig.backend.base import mk_opt_args
 
 
 _SEP = ','
@@ -68,47 +69,66 @@ def _to_s(val, sep=", "):
         return str(val)
 
 
-def _load(filepath=None, stream=None, sep=_SEP, cls=dict, **kwargs):
+def _switch_read_fn_arg(filepath=None, stream=None):
     """
-    :param filepath: Config file path
-    :param stream: File or file-like object provides ini-style conf
-    :param sep: Seprator string
-    :param cls: Container class
+    Switch name of the method to read INI files (:meth:`read` or :meth:`readfp`
+    of :class:`configparser.SafeConfigParser`) depends on given args and return
+    a tuple of (read_fun_name, arg).
 
-    :return: Dict or dict-like object represents config values
+    :param filepath: Config file path
+    :param stream: File or file-like object provides config
+    :return: A tuple of (read_fun_name, arg) where are = filepath | stream
+
+    >>> _switch_read_fn_arg()
+    Traceback (most recent call last):
+    ValueError: filepath or stream must be some value other than None
+    >>> cnf = "dummy.ini"
+    >>> ("read", cnf) == _switch_read_fn_arg(cnf)
+    True
+    >>> ("readfp", cnf) == _switch_read_fn_arg(stream=cnf)  # fake
+    True
     """
     if filepath is None and stream is None:
         raise ValueError("filepath or stream must be some value "
                          "other than None")
-    cnf = cls()
 
+    return ("readfp", stream) if filepath is None else ("read", filepath)
+
+
+def _load(filepath=None, stream=None, sep=_SEP, **kwargs):
+    """
+    :param filepath: Config file path
+    :param stream: File or file-like object provides ini-style conf
+    :param sep: Seprator string
+
+    :return: Dict or dict-like object represents config values
+    """
     # Optional arguements for configparser.SafeConfigParser{,readfp}
-    kwargs_0 = Base.mk_opt_args(("defaults", "dict_type", "allow_no_value"),
-                                kwargs)
-    kwargs_1 = Base.mk_opt_args(("filename", ), kwargs)
+    kwargs_0 = mk_opt_args(("defaults", "dict_type", "allow_no_value"), kwargs)
+    kwargs_1 = mk_opt_args(("filename", ), kwargs)
 
     try:
         parser = configparser.SafeConfigParser(**kwargs_0)
     except TypeError:
-        # It seems ConfigPaser.*ConfigParser in python 2.6 does not support
-        # 'allow_no_value' option parameter, and TypeError will be thrown.
-        kwargs_0 = Base.mk_opt_args(("defaults", "dict_type"), kwargs)
+        # .. note::
+        #    It seems ConfigPaser.*ConfigParser in python 2.6 does not support
+        #    'allow_no_value' option parameter, and TypeError will be thrown.
+        kwargs_0 = mk_opt_args(("defaults", "dict_type"), kwargs)
         parser = configparser.SafeConfigParser(**kwargs_0)
 
-    if filepath is None:
-        parser.readfp(stream, **kwargs_1)
-    else:
-        parser.read(filepath, **kwargs_1)
+    container = dict
+    cnf = container()
+    (fname, arg) = _switch_read_fn_arg(filepath, stream)
+    getattr(parser, fname)(arg, **kwargs_1)
 
+    # .. note:: Process DEFAULT config parameters as special ones.
     if parser.defaults():
-        cnf["DEFAULT"] = cls()
-
+        cnf["DEFAULT"] = container()
         for key, val in iteritems(parser.defaults()):
             cnf["DEFAULT"][key] = _parse(val, sep)
 
     for sect in parser.sections():
-        cnf[sect] = cls()
-
+        cnf[sect] = container()
         for key, val in parser.items(sect):
             cnf[sect][key] = _parse(val, sep)
 
@@ -139,7 +159,7 @@ def mk_lines_g(data):
         yield "\n"  # put an empty line just after each sections.
 
 
-class Parser(Base.LParser, Base.DParser):
+class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.DParser):
     """
     Ini config files parser.
     """
@@ -156,7 +176,7 @@ class Parser(Base.LParser, Base.DParser):
 
         :return: self.container object holding config parameters
         """
-        return _load(filepath=filepath, sep=_SEP, cls=self.container, **kwargs)
+        return _load(filepath=filepath, **kwargs)
 
     def load_from_stream(self, stream, **kwargs):
         """
@@ -167,7 +187,7 @@ class Parser(Base.LParser, Base.DParser):
 
         :return: dict object holding config parameters
         """
-        return _load(stream=stream, sep=_SEP, cls=self.container, **kwargs)
+        return _load(stream=stream, **kwargs)
 
     def dump_to_string(self, cnf, **kwargs):
         """

@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, protected-access
+# pylint: disable=missing-docstring, protected-access, invalid-name
 import os
 import os.path
 import unittest
@@ -45,9 +45,12 @@ class Test10(unittest.TestCase):
     def test_10_ensure_outdir_exists(self):
         outdir = os.path.join(self.workdir, "outdir")
         outfile = os.path.join(outdir, "a.txt")
-
         TT.ensure_outdir_exists(outfile)
 
         self.assertTrue(os.path.exists(outdir))
+
+    def test_12_ensure_outdir_exists__no_dir(self):
+        TT.ensure_outdir_exists("a.txt")
+        self.assertFalse(os.path.exists(os.path.dirname("a.txt")))
 
 # vim:sw=4:ts=4:et:

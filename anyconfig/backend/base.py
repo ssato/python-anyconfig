@@ -58,7 +58,7 @@ def ensure_outdir_exists(filepath):
     """
     outdir = os.path.dirname(filepath)
 
-    if not os.path.exists(outdir):
+    if outdir and not os.path.exists(outdir):
         LOGGER.debug("Making output dir: %s", outdir)
         os.makedirs(outdir)
 

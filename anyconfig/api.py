@@ -122,8 +122,8 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
     else:
         filepath = get_path_from_stream(path_or_stream)
 
-    cparser = find_loader(path_or_stream, forced_type, is_path_)
-    if cparser is None:
+    psr = find_loader(path_or_stream, forced_type, is_path_)
+    if psr is None:
         return None
 
     if ac_schema is not None:
@@ -139,8 +139,7 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
         try:
             LOGGER.debug("Compiling: %s", filepath)
             content = anyconfig.template.render(filepath, ac_context)
-            cnf = cparser.loads(content, ignore_missing=ignore_missing,
-                                **kwargs)
+            cnf = psr.loads(content, ignore_missing=ignore_missing, **kwargs)
             if ac_schema is not None:
                 if not _validate(cnf, schema, format_checker):
                     return None
@@ -152,7 +151,7 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
             LOGGER.warn("Failed to compile %s, fallback to no template "
                         "mode", path_or_stream)
 
-    cnf = cparser.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
+    cnf = psr.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
 
     if ac_schema is not None:
         if not _validate(cnf, schema, format_checker):
@@ -294,8 +293,8 @@ def loads(content, forced_type=None, ac_template=False, ac_context=None,
         LOGGER.warn("No config type was given. Try to parse...")
         return anyconfig.parser.parse(content)
 
-    cparser = find_loader(None, forced_type)
-    if cparser is None:
+    psr = find_loader(None, forced_type)
+    if psr is None:
         return anyconfig.parser.parse(content)
 
     if ac_schema is not None:
@@ -313,7 +312,7 @@ def loads(content, forced_type=None, ac_template=False, ac_context=None,
             LOGGER.warn("Failed to compile and fallback to no template "
                         "mode: '%s'", content[:50] + '...')
 
-    cnf = cparser.loads(content, **kwargs)
+    cnf = psr.loads(content, **kwargs)
 
     if ac_schema is not None:
         if not _validate(cnf, schema, format_checker):
@@ -332,13 +331,13 @@ def _find_dumper(path_or_stream, forced_type=None):
 
     :return: Parser-inherited class object
     """
-    cparser = find_loader(path_or_stream, forced_type)
+    psr = find_loader(path_or_stream, forced_type)
 
-    if cparser is None or not getattr(cparser, "dump", False):
+    if psr is None or not getattr(psr, "dump", False):
         LOGGER.warn("Dump method not implemented. Fallback to json.Parser")
-        cparser = anyconfig.backend.json.Parser()
+        psr = anyconfig.backend.json.Parser()
 
-    return cparser
+    return psr
 
 
 def dump(data, path_or_stream, forced_type=None, **kwargs):

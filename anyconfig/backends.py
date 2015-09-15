@@ -145,20 +145,42 @@ def list_parsers_by_extension(cps=None):
     return ((x, _list_xppairs(xps)) for x, xps in groupby_key(cps_by_ext, fst))
 
 
-def find_by_file(config_file, cps=None):
+def is_path(path_or_stream):
     """
-    Find config parser by file's extension.
+    Is given object `path_or_stream` a file path?
 
-    :param config_file: Config file path
+    :param path_or_stream: file path or stream, file/file-like object
+    :return: True if `path_or_stream` is a file path
+    """
+    return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
+
+
+def find_by_file(path_or_stream, cps=None):
+    """
+    Find config parser by the extension of file `path_or_stream`, file path or
+    stream (a file or file-like objects).
+
+    :param path_or_stream: Config file path or file/file-like object
+    :param cps: A list of pairs :: (type, parser_class)
     :return: Config Parser class found
 
     >>> find_by_file("a.missing_cnf_ext") is None
     True
+    >>> strm = anyconfig.compat.StringIO()
+    >>> find_by_file(strm) is None
+    True
+    >>> find_by_file("a.json")
+    <class 'anyconfig.backend.json.Parser'>
     """
     if cps is None:
         cps = PARSERS
 
-    ext_ref = anyconfig.utils.get_file_extension(config_file)
+    if not is_path(path_or_stream):
+        path_or_stream = anyconfig.utils.get_path_from_stream(path_or_stream)
+        if path_or_stream is None:
+            return None  # There is no way to detect file path.
+
+    ext_ref = anyconfig.utils.get_file_extension(path_or_stream)
     for ext, psrs in list_parsers_by_extension(cps):
         if ext == ext_ref:
             return psrs[-1]
@@ -171,6 +193,7 @@ def find_by_type(cptype, cps=None):
     Find config parser by file's extension.
 
     :param cptype: Config file's type
+    :param cps: A list of pairs :: (type, parser_class)
     :return: Config Parser class found
 
     >>> find_by_type("missing_type") is None

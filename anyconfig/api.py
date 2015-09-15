@@ -73,34 +73,25 @@ def set_loglevel(level):
     LOGGER.setLevel(level)
 
 
-def find_loader(path_or_stream, forced_type=None):
+def find_loader(path_or_stream, forced_type=None, is_path_=None):
     """
     Find out config parser object appropriate to load from a file of given path
     or file/file-like object.
 
     :param path_or_stream: Configuration file path or file / file-like object
     :param forced_type: Forced configuration parser type
+    :param is_path_: True if given `path_or_stream` is a file path
 
     :return: Config parser instance or None
     """
-    if forced_type is not None:
-        cparser = anyconfig.backends.find_by_type(forced_type)
-        if not cparser:
-            LOGGER.error("No parser found for given type: %s", forced_type)
-            return None
-    else:
-        if not _is_path(path_or_stream):
-            path_or_stream = get_path_from_stream(path_or_stream)
-            if path_or_stream is None:
-                return None  # No way to detect filename.
+    (psr, err) = anyconfig.backends.find_parser(path_or_stream, forced_type,
+                                                is_path_=is_path_)
+    if psr is None:
+        LOGGER.error(err)
+        return None
 
-        cparser = anyconfig.backends.find_by_file(path_or_stream)
-        if not cparser:
-            LOGGER.error("No parser found for given file: %s", path_or_stream)
-            return None
-
-    LOGGER.debug("Using config parser of type: %s", cparser.type())
-    return cparser()
+    LOGGER.debug("Using config parser of type: %s", psr.type())
+    return psr()  # TBD: Passing initialization arguments.
 
 
 def single_load(path_or_stream, forced_type=None, ignore_missing=False,
@@ -124,13 +115,14 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    if _is_path(path_or_stream):
+    is_path_ = _is_path(path_or_stream)
+    if is_path_:
         path_or_stream = anyconfig.utils.ensure_expandusr(path_or_stream)
         filepath = path_or_stream
     else:
         filepath = get_path_from_stream(path_or_stream)
 
-    cparser = find_loader(path_or_stream, forced_type)
+    cparser = find_loader(path_or_stream, forced_type, is_path_)
     if cparser is None:
         return None
 

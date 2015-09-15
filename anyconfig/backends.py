@@ -155,13 +155,15 @@ def is_path(path_or_stream):
     return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
 
 
-def find_by_file(path_or_stream, cps=None):
+def find_by_file(path_or_stream, cps=None, is_path_=False):
     """
     Find config parser by the extension of file `path_or_stream`, file path or
     stream (a file or file-like objects).
 
     :param path_or_stream: Config file path or file/file-like object
     :param cps: A list of pairs :: (type, parser_class)
+    :param is_path_: True if given `path_or_stream` is a file path
+
     :return: Config Parser class found
 
     >>> find_by_file("a.missing_cnf_ext") is None
@@ -171,11 +173,13 @@ def find_by_file(path_or_stream, cps=None):
     True
     >>> find_by_file("a.json")
     <class 'anyconfig.backend.json.Parser'>
+    >>> find_by_file("a.json", is_path_=True)
+    <class 'anyconfig.backend.json.Parser'>
     """
     if cps is None:
         cps = PARSERS
 
-    if not is_path(path_or_stream):
+    if not is_path_ and not is_path(path_or_stream):
         path_or_stream = anyconfig.utils.get_path_from_stream(path_or_stream)
         if path_or_stream is None:
             return None  # There is no way to detect file path.
@@ -204,9 +208,52 @@ def find_by_type(cptype, cps=None):
 
     for type_, psrs in list_parsers_by_type(cps):
         if type_ == cptype:
-            return psrs[-1]
+            return psrs[-1] or None
 
     return None
+
+
+def find_parser(path_or_stream, forced_type=None, is_path_=None):
+    """
+    Find out config parser object appropriate to load from a file of given path
+    or file/file-like object.
+
+    :param path_or_stream: Configuration file path or file / file-like object
+    :param forced_type: Forced configuration parser type
+    :param is_path_: True if given `path_or_stream` is a file path
+
+    :return: A tuple of (Parser class or None, "" or error message)
+
+    >>> find_parser(None)
+    Traceback (most recent call last):
+    ValueError: path_or_stream or forced_type must be some value
+
+    >>> find_parser(None, "ini")
+    (<class 'anyconfig.backend.ini.Parser'>, '')
+    >>> find_parser(None, "type_not_exist")
+    (None, 'No parser found for given type: type_not_exist')
+
+    >>> find_parser("cnf.json")
+    (<class 'anyconfig.backend.json.Parser'>, '')
+    >>> find_parser("cnf.json", is_path_=True)
+    (<class 'anyconfig.backend.json.Parser'>, '')
+    >>> find_parser("cnf.ext_not_found")
+    (None, 'No parser found for given file: cnf.ext_not_found')
+    """
+    if not path_or_stream and forced_type is None:
+        raise ValueError("path_or_stream or forced_type must be some value")
+
+    err = ""
+    if forced_type is not None:
+        parser = find_by_type(forced_type)
+        if parser is None:
+            err = "No parser found for given type: %s" % forced_type
+    else:
+        parser = find_by_file(path_or_stream, is_path_=is_path_)
+        if parser is None:
+            err = "No parser found for given file: %s" % path_or_stream
+
+    return (parser, err)
 
 
 def list_types(cps=None):

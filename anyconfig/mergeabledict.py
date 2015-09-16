@@ -247,7 +247,7 @@ class MergeableDict(dict):
         if is_dict_like(other):
             for key, val in iteritems(other):
                 if key in self and is_dict_like(val) and \
-                    is_dict_like(self[key]):
+                        is_dict_like(self[key]):
                     # update recursivalely.
                     self[key].update_w_merge(val, merge_lists)
                 else:

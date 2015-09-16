@@ -92,6 +92,28 @@ def parse_list(str_, sep=","):
     return [parse_single(x) for x in str_.split(sep) if x]
 
 
+def attr_val_itr(str_, avs_sep=":", vs_sep=",", as_sep=";"):
+    """
+    Atrribute and value pair parser.
+
+    :param str_: String represents a list of pairs of attribute and value
+    :param avs_sep: char to separate attribute and values
+    :param vs_sep: char to separate values
+    :param as_sep: char to separate attributes
+    """
+    for rel in parse_list(str_, as_sep):
+        if avs_sep not in rel or rel.endswith(avs_sep):
+            continue
+
+        (_attr, _values) = parse_list(rel, avs_sep)
+
+        if vs_sep in str(_values):
+            _values = parse_list(_values, vs_sep)
+
+        if _values:
+            yield (_attr, _values)
+
+
 def parse_attrlist_0(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     """
     Simple parser to parse expressions in the form of
@@ -115,23 +137,7 @@ def parse_attrlist_0(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     >>> parse_attrlist_0("obsoletes:sysdata;conflicts:sysdata-old")
     [('obsoletes', 'sysdata'), ('conflicts', 'sysdata-old')]
     """
-    def attr_and_values(str_):
-        """
-        :param str_: String represents a list of pairs of attribute and value
-        """
-        for rel in parse_list(str_, as_sep):
-            if avs_sep not in rel or rel.endswith(avs_sep):
-                continue
-
-            (_attr, _values) = parse_list(rel, avs_sep)
-
-            if vs_sep in str(_values):
-                _values = parse_list(_values, vs_sep)
-
-            if _values:
-                yield (_attr, _values)
-
-    return [(a, vs) for a, vs in attr_and_values(str_)]
+    return [(a, vs) for a, vs in attr_val_itr(str_, avs_sep, vs_sep, as_sep)]
 
 
 def parse_attrlist(str_, avs_sep=":", vs_sep=",", as_sep=";"):

@@ -42,14 +42,6 @@ def parse_single(str_):
     >>> parse_single("    a string contains extra whitespaces     ")
     'a string contains extra whitespaces'
     """
-    def matched(pat, str_):
-        """
-        :param pat: Regex pattern string
-        :param str_: String to try match
-        :return: True if `pat` matches `str_`
-        """
-        return pat.match(str_) is not None
-
     if str_ is None:
         return ''
 
@@ -58,13 +50,13 @@ def parse_single(str_):
     if not str_:
         return ''
 
-    if matched(BOOL_PATTERN, str_):
+    if BOOL_PATTERN.match(str_) is not None:
         return bool(str_)
 
-    if matched(INT_PATTERN, str_):
+    if INT_PATTERN.match(str_) is not None:
         return int(str_)
 
-    if matched(STR_PATTERN, str_):
+    if STR_PATTERN.match(str_) is not None:
         return str_[1:-1]
 
     return str_

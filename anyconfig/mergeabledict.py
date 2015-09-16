@@ -244,21 +244,21 @@ class MergeableDict(dict):
         >>> md3["aaa"] == [1, 2, 3, 4, 4, 5]
         True
         """
-        if is_dict_like(other):
-            for key, val in iteritems(other):
-                if key in self and is_dict_like(val) and \
-                        is_dict_like(self[key]):
-                    # update recursivalely.
-                    self[key].update_w_merge(val, merge_lists)
-                else:
-                    if merge_lists and anyconfig.utils.is_iterable(val):
-                        val0 = self.get(key, None)
-                        if val0 is None:
-                            self[key] = [x for x in list(val)]
-                        else:
-                            self[key] += [x for x in list(val) if x not in
-                                          val0]
+        if not is_dict_like(other):
+            return
+
+        for key, val in iteritems(other):
+            if key in self and is_dict_like(val) and is_dict_like(self[key]):
+                # update recursivalely.
+                self[key].update_w_merge(val, merge_lists)
+            else:
+                if merge_lists and anyconfig.utils.is_iterable(val):
+                    val0 = self.get(key, None)
+                    if val0 is None:
+                        self[key] = [x for x in list(val)]
                     else:
-                        self[key] = val
+                        self[key] += [x for x in list(val) if x not in val0]
+                else:
+                    self[key] = val
 
 # vim:sw=4:ts=4:et:

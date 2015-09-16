@@ -25,7 +25,7 @@ import anyconfig.compat
 
 
 LOGGER = logging.getLogger(__name__)
-_COMMENTS = ("#", "!")
+_COMMENT_MARKERS = ("#", "!")
 
 
 def _parseline(line):
@@ -48,7 +48,40 @@ def _parseline(line):
     return match.groups()
 
 
-def load(stream, container=dict, comments=_COMMENTS):
+def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):
+    """
+    Preprocess a line in properties; strip comments, etc.
+
+    :param line:
+        A string not starting w/ any white spaces and ending w/ line breaks.
+        It may be empty. see also: :func:`load`.
+    :param comment_markers: Comment markers, e.g. '#' (hash)
+
+    >>> _pre_process_line('') is None
+    True
+    >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
+    >>> _pre_process_line("# " + s0) is None
+    True
+    >>> _pre_process_line("! " + s0) is None
+    True
+    >>> _pre_process_line(s0 + "# comment")
+    'calendar.japanese.type: LocalGregorianCalendar'
+    """
+    if not line:
+        return None
+
+    if any(c in line for c in comment_markers):
+        if line.startswith(comment_markers):
+            return None
+
+        for marker in comment_markers:
+            if marker in line:  # Then strip the rest starts w/ it.
+                line = line[:line.find(marker)].rstrip()
+
+    return line
+
+
+def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     """
     Load and parse Java properties file given as a fiel or file-like object
     `stream`.
@@ -56,6 +89,7 @@ def load(stream, container=dict, comments=_COMMENTS):
     :param stream: A file or file like object of Java properties files
     :param container:
         A dict or dict-like class (or factory method) to store properties
+    :param comment_markers: Comment markers, e.g. '#' (hash)
     :return: container object holding properties
 
     >>> to_strm = anyconfig.compat.StringIO
@@ -71,24 +105,18 @@ def load(stream, container=dict, comments=_COMMENTS):
     >>> s2 = '''application/postscript: \\
     ...         x=Postscript File;y=.eps,.ps
     ... '''
-    >>> load(to_strm(s2))  # doctest: +IGNORE_EXCEPTION_DETAIL, +ELLIPSIS
+    >>> load(to_strm(s2))
     {'application/postscript': 'x=Postscript File;y=.eps,.ps'}
     """
     ret = container()
     prev = ""
 
     for line in stream.readlines():
-        line = prev + line.strip().rstrip()
-        if not line:
+        line = _pre_process_line(prev + line.strip().rstrip(),
+                                 comment_markers)
+        # I don't think later case may happen but just in case.
+        if line is None or not line:
             continue
-
-        if any(c in line for c in comments):
-            if line.startswith(comments):
-                continue
-
-            for com in comments:
-                if com in line:
-                    line = line[:line.find(com)].rstrip()
 
         if line.endswith("\\"):
             prev += line.rstrip(" \\")

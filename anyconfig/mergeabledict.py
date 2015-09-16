@@ -98,15 +98,15 @@ def set_(dic, path, val, seps=PATH_SEPS, strategy=None):
     dic.update(diff, strategy)
 
 
-def is_mergeabledict_or_dict(obj):
+def is_dict_like(obj):
     """
     :param obj: Any object may be an instance of MergeableDict or dict.
 
-    >>> is_mergeabledict_or_dict("a string")
+    >>> is_dict_like("a string")
     False
-    >>> is_mergeabledict_or_dict({})
+    >>> is_dict_like({})
     True
-    >>> is_mergeabledict_or_dict(create_from({}))
+    >>> is_dict_like(create_from({}))
     True
     """
     return isinstance(obj, (MergeableDict, collections.Mapping))
@@ -122,7 +122,7 @@ def convert_to(mdict):
     :param mdict: A MergeableDict instance
     :return: A dict
     """
-    if is_mergeabledict_or_dict(mdict):
+    if is_dict_like(mdict):
         return dict((k, convert_to(v)) for k, v in iteritems(mdict))
     elif anyconfig.utils.is_iterable(mdict):
         return type(mdict)(convert_to(v) for v in mdict)
@@ -136,7 +136,7 @@ def create_from(dic):
 
     :param dic: A dict instance
     """
-    if is_mergeabledict_or_dict(dic):
+    if is_dict_like(dic):
         return MergeableDict((k, create_from(v)) for k, v in iteritems(dic))
     elif anyconfig.utils.is_iterable(dic):
         return type(dic)(create_from(v) for v in dic)
@@ -194,7 +194,7 @@ class MergeableDict(dict):
         >>> all(md0[k] == md1[k] for k in ("a", "b", "c"))
         True
         """
-        if is_mergeabledict_or_dict(other):
+        if is_dict_like(other):
             for key, val in iteritems(other):
                 self[key] = val
         else:
@@ -213,7 +213,7 @@ class MergeableDict(dict):
         >>> md0["d"] == md2["d"]
         True
         """
-        if is_mergeabledict_or_dict(other):
+        if is_dict_like(other):
             for key, val in iteritems(other):
                 if key not in self:
                     self[key] = val
@@ -244,10 +244,10 @@ class MergeableDict(dict):
         >>> md3["aaa"] == [1, 2, 3, 4, 4, 5]
         True
         """
-        if is_mergeabledict_or_dict(other):
+        if is_dict_like(other):
             for key, val in iteritems(other):
-                if key in self and is_mergeabledict_or_dict(val) and \
-                        is_mergeabledict_or_dict(self[key]):
+                if key in self and is_dict_like(val) and \
+                    is_dict_like(self[key]):
                     # update recursivalely.
                     self[key].update_w_merge(val, merge_lists)
                 else:

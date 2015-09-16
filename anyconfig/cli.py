@@ -219,7 +219,7 @@ def main(argv=None):
             raise RuntimeError(err)
 
         # Output primitive types as it is.
-        if not anyconfig.mergeabledict.is_mergeabledict_or_dict(cnf):
+        if not anyconfig.mergeabledict.is_dict_like(cnf):
             sys.stdout.write(str(cnf) + '\n')
             return
 

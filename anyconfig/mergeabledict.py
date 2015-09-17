@@ -10,7 +10,6 @@ from .compat import iteritems
 from .parser import PATH_SEPS
 
 import collections
-import copy
 import functools
 import operator
 
@@ -192,9 +191,6 @@ class MergeableDict(dict):
         """Update and replace self w/ other if both has same keys.
 
         :param other: object of which type is same as self's.
-        :param keep:
-            Keep original value if type of original value is not a dict nor
-            list.  It will be simply replaced with new value by default.
 
         >>> md0 = MergeableDict.create(dict(a=1, b=[1, 3], c="abc"))
         >>> md1 = MergeableDict.create(dict(a=2, b=[0, 1], c="xyz"))
@@ -205,11 +201,11 @@ class MergeableDict(dict):
         if is_dict_like(other):
             for key, val in iteritems(other):
                 self[key] = val
-        else:
-            self = copy.copy(other)
 
     def update_wo_replace(self, other):
         """Update self w/ other but never replace self w/ other.
+
+        :param other: object of which type is same as self's.
 
         >>> md0 = md1 = MergeableDict.create(dict(a=1, b=[1, 3], c="abc"))
         >>> md2 = MergeableDict.create(dict(a=2, b=[0, 1], c="xyz", d=None))

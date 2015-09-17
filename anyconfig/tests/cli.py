@@ -259,12 +259,14 @@ b:
         A.dump(a, infile)
 
         exited = False
-        self._run("-o", "out.txt", infile)
+        outfile = os.path.join(self.workdir, "out.conf")
+        self._run("-o", outfile, infile)
         self.assertFalse(exited)
 
     def test_82_no_itype_and_otype(self):
         exited = False
-        self._run("-o", "out.txt", "in.txt")
+        outfile = os.path.join(self.workdir, "out.conf")
+        self._run("-o", outfile, "in.conf")
         self.assertFalse(exited)
 
     def test_90_no_inputs__w_env_option(self):

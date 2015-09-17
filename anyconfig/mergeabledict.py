@@ -17,6 +17,8 @@ import operator
 import anyconfig.parser
 import anyconfig.utils
 
+from anyconfig.utils import is_iterable
+
 # TODO: Keep items' order:
 # from collections import OrderedDict as dict
 
@@ -124,7 +126,7 @@ def convert_to(mdict):
     """
     if is_dict_like(mdict):
         return dict((k, convert_to(v)) for k, v in iteritems(mdict))
-    elif anyconfig.utils.is_iterable(mdict):
+    elif is_iterable(mdict):
         return type(mdict)(convert_to(v) for v in mdict)
     else:
         return mdict
@@ -138,7 +140,7 @@ def create_from(dic):
     """
     if is_dict_like(dic):
         return MergeableDict((k, create_from(v)) for k, v in iteritems(dic))
-    elif anyconfig.utils.is_iterable(dic):
+    elif is_iterable(dic):
         return type(dic)(create_from(v) for v in dic)
     else:
         return dic
@@ -165,11 +167,14 @@ class MergeableDict(dict):
         """Merge strategy"""
         return self.strategy
 
-    def update(self, other, strategy=None):
+    def update(self, other, strategy=None, keep=False):
         """Update members recursively based on given strategy.
 
         :param other: Other MergeableDict instance to merge
         :param strategy: Merge strategy
+        :param keep:
+            Keep original value if type of original value is not a dict nor
+            list.  It will be simply replaced with new value by default.
         """
         if strategy is None:
             strategy = self.get_strategy()
@@ -179,14 +184,17 @@ class MergeableDict(dict):
         elif strategy == MS_NO_REPLACE:
             self.update_wo_replace(other)
         elif strategy == MS_DICTS_AND_LISTS:
-            self.update_w_merge(other, merge_lists=True)
+            self.update_w_merge(other, merge_lists=True, keep=keep)
         else:
-            self.update_w_merge(other, merge_lists=False)
+            self.update_w_merge(other, merge_lists=False, keep=keep)
 
     def update_w_replace(self, other):
         """Update and replace self w/ other if both has same keys.
 
         :param other: object of which type is same as self's.
+        :param keep:
+            Keep original value if type of original value is not a dict nor
+            list.  It will be simply replaced with new value by default.
 
         >>> md0 = MergeableDict.create(dict(a=1, b=[1, 3], c="abc"))
         >>> md1 = MergeableDict.create(dict(a=2, b=[0, 1], c="xyz"))
@@ -218,13 +226,23 @@ class MergeableDict(dict):
                 if key not in self:
                     self[key] = val
 
-    def update_w_merge(self, other, merge_lists=False):
-        """Merge members recursively.
+    def update_w_merge(self, other, merge_lists=False, keep=False):
+        """
+        Merge members recursively. Behavior of merge will be vary depends on
+        types of original and new values.
+
+        - dict vs. dict -> merge recursively
+        - list vs. list -> vary depends on `merge_lists`. see its description.
+        - other objects vs. any -> vary depends on `keep`. see its description.
 
         :param merge_lists: Merge not only dicts but also lists. For example,
 
             [1, 2, 3], [3, 4] ==> [1, 2, 3, 4]
             [1, 2, 2], [2, 4] ==> [1, 2, 2, 4]
+
+        :param keep:
+            Keep original value if type of original value is not a dict nor
+            list.  It will be simply replaced with new value by default.
 
         >>> md0 = md1 = MergeableDict.create(dict(a=1, b=dict(c=2, d=3),
         ...                                       e=[1, 2, 2]))
@@ -248,17 +266,17 @@ class MergeableDict(dict):
             return
 
         for key, val in iteritems(other):
-            if key in self and is_dict_like(val) and is_dict_like(self[key]):
-                # update recursivalely.
-                self[key].update_w_merge(val, merge_lists)
-            else:
-                if merge_lists and anyconfig.utils.is_iterable(val):
-                    val0 = self.get(key, None)
-                    if val0 is None:
-                        self[key] = [x for x in list(val)]
-                    else:
-                        self[key] += [x for x in list(val) if x not in val0]
-                else:
-                    self[key] = val
+            val0 = self.get(key, None)  # Original value
+
+            if val0 is None:
+                self[key] = val
+                continue
+
+            if is_dict_like(val0):  # It needs recursive updates.
+                self[key].update_w_merge(val, merge_lists, keep)
+            elif merge_lists and is_iterable(val) and is_iterable(val0):
+                self[key] += [x for x in list(val) if x not in val0]
+            elif not keep:
+                self[key] = val  # Overwrite it.
 
 # vim:sw=4:ts=4:et:

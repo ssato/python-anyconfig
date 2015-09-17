@@ -57,6 +57,11 @@ Examples:
   %prog '/etc/foo.d/*.json' --get a.b.c
   %prog '/etc/foo.d/*.json' --set a.b.c=1"""
 
+DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
+                otype=None, atype=None, merge=A.MS_DICTS,
+                ignore_missing=False, template=False, env=False,
+                schema=None, validate=False, gen_schema=False)
+
 
 def to_log_level(level):
     """
@@ -83,10 +88,8 @@ def option_parser(defaults=None, usage=USAGE):
     :param defaults: Default option values
     :param usage: Usage text
     """
-    defaults = dict(loglevel=1, list=False, output=None, itype=None,
-                    otype=None, atype=None, merge=A.MS_DICTS,
-                    ignore_missing=False, template=False, env=False,
-                    schema=None, validate=False, gen_schema=False)
+    if defaults is None:
+        defaults = DEFAULTS
 
     ctypes = A.list_types()
     ctypes_s = ", ".join(ctypes)

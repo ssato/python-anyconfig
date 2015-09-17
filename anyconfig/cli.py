@@ -4,7 +4,7 @@
 #
 """CLI frontend module for anyconfig.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import codecs
 import locale
@@ -173,6 +173,17 @@ def parse_args(argv=None, defaults=None):
     return (parser, options, args)
 
 
+def _exit_with_output(content, exit_code=0):
+    """
+    Exit the program with printing out messages.
+
+    :param content: content to print out
+    :param exit_code: Exit code
+    """
+    (sys.stdout if exit_code == 0 else sys.stderr).write(content + "\n")
+    sys.exit(exit_code)
+
+
 def _check_options_and_args(parser, options, args):
     """
     Show supported config format types or usage.
@@ -183,16 +194,31 @@ def _check_options_and_args(parser, options, args):
     """
     if not args:
         if options.list:
-            tlist = ", ".join(API.list_types()) + "\n"
-            sys.stdout.write("Supported config types: " + tlist)
-            sys.exit(0)
+            tlist = ", ".join(API.list_types())
+            _exit_with_output("Supported config types: " + tlist)
         else:
             parser.print_usage()
             sys.exit(1)
 
     if options.validate and options.schema is None:
-        sys.stderr.write("--validate option requires --scheme option")
-        sys.exit(1)
+        _exit_with_output("--validate option requires --scheme option", 1)
+
+
+def _exit_if_load_failure(cnf, msg):
+    """
+    :param cnf: Loaded configuration object or None indicates load failure
+    :param msg: Message to print out if failure
+    """
+    if cnf is None:
+        _exit_with_output(msg, 1)
+
+
+def _exit_if_only_to_validate(only_to_validate):
+    """
+    :param only_to_validate: True if it's only to validate
+    """
+    if only_to_validate:
+        _exit_with_output("Validation succeds")
 
 
 def main(argv=None):
@@ -210,20 +236,15 @@ def main(argv=None):
                     merge=options.merge, ac_template=options.template,
                     ac_schema=options.schema)
 
-    if diff is None:
-        sys.stderr.write("Validation failed")
-        sys.exit(1)
-
+    _exit_if_load_failure(diff, "Failed to load: args=%s" % ", ".join(args))
     cnf.update(diff)
 
     if options.args:
         diff = API.loads(options.args, options.atype,
-                       ac_template=options.template, ac_context=cnf)
+                         ac_template=options.template, ac_context=cnf)
         cnf.update(diff, options.merge)
 
-    if options.validate:
-        API.LOGGER.info("Validation succeeds")
-        sys.exit(0)
+    _exit_if_only_to_validate(options.validate)
 
     if options.gen_schema:
         cnf = API.gen_schema(cnf)
@@ -235,35 +256,26 @@ def main(argv=None):
 
         # Output primitive types as it is.
         if not anyconfig.mergeabledict.is_dict_like(cnf):
-            sys.stdout.write(str(cnf) + '\n')
-            return
+            _exit_with_output(str(cnf))
 
     if options.set:
         (key, val) = options.set.split('=')
         API.set_(cnf, key, anyconfig.parser.parse(val))
 
-    if options.output:
-        cparser = API.find_loader(options.output, options.otype)
-        if cparser is None:
-            raise RuntimeError("No suitable dumper was found for %s",
-                               options.output)
-
-        cparser.dump(cnf, options.output)
-    else:
+    if not options.output or options.output == "-":
+        options.output = sys.stdout
         if options.otype is None:
             if options.itype is None:
-                psr = API.find_loader(args[0])
-                if psr is not None:
-                    options.otype = psr.type()  # Reuse detected input type
-                else:
-                    raise RuntimeError("Please specify input and/or output "
-                                       "type with -I (--itype) or -O "
-                                       "(--otype) option")
+                try:
+                    options.otype = API.find_loader(args[0]).type()
+                except AttributeError:
+                    _exit_with_output("Specify input and/or output type[s] "
+                                      "with -I/--itype or -O/--otype option "
+                                      "explicitly", 1)
             else:
                 options.otype = options.itype
 
-        cparser = API.find_loader(None, options.otype)
-        sys.stdout.write(cparser.dumps(cnf) + '\n')
+    API.dump(cnf, options.output, options.otype)
 
 
 if __name__ == '__main__':

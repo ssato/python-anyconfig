@@ -221,6 +221,46 @@ def _exit_if_only_to_validate(only_to_validate):
         _exit_with_output("Validation succeds")
 
 
+def _do_get(cnf, get_path):
+    """
+    :param cnf: Configuration object to print out
+    :param get_path: key path given in --get option
+    :return: updated Configuration object if no error
+    """
+    (cnf, err) = API.get(cnf, get_path)
+    if err:
+        _exit_with_output(err, 1)
+
+    return cnf
+
+
+def _output_result(cnf, outpath, otype, inpath, itype):
+    """
+    :param cnf: Configuration object to print out
+    :param outpath: Output file path or None
+    :param otype: Output type or None
+    :param inpath: Input file path
+    :param itype: Input type or None
+    """
+    if not outpath or outpath == "-":
+        outpath = sys.stdout
+        if otype is None:
+            if itype is None:
+                try:
+                    otype = API.find_loader(inpath).type()
+                except AttributeError:
+                    _exit_with_output("Specify inpath and/or outpath type[s] "
+                                      "with -I/--itype or -O/--otype option "
+                                      "explicitly", 1)
+            else:
+                otype = itype
+
+    if anyconfig.mergeabledict.is_dict_like(cnf):
+        API.dump(cnf, outpath, otype)
+    else:
+        _exit_with_output(str(cnf))  # Output primitive types as it is.
+
+
 def main(argv=None):
     """
     :param argv: Argument list to parse or None (sys.argv will be set).
@@ -250,32 +290,13 @@ def main(argv=None):
         cnf = API.gen_schema(cnf)
 
     if options.get:
-        (cnf, err) = API.get(cnf, options.get)
-        if err:
-            raise RuntimeError(err)
-
-        # Output primitive types as it is.
-        if not anyconfig.mergeabledict.is_dict_like(cnf):
-            _exit_with_output(str(cnf))
+        cnf = _do_get(cnf, options.get)
 
     if options.set:
         (key, val) = options.set.split('=')
         API.set_(cnf, key, anyconfig.parser.parse(val))
 
-    if not options.output or options.output == "-":
-        options.output = sys.stdout
-        if options.otype is None:
-            if options.itype is None:
-                try:
-                    options.otype = API.find_loader(args[0]).type()
-                except AttributeError:
-                    _exit_with_output("Specify input and/or output type[s] "
-                                      "with -I/--itype or -O/--otype option "
-                                      "explicitly", 1)
-            else:
-                options.otype = options.itype
-
-    API.dump(cnf, options.output, options.otype)
+    _output_result(cnf, options.output, options.otype, args[0], options.itype)
 
 
 if __name__ == '__main__':

@@ -19,6 +19,10 @@ CNF_0_PATH = os.path.join(C.selfdir(), "00-cnf.yml")
 SCM_0_PATH = os.path.join(C.selfdir(), "00-scm.yml")
 
 
+def _run(*args):
+    TT.main(["dummy"] + list(args))
+
+
 class Test(unittest.TestCase):
 
     def setUp(self):
@@ -28,13 +32,10 @@ class Test(unittest.TestCase):
     def tearDown(self):
         C.cleanup_workdir(self.workdir)
 
-    def _run(self, *args):
-        TT.main(["dummy"] + list(args))
-
     def _assert_run_and_exit(self, *args):
         raised = False
         try:
-            self._run(*args)
+            _run(*args)
         except SystemExit:
             raised = True
 
@@ -260,13 +261,13 @@ b:
 
         exited = False
         outfile = os.path.join(self.workdir, "out.conf")
-        self._run("-o", outfile, infile)
+        _run("-o", outfile, infile)
         self.assertFalse(exited)
 
     def test_82_no_itype_and_otype(self):
         exited = False
         outfile = os.path.join(self.workdir, "out.conf")
-        self._run("-o", outfile, "in.conf")
+        _run("-o", outfile, "in.conf")
         self.assertFalse(exited)
 
     def test_90_no_inputs__w_env_option(self):

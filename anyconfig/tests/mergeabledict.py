@@ -2,6 +2,8 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 #
 # pylint: disable=missing-docstring,invalid-name
+from __future__ import absolute_import
+
 import unittest
 import anyconfig.mergeabledict as TT
 

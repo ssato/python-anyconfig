@@ -5,7 +5,6 @@
 # pylint: disable=missing-docstring, invalid-name, too-many-public-methods
 import os
 import os.path
-import sys
 import unittest
 
 import anyconfig.cli as TT
@@ -29,12 +28,24 @@ class Test(unittest.TestCase):
     def tearDown(self):
         C.cleanup_workdir(self.workdir)
 
+    def _run(self, *args):
+        TT.main(["dummy"] + list(args))
+
+    def _assert_run_and_exit(self, *args):
+        raised = False
+        try:
+            self._run(*args)
+        except SystemExit:
+            raised = True
+
+        self.assertTrue(raised)
+
     def run_and_check_exit_code(self, args=None, code=0, _not=False,
                                 exc_cls=SystemExit):
         try:
             TT.main(["dummy"] + ([] if args is None else args))
         except exc_cls as exc:
-            ecode = getattr(exc, "code", -1)
+            ecode = getattr(exc, "code", 1)
             (self.assertNotEquals if _not else self.assertEquals)(ecode, code)
 
     def test_10__show_usage(self):
@@ -65,8 +76,7 @@ class Test(unittest.TestCase):
         self.assertTrue(os.path.exists(output))
 
     def test_31__single_input_wo_input_type(self):
-        self.run_and_check_exit_code(["a.conf"], _not=True,
-                                     exc_cls=RuntimeError)
+        self._assert_run_and_exit("a.conf")
 
     def test_32_single_input_w_get_option(self):
         d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))
@@ -248,21 +258,14 @@ b:
         infile = os.path.join(self.workdir, "a.json")
         A.dump(a, infile)
 
-        try:
-            TT.main(["dummy", "-o", "out.txt", infile])
-            sys.exit(-1)
-        except RuntimeError:
-            pass
+        exited = False
+        self._run("-o", "out.txt", infile)
+        self.assertFalse(exited)
 
     def test_82_no_itype_and_otype(self):
-        raised = False
-        try:
-            TT.main(["dummy", "-o", "out.txt", "in.txt"])
-            sys.exit(-1)
-        except RuntimeError:
-            raised = True
-
-        self.assertTrue(raised)
+        exited = False
+        self._run("-o", "out.txt", "in.txt")
+        self.assertFalse(exited)
 
     def test_90_no_inputs__w_env_option(self):
         infile = "/dev/null"

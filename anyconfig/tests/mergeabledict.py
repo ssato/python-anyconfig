@@ -27,68 +27,61 @@ class Test10MergeableDict(unittest.TestCase):
     mk_mdict = TT.MergeableDict.create
 
     def test_20_update__w_replace(self):
-        org = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
+        dic = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
         upd = self.mk_mdict(dict(a=2, b=dict(b=[3, 4, 5], d="D")))
 
-        ref = TT.MergeableDict(**org.copy())
+        ref = TT.MergeableDict(**dic.copy())
         ref['a'] = 2
         ref['b'] = upd['b']
-        ref['b']['c'] = org['b']['c']
+        ref['b']['c'] = dic['b']['c']
 
-        org.update(upd, TT.MS_REPLACE)
-        self.assertTrue(dicts_equal(org, ref))
+        dic.update(upd, TT.MS_REPLACE)
+        self.assertTrue(dicts_equal(dic, ref))
 
     def test_22_update__w_replace__not_a_dict(self):
-        org = TT.MergeableDict()
-        ref = TT.MergeableDict(**org.copy())
-        org.update(1, TT.MS_REPLACE)
-        self.assertTrue(dicts_equal(org, ref))
+        dic = TT.MergeableDict()
+        ref = TT.MergeableDict(**dic.copy())
+        dic.update(1, TT.MS_REPLACE)
+        self.assertTrue(dicts_equal(dic, ref))
 
     def test_24_update__w_None(self):
-        org = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
-        ref = TT.MergeableDict(**org.copy())
-        org.update(None)
-        self.assertTrue(dicts_equal(org, ref))
+        dic = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
+        ref = TT.MergeableDict(**dic.copy())
+        dic.update(None)
+        self.assertTrue(dicts_equal(dic, ref))
 
     def test_30_update__wo_replace(self):
-        a = TT.MergeableDict(a=1, b=TT.MergeableDict(b=[1, 2], c="C"))
-        b = TT.MergeableDict(name="foo", a=2,
-                             b=TT.MergeableDict(b=[3, 4, 5], d="D"))
+        dic = self.mk_mdict(dict(a=1, b=dict(b=[1, 2], c="C")))
+        upd = self.mk_mdict(dict(name="foo", a=2, b=dict(b=[3, 4, 5], d="D")))
 
-        ref = TT.MergeableDict(**a.copy())
-        ref['name'] = b['name']
+        ref = TT.MergeableDict(**dic.copy())
+        ref['name'] = upd['name']
 
-        a.update(b, TT.MS_NO_REPLACE)
-
-        self.assertEquals(a, ref)
+        dic.update(upd, TT.MS_NO_REPLACE)
+        self.assertTrue(dicts_equal(dic, ref))
 
     def test_40_update__w_merge_dicts(self):
-        a = TT.MergeableDict(name="a", a=1,
-                             b=TT.MergeableDict(b=[1, 2], c="C"),
-                             e=[3, 4])
-        b = TT.MergeableDict(a=2, b=TT.MergeableDict(b=[1, 2, 3], d="D"))
+        dic = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C"),
+                                 e=[3, 4]))
+        upd = self.mk_mdict(dict(a=2, b=dict(b=[1, 2, 3], d="D")))
 
-        ref = TT.MergeableDict(**a.copy())
+        ref = TT.MergeableDict(**dic.copy())
         ref['a'] = 2
         ref['b'] = TT.MergeableDict(b=[1, 2, 3], c="C", d="D")
         ref['e'] = [3, 4]
 
-        a.update(b)
-
-        self.assertEquals(a, ref)
+        dic.update_w_merge(upd)
+        self.assertTrue(dicts_equal(dic, ref))
 
     def test_40_update__w_merge_dicts_and_lists(self):
-        a = TT.MergeableDict(name="a", a=1,
-                             b=TT.MergeableDict(b=[1, 2], c="C"))
-        b = TT.MergeableDict(a=2,
-                             b=TT.MergeableDict(b=[3, 4], d="D", e=[1, 2]))
+        dic = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
+        upd = self.mk_mdict(dict(a=2, b=dict(b=[3, 4], d="D", e=[1, 2])))
 
-        ref = TT.MergeableDict(**a.copy())
+        ref = TT.MergeableDict(**dic.copy())
         ref['a'] = 2
         ref['b'] = TT.MergeableDict(b=[1, 2, 3, 4], c="C", d="D", e=[1, 2])
 
-        a.update(b, TT.MS_DICTS_AND_LISTS)
-
-        self.assertEquals(a, ref)
+        dic.update(upd, TT.MS_DICTS_AND_LISTS)
+        self.assertTrue(dicts_equal(dic, ref))
 
 # vim:sw=4:ts=4:et:

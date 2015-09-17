@@ -7,6 +7,8 @@ from __future__ import absolute_import
 import unittest
 import anyconfig.mergeabledict as TT
 
+from anyconfig.tests.common import dicts_equal
+
 
 class Test00Functions(unittest.TestCase):
 
@@ -25,34 +27,28 @@ class Test10MergeableDict(unittest.TestCase):
     mk_mdict = TT.MergeableDict.create
 
     def test_20_update__w_replace(self):
-        a = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
-        b = self.mk_mdict(dict(a=2, b=dict(b=[3, 4, 5], d="D")))
+        org = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
+        upd = self.mk_mdict(dict(a=2, b=dict(b=[3, 4, 5], d="D")))
 
-        ref = TT.MergeableDict(**a.copy())
+        ref = TT.MergeableDict(**org.copy())
         ref['a'] = 2
-        ref['b'] = b['b']
-        ref['b']['c'] = a['b']['c']
+        ref['b'] = upd['b']
+        ref['b']['c'] = org['b']['c']
 
-        a.update(b, TT.MS_REPLACE)
-        self.assertEquals(a, ref)
+        org.update(upd, TT.MS_REPLACE)
+        self.assertTrue(dicts_equal(org, ref))
 
-    def test_20_update__w_replace__not_a_dict(self):
-        a = TT.MergeableDict()
-        a.update(1, TT.MS_REPLACE)
+    def test_22_update__w_replace__not_a_dict(self):
+        org = TT.MergeableDict()
+        ref = TT.MergeableDict(**org.copy())
+        org.update(1, TT.MS_REPLACE)
+        self.assertTrue(dicts_equal(org, ref))
 
-        # NOTE: It does not work.
-        try:
-            self.assertEquals(a, 1)
-        except AssertionError:
-            pass
-
-    def test_20_update__w_None(self):
-        a = TT.MergeableDict(name="a", a=1,
-                             b=TT.MergeableDict(b=[1, 2], c="C"))
-        ref = TT.MergeableDict(**a.copy())
-        a.update(None)
-
-        self.assertEquals(a, ref)
+    def test_24_update__w_None(self):
+        org = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
+        ref = TT.MergeableDict(**org.copy())
+        org.update(None)
+        self.assertTrue(dicts_equal(org, ref))
 
     def test_30_update__wo_replace(self):
         a = TT.MergeableDict(a=1, b=TT.MergeableDict(b=[1, 2], c="C"))

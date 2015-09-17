@@ -13,7 +13,7 @@ import optparse
 import os
 import sys
 
-import anyconfig.api as A
+import anyconfig.api as API
 import anyconfig.compat
 import anyconfig.globals
 import anyconfig.mergeabledict
@@ -21,7 +21,7 @@ import anyconfig.parser
 
 
 _ENCODING = locale.getdefaultlocale()[1]
-A.LOGGER.addHandler(logging.StreamHandler())
+API.LOGGER.addHandler(logging.StreamHandler())
 
 if anyconfig.compat.IS_PYTHON_3:
     import io
@@ -58,7 +58,7 @@ Examples:
   %prog '/etc/foo.d/*.json' --set a.b.c=1"""
 
 DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
-                otype=None, atype=None, merge=A.MS_DICTS,
+                otype=None, atype=None, merge=API.MS_DICTS,
                 ignore_missing=False, template=False, env=False,
                 schema=None, validate=False, gen_schema=False)
 
@@ -81,42 +81,43 @@ def to_log_level(level):
     return [logging.WARN, logging.INFO, logging.DEBUG][level]
 
 
-def option_parser(defaults=None, usage=USAGE):
-    """
-    Make up an option and arguments parser.
-
-    :param defaults: Default option values
-    :param usage: Usage text
-    """
-    if defaults is None:
-        defaults = DEFAULTS
-
-    ctypes = A.list_types()
-    ctypes_s = ", ".join(ctypes)
-    type_help = "Select type of %s config files from " + \
-        ctypes_s + " [Automatically detected by file ext]"
-
-    mts = A.MERGE_STRATEGIES
-    mts_s = ", ".join(mts)
-    mt_help = "Select strategy to merge multiple configs from " + \
-        mts_s + " [%(merge)s]" % defaults
-
-    af_help = """Explicitly select type of argument to provide configs from %s.
+_ATYPE_HELP_FMT = """\
+Explicitly select type of argument to provide configs from %s.
 
 If this option is not set, original parser is used: 'K:V' will become {K: V},
 'K:V_0,V_1,..' will become {K: [V_0, V_1, ...]}, and 'K_0:V_0;K_1:V_1' will
 become {K_0: V_0, K_1: V_1} (where the tyep of K is str, type of V is one of
-Int, str, etc.""" % ctypes_s
+Int, str, etc."""
 
-    get_help = ("Specify key path to get part of config, for example, "
-                "'--get a.b.c' to config {'a': {'b': {'c': 0, 'd': 1}}} "
-                "gives 0 and '--get a.b' to the same config gives "
-                "{'c': 0, 'd': 1}.")
-    set_help = ("Specify key path to set (update) part of config, for "
-                "example, '--set a.b.c=1' to a config {'a': {'b': {'c': 0, "
-                "'d': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.")
+_GET_HELP = ("Specify key path to get part of config, for example, "
+             "'--get a.b.c' to config {'a': {'b': {'c': 0, 'd': 1}}} "
+             "gives 0 and '--get a.b' to the same config gives "
+             "{'c': 0, 'd': 1}.")
+_SET_HELP = ("Specify key path to set (update) part of config, for "
+             "example, '--set a.b.c=1' to a config {'a': {'b': {'c': 0, "
+             "'d': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.")
 
-    parser = optparse.OptionParser(usage, version="%%prog %s" %
+
+def parse_args(argv=None, defaults=None):
+    """
+    Make up an option and arguments parser.
+
+    :param defaults: Default option values
+    """
+    if defaults is None:
+        defaults = DEFAULTS
+
+    ctypes = API.list_types()
+    ctypes_s = ", ".join(ctypes)
+    type_help = "Select type of %s config files from " + \
+        ctypes_s + " [Automatically detected by file ext]"
+
+    mts = API.MERGE_STRATEGIES
+    mts_s = ", ".join(mts)
+    mt_help = "Select strategy to merge multiple configs from " + \
+        mts_s + " [%(merge)s]" % defaults
+
+    parser = optparse.OptionParser(USAGE, version="%%prog %s" %
                                    anyconfig.globals.VERSION)
     parser.set_defaults(**defaults)
 
@@ -136,8 +137,8 @@ Int, str, etc.""" % ctypes_s
     parser.add_option_group(spog)
 
     gspog = optparse.OptionGroup(parser, "Get/set options")
-    gspog.add_option("", "--get", help=get_help)
-    gspog.add_option("", "--set", help=set_help)
+    gspog.add_option("", "--get", help=_GET_HELP)
+    gspog.add_option("", "--set", help=_SET_HELP)
     parser.add_option_group(gspog)
 
     parser.add_option("-o", "--output", help="Output file path")
@@ -147,7 +148,8 @@ Int, str, etc.""" % ctypes_s
                       help=(type_help % "Output"))
     parser.add_option("-M", "--merge", choices=mts, help=mt_help)
     parser.add_option("-A", "--args", help="Argument configs to override")
-    parser.add_option("", "--atype", choices=ctypes, help=af_help)
+    parser.add_option("", "--atype", choices=ctypes,
+                      help=_ATYPE_HELP_FMT % ctypes_s)
 
     parser.add_option("-x", "--ignore-missing", action="store_true",
                       help="Ignore missing input files")
@@ -164,24 +166,24 @@ Int, str, etc.""" % ctypes_s
     parser.add_option("-v", "--verbose", action="store_const", dest="loglevel",
                       const=2, help="Verbose mode")
 
-    return parser
-
-
-def main(argv=None):
-    """
-    :param argv: Argument list to parse or None (sys.argv will be set).
-    """
     if argv is None:
         argv = sys.argv
 
-    parser = option_parser()
     (options, args) = parser.parse_args(argv[1:])
+    return (parser, options, args)
 
-    A.set_loglevel(to_log_level(options.loglevel))
 
+def _check_options_and_args(parser, options, args):
+    """
+    Show supported config format types or usage.
+
+    :param parser: Option parser object
+    :param options: Options optparse.OptionParser.parse_args returns
+    :param args: Arguments optparse.OptionParser.parse_args returns
+    """
     if not args:
         if options.list:
-            tlist = ", ".join(A.list_types()) + "\n"
+            tlist = ", ".join(API.list_types()) + "\n"
             sys.stdout.write("Supported config types: " + tlist)
             sys.exit(0)
         else:
@@ -192,11 +194,21 @@ def main(argv=None):
         sys.stderr.write("--validate option requires --scheme option")
         sys.exit(1)
 
-    cnf = A.container(os.environ.copy()) if options.env else A.container()
-    diff = A.load(args, options.itype,
-                  ignore_missing=options.ignore_missing,
-                  merge=options.merge, ac_template=options.template,
-                  ac_schema=options.schema)
+
+def main(argv=None):
+    """
+    :param argv: Argument list to parse or None (sys.argv will be set).
+    """
+    (parser, options, args) = parse_args(argv=argv)
+    API.LOGGER.setLevel(to_log_level(options.loglevel))
+
+    _check_options_and_args(parser, options, args)
+
+    cnf = API.container(os.environ.copy() if options.env else {})
+    diff = API.load(args, options.itype,
+                    ignore_missing=options.ignore_missing,
+                    merge=options.merge, ac_template=options.template,
+                    ac_schema=options.schema)
 
     if diff is None:
         sys.stderr.write("Validation failed")
@@ -205,19 +217,19 @@ def main(argv=None):
     cnf.update(diff)
 
     if options.args:
-        diff = A.loads(options.args, options.atype,
+        diff = API.loads(options.args, options.atype,
                        ac_template=options.template, ac_context=cnf)
         cnf.update(diff, options.merge)
 
     if options.validate:
-        A.LOGGER.info("Validation succeeds")
+        API.LOGGER.info("Validation succeeds")
         sys.exit(0)
 
     if options.gen_schema:
-        cnf = A.gen_schema(cnf)
+        cnf = API.gen_schema(cnf)
 
     if options.get:
-        (cnf, err) = A.get(cnf, options.get)
+        (cnf, err) = API.get(cnf, options.get)
         if err:
             raise RuntimeError(err)
 
@@ -228,10 +240,10 @@ def main(argv=None):
 
     if options.set:
         (key, val) = options.set.split('=')
-        A.set_(cnf, key, anyconfig.parser.parse(val))
+        API.set_(cnf, key, anyconfig.parser.parse(val))
 
     if options.output:
-        cparser = A.find_loader(options.output, options.otype)
+        cparser = API.find_loader(options.output, options.otype)
         if cparser is None:
             raise RuntimeError("No suitable dumper was found for %s",
                                options.output)
@@ -240,7 +252,7 @@ def main(argv=None):
     else:
         if options.otype is None:
             if options.itype is None:
-                psr = A.find_loader(args[0])
+                psr = API.find_loader(args[0])
                 if psr is not None:
                     options.otype = psr.type()  # Reuse detected input type
                 else:
@@ -250,7 +262,7 @@ def main(argv=None):
             else:
                 options.otype = options.itype
 
-        cparser = A.find_loader(None, options.otype)
+        cparser = API.find_loader(None, options.otype)
         sys.stdout.write(cparser.dumps(cnf) + '\n')
 
 

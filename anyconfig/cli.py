@@ -228,8 +228,8 @@ def _do_get(cnf, get_path):
     :return: updated Configuration object if no error
     """
     (cnf, err) = API.get(cnf, get_path)
-    if err:
-        _exit_with_output(err, 1)
+    if cnf is None:  # Failed to get the result.
+        _exit_with_output("Failed to get result: err=%s" % err, 1)
 
     return cnf
 

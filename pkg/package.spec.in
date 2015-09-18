@@ -141,11 +141,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Tue Sep 15 2015 Satoru SATOH <ssato@redhat.com> - 0.1.0-99
+* Fri Sep 18 2015 Satoru SATOH <ssato@redhat.com> - 0.2.0-1
 - new API anyconfig.to_container, factory method to create container objects
 - enale processing of stream in anyconfig.*load and anyconfig.*dump
 - add a native implementation of Java properties file backend
 - misc doc updates about new backend, APIs, etc.
+- massive refactoring of some complex modules such as api, cli, mergeabledict,
+  parser and some backends and also add some more corner test cases
 - some more minor possible bug fixes found by pylint and flake8
 
 * Sat Aug 15 2015 Satoru SATOH <ssato@redhat.com> - 0.1.0-1

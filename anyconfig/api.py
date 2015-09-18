@@ -8,7 +8,7 @@
 .. versionchanged:: 0.2
    Now APIs :func:`find_loader`, :func:`single_load`, :func:`multi_load`,
    :func:`load` and :func:`dump` can process a file/file-like object or a list
-   offile/file-like objects instead of a file path or a list of file paths.
+   of file/file-like objects instead of a file path or a list of file paths.
 
 .. versionadded:: 0.2
    Export factory method (create) of anyconfig.mergeabledict.MergeableDict

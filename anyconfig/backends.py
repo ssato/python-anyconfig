@@ -23,37 +23,37 @@ LOGGER = logging.getLogger(__name__)
 PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json.Parser,
            anyconfig.backend.properties.Parser, anyconfig.backend.xml.Parser]
 
+_NA_MSG = "%s is not available. Disabled %s support."
+
 try:
     import anyconfig.backend.yaml
     PARSERS.append(anyconfig.backend.yaml.Parser)
 except ImportError:
-    LOGGER.warn("yaml module is not available. Disabled YAML support.")
+    LOGGER.info(_NA_MSG, "yaml module", "YAML")
 
 try:
     import anyconfig.backend.configobj
     PARSERS.append(anyconfig.backend.configobj.Parser)
 except ImportError:
-    LOGGER.warn("ConfigObj module is not available. Disabled its support.")
+    LOGGER.info(_NA_MSG, "ConfigObj module", "its")
 
 try:
     import anyconfig.backend.msgpack
     PARSERS.append(anyconfig.backend.msgpack.Parser)
 except ImportError:
-    LOGGER.warn("msgpack module is not available. "
-                "Disabled MessagePack support.")
+    LOGGER.info(_NA_MSG, "msgpack module", "MessagePack")
 
 try:
     import anyconfig.backend.toml
     PARSERS.append(anyconfig.backend.toml.Parser)
 except ImportError:
-    LOGGER.warn("toml module is not available. Disabled TOML support.")
+    LOGGER.info(_NA_MSG, "toml module", "TOML")
 
 try:
     import anyconfig.backend.bson
     PARSERS.append(anyconfig.backend.bson.Parser)
 except ImportError:
-    LOGGER.warn("bson module in pymongo package is not available. "
-                "Disabled BSON support.")
+    LOGGER.info(_NA_MSG, "bson module in pymongo package", "BSON")
 
 # pylint: disable=no-member
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):

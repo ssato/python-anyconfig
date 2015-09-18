@@ -2,6 +2,8 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# suppress false-positive warn at '... pkg_resources ...' line:
+# pylint: disable=no-member
 """A module to aggregate config parser (loader/dumper) backends.
 """
 from __future__ import absolute_import
@@ -55,13 +57,11 @@ try:
 except ImportError:
     LOGGER.info(_NA_MSG, "bson module in pymongo package", "BSON")
 
-# pylint: disable=no-member
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):
     try:
         PARSERS.append(e.load())
     except ImportError:
         continue
-# pylint: enable=no-member
 
 
 def cmp_cps(lhs, rhs):

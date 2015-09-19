@@ -11,5 +11,6 @@ python-anyconfig
     cli
 
 .. include:: introduction.rst
+.. include:: hacking.rst
 
 .. vim:sw=2:ts=2:et:

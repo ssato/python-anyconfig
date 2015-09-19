@@ -221,7 +221,7 @@ It's also possible to validate config files during load:
 Template config support
 ---------------------------
 
-Anyconfig module supports template config files since 0.0.6.
+anyconfig module supports template config files since 0.0.6.
 That is, config files written in Jinja2 template [#]_ will be compiled before
 loading w/ backend module.
 
@@ -282,10 +282,40 @@ And another one:
 Other random topics with API usage
 -----------------------------------
 
+Suppress logging messages from anyconfig module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+anyconfig uses a global logger named 'anyconfig' [#]_ and provide an utility
+function :func:`anyconfig.set_loglevel` to set logging level of this logger
+like the followings:
+
+- Set log level of anyconfig module before load:
+
+.. code-block:: python
+
+  import logging
+
+  logging.getLogger("anyconfig").setLevel(logging.ERROR)
+
+  import anyconfig
+
+  ...
+
+- Set log level of anyconfig module after load:
+
+.. code-block:: python
+
+  import anyconfig
+  import logging
+
+  anyconfig.set_loglevel(logging.WARN)  # Or: anyconfig.LOGGER.setLevel(logging.ERROR)
+
+.. [#] I https://docs.python.org/2/howto/logging.html#library-config
+
 Combination with other modules
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Anyconfig can be combined with other modules such as pyxdg and appdirs [#]_ .
+anyconfig can be combined with other modules such as pyxdg and appdirs [#]_ .
 
 For example, you can utilize anyconfig and pyxdg or appdirs in you application
 software to load user config files like this:

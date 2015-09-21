@@ -15,6 +15,24 @@ if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
     VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
 
+_LONG_DESC = """
+python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
+python library provides generic access to configuration files in various
+formats with configuration merge along with config template and schema
+validation/generation support.
+
+- Home: https://github.com/ssato/python-anyconfig
+- (Latest) Doc: http://python-anyconfig.readthedocs.org/en/latest/
+- PyPI: https://pypi.python.org/pypi/anyconfig
+- Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
+
+I, Satoru SATOH <ssato@redhat.com>, originally developed and keep maintain it
+with others' help [#]_ .
+
+.. [#] This name took an example from the 'anydbm' python standard library.
+.. [#] see the output of `git log --pretty=format:"%an %ae" | grep -vE "Satoru SATOH" | sort | uniq`.
+"""
+
 def list_filepaths(tdir):
     return [f for f in glob.glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
 

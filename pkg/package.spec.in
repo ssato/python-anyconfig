@@ -141,7 +141,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Mon Sep 21 2015 Satoru SATOH <ssato@redhat.com> - 0.2.1-1
+* Mon Sep 21 2015 Satoru SATOH <ssato@redhat.com> - 0.2.2-1
 - Lower the level of some warn logging messages if backend support module is
   not available
 - Cleanup the doc of PyPI page

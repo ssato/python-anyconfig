@@ -1,3 +1,4 @@
+-r requirements_full-py-2.6.txt
 coveralls
 # flake8  # disabled until 'pkg_resources.VersionConflict' error.
 mock

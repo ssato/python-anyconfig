@@ -27,8 +27,11 @@ _SIMPLETYPE_MAP = {list: "array", tuple: "array",
 _SIMPLE_TYPES = (bool, int, float, str)
 
 if not anyconfig.compat.IS_PYTHON_3:
-    _SIMPLETYPE_MAP[unicode] = "string"
-    _SIMPLE_TYPES = (bool, int, float, str, unicode)
+    try:
+        _SIMPLETYPE_MAP[unicode] = "string"
+        _SIMPLE_TYPES = (bool, int, float, str, unicode)
+    except NameError:
+        pass
 
 
 def validate(obj, schema, format_checker=None, safe=True):

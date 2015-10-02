@@ -1,4 +1,4 @@
-# Ref. http://about.travis-ci.org/docs/user/languages/python/
+# see: http://about.travis-ci.org/docs/user/languages/python/
 language: python
 python:
     #- 2.4
@@ -7,6 +7,9 @@ python:
     - 2.7
     - 3.3
     - 3.4
+    - 3.5
+# see: http://docs.travis-ci.com/user/caching/#pip-cache
+cache: pip
 #matrix:
 #    include:
 #        - python: 2.4
@@ -23,8 +26,8 @@ python:
 sudo: false
 install:
     - if [[ $TRAVIS_PYTHON_VERSION < '2.7' ]]; then pip install -r pkg/test_requirements-py-2.6.txt; else pip install -r pkg/test_requirements.txt; fi
-    - if [[ $TRAVIS_PYTHON_VERSION < '2.7' && $WITH_DEPS == true ]]; then pip install -r pkg/requirements_full-py-2.6.txt; fi
-    - if [[ $TRAVIS_PYTHON_VERSION > '2.6' && $WITH_DEPS == true ]]; then pip install -r pkg/requirements_full.txt; fi
+#    - if [[ $TRAVIS_PYTHON_VERSION < '2.7' && $WITH_DEPS == true ]]; then pip install -r pkg/requirements_full-py-2.6.txt; fi
+#    - if [[ $TRAVIS_PYTHON_VERSION > '2.6' && $WITH_DEPS == true ]]; then pip install -r pkg/requirements_full.txt; fi
 env:
   global:
     - WITH_COVERAGE=1

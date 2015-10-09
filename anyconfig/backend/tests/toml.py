@@ -69,12 +69,9 @@ class Test10(anyconfig.backend.tests.ini.Test10):
 
 class Test20(anyconfig.backend.tests.ini.Test20):
 
+    psr_cls = TT.Parser
     cnf = CNF
     cnf_s = CNF_S
     cnf_fn = "cnf.toml"
-
-    def setUp(self):
-        super(Test20, self).setUp()
-        self.psr = TT.Parser()
 
 # vim:sw=4:ts=4:et:

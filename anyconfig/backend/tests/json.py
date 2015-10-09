@@ -36,13 +36,10 @@ class Test10(anyconfig.backend.tests.ini.Test10):
 
 class Test20(anyconfig.backend.tests.ini.Test20):
 
+    psr_cls = TT.Parser
     cnf = CNF_0
     cnf_s = CNF_0_S
     cnf_fn = "conf0.json"
-
-    def setUp(self):
-        super(Test20, self).setUp()
-        self.psr = TT.Parser()
 
     def test_12_load__w_options(self):
         cnf = self.psr.load(self.cpath, parse_int=None)

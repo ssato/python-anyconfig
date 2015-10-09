@@ -44,13 +44,10 @@ class Test10(anyconfig.backend.tests.ini.Test10):
 
 class Test20(anyconfig.backend.tests.ini.Test20):
 
+    psr_cls = TT.Parser
     cnf = CNF_0
     cnf_s = TT.msgpack.packb(CNF_0)
     cnf_fn = "conf0.msgpack"
-
-    def setUp(self):
-        super(Test20, self).setUp()
-        self.psr = TT.Parser()
 
     def test_12_load__w_options(self):
         cnf = self.psr.load(self.cpath, use_list=False)

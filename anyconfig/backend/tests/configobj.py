@@ -5,8 +5,11 @@
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
 
+import os.path
+
 import anyconfig.backend.configobj as TT
 import anyconfig.backend.tests.ini
+import anyconfig.tests.common
 
 
 CNF_0_S = """\
@@ -67,12 +70,15 @@ class Test10(anyconfig.backend.tests.ini.Test10):
 
 class Test20(anyconfig.backend.tests.ini.Test20):
 
+    psr_cls = TT.Parser
     cnf = CNF_0
     cnf_s = CNF_0_S
     cnf_fn = "conf0.ini"
 
     def setUp(self):
-        super(Test20, self).setUp()
         self.psr = TT.Parser()
+        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.cpath = os.path.join(self.workdir, self.cnf_fn)
+        open(self.cpath, 'w').write(self.cnf_s)
 
 # vim:sw=4:ts=4:et:

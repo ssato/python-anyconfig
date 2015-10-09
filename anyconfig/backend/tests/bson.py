@@ -27,12 +27,9 @@ class Test10(anyconfig.backend.tests.ini.Test10):
 
 class Test20(anyconfig.backend.tests.ini.Test20):
 
+    psr_cls = TT.Parser
     cnf = CNF_0
     cnf_s = TT.bson.BSON.encode(CNF_0)
     cnf_fn = "conf0.bson"
-
-    def setUp(self):
-        super(Test20, self).setUp()
-        self.psr = TT.Parser()
 
 # vim:sw=4:ts=4:et:

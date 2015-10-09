@@ -38,14 +38,11 @@ if TT is not None:
 
     class Test20(anyconfig.backend.tests.ini.Test20):
 
+        psr_cls = TT.Parser
         cnf = CNF_0
         cnf_s = CNF_0_S
         cnf_fn = "test0.yml"
         # load_options = Test10.load_options
         # dump_options = Test20.load_options
-
-        def setUp(self):
-            super(Test20, self).setUp()
-            self.psr = TT.Parser()
 
 # vim:sw=4:ts=4:et:

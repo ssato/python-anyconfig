@@ -65,15 +65,16 @@ class Test12(Test10):
 
 class Test20(unittest.TestCase):
 
+    psr_cls = TT.Parser
     cnf = CNF_0
     cnf_s = CNF_0_S
     cnf_fn = "conf0.ini"
 
     def setUp(self):
-        self.psr = TT.Parser()
+        self.psr = self.psr_cls()
         self.workdir = anyconfig.tests.common.setup_workdir()
         self.cpath = os.path.join(self.workdir, self.cnf_fn)
-        open(self.cpath, 'w').write(self.cnf_s)
+        self.psr.wopen(self.cpath).write(self.cnf_s)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)

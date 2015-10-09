@@ -464,6 +464,21 @@ b:
         self.assertEquals(a3["b"]["c"], a["b"]["c"])
         self.assertEquals(a3["b"]["d"], b["b"]["d"])
 
+    def test_31_dump_and_load__to_from_stream(self):
+        cnf = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+        cpath = os.path.join(self.workdir, "a.json")
+
+        with open(cpath, 'w') as strm:
+            TT.dump(cnf, strm)
+
+        self.assertTrue(os.path.exists(cpath))
+
+        with open(cpath, 'r') as strm:
+            cnf1 = TT.load(strm, forced_type="json")
+
+        self.assertTrue(dicts_equal(cnf, cnf1),
+                        "cnf vs. cnf1: %s\n\n%s" % (str(cnf), str(cnf1)))
+
     def test_32_dump_and_load__w_options(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))

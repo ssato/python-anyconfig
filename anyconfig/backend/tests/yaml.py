@@ -5,16 +5,11 @@
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
 
-import os.path
-import unittest
-
+import anyconfig.backend.tests.ini
 try:
     import anyconfig.backend.yaml as TT
 except ImportError:
     TT = None
-
-import anyconfig.tests.common
-from anyconfig.tests.common import dicts_equal
 
 
 CNF_0_S = """
@@ -31,61 +26,26 @@ CNF_0 = {'a': 0, 'b': 'bbb', 'sect0': {'c': ['x', 'y', 'z']}}
 if TT is not None:
     import yaml
 
-    class Test(unittest.TestCase):
+    class Test10(anyconfig.backend.tests.ini.Test10):
 
         cnf = CNF_0
         cnf_s = CNF_0_S
+        load_options = dict(safe=True, Loader=yaml.loader.Loader)
+        dump_options = dict(safe=True, Dumper=yaml.dumper.Dumper)
 
         def setUp(self):
-            self.workdir = anyconfig.tests.common.setup_workdir()
-            self.cpath = os.path.join(self.workdir, "test0.yml")
-            open(self.cpath, 'w').write(self.cnf_s)
             self.psr = TT.Parser()
 
-        def tearDown(self):
-            anyconfig.tests.common.cleanup_workdir(self.workdir)
+    class Test20(anyconfig.backend.tests.ini.Test20):
 
-        def test_10_loads(self):
-            cnf = self.psr.loads(self.cnf_s)
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+        cnf = CNF_0
+        cnf_s = CNF_0_S
+        cnf_fn = "test0.yml"
+        # load_options = Test10.load_options
+        # dump_options = Test20.load_options
 
-        def test_12_loads__safe(self):
-            cnf = self.psr.loads(self.cnf_s, safe=True)
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-        def test_20_load(self):
-            cnf = self.psr.load(self.cpath)
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-        def test_22_load__safe(self):
-            cnf = self.psr.load(self.cpath, safe=True)
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-        def test_20_load__w_options(self):
-            cnf = self.psr.load(self.cpath, Loader=yaml.loader.Loader)
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-        def test_30_dumps(self):
-            cnf = self.psr.loads(self.psr.dumps(self.cnf))
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-        def test_32_dumps__safe(self):
-            cnf = self.psr.loads(self.psr.dumps(self.cnf, safe=True))
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-        def test_40_dump(self):
-            self.psr.dump(self.cnf, self.cpath)
-            cnf = self.psr.load(self.cpath)
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-        def test_42_dump__safe(self):
-            self.psr.dump(self.cnf, self.cpath, safe=True)
-            cnf = self.psr.load(self.cpath)
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-        def test_40_dump__w_options(self):
-            self.psr.dump(self.cnf, self.cpath, Dumper=yaml.dumper.Dumper)
-            cnf = self.psr.load(self.cpath)
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+        def setUp(self):
+            super(Test20, self).setUp()
+            self.psr = TT.Parser()
 
 # vim:sw=4:ts=4:et:

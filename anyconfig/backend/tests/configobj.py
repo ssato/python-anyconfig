@@ -3,12 +3,10 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import os
-import tempfile
-import unittest
+from __future__ import absolute_import
 
 import anyconfig.backend.configobj as TT
-from anyconfig.tests.common import dicts_equal
+import anyconfig.backend.tests.ini
 
 
 CNF_0_S = """\
@@ -56,57 +54,25 @@ CNF_0 = {'keyword 2': 'value 2',
          'section 2': {'keyword8': 'value 9', 'keyword9': 'value10'}}
 
 
-class Test10(unittest.TestCase):
+class Test10(anyconfig.backend.tests.ini.Test10):
 
-    psr = TT.Parser()
     cnf = CNF_0
     cnf_s = CNF_0_S
-
-    def test_10_loads(self):
-        cnf = self.psr.loads(self.cnf_s)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_30_dumps(self):
-        cnf_s = self.psr.dumps(self.cnf)
-        cnf = self.psr.loads(cnf_s)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-
-class Test20(unittest.TestCase):
-
-    psr = TT.Parser()
-    cnf = CNF_0
-    cnf_s = CNF_0_S
+    load_options = dict(raise_errors=True)
+    dump_options = dict(indent_type="  ")
 
     def setUp(self):
-        (_, self.cpath) = tempfile.mkstemp(prefix="ac-bc-test-")
-        open(self.cpath, 'w').write(self.cnf_s)
+        self.psr = TT.Parser()
 
-    def tearDown(self):
-        os.remove(self.cpath)
 
-    def test_20_load(self):
-        cnf = self.psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+class Test20(anyconfig.backend.tests.ini.Test20):
 
-    def test_30_load__from_stream(self):
-        with open(self.cpath, 'rb') as stream:
-            cnf = self.psr.load(stream)
+    cnf = CNF_0
+    cnf_s = CNF_0_S
+    cnf_fn = "conf0.ini"
 
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_40_dump(self):
-        cpath = self.cpath + ".new"
-        self.psr.dump(self.cnf, cpath)
-        cnf = self.psr.load(cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_50_dump__to_stream(self):
-        cpath = self.cpath + ".new.2"
-        with open(cpath, 'wb') as stream:
-            self.psr.dump(self.cnf, stream)
-
-        cnf = self.psr.load(cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+    def setUp(self):
+        super(Test20, self).setUp()
+        self.psr = TT.Parser()
 
 # vim:sw=4:ts=4:et:

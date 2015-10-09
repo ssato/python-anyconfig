@@ -3,14 +3,10 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import os.path
-import unittest
-
 import anyconfig.backend.bson as TT
-import anyconfig.tests.common
-import anyconfig.compat
+import anyconfig.backend.tests.ini
 
-from anyconfig.tests.common import dicts_equal, to_bytes as _bytes
+from anyconfig.tests.common import to_bytes as _bytes
 
 
 CNF_0 = {"a": 0.1,
@@ -18,63 +14,25 @@ CNF_0 = {"a": 0.1,
          "sect0": {"c": [_bytes("x"), _bytes("y"), _bytes("z")]}}
 
 
-class Test10(unittest.TestCase):
+class Test10(anyconfig.backend.tests.ini.Test10):
+
+    cnf = CNF_0
+    cnf_s = TT.bson.BSON.encode(CNF_0)
+    load_options = dict(as_class=dict)
+    dump_options = dict(check_keys=True)
 
     def setUp(self):
         self.psr = TT.Parser()
-        self.cnf = CNF_0
-        self.cnf_s = TT.bson.BSON.encode(self.cnf)
-
-    def test_10_loads(self):
-        cnf = self.psr.loads(self.cnf_s)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_12_loads__optional_kwargs(self):
-        cnf = self.psr.loads(self.cnf_s, as_class=dict)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_30_dumps(self):
-        cnf = self.psr.loads(self.psr.dumps(self.cnf))
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_32_dump_w_special_option(self):
-        cnf = self.psr.loads(self.psr.dumps(self.cnf, check_keys=True))
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 
-class Test20(unittest.TestCase):
+class Test20(anyconfig.backend.tests.ini.Test20):
+
+    cnf = CNF_0
+    cnf_s = TT.bson.BSON.encode(CNF_0)
+    cnf_fn = "conf0.bson"
 
     def setUp(self):
+        super(Test20, self).setUp()
         self.psr = TT.Parser()
-        self.cnf = CNF_0
-        self.cnf_s = TT.bson.BSON.encode(self.cnf)
-        self.workdir = anyconfig.tests.common.setup_workdir()
-        self.cpath = os.path.join(self.workdir, "test0.bson")
-        open(self.cpath, 'wb').write(self.cnf_s)
-
-    def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
-
-    def test_20_load(self):
-        cnf = self.psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_30_load__from_stream(self):
-        with open(self.cpath, 'rb') as stream:
-            cnf = self.psr.load(stream)
-
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_40_dump(self):
-        self.psr.dump(self.cnf, self.cpath)
-        cnf = self.psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_50_dump__to_stream(self):
-        with open(self.cpath, 'wb') as stream:
-            self.psr.dump(self.cnf, stream)
-
-        cnf = self.psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

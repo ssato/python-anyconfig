@@ -6,11 +6,11 @@
 from __future__ import absolute_import
 
 import copy
-import os.path
 import unittest
 
 import anyconfig.backend.xml as TT
-import anyconfig.tests.common
+import anyconfig.backend.tests.ini
+
 from anyconfig.tests.common import dicts_equal, to_bytes
 
 
@@ -69,40 +69,24 @@ class Test00(unittest.TestCase):
         self.assertEquals(cnf_s, self.cnf_s, cnf_s)
 
 
-class Test10(unittest.TestCase):
+class Test10(anyconfig.backend.tests.ini.Test10):
 
     cnf = CNF_0
     cnf_s = CNF_0_S
-
-    def test_20_loads(self):
-        cnf = TT.Parser().loads(self.cnf_s)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-    def test_30_dumps(self):
-        cnf = TT.Parser().loads(TT.Parser().dumps(self.cnf))
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
-
-class Test20(unittest.TestCase):
-
-    cnf = CNF_0
-    cnf_s = CNF_0_S
+    load_options = dump_options = dict(dummy="this will be ignored")
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
-        self.cpath = os.path.join(self.workdir, "test0.xml")
-        open(self.cpath, 'w').write(self.cnf_s)
+        self.psr = TT.Parser()
 
-    def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
-    def test_10_load(self):
-        cnf = TT.Parser().load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+class Test20(anyconfig.backend.tests.ini.Test20):
 
-    def test_20_dump(self):
-        TT.Parser().dump(self.cnf, self.cpath)
-        cnf = TT.Parser().load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+    cnf = CNF_0
+    cnf_s = CNF_0_S
+    cnf_fn = "conf0.xml"
+
+    def setUp(self):
+        super(Test20, self).setUp()
+        self.psr = TT.Parser()
 
 # vim:sw=4:ts=4:et:

@@ -3,14 +3,12 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import os.path
+from __future__ import absolute_import
+
 import datetime
-import unittest
 
 import anyconfig.backend.toml as TT
-import anyconfig.tests.common
-
-from anyconfig.tests.common import dicts_equal
+import anyconfig.backend.tests.ini
 
 
 # Taken from https://github.com/toml-lang/toml:
@@ -59,37 +57,24 @@ CNF = {'clients': {'data': [['gamma', 'delta'],
        'title': 'TOML Example'}
 
 
-class Test(unittest.TestCase):
+class Test10(anyconfig.backend.tests.ini.Test10):
+
+    cnf = CNF
+    cnf_s = CNF_S
+    load_options = dump_options = dict(dummy="this_will_be_ignored")
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
-        self.cpath = os.path.join(self.workdir, "test0.toml")
-        self.cnf_s = CNF_S
-        self.cnf = CNF
-        open(self.cpath, 'w').write(self.cnf_s)
+        self.psr = TT.Parser()
 
-    def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
-    def test_10_loads(self):
-        cnf = TT.Parser().loads(self.cnf_s)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+class Test20(anyconfig.backend.tests.ini.Test20):
 
-    def test_20_load(self):
-        cnf = TT.Parser().load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+    cnf = CNF
+    cnf_s = CNF_S
+    cnf_fn = "cnf.toml"
 
-    def test_30_dumps(self):
-        psr = TT.Parser()
-        cnf = psr.loads(self.cnf_s)
-        cnf2 = psr.loads(psr.dumps(cnf))
-        self.assertTrue(dicts_equal(cnf2, cnf), str(cnf2))
-
-    def test_40_dump(self):
-        psr = TT.Parser()
-        cnf = psr.loads(self.cnf_s)
-        psr.dump(cnf, self.cpath)
-        cnf = psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+    def setUp(self):
+        super(Test20, self).setUp()
+        self.psr = TT.Parser()
 
 # vim:sw=4:ts=4:et:

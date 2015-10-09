@@ -1,8 +1,10 @@
 #
-# Copyright (C) 2012, 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring, protected-access
+from __future__ import absolute_import
+
 import os.path
 import unittest
 
@@ -28,44 +30,74 @@ class Test10(unittest.TestCase):
 
     cnf = CNF_0
     cnf_s = CNF_0_S
+    load_options = dict(allow_no_value=False, defaults=None)
+    dump_options = dict()
+
+    def setUp(self):
+        self.psr = TT.Parser()
 
     def test_10_loads(self):
-        cnf = TT.Parser().loads(self.cnf_s)
+        cnf = self.psr.loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_12_loads__invalid_input(self):
-        invalid_ini = "key=name"
-        self.assertRaises(Exception, TT.Parser().loads, invalid_ini)
-
-    def test_14_loads__w_options(self):
-        cnf = TT.Parser().loads(self.cnf_s, allow_no_value=False)
+    def test_12_loads__w_options(self):
+        cnf = self.psr.loads(self.cnf_s, **self.load_options)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_20_dumps(self):
-        cnf = TT.Parser().loads(TT.Parser().dumps(self.cnf))
+        cnf = self.psr.loads(self.psr.dumps(self.cnf))
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_22_dumps__w_options(self):
+        cnf = self.psr.loads(self.psr.dumps(self.cnf, **self.dump_options))
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+
+class Test12(Test10):
+
+    test_10_loads = test_12_loads__w_options = lambda: True
+    test_20_loads = test_22_loads__w_options = lambda: True
+
+    def test_12_loads__invalid_input(self):
+        invalid_ini = "key=name"
+        self.assertRaises(Exception, self.psr.loads, invalid_ini)
 
 
 class Test20(unittest.TestCase):
 
     cnf = CNF_0
     cnf_s = CNF_0_S
+    cnf_fn = "conf0.ini"
 
     def setUp(self):
+        self.psr = TT.Parser()
         self.workdir = anyconfig.tests.common.setup_workdir()
-        self.cpath = os.path.join(self.workdir, "conf0.ini")
+        self.cpath = os.path.join(self.workdir, self.cnf_fn)
         open(self.cpath, 'w').write(self.cnf_s)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_10_load(self):
-        cnf = TT.Parser().load(self.cpath)
+        cnf = self.psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_20_dump(self):
-        TT.Parser().dump(self.cnf, self.cpath)
-        cnf = TT.Parser().load(self.cpath)
+        self.psr.dump(self.cnf, self.cpath)
+        cnf = self.psr.load(self.cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_30_load__from_stream(self):
+        with self.psr.ropen(self.cpath) as strm:
+            cnf = self.psr.load(strm)
+
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_40_dump__to_stream(self):
+        with self.psr.wopen(self.cpath) as strm:
+            self.psr.dump(self.cnf, strm)
+
+        cnf = self.psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

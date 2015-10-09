@@ -48,6 +48,16 @@ def _is_path(path_or_stream):
     return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
 
 
+def _is_paths(maybe_paths):
+    """
+    Does given object `maybe_paths` consist of path or path pattern strings?
+    """
+    if anyconfig.utils.is_iterable(maybe_paths):
+        return not getattr(maybe_paths, "read", False)
+
+    return False  # Not an iterable at least.
+
+
 def _validate(cnf, schema, format_checker=None):
     """
     Wrapper function for anycnf.schema.vaildate.
@@ -259,8 +269,7 @@ def load(path_specs, forced_type=None, ignore_missing=False,
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    is_glob_path = _is_path(path_specs) and marker in path_specs
-    if is_glob_path or anyconfig.utils.is_iterable(path_specs):
+    if _is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
         return multi_load(path_specs, forced_type=forced_type,
                           ignore_missing=ignore_missing, merge=merge,
                           marker=marker, ac_template=ac_template,

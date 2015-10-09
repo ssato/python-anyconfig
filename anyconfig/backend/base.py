@@ -115,6 +115,18 @@ class Parser(object):
         """
         return cls._extensions
 
+    def ropen(cls, filepath, **kwargs):
+        """
+        :param filepath: Path to file to open to read data
+        """
+        return open(filepath, cls._open_flags[0], **kwargs)
+
+    def wopen(cls, filepath, **kwargs):
+        """
+        :param filepath: Path to file to open to write data to
+        """
+        return open(filepath, cls._open_flags[1], **kwargs)
+
     def load_from_string(self, content, **kwargs):
         """
         Load config from given string `content`.
@@ -293,8 +305,7 @@ class L2Parser(Parser):
 
         :return: self.container object holding config parameters
         """
-        return self.load_from_stream(open(filepath, self._open_flags[0]),
-                                     **kwargs)
+        return self.load_from_stream(self.ropen(filepath), **kwargs)
 
 
 class DParser(Parser):
@@ -314,7 +325,7 @@ class DParser(Parser):
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
-        with open(filepath, self._open_flags[1]) as out:
+        with self.wopen(filepath) as out:
             out.write(self.dump_to_string(cnf, **kwargs))
 
     def dump_to_stream(self, cnf, stream, **kwargs):
@@ -362,7 +373,7 @@ class D2Parser(Parser):
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
-        with open(filepath, self._open_flags[1]) as out:
+        with self.wopen(filepath) as out:
             self.dump_to_stream(cnf, out, **kwargs)
 
 # vim:sw=4:ts=4:et:

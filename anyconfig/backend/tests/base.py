@@ -3,6 +3,8 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring, protected-access, invalid-name
+from __future__ import absolute_import
+
 import os
 import os.path
 import unittest

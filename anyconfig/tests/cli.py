@@ -3,6 +3,8 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, too-many-public-methods
+from __future__ import absolute_import
+
 import os
 import os.path
 import unittest
@@ -10,13 +12,13 @@ import unittest
 import anyconfig.cli as TT
 import anyconfig.api as A
 import anyconfig.template
-import anyconfig.tests.common as C
+import anyconfig.tests.common
 
 from anyconfig.tests.common import CNF_0
 
 
-CNF_0_PATH = os.path.join(C.selfdir(), "00-cnf.yml")
-SCM_0_PATH = os.path.join(C.selfdir(), "00-scm.yml")
+CNF_0_PATH = os.path.join(anyconfig.tests.common.selfdir(), "00-cnf.yml")
+SCM_0_PATH = os.path.join(anyconfig.tests.common.selfdir(), "00-scm.yml")
 
 
 def _run(*args):
@@ -26,11 +28,12 @@ def _run(*args):
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.workdir = C.setup_workdir()
-        self.script = os.path.join(C.selfdir(), "..", "cli.py")
+        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.script = os.path.join(anyconfig.tests.common.selfdir(),
+                                   "..", "cli.py")
 
     def tearDown(self):
-        C.cleanup_workdir(self.workdir)
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def _assert_run_and_exit(self, *args):
         raised = False
@@ -247,7 +250,7 @@ b:
         if not anyconfig.template.SUPPORTED:
             return
 
-        curdir = C.selfdir()
+        curdir = anyconfig.tests.common.selfdir()
 
         infile = os.path.join(curdir, "*template-c*.yml")
         output = os.path.join(self.workdir, "output.yml")

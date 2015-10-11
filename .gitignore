@@ -1,2 +1,4 @@
 .tox
 .coverage
+__pycache__/
+*.py[cod]

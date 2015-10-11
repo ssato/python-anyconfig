@@ -115,12 +115,14 @@ class Parser(object):
         """
         return cls._extensions
 
+    @classmethod
     def ropen(cls, filepath, **kwargs):
         """
         :param filepath: Path to file to open to read data
         """
         return open(filepath, cls._open_flags[0], **kwargs)
 
+    @classmethod
     def wopen(cls, filepath, **kwargs):
         """
         :param filepath: Path to file to open to write data to

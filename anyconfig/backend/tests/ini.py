@@ -74,7 +74,8 @@ class Test20(unittest.TestCase):
         self.psr = self.psr_cls()
         self.workdir = anyconfig.tests.common.setup_workdir()
         self.cpath = os.path.join(self.workdir, self.cnf_fn)
-        self.psr.wopen(self.cpath).write(self.cnf_s)
+        with self.psr.wopen(self.cpath) as out:
+            out.write(self.cnf_s)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)

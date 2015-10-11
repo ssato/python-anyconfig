@@ -22,7 +22,7 @@ SCM_0_PATH = os.path.join(anyconfig.tests.common.selfdir(), "00-scm.yml")
 
 
 def _run(*args):
-    TT.main(["dummy"] + list(args))
+    TT.main(["dummy", "--silent"] + list(args))
 
 
 class Test(unittest.TestCase):
@@ -47,7 +47,7 @@ class Test(unittest.TestCase):
     def run_and_check_exit_code(self, args=None, code=0, _not=False,
                                 exc_cls=SystemExit):
         try:
-            TT.main(["dummy"] + ([] if args is None else args))
+            TT.main(["dummy", "--silent"] + ([] if args is None else args))
         except exc_cls as exc:
             ecode = getattr(exc, "code", 1)
             (self.assertNotEquals if _not else self.assertEquals)(ecode, code)
@@ -76,7 +76,7 @@ class Test(unittest.TestCase):
         A.dump(a, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, infile])
+        TT.main(["dummy", "--silent", "-o", output, infile])
         self.assertTrue(os.path.exists(output))
 
     def test_31__single_input_wo_input_type(self):
@@ -91,7 +91,7 @@ class Test(unittest.TestCase):
         A.dump(d, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, "--get", "a.b", infile])
+        TT.main(["dummy", "--silent", "-o", output, "--get", "a.b", infile])
         self.assertTrue(os.path.exists(output))
 
         x = A.load(output)
@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
         A.dump(d, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, "--set", "a.b.d=E", infile])
+        TT.main(["dummy", "-q", "-o", output, "--set", "a.b.d=E", infile])
         self.assertTrue(os.path.exists(output))
 
         ref = d.copy()
@@ -119,7 +119,7 @@ class Test(unittest.TestCase):
         infile = os.path.join(os.curdir, "conf_file_should_not_exist.json")
         assert not os.path.exists(infile)
 
-        self.assertFalse(TT.main(["dummy", "-O", "json",
+        self.assertFalse(TT.main(["dummy", "--silent", "-O", "json",
                                   "--ignore-missing", infile]))
 
     def test_37_single_input_w_schema(self):
@@ -168,7 +168,7 @@ class Test(unittest.TestCase):
             A.dump(xs[i], infile)
             self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output] + inputs)
+        TT.main(["dummy", "--silent", "-o", output] + inputs)
         self.assertTrue(os.path.exists(output))
 
     def test_50_single_input__w_arg_option(self):
@@ -180,7 +180,8 @@ class Test(unittest.TestCase):
         A.dump(a, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, "-A", "a:10;name:x;d:3,4", infile])
+        TT.main(["dummy", "--silent", "-o", output, "-A",
+                 "a:10;name:x;d:3,4", infile])
         self.assertTrue(os.path.exists(output))
 
         x = A.load(output)
@@ -198,14 +199,14 @@ class Test(unittest.TestCase):
         infile = os.path.join(self.workdir, "a.json")
         A.dump(a, infile)
 
-        self.run_and_check_exit_code(["--otype", "json", infile], 0)
+        self.run_and_check_exit_code(["--otype", "json", infile])
 
     def test_62_output_wo_output_option_and_otype_w_itype(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         infile = os.path.join(self.workdir, "a.json")
         A.dump(a, infile)
 
-        self.run_and_check_exit_code(["--itype", "json", infile], 0)
+        self.run_and_check_exit_code(["--itype", "json", infile])
 
     def test_70_multi_inputs__w_template(self):
         if not anyconfig.template.SUPPORTED:
@@ -230,7 +231,7 @@ b:
 
         output = os.path.join(self.workdir, "b.json")
 
-        TT.main(["dummy", "--template", "-o", output,
+        TT.main(["dummy", "--silent", "--template", "-o", output,
                  os.path.join(inputsdir, "*.yml")])
         self.assertTrue(os.path.exists(output))
 
@@ -243,7 +244,7 @@ b:
         A.dump(a, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-o", output, infile])
+        TT.main(["dummy", "--silent", "-o", output, infile])
         self.assertTrue(os.path.exists(output))
 
     def test_74_multi_inputs__w_template(self):
@@ -255,7 +256,7 @@ b:
         infile = os.path.join(curdir, "*template-c*.yml")
         output = os.path.join(self.workdir, "output.yml")
 
-        TT.main(["dummy", "--template", "-o", output, infile])
+        TT.main(["dummy", "--silent", "--template", "-o", output, infile])
 
     def test_80_no_out_dumper(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
@@ -280,7 +281,7 @@ b:
         if A.find_loader(infile, "yaml") is None:
             return
 
-        TT.main(["dummy", "--env", "-o", output, infile])
+        TT.main(["dummy", "--silent", "--env", "-o", output, infile])
         data = A.load(output)
 
         for env_var, env_val in os.environ.items():

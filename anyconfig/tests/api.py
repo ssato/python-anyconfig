@@ -149,6 +149,7 @@ class Test30(unittest.TestCase):
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
+        TT.set_loglevel(CRITICAL)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)

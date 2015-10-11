@@ -10,7 +10,7 @@ import os.path
 import unittest
 
 import anyconfig.cli as TT
-import anyconfig.api as A
+import anyconfig.api
 import anyconfig.template
 import anyconfig.tests.common
 
@@ -73,7 +73,7 @@ class Test(unittest.TestCase):
         infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, infile)
+        anyconfig.api.dump(a, infile)
         self.assertTrue(os.path.exists(infile))
 
         TT.main(["dummy", "--silent", "-o", output, infile])
@@ -88,13 +88,13 @@ class Test(unittest.TestCase):
         infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(d, infile)
+        anyconfig.api.dump(d, infile)
         self.assertTrue(os.path.exists(infile))
 
         TT.main(["dummy", "--silent", "-o", output, "--get", "a.b", infile])
         self.assertTrue(os.path.exists(output))
 
-        x = A.load(output)
+        x = anyconfig.api.load(output)
         self.assertEquals(x, d['a']['b'])
 
     def test_34_single_input_w_set_option(self):
@@ -103,7 +103,7 @@ class Test(unittest.TestCase):
         infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(d, infile)
+        anyconfig.api.dump(d, infile)
         self.assertTrue(os.path.exists(infile))
 
         TT.main(["dummy", "-q", "-o", output, "--set", "a.b.d=E", infile])
@@ -112,7 +112,7 @@ class Test(unittest.TestCase):
         ref = d.copy()
         ref['a']['b']['d'] = 'E'
 
-        x = A.load(output)
+        x = anyconfig.api.load(output)
         self.assertEquals(x, ref)
 
     def test_36_single_input__ignore_missing(self):
@@ -133,7 +133,7 @@ class Test(unittest.TestCase):
         infile2 = os.path.join(self.workdir, "input.yml")
         cnf = CNF_0.copy()
         cnf["a"] = "aaa"  # Validation should fail.
-        A.dump(cnf, infile2)
+        anyconfig.api.dump(cnf, infile2)
         self.run_and_check_exit_code(["--schema", scmfile, "--validate",
                                       infile2], 1)
 
@@ -141,7 +141,7 @@ class Test(unittest.TestCase):
         cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         infile = os.path.join(self.workdir, "cnf.json")
         output = os.path.join(self.workdir, "out.yaml")
-        A.dump(cnf, infile)
+        anyconfig.api.dump(cnf, infile)
 
         self.run_and_check_exit_code(["--gen-schema", "-o", output, infile], 0)
         self.assertTrue(os.path.exists(output))
@@ -165,7 +165,7 @@ class Test(unittest.TestCase):
             infile = os.path.join(self.workdir, "a%d.json" % i)
             inputs.append(infile)
 
-            A.dump(xs[i], infile)
+            anyconfig.api.dump(xs[i], infile)
             self.assertTrue(os.path.exists(infile))
 
         TT.main(["dummy", "--silent", "-o", output] + inputs)
@@ -177,14 +177,14 @@ class Test(unittest.TestCase):
         infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, infile)
+        anyconfig.api.dump(a, infile)
         self.assertTrue(os.path.exists(infile))
 
         TT.main(["dummy", "--silent", "-o", output, "-A",
                  "a:10;name:x;d:3,4", infile])
         self.assertTrue(os.path.exists(output))
 
-        x = A.load(output)
+        x = anyconfig.api.load(output)
 
         self.assertNotEquals(a["name"], x["name"])
         self.assertNotEquals(a["a"], x["a"])
@@ -197,14 +197,14 @@ class Test(unittest.TestCase):
     def test_60_output_wo_output_option_w_otype(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         infile = os.path.join(self.workdir, "a.json")
-        A.dump(a, infile)
+        anyconfig.api.dump(a, infile)
 
         self.run_and_check_exit_code(["--otype", "json", infile])
 
     def test_62_output_wo_output_option_and_otype_w_itype(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         infile = os.path.join(self.workdir, "a.json")
-        A.dump(a, infile)
+        anyconfig.api.dump(a, infile)
 
         self.run_and_check_exit_code(["--itype", "json", infile])
 
@@ -217,7 +217,7 @@ class Test(unittest.TestCase):
         inputsdir = os.path.join(self.workdir, "in")
         os.makedirs(inputsdir)
 
-        A.dump(a, os.path.join(inputsdir, "a0.yml"))
+        anyconfig.api.dump(a, os.path.join(inputsdir, "a0.yml"))
         open(os.path.join(inputsdir, "a1.yml"), 'w').write("""\
 name: {{ name }}
 a: {{ a }}
@@ -241,7 +241,7 @@ b:
         infile = os.path.join(self.workdir, "a.json")
         output = os.path.join(self.workdir, "b.json")
 
-        A.dump(a, infile)
+        anyconfig.api.dump(a, infile)
         self.assertTrue(os.path.exists(infile))
 
         TT.main(["dummy", "--silent", "-o", output, infile])
@@ -261,7 +261,7 @@ b:
     def test_80_no_out_dumper(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
         infile = os.path.join(self.workdir, "a.json")
-        A.dump(a, infile)
+        anyconfig.api.dump(a, infile)
 
         exited = False
         outfile = os.path.join(self.workdir, "out.conf")
@@ -278,11 +278,11 @@ b:
         infile = "/dev/null"
         output = os.path.join(self.workdir, "out.yml")
 
-        if A.find_loader(infile, "yaml") is None:
+        if anyconfig.api.find_loader(infile, "yaml") is None:
             return
 
         TT.main(["dummy", "--silent", "--env", "-o", output, infile])
-        data = A.load(output)
+        data = anyconfig.api.load(output)
 
         for env_var, env_val in os.environ.items():
             self.assertTrue(env_var in data)

@@ -286,7 +286,8 @@ class LParser(Parser):
 
         :return: self.container object holding config parameters
         """
-        return self.load_from_stream(anyconfig.compat.StringIO(content))
+        return self.load_from_stream(anyconfig.compat.StringIO(content),
+                                     **kwargs)
 
 
 class L2Parser(Parser):

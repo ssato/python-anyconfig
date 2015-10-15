@@ -4,6 +4,10 @@
 #
 """INI or INI like config files backend.
 
+.. versionchanged:: 0.3
+   Introduce 'parse_value' keyword option to switch behaviors, same as original
+   configparser backend and rich backend parsing each parameter values.
+
 - Format to support: INI or INI like ones
 - Requirements: It should be available always.
 
@@ -14,7 +18,10 @@
     https://docs.python.org/3/library/configparser.html
 
 - Limitations: None obvious
-- Special options: None Obvious
+- Special options:
+
+  - Use 'parse_value' boolean keyword option if you want to parse values by
+    custom parser, anyconfig.backend.ini._parse.
 """
 from __future__ import absolute_import
 
@@ -27,6 +34,13 @@ from anyconfig.backend.base import mk_opt_args
 
 
 _SEP = ','
+
+
+def _noop(val, *args, **kwargs):
+    """
+    Parser does nothing.
+    """
+    return val
 
 
 def _parse(val_s, sep=_SEP):
@@ -103,6 +117,8 @@ def _load(filepath=None, stream=None, sep=_SEP, **kwargs):
 
     :return: Dict or dict-like object represents config values
     """
+    _parse_val = _parse if kwargs.get("parse_value", False) else _noop
+
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = mk_opt_args(("defaults", "dict_type", "allow_no_value"), kwargs)
     kwargs_1 = mk_opt_args(("filename", ), kwargs)
@@ -125,12 +141,12 @@ def _load(filepath=None, stream=None, sep=_SEP, **kwargs):
     if parser.defaults():
         cnf["DEFAULT"] = container()
         for key, val in iteritems(parser.defaults()):
-            cnf["DEFAULT"][key] = _parse(val, sep)
+            cnf["DEFAULT"][key] = _parse_val(val, sep)
 
     for sect in parser.sections():
         cnf[sect] = container()
         for key, val in parser.items(sect):
-            cnf[sect][key] = _parse(val, sep)
+            cnf[sect][key] = _parse_val(val, sep)
 
     return cnf
 
@@ -165,7 +181,8 @@ class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.DParser):
     """
     _type = "ini"
     _extensions = ["ini"]
-    _load_opts = ["defaults", "dict_type", "allow_no_value", "filename"]
+    _load_opts = ["defaults", "dict_type", "allow_no_value", "filename",
+                  "parse_value"]
 
     def load_from_path(self, filepath, **kwargs):
         """

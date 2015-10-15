@@ -110,7 +110,7 @@ def is_dict_like(obj):
     >>> is_dict_like(create_from({}))
     True
     """
-    return isinstance(obj, (MergeableDict, collections.Mapping))
+    return isinstance(obj, (dict, collections.Mapping))
 
 
 def convert_to(mdict):

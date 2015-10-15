@@ -132,19 +132,18 @@ def _load(filepath=None, stream=None, sep=_SEP, **kwargs):
         kwargs_0 = mk_opt_args(("defaults", "dict_type"), kwargs)
         parser = configparser.SafeConfigParser(**kwargs_0)
 
-    container = dict
-    cnf = container()
+    cnf = dict()
     (fname, arg) = _switch_read_fn_arg(filepath, stream)
     getattr(parser, fname)(arg, **kwargs_1)
 
     # .. note:: Process DEFAULT config parameters as special ones.
     if parser.defaults():
-        cnf["DEFAULT"] = container()
+        cnf["DEFAULT"] = dict()
         for key, val in iteritems(parser.defaults()):
             cnf["DEFAULT"][key] = _parse_val(val, sep)
 
     for sect in parser.sections():
-        cnf[sect] = container()
+        cnf[sect] = dict()
         for key, val in parser.items(sect):
             cnf[sect][key] = _parse_val(val, sep)
 

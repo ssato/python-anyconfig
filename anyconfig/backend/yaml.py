@@ -43,6 +43,8 @@ def _yml_load(stream, **kwargs):
 
     :param stream: a file or file-like object to load YAML content
     """
+    if "safe" in kwargs:  # yaml.safe_load does not process Loader opts.
+        kwargs = {}
     return _yml_fnc("load", stream, **kwargs)
 
 

@@ -22,7 +22,9 @@ b: bbb
 c: x,y,z
 """
 
-CNF_0 = {'DEFAULT': {'a': 0, 'b': 'bbb'},
+CNF_0 = {'DEFAULT': {'a': '0', 'b': 'bbb'},
+         'sect0': {'a': '0', 'b': 'bbb', 'c': 'x,y,z'}}
+CNF_1 = {'DEFAULT': {'a': 0, 'b': 'bbb'},
          'sect0': {'a': 0, 'b': 'bbb', 'c': ['x', 'y', 'z']}}
 
 
@@ -50,6 +52,28 @@ class Test10(unittest.TestCase):
 
     def test_22_dumps__w_options(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf, **self.dump_options))
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+
+class Test11(Test10):
+
+    cnf = CNF_1
+
+    def test_10_loads(self):
+        cnf = self.psr.loads(self.cnf_s, parse_value=True)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_12_loads__w_options(self):
+        cnf = self.psr.loads(self.cnf_s, parse_value=True, **self.load_options)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_20_dumps(self):
+        cnf = self.psr.loads(self.psr.dumps(self.cnf), parse_value=True)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_22_dumps__w_options(self):
+        cnf = self.psr.loads(self.psr.dumps(self.cnf, **self.dump_options),
+                             parse_value=True)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 

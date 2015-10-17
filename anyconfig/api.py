@@ -164,11 +164,11 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
                         "mode", path_or_stream)
 
     cnf = psr.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
+    if ac_schema is None or _validate(cnf, schema, format_checker):
+        return cnf
 
-    if ac_schema and not _validate(cnf, schema, format_checker):
-        return None
-
-    return cnf
+    LOGGER.warn("Validation failed: schema=%s", ac_schema)
+    return None
 
 
 def multi_load(paths, forced_type=None, ignore_missing=False,
@@ -217,6 +217,9 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
                       ignore_missing=ignore_missing, merge=merge,
                       marker=marker, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
+        if not schema:
+            LOGGER.warn("Could not load schema: %s", ac_schema)
+            ac_schema = None
 
     cnf = to_container(ac_context) if ac_context else container()
 
@@ -239,11 +242,11 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
 
         cnf.update(conf_updates, merge)
 
-    if ac_schema is not None:
-        if not _validate(cnf, schema, format_checker):
-            return None
+    if ac_schema is None or _validate(cnf, schema, format_checker):
+        return cnf
 
-    return cnf
+    LOGGER.warn("Validation failed: schema=%s", ac_schema)
+    return None
 
 
 def load(path_specs, forced_type=None, ignore_missing=False,
@@ -312,6 +315,9 @@ def loads(content, forced_type=None, ac_template=False, ac_context=None,
         format_checker = kwargs.get("format_checker", None)
         schema = loads(ac_schema, forced_type, ac_template, ac_context,
                        **kwargs)
+        if not schema:
+            LOGGER.warn("Could not load schema: %s", ac_schema)
+            ac_schema = None
 
     if ac_template:
         try:
@@ -324,10 +330,9 @@ def loads(content, forced_type=None, ac_template=False, ac_context=None,
 
     cnf = psr.loads(content, **kwargs)
 
-    if ac_schema is not None:
-        if not _validate(cnf, schema, format_checker):
-            LOGGER.warn("Validation failed: schema=%s", schema)
-            return None
+    if ac_schema and not _validate(cnf, schema, format_checker):
+        LOGGER.warn("Validation failed: schema=%s", schema)
+        return None
 
     return cnf
 

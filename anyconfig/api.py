@@ -143,6 +143,9 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
         schema = load(ac_schema, forced_type=forced_type,
                       ignore_missing=ignore_missing, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
+        if not schema:
+            LOGGER.warn("Could not load schema: %s", ac_schema)
+            ac_schema = None
 
     LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:
@@ -150,9 +153,8 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
             LOGGER.debug("Compiling: %s", filepath)
             content = anyconfig.template.render(filepath, ac_context)
             cnf = psr.loads(content, ignore_missing=ignore_missing, **kwargs)
-            if ac_schema is not None:
-                if not _validate(cnf, schema, format_checker):
-                    return None
+            if ac_schema and not _validate(cnf, schema, format_checker):
+                return None
 
             return cnf
 
@@ -163,9 +165,8 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
 
     cnf = psr.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
 
-    if ac_schema is not None:
-        if not _validate(cnf, schema, format_checker):
-            return None
+    if ac_schema and not _validate(cnf, schema, format_checker):
+        return None
 
     return cnf
 

@@ -229,18 +229,17 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
     for path in paths:
         # Nested patterns like ['*.yml', '/a/b/c.yml'].
         if _is_path(path) and marker in path:
-            conf_updates = multi_load(path, forced_type=forced_type,
-                                      ignore_missing=ignore_missing,
-                                      merge=merge, marker=marker,
-                                      ac_template=ac_template,
-                                      ac_context=cnf, **kwargs)
+            cups = multi_load(path, forced_type=forced_type,
+                              ignore_missing=ignore_missing, merge=merge,
+                              marker=marker, ac_template=ac_template,
+                              ac_context=cnf, **kwargs)
         else:
-            conf_updates = single_load(path, forced_type=forced_type,
-                                       ignore_missing=ignore_missing,
-                                       ac_template=ac_template,
-                                       ac_context=cnf, **kwargs)
+            cups = single_load(path, forced_type=forced_type,
+                               ignore_missing=ignore_missing,
+                               ac_template=ac_template, ac_context=cnf,
+                               **kwargs)
 
-        cnf.update(conf_updates, merge)
+        cnf.update(cups, merge)
 
     if ac_schema is None or _validate(cnf, schema, format_checker):
         return cnf

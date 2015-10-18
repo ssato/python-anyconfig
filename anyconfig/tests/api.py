@@ -143,7 +143,7 @@ class Test_20_dumps_and_loads(unittest.TestCase):
         self.assertTrue(cnf_2 is None, cnf_2)
 
 
-class Test30(unittest.TestCase):
+class Test_30_single_load(unittest.TestCase):
 
     cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
@@ -272,7 +272,19 @@ b:
         cnf_3 = TT.single_load(cnf_2_path, ac_schema=scm_path)
         self.assertTrue(cnf_3 is None)  # Validation should fail.
 
-    def test_20_dump_and_multi_load(self):
+
+class Test_40_multi_load(unittest.TestCase):
+
+    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+
+    def setUp(self):
+        self.workdir = anyconfig.tests.common.setup_workdir()
+        TT.set_loglevel(CRITICAL)
+
+    def tearDown(self):
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
+
+    def test_10_dump_and_multi_load__default_merge_strategy(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
@@ -281,13 +293,10 @@ b:
         g_path = os.path.join(self.workdir, "*.json")
 
         TT.dump(a, a_path)
-        self.assertTrue(os.path.exists(a_path))
-
         TT.dump(b, b_path)
-        self.assertTrue(os.path.exists(b_path))
 
-        a0 = TT.multi_load(g_path, merge=TT.MS_DICTS)
-        a02 = TT.multi_load([g_path, b_path], merge=TT.MS_DICTS)
+        a0 = TT.multi_load(g_path)
+        a02 = TT.multi_load([g_path, b_path])
 
         self.assertEquals(a0["name"], a["name"])
         self.assertEquals(a0["a"], b["a"])
@@ -309,6 +318,17 @@ b:
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
         self.assertEquals(a1["b"]["d"], b["b"]["d"])
 
+    def test_12_dump_and_multi_load__default_merge_strategy(self):
+        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+
+        a_path = os.path.join(self.workdir, "a.json")
+        b_path = os.path.join(self.workdir, "b.json")
+        g_path = os.path.join(self.workdir, "*.json")
+
+        TT.dump(a, a_path)
+        TT.dump(b, b_path)
+
         a2 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS_AND_LISTS)
 
         self.assertEquals(a2["name"], a["name"])
@@ -317,7 +337,7 @@ b:
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
-        a3 = TT.multi_load(os.path.join(self.workdir, "*.json"))
+        a3 = TT.multi_load(g_path)
 
         self.assertEquals(a3["name"], a["name"])
         self.assertEquals(a3["a"], b["a"])
@@ -341,7 +361,14 @@ b:
         self.assertEquals(a5["b"]["c"], a["b"]["c"])
         self.assertFalse("d" in a5["b"])
 
-    def test_21_dump_and_multi_load__to_from_stream(self):
+    def test_14_multi_load__wrong_merge_strategy(self):
+        try:
+            TT.multi_load("/dummy/*.json", merge="merge_st_not_exist")
+            raise RuntimeError("Wrong merge strategy was not handled!")
+        except ValueError:
+            self.assertTrue(1 == 1)  # To suppress warn of pylint.
+
+    def test_20_dump_and_multi_load__to_from_stream(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
@@ -361,14 +388,7 @@ b:
         self.assertEquals(cnf["b"]["c"], a["b"]["c"])
         self.assertEquals(cnf["b"]["d"], b["b"]["d"])
 
-    def test_21_multi_load__wrong_merge_strategy(self):
-        try:
-            TT.multi_load("/dummy/*.json", merge="merge_st_not_exist")
-            raise RuntimeError("Wrong merge strategy was not handled!")
-        except ValueError:
-            self.assertTrue(1 == 1)  # To suppress warn of pylint.
-
-    def test_22_multi_load__ignore_missing(self):
+    def test_30_multi_load__ignore_missing(self):
         null_cntnr = TT.container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
@@ -377,7 +397,7 @@ b:
                                         ignore_missing=True),
                           null_cntnr)
 
-    def test_24_multi_load__templates(self):
+    def test_40_multi_load__templates(self):
         if not anyconfig.template.SUPPORTED:
             return
 
@@ -428,6 +448,18 @@ b:
         self.assertEquals(a02["b"]["b"], b["b"]["b"])
         self.assertEquals(a02["b"]["c"], a["b"]["c"])
         self.assertEquals(a02["b"]["d"], b["b"]["d"])
+
+
+class Test_50_load_and_dump(unittest.TestCase):
+
+    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+
+    def setUp(self):
+        self.workdir = anyconfig.tests.common.setup_workdir()
+        TT.set_loglevel(CRITICAL)
+
+    def tearDown(self):
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_30_dump_and_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

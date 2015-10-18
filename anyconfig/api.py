@@ -58,22 +58,23 @@ def _is_paths(maybe_paths):
     return False  # Not an iterable at least.
 
 
-def _validate(cnf, schema, format_checker=None):
+def _maybe_validated(cnf, schema, format_checker=None):
     """
-    Wrapper function for anycnf.schema.vaildate.
-
     :param cnf: Configuration object :: container
     :param schema: JSON schema object :: container
     :param format_checker: A format property checker object of which class is
         inherited from jsonschema.FormatChecker, it's default if None given.
 
-    :return: True if validation suceeds or jsonschema module is not available.
+    :return: Given `cnf` as it is if validation succeeds else None
     """
-    (ret, msg) = validate(cnf, schema, format_checker, True)
+    if schema is None:
+        return cnf
+
+    (valid, msg) = validate(cnf, schema, format_checker, True)
     if msg:
         LOGGER.warn(msg)
 
-    return ret
+    return cnf if valid else None
 
 
 def set_loglevel(level):
@@ -136,6 +137,7 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
     if psr is None:
         return None
 
+    schema = format_checker = None
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
@@ -143,9 +145,6 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
         schema = load(ac_schema, forced_type=forced_type,
                       ignore_missing=ignore_missing, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
-        if not schema:
-            LOGGER.warn("Could not load schema: %s", ac_schema)
-            ac_schema = None
 
     LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:
@@ -153,10 +152,7 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
             LOGGER.debug("Compiling: %s", filepath)
             content = anyconfig.template.render(filepath, ac_context)
             cnf = psr.loads(content, ignore_missing=ignore_missing, **kwargs)
-            if ac_schema and not _validate(cnf, schema, format_checker):
-                return None
-
-            return cnf
+            return _maybe_validated(cnf, schema, format_checker)
 
         except Exception as exc:
             LOGGER.debug("Exc=%s", str(exc))
@@ -164,11 +160,7 @@ def single_load(path_or_stream, forced_type=None, ignore_missing=False,
                         "mode", path_or_stream)
 
     cnf = psr.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
-    if ac_schema is None or _validate(cnf, schema, format_checker):
-        return cnf
-
-    LOGGER.warn("Validation failed: schema=%s", ac_schema)
-    return None
+    return _maybe_validated(cnf, schema, format_checker)
 
 
 def multi_load(paths, forced_type=None, ignore_missing=False,
@@ -210,6 +202,7 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
     if not paths:
         return container()
 
+    schema = format_checker = None
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
@@ -217,9 +210,6 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
                       ignore_missing=ignore_missing, merge=merge,
                       marker=marker, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
-        if not schema:
-            LOGGER.warn("Could not load schema: %s", ac_schema)
-            ac_schema = None
 
     cnf = to_container(ac_context) if ac_context else container()
 
@@ -241,11 +231,7 @@ def multi_load(paths, forced_type=None, ignore_missing=False,
 
         cnf.update(cups, merge)
 
-    if ac_schema is None or _validate(cnf, schema, format_checker):
-        return cnf
-
-    LOGGER.warn("Validation failed: schema=%s", ac_schema)
-    return None
+    return _maybe_validated(cnf, schema, format_checker)
 
 
 def load(path_specs, forced_type=None, ignore_missing=False,
@@ -309,14 +295,11 @@ def loads(content, forced_type=None, ac_template=False, ac_context=None,
     if psr is None:
         return anyconfig.parser.parse(content)
 
+    schema = None
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
-        format_checker = kwargs.get("format_checker", None)
         schema = loads(ac_schema, forced_type, ac_template, ac_context,
                        **kwargs)
-        if not schema:
-            LOGGER.warn("Could not load schema: %s", ac_schema)
-            ac_schema = None
 
     if ac_template:
         try:
@@ -328,12 +311,7 @@ def loads(content, forced_type=None, ac_template=False, ac_context=None,
                         "mode: '%s'", content[:50] + '...')
 
     cnf = psr.loads(content, **kwargs)
-
-    if ac_schema and not _validate(cnf, schema, format_checker):
-        LOGGER.warn("Validation failed: schema=%s", schema)
-        return None
-
-    return cnf
+    return _maybe_validated(cnf, schema, kwargs.get("format_checker", None))
 
 
 def _find_dumper(path_or_stream, forced_type=None):

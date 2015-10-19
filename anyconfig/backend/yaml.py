@@ -67,7 +67,7 @@ class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.L2Parser,
     Parser for YAML files.
     """
     _type = "yaml"
-    _extensions = ("yaml", "yml")
+    _extensions = ["yaml", "yml"]
     _load_opts = ["Loader", "ac_safe"]
     _dump_opts = ["stream", "Dumper"]
 

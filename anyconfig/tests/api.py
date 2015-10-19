@@ -23,7 +23,7 @@ class Test_10_find_loader(unittest.TestCase):
     def _assert_isinstance(self, obj, cls, msg=False):
         self.assertTrue(isinstance(obj, cls), msg or repr(obj))
 
-    def test_10_find_loader__w_forced_type(self):
+    def test_10_find_loader__w_given_parser(self):
         cpath = "dummy.conf"
         for psr in anyconfig.backends.PARSERS:
             self._assert_isinstance(TT.find_loader(cpath, psr.type()), psr)
@@ -79,7 +79,7 @@ class Test_20_dumps_and_loads(unittest.TestCase):
         a_s = "requires: [{{ requires|join(', ') }}]"
         context = dict(requires=["bash", "zsh"], )
 
-        a1 = TT.loads(a_s, forced_type="yaml", ac_template=True,
+        a1 = TT.loads(a_s, ac_parser="yaml", ac_template=True,
                       ac_context=context)
 
         self.assertEquals(a1["requires"], a["requires"])
@@ -90,7 +90,7 @@ class Test_20_dumps_and_loads(unittest.TestCase):
 
         a = dict(requires="{% }}", )
         a_s = 'requires: "{% }}"'
-        a1 = TT.loads(a_s, forced_type="yaml", ac_template=True,
+        a1 = TT.loads(a_s, ac_parser="yaml", ac_template=True,
                       ac_context={})
 
         self.assertEquals(a1["requires"], a["requires"])
@@ -98,7 +98,7 @@ class Test_20_dumps_and_loads(unittest.TestCase):
     def test_48_loads_w_validation(self):
         cnf_s = TT.dumps(CNF_0, "json")
         scm_s = TT.dumps(SCM_0, "json")
-        cnf_2 = TT.loads(cnf_s, forced_type="json", ac_context={},
+        cnf_2 = TT.loads(cnf_s, ac_parser="json", ac_context={},
                          ac_validate=scm_s)
 
         self.assertEquals(cnf_2["name"], CNF_0["name"])
@@ -109,7 +109,7 @@ class Test_20_dumps_and_loads(unittest.TestCase):
     def test_49_loads_w_validation_error(self):
         cnf_s = """{"a": "aaa"}"""
         scm_s = TT.dumps(SCM_0, "json")
-        cnf_2 = TT.loads(cnf_s, forced_type="json", ac_schema=scm_s)
+        cnf_2 = TT.loads(cnf_s, ac_parser="json", ac_schema=scm_s)
         self.assertTrue(cnf_2 is None, cnf_2)
 
 
@@ -363,7 +363,7 @@ class Test_40_multi_load(unittest.TestCase):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(TT.multi_load([cpath], forced_type="ini",
+        self.assertEquals(TT.multi_load([cpath], ac_parser="ini",
                                         ignore_missing=True),
                           null_cntnr)
 
@@ -477,7 +477,7 @@ class Test_50_load_and_dump(unittest.TestCase):
         self.assertTrue(os.path.exists(cpath))
 
         with open(cpath, 'r') as strm:
-            cnf1 = TT.load(strm, forced_type="json")
+            cnf1 = TT.load(strm, ac_parser="json")
 
         self.assertTrue(dicts_equal(cnf, cnf1),
                         "cnf vs. cnf1: %s\n\n%s" % (str(cnf), str(cnf1)))
@@ -523,7 +523,7 @@ class Test_50_load_and_dump(unittest.TestCase):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(TT.load([cpath], forced_type="ini",
+        self.assertEquals(TT.load([cpath], ac_parser="ini",
                                   ignore_missing=True),
                           null_cntnr)
 

@@ -21,29 +21,29 @@ import anyconfig.backend.json
 import anyconfig.backend.xml
 
 try:
-    import anyconfig.backend.yaml as BYAML
+    import anyconfig.backend.yaml as YML
 except ImportError:
-    BYAML = None
+    YML = None
 
 
 class Test_10_find_loader(unittest.TestCase):
 
-    def __isinstance(self, obj, *cls):
+    def _assert_isinstance(self, obj, *cls):
         self.assertTrue(isinstance(obj, cls))
 
     def test_10_find_loader__w_forced_type(self):
         cpath = "dummy.conf"
 
         # These parsers should work for python >= 2.6.
-        self.__isinstance(TT.find_loader(cpath, "ini"),
-                          anyconfig.backend.ini.Parser)
-        self.__isinstance(TT.find_loader(cpath, "json"),
-                          anyconfig.backend.json.Parser)
-        self.__isinstance(TT.find_loader(cpath, "xml"),
-                          anyconfig.backend.xml.Parser)
+        self._assert_isinstance(TT.find_loader(cpath, "ini"),
+                                anyconfig.backend.ini.Parser)
+        self._assert_isinstance(TT.find_loader(cpath, "json"),
+                                anyconfig.backend.json.Parser)
+        self._assert_isinstance(TT.find_loader(cpath, "xml"),
+                                anyconfig.backend.xml.Parser)
 
-        if BYAML is not None:
-            self.__isinstance(TT.find_loader(cpath, "yaml"), BYAML.Parser)
+        if YML is not None:
+            self._assert_isinstance(TT.find_loader(cpath, "yaml"), YML.Parser)
 
     def test_12_find_loader__w_forced_type__none(self):
         TT.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
@@ -51,18 +51,18 @@ class Test_10_find_loader(unittest.TestCase):
         self.assertEquals(TT.find_loader(cpath, "type_not_exist"), None)
 
     def test_20_find_loader__by_file(self):
-        self.__isinstance(TT.find_loader("dummy.ini"),
-                          anyconfig.backend.ini.Parser)
-        self.__isinstance(TT.find_loader("dummy.json"),
-                          anyconfig.backend.json.Parser)
-        self.__isinstance(TT.find_loader("dummy.jsn"),
-                          anyconfig.backend.json.Parser)
-        self.__isinstance(TT.find_loader("dummy.xml"),
-                          anyconfig.backend.xml.Parser)
+        self._assert_isinstance(TT.find_loader("dummy.ini"),
+                                anyconfig.backend.ini.Parser)
+        self._assert_isinstance(TT.find_loader("dummy.json"),
+                                anyconfig.backend.json.Parser)
+        self._assert_isinstance(TT.find_loader("dummy.jsn"),
+                                anyconfig.backend.json.Parser)
+        self._assert_isinstance(TT.find_loader("dummy.xml"),
+                                anyconfig.backend.xml.Parser)
 
-        if BYAML is not None:
-            self.__isinstance(TT.find_loader("dummy.yaml"), BYAML.Parser)
-            self.__isinstance(TT.find_loader("dummy.yml"), BYAML.Parser)
+        if YML is not None:
+            self._assert_isinstance(TT.find_loader("dummy.yaml"), YML.Parser)
+            self._assert_isinstance(TT.find_loader("dummy.yml"), YML.Parser)
 
     def test_22_find_loader__by_file__none(self):
         # see self.test_12_find_loader__w_forced_type__none

@@ -58,7 +58,7 @@ Examples:
   %prog '/etc/foo.d/*.json' --set a.b.c=1"""
 
 DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
-                otype=None, atype=None, ac_merge=API.MS_DICTS,
+                otype=None, atype=None, merge=API.MS_DICTS,
                 ignore_missing=False, template=False, env=False,
                 schema=None, validate=False, gen_schema=False)
 

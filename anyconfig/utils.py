@@ -90,20 +90,35 @@ def ensure_expandusr(path):
     return os.path.expanduser(path) if '~' in path else path
 
 
-def get_path_from_stream(stream):
+def is_path(path_or_stream):
+    """
+    Is given object `path_or_stream` a file path?
+
+    :param path_or_stream: file path or stream, file/file-like object
+    :return: True if `path_or_stream` is a file path
+    """
+    return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
+
+
+def get_path_from_stream(maybe_stream):
     """
     Try to get file path from given stream `stream`.
 
-    :param stream: A file or file-like object
+    :param maybe_stream: A file or file-like object
     :return: Path of given file or file-like object or None
 
+    >>> __file__ == get_path_from_stream(__file__)
+    True
     >>> __file__ == get_path_from_stream(open(__file__, 'r'))
     True
     >>> strm = anyconfig.compat.StringIO()
     >>> get_path_from_stream(strm) is None
     True
     """
-    maybe_path = getattr(stream, "name", None)
+    if is_path(maybe_stream):
+        return maybe_stream  # It's path.
+
+    maybe_path = getattr(maybe_stream, "name", None)
     if maybe_path is not None:
         maybe_path = os.path.abspath(maybe_path)
 

@@ -11,62 +11,32 @@ import os.path
 import unittest
 
 import anyconfig.api as TT
+import anyconfig.backends
 import anyconfig.template
 import anyconfig.tests.common
 
 from anyconfig.tests.common import CNF_0, SCM_0, dicts_equal
 
-import anyconfig.backend.ini
-import anyconfig.backend.json
-import anyconfig.backend.xml
-
-try:
-    import anyconfig.backend.yaml as YML
-except ImportError:
-    YML = None
-
 
 class Test_10_find_loader(unittest.TestCase):
 
-    def _assert_isinstance(self, obj, *cls):
-        self.assertTrue(isinstance(obj, cls))
+    def _assert_isinstance(self, obj, cls, msg=False):
+        self.assertTrue(isinstance(obj, cls), msg or repr(obj))
 
     def test_10_find_loader__w_forced_type(self):
         cpath = "dummy.conf"
-
-        # These parsers should work for python >= 2.6.
-        self._assert_isinstance(TT.find_loader(cpath, "ini"),
-                                anyconfig.backend.ini.Parser)
-        self._assert_isinstance(TT.find_loader(cpath, "json"),
-                                anyconfig.backend.json.Parser)
-        self._assert_isinstance(TT.find_loader(cpath, "xml"),
-                                anyconfig.backend.xml.Parser)
-
-        if YML is not None:
-            self._assert_isinstance(TT.find_loader(cpath, "yaml"), YML.Parser)
-
-    def test_12_find_loader__w_forced_type__none(self):
-        TT.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
-        cpath = "dummy.conf"
-        self.assertEquals(TT.find_loader(cpath, "type_not_exist"), None)
+        for psr in anyconfig.backends.PARSERS:
+            self._assert_isinstance(TT.find_loader(cpath, psr.type()), psr)
 
     def test_20_find_loader__by_file(self):
-        self._assert_isinstance(TT.find_loader("dummy.ini"),
-                                anyconfig.backend.ini.Parser)
-        self._assert_isinstance(TT.find_loader("dummy.json"),
-                                anyconfig.backend.json.Parser)
-        self._assert_isinstance(TT.find_loader("dummy.jsn"),
-                                anyconfig.backend.json.Parser)
-        self._assert_isinstance(TT.find_loader("dummy.xml"),
-                                anyconfig.backend.xml.Parser)
+        for psr in anyconfig.backends.PARSERS:
+            for ext in psr.extensions():
+                self._assert_isinstance(TT.find_loader("dummy." + ext), psr,
+                                        "ext=%s, psr=%r" % (ext, psr))
 
-        if YML is not None:
-            self._assert_isinstance(TT.find_loader("dummy.yaml"), YML.Parser)
-            self._assert_isinstance(TT.find_loader("dummy.yml"), YML.Parser)
-
-    def test_22_find_loader__by_file__none(self):
-        # see self.test_12_find_loader__w_forced_type__none
-        TT.set_loglevel(CRITICAL)
+    def test_30_find_loader__not_found(self):
+        TT.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
+        self.assertEquals(TT.find_loader("a.cnf", "type_not_exist"), None)
         self.assertEquals(TT.find_loader("dummy.ext_not_found"), None)
 
 

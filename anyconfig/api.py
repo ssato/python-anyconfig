@@ -8,7 +8,8 @@
 .. versionchanged:: 0.3
    Replaced `forced_type` optional argument of some public APIs with
    `ac_parser` to allow skip of config parser search by passing parser object
-   previously found and instantiated.
+   previously found and instantiated. Also removed `ignore_missing` argument
+   from definitions of some public APIs as it does not have much meanings.
 
 .. versionchanged:: 0.2
    Now APIs :func:`find_loader`, :func:`single_load`, :func:`multi_load`,
@@ -113,22 +114,25 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=None):
     return psr()  # TBD: Passing initialization arguments.
 
 
-def single_load(path_or_stream, ac_parser=None, ignore_missing=False,
-                ac_template=False, ac_context=None, ac_schema=None,
-                **kwargs):
+def single_load(path_or_stream, ac_parser=None, ac_template=False,
+                ac_context=None, ac_schema=None, **kwargs):
     """
     Load single config file.
 
     :param path_or_stream: Configuration file path or file / file-like object
     :param ac_parser: Forced parser type or parser object
-    :param ignore_missing: Ignore and just return empty result if given file
-        (``path_or_stream``) does not exist
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
-    :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
-        JSON loader/dumper backend
+    :param kwargs: Optional keyword arguments for backends:
+
+        - Common backend options:
+
+          - ignore_missing: Ignore and just return empty result if given file
+            (``path_or_stream``) does not exist.
+
+        - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
@@ -150,8 +154,7 @@ def single_load(path_or_stream, ac_parser=None, ignore_missing=False,
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
         LOGGER.info("Loading schema: %s", ac_schema)
-        schema = load(ac_schema, ac_parser=None,
-                      ignore_missing=ignore_missing, ac_template=ac_template,
+        schema = load(ac_schema, ac_parser=None, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
 
     LOGGER.info("Loading: %s", filepath)
@@ -159,20 +162,19 @@ def single_load(path_or_stream, ac_parser=None, ignore_missing=False,
         try:
             LOGGER.debug("Compiling: %s", filepath)
             content = anyconfig.template.render(filepath, ac_context)
-            cnf = psr.loads(content, ignore_missing=ignore_missing, **kwargs)
+            cnf = psr.loads(content, **kwargs)
             return _maybe_validated(cnf, schema, format_checker)
 
         except Exception as exc:
             LOGGER.warn("Failed to compile %s, fallback to no template "
                         "mode, exc=%s", path_or_stream, str(exc))
 
-    cnf = psr.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
+    cnf = psr.load(path_or_stream, **kwargs)
     return _maybe_validated(cnf, schema, format_checker)
 
 
-def multi_load(paths, ac_parser=None, ignore_missing=False,
-               merge=MS_DICTS, marker='*', ac_template=False, ac_context=None,
-               ac_schema=None, **kwargs):
+def multi_load(paths, ac_parser=None, merge=MS_DICTS, marker='*',
+               ac_template=False, ac_context=None, ac_schema=None, **kwargs):
     """
     Load multiple config files.
 
@@ -188,7 +190,6 @@ def multi_load(paths, ac_parser=None, ignore_missing=False,
     :param paths: List of config file paths or a glob pattern to list paths, or
         a list of file/file-like objects
     :param ac_parser: Forced parser type or parser object
-    :param ignore_missing: Ignore missing config files
     :param merge: Strategy to merge config results of multiple config files
         loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
     :param marker: Globbing markerer to detect paths patterns
@@ -196,8 +197,9 @@ def multi_load(paths, ac_parser=None, ignore_missing=False,
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
-    :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
-        JSON loader/dumper backend
+    :param kwargs:
+        Optional keyword arguments for backend. See also the description of
+        `kwargs` in `single_load`.
 
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
@@ -213,10 +215,8 @@ def multi_load(paths, ac_parser=None, ignore_missing=False,
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
-        schema = load(ac_schema, ac_parser=None,
-                      ignore_missing=ignore_missing, merge=merge,
-                      marker=marker, ac_template=ac_template,
-                      ac_context=ac_context, **kwargs)
+        schema = load(ac_schema, ac_parser=None, merge=merge, marker=marker,
+                      ac_template=ac_template, ac_context=ac_context, **kwargs)
 
     cnf = to_container(ac_context) if ac_context else container()
 
@@ -226,13 +226,11 @@ def multi_load(paths, ac_parser=None, ignore_missing=False,
     for path in paths:
         # Nested patterns like ['*.yml', '/a/b/c.yml'].
         if _is_path(path) and marker in path:
-            cups = multi_load(path, ac_parser=ac_parser,
-                              ignore_missing=ignore_missing, merge=merge,
+            cups = multi_load(path, ac_parser=ac_parser, merge=merge,
                               marker=marker, ac_template=ac_template,
                               ac_context=cnf, **kwargs)
         else:
             cups = single_load(path, ac_parser=ac_parser,
-                               ignore_missing=ignore_missing,
                                ac_template=ac_template, ac_context=cnf,
                                **kwargs)
 
@@ -241,9 +239,8 @@ def multi_load(paths, ac_parser=None, ignore_missing=False,
     return _maybe_validated(cnf, schema, format_checker)
 
 
-def load(path_specs, ac_parser=None, ignore_missing=False,
-         merge=MS_DICTS, marker='*', ac_template=False, ac_context=None,
-         ac_schema=None, **kwargs):
+def load(path_specs, ac_parser=None, merge=MS_DICTS, marker='*',
+         ac_template=False, ac_context=None, ac_schema=None, **kwargs):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -251,28 +248,26 @@ def load(path_specs, ac_parser=None, ignore_missing=False,
     :param path_specs: Configuration file path or paths or its pattern such as
         '/a/b/*.json' or a list of files/file-like objects
     :param ac_parser: Forced parser type or parser object
-    :param ignore_missing: Ignore missing config files
     :param merge: Merging strategy to use
     :param marker: Globbing marker to detect paths patterns
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
-    :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
-        JSON loader/dumper backend
+    :param kwargs:
+        Optional keyword arguments for backend. See also the description of
+        `kwargs` in `single_load`.
 
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
     if _is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
-        return multi_load(path_specs, ac_parser=ac_parser,
-                          ignore_missing=ignore_missing, merge=merge,
+        return multi_load(path_specs, ac_parser=ac_parser, merge=merge,
                           marker=marker, ac_template=ac_template,
                           ac_context=ac_context, ac_schema=ac_schema, **kwargs)
     else:
         return single_load(path_specs, ac_parser=ac_parser,
-                           ignore_missing=ignore_missing,
                            ac_template=ac_template, ac_context=ac_context,
                            ac_schema=ac_schema, **kwargs)
 
@@ -282,7 +277,6 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
     """
     :param content: Configuration file's content
     :param ac_parser: Forced parser type or parser object
-    :param ignore_missing: Ignore missing config files
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: Context dict to instantiate template

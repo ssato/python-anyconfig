@@ -16,6 +16,7 @@ import pkg_resources
 import anyconfig.compat
 import anyconfig.utils
 
+import anyconfig.backend.base
 import anyconfig.backend.ini
 import anyconfig.backend.json
 import anyconfig.backend.properties
@@ -112,6 +113,20 @@ def uniq(iterable):
             acc.append(obj)
 
     return acc
+
+
+def is_parser(obj):
+    """
+    :return: True if given `obj` is an instance of parser.
+
+    >>> is_parser("ini")
+    False
+    >>> is_parser(anyconfig.backend.base.Parser)
+    False
+    >>> is_parser(anyconfig.backend.base.Parser())
+    True
+    """
+    return isinstance(obj, anyconfig.backend.base.Parser)
 
 
 def list_parsers_by_type(cps=None):

@@ -42,19 +42,12 @@ from anyconfig.mergeabledict import (
 )
 from anyconfig.parser import PATH_SEPS
 from anyconfig.schema import validate, gen_schema
-from anyconfig.utils import get_path_from_stream
+from anyconfig.utils import is_path
 
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
 to_container = container.create
-
-
-def _is_path(path_or_stream):
-    """
-    Is given object `path_or_stream` a file path?
-    """
-    return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
 
 
 def _is_paths(maybe_paths):
@@ -141,12 +134,12 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    is_path_ = _is_path(path_or_stream)
+    is_path_ = is_path(path_or_stream)
     if is_path_:
         path_or_stream = anyconfig.utils.ensure_expandusr(path_or_stream)
         filepath = path_or_stream
     else:
-        filepath = get_path_from_stream(path_or_stream)
+        filepath = anyconfig.utils.get_path_from_stream(path_or_stream)
 
     psr = find_loader(path_or_stream, ac_parser, is_path_)
     if psr is None:
@@ -235,12 +228,12 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
     cnf = to_container(ac_context) if ac_context else container()
 
-    if _is_path(paths) and marker in paths:
+    if is_path(paths) and marker in paths:
         paths = anyconfig.utils.sglob(paths)
 
     for path in paths:
         # Nested patterns like ['*.yml', '/a/b/c.yml'].
-        if _is_path(path) and marker in path:
+        if is_path(path) and marker in path:
             cups = multi_load(path, ac_parser=ac_parser,
                               ac_template=ac_template, ac_context=cnf,
                               **kwargs)
@@ -277,7 +270,7 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
     """
     marker = kwargs.setdefault("ac_marker", kwargs.get("marker", '*'))
 
-    if _is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
+    if is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
         return multi_load(path_specs, ac_parser=ac_parser,
                           ac_template=ac_template, ac_context=ac_context,
                           ac_schema=ac_schema, **kwargs)
@@ -358,12 +351,8 @@ def dump(data, path_or_stream, ac_parser=None, **kwargs):
         JSON loader/dumper backend
     """
     dumper = _find_dumper(path_or_stream, ac_parser)
-
-    if _is_path(path_or_stream):
-        LOGGER.info("Dumping: %s", path_or_stream)
-    else:
-        LOGGER.info("Dumping: %s", get_path_from_stream(path_or_stream))
-
+    LOGGER.info("Dumping: %s",
+                anyconfig.utils.get_path_from_stream(path_or_stream))
     dumper.dump(data, path_or_stream, **kwargs)
 
 

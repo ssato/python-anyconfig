@@ -58,7 +58,7 @@ Examples:
   %prog '/etc/foo.d/*.json' --set a.b.c=1"""
 
 DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
-                otype=None, atype=None, merge=API.MS_DICTS,
+                otype=None, atype=None, ac_merge=API.MS_DICTS,
                 ignore_missing=False, template=False, env=False,
                 schema=None, validate=False, gen_schema=False)
 
@@ -273,7 +273,7 @@ def main(argv=None):
     cnf = API.container(os.environ.copy() if options.env else {})
     diff = API.load(args, options.itype,
                     ignore_missing=options.ignore_missing,
-                    merge=options.merge, ac_template=options.template,
+                    ac_merge=options.merge, ac_template=options.template,
                     ac_schema=options.schema)
 
     _exit_if_load_failure(diff, "Failed to load: args=%s" % ", ".join(args))

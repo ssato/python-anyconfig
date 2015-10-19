@@ -40,7 +40,7 @@ class Parser(anyconfig.backend.base.L2Parser, anyconfig.backend.base.DParser):
     Loader/Dumper of BSON files.
     """
     _type = "bson"
-    _extensions = [".bson", ".bsn"]  # Temporary.
+    _extensions = ["bson", "bsn"]  # Temporary.
     _load_opts = _LOAD_OPTS
     _dump_opts = ["check_keys", "uuid_subtype"]
     _open_flags = ('rb', 'wb')

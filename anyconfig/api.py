@@ -150,7 +150,7 @@ def single_load(path_or_stream, ac_parser=None, ignore_missing=False,
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
         LOGGER.info("Loading schema: %s", ac_schema)
-        schema = load(ac_schema, ac_parser=ac_parser,
+        schema = load(ac_schema, ac_parser=None,
                       ignore_missing=ignore_missing, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
 
@@ -213,7 +213,7 @@ def multi_load(paths, ac_parser=None, ignore_missing=False,
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
-        schema = load(ac_schema, ac_parser=ac_parser,
+        schema = load(ac_schema, ac_parser=None,
                       ignore_missing=ignore_missing, merge=merge,
                       marker=marker, ac_template=ac_template,
                       ac_context=ac_context, **kwargs)
@@ -305,8 +305,7 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
     schema = None
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
-        schema = loads(ac_schema, ac_parser, ac_template, ac_context,
-                       **kwargs)
+        schema = loads(ac_schema, psr, ac_template, ac_context, **kwargs)
 
     if ac_template:
         try:

@@ -8,8 +8,11 @@
 .. versionchanged:: 0.3
    Replaced `forced_type` optional argument of some public APIs with
    `ac_parser` to allow skip of config parser search by passing parser object
-   previously found and instantiated. Also removed `ignore_missing` argument
-   from definitions of some public APIs as it does not have much meanings.
+   previously found and instantiated.
+
+   Also removed some optional arguments, `ignore_missing`, `merge` and
+   `marker`, from definitions of some public APIs as these may not be changed
+   from default in common use cases.
 
 .. versionchanged:: 0.2
    Now APIs :func:`find_loader`, :func:`single_load`, :func:`multi_load`,
@@ -173,8 +176,8 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
     return _maybe_validated(cnf, schema, format_checker)
 
 
-def multi_load(paths, ac_parser=None, merge=MS_DICTS, marker='*',
-               ac_template=False, ac_context=None, ac_schema=None, **kwargs):
+def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
+               ac_schema=None, **kwargs):
     """
     Load multiple config files.
 
@@ -190,23 +193,35 @@ def multi_load(paths, ac_parser=None, merge=MS_DICTS, marker='*',
     :param paths: List of config file paths or a glob pattern to list paths, or
         a list of file/file-like objects
     :param ac_parser: Forced parser type or parser object
-    :param merge: Strategy to merge config results of multiple config files
-        loaded. see also: anyconfig.mergeabledict.MergeableDict.update()
-    :param marker: Globbing markerer to detect paths patterns
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
-    :param kwargs:
-        Optional keyword arguments for backend. See also the description of
-        `kwargs` in `single_load`.
+    :param kwargs: Optional keyword arguments:
+
+        - Common options:
+
+          - ac_merge (merge): Specify strategy of how to merge results loaded
+            from multiple configuration files. See the doc of mergeabledict
+            module for more details of strategies. The default is MS_DICTS.
+
+          - ac_marker (marker): Globbing marker to detect paths patterns.
+
+        - Common backend options:
+
+          - ignore_missing: Ignore and just return empty result if given file
+            (``path_or_stream``) does not exist.
+
+        - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
-    if merge not in MERGE_STRATEGIES:
-        raise ValueError("Invalid merge strategy: " + merge)
+    marker = kwargs.setdefault("ac_marker", kwargs.get("marker", '*'))
+    ac_merge = kwargs.setdefault("ac_merge", kwargs.get("merge", MS_DICTS))
+    if ac_merge not in MERGE_STRATEGIES:
+        raise ValueError("Invalid merge strategy: " + ac_merge)
 
     if not paths:
         return container()
@@ -215,8 +230,8 @@ def multi_load(paths, ac_parser=None, merge=MS_DICTS, marker='*',
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop
         format_checker = kwargs.get("format_checker", None)
-        schema = load(ac_schema, ac_parser=None, merge=merge, marker=marker,
-                      ac_template=ac_template, ac_context=ac_context, **kwargs)
+        schema = load(ac_schema, ac_parser=None, ac_template=ac_template,
+                      ac_context=ac_context, **kwargs)
 
     cnf = to_container(ac_context) if ac_context else container()
 
@@ -226,21 +241,21 @@ def multi_load(paths, ac_parser=None, merge=MS_DICTS, marker='*',
     for path in paths:
         # Nested patterns like ['*.yml', '/a/b/c.yml'].
         if _is_path(path) and marker in path:
-            cups = multi_load(path, ac_parser=ac_parser, merge=merge,
-                              marker=marker, ac_template=ac_template,
-                              ac_context=cnf, **kwargs)
+            cups = multi_load(path, ac_parser=ac_parser,
+                              ac_template=ac_template, ac_context=cnf,
+                              **kwargs)
         else:
             cups = single_load(path, ac_parser=ac_parser,
                                ac_template=ac_template, ac_context=cnf,
                                **kwargs)
 
-        cnf.update(cups, merge)
+        cnf.update(cups, ac_merge)
 
     return _maybe_validated(cnf, schema, format_checker)
 
 
-def load(path_specs, ac_parser=None, merge=MS_DICTS, marker='*',
-         ac_template=False, ac_context=None, ac_schema=None, **kwargs):
+def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
+         ac_schema=None, **kwargs):
     """
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -248,24 +263,24 @@ def load(path_specs, ac_parser=None, merge=MS_DICTS, marker='*',
     :param path_specs: Configuration file path or paths or its pattern such as
         '/a/b/*.json' or a list of files/file-like objects
     :param ac_parser: Forced parser type or parser object
-    :param merge: Merging strategy to use
-    :param marker: Globbing marker to detect paths patterns
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
     :param kwargs:
-        Optional keyword arguments for backend. See also the description of
-        `kwargs` in `single_load`.
+        Optional keyword arguments. See also the description of `kwargs` in
+        `multi_load` function.
 
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
         operations.
     """
+    marker = kwargs.setdefault("ac_marker", kwargs.get("marker", '*'))
+
     if _is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
-        return multi_load(path_specs, ac_parser=ac_parser, merge=merge,
-                          marker=marker, ac_template=ac_template,
-                          ac_context=ac_context, ac_schema=ac_schema, **kwargs)
+        return multi_load(path_specs, ac_parser=ac_parser,
+                          ac_template=ac_template, ac_context=ac_context,
+                          ac_schema=ac_schema, **kwargs)
     else:
         return single_load(path_specs, ac_parser=ac_parser,
                            ac_template=ac_template, ac_context=ac_context,

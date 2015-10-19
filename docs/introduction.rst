@@ -65,7 +65,7 @@ configuration file[s] like the followings:
 
   # Similar to the above, but parameters in the former config file will be simply
   # overwritten by the later ones:
-  conf6 = anyconfig.load("/etc/foo.d/*.json", merge=anyconfig.MS_REPLACE)
+  conf6 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
 
 Also, it can process configuration files which are actually
 `jinja2-based template <http://jinja.pocoo.org>`_ files:

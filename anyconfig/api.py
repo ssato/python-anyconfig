@@ -163,9 +163,8 @@ def single_load(path_or_stream, ac_parser=None, ignore_missing=False,
             return _maybe_validated(cnf, schema, format_checker)
 
         except Exception as exc:
-            LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile %s, fallback to no template "
-                        "mode", path_or_stream)
+                        "mode, exc=%s", path_or_stream, str(exc))
 
     cnf = psr.load(path_or_stream, ignore_missing=ignore_missing, **kwargs)
     return _maybe_validated(cnf, schema, format_checker)
@@ -314,9 +313,8 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
             LOGGER.debug("Compiling")
             content = anyconfig.template.render_s(content, ac_context)
         except Exception as exc:
-            LOGGER.debug("Exc=%s", str(exc))
             LOGGER.warn("Failed to compile and fallback to no template "
-                        "mode: '%s'", content[:50] + '...')
+                        "mode: '%s', exc=%s", content[:50] + '...', str(exc))
 
     cnf = psr.loads(content, **kwargs)
     return _maybe_validated(cnf, schema, kwargs.get("format_checker", None))

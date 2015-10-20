@@ -21,6 +21,36 @@ from anyconfig.tests.common import CNF_0, SCM_0, dicts_equal
 # suppress logging messages.
 TT.set_loglevel(logging.CRITICAL)
 
+CNF_TMPL_0 = """name: {{ name|default('a') }}
+a: {{ a }}
+b:
+    b:
+      {% for x in b.b -%}
+      - {{ x }}
+      {% endfor %}
+    c: {{ b.c }}
+"""
+
+CNF_TMPL_1 = """a: {{ a }}
+b:
+    b:
+        {% for x in b.b -%}
+        - {{ x }}
+        {% endfor %}
+    c: {{ b.c }}
+
+name: {{ name }}
+"""
+
+CNF_TMPL_2 = """a: {{ a }}
+b:
+    b:
+        {% for x in b.b -%}
+        - {{ x }}
+        {% endfor %}
+    d: {{ b.d }}
+"""
+
 
 class Test_10_find_loader(unittest.TestCase):
 
@@ -171,15 +201,7 @@ class Test_30_single_load(unittest.TestCase):
             return
 
         cpath = os.path.join(self.workdir, "a.yaml")
-        open(cpath, 'w').write("""name: {{ name|default('a') }}
-a: {{ a }}
-b:
-    b:
-      {% for x in b.b -%}
-      - {{ x }}
-      {% endfor %}
-    c: {{ b.c }}
-""")
+        open(cpath, 'w').write(CNF_TMPL_0)
 
         cnf = TT.single_load(cpath, ac_template=True, ac_context=self.cnf)
         self.assertTrue(dicts_equal(self.cnf, cnf), str(cnf))
@@ -200,15 +222,7 @@ b:
         a2_path = os.path.join(self.workdir, "x/y/z", "a.yml")
 
         open(a_path, 'w').write("{% include 'b.yml' %}")
-        open(b_path, 'w').write("""name: {{ name|default('a') }}
-a: {{ a }}
-b:
-    b:
-      {% for x in b.b -%}
-      - {{ x }}
-      {% endfor %}
-    c: {{ b.c }}
-""")
+        open(b_path, 'w').write(CNF_TMPL_0)
         os.makedirs(os.path.dirname(a2_path))
         open(a2_path, 'w').write("a: 'xyz'")
 
@@ -382,26 +396,8 @@ class Test_40_multi_load(unittest.TestCase):
         b_path = os.path.join(self.workdir, "b.yml")
         g_path = os.path.join(self.workdir, "*.yml")
 
-        open(a_path, 'w').write("""\
-a: {{ a }}
-b:
-    b:
-        {% for x in b.b -%}
-        - {{ x }}
-        {% endfor %}
-    c: {{ b.c }}
-
-name: {{ name }}
-""")
-        open(b_path, 'w').write("""\
-a: {{ a }}
-b:
-    b:
-        {% for x in b.b -%}
-        - {{ x }}
-        {% endfor %}
-    d: {{ b.d }}
-""")
+        open(a_path, 'w').write(CNF_TMPL_1)
+        open(b_path, 'w').write(CNF_TMPL_2)
 
         a0 = TT.multi_load(g_path, merge=TT.MS_DICTS, ac_template=True,
                            ac_context=ma)

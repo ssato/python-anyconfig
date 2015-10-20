@@ -4,8 +4,8 @@
 #
 # pylint: disable=missing-docstring, invalid-name
 from __future__ import absolute_import
-from logging import CRITICAL
 
+import logging
 import os
 import os.path
 import unittest
@@ -16,6 +16,10 @@ import anyconfig.template
 import anyconfig.tests.common
 
 from anyconfig.tests.common import CNF_0, SCM_0, dicts_equal
+
+
+# suppress logging messages.
+TT.set_loglevel(logging.CRITICAL)
 
 
 class Test_10_find_loader(unittest.TestCase):
@@ -35,7 +39,6 @@ class Test_10_find_loader(unittest.TestCase):
                                         "ext=%s, psr=%r" % (ext, psr))
 
     def test_30_find_loader__not_found(self):
-        TT.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
         self.assertEquals(TT.find_loader("a.cnf", "type_not_exist"), None)
         self.assertEquals(TT.find_loader("dummy.ext_not_found"), None)
 
@@ -119,7 +122,6 @@ class Test_30_single_load(unittest.TestCase):
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
-        TT.set_loglevel(CRITICAL)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
@@ -249,7 +251,6 @@ class Test_40_multi_load(unittest.TestCase):
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
-        TT.set_loglevel(CRITICAL)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
@@ -426,7 +427,6 @@ class Test_50_load_and_dump(unittest.TestCase):
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
-        TT.set_loglevel(CRITICAL)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)

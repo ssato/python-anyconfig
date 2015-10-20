@@ -141,6 +141,22 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Oct 20 2015 Satoru SATOH <ssato@redhat.com> - 0.3.0-1
+- Enhance anyconfig.multiload not to resolv appropriate config parsers
+  everytime loading config files
+- Remove a few backend (common and specific) and common options such as merge
+  (ac_merge), marker (ac_marker), etc. from definitions of some public API
+  functions
+- Add 'ac_' prefix to some keyword arguments to public APIs
+- fix wrong definition of extensions in BSON backend
+- fix a bug that ini (configparser) backend behaves different from original;
+  may close #28
+- fix a bug to pass extra keyword parameters to yaml.safe_load
+- fix a bug that anyconfig.backend.base.LParser.load_from_string does not
+  process and pass process keyword args `kwargs`
+- a lot of other enhancements, refactorings and bug fixes; some of them might
+  break public nad internal APIs so that bumped up the version
+
 * Mon Sep 21 2015 Satoru SATOH <ssato@redhat.com> - 0.2.2-1
 - Lower the level of some warn logging messages if backend support module is
   not available

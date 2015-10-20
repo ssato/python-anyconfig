@@ -146,6 +146,8 @@ def are_same_file_types(paths):
 
     >>> are_same_file_types([])
     False
+    >>> are_same_file_types(["a.conf"])
+    True
     >>> are_same_file_types(["a.conf", "b.conf"])
     True
     >>> are_same_file_types(["a.yml", "b.yml"])
@@ -163,7 +165,7 @@ def are_same_file_types(paths):
     if ext is None:
         return False
 
-    return all(_try_to_get_extension(p) == ext for p in paths)
+    return all(_try_to_get_extension(p) == ext for p in paths[1:])
 
 
 # vim:sw=4:ts=4:et:

@@ -97,16 +97,18 @@ def groupby_key(itr, keyfunc):
 
 
 def uniq(iterable):
-    """
+    """sorted + uniq
+
+    .. note::
+       sorted(set(iterable), key=iterable.index) cannot be used for any
+       iterables (generator, a list of dicts, etc.), I guess.
+
     >>> uniq([1, 2, 3, 1, 2])
     [1, 2, 3]
+    >>> uniq((i for i in (2, 10, 3, 2, 5, 1, 7, 3)))
+    [1, 2, 3, 5, 7, 10]
     """
-    acc = []
-    for obj in iterable:
-        if obj not in acc:
-            acc.append(obj)
-
-    return acc
+    return [t[0] for t in itertools.groupby(sorted(iterable))]
 
 
 def is_parser(obj):
@@ -261,6 +263,6 @@ def list_types(cps=None):
     if cps is None:
         cps = PARSERS
 
-    return sorted(uniq(t for t, ps in list_parsers_by_type(cps)))
+    return uniq(t for t, ps in list_parsers_by_type(cps))
 
 # vim:sw=4:ts=4:et:

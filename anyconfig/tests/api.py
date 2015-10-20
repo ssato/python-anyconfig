@@ -57,10 +57,15 @@ class Test_10_find_loader(unittest.TestCase):
     def _assert_isinstance(self, obj, cls, msg=False):
         self.assertTrue(isinstance(obj, cls), msg or repr(obj))
 
-    def test_10_find_loader__w_given_parser(self):
+    def test_10_find_loader__w_given_parser_type(self):
         cpath = "dummy.conf"
         for psr in anyconfig.backends.PARSERS:
             self._assert_isinstance(TT.find_loader(cpath, psr.type()), psr)
+
+    def test_12_find_loader__w_given_parser_instance(self):
+        cpath = "dummy.conf"
+        for psr in anyconfig.backends.PARSERS:
+            self._assert_isinstance(TT.find_loader(cpath, psr()), psr)
 
     def test_20_find_loader__by_file(self):
         for psr in anyconfig.backends.PARSERS:

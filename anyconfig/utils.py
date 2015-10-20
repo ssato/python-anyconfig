@@ -124,4 +124,46 @@ def get_path_from_stream(maybe_stream):
 
     return maybe_path
 
+
+def _try_to_get_extension(path_or_strm):
+    """
+    Try to get file extension from given path or file object.
+
+    :return: File extension or None
+    """
+    path = get_path_from_stream(path_or_strm)
+    if path is None:
+        return None
+
+    return get_file_extension(path) or None
+
+
+def are_same_file_types(paths):
+    """
+    Are given (maybe) file paths same type (extension) ?
+
+    :param paths: A list of file path or file(-like) objects
+
+    >>> are_same_file_types([])
+    False
+    >>> are_same_file_types(["a.conf", "b.conf"])
+    True
+    >>> are_same_file_types(["a.yml", "b.yml"])
+    True
+    >>> are_same_file_types(["a.yml", "b.json"])
+    False
+    >>> strm = anyconfig.compat.StringIO()
+    >>> are_same_file_types(["a.yml", "b.yml", strm])
+    False
+    """
+    if not paths:
+        return False
+
+    ext = _try_to_get_extension(paths[0])
+    if ext is None:
+        return False
+
+    return all(_try_to_get_extension(p) == ext for p in paths)
+
+
 # vim:sw=4:ts=4:et:

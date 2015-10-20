@@ -37,7 +37,9 @@ def list_filepaths(tdir):
     return [f for f in glob.glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
 
 
-data_files = [("share/man/man1", list_filepaths("docs/"))]
+# TBD:
+# data_files = [("share/man/man1", list_filepaths("docs/"))]
+data_files = [("share/man/man1", ["docs/anyconfig_cli.1"])]
 
 
 class SrpmCommand(Command):

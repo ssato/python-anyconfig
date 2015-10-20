@@ -154,6 +154,7 @@ rm -rf $RPM_BUILD_ROOT
 - fix a bug to pass extra keyword parameters to yaml.safe_load
 - fix a bug that anyconfig.backend.base.LParser.load_from_string does not
   process and pass process keyword args `kwargs`
+- add some more API usage code examples in the doc
 - a lot of other enhancements, refactorings and bug fixes; some of them might
   break public nad internal APIs so that bumped up the version
 

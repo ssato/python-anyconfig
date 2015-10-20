@@ -55,7 +55,10 @@ Examples:
   %prog '/etc/foo.d/*.json' -M noreplace
   # Get/set part of input config
   %prog '/etc/foo.d/*.json' --get a.b.c
-  %prog '/etc/foo.d/*.json' --set a.b.c=1"""
+  %prog '/etc/foo.d/*.json' --set a.b.c=1
+  # Validate with JSON schema or generate JSON schema:
+  %prog --validate -S foo.conf.schema.yml '/etc/foo.d/*.xml'
+  %prog --gen-schema '/etc/foo.d/*.xml' -o foo.conf.schema.yml"""
 
 DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
                 otype=None, atype=None, merge=API.MS_DICTS,

@@ -13,7 +13,8 @@
 - Limitations: None obvious
 - Special options:
 
-  - All keyword options of yaml.{safe\_,}load and yaml.{safe\_,}dump should work.
+  - All keyword options of yaml.{safe\_,}load and yaml.{safe\_,}dump should
+    work.
 
   - Use 'ac_safe' boolean keyword option if you prefer to call
     yaml.safe\_{load,dump} instead of yaml.{load,dump}

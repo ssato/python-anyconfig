@@ -1,7 +1,7 @@
-API Usages
-============
+API Usage Examples
+===================
 
-Here are some examples of API usage.
+Here are some code examples of API usage.
 
 Loading single config file
 ----------------------------
@@ -395,6 +395,36 @@ this:
 
    conf = anyconfig.container(os.environ.copy())
    conf.update(anyconfig.load("/path/to/config_files_dir/*.yml"))
+
+Load from compressed files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Since 0.2.0, python-anyconfig can load configuration from file or file-like
+object (called 'stream' internally). And this should help loading
+configurations from compressed files.
+
+- Loading from a compressed JSON config file:
+
+.. code-block:: python
+
+   import gzip
+
+   strm = gzip.open("/path/to/gzip/compressed/cnf.json.gz")
+   cnf = anyconfig.load(strm, "json")
+
+- Loading from some compressed JSON config files:
+
+.. code-block:: python
+
+   import gzip
+   import glob
+
+   cnfs = "/path/to/gzip/conf/files/*.yml.gz"
+   strms = [gzip.open(f) for f in sorted(glob.glob(cnfs))]
+   cnf = anyconfig.load(strms, "yaml")
+
+Please note that "json" argument passed to anyconfig.load is necessary to help
+anyconfig find out the configuration type of the file.
 
 Convert from/to bunch objects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

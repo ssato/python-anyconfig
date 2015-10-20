@@ -216,9 +216,6 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     if ac_merge not in MERGE_STRATEGIES:
         raise ValueError("Invalid merge strategy: " + ac_merge)
 
-    if not paths:
-        return container()
-
     schema = format_checker = None
     if ac_schema is not None:
         kwargs["ac_schema"] = None  # Avoid infinit loop

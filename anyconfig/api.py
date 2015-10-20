@@ -230,6 +230,9 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
     if is_path(paths) and marker in paths:
         paths = anyconfig.utils.sglob(paths)
+        _same_type = True
+    else:
+        _same_type = anyconfig.utils.are_same_file_types(paths)
 
     for path in paths:
         # Nested patterns like ['*.yml', '/a/b/c.yml'].
@@ -238,6 +241,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
                               ac_template=ac_template, ac_context=cnf,
                               **kwargs)
         else:
+            if _same_type:
+                ac_parser = find_loader(path, ac_parser, is_path(path))
             cups = single_load(path, ac_parser=ac_parser,
                                ac_template=ac_template, ac_context=cnf,
                                **kwargs)

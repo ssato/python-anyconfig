@@ -1,5 +1,7 @@
-API Usage Examples
-===================
+API Usages
+============
+
+Here are some examples of API usage.
 
 Loading single config file
 ----------------------------
@@ -20,14 +22,19 @@ To load single config file:
   # data1["b"]["b1"] => "xyz"
   # data1["c"]["c1"]["c13"] => [1, 2, 3]
 
-  # Same as above
+  # Same as above but I recommend to use the former.
   data2 = anyconfig.single_load("/path/to/foo/conf.d/a.yml")
 
-  # Or you can specify config type explicitly.
-  data3 = anyconfig.load("/path/to/foo/conf.d/b.conf", "yaml")
+  # Or you can specify config type explicitly as needed.
+  cnf_path = "/path/to/foo/conf.d/b.conf"
+  data3 = anyconfig.load(cnf_path, "yaml")
 
-  # Same as above
-  data4 = anyconfig.single_load("/path/to/foo/conf.d/b.conf", "yaml")
+  # Same as above but ...
+  data4 = anyconfig.single_load(cnf_path, "yaml")
+
+  # Same as above as a result but make parser instance and pass it explicitly.
+  yml_psr = anyconfig.find_loader(None, "yaml")
+  data5 = anyconfig.single_load(cnf_path, yml_psr)  # Or: anyconfig.load(...)
 
 You can pass backend (config loader) specific optional parameters to
 these load and dump functions as needed:
@@ -41,7 +48,7 @@ these load and dump functions as needed:
   #    Deserialize ``fp`` (a ``.read()``-supporting file-like object containing
   #    a JSON document) to a Python object.
   #    ...
-  data5 = anyconfig.load("foo.json", parse_float=None)
+  data6 = anyconfig.load("foo.json", parse_float=None)
 
 Also it's possible:
 
@@ -72,11 +79,16 @@ To load multiple config files:
                          ignore_missing=True)
 
   # Specify config files by glob path pattern:
-  data3 = anyconfig.load("/etc/foo.d/*.json")
+  cnf_path = "/etc/foo.d/*.json"
+  data3 = anyconfig.load(cnf_path)
 
-  # Similar to the above, but parameters in the former config file will be simply
+  # Similar to above but make parser instance and pass it explicitly.
+  psr = anyconfig.find_loader(cnf_path)
+  data4 = anyconfig.load(cnf_path, psr)
+
+  # Similar to the above but parameters in the former config file will be simply
   # overwritten by the later ones:
-  data4 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
+  data5 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
 
 On loading multiple config files, you can choose 'strategy' to merge
 configurations from the followings:

@@ -358,6 +358,24 @@ class Test_40_multi_load(unittest.TestCase):
         except ValueError:
             self.assertTrue(1 == 1)  # To suppress warn of pylint.
 
+    def test_16_dump_and_multi_load__mixed_file_types(self):
+        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+
+        a_path = os.path.join(self.workdir, "a.json")
+        b_path = os.path.join(self.workdir, "b.yml")
+
+        TT.dump(a, a_path)
+        TT.dump(b, b_path)
+
+        cnf = TT.multi_load([a_path, b_path])
+
+        self.assertEquals(cnf["name"], a["name"])
+        self.assertEquals(cnf["a"], b["a"])
+        self.assertEquals(cnf["b"]["b"], b["b"]["b"])
+        self.assertEquals(cnf["b"]["c"], a["b"]["c"])
+        self.assertEquals(cnf["b"]["d"], b["b"]["d"])
+
     def test_20_dump_and_multi_load__to_from_stream(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))

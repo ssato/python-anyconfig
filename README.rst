@@ -51,8 +51,8 @@ validation/generation support.
 - PyPI: https://pypi.python.org/pypi/anyconfig
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
-I, Satoru SATOH <ssato@redhat.com>, originally developed and keep maintain it
-with others' help [#]_ .
+I, Satoru SATOH <ssato@redhat.com>, originally developed and continue to
+maintain it with others' help [#]_ .
 
 .. [#] This name took an example from the 'anydbm' python standard library.
 .. [#] see the output of `git log --pretty=format:"%an %ae" | grep -vE "Satoru SATOH" | sort | uniq`.
@@ -105,7 +105,7 @@ configuration file[s] like the followings:
 
   # Similar to the above, but parameters in the former config file will be simply
   # overwritten by the later ones:
-  conf6 = anyconfig.load("/etc/foo.d/*.json", merge=anyconfig.MS_REPLACE)
+  conf6 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
 
 Also, it can process configuration files which are actually
 `jinja2-based template <http://jinja.pocoo.org>`_ files:

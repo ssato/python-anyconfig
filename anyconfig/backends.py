@@ -16,6 +16,7 @@ import pkg_resources
 import anyconfig.compat
 import anyconfig.utils
 
+import anyconfig.backend.base
 import anyconfig.backend.ini
 import anyconfig.backend.json
 import anyconfig.backend.properties
@@ -64,12 +65,6 @@ for e in pkg_resources.iter_entry_points("anyconfig_backends"):
         continue
 
 
-def cmp_cps(lhs, rhs):
-    """Compare config parsers by these priorities.
-    """
-    return anyconfig.compat.cmp(lhs.priority(), rhs.priority())
-
-
 def fst(tpl):
     """
     >>> fst((0, 1))
@@ -102,16 +97,32 @@ def groupby_key(itr, keyfunc):
 
 
 def uniq(iterable):
-    """
+    """sorted + uniq
+
+    .. note::
+       sorted(set(iterable), key=iterable.index) cannot be used for any
+       iterables (generator, a list of dicts, etc.), I guess.
+
     >>> uniq([1, 2, 3, 1, 2])
     [1, 2, 3]
+    >>> uniq((i for i in (2, 10, 3, 2, 5, 1, 7, 3)))
+    [1, 2, 3, 5, 7, 10]
     """
-    acc = []
-    for obj in iterable:
-        if obj not in acc:
-            acc.append(obj)
+    return [t[0] for t in itertools.groupby(sorted(iterable))]
 
-    return acc
+
+def is_parser(obj):
+    """
+    :return: True if given `obj` is an instance of parser.
+
+    >>> is_parser("ini")
+    False
+    >>> is_parser(anyconfig.backend.base.Parser)
+    False
+    >>> is_parser(anyconfig.backend.base.Parser())
+    True
+    """
+    return isinstance(obj, anyconfig.backend.base.Parser)
 
 
 def list_parsers_by_type(cps=None):
@@ -145,16 +156,6 @@ def list_parsers_by_extension(cps=None):
     return ((x, _list_xppairs(xps)) for x, xps in groupby_key(cps_by_ext, fst))
 
 
-def is_path(path_or_stream):
-    """
-    Is given object `path_or_stream` a file path?
-
-    :param path_or_stream: file path or stream, file/file-like object
-    :return: True if `path_or_stream` is a file path
-    """
-    return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
-
-
 def find_by_file(path_or_stream, cps=None, is_path_=False):
     """
     Find config parser by the extension of file `path_or_stream`, file path or
@@ -179,7 +180,7 @@ def find_by_file(path_or_stream, cps=None, is_path_=False):
     if cps is None:
         cps = PARSERS
 
-    if not is_path_ and not is_path(path_or_stream):
+    if not is_path_ and not anyconfig.utils.is_path(path_or_stream):
         path_or_stream = anyconfig.utils.get_path_from_stream(path_or_stream)
         if path_or_stream is None:
             return None  # There is no way to detect file path.
@@ -262,6 +263,6 @@ def list_types(cps=None):
     if cps is None:
         cps = PARSERS
 
-    return sorted(uniq(t for t, ps in list_parsers_by_type(cps)))
+    return uniq(t for t, ps in list_parsers_by_type(cps))
 
 # vim:sw=4:ts=4:et:

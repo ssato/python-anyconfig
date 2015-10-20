@@ -70,7 +70,7 @@ the followings:
 
   then::
 
-    load(["a.yml", "b.yml"], merge=anyconfig.MS_REPLACE)
+    load(["a.yml", "b.yml"], ac_merge=anyconfig.MS_REPLACE)
 
   will give object such like::
 
@@ -100,7 +100,7 @@ the followings:
 
   then::
 
-    load(["a.yml", "b.yml"], merge=anyconfig.MS_NO_REPLACE)
+    load(["a.yml", "b.yml"], ac_merge=anyconfig.MS_NO_REPLACE)
 
   will give object such like::
 
@@ -110,7 +110,7 @@ the followings:
 
   ::
 
-    load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS)
+    load(["a.yml", "b.yml"], ac_merge=anyconfig.MS_DICTS)
 
   will give object such like::
 
@@ -121,7 +121,7 @@ the followings:
 * anyconfig.MS_DICTS_AND_LISTS: Merge dicts and lists recursively. That is, the
   following::
 
-    load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS_AND_LISTS)
+    load(["a.yml", "b.yml"], ac_merge=anyconfig.MS_DICTS_AND_LISTS)
 
   will give object such like::
 

@@ -5,8 +5,8 @@
 """INI or INI like config files backend.
 
 .. versionchanged:: 0.3
-   Introduce 'parse_value' keyword option to switch behaviors, same as original
-   configparser backend and rich backend parsing each parameter values.
+   Introduce 'ac_parse_value' keyword option to switch behaviors, same as
+   original configparser and rich backend parsing each parameter values.
 
 - Format to support: INI or INI like ones
 - Requirements: It should be available always.
@@ -20,7 +20,7 @@
 - Limitations: None obvious
 - Special options:
 
-  - Use 'parse_value' boolean keyword option if you want to parse values by
+  - Use 'ac_parse_value' boolean keyword option if you want to parse values by
     custom parser, anyconfig.backend.ini._parse.
 """
 from __future__ import absolute_import
@@ -117,7 +117,7 @@ def _load(filepath=None, stream=None, sep=_SEP, **kwargs):
 
     :return: Dict or dict-like object represents config values
     """
-    _parse_val = _parse if kwargs.get("parse_value", False) else _noop
+    _parse_val = _parse if kwargs.get("ac_parse_value", False) else _noop
 
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = mk_opt_args(("defaults", "dict_type", "allow_no_value"), kwargs)
@@ -181,7 +181,7 @@ class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.DParser):
     _type = "ini"
     _extensions = ["ini"]
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename",
-                  "parse_value"]
+                  "ac_parse_value"]
 
     def load_from_path(self, filepath, **kwargs):
         """

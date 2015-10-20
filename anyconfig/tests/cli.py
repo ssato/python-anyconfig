@@ -13,12 +13,14 @@ import anyconfig.cli as TT
 import anyconfig.api
 import anyconfig.template
 import anyconfig.tests.common
+import anyconfig.tests.api
 
 from anyconfig.tests.common import CNF_0
 
 
 CNF_0_PATH = os.path.join(anyconfig.tests.common.selfdir(), "00-cnf.yml")
 SCM_0_PATH = os.path.join(anyconfig.tests.common.selfdir(), "00-scm.yml")
+CNF_TMPL_0 = anyconfig.tests.api.CNF_TMPL_1
 
 
 def _run(*args):
@@ -218,17 +220,7 @@ class Test(unittest.TestCase):
         os.makedirs(inputsdir)
 
         anyconfig.api.dump(a, os.path.join(inputsdir, "a0.yml"))
-        open(os.path.join(inputsdir, "a1.yml"), 'w').write("""\
-name: {{ name }}
-a: {{ a }}
-b:
-    b:
-        {% for x in b.b -%}
-        - {{ x }}
-        {% endfor %}
-    c: {{ b.c }}
-""")
-
+        open(os.path.join(inputsdir, "a1.yml"), 'w').write(CNF_TMPL_0)
         output = os.path.join(self.workdir, "b.json")
 
         TT.main(["dummy", "--silent", "--template", "-o", output,

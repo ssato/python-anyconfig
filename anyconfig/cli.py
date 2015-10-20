@@ -273,7 +273,7 @@ def main(argv=None):
     cnf = API.container(os.environ.copy() if options.env else {})
     diff = API.load(args, options.itype,
                     ignore_missing=options.ignore_missing,
-                    merge=options.merge, ac_template=options.template,
+                    ac_merge=options.merge, ac_template=options.template,
                     ac_schema=options.schema)
 
     _exit_if_load_failure(diff, "Failed to load: args=%s" % ", ".join(args))

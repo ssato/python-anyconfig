@@ -4,69 +4,72 @@
 #
 # pylint: disable=missing-docstring, invalid-name
 from __future__ import absolute_import
-from logging import CRITICAL
 
+import logging
 import os
 import os.path
 import unittest
 
 import anyconfig.api as TT
+import anyconfig.backends
 import anyconfig.template
 import anyconfig.tests.common
 
 from anyconfig.tests.common import CNF_0, SCM_0, dicts_equal
 
-import anyconfig.backend.ini
-import anyconfig.backend.json
-import anyconfig.backend.xml
 
-try:
-    import anyconfig.backend.yaml as BYAML
-except ImportError:
-    BYAML = None
+# suppress logging messages.
+TT.set_loglevel(logging.CRITICAL)
+
+CNF_TMPL_0 = """name: {{ name|default('a') }}
+a: {{ a }}
+b:
+    b:
+      {% for x in b.b -%}
+      - {{ x }}
+      {% endfor %}
+    c: {{ b.c }}
+"""
+
+CNF_TMPL_1 = """a: {{ a }}
+b:
+    b:
+        {% for x in b.b -%}
+        - {{ x }}
+        {% endfor %}
+    c: {{ b.c }}
+
+name: {{ name }}
+"""
+
+CNF_TMPL_2 = """a: {{ a }}
+b:
+    b:
+        {% for x in b.b -%}
+        - {{ x }}
+        {% endfor %}
+    d: {{ b.d }}
+"""
 
 
 class Test_10_find_loader(unittest.TestCase):
 
-    def __isinstance(self, obj, *cls):
-        self.assertTrue(isinstance(obj, cls))
+    def _assert_isinstance(self, obj, cls, msg=False):
+        self.assertTrue(isinstance(obj, cls), msg or repr(obj))
 
-    def test_10_find_loader__w_forced_type(self):
+    def test_10_find_loader__w_given_parser(self):
         cpath = "dummy.conf"
-
-        # These parsers should work for python >= 2.6.
-        self.__isinstance(TT.find_loader(cpath, "ini"),
-                          anyconfig.backend.ini.Parser)
-        self.__isinstance(TT.find_loader(cpath, "json"),
-                          anyconfig.backend.json.Parser)
-        self.__isinstance(TT.find_loader(cpath, "xml"),
-                          anyconfig.backend.xml.Parser)
-
-        if BYAML is not None:
-            self.__isinstance(TT.find_loader(cpath, "yaml"), BYAML.Parser)
-
-    def test_12_find_loader__w_forced_type__none(self):
-        TT.set_loglevel(CRITICAL)  # suppress the logging msg "[Error] ..."
-        cpath = "dummy.conf"
-        self.assertEquals(TT.find_loader(cpath, "type_not_exist"), None)
+        for psr in anyconfig.backends.PARSERS:
+            self._assert_isinstance(TT.find_loader(cpath, psr.type()), psr)
 
     def test_20_find_loader__by_file(self):
-        self.__isinstance(TT.find_loader("dummy.ini"),
-                          anyconfig.backend.ini.Parser)
-        self.__isinstance(TT.find_loader("dummy.json"),
-                          anyconfig.backend.json.Parser)
-        self.__isinstance(TT.find_loader("dummy.jsn"),
-                          anyconfig.backend.json.Parser)
-        self.__isinstance(TT.find_loader("dummy.xml"),
-                          anyconfig.backend.xml.Parser)
+        for psr in anyconfig.backends.PARSERS:
+            for ext in psr.extensions():
+                self._assert_isinstance(TT.find_loader("dummy." + ext), psr,
+                                        "ext=%s, psr=%r" % (ext, psr))
 
-        if BYAML is not None:
-            self.__isinstance(TT.find_loader("dummy.yaml"), BYAML.Parser)
-            self.__isinstance(TT.find_loader("dummy.yml"), BYAML.Parser)
-
-    def test_22_find_loader__by_file__none(self):
-        # see self.test_12_find_loader__w_forced_type__none
-        TT.set_loglevel(CRITICAL)
+    def test_30_find_loader__not_found(self):
+        self.assertEquals(TT.find_loader("a.cnf", "type_not_exist"), None)
         self.assertEquals(TT.find_loader("dummy.ext_not_found"), None)
 
 
@@ -109,7 +112,7 @@ class Test_20_dumps_and_loads(unittest.TestCase):
         a_s = "requires: [{{ requires|join(', ') }}]"
         context = dict(requires=["bash", "zsh"], )
 
-        a1 = TT.loads(a_s, forced_type="yaml", ac_template=True,
+        a1 = TT.loads(a_s, ac_parser="yaml", ac_template=True,
                       ac_context=context)
 
         self.assertEquals(a1["requires"], a["requires"])
@@ -120,7 +123,7 @@ class Test_20_dumps_and_loads(unittest.TestCase):
 
         a = dict(requires="{% }}", )
         a_s = 'requires: "{% }}"'
-        a1 = TT.loads(a_s, forced_type="yaml", ac_template=True,
+        a1 = TT.loads(a_s, ac_parser="yaml", ac_template=True,
                       ac_context={})
 
         self.assertEquals(a1["requires"], a["requires"])
@@ -128,7 +131,7 @@ class Test_20_dumps_and_loads(unittest.TestCase):
     def test_48_loads_w_validation(self):
         cnf_s = TT.dumps(CNF_0, "json")
         scm_s = TT.dumps(SCM_0, "json")
-        cnf_2 = TT.loads(cnf_s, forced_type="json", ac_context={},
+        cnf_2 = TT.loads(cnf_s, ac_parser="json", ac_context={},
                          ac_validate=scm_s)
 
         self.assertEquals(cnf_2["name"], CNF_0["name"])
@@ -139,17 +142,16 @@ class Test_20_dumps_and_loads(unittest.TestCase):
     def test_49_loads_w_validation_error(self):
         cnf_s = """{"a": "aaa"}"""
         scm_s = TT.dumps(SCM_0, "json")
-        cnf_2 = TT.loads(cnf_s, forced_type="json", ac_schema=scm_s)
+        cnf_2 = TT.loads(cnf_s, ac_parser="json", ac_schema=scm_s)
         self.assertTrue(cnf_2 is None, cnf_2)
 
 
-class Test30(unittest.TestCase):
+class Test_30_single_load(unittest.TestCase):
 
     cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
-        TT.set_loglevel(CRITICAL)
 
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
@@ -199,15 +201,7 @@ class Test30(unittest.TestCase):
             return
 
         cpath = os.path.join(self.workdir, "a.yaml")
-        open(cpath, 'w').write("""name: {{ name|default('a') }}
-a: {{ a }}
-b:
-    b:
-      {% for x in b.b -%}
-      - {{ x }}
-      {% endfor %}
-    c: {{ b.c }}
-""")
+        open(cpath, 'w').write(CNF_TMPL_0)
 
         cnf = TT.single_load(cpath, ac_template=True, ac_context=self.cnf)
         self.assertTrue(dicts_equal(self.cnf, cnf), str(cnf))
@@ -228,15 +222,7 @@ b:
         a2_path = os.path.join(self.workdir, "x/y/z", "a.yml")
 
         open(a_path, 'w').write("{% include 'b.yml' %}")
-        open(b_path, 'w').write("""name: {{ name|default('a') }}
-a: {{ a }}
-b:
-    b:
-      {% for x in b.b -%}
-      - {{ x }}
-      {% endfor %}
-    c: {{ b.c }}
-""")
+        open(b_path, 'w').write(CNF_TMPL_0)
         os.makedirs(os.path.dirname(a2_path))
         open(a2_path, 'w').write("a: 'xyz'")
 
@@ -272,7 +258,18 @@ b:
         cnf_3 = TT.single_load(cnf_2_path, ac_schema=scm_path)
         self.assertTrue(cnf_3 is None)  # Validation should fail.
 
-    def test_20_dump_and_multi_load(self):
+
+class Test_40_multi_load(unittest.TestCase):
+
+    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+
+    def setUp(self):
+        self.workdir = anyconfig.tests.common.setup_workdir()
+
+    def tearDown(self):
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
+
+    def test_10_dump_and_multi_load__default_merge_strategy(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
@@ -281,13 +278,10 @@ b:
         g_path = os.path.join(self.workdir, "*.json")
 
         TT.dump(a, a_path)
-        self.assertTrue(os.path.exists(a_path))
-
         TT.dump(b, b_path)
-        self.assertTrue(os.path.exists(b_path))
 
-        a0 = TT.multi_load(g_path, merge=TT.MS_DICTS)
-        a02 = TT.multi_load([g_path, b_path], merge=TT.MS_DICTS)
+        a0 = TT.multi_load(g_path)
+        a02 = TT.multi_load([g_path, b_path])
 
         self.assertEquals(a0["name"], a["name"])
         self.assertEquals(a0["a"], b["a"])
@@ -309,6 +303,17 @@ b:
         self.assertEquals(a1["b"]["c"], a["b"]["c"])
         self.assertEquals(a1["b"]["d"], b["b"]["d"])
 
+    def test_12_dump_and_multi_load__default_merge_strategy(self):
+        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+
+        a_path = os.path.join(self.workdir, "a.json")
+        b_path = os.path.join(self.workdir, "b.json")
+        g_path = os.path.join(self.workdir, "*.json")
+
+        TT.dump(a, a_path)
+        TT.dump(b, b_path)
+
         a2 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS_AND_LISTS)
 
         self.assertEquals(a2["name"], a["name"])
@@ -317,7 +322,7 @@ b:
         self.assertEquals(a2["b"]["c"], a["b"]["c"])
         self.assertEquals(a2["b"]["d"], b["b"]["d"])
 
-        a3 = TT.multi_load(os.path.join(self.workdir, "*.json"))
+        a3 = TT.multi_load(g_path)
 
         self.assertEquals(a3["name"], a["name"])
         self.assertEquals(a3["a"], b["a"])
@@ -341,7 +346,14 @@ b:
         self.assertEquals(a5["b"]["c"], a["b"]["c"])
         self.assertFalse("d" in a5["b"])
 
-    def test_21_dump_and_multi_load__to_from_stream(self):
+    def test_14_multi_load__wrong_merge_strategy(self):
+        try:
+            TT.multi_load("/dummy/*.json", merge="merge_st_not_exist")
+            raise RuntimeError("Wrong merge strategy was not handled!")
+        except ValueError:
+            self.assertTrue(1 == 1)  # To suppress warn of pylint.
+
+    def test_20_dump_and_multi_load__to_from_stream(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
@@ -361,23 +373,16 @@ b:
         self.assertEquals(cnf["b"]["c"], a["b"]["c"])
         self.assertEquals(cnf["b"]["d"], b["b"]["d"])
 
-    def test_21_multi_load__wrong_merge_strategy(self):
-        try:
-            TT.multi_load("/dummy/*.json", merge="merge_st_not_exist")
-            raise RuntimeError("Wrong merge strategy was not handled!")
-        except ValueError:
-            self.assertTrue(1 == 1)  # To suppress warn of pylint.
-
-    def test_22_multi_load__ignore_missing(self):
+    def test_30_multi_load__ignore_missing(self):
         null_cntnr = TT.container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(TT.multi_load([cpath], forced_type="ini",
+        self.assertEquals(TT.multi_load([cpath], ac_parser="ini",
                                         ignore_missing=True),
                           null_cntnr)
 
-    def test_24_multi_load__templates(self):
+    def test_40_multi_load__templates(self):
         if not anyconfig.template.SUPPORTED:
             return
 
@@ -391,26 +396,8 @@ b:
         b_path = os.path.join(self.workdir, "b.yml")
         g_path = os.path.join(self.workdir, "*.yml")
 
-        open(a_path, 'w').write("""\
-a: {{ a }}
-b:
-    b:
-        {% for x in b.b -%}
-        - {{ x }}
-        {% endfor %}
-    c: {{ b.c }}
-
-name: {{ name }}
-""")
-        open(b_path, 'w').write("""\
-a: {{ a }}
-b:
-    b:
-        {% for x in b.b -%}
-        - {{ x }}
-        {% endfor %}
-    d: {{ b.d }}
-""")
+        open(a_path, 'w').write(CNF_TMPL_1)
+        open(b_path, 'w').write(CNF_TMPL_2)
 
         a0 = TT.multi_load(g_path, merge=TT.MS_DICTS, ac_template=True,
                            ac_context=ma)
@@ -428,6 +415,17 @@ b:
         self.assertEquals(a02["b"]["b"], b["b"]["b"])
         self.assertEquals(a02["b"]["c"], a["b"]["c"])
         self.assertEquals(a02["b"]["d"], b["b"]["d"])
+
+
+class Test_50_load_and_dump(unittest.TestCase):
+
+    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+
+    def setUp(self):
+        self.workdir = anyconfig.tests.common.setup_workdir()
+
+    def tearDown(self):
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
 
     def test_30_dump_and_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
@@ -475,7 +473,7 @@ b:
         self.assertTrue(os.path.exists(cpath))
 
         with open(cpath, 'r') as strm:
-            cnf1 = TT.load(strm, forced_type="json")
+            cnf1 = TT.load(strm, ac_parser="json")
 
         self.assertTrue(dicts_equal(cnf, cnf1),
                         "cnf vs. cnf1: %s\n\n%s" % (str(cnf), str(cnf1)))
@@ -521,7 +519,7 @@ b:
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEquals(TT.load([cpath], forced_type="ini",
+        self.assertEquals(TT.load([cpath], ac_parser="ini",
                                   ignore_missing=True),
                           null_cntnr)
 

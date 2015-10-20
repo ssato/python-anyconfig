@@ -76,7 +76,7 @@ To load multiple config files:
 
   # Similar to the above, but parameters in the former config file will be simply
   # overwritten by the later ones:
-  data4 = anyconfig.load("/etc/foo.d/*.json", merge=anyconfig.MS_REPLACE)
+  data4 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
 
 On loading multiple config files, you can choose 'strategy' to merge
 configurations from the followings:
@@ -112,7 +112,7 @@ configurations from the followings:
 
   .. code-block:: python
 
-    load(["a.yml", "b.yml"], merge=anyconfig.MS_REPLACE)
+    load(["a.yml", "b.yml"], ac_merge=anyconfig.MS_REPLACE)
 
   will give object such like:
   
@@ -150,7 +150,7 @@ configurations from the followings:
   
   .. code-block:: python
 
-    load(["a.yml", "b.yml"], merge=anyconfig.MS_NO_REPLACE)
+    load(["a.yml", "b.yml"], ac_merge=anyconfig.MS_NO_REPLACE)
 
   will give object such like:
 
@@ -162,7 +162,7 @@ configurations from the followings:
 
   .. code-block:: python
 
-    load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS)
+    load(["a.yml", "b.yml"], ac_merge=anyconfig.MS_DICTS)
 
   will give object such like:
 
@@ -177,7 +177,7 @@ configurations from the followings:
 
   .. code-block:: python
  
-    load(["a.yml", "b.yml"], merge=anyconfig.MS_DICTS_AND_LISTS)
+    load(["a.yml", "b.yml"], ac_merge=anyconfig.MS_DICTS_AND_LISTS)
 
   will give object such like:
 

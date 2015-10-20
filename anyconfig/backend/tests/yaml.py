@@ -30,8 +30,8 @@ if TT is not None:
 
         cnf = CNF_0
         cnf_s = CNF_0_S
-        load_options = dict(safe=True, Loader=yaml.loader.Loader)
-        dump_options = dict(safe=True, Dumper=yaml.dumper.Dumper)
+        load_options = dict(ac_safe=True, Loader=yaml.loader.Loader)
+        dump_options = dict(ac_safe=True, Dumper=yaml.dumper.Dumper)
 
         def setUp(self):
             self.psr = TT.Parser()

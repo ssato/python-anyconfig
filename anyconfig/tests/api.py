@@ -358,6 +358,9 @@ class Test_40_multi_load(unittest.TestCase):
         except ValueError:
             self.assertTrue(1 == 1)  # To suppress warn of pylint.
 
+    def test_15_multi_load__empty_path_list(self):
+        self.assertEquals(TT.multi_load([]), TT.container())
+
     def test_16_dump_and_multi_load__mixed_file_types(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))

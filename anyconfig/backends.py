@@ -65,12 +65,6 @@ for e in pkg_resources.iter_entry_points("anyconfig_backends"):
         continue
 
 
-def cmp_cps(lhs, rhs):
-    """Compare config parsers by these priorities.
-    """
-    return anyconfig.compat.cmp(lhs.priority(), rhs.priority())
-
-
 def fst(tpl):
     """
     >>> fst((0, 1))

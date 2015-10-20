@@ -22,6 +22,6 @@ JSON and YAML backend modules (anyconfig.backend.{json,yaml}_) should be good
 examples to write backend modules and its test cases, I think.
 
 Also, please take a look at some example backend plugin modules mentioned in
-the `Supported configuration formats`_ section.
+the Supported configuration formats section.
 
 .. vim:sw=2:ts=2:et:

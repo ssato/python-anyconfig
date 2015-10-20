@@ -13,10 +13,10 @@
 - Limitations: None obvious
 - Special options:
 
-  - All keyword options of yaml.{safe_,}load and yaml.{safe_,}dump should work.
+  - All keyword options of yaml.{safe\_,}load and yaml.{safe\_,}dump should work.
 
   - Use 'ac_safe' boolean keyword option if you prefer to call
-    yaml.safe_{load,dump} instead of yaml.{load,dump}
+    yaml.safe\_{load,dump} instead of yaml.{load,dump}
 
   - See also: http://pyyaml.org/wiki/PyYAMLDocumentation
 """
@@ -27,7 +27,7 @@ import anyconfig.backend.base
 
 
 def _yml_fnc(fname, *args, **kwargs):
-    """An wrapper of yaml.{safe_,}(load|dump).
+    """An wrapper of yaml.{safe\_,}(load|dump).
 
     :param fname:
         "load" or "dump", not checked but it should be OK.
@@ -36,14 +36,14 @@ def _yml_fnc(fname, *args, **kwargs):
     :param kwargs: keyword args may contain "ac_safe" to load/dump safely
     """
     key = "ac_safe"
-    fnc = getattr(yaml, key in kwargs and "safe_" + fname or fname)
+    fnc = getattr(yaml, key in kwargs and "safe\_" + fname or fname)
     kwargs = anyconfig.backend.base.mk_opt_args([k for k in kwargs.keys()
                                                  if k != key], kwargs)
     return fnc(*args, **kwargs)
 
 
 def _yml_load(stream, **kwargs):
-    """An wrapper of yaml.{safe_,}load.
+    """An wrapper of yaml.{safe\_,}load.
 
     :param stream: a file or file-like object to load YAML content
     """
@@ -53,7 +53,7 @@ def _yml_load(stream, **kwargs):
 
 
 def _yml_dump(cnf, stream, **kwargs):
-    """An wrapper of yaml.{safe_,}dump.
+    """An wrapper of yaml.{safe\_,}dump.
 
     :param cnf: Configuration data (dict-like object) to dump
     :param stream: a file or file-like object to load YAML content

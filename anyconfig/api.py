@@ -254,7 +254,7 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
     given paths pattern.
 
     :param path_specs: Configuration file path or paths or its pattern such as
-        '/a/b/*.json' or a list of files/file-like objects
+        '/a/b/\*.json' or a list of files/file-like objects
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True

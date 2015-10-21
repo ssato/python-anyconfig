@@ -112,7 +112,7 @@ def uniq(iterable, **kwopts):
     >>> uniq((i for i in (2, 10, 3, 2, 5, 1, 7, 3)))
     [1, 2, 3, 5, 7, 10]
     >>> uniq(({str(i): i} for i in (2, 10, 3, 2, 5, 1, 7, 3)),
-    ...      key=lambda d: int(d.keys()[0]))
+    ...      key=lambda d: int(list(d.keys())[0]))
     [{'1': 1}, {'2': 2}, {'3': 3}, {'5': 5}, {'7': 7}, {'10': 10}]
     """
     return [t[0] for t in itertools.groupby(sorted(iterable, **kwopts))]

@@ -96,19 +96,26 @@ def groupby_key(itr, keyfunc):
     return itertools.groupby(sorted(itr, key=keyfunc), key=keyfunc)
 
 
-def uniq(iterable):
+def uniq(iterable, **kwopts):
     """sorted + uniq
 
     .. note::
        sorted(set(iterable), key=iterable.index) cannot be used for any
        iterables (generator, a list of dicts, etc.), I guess.
 
+    :param iterable: Iterable objects, a list, generator, iterator, etc.
+    :param kwopts: Keyword options passed to sorted()
+    :return: a sorted list of items in iterable
+
     >>> uniq([1, 2, 3, 1, 2])
     [1, 2, 3]
     >>> uniq((i for i in (2, 10, 3, 2, 5, 1, 7, 3)))
     [1, 2, 3, 5, 7, 10]
+    >>> uniq(({str(i): i} for i in (2, 10, 3, 2, 5, 1, 7, 3)),
+    ...      key=lambda d: int(d.keys()[0]))
+    [{'1': 1}, {'2': 2}, {'3': 3}, {'5': 5}, {'7': 7}, {'10': 10}]
     """
-    return [t[0] for t in itertools.groupby(sorted(iterable))]
+    return [t[0] for t in itertools.groupby(sorted(iterable, **kwopts))]
 
 
 def is_parser(obj):

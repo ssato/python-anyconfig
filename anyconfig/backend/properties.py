@@ -34,7 +34,7 @@ def _parseline(line):
 
     :param line:
         A string to parse, must not start with ' ', '#' or '!' (comment)
-    :return: A tuple of (key, value) or None
+    :return: A tuple of (key, value), both key and value may be None
 
     >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
     >>> _parseline(s0)
@@ -43,7 +43,7 @@ def _parseline(line):
     match = re.match(r"^(\S+)(?:\s+)?(?<!\\)[:=](?:\s+)?(.+)", line)
     if not match:
         LOGGER.warn("Invalid line found: %s", line)
-        return None
+        return (None, None)
 
     return match.groups()
 
@@ -124,12 +124,11 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
         prev = ""  # re-initialize for later use.
 
-        keyval = _parseline(line)
-        if keyval is None:
+        (key, val) = _parseline(line)
+        if key is None:
             LOGGER.warn("Failed to parse the line: %s", line)
             continue
 
-        (key, val) = keyval
         ret[key] = val
 
     return ret

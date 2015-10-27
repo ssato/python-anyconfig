@@ -81,6 +81,29 @@ def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):
     return line
 
 
+def _unescape(in_s):
+    """
+    :param in_s: Input string
+
+    # TODO:
+    # >>> _unescape(r"aaa\\:bbb\\c")
+    # 'aaa:bbb\\c'
+    """
+    return re.sub(r"\\([:=\\])", r'\1', in_s)
+
+
+def _escape(in_s):
+    """
+    :param in_s: Input string
+
+    # TODO:
+    # >>> _escape(r"aaa:bbb")
+    # 'aaa\\:bbb'
+    """
+    _esc = lambda c: chr(92) + c if c in (':', '=', '\\') else c
+    return ''.join(_esc(c) for c in in_s)
+
+
 def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     """
     Load and parse Java properties file given as a fiel or file-like object
@@ -102,6 +125,9 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     {'calendar.japanese.type': 'LocalGregorianCalendar'}
     >>> load(to_strm(s0 + "# ..."))
     {'calendar.japanese.type': 'LocalGregorianCalendar'}
+    >>> s1 = r"key=a\\:b"
+    >>> load(to_strm(s1))
+    {'key': 'a:b'}
     >>> s2 = '''application/postscript: \\
     ...         x=Postscript File;y=.eps,.ps
     ... '''
@@ -129,7 +155,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
             LOGGER.warn("Failed to parse the line: %s", line)
             continue
 
-        ret[key] = val
+        ret[key] = _unescape(val)
 
     return ret
 
@@ -162,6 +188,6 @@ class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.L2Parser,
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in anyconfig.compat.iteritems(cnf):
-            stream.write("%s = %s\n" % (key, val))
+            stream.write("%s = %s\n" % (key, _escape(val)))
 
 # vim:sw=4:ts=4:et:

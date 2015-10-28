@@ -14,7 +14,7 @@ import operator
 
 from anyconfig.utils import is_iterable
 
-# TODO: Keep items' order:
+# TBD: Keep items' order:
 # from collections import OrderedDict as dict
 
 

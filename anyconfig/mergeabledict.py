@@ -43,6 +43,8 @@ def jsnp_decode(jsn_s):
     Parse and decode given encoded JSON Pointer expression, convert ~1 to
     / and ~0 to ~.
 
+    >>> jsnp_decode("/a~1b")
+    '/a/b'
     >>> jsnp_decode("~1aaa~1~0bbb")
     '/aaa/~bbb'
     """

@@ -7,7 +7,6 @@
 """
 from __future__ import absolute_import
 from .compat import iteritems
-from .parser import PATH_SEPS
 
 import collections
 import functools
@@ -28,6 +27,38 @@ MS_DICTS = "merge_dicts"
 MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 
 MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
+
+PATH_SEPS = ('/', '.')
+
+
+def parse_path(path, seps=PATH_SEPS):
+    """
+    Parse path expression and return list of path items.
+
+    :param path: Path expression may contain separator chars.
+    :param seps: Separator char candidates.
+
+    :return: A list of keys to fetch object[s] later.
+
+    >>> parse_path('')
+    []
+    >>> parse_path('/a') == parse_path('.a') == ['a']
+    True
+    >>> parse_path('a') == parse_path('a.') == ['a']
+    True
+    >>> parse_path('/a/b/c') == parse_path('a.b.c') == ['a', 'b', 'c']
+    True
+    >>> parse_path('abc')
+    ['abc']
+    """
+    if not path:
+        return []
+
+    for sep in seps:
+        if sep in path:
+            return [x for x in path.split(sep) if x]
+
+    return [path]
 
 
 def get(dic, path, seps=PATH_SEPS):

@@ -12,7 +12,7 @@ from anyconfig.tests.common import dicts_equal
 
 class Test00Functions(unittest.TestCase):
 
-    def test_create_from__convert_to(self):
+    def test_10_create_from__convert_to(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), e=[3, 4])
         b = TT.create_from(a)
         c = TT.convert_to(b)
@@ -20,6 +20,32 @@ class Test00Functions(unittest.TestCase):
         self.assertTrue(isinstance(b, TT.MergeableDict))
         self.assertTrue(isinstance(c, dict))
         self.assertFalse(isinstance(c, TT.MergeableDict))
+
+    def test_20_get__json_pointer(self):
+        # test case in rfc, http://tools.ietf.org/html/rfc6901
+        dic = {"foo": ["bar", "baz"],
+               "": 0,
+               "a/b": 1,
+               "c%d": 2,
+               "e^f": 3,
+               "g|h": 4,
+               r"i\\j": 5,
+               r'k\"l': 6,
+               " ": 7,
+               "m~n": 8}
+
+        self.assertTrue(dicts_equal(TT.get(dic, "")[0], dic))
+        self.assertEquals(TT.get(dic, "/foo")[0], ["bar", "baz"])
+        self.assertEquals(TT.get(dic, "/foo/0")[0], "bar")
+        self.assertEquals(TT.get(dic, "/")[0], 0)
+        self.assertEquals(TT.get(dic, "/a~1b")[0], 1)
+        self.assertEquals(TT.get(dic, "/c%d")[0], 2)
+        self.assertEquals(TT.get(dic, "/e^f")[0], 3)
+        self.assertEquals(TT.get(dic, "/g|h")[0], 4)
+        self.assertEquals(TT.get(dic, r"/i\\j")[0], 5)
+        self.assertEquals(TT.get(dic, r'/k\"l')[0], 6)
+        self.assertEquals(TT.get(dic, "/ ")[0], 7)
+        self.assertEquals(TT.get(dic, "/m~0n")[0], 8)
 
 
 class Test10MergeableDict(unittest.TestCase):

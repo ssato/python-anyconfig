@@ -38,14 +38,14 @@ _JSNP_GET_ARRAY_IDX_REG = re.compile(r"(?:0|[1-9][0-9]*)")
 _JSNP_SET_ARRAY_IDX = re.compile(r"(?:0|[1-9][0-9]*|-)")
 
 
-def jsnp_decode(jsn_s):
+def jsnp_unescape(jsn_s):
     """
     Parse and decode given encoded JSON Pointer expression, convert ~1 to
     / and ~0 to ~.
 
-    >>> jsnp_decode("/a~1b")
+    >>> jsnp_unescape("/a~1b")
     '/a/b'
-    >>> jsnp_decode("~1aaa~1~0bbb")
+    >>> jsnp_unescape("~1aaa~1~0bbb")
     '/aaa/~bbb'
     """
     return jsn_s.replace('~1', '/').replace('~0', '~')
@@ -126,7 +126,7 @@ def get(dic, path, seps=PATH_SEPS):
     if not path:
         return (dic, '')
 
-    items = parse_path(jsnp_decode(path), seps)
+    items = [jsnp_unescape(p) for p in parse_path(path, seps)]
     if not items:
         return (dic, '')
     try:

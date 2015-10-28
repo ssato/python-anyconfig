@@ -23,12 +23,7 @@ CASES = dict(single_0=[("", "")],
                           [('requires', ['bash', 'zsh']), ]),
                          ("obsoletes:sysdata;conflicts:sysdata-old",
                           [('obsoletes', 'sysdata'),
-                           ('conflicts', 'sysdata-old')])],
-             path_empty=[("", [])],
-             path_single=[("", []), ("a", ['a']), ("/a", ['a']),
-                          (".a", ['a']), ("a.", ['a'])],
-             path_multi=[("/a/b/c/d", ['a', 'b', 'c', 'd']),
-                         ("a.b.c.d", ['a', 'b', 'c', 'd'])])
+                           ('conflicts', 'sysdata-old')])])
 
 
 class Test(unittest.TestCase):
@@ -56,14 +51,5 @@ class Test(unittest.TestCase):
     def test_30_parse(self):
         self.run_cases("single", TT.parse)
         self.run_cases("list", TT.parse)
-
-    def test_50_parse_path__empty(self):
-        self.run_cases("path_empty", TT.parse_path)
-
-    def test_52_parse_path__single(self):
-        self.run_cases("path_single", TT.parse_path)
-
-    def test_54_parse_path__multi(self):
-        self.run_cases("path_multi", TT.parse_path)
 
 # vim:sw=4:ts=4:et:

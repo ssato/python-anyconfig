@@ -112,7 +112,7 @@ def get(dic, path, seps=PATH_SEPS):
     ([1, 2], '')
     >>> get(d, "/a/b/d/1")
     (2, '')
-    >>> get(d, "/a/b/d/2")  # doctest: +IGNORE_EXCEPTION_DETAIL
+    >>> get(d, "/a/b/d/2")
     (None, 'list index out of range')
     >>> get(d, "/a/b/d/-")  # doctest: +ELLIPSIS
     (None, 'list indices must be integers...')

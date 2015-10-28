@@ -97,7 +97,9 @@ def get(dic, path, seps=PATH_SEPS):
     :return: A tuple of (result_object, error_message)
 
     >>> d = {'a': {'b': {'c': 0, 'd': [1, 2]}}, '': 3}
-    >>> d2 = get(d, '')
+    >>> (d2, err) = get(d, '')
+    >>> err
+    ''
     >>> len(d2) == len(d) and sorted(d2.items()) == sorted(d.items())
     True
     >>> get(d, '/') == (3, '')
@@ -120,11 +122,11 @@ def get(dic, path, seps=PATH_SEPS):
     True
     """
     if not path:
-        return dic
+        return (dic, '')
 
     items = parse_path(jsnp_decode(path), seps)
     if not items:
-        return dic
+        return (dic, '')
     try:
         if len(items) == 1:
             return (dic[items[0]], '')

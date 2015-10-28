@@ -4,6 +4,12 @@
 # License: MIT
 #
 """Merge-able dict.
+
+.. versionadded: 0.3.1
+   Added naive and partial implementation of JSON Pointer support
+
+.. note::
+   JSON Pointer: http://tools.ietf.org/html/rfc6901
 """
 from __future__ import absolute_import
 from .compat import iteritems
@@ -11,6 +17,7 @@ from .compat import iteritems
 import collections
 import functools
 import operator
+import re
 
 from anyconfig.utils import is_iterable
 
@@ -27,6 +34,20 @@ MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 
 PATH_SEPS = ('/', '.')
 
+_JSNP_GET_ARRAY_IDX_REG = re.compile(r"(?:0|[1-9][0-9]*)")
+_JSNP_SET_ARRAY_IDX = re.compile(r"(?:0|[1-9][0-9]*|-)")
+
+
+def jsnp_decode(jsn_s):
+    """
+    Parse and decode given encoded JSON Pointer expression, convert ~1 to
+    / and ~0 to ~.
+
+    >>> jsnp_decode("~1aaa~1~0bbb")
+    '/aaa/~bbb'
+    """
+    return jsn_s.replace('~1', '/').replace('~0', '~')
+
 
 def parse_path(path, seps=PATH_SEPS):
     """
@@ -39,6 +60,8 @@ def parse_path(path, seps=PATH_SEPS):
 
     >>> parse_path('')
     []
+    >>> parse_path('/')  # JSON Pointer spec expects this behavior.
+    ['']
     >>> parse_path('/a') == parse_path('.a') == ['a']
     True
     >>> parse_path('a') == parse_path('a.') == ['a']
@@ -53,6 +76,8 @@ def parse_path(path, seps=PATH_SEPS):
 
     for sep in seps:
         if sep in path:
+            if path == sep:  # Special case, '/' or '.' only.
+                return ['']
             return [x for x in path.split(sep) if x]
 
     return [path]
@@ -62,29 +87,56 @@ def get(dic, path, seps=PATH_SEPS):
     """
     getter for nested dicts.
 
+    .. versionchanged: 0.3.1
+       Added naive and partial implementation of JSON Pointer support
+
     :param dic: Dict or dict-like object
     :param path: Path expression to point object wanted
-    :param seps: Separator char candidates.
+    :param seps: Separator char candidates
 
-    >>> d = dict(a=dict(b=dict(c=0, d=1)))
-    >>> get(d, '/') == (d, '')
+    :return: A tuple of (result_object, error_message)
+
+    >>> d = {'a': {'b': {'c': 0, 'd': [1, 2]}}, '': 3}
+    >>> d2 = get(d, '')
+    >>> len(d2) == len(d) and sorted(d2.items()) == sorted(d.items())
+    True
+    >>> get(d, '/') == (3, '')
     True
     >>> get(d, "/a/b/c")
     (0, '')
     >>> get(d, "a.b.d")
-    (1, '')
-    >>> get(d, "a.b") == ({'c': 0, 'd': 1}, '')
+    ([1, 2], '')
+    >>> get(d, "/a/b/d/1")
+    (2, '')
+    >>> get(d, "/a/b/d/2")  # doctest: +IGNORE_EXCEPTION_DETAIL
+    (None, 'list index out of range')
+    >>> get(d, "/a/b/d/-")  # doctest: +ELLIPSIS
+    (None, 'list indices must be integers, not str')
+    >>> get(d, "a.b") == ({'c': 0, 'd': [1, 2]}, '')
     True
     >>> get(d, "a.b.key_not_exist")[0] is None
     True
     >>> get('a str', 'a')[0] is None
     True
     """
+    if not path:
+        return dic
+
+    items = parse_path(jsnp_decode(path), seps)
+    if not items:
+        return dic
     try:
-        return (functools.reduce(operator.getitem, parse_path(path, seps),
-                                 dic),
-                '')
-    except (TypeError, KeyError) as exc:
+        if len(items) == 1:
+            return (dic[items[0]], '')
+
+        parent = functools.reduce(operator.getitem, items[:-1], dic)
+
+        if is_iterable(parent) and _JSNP_GET_ARRAY_IDX_REG.match(items[-1]):
+            return (parent[int(items[-1])], '')
+        else:
+            return (parent[items[-1]], '')
+
+    except (TypeError, KeyError, IndexError) as exc:
         return (None, str(exc))
 
 

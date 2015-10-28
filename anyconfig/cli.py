@@ -95,7 +95,9 @@ Int, str, etc."""
 _GET_HELP = ("Specify key path to get part of config, for example, "
              "'--get a.b.c' to config {'a': {'b': {'c': 0, 'd': 1}}} "
              "gives 0 and '--get a.b' to the same config gives "
-             "{'c': 0, 'd': 1}.")
+             "{'c': 0, 'd': 1}. Path expression can be JSON Pointer "
+             "expression (http://tools.ietf.org/html/rfc6901) such like "
+             "'', '/a~1b', '/m~0n'.")
 _SET_HELP = ("Specify key path to set (update) part of config, for "
              "example, '--set a.b.c=1' to a config {'a': {'b': {'c': 0, "
              "'d': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.")

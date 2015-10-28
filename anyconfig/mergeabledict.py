@@ -12,9 +12,6 @@ import collections
 import functools
 import operator
 
-import anyconfig.parser
-import anyconfig.utils
-
 from anyconfig.utils import is_iterable
 
 # TODO: Keep items' order:
@@ -84,8 +81,7 @@ def get(dic, path, seps=PATH_SEPS):
     True
     """
     try:
-        return (functools.reduce(operator.getitem,
-                                 anyconfig.parser.parse_path(path, seps),
+        return (functools.reduce(operator.getitem, parse_path(path, seps),
                                  dic),
                 '')
     except (TypeError, KeyError) as exc:
@@ -106,7 +102,7 @@ def mk_nested_dic(path, val, seps=PATH_SEPS):
     {'a': {'b': {'c': 1}}}
     """
     ret = None
-    for key in reversed(anyconfig.parser.parse_path(path, seps)):
+    for key in reversed(parse_path(path, seps)):
         ret = {key: val if ret is None else ret.copy()}
 
     return ret

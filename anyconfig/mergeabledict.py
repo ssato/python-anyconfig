@@ -115,7 +115,7 @@ def get(dic, path, seps=PATH_SEPS):
     >>> get(d, "/a/b/d/2")  # doctest: +IGNORE_EXCEPTION_DETAIL
     (None, 'list index out of range')
     >>> get(d, "/a/b/d/-")  # doctest: +ELLIPSIS
-    (None, 'list indices must be integers, not str')
+    (None, 'list indices must be integers...')
     >>> get(d, "a.b") == ({'c': 0, 'd': [1, 2]}, '')
     True
     >>> get(d, "a.b.key_not_exist")[0] is None

@@ -103,8 +103,8 @@ def get(dic, path, seps=PATH_SEPS):
     (3, '')
     >>> get(d, "/a/b/c")
     (0, '')
-    >>> get(d, "a.b")
-    ({'c': 0, 'd': [1, 2]}, '')
+    >>> sorted(get(d, "a.b")[0].items())
+    [('c', 0), ('d', [1, 2])]
     >>> (get(d, "a.b.d"), get(d, "/a/b/d/1"))
     (([1, 2], ''), (2, ''))
     >>> get(d, "a.b.key_not_exist")  # doctest: +ELLIPSIS

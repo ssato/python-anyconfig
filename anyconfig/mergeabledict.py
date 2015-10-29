@@ -114,9 +114,6 @@ def get(dic, path, seps=PATH_SEPS):
     >>> get(d, "/a/b/d/-")  # doctest: +ELLIPSIS
     (None, 'list indices must be integers...')
     """
-    if not path:
-        return (dic, '')
-
     items = [jsnp_unescape(p) for p in parse_path(path, seps)]
     if not items:
         return (dic, '')

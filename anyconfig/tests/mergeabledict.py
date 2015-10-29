@@ -21,7 +21,13 @@ class Test00Functions(unittest.TestCase):
         self.assertTrue(isinstance(c, dict))
         self.assertFalse(isinstance(c, TT.MergeableDict))
 
-    def test_20_get__json_pointer(self):
+    def test_20_get__invalid_inputs(self):
+        dic = dict(a=1, b=[1, 2])
+        (dic2, err) = TT.get(dic, '')
+        self.assertEquals(err, '')
+        self.assertTrue(dicts_equal(dic2, dic))
+
+    def test_22_get__json_pointer(self):
         # test case in rfc, http://tools.ietf.org/html/rfc6901
         dic = {"foo": ["bar", "baz"],
                "": 0,
@@ -46,6 +52,22 @@ class Test00Functions(unittest.TestCase):
         self.assertEquals(TT.get(dic, r'/k\"l')[0], 6)
         self.assertEquals(TT.get(dic, "/ ")[0], 7)
         self.assertEquals(TT.get(dic, "/m~0n")[0], 8)
+
+    def test_24_get__json_pointer__array(self):
+        dic = dict(a=[1, 2], )
+        self.assertEquals(TT.get(dic, "/a/1"), (2, ''))
+
+        (val, msg) = TT.get(dic, "/a/2")
+        self.assertTrue(val is None)
+        self.assertTrue(bool(msg))
+        # maybe the error message depends on python version.
+        # self.assertEquals(msg, 'list index out of range')
+
+        (val, msg) = TT.get(dic, "/a/b/d/-")
+        self.assertTrue(val is None)
+        self.assertTrue(bool(msg))
+        # Likewise.
+        # self.assertEquals(msg, 'list indices must be integers...')
 
 
 class Test10MergeableDict(unittest.TestCase):

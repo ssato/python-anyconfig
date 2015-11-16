@@ -36,8 +36,9 @@ def _parseline(line):
         A string to parse, must not start with ' ', '#' or '!' (comment)
     :return: A tuple of (key, value), both key and value may be None
 
-    >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
-    >>> _parseline(s0)
+    >>> _parseline("aaa")
+    (None, None)
+    >>> _parseline("calendar.japanese.type: LocalGregorianCalendar")
     ('calendar.japanese.type', 'LocalGregorianCalendar')
     """
     match = re.match(r"^(\S+)(?:\s+)?(?<!\\)[:=](?:\s+)?(.+)", line)
@@ -81,6 +82,36 @@ def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):
     return line
 
 
+def unescape(in_s):
+    """
+    :param in_s: Input string
+    """
+    return re.sub(r"\\(.)", r"\1", in_s)
+
+
+def _escape_char(in_c):
+    """
+    Escape some special characters in java .properties files.
+
+    :param in_c: Input character
+
+    >>> "\\:" == _escape_char(':')
+    True
+    >>> "\\=" == _escape_char('=')
+    True
+    >>> _escape_char('a')
+    'a'
+    """
+    return '\\' + in_c if in_c in (':', '=', '\\') else in_c
+
+
+def escape(in_s):
+    """
+    :param in_s: Input string
+    """
+    return ''.join(_escape_char(c) for c in in_s)
+
+
 def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     """
     Load and parse Java properties file given as a fiel or file-like object
@@ -94,14 +125,21 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
     >>> to_strm = anyconfig.compat.StringIO
     >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
+    >>> load(to_strm(''))
+    {}
     >>> load(to_strm("# " + s0))
     {}
     >>> load(to_strm("! " + s0))
+    {}
+    >>> load(to_strm("calendar.japanese.type:"))
     {}
     >>> load(to_strm(s0))
     {'calendar.japanese.type': 'LocalGregorianCalendar'}
     >>> load(to_strm(s0 + "# ..."))
     {'calendar.japanese.type': 'LocalGregorianCalendar'}
+    >>> s1 = r"key=a\\:b"
+    >>> load(to_strm(s1))
+    {'key': 'a:b'}
     >>> s2 = '''application/postscript: \\
     ...         x=Postscript File;y=.eps,.ps
     ... '''
@@ -129,7 +167,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
             LOGGER.warn("Failed to parse the line: %s", line)
             continue
 
-        ret[key] = val
+        ret[key] = unescape(val)
 
     return ret
 
@@ -162,6 +200,6 @@ class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.L2Parser,
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in anyconfig.compat.iteritems(cnf):
-            stream.write("%s = %s\n" % (key, val))
+            stream.write("%s = %s\n" % (key, escape(val)))
 
 # vim:sw=4:ts=4:et:

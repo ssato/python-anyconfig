@@ -36,8 +36,9 @@ def _parseline(line):
         A string to parse, must not start with ' ', '#' or '!' (comment)
     :return: A tuple of (key, value), both key and value may be None
 
-    >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
-    >>> _parseline(s0)
+    >>> _parseline("aaa")
+    (None, None)
+    >>> _parseline("calendar.japanese.type: LocalGregorianCalendar")
     ('calendar.japanese.type', 'LocalGregorianCalendar')
     """
     match = re.match(r"^(\S+)(?:\s+)?(?<!\\)[:=](?:\s+)?(.+)", line)
@@ -93,6 +94,13 @@ def _escape_char(in_c):
     Escape some special characters in java .properties files.
 
     :param in_c: Input character
+
+    >>> "\\:" == _escape_char(':')
+    True
+    >>> "\\=" == _escape_char('=')
+    True
+    >>> _escape_char('a')
+    'a'
     """
     return '\\' + in_c if in_c in (':', '=', '\\') else in_c
 
@@ -117,9 +125,13 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
     >>> to_strm = anyconfig.compat.StringIO
     >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
+    >>> load(to_strm(''))
+    {}
     >>> load(to_strm("# " + s0))
     {}
     >>> load(to_strm("! " + s0))
+    {}
+    >>> load(to_strm("calendar.japanese.type:"))
     {}
     >>> load(to_strm(s0))
     {'calendar.japanese.type': 'LocalGregorianCalendar'}

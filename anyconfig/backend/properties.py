@@ -88,12 +88,20 @@ def unescape(in_s):
     return re.sub(r"\\(.)", r"\1", in_s)
 
 
+def _escape_char(in_c):
+    """
+    Escape some special characters in java .properties files.
+
+    :param in_c: Input character
+    """
+    return '\\' + in_c if in_c in (':', '=', '\\') else in_c
+
+
 def escape(in_s):
     """
     :param in_s: Input string
     """
-    _esc = lambda c: '\\' + c if c in (':', '=', '\\') else c
-    return ''.join(_esc(c) for c in in_s)
+    return ''.join(_escape_char(c) for c in in_s)
 
 
 def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):

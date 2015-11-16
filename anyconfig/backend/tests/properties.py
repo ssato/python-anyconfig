@@ -4,7 +4,7 @@
 #
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
-
+import unittest
 import anyconfig.backend.properties as TT
 import anyconfig.backend.tests.ini
 
@@ -19,6 +19,24 @@ sect1.d = \\
 """
 CNF = {"a": "0", "b": "bbb", "sect0.c": "x;y;z",
        "sect1.d": "1,2,3"}
+
+
+class Test00(unittest.TestCase):
+
+    def test_10_unescape(self):
+        exp = "aaa:bbb"
+        res = TT.unescape(r"aaa\:bbb")
+        self.assertEquals(res, exp, res)
+
+    def test_12_unescape(self):
+        exp = r"\a"
+        res = TT.unescape(r"\\a")
+        self.assertEquals(res, exp, res)
+
+    def test_20_escape(self):
+        exp = r"\:\=\\ "
+        res = TT.escape(r":=\ ")
+        self.assertEquals(res, exp, res)
 
 
 class Test10(anyconfig.backend.tests.ini.Test10):

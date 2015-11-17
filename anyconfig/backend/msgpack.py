@@ -25,7 +25,7 @@ import anyconfig.backend.base
 from anyconfig.backend.base import to_method
 
 
-class Parser(anyconfig.backend.base.FromStreamLoader2,
+class Parser(anyconfig.backend.base.FromStreamLoader,
              anyconfig.backend.base.ToStreamDumper):
     """
     Loader/Dumper for MessagePack files.

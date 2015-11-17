@@ -43,7 +43,7 @@ if not anyconfig.compat.IS_PYTHON_3:
     _DUMP_OPTS.append("encoding")
 
 
-class Parser(anyconfig.backend.base.FromStreamLoader2,
+class Parser(anyconfig.backend.base.FromStreamLoader,
              anyconfig.backend.base.ToStreamDumper):
     """
     Parser for JSON files.

@@ -320,16 +320,6 @@ class FromStreamLoader(Parser):
         return self.load_from_stream(anyconfig.compat.StringIO(content),
                                      **kwargs)
 
-
-class FromStreamLoader2(Parser):
-    """
-    Abstract config parser provides a method to load configuration from a file
-    or file-like object (stream) to help implement parser of which backend
-    lacks of such function.
-
-    Parser classes inherit this class have to override the method
-    :meth:`load_from_stream` at least.
-    """
     def load_from_path(self, filepath, **kwargs):
         """
         Load config from given file path `filepath`.

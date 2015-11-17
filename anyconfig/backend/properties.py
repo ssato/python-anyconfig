@@ -173,7 +173,6 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
 
 class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.FromStreamLoader2,
              anyconfig.backend.base.ToStreamDumper):
     """
     Parser for Java properties files.

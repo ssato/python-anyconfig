@@ -63,7 +63,6 @@ def _yml_dump(cnf, stream, **kwargs):
 
 
 class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.FromStreamLoader2,
              anyconfig.backend.base.ToStreamDumper):
     """
     Parser for YAML files.

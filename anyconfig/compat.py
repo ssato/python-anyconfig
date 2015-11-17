@@ -80,7 +80,7 @@ def copen(filepath, flag='r', encoding=ENCODING):
 # pylint: disable=redefined-builtin
 if IS_PYTHON_3:
     import configparser  # flake8: noqa
-    from collections import UserDict # flake8: noqa
+    from collections import UserDict  # flake8: noqa
     from io import StringIO  # flake8: noqa
     iteritems = py3_iteritems
     from_iterable = itertools.chain.from_iterable

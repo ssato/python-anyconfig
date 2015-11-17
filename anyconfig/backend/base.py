@@ -269,6 +269,37 @@ class Parser(object):
             self.dump_to_stream(cnf, path_or_stream, **kwargs)
 
 
+class FromStringLoader(Parser):
+    """
+    Abstract config parser provides a method to load configuration from string
+    content to help implement parser of which backend lacks of such function.
+
+    Parser classes inherit this class have to override the method
+    :meth:`load_from_string` at least.
+    """
+    def load_from_stream(self, stream, **kwargs):
+        """
+        Load config from given stream `stream`.
+
+        :param stream: Config file or file-like object
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
+        :return: self.container object holding config parameters
+        """
+        return self.load_from_string(stream.read(), **kwargs)
+
+    def load_from_path(self, filepath, **kwargs):
+        """
+        Load config from given file path `filepath`.
+
+        :param filepath: Config file path
+        :param kwargs: optional keyword parameters to be sanitized :: dict
+
+        :return: self.container object holding config parameters
+        """
+        return self.load_from_stream(self.ropen(filepath), **kwargs)
+
+
 class FromStreamLoader(Parser):
     """
     Abstract config parser provides a method to load configuration from string

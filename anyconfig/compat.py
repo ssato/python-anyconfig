@@ -89,7 +89,7 @@ if IS_PYTHON_3:
     STR_TYPES = (str, )
 else:
     import ConfigParser as configparser  # flake8: noqa
-    from UserDict import UserDict # flake8: noqa
+    from UserDict import UserDict  # flake8: noqa
     try:
         from cStringIO import StringIO  # flake8: noqa
     except ImportError:

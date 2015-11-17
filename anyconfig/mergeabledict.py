@@ -12,7 +12,7 @@
    JSON Pointer: http://tools.ietf.org/html/rfc6901
 """
 from __future__ import absolute_import
-from .compat import iteritems
+from .compat import iteritems, UserDict
 
 import collections
 import functools
@@ -181,7 +181,7 @@ def is_dict_like(obj):
     >>> is_dict_like(create_from({}))
     True
     """
-    return isinstance(obj, (dict, collections.Mapping))
+    return isinstance(obj, (dict, collections.Mapping, UserDict))
 
 
 def convert_to(mdict):

@@ -80,6 +80,7 @@ def copen(filepath, flag='r', encoding=ENCODING):
 # pylint: disable=redefined-builtin
 if IS_PYTHON_3:
     import configparser  # flake8: noqa
+    from collections import UserDict # flake8: noqa
     from io import StringIO  # flake8: noqa
     iteritems = py3_iteritems
     from_iterable = itertools.chain.from_iterable
@@ -88,6 +89,7 @@ if IS_PYTHON_3:
     STR_TYPES = (str, )
 else:
     import ConfigParser as configparser  # flake8: noqa
+    from UserDict import UserDict # flake8: noqa
     try:
         from cStringIO import StringIO  # flake8: noqa
     except ImportError:

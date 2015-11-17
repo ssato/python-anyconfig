@@ -35,7 +35,7 @@ except AttributeError:  # _use_c looks missing in python 3 version.
     _LOAD_OPTS = []  # Keep it empty until making sure valid options.
 
 
-class Parser(anyconfig.backend.base.FromStreamLoader2,
+class Parser(anyconfig.backend.base.FromStringLoader,
              anyconfig.backend.base.ToStringDumper):
     """
     Loader/Dumper of BSON files.
@@ -59,16 +59,5 @@ class Parser(anyconfig.backend.base.FromStreamLoader2,
         """
         objs = bson.decode_all(content, **kwargs)
         return None if not objs else self.container.create(objs[0])
-
-    def load_from_stream(self, stream, **kwargs):
-        """
-        Load BSON config from given file or file-like object `stream`.
-
-        :param stream: Config file or file-like object
-        :param kwargs: backend-specific optional keyword parameters :: dict
-
-        :return: self.container() object holding config parameters
-        """
-        return self.load_from_string(stream.read(), **kwargs)
 
 # vim:sw=4:ts=4:et:

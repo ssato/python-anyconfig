@@ -212,7 +212,7 @@ class Parser(object):
 
         :return: string represents the configuration
         """
-        pass  # Dummy impl. e.g. str(cnf) ?
+        pass
 
     def dump_to_path(self, cnf, filepath, **kwargs):
         """

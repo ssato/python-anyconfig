@@ -24,7 +24,8 @@ import anyconfig.backend.base
 from anyconfig.backend.base import to_method
 
 
-class Parser(anyconfig.backend.base.L2Parser, anyconfig.backend.base.D2Parser):
+class Parser(anyconfig.backend.base.FromStreamLoader2,
+             anyconfig.backend.base.ToStreamDumper):
     """
     TOML parser.
     """

@@ -269,7 +269,7 @@ class Parser(object):
             self.dump_to_stream(cnf, path_or_stream, **kwargs)
 
 
-class LParser(Parser):
+class FromStreamLoader(Parser):
     """
     Abstract config parser provides a method to load configuration from string
     content to help implement parser of which backend lacks of such function.
@@ -290,7 +290,7 @@ class LParser(Parser):
                                      **kwargs)
 
 
-class L2Parser(Parser):
+class FromStreamLoader2(Parser):
     """
     Abstract config parser provides a method to load configuration from a file
     or file-like object (stream) to help implement parser of which backend
@@ -311,7 +311,7 @@ class L2Parser(Parser):
         return self.load_from_stream(self.ropen(filepath), **kwargs)
 
 
-class DParser(Parser):
+class ToStringDumper(Parser):
     """
     Abstract config parser provides a method to dump configuration to a file or
     file-like object (stream) and a file of given path to help implement parser
@@ -344,7 +344,7 @@ class DParser(Parser):
         stream.write(self.dump_to_string(cnf, **kwargs))
 
 
-class D2Parser(Parser):
+class ToStreamDumper(Parser):
     """
     Abstract config parser provides methods to dump configuration to a string
     content or a file of given path to help implement parser of which backend

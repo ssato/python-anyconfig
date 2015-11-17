@@ -35,7 +35,8 @@ except AttributeError:  # _use_c looks missing in python 3 version.
     _LOAD_OPTS = []  # Keep it empty until making sure valid options.
 
 
-class Parser(anyconfig.backend.base.L2Parser, anyconfig.backend.base.DParser):
+class Parser(anyconfig.backend.base.FromStreamLoader2,
+             anyconfig.backend.base.ToStringDumper):
     """
     Loader/Dumper of BSON files.
     """

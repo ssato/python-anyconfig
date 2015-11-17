@@ -62,8 +62,8 @@ def _yml_dump(cnf, stream, **kwargs):
     return _yml_fnc("dump", cnf, stream, **kwargs)
 
 
-class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.L2Parser,
-             anyconfig.backend.base.D2Parser):
+class Parser(anyconfig.backend.base.FromStreamLoader,
+             anyconfig.backend.base.ToStreamDumper):
     """
     Parser for YAML files.
     """

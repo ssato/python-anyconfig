@@ -133,7 +133,7 @@ def etree_write(tree, stream):
         tree.write(stream, encoding='UTF-8', xml_declaration=True)
 
 
-class Parser(anyconfig.backend.base.D2Parser):
+class Parser(anyconfig.backend.base.ToStreamDumper):
     """
     Parser for XML files.
     """

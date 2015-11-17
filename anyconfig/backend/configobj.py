@@ -35,7 +35,8 @@ def make_configobj(cnf, **kwargs):
     return cobj
 
 
-class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.D2Parser):
+class Parser(anyconfig.backend.base.FromStreamLoader,
+             anyconfig.backend.base.ToStreamDumper):
     """
     Parser for Ini-like config files which configobj supports.
     """

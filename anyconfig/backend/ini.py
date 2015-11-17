@@ -174,7 +174,8 @@ def mk_lines_g(data):
         yield "\n"  # put an empty line just after each sections.
 
 
-class Parser(anyconfig.backend.base.LParser, anyconfig.backend.base.DParser):
+class Parser(anyconfig.backend.base.FromStreamLoader,
+             anyconfig.backend.base.ToStringDumper):
     """
     Ini config files parser.
     """

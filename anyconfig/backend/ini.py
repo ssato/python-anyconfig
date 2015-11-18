@@ -109,9 +109,10 @@ def _load(stream, sep=_SEP, **kwargs):
     parser.readfp(stream, **kwargs_1)
 
     # .. note:: Process DEFAULT config parameters as special ones.
-    if parser.defaults():
+    defaults = parser.defaults()
+    if defaults:
         cnf["DEFAULT"] = dict()
-        for key, val in iteritems(parser.defaults()):
+        for key, val in iteritems(defaults):
             cnf["DEFAULT"][key] = _parse_val(val, sep)
 
     for sect in parser.sections():

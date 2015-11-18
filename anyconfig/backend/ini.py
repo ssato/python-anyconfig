@@ -2,6 +2,7 @@
 # Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+#  pylint: disable=unused-argument
 """INI or INI like config files backend.
 
 .. versionchanged:: 0.3
@@ -40,6 +41,8 @@ def _noop(val, *args, **kwargs):
     """
     Parser does nothing.
     """
+    # It means nothing but can suppress 'Unused argument' pylint warns.
+    # (val, args, kwargs)[0]
     return val
 
 

@@ -26,13 +26,30 @@ import bson
 import anyconfig.backend.base
 
 
-try:
-    if bson._use_c:
-        _LOAD_OPTS = []  # No keyword args are permitted for decode_all().
-    else:
-        _LOAD_OPTS = ["as_class", "tz_aware", "uuid_subtype"]
-except AttributeError:  # _use_c looks missing in python 3 version.
-    _LOAD_OPTS = []  # Keep it empty until making sure valid options.
+def _load_opts(use_c=None):
+    """
+    Decide loading options by bson._use_c.
+
+    - No keyword args are permitted for decode_all() if bson._use_c == True
+    - bson._use_c looks missing in python 3 version.
+
+    :param use_c: bson._use_c
+
+    >>> _load_opts(True)
+    []
+    >>> _load_opts(False)
+    ['as_class', 'tz_aware', 'uuid_subtype']
+
+    # >>> _load_opts()
+    # <result varies depends on environment...>
+    """
+    if use_c is None:
+        use_c = getattr(bson, "_use_c", None)
+
+    if use_c is None or use_c:
+        return []
+
+    return ["as_class", "tz_aware", "uuid_subtype"]
 
 
 class Parser(anyconfig.backend.base.FromStringLoader,
@@ -42,7 +59,7 @@ class Parser(anyconfig.backend.base.FromStringLoader,
     """
     _type = "bson"
     _extensions = ["bson", "bsn"]  # Temporary.
-    _load_opts = _LOAD_OPTS
+    _load_opts = _load_opts()
     _dump_opts = ["check_keys", "uuid_subtype"]
     _open_flags = ('rb', 'wb')
 

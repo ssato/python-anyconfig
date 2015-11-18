@@ -83,35 +83,8 @@ def _to_s(val, sep=", "):
         return str(val)
 
 
-def _switch_read_fn_arg(filepath=None, stream=None):
+def _load(stream, sep=_SEP, **kwargs):
     """
-    Switch name of the method to read INI files (:meth:`read` or :meth:`readfp`
-    of :class:`configparser.SafeConfigParser`) depends on given args and return
-    a tuple of (read_fun_name, arg).
-
-    :param filepath: Config file path
-    :param stream: File or file-like object provides config
-    :return: A tuple of (read_fun_name, arg) where are = filepath | stream
-
-    >>> _switch_read_fn_arg()
-    Traceback (most recent call last):
-    ValueError: filepath or stream must be some value other than None
-    >>> cnf = "dummy.ini"
-    >>> ("read", cnf) == _switch_read_fn_arg(cnf)
-    True
-    >>> ("readfp", cnf) == _switch_read_fn_arg(stream=cnf)  # fake
-    True
-    """
-    if filepath is None and stream is None:
-        raise ValueError("filepath or stream must be some value "
-                         "other than None")
-
-    return ("readfp", stream) if filepath is None else ("read", filepath)
-
-
-def _load(filepath=None, stream=None, sep=_SEP, **kwargs):
-    """
-    :param filepath: Config file path
     :param stream: File or file-like object provides ini-style conf
     :param sep: Seprator string
 
@@ -133,8 +106,7 @@ def _load(filepath=None, stream=None, sep=_SEP, **kwargs):
         parser = configparser.SafeConfigParser(**kwargs_0)
 
     cnf = dict()
-    (fname, arg) = _switch_read_fn_arg(filepath, stream)
-    getattr(parser, fname)(arg, **kwargs_1)
+    parser.readfp(stream, **kwargs_1)
 
     # .. note:: Process DEFAULT config parameters as special ones.
     if parser.defaults():
@@ -150,28 +122,36 @@ def _load(filepath=None, stream=None, sep=_SEP, **kwargs):
     return cnf
 
 
-def mk_lines_g(data):
+def _dumps(cnf, **kwargs):
     """
-    Make lines from given `data`
+    :param cnf: Configuration data to dump :: self.container
+    :param kwargs: optional keyword parameters to be sanitized :: dict
+    :return: String representation of `cnf` object in INI format
     """
-    has_default = "DEFAULT" in data
+    has_default = "DEFAULT" in cnf
 
     def is_inherited_from_default(key, val):
         """
         :return: True if (key, val) pair in defaults.
         """
-        return has_default and data["DEFAULT"].get(key, None) == val
+        return has_default and cnf["DEFAULT"].get(key, None) == val
 
-    for sect, params in iteritems(data):
-        yield "[%s]\n" % sect
+    def mk_lines_g(cnf):
+        """Make lines from given `cnf` object.
+        """
+        for sect, params in iteritems(cnf):
+            yield "[%s]\n" % sect
 
-        for key, val in iteritems(params):
-            if sect != "DEFAULT" and is_inherited_from_default(key, val):
-                continue
+            for key, val in iteritems(params):
+                if sect != "DEFAULT" and is_inherited_from_default(key, val):
+                    continue
 
-            yield "%s = %s\n" % (key, _to_s(val))
+                yield "%s = %s\n" % (key, _to_s(val))
 
-        yield "\n"  # put an empty line just after each sections.
+            yield "\n"  # put an empty line just after each sections.
+
+
+    return '\n'.join(l for l in mk_lines_g(cnf))
 
 
 class Parser(anyconfig.backend.base.FromStreamLoader,
@@ -184,37 +164,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename",
                   "ac_parse_value"]
 
-    def load_from_path(self, filepath, **kwargs):
-        """
-        Load config from given file path `filepath`.
-
-        :param filepath: Config file path
-        :param kwargs: optional keyword parameters to be sanitized :: dict
-
-        :return: self.container object holding config parameters
-        """
-        return _load(filepath=filepath, **kwargs)
-
-    def load_from_stream(self, stream, **kwargs):
-        """
-        Load INI config from given file or file-like object `stream`.
-
-        :param stream: Config file or file-like object
-        :param kwargs: configparser specific optional keyword parameters
-
-        :return: dict object holding config parameters
-        """
-        return _load(stream=stream, **kwargs)
-
-    def dump_to_string(self, cnf, **kwargs):
-        """
-        Dump INI config `cnf` to a string.
-
-        :param cnf: Configuration data to dump :: self.container
-        :param kwargs: optional keyword parameters to be sanitized :: dict
-
-        :return: string represents the configuration
-        """
-        return '\n'.join(l for l in mk_lines_g(cnf))
+    load_from_stream = anyconfig.backend.base.to_method(_load)
+    dump_to_string = anyconfig.backend.base.to_method(_dumps)
 
 # vim:sw=4:ts=4:et:

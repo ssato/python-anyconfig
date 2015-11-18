@@ -123,28 +123,31 @@ def _load(stream, sep=_SEP, **kwargs):
     return cnf
 
 
+def _dumps_itr(cnf):
+    """
+    :param cnf: Configuration data to dump :: self.container
+    """
+    dkey = "DEFAULT"
+    for sect, params in iteritems(cnf):
+        yield "[%s]\n" % sect
+
+        for key, val in iteritems(params):
+            if sect != dkey and dkey in cnf and cnf[dkey].get(key) == val:
+                continue  # It should be in [DEFAULT] section.
+
+            yield "%s = %s\n" % (key, _to_s(val))
+
+        yield "\n"  # put an empty line just after each sections.
+
+
 def _dumps(cnf, **kwargs):
     """
     :param cnf: Configuration data to dump :: self.container
     :param kwargs: optional keyword parameters to be sanitized :: dict
+
     :return: String representation of `cnf` object in INI format
     """
-    def mk_lines_g(cnf):
-        """Make lines from given `cnf` object.
-        """
-        for sect, params in iteritems(cnf):
-            yield "[%s]\n" % sect
-
-            for key, val in iteritems(params):
-                if sect != "DEFAULT" and "DEFAULT" in cnf and \
-                        cnf["DEFAULT"].get(key, None) == val:
-                    continue
-
-                yield "%s = %s\n" % (key, _to_s(val))
-
-            yield "\n"  # put an empty line just after each sections.
-
-    return '\n'.join(l for l in mk_lines_g(cnf))
+    return '\n'.join(l for l in _dumps_itr(cnf))
 
 
 class Parser(anyconfig.backend.base.FromStreamLoader,

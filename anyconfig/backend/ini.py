@@ -150,7 +150,6 @@ def _dumps(cnf, **kwargs):
 
             yield "\n"  # put an empty line just after each sections.
 
-
     return '\n'.join(l for l in mk_lines_g(cnf))
 
 

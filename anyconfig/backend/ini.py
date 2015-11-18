@@ -128,14 +128,6 @@ def _dumps(cnf, **kwargs):
     :param kwargs: optional keyword parameters to be sanitized :: dict
     :return: String representation of `cnf` object in INI format
     """
-    has_default = "DEFAULT" in cnf
-
-    def is_inherited_from_default(key, val):
-        """
-        :return: True if (key, val) pair in defaults.
-        """
-        return has_default and cnf["DEFAULT"].get(key, None) == val
-
     def mk_lines_g(cnf):
         """Make lines from given `cnf` object.
         """
@@ -143,7 +135,8 @@ def _dumps(cnf, **kwargs):
             yield "[%s]\n" % sect
 
             for key, val in iteritems(params):
-                if sect != "DEFAULT" and is_inherited_from_default(key, val):
+                if sect != "DEFAULT" and "DEFAULT" in cnf and \
+                        cnf["DEFAULT"].get(key, None) == val:
                     continue
 
                 yield "%s = %s\n" % (key, _to_s(val))

@@ -141,6 +141,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 22 2015 Satoru SATOH <ssato@redhat.com> - 0.4.0-1
+- fix: correct escape/unescape process in Java properties backend, closed #31
+- enhancement: Added naive impl. of JSON Pointer support (getter only)
+- refactor: Refactoring around backend base classes, loaders and dumpers
+- some other enhancements, refactorings and bug fixes
+
 * Tue Oct 20 2015 Satoru SATOH <ssato@redhat.com> - 0.3.0-1
 - Enhance anyconfig.multiload not to resolv appropriate config parsers
   everytime loading config files

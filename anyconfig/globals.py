@@ -8,7 +8,7 @@ import anyconfig.init
 
 
 AUTHOR = "Satoru SATOH <ssat@redhat.com>"
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 
 LOGGER = anyconfig.init.LOGGER
 

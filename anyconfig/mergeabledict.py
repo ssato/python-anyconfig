@@ -210,6 +210,9 @@ def create_from(dic):
     """
     if is_dict_like(dic):
         return MergeableDict((k, create_from(v)) for k, v in iteritems(dic))
+    elif isinstance(dic, tuple) and hasattr(dic, "_asdict"):  # namedtuple
+        return MergeableDict((k, create_from(getattr(dic, k))) for k
+                             in dic._fields)
     elif is_iterable(dic):
         return type(dic)(create_from(v) for v in dic)
     else:

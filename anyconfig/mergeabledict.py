@@ -8,6 +8,9 @@
 .. versionadded: 0.3.1
    Added naive and partial implementation of JSON Pointer support
 
+.. versionchanged: 0.5.0
+   Convert collections.namedtuple objects to dicts recursively
+
 .. note::
    JSON Pointer: http://tools.ietf.org/html/rfc6901
 """

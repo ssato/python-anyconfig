@@ -4,6 +4,7 @@
 # pylint: disable=missing-docstring,invalid-name
 from __future__ import absolute_import
 
+import collections
 import unittest
 import anyconfig.mergeabledict as TT
 
@@ -20,6 +21,19 @@ class Test00Functions(unittest.TestCase):
         self.assertTrue(isinstance(b, TT.MergeableDict))
         self.assertTrue(isinstance(c, dict))
         self.assertFalse(isinstance(c, TT.MergeableDict))
+
+    def test_12_create_from_namedtuple(self):
+        make_a = collections.namedtuple("A", "name a b e")
+        make_b = collections.namedtuple("B", "b c")
+        obj = make_a("foo", 1, make_b([1, 2], "C"), [3, 4])
+        mobj = TT.create_from(obj)
+
+        self.assertTrue(isinstance(mobj, TT.MergeableDict))
+        self.assertEquals(obj.name, mobj["name"])
+        self.assertEquals(obj.a, mobj["a"])
+        self.assertEquals(obj.b.b, mobj["b"]["b"])
+        self.assertEquals(obj.b.c, mobj["b"]["c"])
+        self.assertEquals(obj.e, mobj["e"])
 
     def test_20_get__invalid_inputs(self):
         dic = dict(a=1, b=[1, 2])

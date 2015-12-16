@@ -29,8 +29,8 @@ try:
         return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
 
 except ImportError:
-    LOGGER.warn("Jinja2 is not available on your system, so "
-                "template support will be disabled.")
+    LOGGER.warning("Jinja2 is not available on your system, so "
+                   "template support will be disabled.")
 
     class TemplateNotFound(RuntimeError):
         """Dummy exception"""

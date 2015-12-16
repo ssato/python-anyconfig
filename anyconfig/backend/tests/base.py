@@ -20,11 +20,11 @@ class Test00(unittest.TestCase):
         self.psr = TT.Parser()
 
     def test_10_type(self):
-        self.assertEquals(self.psr.type(), TT.Parser._type)
+        self.assertEqual(self.psr.type(), TT.Parser._type)
 
     def test_20_loads__null_content(self):
         cnf = self.psr.loads('')
-        self.assertEquals(cnf, self.psr.container())
+        self.assertEqual(cnf, self.psr.container())
         self.assertTrue(isinstance(cnf, self.psr.container))
 
     def test_30_load__ignore_missing(self):
@@ -32,7 +32,7 @@ class Test00(unittest.TestCase):
         assert not os.path.exists(cpath)
 
         cnf = self.psr.load(cpath, ignore_missing=True)
-        self.assertEquals(cnf, self.psr.container())
+        self.assertEqual(cnf, self.psr.container())
         self.assertTrue(isinstance(cnf, self.psr.container))
 
 

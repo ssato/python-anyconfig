@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
             TT.main(["dummy", "--silent"] + ([] if args is None else args))
         except exc_cls as exc:
             ecode = getattr(exc, "code", 1)
-            (self.assertNotEquals if _not else self.assertEquals)(ecode, code)
+            (self.assertNotEqual if _not else self.assertEqual)(ecode, code)
 
     def test_10__show_usage(self):
         self.run_and_check_exit_code(["--help"])
@@ -97,7 +97,7 @@ class Test(unittest.TestCase):
         self.assertTrue(os.path.exists(output))
 
         x = anyconfig.api.load(output)
-        self.assertEquals(x, d['a']['b'])
+        self.assertEqual(x, d['a']['b'])
 
     def test_34_single_input_w_set_option(self):
         d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))
@@ -115,7 +115,7 @@ class Test(unittest.TestCase):
         ref['a']['b']['d'] = 'E'
 
         x = anyconfig.api.load(output)
-        self.assertEquals(x, ref)
+        self.assertEqual(x, ref)
 
     def test_36_single_input__ignore_missing(self):
         infile = os.path.join(os.curdir, "conf_file_should_not_exist.json")
@@ -188,13 +188,13 @@ class Test(unittest.TestCase):
 
         x = anyconfig.api.load(output)
 
-        self.assertNotEquals(a["name"], x["name"])
-        self.assertNotEquals(a["a"], x["a"])
-        self.assertNotEquals(a["d"], x["d"])
+        self.assertNotEqual(a["name"], x["name"])
+        self.assertNotEqual(a["a"], x["a"])
+        self.assertNotEqual(a["d"], x["d"])
 
-        self.assertEquals(x["name"], 'x')
-        self.assertEquals(x["a"], 10)
-        self.assertEquals(x["d"], [3, 4])
+        self.assertEqual(x["name"], 'x')
+        self.assertEqual(x["a"], 10)
+        self.assertEqual(x["d"], [3, 4])
 
     def test_60_output_wo_output_option_w_otype(self):
         a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -278,6 +278,6 @@ class Test(unittest.TestCase):
 
         for env_var, env_val in os.environ.items():
             self.assertTrue(env_var in data)
-            self.assertEquals(env_val, os.environ[env_var])
+            self.assertEqual(env_val, os.environ[env_var])
 
 # vim:sw=4:ts=4:et:

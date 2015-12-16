@@ -73,7 +73,7 @@ def _maybe_validated(cnf, schema, format_checker=None):
 
     (valid, msg) = validate(cnf, schema, format_checker, True)
     if msg:
-        LOGGER.warn(msg)
+        LOGGER.warning(msg)
 
     return cnf if valid else None
 
@@ -161,8 +161,8 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
             return _maybe_validated(cnf, schema, format_checker)
 
         except Exception as exc:
-            LOGGER.warn("Failed to compile %s, fallback to no template "
-                        "mode, exc=%s", path_or_stream, str(exc))
+            LOGGER.warning("Failed to compile %s, fallback to no template "
+                           "mode, exc=%r", path_or_stream, exc)
 
     cnf = psr.load(path_or_stream, **kwargs)
     return _maybe_validated(cnf, schema, format_checker)
@@ -248,7 +248,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
 def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
          ac_schema=None, **kwargs):
-    """
+    r"""
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
 
@@ -296,7 +296,7 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
         operations.
     """
     if ac_parser is None:
-        LOGGER.warn("No type or parser was given. Try to parse...")
+        LOGGER.warning("No type or parser was given. Try to parse...")
         return anyconfig.parser.parse(content)
 
     psr = find_loader(None, ac_parser)
@@ -313,8 +313,8 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
             LOGGER.debug("Compiling")
             content = anyconfig.template.render_s(content, ac_context)
         except Exception as exc:
-            LOGGER.warn("Failed to compile and fallback to no template "
-                        "mode: '%s', exc=%s", content[:50] + '...', str(exc))
+            LOGGER.warning("Failed to compile and fallback to no template "
+                           "mode: '%s', exc=%r", content[:50] + '...', exc)
 
     cnf = psr.loads(content, **kwargs)
     return _maybe_validated(cnf, schema, kwargs.get("format_checker", None))
@@ -332,7 +332,7 @@ def _find_dumper(path_or_stream, ac_parser=None):
     psr = find_loader(path_or_stream, ac_parser)
 
     if psr is None or not getattr(psr, "dump", False):
-        LOGGER.warn("Dump method not implemented. Fallback to json.Parser")
+        LOGGER.warning("Dump method not implemented. Fallback to json.Parser")
         psr = anyconfig.backend.json.Parser()
 
     return psr

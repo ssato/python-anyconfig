@@ -42,7 +42,7 @@ class Test(unittest.TestCase):
             for fname, _str, ctx in self.templates:
                 fpath = os.path.join(self.workdir, fname)
                 c_r = TT.render_impl(fpath)
-                self.assertEquals(c_r, ctx)
+                self.assertEqual(c_r, ctx)
 
     def test_12_render_impl__w_paths(self):
         if TT.SUPPORTED:
@@ -50,14 +50,14 @@ class Test(unittest.TestCase):
                 fpath = os.path.join(self.workdir, fname)
                 c_r = TT.render_impl(os.path.basename(fpath),
                                      paths=[os.path.dirname(fpath)])
-                self.assertEquals(c_r, ctx)
+                self.assertEqual(c_r, ctx)
 
     def test_20_render__wo_paths(self):
         if TT.SUPPORTED:
             for fname, _str, ctx in self.templates:
                 fpath = os.path.join(self.workdir, fname)
                 c_r = TT.render(fpath)
-                self.assertEquals(c_r, ctx)
+                self.assertEqual(c_r, ctx)
 
     def test_22_render__w_wrong_tpath(self):
         if TT.SUPPORTED:
@@ -73,7 +73,7 @@ class Test(unittest.TestCase):
 
             with mock.patch(mpt, return_value=ok_t):
                 c_r = TT.render(ng_t, ctx, ask=True)
-                self.assertEquals(c_r, ok_content)
+                self.assertEqual(c_r, ok_content)
             try:
                 TT.render(ng_t, ctx, ask=False)
                 assert False  # force raising an exception.
@@ -92,7 +92,7 @@ class Test(unittest.TestCase):
             open(tmpl, 'w').write("{{ a|default('aaa') }}")
 
             c_r = TT.render(tmpl)
-            self.assertEquals(c_r, "aaa")
+            self.assertEqual(c_r, "aaa")
 
     def test_25_render__w_prefer_paths(self):
         if TT.SUPPORTED:
@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
             open(tmpl, 'w').write("{{ a|default('aaa') }}")
 
             c_r = TT.render(tmpl, paths=[self.workdir])
-            self.assertNotEquals(c_r, "aaa")
-            self.assertEquals(c_r, self.templates[0][-1])
+            self.assertNotEqual(c_r, "aaa")
+            self.assertEqual(c_r, self.templates[0][-1])
 
 # vim:sw=4:ts=4:et:

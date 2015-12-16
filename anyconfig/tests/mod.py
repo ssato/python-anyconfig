@@ -27,10 +27,10 @@ class Test(unittest.TestCase):
 
         obj1 = TT.load(obj_path)
 
-        self.assertEquals(obj1["name"], obj["name"])
-        self.assertEquals(obj1["a"], obj["a"])
-        self.assertEquals(obj1["b"]["b"], obj["b"]["b"])
-        self.assertEquals(obj1["b"]["c"], obj["b"]["c"])
+        self.assertEqual(obj1["name"], obj["name"])
+        self.assertEqual(obj1["a"], obj["a"])
+        self.assertEqual(obj1["b"]["b"], obj["b"]["b"])
+        self.assertEqual(obj1["b"]["c"], obj["b"]["c"])
 
     def test_20_dump_and_multi_load(self):
         obja = dict(name="a", a=1, b=dict(b=[0, 1], c="C"))
@@ -47,18 +47,18 @@ class Test(unittest.TestCase):
 
         obja1 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS)
 
-        self.assertEquals(obja1["name"], obja["name"])
-        self.assertEquals(obja1["a"], objb["a"])
-        self.assertEquals(obja1["b"]["b"], objb["b"]["b"])
-        self.assertEquals(obja1["b"]["c"], obja["b"]["c"])
-        self.assertEquals(obja1["b"]["d"], objb["b"]["d"])
+        self.assertEqual(obja1["name"], obja["name"])
+        self.assertEqual(obja1["a"], objb["a"])
+        self.assertEqual(obja1["b"]["b"], objb["b"]["b"])
+        self.assertEqual(obja1["b"]["c"], obja["b"]["c"])
+        self.assertEqual(obja1["b"]["d"], objb["b"]["d"])
 
         obja2 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS_AND_LISTS)
 
-        self.assertEquals(obja2["name"], obja["name"])
-        self.assertEquals(obja2["a"], objb["a"])
-        self.assertEquals(obja2["b"]["b"], [0, 1, 2, 3, 4, 5])
-        self.assertEquals(obja2["b"]["c"], obja["b"]["c"])
-        self.assertEquals(obja2["b"]["d"], objb["b"]["d"])
+        self.assertEqual(obja2["name"], obja["name"])
+        self.assertEqual(obja2["a"], objb["a"])
+        self.assertEqual(obja2["b"]["b"], [0, 1, 2, 3, 4, 5])
+        self.assertEqual(obja2["b"]["c"], obja["b"]["c"])
+        self.assertEqual(obja2["b"]["d"], objb["b"]["d"])
 
 # vim:sw=4:ts=4:et:

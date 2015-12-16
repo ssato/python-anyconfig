@@ -26,17 +26,17 @@ class Test00(unittest.TestCase):
     def test_10_unescape(self):
         exp = "aaa:bbb"
         res = TT.unescape(r"aaa\:bbb")
-        self.assertEquals(res, exp, res)
+        self.assertEqual(res, exp, res)
 
     def test_12_unescape(self):
         exp = r"\a"
         res = TT.unescape(r"\\a")
-        self.assertEquals(res, exp, res)
+        self.assertEqual(res, exp, res)
 
     def test_20_escape(self):
         exp = r"\:\=\\ "
         res = TT.escape(r":=\ ")
-        self.assertEquals(res, exp, res)
+        self.assertEqual(res, exp, res)
 
 
 class Test10(anyconfig.backend.tests.ini.Test10):

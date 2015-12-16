@@ -32,7 +32,7 @@ class Test(unittest.TestCase):
 
     def run_cases(self, category, tfunc):
         for inp, exp in self.testcases.get(category, []):
-            self.assertEquals(tfunc(inp), exp)
+            self.assertEqual(tfunc(inp), exp)
 
     def test_00_parse_single(self):
         self.run_cases("single_0", TT.parse_single)
@@ -42,8 +42,8 @@ class Test(unittest.TestCase):
         self.run_cases("list", TT.parse_list)
 
         # A few special cases:
-        self.assertEquals(TT.parse_list(""), [])
-        self.assertEquals(TT.parse_list("a|b|", "|"), ["a", "b"])
+        self.assertEqual(TT.parse_list(""), [])
+        self.assertEqual(TT.parse_list("a|b|", "|"), ["a", "b"])
 
     def test_20_parse_attrlist_0(self):
         self.run_cases("attrlist_0", TT.parse_attrlist_0)

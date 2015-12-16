@@ -43,7 +43,7 @@ def _parseline(line):
     """
     match = re.match(r"^(\S+)(?:\s+)?(?<!\\)[:=](?:\s+)?(.+)", line)
     if not match:
-        LOGGER.warn("Invalid line found: %s", line)
+        LOGGER.warning("Invalid line found: %s", line)
         return (None, None)
 
     return match.groups()
@@ -164,7 +164,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
         (key, val) = _parseline(line)
         if key is None:
-            LOGGER.warn("Failed to parse the line: %s", line)
+            LOGGER.warning("Failed to parse the line: %s", line)
             continue
 
         ret[key] = unescape(val)

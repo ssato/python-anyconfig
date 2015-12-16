@@ -53,7 +53,7 @@ class Test00(unittest.TestCase):
                               '<b id="b0">bbb</b></config>')
 
     def test_10_etree_to_container__empty(self):
-        self.assertEquals(TT.etree_to_container(None, dict), {})
+        self.assertEqual(TT.etree_to_container(None, dict), {})
 
     def test_12_etree_to_container(self):
         cnf = TT.etree_to_container(self.root, TT.Parser().container)
@@ -68,7 +68,7 @@ class Test00(unittest.TestCase):
         buf = TT.BytesIO()
         tree.write(buf)
         cnf_s = buf.getvalue()
-        self.assertEquals(cnf_s, self.cnf_s, cnf_s)
+        self.assertEqual(cnf_s, self.cnf_s, cnf_s)
 
 
 class Test10(anyconfig.backend.tests.ini.Test10):

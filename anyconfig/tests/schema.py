@@ -53,9 +53,9 @@ class Test(unittest.TestCase):
         self.assertTrue(nscm, ref_nscm)
 
     def test_40_gen_schema__primitive_types(self):
-        self.assertEquals(TT.gen_schema(None), {'type': 'null'})
-        self.assertEquals(TT.gen_schema(0), {'type': 'integer'})
-        self.assertEquals(TT.gen_schema("aaa"), {'type': 'string'})
+        self.assertEqual(TT.gen_schema(None), {'type': 'null'})
+        self.assertEqual(TT.gen_schema(0), {'type': 'integer'})
+        self.assertEqual(TT.gen_schema("aaa"), {'type': 'string'})
 
         scm = TT.gen_schema([1])
         ref_scm = {'items': {'type': 'integer'}, 'type': 'array'}

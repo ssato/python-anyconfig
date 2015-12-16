@@ -30,20 +30,20 @@ class Test00Functions(unittest.TestCase):
         obj2 = TT.convert_to(mobj, to_namedtuple=True)
 
         self.assertTrue(isinstance(mobj, TT.MergeableDict))
-        self.assertEquals(obj.name, mobj["name"])
-        self.assertEquals(mobj[TT.NAMEDTUPLE_CLS_KEY], "A")
-        self.assertEquals(obj.a, mobj["a"])
-        self.assertEquals(mobj["b"][TT.NAMEDTUPLE_CLS_KEY], "B")
-        self.assertEquals(obj.b.b, mobj["b"]["b"])
-        self.assertEquals(obj.b.c, mobj["b"]["c"])
-        self.assertEquals(obj.e, mobj["e"])
+        self.assertEqual(obj.name, mobj["name"])
+        self.assertEqual(mobj[TT.NAMEDTUPLE_CLS_KEY], "A")
+        self.assertEqual(obj.a, mobj["a"])
+        self.assertEqual(mobj["b"][TT.NAMEDTUPLE_CLS_KEY], "B")
+        self.assertEqual(obj.b.b, mobj["b"]["b"])
+        self.assertEqual(obj.b.c, mobj["b"]["c"])
+        self.assertEqual(obj.e, mobj["e"])
 
-        self.assertEquals(obj, obj2)
+        self.assertEqual(obj, obj2)
 
     def test_20_get__invalid_inputs(self):
         dic = dict(a=1, b=[1, 2])
         (dic2, err) = TT.get(dic, '')
-        self.assertEquals(err, '')
+        self.assertEqual(err, '')
         self.assertTrue(dicts_equal(dic2, dic))
 
     def test_22_get__json_pointer(self):
@@ -60,33 +60,33 @@ class Test00Functions(unittest.TestCase):
                "m~n": 8}
 
         self.assertTrue(dicts_equal(TT.get(dic, "")[0], dic))
-        self.assertEquals(TT.get(dic, "/foo")[0], ["bar", "baz"])
-        self.assertEquals(TT.get(dic, "/foo/0")[0], "bar")
-        self.assertEquals(TT.get(dic, "/")[0], 0)
-        self.assertEquals(TT.get(dic, "/a~1b")[0], 1)
-        self.assertEquals(TT.get(dic, "/c%d")[0], 2)
-        self.assertEquals(TT.get(dic, "/e^f")[0], 3)
-        self.assertEquals(TT.get(dic, "/g|h")[0], 4)
-        self.assertEquals(TT.get(dic, r"/i\\j")[0], 5)
-        self.assertEquals(TT.get(dic, r'/k\"l')[0], 6)
-        self.assertEquals(TT.get(dic, "/ ")[0], 7)
-        self.assertEquals(TT.get(dic, "/m~0n")[0], 8)
+        self.assertEqual(TT.get(dic, "/foo")[0], ["bar", "baz"])
+        self.assertEqual(TT.get(dic, "/foo/0")[0], "bar")
+        self.assertEqual(TT.get(dic, "/")[0], 0)
+        self.assertEqual(TT.get(dic, "/a~1b")[0], 1)
+        self.assertEqual(TT.get(dic, "/c%d")[0], 2)
+        self.assertEqual(TT.get(dic, "/e^f")[0], 3)
+        self.assertEqual(TT.get(dic, "/g|h")[0], 4)
+        self.assertEqual(TT.get(dic, r"/i\\j")[0], 5)
+        self.assertEqual(TT.get(dic, r'/k\"l')[0], 6)
+        self.assertEqual(TT.get(dic, "/ ")[0], 7)
+        self.assertEqual(TT.get(dic, "/m~0n")[0], 8)
 
     def test_24_get__json_pointer__array(self):
         dic = dict(a=[1, 2], )
-        self.assertEquals(TT.get(dic, "/a/1"), (2, ''))
+        self.assertEqual(TT.get(dic, "/a/1"), (2, ''))
 
         (val, msg) = TT.get(dic, "/a/2")
         self.assertTrue(val is None)
         self.assertTrue(bool(msg))
         # maybe the error message depends on python version.
-        # self.assertEquals(msg, 'list index out of range')
+        # self.assertEqual(msg, 'list index out of range')
 
         (val, msg) = TT.get(dic, "/a/b/d/-")
         self.assertTrue(val is None)
         self.assertTrue(bool(msg))
         # Likewise.
-        # self.assertEquals(msg, 'list indices must be integers...')
+        # self.assertEqual(msg, 'list indices must be integers...')
 
 
 class Test10MergeableDict(unittest.TestCase):

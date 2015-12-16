@@ -40,6 +40,8 @@ PATH_SEPS = ('/', '.')
 _JSNP_GET_ARRAY_IDX_REG = re.compile(r"(?:0|[1-9][0-9]*)")
 _JSNP_SET_ARRAY_IDX = re.compile(r"(?:0|[1-9][0-9]*|-)")
 
+NAMEDTUPLE_CLS_KEY = "_namedtuple_cls_"
+
 
 def jsnp_unescape(jsn_s):
     """
@@ -187,7 +189,19 @@ def is_dict_like(obj):
     return isinstance(obj, (dict, collections.Mapping, UserDict))
 
 
-def convert_to(mdict):
+def is_namedtuple(obj):
+    """
+    >>> p0 = collections.namedtuple("Point", "x y")(1, 2)
+    >>> is_namedtuple(p0)
+    True
+    >>> is_namedtuple(tuple(p0))
+    False
+    """
+    return isinstance(obj, tuple) and hasattr(obj, "_asdict")
+
+
+def convert_to(mdict, to_namedtuple=False,
+               _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
     """
     Convert a MergeableDict instances to a dict object.
 
@@ -195,27 +209,49 @@ def convert_to(mdict):
     (bunch is distributed under MIT license same as this module.)
 
     :param mdict: A MergeableDict instance
-    :return: A dict
+    :param to_namedtuple:
+        Convert `mdict` to namedtuple object of which definition is created on
+        the fly if True
+    :param _namedtuple_cls_key:
+        Special keyword to embedded the class name of namedtuple object to
+        create.  See the comments in :func:`create_from` also.
+
+    :return: A dict or namedtuple object if to_namedtuple is True
     """
-    if is_dict_like(mdict):
-        return dict((k, convert_to(v)) for k, v in iteritems(mdict))
+    if is_dict_like(mdict) or is_namedtuple(mdict):
+        if to_namedtuple:
+            _name = mdict.get(_namedtuple_cls_key, "NamedTuple")
+            _keys = [k for k in mdict.keys() if k != _namedtuple_cls_key]
+            _vals = [convert_to(mdict[k], to_namedtuple, _namedtuple_cls_key)
+                     for k in _keys]
+            return collections.namedtuple(_name, _keys)(*_vals)
+        else:
+            return dict((k, convert_to(v)) for k, v in iteritems(mdict))
     elif is_iterable(mdict):
-        return type(mdict)(convert_to(v) for v in mdict)
+        return type(mdict)(convert_to(v, to_namedtuple, _namedtuple_cls_key)
+                           for v in mdict)
     else:
         return mdict
 
 
-def create_from(dic):
+def create_from(dic, _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
     """
     Try creating a MergeableDict instance[s] from a dict or any other objects.
 
     :param dic: A dict instance
+    :param _namedtuple_cls_key:
+        Special keyword to embedded the class name of namedtuple object to the
+        MergeableDict object created. It's a hack and not elegant but I don't
+        think there are another ways to make same namedtuple object from the
+        MergeableDict object created from it.
     """
     if is_dict_like(dic):
         return MergeableDict((k, create_from(v)) for k, v in iteritems(dic))
     elif isinstance(dic, tuple) and hasattr(dic, "_asdict"):  # namedtuple
-        return MergeableDict((k, create_from(getattr(dic, k))) for k
-                             in dic._fields)
+        mdict = OrderedMergeableDict((k, create_from(getattr(dic, k))) for k
+                                     in dic._fields)
+        mdict[_namedtuple_cls_key] = dic.__class__.__name__
+        return mdict
     elif is_iterable(dic):
         return type(dic)(create_from(v) for v in dic)
     else:
@@ -351,5 +387,11 @@ class MergeableDict(dict):
                 self[key] += [x for x in list(val) if x not in val0]
             elif not keep:
                 self[key] = val  # Overwrite it.
+
+
+class OrderedMergeableDict(collections.OrderedDict, MergeableDict):
+    """MergeableDict keeps order of keys.
+    """
+    pass
 
 # vim:sw=4:ts=4:et:

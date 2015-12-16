@@ -3,6 +3,7 @@ PyYAML
 configobj
 jsonschema
 msgpack-python
+ordereddict
 pymongo
 simplejson
 toml

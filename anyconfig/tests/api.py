@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2015 Satoru SATOH <ssato at redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, invalid-name
+# pylint: disable=missing-docstring, invalid-name, no-member
 from __future__ import absolute_import
 
 import logging
@@ -388,13 +388,22 @@ class Test_40_multi_load(unittest.TestCase):
         self.assertEqual(cnf["b"]["c"], a["b"]["c"])
         self.assertEqual(cnf["b"]["d"], b["b"]["d"])
 
+    def test_18_dump_and_multi_load__namedtuple(self):
+        a = TT.convert_to(dict(a=1, b=dict(b=[0, 1], c="C"), name="a"), True)
+        b = TT.convert_to(dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D")), True)
+
+        a_path = os.path.join(self.workdir, "a.json")
+        b_path = os.path.join(self.workdir, "b.yml")
+
+        TT.dump(a, a_path, ac_namedtuple=True)
+        TT.dump(b, b_path, ac_namedtuple=True)
         cnf = TT.multi_load([a_path, b_path], ac_namedtuple=True)
 
-        self.assertEqual(cnf.name, a["name"])
-        self.assertEqual(cnf.a, b["a"])
-        self.assertEqual(cnf.b.b, b["b"]["b"])
-        self.assertEqual(cnf.b.c, a["b"]["c"])
-        self.assertEqual(cnf.b.d, b["b"]["d"])
+        self.assertEqual(cnf.name, a.name)
+        self.assertEqual(cnf.a, b.a)
+        self.assertEqual(cnf.b.b, b.b.b)
+        self.assertEqual(cnf.b.c, a.b.c)
+        self.assertEqual(cnf.b.d, b.b.d)
 
     def test_20_dump_and_multi_load__to_from_stream(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

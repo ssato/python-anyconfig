@@ -3,7 +3,10 @@
 # License: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
-"""Public APIs of anyconfig module.
+r"""Public APIs of anyconfig module.
+
+.. versionadded:: 0.4.99
+   Added ac_namedtuple parameter to \*load and \*dump APIs.
 
 .. versionchanged:: 0.3
    Replaced `forced_type` optional argument of some public APIs with
@@ -38,7 +41,7 @@ import anyconfig.utils
 # Import some global constants will be re-exported:
 from anyconfig.mergeabledict import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    PATH_SEPS, get, set_  # flake8: noqa
+    PATH_SEPS, get, set_, convert_to, create_from  # flake8: noqa
 )
 from anyconfig.schema import validate, gen_schema
 from anyconfig.utils import is_path
@@ -59,12 +62,13 @@ def _is_paths(maybe_paths):
     return False  # Not an iterable at least.
 
 
-def _maybe_validated(cnf, schema, format_checker=None):
+def _maybe_validated(cnf, schema, format_checker=None, ac_namedtuple=False):
     """
     :param cnf: Configuration object :: container
     :param schema: JSON schema object :: container
     :param format_checker: A format property checker object of which class is
         inherited from jsonschema.FormatChecker, it's default if None given.
+    :param ac_namedtuple: Convert result to nested namedtuple object if True
 
     :return: Given `cnf` as it is if validation succeeds else None
     """
@@ -75,7 +79,10 @@ def _maybe_validated(cnf, schema, format_checker=None):
     if msg:
         LOGGER.warning(msg)
 
-    return cnf if valid else None
+    if valid:
+        return convert_to(cnf, True) if ac_namedtuple else cnf
+
+    return None
 
 
 def set_loglevel(level):
@@ -110,7 +117,8 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=None):
 
 
 def single_load(path_or_stream, ac_parser=None, ac_template=False,
-                ac_context=None, ac_schema=None, **kwargs):
+                ac_context=None, ac_schema=None, ac_namedtuple=False,
+                **kwargs):
     """
     Load single config file.
 
@@ -120,6 +128,7 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
+    :param ac_namedtuple: Convert result to nested namedtuple object if True
     :param kwargs: Optional keyword arguments for backends:
 
         - Common backend options:
@@ -165,11 +174,11 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
                            "mode, exc=%r", path_or_stream, exc)
 
     cnf = psr.load(path_or_stream, **kwargs)
-    return _maybe_validated(cnf, schema, format_checker)
+    return _maybe_validated(cnf, schema, format_checker, ac_namedtuple)
 
 
 def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
-               ac_schema=None, **kwargs):
+               ac_schema=None, ac_namedtuple=False, **kwargs):
     """
     Load multiple config files.
 
@@ -189,6 +198,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
+    :param ac_namedtuple: Convert result to nested namedtuple object if True
     :param kwargs: Optional keyword arguments:
 
         - Common options:
@@ -243,11 +253,11 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
         cnf.update(cups, ac_merge)
 
-    return _maybe_validated(cnf, schema, format_checker)
+    return _maybe_validated(cnf, schema, format_checker, ac_namedtuple)
 
 
 def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
-         ac_schema=None, **kwargs):
+         ac_schema=None, ac_namedtuple=False, **kwargs):
     r"""
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -259,6 +269,7 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
+    :param ac_namedtuple: Convert result to nested namedtuple object if True
     :param kwargs:
         Optional keyword arguments. See also the description of `kwargs` in
         `multi_load` function.
@@ -272,15 +283,17 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
     if is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
         return multi_load(path_specs, ac_parser=ac_parser,
                           ac_template=ac_template, ac_context=ac_context,
-                          ac_schema=ac_schema, **kwargs)
+                          ac_schema=ac_schema, ac_namedtuple=ac_namedtuple,
+                          **kwargs)
     else:
         return single_load(path_specs, ac_parser=ac_parser,
                            ac_template=ac_template, ac_context=ac_context,
-                           ac_schema=ac_schema, **kwargs)
+                           ac_schema=ac_schema, ac_namedtuple=ac_namedtuple,
+                           **kwargs)
 
 
 def loads(content, ac_parser=None, ac_template=False, ac_context=None,
-          ac_schema=None, **kwargs):
+          ac_schema=None, ac_namedtuple=False, **kwargs):
     """
     :param content: Configuration file's content
     :param ac_parser: Forced parser type or parser object
@@ -288,6 +301,7 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
         try to compile it AAR if True
     :param ac_context: Context dict to instantiate template
     :param ac_schema: JSON schema content to validate given config file
+    :param ac_namedtuple: Convert result to nested namedtuple object if True
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
 
@@ -317,7 +331,8 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
                            "mode: '%s', exc=%r", content[:50] + '...', exc)
 
     cnf = psr.loads(content, **kwargs)
-    return _maybe_validated(cnf, schema, kwargs.get("format_checker", None))
+    return _maybe_validated(cnf, schema, kwargs.get("format_checker", None),
+                            ac_namedtuple)
 
 
 def _find_dumper(path_or_stream, ac_parser=None):
@@ -338,7 +353,7 @@ def _find_dumper(path_or_stream, ac_parser=None):
     return psr
 
 
-def dump(data, path_or_stream, ac_parser=None, **kwargs):
+def dump(data, path_or_stream, ac_parser=None, ac_namedtuple=False, **kwargs):
     """
     Save `data` as `path_or_stream`.
 
@@ -346,27 +361,33 @@ def dump(data, path_or_stream, ac_parser=None, **kwargs):
         anyconfig.mergeabledict.MergeableDict by default
     :param path_or_stream: Output file path or file / file-like object
     :param ac_parser: Forced parser type or parser object
+    :param ac_namedtuple: Convert result to nested namedtuple object if True
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
     """
     dumper = _find_dumper(path_or_stream, ac_parser)
     LOGGER.info("Dumping: %s",
                 anyconfig.utils.get_path_from_stream(path_or_stream))
+    if ac_namedtuple:
+        data = create_from(data)
     dumper.dump(data, path_or_stream, **kwargs)
 
 
-def dumps(data, ac_parser=None, **kwargs):
+def dumps(data, ac_parser=None, ac_namedtuple=False, **kwargs):
     """
     Return string representation of `data` in forced type format.
 
     :param data: Config data object to dump ::
         anyconfig.mergeabledict.MergeableDict by default
     :param ac_parser: Forced parser type or parser object
+    :param ac_namedtuple: Convert result to nested namedtuple object if True
     :param kwargs: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
 
     :return: Backend-specific string representation for the given data
     """
+    if ac_namedtuple:
+        data = create_from(data)
     return _find_dumper(None, ac_parser).dumps(data, **kwargs)
 
 # vim:sw=4:ts=4:et:

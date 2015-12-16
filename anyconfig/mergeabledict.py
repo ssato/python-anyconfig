@@ -21,11 +21,8 @@ import functools
 import operator
 import re
 
-from .compat import iteritems, UserDict
+from .compat import iteritems, UserDict, OrderedDict
 from anyconfig.utils import is_iterable
-
-# TBD: Keep items' order:
-# from collections import OrderedDict as dict
 
 
 MS_REPLACE = "replace"
@@ -389,7 +386,7 @@ class MergeableDict(dict):
                 self[key] = val  # Overwrite it.
 
 
-class OrderedMergeableDict(collections.OrderedDict, MergeableDict):
+class OrderedMergeableDict(OrderedDict, MergeableDict):
     """MergeableDict keeps order of keys.
     """
     pass

@@ -14,6 +14,11 @@ import locale
 import sys
 
 try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict  # Python 2.6
+
+try:
     from logging import NullHandler
 except ImportError:  # python < 2.7 doesn't have it.
     import logging

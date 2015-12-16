@@ -73,11 +73,11 @@ def _maybe_validated(cnf, schema, format_checker=None, ac_namedtuple=False):
     :return: Given `cnf` as it is if validation succeeds else None
     """
     if schema is None:
-        return cnf
-
-    (valid, msg) = validate(cnf, schema, format_checker, True)
-    if msg:
-        LOGGER.warning(msg)
+        valid = True
+    else:
+        (valid, msg) = validate(cnf, schema, format_checker, True)
+        if msg:
+            LOGGER.warning(msg)
 
     if valid:
         return convert_to(cnf, True) if ac_namedtuple else cnf

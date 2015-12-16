@@ -15,13 +15,13 @@
    JSON Pointer: http://tools.ietf.org/html/rfc6901
 """
 from __future__ import absolute_import
-from .compat import iteritems, UserDict
 
 import collections
 import functools
 import operator
 import re
 
+from .compat import iteritems, UserDict
 from anyconfig.utils import is_iterable
 
 # TBD: Keep items' order:

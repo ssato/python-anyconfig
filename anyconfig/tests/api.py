@@ -182,6 +182,15 @@ class Test_30_single_load(unittest.TestCase):
     def test_12_dump_and_single_load__no_parser(self):
         self.assertEqual(TT.single_load("dummy.ext_not_exist"), None)
 
+    def test_13_dump_and_single_load__namedtuple(self):
+        cpath = os.path.join(self.workdir, "a.json")
+        cnf = TT.convert_to(self.cnf, to_namedtuple=True)
+
+        TT.dump(self.cnf, cpath)
+        self.assertTrue(os.path.exists(cpath))
+        cnf1 = TT.single_load(cpath, ac_namedtuple=True)
+        self.assertTrue(cnf == cnf1, "%r -> %r" % (cnf, cnf1))
+
     def test_14_single_load__ignore_missing(self):
         null_cntnr = TT.container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
@@ -378,6 +387,14 @@ class Test_40_multi_load(unittest.TestCase):
         self.assertEqual(cnf["b"]["b"], b["b"]["b"])
         self.assertEqual(cnf["b"]["c"], a["b"]["c"])
         self.assertEqual(cnf["b"]["d"], b["b"]["d"])
+
+        cnf = TT.multi_load([a_path, b_path], ac_namedtuple=True)
+
+        self.assertEqual(cnf.name, a["name"])
+        self.assertEqual(cnf.a, b["a"])
+        self.assertEqual(cnf.b.b, b["b"]["b"])
+        self.assertEqual(cnf.b.c, a["b"]["c"])
+        self.assertEqual(cnf.b.d, b["b"]["d"])
 
     def test_20_dump_and_multi_load__to_from_stream(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

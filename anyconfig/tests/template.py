@@ -5,8 +5,8 @@
 # pylint: disable=missing-docstring, unused-variable
 import os.path
 import os
-import mock
 import unittest
+import mock
 
 import anyconfig.template as TT
 import anyconfig.tests.common

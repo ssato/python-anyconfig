@@ -158,10 +158,9 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
     if psr is None:
         return None
 
-    schema = format_checker = None
+    schema = None
     if ac_schema is not None:
         options["ac_schema"] = None  # Avoid infinit loop
-        format_checker = options.get("format_checker", None)
         LOGGER.info("Loading schema: %s", ac_schema)
         schema = load(ac_schema, ac_parser=None, ac_template=ac_template,
                       ac_context=ac_context, **options)
@@ -172,14 +171,14 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
             LOGGER.debug("Compiling: %s", filepath)
             content = anyconfig.template.render(filepath, ac_context)
             cnf = psr.loads(content, **options)
-            return _maybe_validated(cnf, schema, format_checker, **options)
+            return _maybe_validated(cnf, schema, **options)
 
         except Exception as exc:
             LOGGER.warning("Failed to compile %s, fallback to no template "
                            "mode, exc=%r", path_or_stream, exc)
 
     cnf = psr.load(path_or_stream, **options)
-    return _maybe_validated(cnf, schema, format_checker, **options)
+    return _maybe_validated(cnf, schema, **options)
 
 
 def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
@@ -231,10 +230,9 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     if ac_merge not in MERGE_STRATEGIES:
         raise ValueError("Invalid merge strategy: " + ac_merge)
 
-    schema = format_checker = None
+    schema = None
     if ac_schema is not None:
         options["ac_schema"] = None  # Avoid infinit loop
-        format_checker = options.get("format_checker", None)
         schema = load(ac_schema, ac_parser=None, ac_template=ac_template,
                       ac_context=ac_context, **options)
 
@@ -259,7 +257,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
         cnf.update(cups, ac_merge)
 
-    return _maybe_validated(cnf, schema, format_checker, **options)
+    return _maybe_validated(cnf, schema, **options)
 
 
 def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,

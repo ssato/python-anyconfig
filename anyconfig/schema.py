@@ -34,7 +34,7 @@ if not anyconfig.compat.IS_PYTHON_3:
         pass
 
 
-def validate(obj, schema, format_checker=None, safe=True):
+def validate(obj, schema, **options):
     """
     Validate target object with given schema object, loaded from JSON schema.
 
@@ -43,14 +43,19 @@ def validate(obj, schema, format_checker=None, safe=True):
     :parae obj: Target object (a dict or a dict-like object) to validate
     :param schema: Schema object (a dict or a dict-like object)
         instantiated from schema JSON file or schema JSON string
-    :param format_checker: A format property checker object of which class is
-        inherited from jsonschema.FormatChecker, it's default if None given.
-    :param safe: Exception (jsonschema.ValidationError or
-        jsonschema.SchemaError) will be thrown if it's True and any validation
-        error occurs.
+    :param options: Other keyword options such as:
+
+        - format_checker: A format property checker object of which class is
+          inherited from jsonschema.FormatChecker, it's default if None given.
+
+        - safe: Exception (jsonschema.ValidationError or jsonschema.SchemaError
+          or others) will be thrown during validation process due to any
+          validation or related errors. However, these will be catched by
+          default, and will be re-raised if `safe` is False.
 
     :return: (True if validation succeeded else False, error message)
     """
+    format_checker = options.get("format_checker", None)
     try:
         if format_checker is None:
             format_checker = jsonschema.FormatChecker()  # :raises: NameError
@@ -59,7 +64,7 @@ def validate(obj, schema, format_checker=None, safe=True):
             return (True, '')
         except (jsonschema.ValidationError, jsonschema.SchemaError,
                 Exception) as exc:
-            if safe:
+            if options.get("safe", True):
                 return (False, str(exc))
             else:
                 raise

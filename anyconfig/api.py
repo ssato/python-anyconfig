@@ -363,7 +363,7 @@ def dump(data, path_or_stream, ac_parser=None, **options):
     :param path_or_stream: Output file path or file / file-like object
     :param ac_parser: Forced parser type or parser object
     :param options: Keyword options such ash:
-    
+
         - ac_namedtuple: Convert result to nested namedtuple object if True
         - other backend specific optional arguments, e.g. {"indent": 2} for
           JSON loader/dumper backend

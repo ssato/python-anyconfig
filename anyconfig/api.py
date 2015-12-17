@@ -263,7 +263,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
 
 def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
-         ac_schema=None, ac_namedtuple=False, **options):
+         ac_schema=None, **options):
     r"""
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -275,7 +275,6 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
-    :param ac_namedtuple: Convert result to nested namedtuple object if True
     :param options:
         Optional keyword arguments. See also the description of `options` in
         `multi_load` function.
@@ -289,13 +288,11 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
     if is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
         return multi_load(path_specs, ac_parser=ac_parser,
                           ac_template=ac_template, ac_context=ac_context,
-                          ac_schema=ac_schema, ac_namedtuple=ac_namedtuple,
-                          **options)
+                          ac_schema=ac_schema, **options)
     else:
         return single_load(path_specs, ac_parser=ac_parser,
                            ac_template=ac_template, ac_context=ac_context,
-                           ac_schema=ac_schema, ac_namedtuple=ac_namedtuple,
-                           **options)
+                           ac_schema=ac_schema, **options)
 
 
 def loads(content, ac_parser=None, ac_template=False, ac_context=None,
@@ -307,7 +304,6 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
         try to compile it AAR if True
     :param ac_context: Context dict to instantiate template
     :param ac_schema: JSON schema content to validate given config file
-    :param ac_namedtuple: Convert result to nested namedtuple object if True
     :param options: Backend specific optional arguments, e.g. {"indent": 2} for
         JSON loader/dumper backend
 
@@ -358,7 +354,7 @@ def _find_dumper(path_or_stream, ac_parser=None):
     return psr
 
 
-def dump(data, path_or_stream, ac_parser=None, ac_namedtuple=False, **options):
+def dump(data, path_or_stream, ac_parser=None, **options):
     """
     Save `data` as `path_or_stream`.
 
@@ -366,32 +362,32 @@ def dump(data, path_or_stream, ac_parser=None, ac_namedtuple=False, **options):
         anyconfig.mergeabledict.MergeableDict by default
     :param path_or_stream: Output file path or file / file-like object
     :param ac_parser: Forced parser type or parser object
-    :param ac_namedtuple: Convert result to nested namedtuple object if True
-    :param options: Backend specific optional arguments, e.g. {"indent": 2} for
-        JSON loader/dumper backend
+    :param options: Keyword options such ash:
+    
+        - ac_namedtuple: Convert result to nested namedtuple object if True
+        - other backend specific optional arguments, e.g. {"indent": 2} for
+          JSON loader/dumper backend
     """
     dumper = _find_dumper(path_or_stream, ac_parser)
     LOGGER.info("Dumping: %s",
                 anyconfig.utils.get_path_from_stream(path_or_stream))
-    if ac_namedtuple:
+    if options.get("ac_namedtuple", False):
         data = create_from(data)
     dumper.dump(data, path_or_stream, **options)
 
 
-def dumps(data, ac_parser=None, ac_namedtuple=False, **options):
+def dumps(data, ac_parser=None, **options):
     """
     Return string representation of `data` in forced type format.
 
     :param data: Config data object to dump ::
         anyconfig.mergeabledict.MergeableDict by default
     :param ac_parser: Forced parser type or parser object
-    :param ac_namedtuple: Convert result to nested namedtuple object if True
-    :param options: Backend specific optional arguments, e.g. {"indent": 2} for
-        JSON loader/dumper backend
+    :param options: see :func:`dump`
 
     :return: Backend-specific string representation for the given data
     """
-    if ac_namedtuple:
+    if options.get("ac_namedtuple", False):
         data = create_from(data)
     return _find_dumper(None, ac_parser).dumps(data, **options)
 

@@ -62,13 +62,15 @@ def _is_paths(maybe_paths):
     return False  # Not an iterable at least.
 
 
-def _maybe_validated(cnf, schema, format_checker=None, ac_namedtuple=False):
+def _maybe_validated(cnf, schema, format_checker=None, **options):
     """
     :param cnf: Configuration object :: container
     :param schema: JSON schema object :: container
     :param format_checker: A format property checker object of which class is
         inherited from jsonschema.FormatChecker, it's default if None given.
-    :param ac_namedtuple: Convert result to nested namedtuple object if True
+    :param options: Keyword options such as:
+
+        - ac_namedtuple: Convert result to nested namedtuple object if True
 
     :return: Given `cnf` as it is if validation succeeds else None
     """
@@ -81,7 +83,7 @@ def _maybe_validated(cnf, schema, format_checker=None, ac_namedtuple=False):
             LOGGER.warning(msg)
 
     if valid:
-        return convert_to(cnf, True) if ac_namedtuple else cnf
+        return convert_to(cnf, True) if options.get("ac_namedtuple") else cnf
 
     return None
 
@@ -118,8 +120,7 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=None):
 
 
 def single_load(path_or_stream, ac_parser=None, ac_template=False,
-                ac_context=None, ac_schema=None, ac_namedtuple=False,
-                **options):
+                ac_context=None, ac_schema=None, **options):
     """
     Load single config file.
 
@@ -129,8 +130,11 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
-    :param ac_namedtuple: Convert result to nested namedtuple object if True
-    :param options: Optional keyword arguments for backends:
+    :param options: Optional keyword arguments such as:
+
+        - Common options:
+
+            - ac_namedtuple: Convert result to nested namedtuple object if True
 
         - Common backend options:
 
@@ -168,18 +172,18 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
             LOGGER.debug("Compiling: %s", filepath)
             content = anyconfig.template.render(filepath, ac_context)
             cnf = psr.loads(content, **options)
-            return _maybe_validated(cnf, schema, format_checker)
+            return _maybe_validated(cnf, schema, format_checker, **options)
 
         except Exception as exc:
             LOGGER.warning("Failed to compile %s, fallback to no template "
                            "mode, exc=%r", path_or_stream, exc)
 
     cnf = psr.load(path_or_stream, **options)
-    return _maybe_validated(cnf, schema, format_checker, ac_namedtuple)
+    return _maybe_validated(cnf, schema, format_checker, **options)
 
 
 def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
-               ac_schema=None, ac_namedtuple=False, **options):
+               ac_schema=None, **options):
     """
     Load multiple config files.
 
@@ -199,7 +203,6 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param ac_schema: JSON schema file path to validate given config file
-    :param ac_namedtuple: Convert result to nested namedtuple object if True
     :param options: Optional keyword arguments:
 
         - Common options:
@@ -209,6 +212,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
             module for more details of strategies. The default is MS_DICTS.
 
           - ac_marker (marker): Globbing marker to detect paths patterns.
+
+          - ac_namedtuple: Convert result to nested namedtuple object if True
 
         - Common backend options:
 
@@ -240,21 +245,21 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
         paths = anyconfig.utils.sglob(paths)
 
     for path in paths:
+        opts = options.copy()
+        opts["ac_namedtuple"] = False  # Disabled within this loop.
         # Nested patterns like ['*.yml', '/a/b/c.yml'].
         if is_path(path) and marker in path:
             cups = multi_load(path, ac_parser=ac_parser,
-                              ac_template=ac_template, ac_context=cnf,
-                              **options)
+                              ac_template=ac_template, ac_context=cnf, **opts)
         else:
             if same_type:
                 ac_parser = find_loader(path, ac_parser, is_path(path))
             cups = single_load(path, ac_parser=ac_parser,
-                               ac_template=ac_template, ac_context=cnf,
-                               **options)
+                               ac_template=ac_template, ac_context=cnf, **opts)
 
         cnf.update(cups, ac_merge)
 
-    return _maybe_validated(cnf, schema, format_checker, ac_namedtuple)
+    return _maybe_validated(cnf, schema, format_checker, **options)
 
 
 def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
@@ -294,7 +299,7 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
 
 
 def loads(content, ac_parser=None, ac_template=False, ac_context=None,
-          ac_schema=None, ac_namedtuple=False, **options):
+          ac_schema=None, **options):
     """
     :param content: Configuration file's content
     :param ac_parser: Forced parser type or parser object
@@ -332,8 +337,7 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
                            "mode: '%s', exc=%r", content[:50] + '...', exc)
 
     cnf = psr.loads(content, **options)
-    return _maybe_validated(cnf, schema, options.get("format_checker", None),
-                            ac_namedtuple)
+    return _maybe_validated(cnf, schema, **options)
 
 
 def _find_dumper(path_or_stream, ac_parser=None):

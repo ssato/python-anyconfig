@@ -75,7 +75,8 @@ def _maybe_validated(cnf, schema, format_checker=None, ac_namedtuple=False):
     if schema is None:
         valid = True
     else:
-        (valid, msg) = validate(cnf, schema, format_checker, True)
+        (valid, msg) = validate(cnf, schema, format_checker=format_checker,
+                                safe=True)
         if msg:
             LOGGER.warning(msg)
 

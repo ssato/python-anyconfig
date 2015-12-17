@@ -167,5 +167,4 @@ def are_same_file_types(paths):
 
     return all(_try_to_get_extension(p) == ext for p in paths[1:])
 
-
 # vim:sw=4:ts=4:et:

@@ -261,7 +261,7 @@ def create_from(obj, _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
     """
     if is_dict_like(obj):
         return MergeableDict((k, create_from(v)) for k, v in iteritems(obj))
-    elif isinstance(obj, tuple) and hasattr(obj, "_asdict"):  # namedtuple
+    elif is_namedtuple(obj):
         mdict = OrderedMergeableDict((k, create_from(getattr(obj, k))) for k
                                      in obj._fields)
         mdict[_namedtuple_cls_key] = obj.__class__.__name__

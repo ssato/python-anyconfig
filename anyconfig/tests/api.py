@@ -16,6 +16,7 @@ import anyconfig.template
 import anyconfig.tests.common
 
 from anyconfig.tests.common import CNF_0, SCM_0, dicts_equal
+from anyconfig.compat import OrderedDict
 
 
 # suppress logging messages.
@@ -184,12 +185,13 @@ class Test_30_single_load(unittest.TestCase):
 
     def test_13_dump_and_single_load__namedtuple(self):
         cpath = os.path.join(self.workdir, "a.json")
-        cnf = TT.convert_to(self.cnf, to_namedtuple=True)
+        cnf0 = TT.convert_to(OrderedDict(self.cnf), to_namedtuple=True)
 
-        TT.dump(self.cnf, cpath)
+        TT.dump(cnf0, cpath, namedtuple=True)
         self.assertTrue(os.path.exists(cpath))
+
         cnf1 = TT.single_load(cpath, ac_namedtuple=True)
-        self.assertTrue(cnf == cnf1, "%r -> %r" % (cnf, cnf1))
+        self.assertTrue(cnf0 == cnf1, "%r -> %r" % (cnf0, cnf1))
 
     def test_14_single_load__ignore_missing(self):
         null_cntnr = TT.container()

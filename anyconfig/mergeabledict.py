@@ -6,10 +6,10 @@
 """Merge-able dict.
 
 .. versionchanged: 0.4.99
-   Convert collections.namedtuple objects to dicts recursively
+   Convert collections.namedtuple objects to dicts recursively.
 
 .. versionadded: 0.3.1
-   Added naive and partial implementation of JSON Pointer support
+   Added naive and partial implementation of JSON Pointer support.
 
 .. note::
    JSON Pointer: http://tools.ietf.org/html/rfc6901

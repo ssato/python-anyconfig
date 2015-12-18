@@ -5,7 +5,7 @@
 #
 """Merge-able dict.
 
-.. versionchanged: 0.5.0
+.. versionchanged: 0.4.99
    Convert collections.namedtuple objects to dicts recursively
 
 .. versionadded: 0.3.1

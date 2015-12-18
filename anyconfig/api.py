@@ -6,6 +6,9 @@
 r"""Public APIs of anyconfig module.
 
 .. versionadded:: 0.4.99
+   Most keyword arguments passed to APIs are now position independent.
+
+.. versionadded:: 0.4.99
    Added ac_namedtuple parameter to \*load and \*dump APIs.
 
 .. versionchanged:: 0.3
@@ -119,8 +122,28 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=None):
     return psr()  # TBD: Passing initialization arguments.
 
 
+def _load_schema(**options):
+    """
+    :param options: Optional keyword arguments such as
+
+        - ac_template: Assume configuration file may be a template file and try
+          to compile it AAR if True
+        - ac_context: A dict presents context to instantiate template
+        - ac_schema: JSON schema file path to validate given config file
+    """
+    ac_schema = options.get("ac_schema", None)
+    if ac_schema is not None:
+        options["ac_parser"] = None  # Try to detect it as it may be different
+                                     # format from the original config file.
+        options["ac_schema"] = None  # Avoid infinite loop.
+        LOGGER.info("Loading schema: %s", ac_schema)
+        return load(ac_schema, **options)
+
+    return None
+
+
 def single_load(path_or_stream, ac_parser=None, ac_template=False,
-                ac_context=None, ac_schema=None, **options):
+                ac_context=None, **options):
     """
     Load single config file.
 
@@ -129,12 +152,12 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
-    :param ac_schema: JSON schema file path to validate given config file
     :param options: Optional keyword arguments such as:
 
         - Common options:
 
-            - ac_namedtuple: Convert result to nested namedtuple object if True
+          - ac_namedtuple: Convert result to nested namedtuple object if True
+          - ac_schema: JSON schema file path to validate given config file
 
         - Common backend options:
 
@@ -158,12 +181,9 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
     if psr is None:
         return None
 
-    schema = None
-    if ac_schema is not None:
-        options["ac_schema"] = None  # Avoid infinit loop
-        LOGGER.info("Loading schema: %s", ac_schema)
-        schema = load(ac_schema, ac_parser=None, ac_template=ac_template,
-                      ac_context=ac_context, **options)
+    schema = _load_schema(ac_template=ac_template, ac_context=ac_context,
+                          **options)
+    options["ac_schema"] = None  # It's not needed now.
 
     LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:
@@ -182,7 +202,7 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
 
 
 def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
-               ac_schema=None, **options):
+               **options):
     """
     Load multiple config files.
 
@@ -201,7 +221,6 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
-    :param ac_schema: JSON schema file path to validate given config file
     :param options: Optional keyword arguments:
 
         - Common options:
@@ -211,8 +230,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
             module for more details of strategies. The default is MS_DICTS.
 
           - ac_marker (marker): Globbing marker to detect paths patterns.
-
           - ac_namedtuple: Convert result to nested namedtuple object if True
+          - ac_schema: JSON schema file path to validate given config file
 
         - Common backend options:
 
@@ -230,11 +249,9 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     if ac_merge not in MERGE_STRATEGIES:
         raise ValueError("Invalid merge strategy: " + ac_merge)
 
-    schema = None
-    if ac_schema is not None:
-        options["ac_schema"] = None  # Avoid infinit loop
-        schema = load(ac_schema, ac_parser=None, ac_template=ac_template,
-                      ac_context=ac_context, **options)
+    schema = _load_schema(ac_template=ac_template, ac_context=ac_context,
+                          **options)
+    options["ac_schema"] = None  # It's not needed now.
 
     cnf = to_container(ac_context) if ac_context else container()
     same_type = anyconfig.utils.are_same_file_types(paths)
@@ -261,7 +278,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
 
 def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
-         ac_schema=None, **options):
+         **options):
     r"""
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -272,7 +289,6 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
-    :param ac_schema: JSON schema file path to validate given config file
     :param options:
         Optional keyword arguments. See also the description of `options` in
         `multi_load` function.
@@ -286,24 +302,24 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
     if is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
         return multi_load(path_specs, ac_parser=ac_parser,
                           ac_template=ac_template, ac_context=ac_context,
-                          ac_schema=ac_schema, **options)
+                          **options)
     else:
         return single_load(path_specs, ac_parser=ac_parser,
                            ac_template=ac_template, ac_context=ac_context,
-                           ac_schema=ac_schema, **options)
+                           **options)
 
 
 def loads(content, ac_parser=None, ac_template=False, ac_context=None,
-          ac_schema=None, **options):
+          **options):
     """
     :param content: Configuration file's content
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: Context dict to instantiate template
-    :param ac_schema: JSON schema content to validate given config file
-    :param options: Backend specific optional arguments, e.g. {"indent": 2} for
-        JSON loader/dumper backend
+    :param options:
+        Optional keyword arguments. See also the description of `options` in
+        `single_load` function.
 
     :return: Dict-like object (instance of
         anyconfig.mergeabledict.MergeableDict by default) supports merge
@@ -318,9 +334,11 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
         return anyconfig.parser.parse(content)
 
     schema = None
+    ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
-        options["ac_schema"] = None  # Avoid infinit loop
-        schema = loads(ac_schema, psr, ac_template, ac_context, **options)
+        options["ac_schema"] = None
+        schema = loads(ac_schema, ac_parser=psr, ac_template=ac_template,
+                       ac_context=ac_context, **options)
 
     if ac_template:
         try:

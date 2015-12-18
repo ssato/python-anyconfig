@@ -197,38 +197,50 @@ def is_namedtuple(obj):
     return isinstance(obj, tuple) and hasattr(obj, "_asdict")
 
 
-def convert_to(mdict, to_namedtuple=False,
+def convert_to(obj, to_namedtuple=False,
                _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
     """
-    Convert a MergeableDict instances to a dict object.
+    Convert a OrderedMergeableDict or MergeableDict instances to a dict or
+    namedtuple object recursively.
 
     Borrowed basic idea and implementation from bunch.unbunchify.
     (bunch is distributed under MIT license same as this module.)
 
-    :param mdict: A MergeableDict instance
+    .. note::
+       If `to_namedtuple` is True and given object `obj` is MergeableDict
+       (! OrderedMergeableDict), then the order of fields of result namedtuple
+       object may be random and not stable because the order of MergeableDict
+       may not be kept and stable.
+
+    :param obj: An [Ordered]MergeableDict instance or other object
     :param to_namedtuple:
-        Convert `mdict` to namedtuple object of which definition is created on
-        the fly if True
+        Convert `obj` to namedtuple object of which definition is created on
+        the fly if True instead of dict.
     :param _namedtuple_cls_key:
         Special keyword to embedded the class name of namedtuple object to
         create.  See the comments in :func:`create_from` also.
 
     :return: A dict or namedtuple object if to_namedtuple is True
     """
-    if is_dict_like(mdict) or is_namedtuple(mdict):
+    if is_dict_like(obj):
         if to_namedtuple:
-            _name = mdict.get(_namedtuple_cls_key, "NamedTuple")
-            _keys = [k for k in mdict.keys() if k != _namedtuple_cls_key]
-            _vals = [convert_to(mdict[k], to_namedtuple, _namedtuple_cls_key)
+            _name = obj.get(_namedtuple_cls_key, "NamedTuple")
+            _keys = [k for k in obj.keys() if k != _namedtuple_cls_key]
+            _vals = [convert_to(obj[k], to_namedtuple, _namedtuple_cls_key)
                      for k in _keys]
             return collections.namedtuple(_name, _keys)(*_vals)
         else:
-            return dict((k, convert_to(v)) for k, v in iteritems(mdict))
-    elif is_iterable(mdict):
-        return type(mdict)(convert_to(v, to_namedtuple, _namedtuple_cls_key)
-                           for v in mdict)
+            return dict((k, convert_to(v)) for k, v in iteritems(obj))
+    elif is_namedtuple(obj):
+        if to_namedtuple:
+            return obj  # Nothing to do if it's nested n.t. (it should be).
+        else:
+            return dict((k, convert_to(getattr(obj, k))) for k in obj._fields)
+    elif is_iterable(obj):
+        return type(obj)(convert_to(v, to_namedtuple, _namedtuple_cls_key)
+                         for v in obj)
     else:
-        return mdict
+        return obj
 
 
 def create_from(obj, _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):

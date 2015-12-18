@@ -212,6 +212,11 @@ def convert_to(obj, to_namedtuple=False,
        object may be random and not stable because the order of MergeableDict
        may not be kept and stable.
 
+    .. note::
+       namedtuple object cannot have fields start with '_' because it may be
+       conflicts with special methods of object like '__class__'. So it'll fail
+       if to convert dicts has such keys.
+
     :param obj: An [Ordered]MergeableDict instance or other object
     :param to_namedtuple:
         Convert `obj` to namedtuple object of which definition is created on

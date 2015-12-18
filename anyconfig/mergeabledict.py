@@ -3,16 +3,15 @@
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-"""Merge-able dict.
+"""Dict-based object supports merge operations.
 
 .. versionchanged: 0.4.99
-   Convert collections.namedtuple objects to dicts recursively.
+   Support to convert namedtuple objects from/to dicts recursively.
 
 .. versionadded: 0.3.1
    Added naive and partial implementation of JSON Pointer support.
 
-.. note::
-   JSON Pointer: http://tools.ietf.org/html/rfc6901
+.. note:: JSON Pointer: http://tools.ietf.org/html/rfc6901
 """
 from __future__ import absolute_import
 
@@ -207,8 +206,8 @@ def convert_to(obj, to_namedtuple=False,
     (bunch is distributed under MIT license same as this module.)
 
     .. note::
-       If `to_namedtuple` is True and given object `obj` is MergeableDict
-       (! OrderedMergeableDict), then the order of fields of result namedtuple
+       If `to_namedtuple` is True and given object `obj` is MergeableDict and
+       not OrderedMergeableDict, then the order of fields of result namedtuple
        object may be random and not stable because the order of MergeableDict
        may not be kept and stable.
 

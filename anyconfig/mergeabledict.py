@@ -247,26 +247,34 @@ def convert_to(obj, to_namedtuple=False,
         return obj
 
 
-def create_from(obj, _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
+def create_from(obj, ac_ordered=False, _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
     """
     Try creating a MergeableDict instance[s] from a dict or any other objects.
 
     :param obj: A dict instance
+    :param ac_ordered:
+        Create an instance of OrderedMergeableDict instead of MergeableDict If
+        it's True. Please note that OrderedMergeableDict class will be chosen
+        for namedtuple objects regardless of this argument always to keep keys
+        (fields) order.
     :param _namedtuple_cls_key:
         Special keyword to embedded the class name of namedtuple object to the
         MergeableDict object created. It's a hack and not elegant but I don't
         think there are another ways to make same namedtuple object from the
         MergeableDict object created from it.
     """
+    opts = dict(ac_ordered=ac_ordered, _namedtuple_cls_key=_namedtuple_cls_key)
+
     if is_dict_like(obj):
-        return MergeableDict((k, create_from(v)) for k, v in iteritems(obj))
+        cls = OrderedMergeableDict if ac_ordered else MergeableDict
+        return cls((k, create_from(v, **opts)) for k, v in iteritems(obj))
     elif is_namedtuple(obj):
-        mdict = OrderedMergeableDict((k, create_from(getattr(obj, k))) for k
-                                     in obj._fields)
+        mdict = OrderedMergeableDict((k, create_from(getattr(obj, k), **opts))
+                                     for k in obj._fields)
         mdict[_namedtuple_cls_key] = obj.__class__.__name__
         return mdict
     elif is_iterable(obj):
-        return type(obj)(create_from(v) for v in obj)
+        return type(obj)(create_from(v, **opts) for v in obj)
     else:
         return obj
 

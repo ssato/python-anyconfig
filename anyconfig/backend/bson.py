@@ -75,6 +75,9 @@ class Parser(anyconfig.backend.base.FromStringLoader,
         :return: self.container() object holding config parameters
         """
         objs = bson.decode_all(content, **kwargs)
-        return None if not objs else self.container.create(objs[0])
+        if objs:
+            return anyconfig.mergeabledict.create_from(objs[0])
+        else:
+            return None
 
 # vim:sw=4:ts=4:et:

@@ -443,7 +443,7 @@ class Test_40_multi_load(unittest.TestCase):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
-        ma = TT.container.create(a)
+        ma = TT.to_container(a)
         ma.update(b, TT.MS_DICTS)
 
         a_path = os.path.join(self.workdir, "a.yml")

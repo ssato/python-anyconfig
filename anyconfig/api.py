@@ -44,7 +44,8 @@ import anyconfig.utils
 # Import some global constants will be re-exported:
 from anyconfig.mergeabledict import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    PATH_SEPS, get, set_, convert_to, create_from  # flake8: noqa
+    PATH_SEPS, get, set_, convert_to,  # flake8: noqa
+    create_from as to_container
 )
 from anyconfig.schema import validate, gen_schema
 from anyconfig.utils import is_path
@@ -52,7 +53,6 @@ from anyconfig.utils import is_path
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
 container = anyconfig.mergeabledict.MergeableDict
-to_container = container.create
 
 
 def _is_paths(maybe_paths):
@@ -389,7 +389,7 @@ def dump(data, path_or_stream, ac_parser=None, **options):
     LOGGER.info("Dumping: %s",
                 anyconfig.utils.get_path_from_stream(path_or_stream))
     if options.get("ac_namedtuple", False):
-        data = create_from(data)
+        data = to_container(data)
     dumper.dump(data, path_or_stream, **options)
 
 
@@ -405,7 +405,7 @@ def dumps(data, ac_parser=None, **options):
     :return: Backend-specific string representation for the given data
     """
     if options.get("ac_namedtuple", False):
-        data = create_from(data)
+        data = to_container(data)
     return _find_dumper(None, ac_parser).dumps(data, **options)
 
 # vim:sw=4:ts=4:et:

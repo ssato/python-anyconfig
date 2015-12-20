@@ -98,11 +98,9 @@ class Test00Functions(unittest.TestCase):
 
 class Test10MergeableDict(unittest.TestCase):
 
-    mk_mdict = TT.MergeableDict.create
-
     def test_20_update__w_replace(self):
-        dic = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
-        upd = self.mk_mdict(dict(a=2, b=dict(b=[3, 4, 5], d="D")))
+        dic = TT.create_from(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
+        upd = TT.create_from(dict(a=2, b=dict(b=[3, 4, 5], d="D")))
         ref = TT.MergeableDict(**dic.copy())
         ref['a'] = 2
         ref['b'] = upd['b']
@@ -118,14 +116,14 @@ class Test10MergeableDict(unittest.TestCase):
         self.assertTrue(dicts_equal(dic, ref))
 
     def test_24_update__w_None(self):
-        dic = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
+        dic = TT.create_from(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
         ref = TT.MergeableDict(**dic.copy())
         dic.update(None)
         self.assertTrue(dicts_equal(dic, ref))
 
     def test_30_update__wo_replace(self):
-        dic = self.mk_mdict(dict(a=1, b=dict(b=[1, 2], c="C")))
-        upd = self.mk_mdict(dict(name="foo", a=2, b=dict(b=[3, 4, 5], d="D")))
+        dic = TT.create_from(dict(a=1, b=dict(b=[1, 2], c="C")))
+        upd = TT.create_from(dict(name="foo", a=2, b=dict(b=[3, 4, 5], d="D")))
         ref = TT.MergeableDict(**dic.copy())
         ref['name'] = upd['name']
 
@@ -133,8 +131,8 @@ class Test10MergeableDict(unittest.TestCase):
         self.assertTrue(dicts_equal(dic, ref))
 
     def test_40_update_w_merge__primitives(self):
-        dic = self.mk_mdict(dict(a=1, b="b"))
-        upd = self.mk_mdict(dict(a=2, b="B", c=[1, 2, 3]))
+        dic = TT.create_from(dict(a=1, b="b"))
+        upd = TT.create_from(dict(a=2, b="B", c=[1, 2, 3]))
         dic2 = TT.MergeableDict(**dic.copy())
         ref = TT.MergeableDict(**dic.copy())
         ref["c"] = upd["c"]
@@ -166,9 +164,9 @@ class Test10MergeableDict(unittest.TestCase):
         self.assertTrue(dicts_equal(dic2, upd2))
 
     def test_48_update_w_merge_dicts__complex_case(self):
-        dic = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C"),
-                                 e=[3, 4]))
-        upd = self.mk_mdict(dict(a=2, b=dict(b=[1, 2, 3], d="D")))
+        dic = TT.create_from(dict(name="a", a=1, b=dict(b=[1, 2], c="C"),
+                                  e=[3, 4]))
+        upd = TT.create_from(dict(a=2, b=dict(b=[1, 2, 3], d="D")))
         ref = TT.MergeableDict(**dic.copy())
         ref['a'] = 2
         ref['b'] = TT.MergeableDict(b=[1, 2, 3], c="C", d="D")
@@ -178,8 +176,8 @@ class Test10MergeableDict(unittest.TestCase):
         self.assertTrue(dicts_equal(dic, ref))
 
     def test_50_update__w_merge_dicts_and_lists(self):
-        dic = self.mk_mdict(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
-        upd = self.mk_mdict(dict(a=2, b=dict(b=[3, 4], d="D", e=[1, 2])))
+        dic = TT.create_from(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
+        upd = TT.create_from(dict(a=2, b=dict(b=[3, 4], d="D", e=[1, 2])))
 
         ref = TT.MergeableDict(**dic.copy())
         ref['a'] = 2

@@ -247,7 +247,8 @@ def convert_to(obj, to_namedtuple=False,
         return obj
 
 
-def create_from(obj=None, ac_ordered=False, _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
+def create_from(obj=None, ac_ordered=False,
+                _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
     """
     Try creating a MergeableDict instance[s] from a dict or any other objects.
 

@@ -275,7 +275,7 @@ def main(argv=None):
 
     _check_options_and_args(parser, options, args)
 
-    cnf = API.container(os.environ.copy() if options.env else {})
+    cnf = API.to_container(os.environ.copy() if options.env else {})
     diff = API.load(args, options.itype,
                     ignore_missing=options.ignore_missing,
                     ac_merge=options.merge, ac_template=options.template,

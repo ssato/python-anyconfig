@@ -254,7 +254,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
                           **options)
     options["ac_schema"] = None  # It's not needed now.
 
-    cnf = to_container(ac_context) if ac_context else container()
+    cnf = to_container(ac_context)
     same_type = anyconfig.utils.are_same_file_types(paths)
 
     if is_path(paths) and marker in paths:

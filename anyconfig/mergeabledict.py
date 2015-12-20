@@ -264,11 +264,11 @@ def create_from(obj=None, ac_ordered=False,
         think there are another ways to make same namedtuple object from the
         MergeableDict object created from it.
     """
-    opts = dict(ac_ordered=ac_ordered, _namedtuple_cls_key=_namedtuple_cls_key)
     cls = OrderedMergeableDict if ac_ordered else MergeableDict
     if obj is None:
         return cls()
 
+    opts = dict(ac_ordered=ac_ordered, _namedtuple_cls_key=_namedtuple_cls_key)
     if is_dict_like(obj):
         return cls((k, create_from(v, **opts)) for k, v in iteritems(obj))
     elif is_namedtuple(obj):

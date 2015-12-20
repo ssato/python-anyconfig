@@ -289,11 +289,6 @@ class MergeableDict(dict):
 
     strategy = MS_DICTS
 
-    @classmethod
-    def convert_to(cls, mdict):
-        """Create an object from MergeableDict instances"""
-        return convert_to(mdict)
-
     def get_strategy(self):
         """Merge strategy"""
         return self.strategy

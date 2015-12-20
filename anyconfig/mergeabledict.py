@@ -283,10 +283,8 @@ def create_from(obj=None, ac_ordered=False,
 
 
 class MergeableDict(dict):
+    """Dict based object supports 'merge' operation.
     """
-    Dict based object supports 'merge' operation.
-    """
-
     strategy = MS_DICTS
 
     def get_strategy(self):

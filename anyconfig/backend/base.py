@@ -246,7 +246,7 @@ class Parser(object):
         :return: string represents the configuration
         """
         kwargs = mk_opt_args(self._dump_opts, kwargs)
-        cnf = self.container.convert_to(cnf)
+        cnf = anyconfig.mergeabledict.convert_to(cnf)
         return self.dump_to_string(cnf, **kwargs)
 
     def dump(self, cnf, path_or_stream, **kwargs):
@@ -260,7 +260,7 @@ class Parser(object):
         :raises IOError, OSError, AttributeError: When dump failed.
         """
         kwargs = mk_opt_args(self._dump_opts, kwargs)
-        cnf = self.container.convert_to(cnf)
+        cnf = anyconfig.mergeabledict.convert_to(cnf)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
             ensure_outdir_exists(path_or_stream)

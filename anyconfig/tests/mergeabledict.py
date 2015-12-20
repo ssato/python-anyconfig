@@ -40,6 +40,13 @@ class Test00Functions(unittest.TestCase):
 
         self.assertEqual(obj, obj2)
 
+    def test_14_create_from__null(self):
+        mdct = TT.create_from()
+        omd = TT.create_from(ac_ordered=True)
+
+        self.assertTrue(isinstance(mdct, TT.MergeableDict))
+        self.assertTrue(isinstance(omd, TT.OrderedMergeableDict))
+
     def test_20_get__invalid_inputs(self):
         dic = dict(a=1, b=[1, 2])
         (dic2, err) = TT.get(dic, '')

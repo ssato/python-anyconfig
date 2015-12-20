@@ -247,11 +247,11 @@ def convert_to(obj, to_namedtuple=False,
         return obj
 
 
-def create_from(obj, ac_ordered=False, _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
+def create_from(obj=None, ac_ordered=False, _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
     """
     Try creating a MergeableDict instance[s] from a dict or any other objects.
 
-    :param obj: A dict instance
+    :param obj: A dict instance or None
     :param ac_ordered:
         Create an instance of OrderedMergeableDict instead of MergeableDict If
         it's True. Please note that OrderedMergeableDict class will be chosen
@@ -264,9 +264,11 @@ def create_from(obj, ac_ordered=False, _namedtuple_cls_key=NAMEDTUPLE_CLS_KEY):
         MergeableDict object created from it.
     """
     opts = dict(ac_ordered=ac_ordered, _namedtuple_cls_key=_namedtuple_cls_key)
+    cls = OrderedMergeableDict if ac_ordered else MergeableDict
+    if obj is None:
+        return cls()
 
     if is_dict_like(obj):
-        cls = OrderedMergeableDict if ac_ordered else MergeableDict
         return cls((k, create_from(v, **opts)) for k, v in iteritems(obj))
     elif is_namedtuple(obj):
         mdict = OrderedMergeableDict((k, create_from(getattr(obj, k), **opts))

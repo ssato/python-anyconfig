@@ -29,6 +29,8 @@ try:
 except ImportError:
     import simplejson as json
 
+from anyconfig.backend.base import to_container
+
 
 _LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant",
               "object_pairs_hook"]
@@ -63,9 +65,9 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
         :param content: JSON config content string
         :param kwargs: optional keyword parameters passed to json.loads
 
-        :return: self.container object holding configuration
+        :return: Dict-like object holding configuration
         """
-        return json.loads(content, object_hook=self.container, **kwargs)
+        return json.loads(content, object_hook=to_container, **kwargs)
 
     def load_from_stream(self, stream, **kwargs):
         """
@@ -74,8 +76,8 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
         :param stream: JSON file or file-like object
         :param kwargs: optional keyword parameters passed to json.load
 
-        :return: self.container object holding configuration
+        :return: Dict-like object holding configuration
         """
-        return json.load(stream, object_hook=self.container, **kwargs)
+        return json.load(stream, object_hook=to_container, **kwargs)
 
 # vim:sw=4:ts=4:et:

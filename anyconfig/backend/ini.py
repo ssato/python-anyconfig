@@ -128,7 +128,7 @@ def _load(stream, sep=_SEP, **kwargs):
 
 def _dumps_itr(cnf):
     """
-    :param cnf: Configuration data to dump :: self.container
+    :param cnf: Configuration data to dump
     """
     dkey = "DEFAULT"
     for sect, params in iteritems(cnf):
@@ -145,7 +145,7 @@ def _dumps_itr(cnf):
 
 def _dumps(cnf, **kwargs):
     """
-    :param cnf: Configuration data to dump :: self.container
+    :param cnf: Configuration data to dump
     :param kwargs: optional keyword parameters to be sanitized :: dict
 
     :return: String representation of `cnf` object in INI format

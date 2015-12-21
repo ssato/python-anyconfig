@@ -72,7 +72,7 @@ class Parser(anyconfig.backend.base.FromStringLoader,
         :param content: BSON config content in bytes data string
         :param kwargs: optional keyword parameters
 
-        :return: self.container() object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         objs = bson.decode_all(content, **kwargs)
         if objs:

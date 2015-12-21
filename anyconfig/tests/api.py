@@ -194,7 +194,7 @@ class Test_30_single_load(unittest.TestCase):
         self.assertTrue(cnf0 == cnf1, "%r -> %r" % (cnf0, cnf1))
 
     def test_14_single_load__ignore_missing(self):
-        null_cntnr = TT.container()
+        null_cntnr = TT.to_container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
@@ -370,7 +370,7 @@ class Test_40_multi_load(unittest.TestCase):
             self.assertTrue(1 == 1)  # To suppress warn of pylint.
 
     def test_15_multi_load__empty_path_list(self):
-        self.assertEqual(TT.multi_load([]), TT.container())
+        self.assertEqual(TT.multi_load([]), TT.to_container())
 
     def test_16_dump_and_multi_load__mixed_file_types(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
@@ -428,7 +428,7 @@ class Test_40_multi_load(unittest.TestCase):
         self.assertEqual(cnf["b"]["d"], b["b"]["d"])
 
     def test_30_multi_load__ignore_missing(self):
-        null_cntnr = TT.container()
+        null_cntnr = TT.to_container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
@@ -569,7 +569,7 @@ class Test_50_load_and_dump(unittest.TestCase):
         self.assertEqual(a3["b"]["d"], b["b"]["d"])
 
     def test_34_load__ignore_missing(self):
-        null_cntnr = TT.container()
+        null_cntnr = TT.to_container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 

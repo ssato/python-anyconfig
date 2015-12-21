@@ -31,8 +31,10 @@ import anyconfig.compat
 import anyconfig.mergeabledict
 import anyconfig.utils
 
+from anyconfig.mergeabledict import create_from as to_container
 
 LOGGER = logging.getLogger(__name__)
+_NULL = to_container()
 
 
 def mk_opt_args(keys, kwargs):
@@ -135,9 +137,9 @@ class Parser(object):
         :param content: Config content string
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.container()
+        return _NULL
 
     def load_from_path(self, filepath, **kwargs):
         """
@@ -146,9 +148,9 @@ class Parser(object):
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.container()
+        return _NULL
 
     def load_from_stream(self, stream, **kwargs):
         """
@@ -157,9 +159,9 @@ class Parser(object):
         :param stream:  Config file or file like object
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.container()
+        return _NULL
 
     def loads(self, content, **kwargs):
         """
@@ -168,14 +170,13 @@ class Parser(object):
         :param content:  Config file content
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         if not content or content is None:
-            return self.container()
+            return _NULL
 
         kwargs = mk_opt_args(self._load_opts, kwargs)
-        obj = self.load_from_string(content, **kwargs)
-        return anyconfig.mergeabledict.create_from(obj)
+        return to_container(self.load_from_string(content, **kwargs))
 
     def load(self, path_or_stream, ignore_missing=False, **kwargs):
         """
@@ -189,25 +190,25 @@ class Parser(object):
             exist in actual
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         kwargs = mk_opt_args(self._load_opts, kwargs)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
             if ignore_missing and not os.path.exists(path_or_stream):
-                return self.container()
+                return _NULL
 
             cnf = self.load_from_path(path_or_stream, **kwargs)
         else:
             cnf = self.load_from_stream(path_or_stream, **kwargs)
 
-        return anyconfig.mergeabledict.create_from(cnf)
+        return to_container(cnf)
 
     def dump_to_string(self, cnf, **kwargs):
         """
         Dump config `cnf` to a string.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: string represents the configuration
@@ -218,7 +219,7 @@ class Parser(object):
         """
         Dump config `cnf` to a file `filepath`.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
@@ -230,7 +231,7 @@ class Parser(object):
 
         TODO: How to process socket objects same as file objects ?
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param stream:  Config file or file like object
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
@@ -240,7 +241,7 @@ class Parser(object):
         """
         Dump config `cnf` to a string.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: string represents the configuration
@@ -254,7 +255,7 @@ class Parser(object):
         Dump config `cnf` to a filepath or file-like object
         `path_or_stream`.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param path_or_stream: Config file path or file{,-like} object
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
@@ -284,7 +285,7 @@ class FromStringLoader(Parser):
         :param stream: Config file or file-like object
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         return self.load_from_string(stream.read(), **kwargs)
 
@@ -295,7 +296,7 @@ class FromStringLoader(Parser):
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         return self.load_from_stream(self.ropen(filepath), **kwargs)
 
@@ -315,7 +316,7 @@ class FromStreamLoader(Parser):
         :param content: Config content string
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         return self.load_from_stream(anyconfig.compat.StringIO(content),
                                      **kwargs)
@@ -327,7 +328,7 @@ class FromStreamLoader(Parser):
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         return self.load_from_stream(self.ropen(filepath), **kwargs)
 
@@ -345,7 +346,7 @@ class ToStringDumper(Parser):
         """
         Dump config `cnf` to a file `filepath`.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
@@ -358,7 +359,7 @@ class ToStringDumper(Parser):
 
         TODO: How to process socket objects same as file objects ?
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param stream:  Config file or file like object
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
@@ -380,10 +381,10 @@ class ToStreamDumper(Parser):
         """
         Dump config `cnf` to a string.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         stream = self.to_stream()
         self.dump_to_stream(cnf, stream, **kwargs)
@@ -393,7 +394,7 @@ class ToStreamDumper(Parser):
         """
         Dump config `cnf` to a file `filepath`.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """

@@ -24,7 +24,7 @@ def make_configobj(cnf, **kwargs):
     """
     Make a configobj.ConfigObj initalized with given config `cnf`.
 
-    :param cnf: Configuration data :: Parser.container
+    :param cnf: Configuration data
     :param kwargs: optional keyword parameters passed to ConfigObj.__init__
 
     :return: An initialized configobj.ConfigObj instance
@@ -57,7 +57,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
         """
         Dump config `cnf` to a string.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param kwargs: backend-specific optional keyword parameters :: dict
 
         :return: string represents the configuration
@@ -66,7 +66,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param stream: Config file or file-like object
         :param kwargs: backend-specific optional keyword parameters :: dict
         """

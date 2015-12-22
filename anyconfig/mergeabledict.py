@@ -282,6 +282,146 @@ def create_from(obj=None, ac_ordered=False,
         return obj
 
 
+class UpdateWithReplaceDict(dict):
+    """
+    Replace self with other if both has same keys on update.
+
+    >>> md0 = UpdateWithReplaceDict(dict(a=1, b=[1, 3], c="abc", f=None))
+    >>> md1 = UpdateWithReplaceDict(dict(a=2, b=[0, 1], c=dict(d="d", e=1)))
+    >>> md0.update(md1)
+    >>> all(md0[k] == md1[k] for k in ("a", "b", "c"))
+    True
+    >>> md0["f"] is None
+    True
+    """
+    def _update(self, other):
+        """
+        :param other: dict or dict-like object
+        """
+        for key in other.keys():
+            self[key] = other[key]
+
+    def update(self, other, **another):
+        """
+        :param other: object of which type is same as self's.
+        :param another: Keyword arguments to update self.
+        """
+        if callable(getattr(other, "keys", None)):
+            self._update(other)
+
+        self._update(another)
+
+
+class UpdateWoReplaceDict(dict):
+    """
+    Update self w/ other but never replace self w/ other.
+
+    >>> md0 = UpdateWoReplaceDict(dict(a=1, b=[1, 3], c="abc"))
+    >>> md1 = md0.copy()
+    >>> md2 = UpdateWoReplaceDict(dict(a=2, b=[0, 1], c="xyz", d=None))
+    >>> md0.update(md2)
+    >>> all(md0[k] != md2[k] for k in ("a", "b", "c"))
+    True
+    >>> all(md0[k] == md1[k] for k in ("a", "b", "c"))
+    True
+    >>> md0["d"] == md2["d"]
+    True
+    """
+    def _update(self, other):
+        """
+        :param other: dict or dict-like object
+        """
+        for key in other.keys():
+            if key not in self:
+                self[key] = other[key]
+
+    def update(self, other, **another):
+        """
+        :param other: object of which type is same as self's.
+        :param another: Keyword arguments to update self.
+        """
+        if callable(getattr(other, "keys", None)):
+            self._update(other)
+
+        self._update(another)
+
+
+class UpdateWithMergeDict(dict):
+    """
+    Merge members recursively. Behavior of merge will be vary depends on
+    types of original and new values.
+
+    - dict vs. dict -> merge recursively
+    - list vs. list -> vary depends on `merge_lists`. see its description.
+    - other objects vs. any -> vary depends on `keep`. see its description.
+
+    class variables:
+
+        - merge_lists: Merge not only dicts but also lists. For example,
+
+            [1, 2, 3], [3, 4] ==> [1, 2, 3, 4]
+            [1, 2, 2], [2, 4] ==> [1, 2, 2, 4]
+
+        - keep: Keep original value if type of original value is not a dict nor
+          list. It will be simply replaced with new value by default.
+
+    >>> mb0 = UpdateWithMergeDict(dict(c=2, d=3))
+    >>> mb1 = UpdateWithMergeDict(dict(c=4, d=5))
+    >>> md0 = UpdateWithMergeDict(dict(a=1, b=mb0, e=[1, 2, 2]))
+    >>> md1 = md0.copy()
+    >>> md2 = UpdateWithMergeDict(dict(a=2, b=mb1, e=[2, 3, 4]))
+    >>> md0.update(md2)
+    >>> md0["a"] == md2["a"]
+    True
+    >>> md0["b"]["d"] == md2["b"]["d"]
+    True
+    >>> md0["e"] == md2["e"]
+    True
+    """
+    merge_lists = False
+    keep = False
+
+    def _update(self, other):
+        """
+        :param other: dict or dict-like object
+        """
+        for key, val in iteritems(other):
+            if key not in self:
+                self[key] = val
+                continue
+
+            val0 = self[key]  # Original value
+            if is_dict_like(val0):  # It needs recursive updates.
+                self[key]._update(val)
+            elif self.merge_lists and is_iterable(val) and is_iterable(val0):
+                self[key] += [x for x in val if x not in val0]
+            elif not self.keep:
+                self[key] = val  # Overwrite it.
+
+    def update(self, other, **another):
+        """
+        :param other: object of which type is same as self's.
+        :param another: Keyword arguments to update self.
+        """
+        if callable(getattr(other, "keys", None)):
+            self._update(other)
+
+        self._update(another)
+
+
+class UpdateWithMergeListsDict(UpdateWithMergeDict):
+    """
+    Similar to UpdateWithMergeDict but merge lists by default.
+
+    >>> md3 = UpdateWithMergeListsDict(aaa=[1, 2, 3])
+    >>> md4 = UpdateWithMergeListsDict(aaa=[4, 4, 5])
+    >>> md3.update(md4)
+    >>> md3["aaa"]
+    [1, 2, 3, 4, 4, 5]
+    """
+    merge_lists = True
+
+
 class MergeableDict(dict):
     """Dict based object supports 'merge' operation.
     """

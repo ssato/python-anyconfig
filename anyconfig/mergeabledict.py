@@ -287,38 +287,50 @@ class UpdateWithReplaceDict(dict):
     Replace self with other if both has same keys on update.
 
     >>> md0 = UpdateWithReplaceDict(dict(a=1, b=[1, 3], c="abc", f=None))
-    >>> md1 = UpdateWithReplaceDict(dict(a=2, b=[0, 1], c=dict(d="d", e=1)))
+    >>> md1 = UpdateWithReplaceDict(a=2, b=[0, 1], c=dict(d="d", e=1))
     >>> md0.update(md1)
     >>> all(md0[k] == md1[k] for k in ("a", "b", "c"))
     True
     >>> md0["f"] is None
     True
     """
-    def _update(self, other):
+    def _update(self, other, key, val=None):
         """
-        :param other: dict or dict-like object
+        :param other:
+            dict or dict-like object or a list of (key, value) pair tuples
+        :param key: object key
+        :param val: object value
         """
-        for key in other.keys():
-            self[key] = other[key]
+        self[key] = other[key] if val is None else val
 
     def update(self, other, **another):
         """
-        :param other: object of which type is same as self's.
-        :param another: Keyword arguments to update self.
+        :param other:
+            a dict or dict-like object or a list of (key, value) pair tuples
+            to update self
+        :param another: optional keyword arguments to update self more
+
+        .. seealso:: Document of dict.update
         """
         if callable(getattr(other, "keys", None)):
-            self._update(other)
+            for key in other.keys():
+                self._update(other, key)
+        else:
+            for key, val in other:  # ValueError may be raised.
+                self._update(other, key, val)
 
-        self._update(another)
+        for key in another.keys():
+            self._update(another, key)
 
 
-class UpdateWoReplaceDict(dict):
+class UpdateWoReplaceDict(UpdateWithReplaceDict):
     """
-    Update self w/ other but never replace self w/ other.
+    Update self w/ other but never replace self w/ other if both objects have
+    same keys.
 
     >>> md0 = UpdateWoReplaceDict(dict(a=1, b=[1, 3], c="abc"))
     >>> md1 = md0.copy()
-    >>> md2 = UpdateWoReplaceDict(dict(a=2, b=[0, 1], c="xyz", d=None))
+    >>> md2 = UpdateWoReplaceDict(a=2, b=[0, 1], c="xyz", d=None)
     >>> md0.update(md2)
     >>> all(md0[k] != md2[k] for k in ("a", "b", "c"))
     True
@@ -327,26 +339,18 @@ class UpdateWoReplaceDict(dict):
     >>> md0["d"] == md2["d"]
     True
     """
-    def _update(self, other):
+    def _update(self, other, key, val=None):
         """
-        :param other: dict or dict-like object
+        :param other:
+            dict or dict-like object or a list of (key, value) pair tuples
+        :param key: object key
+        :param val: object value
         """
-        for key in other.keys():
-            if key not in self:
-                self[key] = other[key]
-
-    def update(self, other, **another):
-        """
-        :param other: object of which type is same as self's.
-        :param another: Keyword arguments to update self.
-        """
-        if callable(getattr(other, "keys", None)):
-            self._update(other)
-
-        self._update(another)
+        if key not in self:
+            self[key] = other[key] if val is None else val
 
 
-class UpdateWithMergeDict(dict):
+class UpdateWithMergeDict(UpdateWithReplaceDict):
     """
     Merge members recursively. Behavior of merge will be vary depends on
     types of original and new values.
@@ -367,9 +371,9 @@ class UpdateWithMergeDict(dict):
 
     >>> mb0 = UpdateWithMergeDict(dict(c=2, d=3))
     >>> mb1 = UpdateWithMergeDict(dict(c=4, d=5))
-    >>> md0 = UpdateWithMergeDict(dict(a=1, b=mb0, e=[1, 2, 2]))
+    >>> md0 = UpdateWithMergeDict(a=1, b=mb0, e=[1, 2, 2])
     >>> md1 = md0.copy()
-    >>> md2 = UpdateWithMergeDict(dict(a=2, b=mb1, e=[2, 3, 4]))
+    >>> md2 = UpdateWithMergeDict(a=2, b=mb1, e=[2, 3, 4])
     >>> md0.update(md2)
     >>> md0["a"] == md2["a"]
     True
@@ -381,32 +385,26 @@ class UpdateWithMergeDict(dict):
     merge_lists = False
     keep = False
 
-    def _update(self, other):
+    def _update(self, other, key, val=None):
         """
-        :param other: dict or dict-like object
+        :param other:
+            dict or dict-like object or a list of (key, value) pair tuples
+        :param key: object key
+        :param val: object value
         """
-        for key, val in iteritems(other):
-            if key not in self:
-                self[key] = val
-                continue
+        if val is None:
+            val = other[key]
 
+        if key in self:
             val0 = self[key]  # Original value
             if is_dict_like(val0):  # It needs recursive updates.
-                self[key]._update(val)
+                self[key].update(val)
             elif self.merge_lists and is_iterable(val) and is_iterable(val0):
                 self[key] += [x for x in val if x not in val0]
             elif not self.keep:
                 self[key] = val  # Overwrite it.
-
-    def update(self, other, **another):
-        """
-        :param other: object of which type is same as self's.
-        :param another: Keyword arguments to update self.
-        """
-        if callable(getattr(other, "keys", None)):
-            self._update(other)
-
-        self._update(another)
+        else:
+            self[key] = val
 
 
 class UpdateWithMergeListsDict(UpdateWithMergeDict):

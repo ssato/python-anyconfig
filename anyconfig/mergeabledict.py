@@ -251,7 +251,7 @@ def convert_to(obj, to_namedtuple=False, ac_ordered=False,
 
 
 def create_from(obj=None, ac_ordered=False,
-                _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY):
+                _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
     """
     Try creating a MergeableDict instance[s] from a dict or any other objects.
 
@@ -266,6 +266,10 @@ def create_from(obj=None, ac_ordered=False,
         MergeableDict object created. It's a hack and not elegant but I don't
         think there are another ways to make same namedtuple object from the
         MergeableDict object created from it.
+    :param options: Other keyword arguments such as:
+
+        - ac_merge: Specify strategy from MERGE_STRATEGIES of how to merge
+          results loaded from multiple configuration files.
     """
     cls = OrderedMergeableDict if ac_ordered else MergeableDict
     if obj is None:

@@ -570,8 +570,8 @@ class MergeableDict(dict):
 
         :param other: object of which type is same as self's.
 
-        >>> md0 = create_from(dict(a=1, b=[1, 3], c="abc"))
-        >>> md1 = create_from(dict(a=2, b=[0, 1], c="xyz"))
+        >>> md0 = MergeableDict(a=1, b=[1, 3], c="abc")
+        >>> md1 = MergeableDict(a=2, b=[0, 1], c="xyz")
         >>> md0.update_w_replace(md1)
         >>> all(md0[k] == md1[k] for k in ("a", "b", "c"))
         True
@@ -585,8 +585,8 @@ class MergeableDict(dict):
 
         :param other: object of which type is same as self's.
 
-        >>> md0 = md1 = create_from(dict(a=1, b=[1, 3], c="abc"))
-        >>> md2 = create_from(dict(a=2, b=[0, 1], c="xyz", d=None))
+        >>> md0 = md1 = MergeableDict(a=1, b=[1, 3], c="abc")
+        >>> md2 = MergeableDict(a=2, b=[0, 1], c="xyz", d=None)
         >>> md0.update_wo_replace(md2)
         >>> all(md0[k] != md2[k] for k in ("a", "b", "c"))
         True
@@ -618,10 +618,9 @@ class MergeableDict(dict):
             Keep original value if type of original value is not a dict nor
             list.  It will be simply replaced with new value by default.
 
-        >>> md0 = md1 = create_from(dict(a=1, b=dict(c=2, d=3),
-        ...                                       e=[1, 2, 2]))
-        >>> md2 = create_from(dict(a=2, b=dict(d=4, f=5),
-        ...                                 e=[2, 3, 4]))
+        >>> md10 = MergeableDict(c=2, d=3)
+        >>> md0 = md1 = MergeableDict(a=1, b=md10, e=[1, 2, 2])
+        >>> md2 = MergeableDict(a=2, b=MergeableDict(d=4, f=5), e=[2, 3, 4])
         >>> md0.update_w_merge(md2, False)
         >>> md0["a"] == md2["a"]
         True
@@ -630,8 +629,8 @@ class MergeableDict(dict):
         >>> md0["e"] == md2["e"]
         True
 
-        >>> md3 = create_from(dict(aaa=[1, 2, 3], ))
-        >>> md4 = create_from(dict(aaa=[4, 4, 5], ))
+        >>> md3 = MergeableDict(aaa=[1, 2, 3])
+        >>> md4 = MergeableDict(aaa=[4, 4, 5])
         >>> md3.update_w_merge(md4, True)
         >>> md3["aaa"] == [1, 2, 3, 4, 4, 5]
         True

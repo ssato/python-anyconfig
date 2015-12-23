@@ -185,7 +185,8 @@ class Test_30_single_load(unittest.TestCase):
 
     def test_13_dump_and_single_load__namedtuple(self):
         cpath = os.path.join(self.workdir, "a.json")
-        cnf0 = TT.convert_to(OrderedDict(self.cnf), to_namedtuple=True)
+        cnf = OrderedDict(sorted(self.cnf.items()))
+        cnf0 = TT.convert_to(cnf, to_namedtuple=True)
 
         TT.dump(cnf0, cpath, namedtuple=True)
         self.assertTrue(os.path.exists(cpath))

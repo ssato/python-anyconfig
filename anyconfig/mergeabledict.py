@@ -414,6 +414,10 @@ class UpdateWithMergeListsOrderedDict(UpdateWithMergeListsDict, OrderedDict):
     pass
 
 
+# Alias to keep backward compatibility for a while.
+MergeableDict = UpdateWithMergeDict
+
+
 def convert_to(obj, to_namedtuple=False, ac_ordered=False,
                _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY):
     """

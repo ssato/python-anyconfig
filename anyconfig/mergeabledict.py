@@ -465,6 +465,37 @@ def convert_to(obj, to_namedtuple=False, ac_ordered=False,
         return obj
 
 
+# Mapppings: (merge_strategy, ordered?) : mergeable dict class
+_MS_CLASS_MAP = {(MS_REPLACE, True): UpdateWithReplaceOrderedDict,
+                 (MS_REPLACE, False): UpdateWithReplaceDict,
+                 (MS_NO_REPLACE, True): UpdateWoReplaceOrderedDict,
+                 (MS_NO_REPLACE, False): UpdateWoReplaceDict,
+                 (MS_DICTS, True): UpdateWithMergeOrderedDict,
+                 (MS_DICTS, False): UpdateWithMergeDict,
+                 (MS_DICTS_AND_LISTS, True): UpdateWithMergeListsOrderedDict,
+                 (MS_DICTS_AND_LISTS, False): UpdateWithMergeListsDict}
+
+# Hack: mappings from non-ordered version of mdict to ordered one.
+_MDICTS_CLASS_MAP = {UpdateWithReplaceDict: UpdateWithReplaceOrderedDict,
+                     UpdateWoReplaceDict: UpdateWoReplaceOrderedDict,
+                     UpdateWithMergeDict: UpdateWithMergeOrderedDict,
+                     UpdateWithMergeListsDict: UpdateWithMergeListsOrderedDict}
+
+
+def _get_mdict_class(ac_merge=MS_DICTS, ac_ordered=False):
+    """
+    :param ac_merge:
+        Specify strategy from MERGE_STRATEGIES of how to merge results loaded
+        from multiple configuration files.
+    :param ac_ordered:
+        Create an instance of OrderedMergeableDict instead of MergeableDict If
+        it's True. Please note that OrderedMergeableDict class will be chosen
+        for namedtuple objects regardless of this argument always to keep keys
+        (fields) order.
+    """
+    return _MS_CLASS_MAP.get((ac_merge, ac_ordered), UpdateWithMergeDict)
+
+
 def create_from(obj=None, ac_ordered=False,
                 _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
     """

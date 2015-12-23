@@ -196,99 +196,6 @@ def is_namedtuple(obj):
     return isinstance(obj, tuple) and hasattr(obj, "_asdict")
 
 
-def convert_to(obj, to_namedtuple=False, ac_ordered=False,
-               _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY):
-    """
-    Convert a OrderedMergeableDict or MergeableDict instances to a dict or
-    namedtuple object recursively.
-
-    Borrowed basic idea and implementation from bunch.unbunchify.
-    (bunch is distributed under MIT license same as this module.)
-
-    .. note::
-       If `to_namedtuple` is True and given object `obj` is MergeableDict and
-       not OrderedMergeableDict, then the order of fields of result namedtuple
-       object may be random and not stable because the order of MergeableDict
-       may not be kept and stable.
-
-    .. note::
-       namedtuple object cannot have fields start with '_' because it may be
-       conflicts with special methods of object like '__class__'. So it'll fail
-       if to convert dicts has such keys.
-
-    :param obj: An [Ordered]MergeableDict instance or other object
-    :param to_namedtuple:
-        Convert `obj` to namedtuple object of which definition is created on
-        the fly if True instead of dict.
-    :param ac_ordered:
-        Create an instance of OrderedDict instead of dict if it's True.
-    :param _ac_ntpl_cls_key:
-        Special keyword to embedded the class name of namedtuple object to
-        create.  See the comments in :func:`create_from` also.
-
-    :return: A dict or namedtuple object if to_namedtuple is True
-    """
-    cls = OrderedDict if ac_ordered else dict
-    if is_dict_like(obj):
-        if to_namedtuple:
-            _name = obj.get(_ac_ntpl_cls_key, "NamedTuple")
-            _keys = [k for k in obj.keys() if k != _ac_ntpl_cls_key]
-            _vals = [convert_to(obj[k], to_namedtuple, _ac_ntpl_cls_key)
-                     for k in _keys]
-            return collections.namedtuple(_name, _keys)(*_vals)
-        else:
-            return cls((k, convert_to(v)) for k, v in iteritems(obj))
-    elif is_namedtuple(obj):
-        if to_namedtuple:
-            return obj  # Nothing to do if it's nested n.t. (it should be).
-        else:
-            return cls((k, convert_to(getattr(obj, k))) for k in obj._fields)
-    elif is_iterable(obj):
-        return type(obj)(convert_to(v, to_namedtuple, _ac_ntpl_cls_key)
-                         for v in obj)
-    else:
-        return obj
-
-
-def create_from(obj=None, ac_ordered=False,
-                _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
-    """
-    Try creating a MergeableDict instance[s] from a dict or any other objects.
-
-    :param obj: A dict instance or None
-    :param ac_ordered:
-        Create an instance of OrderedMergeableDict instead of MergeableDict If
-        it's True. Please note that OrderedMergeableDict class will be chosen
-        for namedtuple objects regardless of this argument always to keep keys
-        (fields) order.
-    :param _ac_ntpl_cls_key:
-        Special keyword to embedded the class name of namedtuple object to the
-        MergeableDict object created. It's a hack and not elegant but I don't
-        think there are another ways to make same namedtuple object from the
-        MergeableDict object created from it.
-    :param options: Other keyword arguments such as:
-
-        - ac_merge: Specify strategy from MERGE_STRATEGIES of how to merge
-          results loaded from multiple configuration files.
-    """
-    cls = OrderedMergeableDict if ac_ordered else MergeableDict
-    if obj is None:
-        return cls()
-
-    opts = dict(ac_ordered=ac_ordered, _ac_ntpl_cls_key=_ac_ntpl_cls_key)
-    if is_dict_like(obj):
-        return cls((k, create_from(v, **opts)) for k, v in iteritems(obj))
-    elif is_namedtuple(obj):
-        mdict = OrderedMergeableDict((k, create_from(getattr(obj, k), **opts))
-                                     for k in obj._fields)
-        mdict[_ac_ntpl_cls_key] = obj.__class__.__name__
-        return mdict
-    elif is_iterable(obj):
-        return type(obj)(create_from(v, **opts) for v in obj)
-    else:
-        return obj
-
-
 class UpdateWithReplaceDict(dict):
     """
     Replace self with other if both has same keys on update.
@@ -502,6 +409,99 @@ class UpdateWithMergeListsOrderedDict(UpdateWithMergeListsDict, OrderedDict):
     ['aaa', 'b']
     """
     pass
+
+
+def convert_to(obj, to_namedtuple=False, ac_ordered=False,
+               _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY):
+    """
+    Convert a OrderedMergeableDict or MergeableDict instances to a dict or
+    namedtuple object recursively.
+
+    Borrowed basic idea and implementation from bunch.unbunchify.
+    (bunch is distributed under MIT license same as this module.)
+
+    .. note::
+       If `to_namedtuple` is True and given object `obj` is MergeableDict and
+       not OrderedMergeableDict, then the order of fields of result namedtuple
+       object may be random and not stable because the order of MergeableDict
+       may not be kept and stable.
+
+    .. note::
+       namedtuple object cannot have fields start with '_' because it may be
+       conflicts with special methods of object like '__class__'. So it'll fail
+       if to convert dicts has such keys.
+
+    :param obj: An [Ordered]MergeableDict instance or other object
+    :param to_namedtuple:
+        Convert `obj` to namedtuple object of which definition is created on
+        the fly if True instead of dict.
+    :param ac_ordered:
+        Create an instance of OrderedDict instead of dict if it's True.
+    :param _ac_ntpl_cls_key:
+        Special keyword to embedded the class name of namedtuple object to
+        create.  See the comments in :func:`create_from` also.
+
+    :return: A dict or namedtuple object if to_namedtuple is True
+    """
+    cls = OrderedDict if ac_ordered else dict
+    if is_dict_like(obj):
+        if to_namedtuple:
+            _name = obj.get(_ac_ntpl_cls_key, "NamedTuple")
+            _keys = [k for k in obj.keys() if k != _ac_ntpl_cls_key]
+            _vals = [convert_to(obj[k], to_namedtuple, _ac_ntpl_cls_key)
+                     for k in _keys]
+            return collections.namedtuple(_name, _keys)(*_vals)
+        else:
+            return cls((k, convert_to(v)) for k, v in iteritems(obj))
+    elif is_namedtuple(obj):
+        if to_namedtuple:
+            return obj  # Nothing to do if it's nested n.t. (it should be).
+        else:
+            return cls((k, convert_to(getattr(obj, k))) for k in obj._fields)
+    elif is_iterable(obj):
+        return type(obj)(convert_to(v, to_namedtuple, _ac_ntpl_cls_key)
+                         for v in obj)
+    else:
+        return obj
+
+
+def create_from(obj=None, ac_ordered=False,
+                _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
+    """
+    Try creating a MergeableDict instance[s] from a dict or any other objects.
+
+    :param obj: A dict instance or None
+    :param ac_ordered:
+        Create an instance of OrderedMergeableDict instead of MergeableDict If
+        it's True. Please note that OrderedMergeableDict class will be chosen
+        for namedtuple objects regardless of this argument always to keep keys
+        (fields) order.
+    :param _ac_ntpl_cls_key:
+        Special keyword to embedded the class name of namedtuple object to the
+        MergeableDict object created. It's a hack and not elegant but I don't
+        think there are another ways to make same namedtuple object from the
+        MergeableDict object created from it.
+    :param options: Other keyword arguments such as:
+
+        - ac_merge: Specify strategy from MERGE_STRATEGIES of how to merge
+          results loaded from multiple configuration files.
+    """
+    cls = OrderedMergeableDict if ac_ordered else MergeableDict
+    if obj is None:
+        return cls()
+
+    opts = dict(ac_ordered=ac_ordered, _ac_ntpl_cls_key=_ac_ntpl_cls_key)
+    if is_dict_like(obj):
+        return cls((k, create_from(v, **opts)) for k, v in iteritems(obj))
+    elif is_namedtuple(obj):
+        mdict = OrderedMergeableDict((k, create_from(getattr(obj, k), **opts))
+                                     for k in obj._fields)
+        mdict[_ac_ntpl_cls_key] = obj.__class__.__name__
+        return mdict
+    elif is_iterable(obj):
+        return type(obj)(create_from(v, **opts) for v in obj)
+    else:
+        return obj
 
 
 class MergeableDict(dict):

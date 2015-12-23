@@ -420,6 +420,83 @@ class UpdateWithMergeListsDict(UpdateWithMergeDict):
     merge_lists = True
 
 
+class UpdateWithReplaceOrderedDict(UpdateWithReplaceDict, OrderedDict):
+    """
+    Similar to UpdateWithReplaceDict but keep keys' order like OrderedDict.
+
+    >>> od0 = OrderedDict((('a', 1), ('b', [1, 3]), ('c', "abc"), ('f', None)))
+    >>> md0 = UpdateWithReplaceOrderedDict(od0)
+    >>> md1 = UpdateWithReplaceOrderedDict(a=2, b=[0, 1], c=dict(d="d", e=1))
+    >>> md0.update(md1)
+    >>> all(md0[k] == md1[k] for k in ("a", "b", "c"))
+    True
+    >>> md0["f"] is None
+    True
+    >>> list(md0.keys())
+    ['a', 'b', 'c', 'f']
+    """
+    pass
+
+
+class UpdateWoReplaceOrderedDict(UpdateWoReplaceDict, OrderedDict):
+    """
+    Similar to UpdateWoReplaceDict but keep keys' order like OrderedDict.
+
+    >>> md0 = UpdateWoReplaceOrderedDict((('a', 1), ('b', [1, 3]),
+    ...                                   ('c', "abc")))
+    >>> md1 = md0.copy()
+    >>> md2 = UpdateWoReplaceOrderedDict(a=2, b=[0, 1], c="xyz", d=None)
+    >>> md0.update(md2)
+    >>> all(md0[k] != md2[k] for k in ("a", "b", "c"))
+    True
+    >>> all(md0[k] == md1[k] for k in ("a", "b", "c"))
+    True
+    >>> md0["d"] == md2["d"]
+    True
+    >>> list(md0.keys())
+    ['a', 'b', 'c', 'd']
+    """
+    pass
+
+
+class UpdateWithMergeOrderedDict(UpdateWithMergeDict, OrderedDict):
+    """
+    Similar to UpdateWithMergeDict but keep keys' order like OrderedDict.
+
+    >>> mb0 = UpdateWithMergeOrderedDict((('c', 2), ('d', 3)))
+    >>> mb1 = UpdateWithMergeOrderedDict((('c', 4), ('d', 5)))
+    >>> md0 = UpdateWithMergeOrderedDict((('a', 1), ('b', mb0),
+    ...                                   ('e', [1, 2, 2])))
+    >>> md1 = md0.copy()
+    >>> md2 = UpdateWithMergeDict(a=2, b=mb1, e=[2, 3, 4])
+    >>> md0.update(md2)
+    >>> md0["a"] == md2["a"]
+    True
+    >>> md0["b"]["d"] == md2["b"]["d"]
+    True
+    >>> md0["e"] == md2["e"]
+    True
+    >>> list(md0.keys())
+    ['a', 'b', 'e']
+    """
+    pass
+
+
+class UpdateWithMergeListsOrderedDict(UpdateWithMergeListsDict, OrderedDict):
+    """
+    Similar to UpdateWithMergeListsDict but keep keys' order like OrderedDict.
+
+    >>> md0 = UpdateWithMergeListsOrderedDict((("aaa", [1, 2, 3]), ('b', 0)))
+    >>> md1 = UpdateWithMergeListsOrderedDict(aaa=[4, 4, 5])
+    >>> md0.update(md1)
+    >>> md0["aaa"]
+    [1, 2, 3, 4, 4, 5]
+    >>> list(md0.keys())
+    ['aaa', 'b']
+    """
+    pass
+
+
 class MergeableDict(dict):
     """Dict based object supports 'merge' operation.
     """

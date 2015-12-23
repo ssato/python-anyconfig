@@ -196,7 +196,7 @@ def is_namedtuple(obj):
     return isinstance(obj, tuple) and hasattr(obj, "_asdict")
 
 
-def convert_to(obj, to_namedtuple=False,
+def convert_to(obj, to_namedtuple=False, ac_ordered=False,
                _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY):
     """
     Convert a OrderedMergeableDict or MergeableDict instances to a dict or
@@ -220,12 +220,15 @@ def convert_to(obj, to_namedtuple=False,
     :param to_namedtuple:
         Convert `obj` to namedtuple object of which definition is created on
         the fly if True instead of dict.
+    :param ac_ordered:
+        Create an instance of OrderedDict instead of dict if it's True.
     :param _ac_ntpl_cls_key:
         Special keyword to embedded the class name of namedtuple object to
         create.  See the comments in :func:`create_from` also.
 
     :return: A dict or namedtuple object if to_namedtuple is True
     """
+    cls = OrderedDict if ac_ordered else dict
     if is_dict_like(obj):
         if to_namedtuple:
             _name = obj.get(_ac_ntpl_cls_key, "NamedTuple")
@@ -234,12 +237,12 @@ def convert_to(obj, to_namedtuple=False,
                      for k in _keys]
             return collections.namedtuple(_name, _keys)(*_vals)
         else:
-            return dict((k, convert_to(v)) for k, v in iteritems(obj))
+            return cls((k, convert_to(v)) for k, v in iteritems(obj))
     elif is_namedtuple(obj):
         if to_namedtuple:
             return obj  # Nothing to do if it's nested n.t. (it should be).
         else:
-            return dict((k, convert_to(getattr(obj, k))) for k in obj._fields)
+            return cls((k, convert_to(getattr(obj, k))) for k in obj._fields)
     elif is_iterable(obj):
         return type(obj)(convert_to(v, to_namedtuple, _ac_ntpl_cls_key)
                          for v in obj)

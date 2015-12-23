@@ -22,6 +22,18 @@ class Test00Functions(unittest.TestCase):
         self.assertTrue(isinstance(c, dict))
         self.assertFalse(isinstance(c, TT.MergeableDict))
 
+    def test_11_create_from__convert_to__ordered(self):
+        a = TT.OrderedDict((("name", "a"), ("a", 1),
+                            ("b", TT.OrderedDict((("b", [1, 2]), ("c", "C")))),
+                            ("e", [3, 4])))
+        b = TT.create_from(a, ac_ordered=True)
+        c = TT.convert_to(b, ac_ordered=True)
+
+        self.assertTrue(isinstance(b, TT.MergeableDict))
+        self.assertFalse(isinstance(c, TT.MergeableDict))
+        self.assertTrue(dicts_equal(a, c))
+        self.assertEquals(list(a.keys()), list(c.keys()))
+
     def test_12_create_from__conver_to__namedtuple(self):
         make_a = collections.namedtuple("A", "name a b e")
         make_b = collections.namedtuple("B", "b c")

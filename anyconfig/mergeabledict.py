@@ -167,8 +167,11 @@ def set_(dic, path, val, seps=PATH_SEPS, strategy=None):
     >>> d['a']['b']['d']
     3
     """
-    diff = mk_nested_dic(path, val, seps)
-    dic.update(diff, strategy)
+    if strategy is None:
+        strategy = MS_DICTS
+    cls = _get_mdict_class(ac_merge=strategy)
+    diff = cls(mk_nested_dic(path, val, seps))
+    dic.update(diff)
 
 
 def is_dict_like(obj):
@@ -517,7 +520,8 @@ def create_from(obj=None, ac_ordered=False,
         - ac_merge: Specify strategy from MERGE_STRATEGIES of how to merge
           results loaded from multiple configuration files.
     """
-    cls = OrderedMergeableDict if ac_ordered else MergeableDict
+    ac_merge = options.get("ac_merge", MS_DICTS)
+    cls = _get_mdict_class(ac_merge=ac_merge, ac_ordered=ac_ordered)
     if obj is None:
         return cls()
 
@@ -525,8 +529,9 @@ def create_from(obj=None, ac_ordered=False,
     if is_dict_like(obj):
         return cls((k, create_from(v, **opts)) for k, v in iteritems(obj))
     elif is_namedtuple(obj):
-        mdict = OrderedMergeableDict((k, create_from(getattr(obj, k), **opts))
-                                     for k in obj._fields)
+        ocls = _MDICTS_CLASS_MAP[cls]
+        mdict = ocls((k, create_from(getattr(obj, k), **opts)) for k
+                     in obj._fields)
         mdict[_ac_ntpl_cls_key] = obj.__class__.__name__
         return mdict
     elif is_iterable(obj):

@@ -153,27 +153,6 @@ def mk_nested_dic(path, val, seps=PATH_SEPS):
     return ret
 
 
-def set_(dic, path, val, seps=PATH_SEPS, strategy=None):
-    """
-    setter for nested dicts.
-
-    :param dic: MergeableDict instance or other dict-like objects support
-        recursive merge operations.
-    :param path: Path expression to point object wanted
-    :param seps: Separator char candidates.
-
-    >>> d = create_from(dict(a=1, b=dict(c=2, )))
-    >>> set_(d, 'a.b.d', 3)
-    >>> d['a']['b']['d']
-    3
-    """
-    if strategy is None:
-        strategy = MS_DICTS
-    cls = _get_mdict_class(ac_merge=strategy)
-    diff = cls(mk_nested_dic(path, val, seps))
-    dic.update(diff)
-
-
 def is_dict_like(obj):
     """
     :param obj: Any object may be an instance of MergeableDict or dict.
@@ -574,5 +553,26 @@ def create_from(obj=None, ac_ordered=False,
         return type(obj)(create_from(v, **opts) for v in obj)
     else:
         return obj
+
+
+def set_(dic, path, val, seps=PATH_SEPS, strategy=None):
+    """
+    setter for nested dicts.
+
+    :param dic: MergeableDict instance or other dict-like objects support
+        recursive merge operations.
+    :param path: Path expression to point object wanted
+    :param seps: Separator char candidates.
+
+    >>> d = create_from(dict(a=1, b=dict(c=2, )))
+    >>> set_(d, 'a.b.d', 3)
+    >>> d['a']['b']['d']
+    3
+    """
+    if strategy is None:
+        strategy = MS_DICTS
+    cls = _get_mdict_class(ac_merge=strategy)
+    diff = cls(mk_nested_dic(path, val, seps))
+    dic.update(diff)
 
 # vim:sw=4:ts=4:et:

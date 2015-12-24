@@ -6,13 +6,16 @@
 #
 # Access to bson._use_c is required to switch loading options:
 # pylint: disable=protected-access
-"""BSON backend.
+r"""BSON backend.
 
 .. versionadded:: 0.1.0
 
 - Format to support: BSON, http://bsonspec.org
 - Requirements: bson in pymongo, https://pypi.python.org/pypi/pymongo/
-- Limitations: None obvious
+- Limitations: It seems that the APIs of bson.decode\* were changed a lot in
+  the current version (3.2) of python-bson in pymongo and this backend might
+  not work with it. I don't have a time to test with that latest version yet
+  and it's only tested with the older one, 2.5.2.
 - Special options:
 
   - All keyword options for :meth:`encode` (dump{s,}) and :meth:`decode`

@@ -86,9 +86,10 @@ def _to_s(val, sep=", "):
         return str(val)
 
 
-def _load(stream, sep=_SEP, **kwargs):
+def _load(stream, to_container=dict, sep=_SEP, **kwargs):
     """
     :param stream: File or file-like object provides ini-style conf
+    :param to_container: any callable to make container
     :param sep: Seprator string
 
     :return: Dict or dict-like object represents config values
@@ -108,18 +109,18 @@ def _load(stream, sep=_SEP, **kwargs):
         kwargs_0 = mk_opt_args(("defaults", "dict_type"), kwargs)
         parser = configparser.SafeConfigParser(**kwargs_0)
 
-    cnf = dict()
+    cnf = to_container()
     parser.readfp(stream, **kwargs_1)
 
     # .. note:: Process DEFAULT config parameters as special ones.
     defaults = parser.defaults()
     if defaults:
-        cnf["DEFAULT"] = dict()
+        cnf["DEFAULT"] = to_container()
         for key, val in iteritems(defaults):
             cnf["DEFAULT"][key] = _parse_val(val, sep)
 
     for sect in parser.sections():
-        cnf[sect] = dict()
+        cnf[sect] = to_container()
         for key, val in parser.items(sect):
             cnf[sect][key] = _parse_val(val, sep)
 
@@ -163,7 +164,20 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename",
                   "ac_parse_value"]
 
-    load_from_stream = anyconfig.backend.base.to_method(_load)
     dump_to_string = anyconfig.backend.base.to_method(_dumps)
+
+    def load_from_stream(self, stream, **options):
+        """
+        Load config from given file like object `stream`.
+
+        :param stream:  Config file or file like object
+        :param options: optional keyword arguments
+
+        :return: Dict-like object holding config parameters
+        """
+        to_container = anyconfig.backend.base.to_container_fn(**options)
+        opts = self._load_options(**options)
+        opts["to_container"] = to_container
+        return _load(stream, **opts)
 
 # vim:sw=4:ts=4:et:

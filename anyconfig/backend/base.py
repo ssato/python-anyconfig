@@ -80,6 +80,16 @@ def to_method(func):
     return wrapper
 
 
+def to_container_fn(**options):
+    """
+    :param options:
+        Keyword options will be passed to :fnc:`create_from` in
+        :mod:`anyconfig.mergeabledict` to decide which mergeable dict to
+        wrap configurations.
+    """
+    return functools.partial(anyconfig.mergeabledict.create_from, **options)
+
+
 class Parser(object):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
@@ -168,15 +178,6 @@ class Parser(object):
         """
         return _NULL
 
-    def _to_container_fn(self, **opts):
-        """
-        :param opts:
-            Keyword options will be passed to :fnc:`create_from` in
-            :mod:`anyconfig.mergeabledict` to decide which mergeable dict to
-            wrap configurations.
-        """
-        return functools.partial(anyconfig.mergeabledict.create_from, **opts)
-
     def loads(self, content, **options):
         """
         Load config from given string `content` after some checks.
@@ -190,7 +191,7 @@ class Parser(object):
         :return: dict or dict-like object holding configurations
         """
         if not content or content is None:
-            return self._to_container_fn(**options)()
+            return to_container_fn(**options)()
 
         return self.load_from_string(content, **options)
 
@@ -213,7 +214,7 @@ class Parser(object):
         """
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
             if ignore_missing and not os.path.exists(path_or_stream):
-                return self._to_container_fn(**options)()
+                return to_container_fn(**options)()
 
             cnf = self.load_from_path(path_or_stream, **options)
         else:

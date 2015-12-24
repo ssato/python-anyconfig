@@ -391,13 +391,13 @@ class UpdateWithMergeOrderedDict(UpdateWithMergeDict, OrderedDict):
 
     >>> od0 = OrderedDict((("c", 2), ("d", 3)))
     >>> od1 = OrderedDict((("c", 4), ("d", 5), ("g", None)))
-    >>> md0 = UpdateWithMergeDict((("a", 1),
-    ...                            ("b", UpdateWithMergeDict(od0)),
-    ...                            ("e", [1, 2, 2]), ("f", None)))
+    >>> md0 = UpdateWithMergeOrderedDict(
+    ...          (("a", 1), ("b", UpdateWithMergeOrderedDict(od0)),
+    ...           ("e", [1, 2, 2]), ("f", None)))
     >>> ref = md0.copy()
-    >>> upd = UpdateWithMergeDict((("a", 2),
-    ...                            ("b", UpdateWithMergeDict(od1)),
-    ...                            ("e", [2, 3, 4])))
+    >>> upd = UpdateWithMergeOrderedDict(
+    ...          (("a", 2), ("b", UpdateWithMergeOrderedDict(od1)),
+    ...           ("e", [2, 3, 4])))
     >>> md0.update(upd)
     >>> all(md0[k] == upd[k] for k in ("a", "e"))  # vary depends on 'keep'.
     True

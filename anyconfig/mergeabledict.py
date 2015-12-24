@@ -6,7 +6,13 @@
 """Dict-based object supports merge operations.
 
 .. versionchanged: 0.4.99
-   Support to convert namedtuple objects from/to dicts recursively.
+
+   - support to convert namedtuple objects from/to mergeable dicts recursively.
+   - split MergeableDict into some classes to make these update methods worked
+     like dict.update, and remove MergeableDict class to eliminate bogus
+     update_* methods.
+   - make create_from() works as factory function of various mergeable dict
+     classes.
 
 .. versionadded: 0.3.1
    Added naive and partial implementation of JSON Pointer support.

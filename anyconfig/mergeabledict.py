@@ -559,8 +559,11 @@ def create_from(obj=None, ac_ordered=False,
         return cls()
 
     opts = dict(ac_ordered=ac_ordered, _ac_ntpl_cls_key=_ac_ntpl_cls_key)
+    opts.update(options)
+
     if is_dict_like(obj):
-        return cls((k, create_from(v, **opts)) for k, v in iteritems(obj))
+        return cls((k, None if v is None else create_from(v, **opts)) for k, v
+                   in iteritems(obj))
     elif is_namedtuple(obj):
         ocls = _MDICTS_CLASS_MAP[cls]
         mdict = ocls((k, create_from(getattr(obj, k), **opts)) for k

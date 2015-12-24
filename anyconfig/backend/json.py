@@ -29,8 +29,6 @@ try:
 except ImportError:
     import simplejson as json
 
-from anyconfig.backend.base import to_container
-
 
 _LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant",
               "object_pairs_hook"]
@@ -58,26 +56,30 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     dump_to_string = anyconfig.backend.base.to_method(json.dumps)
     dump_to_stream = anyconfig.backend.base.to_method(json.dump)
 
-    def load_from_string(self, content, **kwargs):
+    def load_from_string(self, content, **opts):
         """
         Load JSON config from given string `content`.
 
-        :param content: JSON config content string
-        :param kwargs: optional keyword parameters passed to json.loads
+        :param content: JSON config content
+        :param opts: keyword options passed to `json.loads`
 
         :return: Dict-like object holding configuration
         """
-        return json.loads(content, object_hook=to_container, **kwargs)
+        to_container = anyconfig.backend.base.to_container_fn(**opts)
+        opts = self._load_options(**opts)
+        return json.loads(content, object_hook=to_container, **opts)
 
-    def load_from_stream(self, stream, **kwargs):
+    def load_from_stream(self, stream, **opts):
         """
-        Load JSON config from given file or file-like object `stream`.
+        Load JSON config from given stream `stream`.
 
-        :param stream: JSON file or file-like object
-        :param kwargs: optional keyword parameters passed to json.load
+        :param content: JSON config content string or stream
+        :param opts: keyword options passed to `json.load`
 
         :return: Dict-like object holding configuration
         """
-        return json.load(stream, object_hook=to_container, **kwargs)
+        to_container = anyconfig.backend.base.to_container_fn(**opts)
+        opts = self._load_options(**opts)
+        return json.load(stream, object_hook=to_container, **opts)
 
 # vim:sw=4:ts=4:et:

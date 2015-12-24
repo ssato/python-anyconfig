@@ -269,7 +269,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
             cups = single_load(path, ac_parser=ac_parser,
                                ac_template=ac_template, ac_context=cnf, **opts)
 
-        cnf.update(cups)
+        if cups:
+            cnf.update(cups)
 
     return _maybe_validated(cnf, schema, **options)
 

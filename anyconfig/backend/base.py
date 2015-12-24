@@ -33,7 +33,6 @@ import anyconfig.utils
 
 
 LOGGER = logging.getLogger(__name__)
-_NULL = {}
 
 
 def mk_opt_args(keys, kwargs):
@@ -102,8 +101,6 @@ class Parser(object):
     _dump_opts = []
     _open_flags = ('r', 'w')
 
-    container = anyconfig.mergeabledict.MergeableDict
-
     @classmethod
     def type(cls):
         """
@@ -145,38 +142,41 @@ class Parser(object):
         """
         return mk_opt_args(self._load_opts, kwargs)
 
-    def load_from_string(self, content, **kwargs):
+    def load_from_string(self, content, to_container, **kwargs):
         """
         Load config from given string `content`.
 
         :param content: Config content string
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        return _NULL
+        return to_container()
 
-    def load_from_path(self, filepath, **kwargs):
+    def load_from_path(self, filepath, to_container, **kwargs):
         """
         Load config from given file path `filepath`.
 
         :param filepath: Config file path
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        return _NULL
+        return to_container()
 
-    def load_from_stream(self, stream, **kwargs):
+    def load_from_stream(self, stream, to_container, **kwargs):
         """
         Load config from given file like object `stream`.
 
         :param stream:  Config file or file like object
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        return _NULL
+        return to_container()
 
     def loads(self, content, **options):
         """
@@ -190,10 +190,12 @@ class Parser(object):
 
         :return: dict or dict-like object holding configurations
         """
+        to_container = to_container_fn(**options)
         if not content or content is None:
-            return to_container_fn(**options)()
+            return to_container()
 
-        return self.load_from_string(content, **options)
+        return self.load_from_string(content, to_container,
+                                     **self._load_options(**options))
 
     def load(self, path_or_stream, ignore_missing=False, **options):
         """
@@ -212,13 +214,17 @@ class Parser(object):
 
         :return: dict or dict-like object holding configurations
         """
+        to_container = to_container_fn(**options)
+        options = self._load_options(**options)
+
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
             if ignore_missing and not os.path.exists(path_or_stream):
-                return to_container_fn(**options)()
+                return to_container()
 
-            cnf = self.load_from_path(path_or_stream, **options)
+            cnf = self.load_from_path(path_or_stream, to_container, **options)
         else:
-            cnf = self.load_from_stream(path_or_stream, **options)
+            cnf = self.load_from_stream(path_or_stream, to_container,
+                                        **options)
 
         return cnf
 
@@ -296,27 +302,30 @@ class FromStringLoader(Parser):
     Parser classes inherit this class have to override the method
     :meth:`load_from_string` at least.
     """
-    def load_from_stream(self, stream, **kwargs):
+    def load_from_stream(self, stream, to_container, **kwargs):
         """
         Load config from given stream `stream`.
 
         :param stream: Config file or file-like object
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        return self.load_from_string(stream.read(), **kwargs)
+        return self.load_from_string(stream.read(), to_container, **kwargs)
 
-    def load_from_path(self, filepath, **kwargs):
+    def load_from_path(self, filepath, to_container, **kwargs):
         """
         Load config from given file path `filepath`.
 
         :param filepath: Config file path
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        return self.load_from_stream(self.ropen(filepath), **kwargs)
+        return self.load_from_stream(self.ropen(filepath), to_container,
+                                     **kwargs)
 
 
 class FromStreamLoader(Parser):
@@ -327,28 +336,31 @@ class FromStreamLoader(Parser):
     Parser classes inherit this class have to override the method
     :meth:`load_from_stream` at least.
     """
-    def load_from_string(self, content, **kwargs):
+    def load_from_string(self, content, to_container, **kwargs):
         """
         Load config from given string `cnf_content`.
 
         :param content: Config content string
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
         return self.load_from_stream(anyconfig.compat.StringIO(content),
-                                     **kwargs)
+                                     to_container, **kwargs)
 
-    def load_from_path(self, filepath, **kwargs):
+    def load_from_path(self, filepath, to_container, **kwargs):
         """
         Load config from given file path `filepath`.
 
         :param filepath: Config file path
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        return self.load_from_stream(self.ropen(filepath), **kwargs)
+        return self.load_from_stream(self.ropen(filepath), to_container,
+                                     **kwargs)
 
 
 class ToStringDumper(Parser):

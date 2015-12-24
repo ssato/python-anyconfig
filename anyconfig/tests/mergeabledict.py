@@ -11,53 +11,7 @@ import anyconfig.mergeabledict as TT
 from anyconfig.tests.common import dicts_equal
 
 
-class Test00Functions(unittest.TestCase):
-
-    def test_10_create_from__convert_to(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), e=[3, 4])
-        b = TT.create_from(a)
-        c = TT.convert_to(b)
-
-        self.assertTrue(isinstance(b, TT.MergeableDict))
-        self.assertTrue(isinstance(c, dict))
-        self.assertFalse(isinstance(c, TT.MergeableDict))
-
-    def test_11_create_from__convert_to__ordered(self):
-        a = TT.OrderedDict((("name", "a"), ("a", 1),
-                            ("b", TT.OrderedDict((("b", [1, 2]), ("c", "C")))),
-                            ("e", [3, 4])))
-        b = TT.create_from(a, ac_ordered=True)
-        c = TT.convert_to(b, ac_ordered=True)
-
-        self.assertTrue(isinstance(b, TT.MergeableDict))
-        self.assertFalse(isinstance(c, TT.MergeableDict))
-        self.assertTrue(dicts_equal(a, c))
-        self.assertEquals(list(a.keys()), list(c.keys()))
-
-    def test_12_create_from__conver_to__namedtuple(self):
-        make_a = collections.namedtuple("A", "name a b e")
-        make_b = collections.namedtuple("B", "b c")
-        obj = make_a("foo", 1, make_b([1, 2], "C"), [3, 4])
-        mobj = TT.create_from(obj)
-        obj2 = TT.convert_to(mobj, to_namedtuple=True)
-
-        self.assertTrue(isinstance(mobj, TT.MergeableDict))
-        self.assertEqual(obj.name, mobj["name"])
-        self.assertEqual(mobj[TT.NAMEDTUPLE_CLS_KEY], "A")
-        self.assertEqual(obj.a, mobj["a"])
-        self.assertEqual(mobj["b"][TT.NAMEDTUPLE_CLS_KEY], "B")
-        self.assertEqual(obj.b.b, mobj["b"]["b"])
-        self.assertEqual(obj.b.c, mobj["b"]["c"])
-        self.assertEqual(obj.e, mobj["e"])
-
-        self.assertEqual(obj, obj2)
-
-    def test_14_create_from__null(self):
-        mdct = TT.create_from()
-        omd = TT.create_from(ac_ordered=True)
-
-        self.assertTrue(isinstance(mdct, TT.MergeableDict))
-        self.assertTrue(isinstance(omd, TT.OrderedMergeableDict))
+class Test_00_Functions(unittest.TestCase):
 
     def test_20_get__invalid_inputs(self):
         dic = dict(a=1, b=[1, 2])
@@ -108,94 +62,101 @@ class Test00Functions(unittest.TestCase):
         # self.assertEqual(msg, 'list indices must be integers...')
 
 
-class Test10MergeableDict(unittest.TestCase):
+_CNF_0 = TT.OrderedDict((("name", "a"), ("a", 1),
+                         ("b", TT.OrderedDict((("b", (1, 2)), ))),
+                         ("c", "C"), ("e", [3, 4]), ("f", None)))
 
-    def test_20_update__w_replace(self):
-        dic = TT.create_from(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
-        upd = TT.create_from(dict(a=2, b=dict(b=[3, 4, 5], d="D")))
-        ref = TT.MergeableDict(**dic.copy())
-        ref['a'] = 2
-        ref['b'] = upd['b']
-        ref['b']['c'] = dic['b']['c']
 
-        dic.update(upd, TT.MS_REPLACE)
-        self.assertTrue(dicts_equal(dic, ref))
+class Test_30_create_from(unittest.TestCase):
 
-    def test_22_update__w_replace__not_a_dict(self):
-        dic = TT.MergeableDict()
-        ref = TT.MergeableDict(**dic.copy())
-        dic.update(1, TT.MS_REPLACE)
-        self.assertTrue(dicts_equal(dic, ref))
+    def test_00_null(self):
+        md0 = TT.create_from()
 
-    def test_24_update__w_None(self):
-        dic = TT.create_from(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
-        ref = TT.MergeableDict(**dic.copy())
-        dic.update(None)
-        self.assertTrue(dicts_equal(dic, ref))
+        # check if md0 is an object of base and default class:
+        self.assertTrue(isinstance(md0, TT.UpdateWithReplaceDict))
+        self.assertTrue(isinstance(md0, TT.UpdateWithMergeDict))
+        self.assertTrue(not md0)
 
-    def test_30_update__wo_replace(self):
-        dic = TT.create_from(dict(a=1, b=dict(b=[1, 2], c="C")))
-        upd = TT.create_from(dict(name="foo", a=2, b=dict(b=[3, 4, 5], d="D")))
-        ref = TT.MergeableDict(**dic.copy())
-        ref['name'] = upd['name']
+    def test_10_default(self):
+        md0 = TT.create_from(_CNF_0)
 
-        dic.update(upd, TT.MS_NO_REPLACE)
-        self.assertTrue(dicts_equal(dic, ref))
+        self.assertTrue(isinstance(md0, TT.UpdateWithReplaceDict))
+        self.assertTrue(isinstance(md0, TT.UpdateWithMergeDict))
+        self.assertTrue(isinstance(md0["b"], TT.UpdateWithReplaceDict))
+        self.assertTrue(isinstance(md0["b"], TT.UpdateWithMergeDict))
+        for k in "name a c e f".split():
+            self.assertTrue(md0[k] == _CNF_0[k],
+                            "%r vs. %r" % (md0[k], _CNF_0[k]))
 
-    def test_40_update_w_merge__primitives(self):
-        dic = TT.create_from(dict(a=1, b="b"))
-        upd = TT.create_from(dict(a=2, b="B", c=[1, 2, 3]))
-        dic2 = TT.MergeableDict(**dic.copy())
-        ref = TT.MergeableDict(**dic.copy())
-        ref["c"] = upd["c"]
+    def test_20__merge_type(self):
+        md1 = TT.create_from(_CNF_0, ac_merge=TT.MS_REPLACE)
+        md2 = TT.create_from(_CNF_0, ac_merge=TT.MS_NO_REPLACE)
+        md3 = TT.create_from(_CNF_0, ac_merge=TT.MS_DICTS_AND_LISTS)
 
-        dic.update_w_merge(upd)
-        self.assertTrue(dicts_equal(dic, upd))
+        self.assertTrue(isinstance(md1, TT.UpdateWithReplaceDict))
+        self.assertTrue(isinstance(md2, TT.UpdateWoReplaceDict))
+        self.assertTrue(isinstance(md3, TT.UpdateWithMergeListsDict))
 
-        dic2.update_w_merge(upd, keep=True)
-        self.assertTrue(dicts_equal(dic2, ref))
+        for mdn in (md1, md2, md3):
+            self.assertTrue(isinstance(mdn["b"], type(mdn)),
+                            "%r (%r)" % (mdn["b"], type(mdn["b"])))
+            for k in "name a c e f".split():
+                self.assertTrue(mdn[k] == _CNF_0[k],
+                                "%r vs. %r" % (mdn[k], _CNF_0[k]))
 
-    def test_42_update_w_merge__lists(self):
-        dic = TT.MergeableDict(a=[1, 2, 3])
-        upd = TT.MergeableDict(a=[1, 4, 5])
-        upd2 = TT.MergeableDict(a=1)
-        dic2 = TT.MergeableDict(**dic.copy())
-        ref = TT.MergeableDict(**dic.copy())
-        ref["a"] = [1, 2, 3, 4, 5]
+    def test_30_ordered(self):
+        md0 = TT.create_from(_CNF_0, ac_ordered=True)
 
-        dic.update_w_merge(upd)
-        self.assertTrue(dicts_equal(dic, upd))
+        self.assertTrue(isinstance(md0, TT.UpdateWithReplaceDict))
+        self.assertTrue(isinstance(md0, TT.UpdateWithMergeOrderedDict))
+        self.assertTrue(isinstance(md0["b"], TT.UpdateWithReplaceDict))
+        self.assertTrue(isinstance(md0["b"], TT.UpdateWithMergeOrderedDict))
+        for k in "name a c e f".split():
+            self.assertTrue(md0[k] == _CNF_0[k],
+                            "%r vs. %r" % (md0[k], _CNF_0[k]))
 
-        dic2.update_w_merge(upd, merge_lists=True)
-        self.assertTrue(dicts_equal(dic2, ref))
+    def test_40_namedtuple(self):
+        _point = collections.namedtuple("Point", "x y")
+        _triangle = collections.namedtuple("Triangle", "p0 p1 p2")
+        obj = _triangle(_point(0, 0), _point(1, 0), _point(0, 1))
+        md0 = TT.create_from(obj)
 
-        dic2.update_w_merge(upd2, merge_lists=True, keep=True)
-        self.assertTrue(dicts_equal(dic2, ref))
+        self.assertTrue(isinstance(md0, TT.UpdateWithMergeOrderedDict))
+        self.assertTrue(isinstance(md0["p0"], TT.UpdateWithMergeOrderedDict))
+        for k in "p0 p1 p2".split():
+            self.assertEqual(md0[TT.NAMEDTUPLE_CLS_KEY], "Triangle")
+            for k2 in "x y".split():
+                self.assertEqual(md0[k][TT.NAMEDTUPLE_CLS_KEY], "Point")
+                ref = getattr(getattr(obj, k), k2)
+                self.assertTrue(md0[k][k2] == ref,
+                                "%r vs. %r" % (md0[k][k2], ref))
 
-        dic2.update_w_merge(upd2, merge_lists=True, keep=False)
-        self.assertTrue(dicts_equal(dic2, upd2))
 
-    def test_48_update_w_merge_dicts__complex_case(self):
-        dic = TT.create_from(dict(name="a", a=1, b=dict(b=[1, 2], c="C"),
-                                  e=[3, 4]))
-        upd = TT.create_from(dict(a=2, b=dict(b=[1, 2, 3], d="D")))
-        ref = TT.MergeableDict(**dic.copy())
-        ref['a'] = 2
-        ref['b'] = TT.MergeableDict(b=[1, 2, 3], c="C", d="D")
-        ref['e'] = [3, 4]
+class Test_40_convert_to(unittest.TestCase):
 
-        dic.update_w_merge(upd)
-        self.assertTrue(dicts_equal(dic, ref))
+    def test_00_none(self):
+        self.assertTrue(TT.convert_to(None) is None)
 
-    def test_50_update__w_merge_dicts_and_lists(self):
-        dic = TT.create_from(dict(name="a", a=1, b=dict(b=[1, 2], c="C")))
-        upd = TT.create_from(dict(a=2, b=dict(b=[3, 4], d="D", e=[1, 2])))
+    def test_10_iterable(self):
+        for inp in ([], [0, 1, 2], (), (0, 1), [0, [1, [2]]]):
+            self.assertEqual(TT.convert_to(inp), inp)
 
-        ref = TT.MergeableDict(**dic.copy())
-        ref['a'] = 2
-        ref['b'] = TT.MergeableDict(b=[1, 2, 3, 4], c="C", d="D", e=[1, 2])
+    def test_20_mdict(self):
+        md0 = TT.create_from(_CNF_0)
+        dic0 = TT.convert_to(md0)
 
-        dic.update(upd, TT.MS_DICTS_AND_LISTS)
-        self.assertTrue(dicts_equal(dic, ref))
+        for k in "name a c e f".split():
+            self.assertTrue(dic0[k] == md0[k], "%r vs. %r" % (dic0[k], md0[k]))
+
+        for k in dic0["b"].keys():
+            self.assertTrue(dic0["b"][k] == md0["b"][k])
+
+    def test_30_to_namedtuple(self):
+        _point = collections.namedtuple("Point", "x y")
+        _triangle = collections.namedtuple("Triangle", "p0 p1 p2")
+        itpl = _triangle(_point(0, 0), _point(1, 0), _point(0, 1))
+        md0 = TT.create_from(itpl)
+        otpl = TT.convert_to(md0, to_namedtuple=True)
+        self.assertEqual(otpl, itpl)
 
 # vim:sw=4:ts=4:et:

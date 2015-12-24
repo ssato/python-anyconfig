@@ -426,8 +426,8 @@ class UpdateWithMergeListsOrderedDict(UpdateWithMergeListsDict, OrderedDict):
 MergeableDict = UpdateWithMergeDict
 
 
-def convert_to(obj, to_namedtuple=False, ac_ordered=False,
-               _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY):
+def convert_to(obj, to_namedtuple=False, _ac_ntpl_cls_key=NAMEDTUPLE_CLS_KEY,
+               **opts):
     """
     Convert a OrderedMergeableDict or MergeableDict instances to a dict or
     namedtuple object recursively.
@@ -450,26 +450,27 @@ def convert_to(obj, to_namedtuple=False, ac_ordered=False,
     :param to_namedtuple:
         Convert `obj` to namedtuple object of which definition is created on
         the fly if True instead of dict.
-    :param ac_ordered:
-        Create an instance of OrderedDict instead of dict if it's True.
     :param _ac_ntpl_cls_key:
         Special keyword to embedded the class name of namedtuple object to
         create.  See the comments in :func:`create_from` also.
+    :param opts: Extra optional keyword arguments such as ac_ordered:
+
+        - ac_ordered: Create an OrderedDict object instead of dict if True
 
     :return: A dict or namedtuple object if to_namedtuple is True
     """
-    cls = OrderedDict if ac_ordered else dict
+    cls = OrderedDict if opts.get("ac_ordered", False) else dict
     if is_dict_like(obj):
         if to_namedtuple:
             _name = obj.get(_ac_ntpl_cls_key, "NamedTuple")
             _keys = [k for k in obj.keys() if k != _ac_ntpl_cls_key]
-            _vals = [convert_to(obj[k], to_namedtuple, _ac_ntpl_cls_key)
-                     for k in _keys]
+            _vals = [convert_to(obj[k], to_namedtuple, _ac_ntpl_cls_key,
+                                **opts) for k in _keys]
             return collections.namedtuple(_name, _keys)(*_vals)
         else:
-            return cls((k, convert_to(v)) for k, v in iteritems(obj))
+            return cls((k, convert_to(v, **opts)) for k, v in iteritems(obj))
     elif is_iterable(obj):
-        return type(obj)(convert_to(v, to_namedtuple, _ac_ntpl_cls_key)
+        return type(obj)(convert_to(v, to_namedtuple, _ac_ntpl_cls_key, **opts)
                          for v in obj)
     else:
         return obj

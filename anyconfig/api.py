@@ -246,15 +246,11 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
         operations.
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
-    ac_merge = options.setdefault("ac_merge", options.get("merge", MS_DICTS))
-    if ac_merge not in MERGE_STRATEGIES:
-        raise ValueError("Invalid merge strategy: " + ac_merge)
-
     schema = _load_schema(ac_template=ac_template, ac_context=ac_context,
                           **options)
     options["ac_schema"] = None  # It's not needed now.
 
-    cnf = to_container(ac_context)
+    cnf = to_container(ac_context, **options)
     same_type = anyconfig.utils.are_same_file_types(paths)
 
     if is_path(paths) and marker in paths:
@@ -273,7 +269,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
             cups = single_load(path, ac_parser=ac_parser,
                                ac_template=ac_template, ac_context=cnf, **opts)
 
-        cnf.update(cups, ac_merge)
+        cnf.update(cups)
 
     return _maybe_validated(cnf, schema, **options)
 
@@ -389,7 +385,7 @@ def dump(data, path_or_stream, ac_parser=None, **options):
     LOGGER.info("Dumping: %s",
                 anyconfig.utils.get_path_from_stream(path_or_stream))
     if options.get("ac_namedtuple", False):
-        data = to_container(data)
+        data = to_container(data, **options)
     dumper.dump(data, path_or_stream, **options)
 
 
@@ -405,7 +401,7 @@ def dumps(data, ac_parser=None, **options):
     :return: Backend-specific string representation for the given data
     """
     if options.get("ac_namedtuple", False):
-        data = to_container(data)
+        data = to_container(data, **options)
     return _find_dumper(None, ac_parser).dumps(data, **options)
 
 # vim:sw=4:ts=4:et:

@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
         TT.dump(objb, b_path)
         self.assertTrue(os.path.exists(b_path))
 
-        obja1 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS)
+        obja1 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_DICTS)
 
         self.assertEqual(obja1["name"], obja["name"])
         self.assertEqual(obja1["a"], objb["a"])
@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
         self.assertEqual(obja1["b"]["c"], obja["b"]["c"])
         self.assertEqual(obja1["b"]["d"], objb["b"]["d"])
 
-        obja2 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS_AND_LISTS)
+        obja2 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_DICTS_AND_LISTS)
 
         self.assertEqual(obja2["name"], obja["name"])
         self.assertEqual(obja2["a"], objb["a"])

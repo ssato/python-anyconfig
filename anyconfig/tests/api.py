@@ -188,7 +188,7 @@ class Test_30_single_load(unittest.TestCase):
         cnf = OrderedDict(sorted(self.cnf.items()))
         cnf0 = TT.convert_to(cnf, to_namedtuple=True)
 
-        TT.dump(cnf0, cpath, namedtuple=True)
+        TT.dump(cnf0, cpath, ac_namedtuple=True)
         self.assertTrue(os.path.exists(cpath))
 
         cnf1 = TT.single_load(cpath, ac_namedtuple=True)
@@ -312,7 +312,7 @@ class Test_40_multi_load(unittest.TestCase):
         self.assertEqual(a02["b"]["c"], a["b"]["c"])
         self.assertEqual(a02["b"]["d"], b["b"]["d"])
 
-        a1 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS)
+        a1 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_DICTS)
 
         self.assertEqual(a1["name"], a["name"])
         self.assertEqual(a1["a"], b["a"])
@@ -331,7 +331,7 @@ class Test_40_multi_load(unittest.TestCase):
         TT.dump(a, a_path)
         TT.dump(b, b_path)
 
-        a2 = TT.multi_load([a_path, b_path], merge=TT.MS_DICTS_AND_LISTS)
+        a2 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_DICTS_AND_LISTS)
 
         self.assertEqual(a2["name"], a["name"])
         self.assertEqual(a2["a"], b["a"])
@@ -347,7 +347,7 @@ class Test_40_multi_load(unittest.TestCase):
         self.assertEqual(a3["b"]["c"], a["b"]["c"])
         self.assertEqual(a3["b"]["d"], b["b"]["d"])
 
-        a4 = TT.multi_load([a_path, b_path], merge=TT.MS_REPLACE)
+        a4 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_REPLACE)
 
         self.assertEqual(a4["name"], a["name"])
         self.assertEqual(a4["a"], b["a"])
@@ -355,7 +355,7 @@ class Test_40_multi_load(unittest.TestCase):
         self.assertFalse("c" in a4["b"])
         self.assertEqual(a4["b"]["d"], b["b"]["d"])
 
-        a5 = TT.multi_load([a_path, b_path], merge=TT.MS_NO_REPLACE)
+        a5 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_NO_REPLACE)
 
         self.assertEqual(a5["name"], a["name"])
         self.assertEqual(a5["a"], a["a"])
@@ -365,7 +365,7 @@ class Test_40_multi_load(unittest.TestCase):
 
     def test_14_multi_load__wrong_merge_strategy(self):
         try:
-            TT.multi_load("/dummy/*.json", merge="merge_st_not_exist")
+            TT.multi_load("/dummy/*.json", ac_merge="merge_st_not_exist")
             raise RuntimeError("Wrong merge strategy was not handled!")
         except ValueError:
             self.assertTrue(1 == 1)  # To suppress warn of pylint.
@@ -444,8 +444,8 @@ class Test_40_multi_load(unittest.TestCase):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
         b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
-        ma = TT.to_container(a)
-        ma.update(b, TT.MS_DICTS)
+        ma = TT.to_container(a, ac_merge=TT.MS_DICTS)
+        ma.update(b)
 
         a_path = os.path.join(self.workdir, "a.yml")
         b_path = os.path.join(self.workdir, "b.yml")
@@ -454,9 +454,9 @@ class Test_40_multi_load(unittest.TestCase):
         open(a_path, 'w').write(CNF_TMPL_1)
         open(b_path, 'w').write(CNF_TMPL_2)
 
-        a0 = TT.multi_load(g_path, merge=TT.MS_DICTS, ac_template=True,
+        a0 = TT.multi_load(g_path, ac_merge=TT.MS_DICTS, ac_template=True,
                            ac_context=ma)
-        a02 = TT.multi_load([g_path, b_path], merge=TT.MS_DICTS,
+        a02 = TT.multi_load([g_path, b_path], ac_merge=TT.MS_DICTS,
                             ac_template=True, ac_context=ma)
 
         self.assertEqual(a0["name"], a["name"])

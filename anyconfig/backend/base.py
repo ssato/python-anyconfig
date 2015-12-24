@@ -129,6 +129,12 @@ class Parser(object):
         """
         return open(filepath, cls._open_flags[1], **kwargs)
 
+    def _load_options(self, **kwargs):
+        """
+        Select backend specific loading options from `kwargs` only.
+        """
+        return mk_opt_args(self._load_opts, kwargs)
+
     def load_from_string(self, content, **kwargs):
         """
         Load config from given string `content`.

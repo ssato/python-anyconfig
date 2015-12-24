@@ -468,11 +468,6 @@ def convert_to(obj, to_namedtuple=False, ac_ordered=False,
             return collections.namedtuple(_name, _keys)(*_vals)
         else:
             return cls((k, convert_to(v)) for k, v in iteritems(obj))
-    elif is_namedtuple(obj):
-        if to_namedtuple:
-            return obj  # Nothing to do if it's nested n.t. (it should be).
-        else:
-            return cls((k, convert_to(getattr(obj, k))) for k in obj._fields)
     elif is_iterable(obj):
         return type(obj)(convert_to(v, to_namedtuple, _ac_ntpl_cls_key)
                          for v in obj)

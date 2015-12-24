@@ -535,6 +535,9 @@ def create_from(obj=None, ac_ordered=False,
           results loaded from multiple configuration files.
     """
     ac_merge = options.get("ac_merge", MS_DICTS)
+    if ac_merge not in MERGE_STRATEGIES:
+        raise ValueError("Wrong merge strategy: %r" % ac_merge)
+
     cls = _get_mdict_class(ac_merge=ac_merge, ac_ordered=ac_ordered)
     if obj is None:
         return cls()

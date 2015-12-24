@@ -11,7 +11,7 @@ r"""BSON backend.
 .. versionchanged:: 0.4.99
 
    - utilize as_class keyword argument to allow container objects made directly
-     on load if C extension is not used.
+     on load if C extension is not used and enabled.
    - _load_opts() was removed because C extension looks forced to be enalbed
      if bson.has_c() == True, that is, C extension was built. see also:
      https://jira.mongodb.org/browse/PYTHON-379
@@ -50,19 +50,18 @@ class Parser(anyconfig.backend.base.FromStringLoader,
 
     dump_to_string = anyconfig.backend.base.to_method(bson.BSON.encode)
 
-    def load_from_string(self, content, **kwargs):
+    def load_from_string(self, content, to_container, **kwargs):
         """
         Load BSON config from given string `content`.
 
         :param content: BSON config content in bytes data string
+        :param to_container: callble to make a container object
         :param kwargs: optional keyword parameters
 
         :return: Dict-like object holding config parameters
         """
-        to_container = anyconfig.backend.base.to_container_fn(**kwargs)
-        if self._load_opts:
-            objs = bson.decode_all(content, as_class=to_container,
-                                   **self._load_options(**kwargs))
+        if self._load_opts:  # indicates that C extension is not used.
+            objs = bson.decode_all(content, as_class=to_container, **kwargs)
         else:
             # .. note::
             #    The order of loaded configuration keys may be lost but

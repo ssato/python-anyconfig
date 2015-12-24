@@ -180,16 +180,17 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _type = "properties"
     _extensions = ["properties"]
 
-    def load_from_stream(self, stream, **kwargs):
+    def load_from_stream(self, stream, to_container, **kwargs):
         """
         Load config from given file like object `stream`.
 
         :param stream: A file or file like object of Java properties files
+        :param to_container: callble to make a container object
         :param kwargs: optional keyword parameters (ignored)
 
         :return: Dict-like object holding config parameters
         """
-        return load(stream, to_container=anyconfig.backend.base.to_container)
+        return load(stream, to_container=to_container)
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """

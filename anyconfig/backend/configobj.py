@@ -11,7 +11,10 @@
 
 - Format to support: configobj, http://goo.gl/JbP2Kp (readthedocs.org)
 - Requirements: configobj (https://pypi.python.org/pypi/configobj/)
-- Limitations: None obvious
+- Limitations: It seems that configobj.ConfigObj does not receive callble to
+  make a dict objects from configurations. If it's true and then the order of
+  configurations might be lost.
+
 - Special options:
 
   - All options except for 'infile' passed to configobj.ConfigObj.__init__
@@ -62,12 +65,10 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _dump_opts = _LOAD_OPTS  # Likewise.
     _open_flags = ('rb', 'wb')
 
-    def __load(self, path_or_strm, **options):
+    def __load(self, path_or_strm, to_container, **kwargs):
         """
         :param path_or_strm: input config file path or file/file-like object
         """
-        to_container = anyconfig.backend.base.to_container_fn(**options)
-        kwargs = self._load_options(**options)
         return to_container(configobj.ConfigObj(path_or_strm, **kwargs))
 
     load_from_path = load_from_stream = __load

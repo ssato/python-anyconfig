@@ -40,8 +40,6 @@ import anyconfig.backend.base
 import anyconfig.compat
 import anyconfig.mergeabledict
 
-from anyconfig.backend.base import to_container
-
 try:
     # First, try lxml which is compatible with elementtree and looks faster a
     # lot. See also: http://getpython3.com/diveintopython3/xml.html
@@ -143,11 +141,12 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
     _extensions = ["xml"]
     _open_flags = ('rb', 'wb')
 
-    def load_from_string(self, content, **kwargs):
+    def load_from_string(self, content, to_container, **kwargs):
         """
         Load config from XML snippet (a string `content`).
 
         :param content: XML snippet (a string)
+        :param to_container: callble to make a container object
         :param kwargs: optional keyword parameters passed to
 
         :return: Dict-like object holding config parameters
@@ -155,24 +154,26 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         root = ET.ElementTree(ET.fromstring(content)).getroot()
         return etree_to_container(root, to_container)
 
-    def load_from_path(self, filepath, **kwargs):
+    def load_from_path(self, filepath, to_container, **kwargs):
         """
         :param filepath: XML file path
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param to_container: callble to make a container object
+        :param kwargs: optional keyword parameters to be sanitized
 
         :return: Dict-like object holding config parameters
         """
         root = ET.parse(filepath).getroot()
         return etree_to_container(root, to_container)
 
-    def load_from_stream(self, stream, **kwargs):
+    def load_from_stream(self, stream, to_container, **kwargs):
         """
         :param stream: XML file or file-like object
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param to_container: callble to make a container object
+        :param kwargs: optional keyword parameters to be sanitized
 
         :return: Dict-like object holding config parameters
         """
-        return self.load_from_path(stream, **kwargs)
+        return self.load_from_path(stream, to_container, **kwargs)
 
     def dump_to_string(self, cnf, **kwargs):
         """
@@ -181,7 +182,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
 
         :return: string represents the configuration
         """
-        tree = container_to_etree(cnf, to_container)
+        tree = container_to_etree(cnf)
         buf = BytesIO()
         etree_write(tree, buf)
         return buf.getvalue()
@@ -192,7 +193,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         :param stream: Config file or file like object write to
         :param kwargs: optional keyword parameters
         """
-        tree = container_to_etree(cnf, to_container)
+        tree = container_to_etree(cnf)
         etree_write(tree, stream)
 
 # vim:sw=4:ts=4:et:

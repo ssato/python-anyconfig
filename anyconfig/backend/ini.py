@@ -166,18 +166,16 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
     dump_to_string = anyconfig.backend.base.to_method(_dumps)
 
-    def load_from_stream(self, stream, **options):
+    def load_from_stream(self, stream, to_container, **options):
         """
         Load config from given file like object `stream`.
 
         :param stream:  Config file or file like object
+        :param to_container: callble to make a container object
         :param options: optional keyword arguments
 
         :return: Dict-like object holding config parameters
         """
-        to_container = anyconfig.backend.base.to_container_fn(**options)
-        opts = self._load_options(**options)
-        opts["to_container"] = to_container
-        return _load(stream, **opts)
+        return _load(stream, to_container=to_container, **options)
 
 # vim:sw=4:ts=4:et:

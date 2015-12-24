@@ -14,6 +14,9 @@ import anyconfig.mergeabledict
 import anyconfig.tests.common
 
 
+MZERO = TT.to_container_fn()()
+
+
 class Test00(unittest.TestCase):
 
     def setUp(self):
@@ -24,16 +27,16 @@ class Test00(unittest.TestCase):
 
     def test_20_loads__null_content(self):
         cnf = self.psr.loads('')
-        self.assertEqual(cnf, self.psr.container())
-        self.assertTrue(isinstance(cnf, self.psr.container))
+        self.assertEqual(cnf, MZERO)
+        self.assertTrue(isinstance(cnf, type(MZERO)))
 
     def test_30_load__ignore_missing(self):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
         cnf = self.psr.load(cpath, ignore_missing=True)
-        self.assertEqual(cnf, self.psr.container())
-        self.assertTrue(isinstance(cnf, self.psr.container))
+        self.assertEqual(cnf, MZERO)
+        self.assertTrue(isinstance(cnf, type(MZERO)))
 
 
 class Test10(unittest.TestCase):

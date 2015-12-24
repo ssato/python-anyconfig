@@ -56,30 +56,28 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     dump_to_string = anyconfig.backend.base.to_method(json.dumps)
     dump_to_stream = anyconfig.backend.base.to_method(json.dump)
 
-    def load_from_string(self, content, **opts):
+    def load_from_string(self, content, to_container, **opts):
         """
         Load JSON config from given string `content`.
 
         :param content: JSON config content
+        :param to_container: callble to make a container object
         :param opts: keyword options passed to `json.loads`
 
         :return: Dict-like object holding configuration
         """
-        to_container = anyconfig.backend.base.to_container_fn(**opts)
-        opts = self._load_options(**opts)
         return json.loads(content, object_hook=to_container, **opts)
 
-    def load_from_stream(self, stream, **opts):
+    def load_from_stream(self, stream, to_container, **opts):
         """
         Load JSON config from given stream `stream`.
 
-        :param content: JSON config content string or stream
+        :param stream: Stream will provide JSON config content string
+        :param to_container: callble to make a container object
         :param opts: keyword options passed to `json.load`
 
         :return: Dict-like object holding configuration
         """
-        to_container = anyconfig.backend.base.to_container_fn(**opts)
-        opts = self._load_options(**opts)
         return json.load(stream, object_hook=to_container, **opts)
 
 # vim:sw=4:ts=4:et:

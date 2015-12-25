@@ -207,14 +207,14 @@ class UpdateWithReplaceDict(dict):
     Traceback (most recent call last):
     TypeError: ...
     """
-    def _update(self, other, key, val=None):
+    def _update(self, other, key, val=None, is_dict=True):
         """
         :param other:
             dict or dict-like object or a list of (key, value) pair tuples
         :param key: object key
         :param val: object value
         """
-        self[key] = other[key] if val is None else val
+        self[key] = other[key] if val is None and is_dict else val
 
     def update(self, *others, **another):
         """
@@ -226,12 +226,12 @@ class UpdateWithReplaceDict(dict):
         .. seealso:: Document of dict.update
         """
         for other in others:
-            if callable(getattr(other, "keys", False)):
+            if hasattr(other, "keys"):
                 for key in other.keys():
                     self._update(other, key)
             else:
                 for key, val in other:  # TypeError, etc. may be raised.
-                    self._update(other, key, val)
+                    self._update(other, key, val=val, is_dict=False)
 
         for key in another.keys():
             self._update(another, key)

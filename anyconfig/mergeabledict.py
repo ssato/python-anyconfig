@@ -216,21 +216,22 @@ class UpdateWithReplaceDict(dict):
         """
         self[key] = other[key] if val is None else val
 
-    def update(self, other, **another):
+    def update(self, *others, **another):
         """
-        :param other:
-            a dict or dict-like object or a list of (key, value) pair tuples
-            to update self
+        :param others:
+            a list of dict or dict-like objects or a list of (key, value) pair
+            tuples to update self
         :param another: optional keyword arguments to update self more
 
         .. seealso:: Document of dict.update
         """
-        if callable(getattr(other, "keys", None)):
-            for key in other.keys():
-                self._update(other, key)
-        else:
-            for key, val in other:  # (ValueError, TypeError) may be raised.
-                self._update(other, key, val)
+        for other in others:
+            if callable(getattr(other, "keys", False)):
+                for key in other.keys():
+                    self._update(other, key)
+            else:
+                for key, val in other:  # TypeError, etc. may be raised.
+                    self._update(other, key, val)
 
         for key in another.keys():
             self._update(another, key)

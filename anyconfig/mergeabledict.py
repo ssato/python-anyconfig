@@ -372,7 +372,7 @@ class UpdateWoReplaceOrderedDict(UpdateWoReplaceDict, OrderedDict):
     Similar to UpdateWoReplaceDict but keep keys' order like OrderedDict.
 
     >>> od0 = OrderedDict((("a", 1), ("b", [1, 3]), ("c", "abc"),
-    ...                    ("f", None))))
+    ...                    ("f", None)))
     >>> md0 = UpdateWoReplaceOrderedDict(od0)
     >>> ref = md0.copy()
     >>> md1 = UpdateWoReplaceOrderedDict((("a", 2), ("b", [0, 1]),

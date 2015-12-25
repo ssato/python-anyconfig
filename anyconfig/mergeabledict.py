@@ -342,11 +342,13 @@ class UpdateWithReplaceOrderedDict(UpdateWithReplaceDict, OrderedDict):
     Similar to UpdateWithReplaceDict but keep keys' order like OrderedDict.
 
     >>> od0 = OrderedDict((("a", 1), ("b", [1, 3]), ("c", "abc"), ("f", None)))
+    >>> od1 = OrderedDict((("a", 2), ("b", [0, 1]),
+    ...                    ("c", OrderedDict((("d", "d"), ("e", 1)))),
+    ...                    ("d", "d")))
     >>> md0 = UpdateWithReplaceOrderedDict(od0)
     >>> md1 = UpdateWithReplaceOrderedDict(od0.items())
     >>> ref = md0.copy()
-    >>> upd = UpdateWithReplaceOrderedDict(a=2, b=[0, 1], c=dict(d="d", e=1),
-    ...                                    d="d")
+    >>> upd = UpdateWithReplaceOrderedDict(od1)
     >>> md0.update(upd)
     >>> md1.update(upd)
     >>> all(md0[k] == upd[k] for k in upd.keys())
@@ -369,11 +371,12 @@ class UpdateWoReplaceOrderedDict(UpdateWoReplaceDict, OrderedDict):
     """
     Similar to UpdateWoReplaceDict but keep keys' order like OrderedDict.
 
-    >>> md0 = UpdateWoReplaceOrderedDict(OrderedDict((("a", 1), ("b", [1, 3]),
-    ...                                               ("c", "abc"),
-    ...                                               ("f", None))))
+    >>> od0 = OrderedDict((("a", 1), ("b", [1, 3]), ("c", "abc"),
+    ...                    ("f", None))))
+    >>> md0 = UpdateWoReplaceOrderedDict(od0)
     >>> ref = md0.copy()
-    >>> md1 = UpdateWoReplaceOrderedDict(a=2, b=[0, 1], c="xyz", d=None)
+    >>> md1 = UpdateWoReplaceOrderedDict((("a", 2), ("b", [0, 1]),
+    ...                                   ("c", "xyz"), ("d", None)))
     >>> md0.update(md1)
     >>> all(md0[k] == md1[k] for k in md1.keys() if k not in ref)
     True
@@ -392,12 +395,11 @@ class UpdateWithMergeOrderedDict(UpdateWithMergeDict, OrderedDict):
     >>> od0 = OrderedDict((("c", 2), ("d", 3)))
     >>> od1 = OrderedDict((("c", 4), ("d", 5), ("g", None)))
     >>> md0 = UpdateWithMergeOrderedDict(
-    ...          (("a", 1), ("b", UpdateWithMergeOrderedDict(od0)),
-    ...           ("e", [1, 2, 2]), ("f", None)))
+    ...          OrderedDict((("a", 1),
+    ...                       ("b", UpdateWithMergeOrderedDict(od0)),
+    ...                       ("e", [1, 2, 2]), ("f", None))))
     >>> ref = md0.copy()
-    >>> upd = UpdateWithMergeOrderedDict(
-    ...          (("a", 2), ("b", UpdateWithMergeOrderedDict(od1)),
-    ...           ("e", [2, 3, 4])))
+    >>> upd = dict(a=2, b=UpdateWithMergeOrderedDict(od1), e=[2, 3, 4])
     >>> md0.update(upd)
     >>> all(md0[k] == upd[k] for k in ("a", "e"))  # vary depends on 'keep'.
     True
@@ -418,7 +420,7 @@ class UpdateWithMergeListsOrderedDict(UpdateWithMergeListsDict, OrderedDict):
     Similar to UpdateWithMergeListsDict but keep keys' order like OrderedDict.
 
     >>> md0 = UpdateWithMergeListsOrderedDict((("aaa", [1, 2, 3]), ('b', 0)))
-    >>> upd = UpdateWithMergeListsOrderedDict(aaa=[4, 4, 5])
+    >>> upd = UpdateWithMergeListsOrderedDict((("aaa", [4, 4, 5]), ))
     >>> md0.update(upd)
     >>> md0["aaa"]
     [1, 2, 3, 4, 4, 5]

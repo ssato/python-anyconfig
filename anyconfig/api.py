@@ -86,7 +86,10 @@ def _maybe_validated(cnf, schema, format_checker=None, **options):
             LOGGER.warning(msg)
 
     if valid:
-        return convert_to(cnf, True) if options.get("ac_namedtuple") else cnf
+        if options.get("ac_namedtuple", False):
+            return convert_to(cnf, to_namedtuple=True)
+        else:
+            return cnf
 
     return None
 

@@ -51,7 +51,7 @@ def _yml_load(stream, to_container, **kwargs):
     """
     if "ac_safe" in kwargs:  # yaml.safe_load does not process Loader opts.
         kwargs = {}
-    return _yml_fnc("load", stream, **kwargs)
+    return to_container(_yml_fnc("load", stream, **kwargs))
 
 
 def _yml_dump(cnf, stream, **kwargs):

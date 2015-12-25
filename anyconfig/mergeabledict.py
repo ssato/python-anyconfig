@@ -538,6 +538,9 @@ def create_from(obj=None, ac_ordered=False,
     if ac_merge not in MERGE_STRATEGIES:
         raise ValueError("Wrong merge strategy: %r" % ac_merge)
 
+    if getattr(options, "ac_namedtuple", False):
+        ac_ordered = True  # To keep the order of items.
+
     cls = _get_mdict_class(ac_merge=ac_merge, ac_ordered=ac_ordered)
     if obj is None:
         return cls()

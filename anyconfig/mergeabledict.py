@@ -253,15 +253,15 @@ class UpdateWoReplaceDict(UpdateWithReplaceDict):
     >>> all(md0[k] == ref[k] for k in ref.keys())
     True
     """
-    def _update(self, other, key, val=None):
+    def _update(self, other, key, *args):
         """
         :param other:
             dict or dict-like object or a list of (key, value) pair tuples
         :param key: object key
-        :param val: object value
+        :param args: [] or (value, ...)
         """
         if key not in self:
-            self[key] = other[key] if val is None else val
+            self[key] = args[0] if args else other[key]
 
 
 class UpdateWithMergeDict(UpdateWithReplaceDict):
@@ -303,16 +303,14 @@ class UpdateWithMergeDict(UpdateWithReplaceDict):
     merge_lists = False
     keep = False
 
-    def _update(self, other, key, val=None):
+    def _update(self, other, key, *args):
         """
         :param other:
             dict or dict-like object or a list of (key, value) pair tuples
         :param key: object key
-        :param val: object value
+        :param args: [] or (value, ...)
         """
-        if val is None:
-            val = other[key]
-
+        val = args[0] if args else other[key]
         if key in self:
             val0 = self[key]  # Original value
             if is_dict_like(val0):  # It needs recursive updates.

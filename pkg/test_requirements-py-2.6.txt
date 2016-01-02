@@ -1,0 +1,9 @@
+-r requirements_full-py-2.6.txt
+coveralls
+# disable this if 'pkg_resources.VersionConflict' error happens:
+flake8
+nose
+pep8
+# :see: 2.4 What versions of Python is Pylint supporting? in
+# http://docs.pylint.org/faq.html#installation
+pylint<1.4

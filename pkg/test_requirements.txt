@@ -1,0 +1,8 @@
+-r requirements_full.txt
+coveralls
+# disable this if 'pkg_resources.VersionConflict' error happens:
+flake8
+mock
+nose
+pep8
+pylint

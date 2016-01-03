@@ -167,7 +167,8 @@ def set_(dic, path, val, seps=PATH_SEPS):
     dic.update(mk_nested_dic(path, val, seps))
 
 
-def make(obj=None, ordered=False, _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
+def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
+         _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
     """
     Factory function to create a dict-like object[s] supports merge operation
     from a dict or any other objects.
@@ -178,17 +179,15 @@ def make(obj=None, ordered=False, _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
         it's True. Please note that OrderedMergeableDict class will be chosen
         for namedtuple objects regardless of this argument always to keep keys
         (fields) order.
+    :param merge:
+        Specify strategy from MERGE_STRATEGIES of how to merge results loaded
+        from multiple configuration files.
     :param _ntpl_cls_key:
         Special keyword to embedded the class name of namedtuple object to the
         MergeableDict object created. It's a hack and not elegant but I don't
         think there are another ways to make same namedtuple object from the
         MergeableDict object created from it.
-    :param options: Other keyword arguments such as:
-
-        - merge: Specify strategy from MERGE_STRATEGIES of how to merge
-          results loaded from multiple configuration files.
     """
-    merge = options.get("merge", m9dicts.globals.MS_DICTS)
     if merge not in m9dicts.globals.MERGE_STRATEGIES:
         raise ValueError("Wrong merge strategy: %r" % merge)
 

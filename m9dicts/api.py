@@ -25,6 +25,7 @@ except ImportError:
     from ordereddict import OrderedDict  # Python 2.6
 
 import m9dicts.globals
+import m9dicts.dicts
 import m9dicts.utils
 
 
@@ -168,9 +169,10 @@ def set_(dic, path, val, seps=PATH_SEPS):
 
 def make(obj=None, ordered=False, _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
     """
-    Try creating a MergeableDict instance[s] from a dict or any other objects.
+    Factory function to create a dict-like object[s] supports merge operation
+    from a dict or any other objects.
 
-    :param obj: A dict instance or None
+    :param obj: A dict or other object[s] or None
     :param ordered:
         Create an instance of OrderedMergeableDict instead of MergeableDict If
         it's True. Please note that OrderedMergeableDict class will be chosen
@@ -214,39 +216,37 @@ def make(obj=None, ordered=False, _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
         return obj
 
 
-def convert_to(obj, to_namedtuple=False, _ntpl_cls_key=NAMEDTUPLE_CLS_KEY,
-               **opts):
+def convert_to(obj, ordered=False, to_namedtuple=False,
+               _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **opts):
     """
-    Convert a mdict objects to a dict or namedtuple object recursively.
+    Convert a dict-like object[s] support merge operation to a dict or
+    namedtuple object recursively.
 
     Borrowed basic idea and implementation from bunch.unbunchify.
     (bunch is distributed under MIT license same as this module.)
 
     .. note::
-       If `to_namedtuple` is True and given object `obj` is MergeableDict and
-       not OrderedMergeableDict, then the order of fields of result namedtuple
-       object may be random and not stable because the order of MergeableDict
-       may not be kept and stable.
+       If `to_namedtuple` is True and given object `obj` is not a dict-like
+       object keeping key orders , then the order of fields of result
+       namedtuple object may be random and not stable.
 
     .. note::
        namedtuple object cannot have fields start with '_' because it may be
        conflicts with special methods of object like '__class__'. So it'll fail
        if to convert dicts has such keys.
 
-    :param obj: An [Ordered]MergeableDict instance or other object
+    :param obj: A m9dicts objects or other primitive object
+    :param ordered: Create an OrderedDict instead of dict to keep the key order
     :param to_namedtuple:
         Convert `obj` to namedtuple object of which definition is created on
         the fly if True instead of dict.
     :param _ntpl_cls_key:
         Special keyword to embedded the class name of namedtuple object to
         create.  See the comments in :func:`make` also.
-    :param opts: Extra optional keyword arguments such as ac_ordered:
-
-        - ac_ordered: Create an OrderedDict object instead of dict if True
 
     :return: A dict or namedtuple object if to_namedtuple is True
     """
-    cls = OrderedDict if opts.get("ac_ordered", False) else dict
+    cls = OrderedDict if ordered else dict
     if m9dicts.utils.is_dict_like(obj):
         if to_namedtuple:
             _name = obj.get(_ntpl_cls_key, "NamedTuple")

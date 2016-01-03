@@ -90,7 +90,7 @@ class Test_20_make(unittest.TestCase):
             self.assertTrue(md0[k] == _CNF_0[k],
                             "%r vs. %r" % (md0[k], _CNF_0[k]))
 
-    def test_20__merge_type(self):
+    def test_20_merge(self):
         md1 = TT.make(_CNF_0, merge=MG.MS_REPLACE)
         md2 = TT.make(_CNF_0, merge=MG.MS_NO_REPLACE)
         md3 = TT.make(_CNF_0, merge=MG.MS_DICTS_AND_LISTS)

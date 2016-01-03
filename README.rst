@@ -114,19 +114,19 @@ m9dicts provides some m9dict (merge-able dict) classes merging (maybe nested)
 dicts recursively according to different merge strategy.
 
 .. csv-table::
-   :header: "m9dict class", "Keep keys order?", strategy, notes
+   :header: "m9dict class", "Keep keys order?", strategy
    :widths: 15, 20, 30
 
-   UpdateWithReplaceDict, No, Replace value of dict to update with other's if both have same keys on update
+   UpdateWithReplaceDict, No, Replace value of dict to update with other's if both have same keys on update.
    UpdateWithReplaceOrderedDict, Yes, Likewise but the order of keys are kept.
-   UpdateWoReplaceDict, No, Never update (replace) the value of dict ot update with other's, that is, only the values it does not have the key will be added on update.
+   UpdateWoReplaceDict, No, "Never update (replace) the value of dict ot update with other's, that is, only the values it does not have the key will be added on update." 
    UpdateWoReplaceOrderedDict, Yes, Likewise but the order of keys are kept.
    UpdateWithMergeDict, No, Merge the value of dict to update with other's recursively. Behavior of merge will be vary depends on types of original and new values.
    UpdateWithMergeOrderedDict, Yes, Likewise but the order of keys are kept.
    UpdateWithMergeListsDict, No, Merge recursively like UpdateWithMergeDict but lists will be concatenated.
    UpdateWithMergeListsOrderedDict, Yes, Likewise but the order of keys are kept.
 
-.. seealso:: Document of each m9dict class in m9dicts.dicts
+See also each m9dict class in m9dicts.dicts.
 
 Installation
 ==============
@@ -186,6 +186,8 @@ Run '[WITH_COVERAGE=1] ./pkg/runtest.sh [path_to_python_code]' or 'tox' for test
 For example,
 
 .. code-block:: console
+
+   $ WITH_COVERAGE=1 ./pkg/runtest.sh 2>&1 | tee /tmp/t.log
 
 About test-time requirements, please take a look at pkg/test_requirements.txt.
 

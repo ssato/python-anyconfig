@@ -32,7 +32,7 @@ def _are_list_like(*objs):
 
 class UpdateWithReplaceDict(dict):
     """
-    Replace value of self with other's if both has same keys on update.
+    Replace value of self with other's if both have same keys on update.
     Otherwise, just keep the value of self.
 
     >>> od0 = OrderedDict((("a", 1), ("b", [1, 3]), ("c", "abc"), ("f", None)))

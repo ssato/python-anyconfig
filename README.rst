@@ -2,11 +2,11 @@
 python-m9dicts
 ================
 
-.. image:: https://img.shields.io/pypi/v/m9dicts.svg
+.. .. image:: https://img.shields.io/pypi/v/m9dicts.svg
    :target: https://pypi.python.org/pypi/m9dicts/
    :alt: [Latest Version]
 
-.. image:: https://img.shields.io/pypi/pyversions/m9dicts.svg
+.. .. image:: https://img.shields.io/pypi/pyversions/m9dicts.svg
    :target: https://pypi.python.org/pypi/m9dicts/
    :alt: [Python versions]
 

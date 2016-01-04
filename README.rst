@@ -22,7 +22,7 @@ python-m9dicts
    :target: https://landscape.io/github/ssato/python-m9dicts/master
    :alt: [Code Health]
 
-.. .. image:: https://scrutinizer-ci.com/g/ssato/python-m9dicts/badges/quality-score.png?b=master
+.. image:: https://scrutinizer-ci.com/g/ssato/python-m9dicts/badges/quality-score.png?b=master
    :target: https://scrutinizer-ci.com/g/ssato/python-m9dicts
    :alt: [Code Quality]
 

@@ -99,9 +99,9 @@ class Test_20_make(unittest.TestCase):
         self.assertTrue(isinstance(md2, MD.UpdateWoReplaceDict))
         self.assertTrue(isinstance(md3, MD.UpdateWithMergeListsDict))
 
-        for mdn in (md1, md2, md3):
+        for idx, mdn in enumerate((md1, md2, md3)):
             self.assertTrue(isinstance(mdn["b"], type(mdn)),
-                            "%r (%r)" % (mdn["b"], type(mdn["b"])))
+                            "#%d %r (%r)" % (idx, mdn["b"], type(mdn["b"])))
             for k in "name a c e f".split():
                 self.assertTrue(mdn[k] == _CNF_0[k],
                                 "%r vs. %r" % (mdn[k], _CNF_0[k]))

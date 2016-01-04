@@ -191,9 +191,6 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
     if merge not in m9dicts.globals.MERGE_STRATEGIES:
         raise ValueError("Wrong merge strategy: %r" % merge)
 
-    if getattr(options, "namedtuple", False):
-        ordered = True  # To keep the order of items.
-
     cls = m9dicts.dicts.get_mdict_class(merge=merge, ordered=ordered)
     if obj is None:
         return cls()

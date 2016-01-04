@@ -198,7 +198,7 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
     if obj is None:
         return cls()
 
-    opts = dict(ordered=ordered, _ntpl_cls_key=_ntpl_cls_key)
+    opts = dict(ordered=ordered, merge=merge, _ntpl_cls_key=_ntpl_cls_key)
     opts.update(options)
 
     if m9dicts.utils.is_dict_like(obj):

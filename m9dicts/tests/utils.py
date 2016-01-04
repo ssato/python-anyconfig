@@ -4,12 +4,8 @@
 # pylint: disable=missing-docstring,invalid-name
 from __future__ import absolute_import
 import unittest
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict  # python 2.6
-
 import m9dicts.utils as TT
+from m9dicts.compat import OrderedDict
 
 
 class Test_00_Functions(unittest.TestCase):

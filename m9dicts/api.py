@@ -19,11 +19,7 @@ import functools
 import operator
 import re
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict  # Python 2.6
-
+import m9dicts.compat
 import m9dicts.globals
 import m9dicts.dicts
 import m9dicts.utils
@@ -242,7 +238,7 @@ def convert_to(obj, ordered=False, to_namedtuple=False,
 
     :return: A dict or namedtuple object if to_namedtuple is True
     """
-    cls = OrderedDict if ordered else dict
+    cls = m9dicts.compat.OrderedDict if ordered else dict
     if m9dicts.utils.is_dict_like(obj):
         if to_namedtuple:
             _name = obj.get(_ntpl_cls_key, "NamedTuple")
@@ -256,8 +252,9 @@ def convert_to(obj, ordered=False, to_namedtuple=False,
         if to_namedtuple:
             return obj  # Nothing to do if it's nested n.t. (it should be).
         else:
-            return OrderedDict((k, convert_to(getattr(obj, k), ordered=True))
-                               for k in obj._fields)
+            return m9dicts.compat.OrderedDict((k, convert_to(getattr(obj, k),
+                                                             ordered=True))
+                                              for k in obj._fields)
     elif m9dicts.utils.is_list_like(obj):
         return type(obj)(convert_to(v, to_namedtuple, _ntpl_cls_key, **opts)
                          for v in obj)

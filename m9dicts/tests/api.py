@@ -11,6 +11,7 @@ import m9dicts.dicts as MD
 import m9dicts.globals as MG
 
 from m9dicts.tests.common import dicts_equal
+from m9dicts.compat import OrderedDict
 
 
 class Test_10_get(unittest.TestCase):
@@ -64,9 +65,9 @@ class Test_10_get(unittest.TestCase):
         # self.assertEqual(msg, 'list indices must be integers...')
 
 
-_CNF_0 = TT.OrderedDict((("name", "a"), ("a", 1),
-                         ("b", TT.OrderedDict((("b", (1, 2)), ))),
-                         ("c", "C"), ("e", [3, 4]), ("f", None)))
+_CNF_0 = OrderedDict((("name", "a"), ("a", 1),
+                      ("b", OrderedDict((("b", (1, 2)), ))),
+                      ("c", "C"), ("e", [3, 4]), ("f", None)))
 
 
 class Test_20_make(unittest.TestCase):
@@ -175,9 +176,9 @@ class Test_30_convert_to(unittest.TestCase):
         _triangle = collections.namedtuple("Triangle", "p0 p1 p2")
         itpl = _triangle(_point(0, 0), _point(1, 0), _point(0, 1))
         res = TT.convert_to(itpl)
-        ref = TT.OrderedDict((("p0", TT.OrderedDict((("x", 0), ("y", 0)))),
-                              ("p1", TT.OrderedDict((("x", 1), ("y", 0)))),
-                              ("p2", TT.OrderedDict((("x", 0), ("y", 1))))))
+        ref = OrderedDict((("p0", OrderedDict((("x", 0), ("y", 0)))),
+                           ("p1", OrderedDict((("x", 1), ("y", 0)))),
+                           ("p2", OrderedDict((("x", 0), ("y", 1))))))
         self.assertNotEqual(res, itpl)
         self.assertEqual(list(res.keys()), list(ref.keys()))
         for key in "p0 p1 p2".split():

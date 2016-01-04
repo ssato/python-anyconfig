@@ -9,13 +9,10 @@
 """
 from __future__ import absolute_import
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict  # Python 2.6
-
 import m9dicts.globals as MG
 import m9dicts.utils
+
+from m9dicts.compat import OrderedDict
 
 
 def _are_list_like(*objs):
@@ -38,10 +35,14 @@ class UpdateWithReplaceDict(dict):
     >>> od0 = OrderedDict((("a", 1), ("b", [1, 3]), ("c", "abc"), ("f", None)))
     >>> md0 = UpdateWithReplaceDict(od0)
     >>> md1 = UpdateWithReplaceDict(od0.items())
+    >>> md2 = md0.copy()
+    >>> md3 = md0.copy()
     >>> ref = md0.copy()
     >>> upd = UpdateWithReplaceDict(a=2, b=[0, 1], c=dict(d="d", e=1), d="d")
     >>> md0.update(upd)
     >>> md1.update(upd)
+    >>> md2.update(list(upd.items()))
+    >>> md3.update(**upd)
     >>> all(md0[k] == upd[k] for k in upd.keys())
     True
     >>> all(md0[k] == ref[k] for k in ref.keys() if k not in upd)
@@ -50,7 +51,15 @@ class UpdateWithReplaceDict(dict):
     True
     >>> all(md1[k] == ref[k] for k in ref.keys() if k not in upd)
     True
-    >>> md2 = UpdateWithReplaceDict(1)  # doctest: +ELLIPSIS
+    >>> all(md2[k] == upd[k] for k in upd.keys())
+    True
+    >>> all(md2[k] == ref[k] for k in ref.keys() if k not in upd)
+    True
+    >>> all(md3[k] == upd[k] for k in upd.keys())
+    True
+    >>> all(md3[k] == ref[k] for k in ref.keys() if k not in upd)
+    True
+    >>> md5 = UpdateWithReplaceDict(1)  # doctest: +ELLIPSIS
     Traceback (most recent call last):
     TypeError: ...
     """
@@ -144,6 +153,12 @@ class UpdateWithMergeDict(UpdateWithReplaceDict):
     True
     >>> all(md0[k] == ref[k] for k in ref.keys() if k not in upd)
     True
+    >>> class Foo(UpdateWithMergeDict):
+    ...     keep = True
+    >>> md1 = Foo(a=1, b=2)
+    >>> md1.update(a=2)
+    >>> md1["a"]
+    1
     """
     merge_lists = False
     keep = False

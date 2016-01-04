@@ -27,9 +27,9 @@ class Test00(unittest.TestCase):
         self.assertTrue(dicts_equal({}, {}))
         self.assertFalse(dicts_equal({}, {'a': 1}))
 
-        d0 = {'a': 1}
-        d1 = {'a': [1, 2, 3]}
-        self.assertTrue(dicts_equal(d0, d0))
-        self.assertFalse(dicts_equal(d0, d1))
+        dic0 = {'a': 1}
+        dic1 = {'a': [1, 2, 3]}
+        self.assertTrue(dicts_equal(dic0, dic0))
+        self.assertFalse(dicts_equal(dic0, dic1))
 
 # vim:sw=4:ts=4:et:

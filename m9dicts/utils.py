@@ -7,11 +7,8 @@
 """
 from __future__ import absolute_import
 import collections
+import m9dicts.compat
 
-try:
-    _STR_TYPES = (basestring, unicode)  # Python 2.x
-except NameError:
-    _STR_TYPES = (str, )  # Python 3.x
 
 _LIST_LIKE_TYPES = (collections.Iterable, collections.Sequence)
 
@@ -24,11 +21,7 @@ def is_dict_like(obj):
     False
     >>> is_dict_like({})
     True
-    >>> try:
-    ...     from collections import OrderedDict
-    ... except ImportError:
-    ...     from ordereddict import OrderedDict  # python 2.6
-    >>> is_dict_like(OrderedDict((('a', 1), ('b', 2))))
+    >>> is_dict_like(m9dicts.compat.OrderedDict((('a', 1), ('b', 2))))
     True
     """
     return isinstance(obj, (dict, collections.Mapping))  # any others?
@@ -66,6 +59,6 @@ def is_list_like(obj):
     False
     """
     return isinstance(obj, _LIST_LIKE_TYPES) and \
-        not (isinstance(obj, _STR_TYPES) or is_dict_like(obj))
+        not (isinstance(obj, m9dicts.compat.STR_TYPES) or is_dict_like(obj))
 
 # vim:sw=4:ts=4:et:

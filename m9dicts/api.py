@@ -256,7 +256,8 @@ def convert_to(obj, ordered=False, to_namedtuple=False,
         if to_namedtuple:
             return obj  # Nothing to do if it's nested n.t. (it should be).
         else:
-            return cls((k, convert_to(getattr(obj, k))) for k in obj._fields)
+            return OrderedDict((k, convert_to(getattr(obj, k), ordered=True))
+                               for k in obj._fields)
     elif m9dicts.utils.is_list_like(obj):
         return type(obj)(convert_to(v, to_namedtuple, _ntpl_cls_key, **opts)
                          for v in obj)

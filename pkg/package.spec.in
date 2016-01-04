@@ -28,7 +28,6 @@ Summary:        Generic access to configuration files in some formats
 Group:          Development/Libraries
 License:        MIT
 URL:            https://github.com/ssato/%{name}
-#Source0:        https://github.com/ssato/%{name}/tarball/master/%{name}-%{version}.tar.gz
 Source0:        %{pkgname}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch

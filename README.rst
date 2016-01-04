@@ -38,8 +38,8 @@ strategy, and some related utility functions (APIs).
 - Author: Satoru SATOH <ssato@redhat.com>
 - License: MIT
 - Home: https://github.com/ssato/python-m9dicts
-
-.. - PyPI: https://pypi.python.org/pypi/m9dicts
+- PyPI: https://pypi.python.org/pypi/m9dicts
+- RPMs: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
 Usage
 -------

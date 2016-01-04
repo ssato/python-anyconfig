@@ -1,5 +1,5 @@
 #! /bin/bash
-# Ref. 2. git read-tree in 
+# Ref. 2. git read-tree in http://bit.ly/1R6yAVy
 set -ex
 
 commit=m9dicts/master

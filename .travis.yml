@@ -1,0 +1,47 @@
+# see: http://about.travis-ci.org/docs/user/languages/python/
+language: python
+python:
+    #- 2.4
+    #- 2.5
+    - 2.6
+    - 2.7
+    - 3.3
+    - 3.4
+    - 3.5
+# see: http://docs.travis-ci.com/user/caching/#pip-cache
+cache: pip
+#matrix:
+#    include:
+#        - python: 2.4
+#          env: FULL="true"
+#        - python: 2.5
+#          env: FULL="true"
+#        - python: 2.6
+#          env: FULL="true"
+#        - python: 2.7
+#          env: FULL="true"
+##        - python: 3.2
+##          env: LANG="en_US.utf-8"
+# see: http://docs.travis-ci.com/user/migrating-from-legacy/
+sudo: false
+install:
+    - if [[ $TRAVIS_PYTHON_VERSION < '2.7' ]]; then pip install -r pkg/test_requirements-py-2.6.txt; else pip install -r pkg/test_requirements.txt; fi
+#    - if [[ $TRAVIS_PYTHON_VERSION < '2.7' && $WITH_DEPS == true ]]; then pip install -r pkg/requirements_full-py-2.6.txt; fi
+#    - if [[ $TRAVIS_PYTHON_VERSION > '2.6' && $WITH_DEPS == true ]]; then pip install -r pkg/requirements_full.txt; fi
+env:
+  global:
+    - WITH_COVERAGE=1
+    - WITH_DEPS=true
+  # TODO: It's needed to process ImportError with anyconfig.backend.*, etc.
+  #matrix:
+  #  - WITH_DEPS=true
+  #  - WITH_DEPS=false
+script:
+    - "./pkg/runtest.sh"
+after_success:
+  - coveralls
+notifications:
+    email:
+        recipients:
+            - satoru.satoh+github@gmail.com
+        on_failure: always

@@ -18,7 +18,8 @@ python-m9dicts
    :target: https://coveralls.io/r/ssato/python-m9dicts
    :alt: [Coverage Status]
 
-.. image:: https://landscape.io/github/ssato/python-m9dicts/master/landscape.png
+.. note: there is an issue syncing with github repos now. disabled tentatively until the fix.
+.. .. image:: https://landscape.io/github/ssato/python-m9dicts/master/landscape.png
    :target: https://landscape.io/github/ssato/python-m9dicts/master
    :alt: [Code Health]
 

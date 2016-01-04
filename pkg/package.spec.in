@@ -10,8 +10,10 @@
 %global with_python3 0
 %endif
 
-%global short_desc dict-like objects support recursive merge operations
-%global long_desc python-m9dicts (merge-able dicts) is a python library provides some dict-like objects support recursive merge operations according to each merge strategies.
+%global short_desc Dict-like objects support recursive merge operations
+%global long_desc \
+python-m9dicts (merge-able dicts) is a python library provides some dict-like \
+objects support recursive merge operations according to each merge strategies.
 
 # disable debuginfo
 %define debug_package %{nil}

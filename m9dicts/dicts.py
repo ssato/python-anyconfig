@@ -34,31 +34,15 @@ class UpdateWithReplaceDict(dict):
 
     >>> od0 = OrderedDict((("a", 1), ("b", [1, 3]), ("c", "abc"), ("f", None)))
     >>> md0 = UpdateWithReplaceDict(od0)
-    >>> md1 = UpdateWithReplaceDict(od0.items())
-    >>> md2 = md0.copy()
-    >>> md3 = md0.copy()
-    >>> ref = md0.copy()
     >>> upd = UpdateWithReplaceDict(a=2, b=[0, 1], c=dict(d="d", e=1), d="d")
+    >>> (ref, md1, md2, md3) = [md0.copy() for _ in range(4)]
     >>> md0.update(upd)
-    >>> md1.update(upd)
+    >>> md1.update(dict(upd))
     >>> md2.update(list(upd.items()))
     >>> md3.update(**upd)
-    >>> all(md0[k] == upd[k] for k in upd.keys())
-    True
-    >>> all(md0[k] == ref[k] for k in ref.keys() if k not in upd)
-    True
-    >>> all(md1[k] == upd[k] for k in upd.keys())
-    True
-    >>> all(md1[k] == ref[k] for k in ref.keys() if k not in upd)
-    True
-    >>> all(md2[k] == upd[k] for k in upd.keys())
-    True
-    >>> all(md2[k] == ref[k] for k in ref.keys() if k not in upd)
-    True
-    >>> all(md3[k] == upd[k] for k in upd.keys())
-    True
-    >>> all(md3[k] == ref[k] for k in ref.keys() if k not in upd)
-    True
+    >>> for md in (md0, md1, md2, md3):
+    ...     assert all(md[k] == upd[k] for k in upd.keys())
+    ...     assert all(md[k] == ref[k] for k in ref.keys() if k not in upd)
     >>> md5 = UpdateWithReplaceDict(1)  # doctest: +ELLIPSIS
     Traceback (most recent call last):
     TypeError: ...
@@ -139,13 +123,10 @@ class UpdateWithMergeDict(UpdateWithReplaceDict):
 
     >>> od0 = OrderedDict((("c", 2), ("d", 3)))
     >>> od1 = OrderedDict((("c", 4), ("d", 5), ("g", None)))
-    >>> md0 = UpdateWithMergeDict((("a", 1),
-    ...                            ("b", UpdateWithMergeDict(od0)),
+    >>> md0 = UpdateWithMergeDict((("a", 1), ("b", UpdateWithMergeDict(od0)),
     ...                            ("e", [1, 2, 2]), ("f", None)))
+    >>> upd = dict(a=2, b=od1, e=[2, 3, 4])
     >>> ref = md0.copy()
-    >>> upd = UpdateWithMergeDict((("a", 2),
-    ...                            ("b", UpdateWithMergeDict(od1)),
-    ...                            ("e", [2, 3, 4])))
     >>> md0.update(upd)
     >>> all(md0[k] == upd[k] for k in ("a", "e"))  # vary depends on 'keep'.
     True
@@ -156,9 +137,11 @@ class UpdateWithMergeDict(UpdateWithReplaceDict):
     >>> class Foo(UpdateWithMergeDict):
     ...     keep = True
     >>> md1 = Foo(a=1, b=2)
-    >>> md1.update(a=2)
+    >>> md1.update(a=2, c=3)
     >>> md1["a"]
     1
+    >>> md1["c"]
+    3
     """
     merge_lists = False
     keep = False
@@ -186,10 +169,9 @@ class UpdateWithMergeListsDict(UpdateWithMergeDict):
     """
     Similar to UpdateWithMergeDict but merge lists by default.
 
-    >>> md0 = UpdateWithMergeListsDict(aaa=[1, 2, 3])
-    >>> upd = UpdateWithMergeListsDict(aaa=[4, 4, 5])
-    >>> md0.update(upd)
-    >>> md0["aaa"]
+    >>> md0 = UpdateWithMergeListsDict(a=[1, 2, 3])
+    >>> md0.update(a=[4, 4, 5])
+    >>> md0["a"]
     [1, 2, 3, 4, 4, 5]
     """
     merge_lists = True
@@ -205,22 +187,14 @@ class UpdateWithReplaceOrderedDict(UpdateWithReplaceDict, OrderedDict):
     ...                    ("d", "d")))
     >>> md0 = UpdateWithReplaceOrderedDict(od0)
     >>> md1 = UpdateWithReplaceOrderedDict(od0.items())
-    >>> ref = md0.copy()
     >>> upd = UpdateWithReplaceOrderedDict(od1)
-    >>> md0.update(upd)
-    >>> md1.update(upd)
-    >>> all(md0[k] == upd[k] for k in upd.keys())
-    True
-    >>> all(md0[k] == ref[k] for k in ref.keys() if k not in upd)
-    True
-    >>> all(md1[k] == upd[k] for k in upd.keys())
-    True
-    >>> all(md1[k] == ref[k] for k in ref.keys() if k not in upd)
-    True
-    >>> list(md0.keys())
-    ['a', 'b', 'c', 'f', 'd']
-    >>> list(md1.keys())
-    ['a', 'b', 'c', 'f', 'd']
+    >>> ref = md0.copy()
+    >>> for md in (md0, md1):
+    ...     md.update(upd)
+    ...     assert all(md0[k] == upd[k] for k in upd.keys())
+    ...     assert all(md0[k] == ref[k] for k in ref.keys() if k not in upd)
+    ...     assert list(md0.keys()) == ['a', 'b', 'c', 'f', 'd']
+    >>>
     """
     pass
 
@@ -232,11 +206,11 @@ class UpdateWoReplaceOrderedDict(UpdateWoReplaceDict, OrderedDict):
     >>> od0 = OrderedDict((("a", 1), ("b", [1, 3]), ("c", "abc"),
     ...                    ("f", None)))
     >>> md0 = UpdateWoReplaceOrderedDict(od0)
-    >>> ref = md0.copy()
-    >>> md1 = UpdateWoReplaceOrderedDict((("a", 2), ("b", [0, 1]),
+    >>> upd = UpdateWoReplaceOrderedDict((("a", 2), ("b", [0, 1]),
     ...                                   ("c", "xyz"), ("d", None)))
-    >>> md0.update(md1)
-    >>> all(md0[k] == md1[k] for k in md1.keys() if k not in ref)
+    >>> ref = md0.copy()
+    >>> md0.update(upd)
+    >>> all(md0[k] == upd[k] for k in upd.keys() if k not in ref)
     True
     >>> all(md0[k] == ref[k] for k in ref.keys())
     True
@@ -259,7 +233,7 @@ class UpdateWithMergeOrderedDict(UpdateWithMergeDict, OrderedDict):
     >>> ref = md0.copy()
     >>> upd = dict(a=2, b=UpdateWithMergeOrderedDict(od1), e=[2, 3, 4])
     >>> md0.update(upd)
-    >>> all(md0[k] == upd[k] for k in ("a", "e"))  # vary depends on 'keep'.
+    >>> all(md0[k] == upd[k] for k in ("a", "e"))
     True
     >>> all(md0[k] == ref[k] for k in ref.keys() if k not in upd)
     True
@@ -277,13 +251,12 @@ class UpdateWithMergeListsOrderedDict(UpdateWithMergeListsDict, OrderedDict):
     """
     Similar to UpdateWithMergeListsDict but keep keys' order like OrderedDict.
 
-    >>> md0 = UpdateWithMergeListsOrderedDict((("aaa", [1, 2, 3]), ('b', 0)))
-    >>> upd = UpdateWithMergeListsOrderedDict((("aaa", [4, 4, 5]), ))
-    >>> md0.update(upd)
-    >>> md0["aaa"]
+    >>> md0 = UpdateWithMergeListsOrderedDict((("a", [1, 2, 3]), ('b', 0)))
+    >>> md0.update(a=[4, 4, 5])
+    >>> md0["a"]
     [1, 2, 3, 4, 4, 5]
     >>> list(md0.keys())
-    ['aaa', 'b']
+    ['a', 'b']
     """
     pass
 

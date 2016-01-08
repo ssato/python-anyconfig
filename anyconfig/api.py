@@ -42,7 +42,7 @@ import anyconfig.utils
 
 # Import some global constants will be re-exported:
 from anyconfig.mdicts import (
-    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS,
+    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
     get, set_, to_container, convert_to  # flake8: noqa
 )
 from anyconfig.schema import validate, gen_schema

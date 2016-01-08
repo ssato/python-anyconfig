@@ -52,7 +52,6 @@ from anyconfig.utils import is_path
 
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
-container = anyconfig.mergeabledict.MergeableDict
 
 
 def _is_paths(maybe_paths):
@@ -67,8 +66,8 @@ def _is_paths(maybe_paths):
 
 def _maybe_validated(cnf, schema, format_checker=None, **options):
     """
-    :param cnf: Configuration object :: container
-    :param schema: JSON schema object :: container
+    :param cnf: Configuration object
+    :param schema: JSON schema object
     :param format_checker: A format property checker object of which class is
         inherited from jsonschema.FormatChecker, it's default if None given.
     :param options: Keyword options such as:

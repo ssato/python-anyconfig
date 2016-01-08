@@ -14,7 +14,7 @@ import anyconfig.backend.tests.ini
 import anyconfig.tests.common
 
 from anyconfig.tests.common import dicts_equal, to_bytes
-from anyconfig.mergeabledict import create_from as to_container
+from anyconfig.mdicts import to_container
 
 
 CNF_0_S = """<?xml version="1.0" encoding="UTF-8"?>

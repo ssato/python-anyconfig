@@ -28,7 +28,7 @@ import logging
 import os
 
 import anyconfig.compat
-import anyconfig.mergeabledict
+import anyconfig.mdicts
 import anyconfig.utils
 
 
@@ -82,11 +82,11 @@ def to_method(func):
 def to_container_fn(**options):
     """
     :param options:
-        Keyword options will be passed to :fnc:`create_from` in
-        :mod:`anyconfig.mergeabledict` to decide which mergeable dict to
+        Keyword options will be passed to :fnc:`to_container` in
+        :mod:`anyconfig.mdicts` to decide which merge-able dict to
         wrap configurations.
     """
-    return functools.partial(anyconfig.mergeabledict.create_from, **options)
+    return functools.partial(anyconfig.mdicts.to_container, **options)
 
 
 class Parser(object):
@@ -270,7 +270,7 @@ class Parser(object):
 
         :return: string represents the configuration
         """
-        cnf = anyconfig.mergeabledict.convert_to(cnf, **kwargs)
+        cnf = anyconfig.mdicts.convert_to(cnf, **kwargs)
         kwargs = mk_opt_args(self._dump_opts, kwargs)
         return self.dump_to_string(cnf, **kwargs)
 
@@ -284,7 +284,7 @@ class Parser(object):
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
         """
-        cnf = anyconfig.mergeabledict.convert_to(cnf, **kwargs)
+        cnf = anyconfig.mdicts.convert_to(cnf, **kwargs)
         kwargs = mk_opt_args(self._dump_opts, kwargs)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):

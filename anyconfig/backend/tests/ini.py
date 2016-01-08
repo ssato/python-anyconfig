@@ -5,6 +5,7 @@
 # pylint: disable=missing-docstring, protected-access
 from __future__ import absolute_import
 
+import m9dicts
 import os.path
 import unittest
 
@@ -12,7 +13,6 @@ import anyconfig.backend.ini as TT
 import anyconfig.tests.common
 
 from anyconfig.tests.common import dicts_equal
-from anyconfig.mergeabledict import UpdateWithReplaceDict
 
 
 CNF_0_S = """[DEFAULT]
@@ -42,22 +42,22 @@ class Test10(unittest.TestCase):
     def test_10_loads(self):
         cnf = self.psr.loads(self.cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_12_loads__w_options(self):
         cnf = self.psr.loads(self.cnf_s, **self.load_options)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_20_dumps(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf))
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_22_dumps__w_options(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf, **self.dump_options))
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
 
 class Test11(Test10):
@@ -67,24 +67,24 @@ class Test11(Test10):
     def test_10_loads(self):
         cnf = self.psr.loads(self.cnf_s, ac_parse_value=True)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_12_loads__w_options(self):
         cnf = self.psr.loads(self.cnf_s, ac_parse_value=True,
                              **self.load_options)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_20_dumps(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf), ac_parse_value=True)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_22_dumps__w_options(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf, **self.dump_options),
                              ac_parse_value=True)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
 
 class Test12(Test10):
@@ -117,20 +117,20 @@ class Test20(unittest.TestCase):
     def test_10_load(self):
         cnf = self.psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_20_dump(self):
         self.psr.dump(self.cnf, self.cpath)
         cnf = self.psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_30_load__from_stream(self):
         with self.psr.ropen(self.cpath) as strm:
             cnf = self.psr.load(strm)
 
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_40_dump__to_stream(self):
         with self.psr.wopen(self.cpath) as strm:
@@ -138,6 +138,6 @@ class Test20(unittest.TestCase):
 
         cnf = self.psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
 # vim:sw=4:ts=4:et:

@@ -10,7 +10,6 @@ import os.path
 import unittest
 
 import anyconfig.backend.base as TT  # stands for test target
-import anyconfig.mergeabledict
 import anyconfig.tests.common
 
 

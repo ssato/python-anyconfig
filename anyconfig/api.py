@@ -36,16 +36,14 @@ from anyconfig.globals import LOGGER
 import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
-import anyconfig.mergeabledict
 import anyconfig.parser
 import anyconfig.template
 import anyconfig.utils
 
 # Import some global constants will be re-exported:
-from anyconfig.mergeabledict import (
-    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    PATH_SEPS, get, set_, convert_to,  # flake8: noqa
-    create_from as to_container
+from anyconfig.mdicts import (
+    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS,
+    get, set_, to_container, convert_to  # flake8: noqa
 )
 from anyconfig.schema import validate, gen_schema
 from anyconfig.utils import is_path
@@ -169,9 +167,7 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
-    :return: Dict-like object (instance of
-        anyconfig.mergeabledict.MergeableDict by default) supports merge
-        operations.
+    :return: dict or dict-like object supports merge operations
     """
     is_path_ = is_path(path_or_stream)
     if is_path_:
@@ -229,8 +225,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
         - Common options:
 
           - ac_merge (merge): Specify strategy of how to merge results loaded
-            from multiple configuration files. See the doc of mergeabledict
-            module for more details of strategies. The default is MS_DICTS.
+            from multiple configuration files. See the doc of :mod:`m9dicts`
+            for more details of strategies. The default is m9dicts.MS_DICTS.
 
           - ac_marker (marker): Globbing marker to detect paths patterns.
           - ac_namedtuple: Convert result to nested namedtuple object if True
@@ -243,9 +239,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
-    :return: Dict-like object (instance of
-        anyconfig.mergeabledict.MergeableDict by default) supports merge
-        operations.
+    :return: dict or dict-like object supports merge operations
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
     schema = _load_schema(ac_template=ac_template, ac_context=ac_context,
@@ -293,9 +287,7 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
         Optional keyword arguments. See also the description of `options` in
         `multi_load` function.
 
-    :return: Dict-like object (instance of
-        anyconfig.mergeabledict.MergeableDict by default) supports merge
-        operations.
+    :return: dict or dict-like object supports merge operations
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
@@ -321,9 +313,7 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
         Optional keyword arguments. See also the description of `options` in
         `single_load` function.
 
-    :return: Dict-like object (instance of
-        anyconfig.mergeabledict.MergeableDict by default) supports merge
-        operations.
+    :return: dict or dict-like object supports merge operations
     """
     if ac_parser is None:
         LOGGER.warning("No type or parser was given. Try to parse...")
@@ -374,8 +364,7 @@ def dump(data, path_or_stream, ac_parser=None, **options):
     """
     Save `data` as `path_or_stream`.
 
-    :param data: Config data object to dump ::
-        anyconfig.mergeabledict.MergeableDict by default
+    :param data: Config data object to dump
     :param path_or_stream: Output file path or file / file-like object
     :param ac_parser: Forced parser type or parser object
     :param options: Keyword options such ash:
@@ -396,8 +385,7 @@ def dumps(data, ac_parser=None, **options):
     """
     Return string representation of `data` in forced type format.
 
-    :param data: Config data object to dump ::
-        anyconfig.mergeabledict.MergeableDict by default
+    :param data: Config data object to dump
     :param ac_parser: Forced parser type or parser object
     :param options: see :func:`dump`
 

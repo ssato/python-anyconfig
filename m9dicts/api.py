@@ -99,21 +99,18 @@ def mk_nested_dic(path, val, seps=PATH_SEPS):
     return ret
 
 
-def get(dic, path, seps=PATH_SEPS):
+def get(dic, path, seps=PATH_SEPS, idx_reg=_JSNP_GET_ARRAY_IDX_REG):
     """
     getter for nested dicts.
 
     :param dic: a dict[-like] object
     :param path: Path expression to point object wanted
     :param seps: Separator char candidates
-
     :return: A tuple of (result_object, error_message)
 
     >>> d = {'a': {'b': {'c': 0, 'd': [1, 2]}}, '': 3}
-    >>> get(d, '/')  # key becomes '' (empty string).
-    (3, '')
-    >>> get(d, "/a/b/c")
-    (0, '')
+    >>> assert get(d, '/') == (3, '')  # key becomes '' (empty string).
+    >>> assert get(d, "/a/b/c") == (0, '')
     >>> sorted(get(d, "a.b")[0].items())
     [('c', 0), ('d', [1, 2])]
     >>> (get(d, "a.b.d"), get(d, "/a/b/d/1"))
@@ -132,13 +129,9 @@ def get(dic, path, seps=PATH_SEPS):
         if len(items) == 1:
             return (dic[items[0]], '')
 
-        parent = functools.reduce(operator.getitem, items[:-1], dic)
-
-        if m9dicts.utils.is_list_like(parent) and \
-                _JSNP_GET_ARRAY_IDX_REG.match(items[-1]):
-            return (parent[int(items[-1])], '')
-        else:
-            return (parent[items[-1]], '')
+        prnt = functools.reduce(operator.getitem, items[:-1], dic)
+        arr = m9dicts.utils.is_list_like(prnt) and idx_reg.match(items[-1])
+        return (prnt[int(items[-1])], '') if arr else (prnt[items[-1]], '')
 
     except (TypeError, KeyError, IndexError) as exc:
         return (None, str(exc))

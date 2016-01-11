@@ -12,11 +12,8 @@ from __future__ import absolute_import
 import m9dicts
 from m9dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    get, set_, is_namedtuple  # flake8: noqa
+    NTPL_CLS_KEY, get, set_, is_namedtuple  # flake8: noqa
 )
-
-
-NTPL_CLS_KEY = "ntpl_cls_key__"
 
 
 def to_container(obj=None, ac_ordered=False, ac_merge=m9dicts.MS_DICTS,

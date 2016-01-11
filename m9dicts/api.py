@@ -193,7 +193,7 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
     options.update(ordered=ordered, merge=merge, _ntpl_cls_key=_ntpl_cls_key)
     if m9dicts.utils.is_dict_like(obj):
         return cls((k, None if v is None else make(v, **options)) for k, v
-                   in obj.items())
+                   in obj.items() if k != _ntpl_cls_key)
     elif m9dicts.utils.is_namedtuple(obj):
         return _make_from_namedtuple(obj, **options)
     elif m9dicts.utils.is_list_like(obj):

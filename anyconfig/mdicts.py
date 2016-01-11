@@ -12,7 +12,7 @@ from __future__ import absolute_import
 import m9dicts
 from m9dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    get, set_  # flake8: noqa
+    get, set_, is_namedtuple  # flake8: noqa
 )
 
 

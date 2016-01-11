@@ -100,8 +100,7 @@ def mk_nested_dic(path, val, seps=PATH_SEPS):
 
 
 def get(dic, path, seps=PATH_SEPS, idx_reg=_JSNP_GET_ARRAY_IDX_REG):
-    """
-    getter for nested dicts.
+    """getter for nested dicts.
 
     :param dic: a dict[-like] object
     :param path: Path expression to point object wanted
@@ -138,8 +137,7 @@ def get(dic, path, seps=PATH_SEPS, idx_reg=_JSNP_GET_ARRAY_IDX_REG):
 
 
 def set_(dic, path, val, seps=PATH_SEPS):
-    """
-    setter for nested dicts.
+    """setter for nested dicts.
 
     :param dic: a dict[-like] object support recursive merge operations
     :param path: Path expression to point object wanted
@@ -155,9 +153,8 @@ def set_(dic, path, val, seps=PATH_SEPS):
 
 def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
          _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
-    """
-    Factory function to create a dict-like object[s] supports merge operation
-    from a dict or any other objects.
+    """Factory function to create a dict-like object[s] supports merge
+    operation from a dict or any other objects.
 
     :param obj: A dict or other object[s] or None
     :param ordered:
@@ -200,22 +197,15 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
 
 def convert_to(obj, ordered=False, to_namedtuple=False,
                _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **opts):
-    """
-    Convert a dict-like object[s] support merge operation to a dict or
-    namedtuple object recursively.
-
-    Borrowed basic idea and implementation from bunch.unbunchify.
-    (bunch is distributed under MIT license same as this module.)
+    """Convert a dict-like object[s] support merge operation to a dict or
+    namedtuple object recursively. Borrowed basic idea and implementation from
+    bunch.unbunchify. (bunch is distributed under MIT license same as this.)
 
     .. note::
-       If `to_namedtuple` is True and given object `obj` is not a dict-like
-       object keeping key orders , then the order of fields of result
-       namedtuple object may be random and not stable.
-
-    .. note::
-       namedtuple object cannot have fields start with '_' because it may be
-       conflicts with special methods of object like '__class__'. So it'll fail
-       if to convert dicts has such keys.
+       - Given `obj` doesn't keep key order and if `to_namedtuple` is True,
+         then the order of fields of result namedtuple object becomes random.
+       - namedtuple object cannot have fields start with '_', So it'll fail if
+         to convert dicts has such keys.
 
     :param obj: A m9dicts objects or other primitive object
     :param ordered: Create an OrderedDict instead of dict to keep the key order

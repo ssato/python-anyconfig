@@ -189,7 +189,7 @@ class Test_30_single_load(unittest.TestCase):
             cnf = OrderedDict(sorted(self.cnf.items()))
             cnf0 = TT.convert_to(cnf, to_namedtuple=True)
 
-            TT.dump(cnf0, cpath, ac_ordered=True)
+            TT.dump(cnf0, cpath)
             self.assertTrue(os.path.exists(cpath))
 
             cnf1 = TT.single_load(cpath, ac_namedtuple=True)
@@ -394,14 +394,16 @@ class Test_40_multi_load(unittest.TestCase):
         self.assertEqual(cnf["b"]["d"], b["b"]["d"])
 
     def test_18_dump_and_multi_load__namedtuple(self):
-        a = TT.convert_to(dict(a=1, b=dict(b=[0, 1], c="C"), name="a"), True)
-        b = TT.convert_to(dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D")), True)
+        a = TT.convert_to(dict(a=1, b=dict(b=[0, 1], c="C"), name="a"),
+                          ac_namedtuple=True)
+        b = TT.convert_to(dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D")),
+                          ac_namedtuple=True)
 
         a_path = os.path.join(self.workdir, "a.json")
         b_path = os.path.join(self.workdir, "b.yml")
 
-        TT.dump(a, a_path, ac_namedtuple=True)
-        TT.dump(b, b_path, ac_namedtuple=True)
+        TT.dump(a, a_path)
+        TT.dump(b, b_path)
         cnf = TT.multi_load([a_path, b_path], ac_namedtuple=True)
 
         self.assertEqual(cnf.name, a.name)

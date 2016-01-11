@@ -57,9 +57,7 @@ class UpdateWithReplaceDict(dict):
 
     def update(self, *others, **another):
         """
-        :param others:
-            a list of dict[-like] objects or a list of (key, value) tuples to
-            update self
+        :param others: a list of dict[-like] objects or (key, value) tuples
         :param another: optional keyword arguments to update self more
 
         .. seealso:: Document of dict.update

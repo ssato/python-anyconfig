@@ -54,17 +54,14 @@ def _split_path(path, seps=PATH_SEPS):
 
     :param path: Path expression may contain separator chars.
     :param seps: Separator char candidates.
-
     :return: A list of keys to fetch object[s] later.
 
     >>> _split_path('')
     []
     >>> _split_path('/')  # JSON Pointer spec expects this behavior.
     ['']
-    >>> _split_path('/a') == _split_path('.a') == ['a']
-    True
-    >>> _split_path('a') == _split_path('a.') == ['a']
-    True
+    >>> for p in ('/a', '.a', 'a', 'a.'):
+    ...     assert _split_path(p) == ['a'], p
     >>> _split_path('/a/b/c') == _split_path('a.b.c') == ['a', 'b', 'c']
     True
     >>> _split_path('abc')

@@ -50,7 +50,9 @@ class Test10(unittest.TestCase):
         self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
     def test_20_dumps(self):
-        cnf = self.psr.loads(self.psr.dumps(self.cnf))
+        cnf_s = self.psr.dumps(self.cnf)
+        self.assertTrue(cnf_s)
+        cnf = self.psr.loads(cnf_s)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
         self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 

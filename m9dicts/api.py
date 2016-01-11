@@ -147,6 +147,13 @@ def set_(dic, path, val, seps=PATH_SEPS):
     dic.update(mk_nested_dic(path, val, seps))
 
 
+def check_merge(merge):
+    """Check if given `merge` is valid and ValueError will be raised if not.
+    """
+    if merge not in m9dicts.globals.MERGE_STRATEGIES:
+        raise ValueError("Wrong merge strategy: %r" % merge)
+
+
 def _make_from_namedtuple(obj, merge=m9dicts.globals.MS_DICTS,
                           _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **opts):
     """
@@ -178,9 +185,7 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
     :param merge: see :func:`_make_from_namedtuple` (above).
     :param _ntpl_cls_key: see :func:`_make_from_namedtuple` (above).
     """
-    if merge not in m9dicts.globals.MERGE_STRATEGIES:
-        raise ValueError("Wrong merge strategy: %r" % merge)
-
+    check_merge(merge)
     cls = m9dicts.dicts.get_mdict_class(merge=merge, ordered=ordered)
     if obj is None:
         return cls()

@@ -16,8 +16,11 @@ from m9dicts import (
 )
 
 
+NTPL_CLS_KEY = "ntpl_cls_key__"
+
+
 def to_container(obj=None, ac_ordered=False, ac_merge=m9dicts.MS_DICTS,
-                 ac_ntpl_cls_key="_ntpl_cls_", **options):
+                 ac_ntpl_cls_key=NTPL_CLS_KEY, **options):
     """
     Factory function to create a dict-like object[s] supports merge operation
     from a dict or any other objects.
@@ -42,16 +45,15 @@ def to_container(obj=None, ac_ordered=False, ac_merge=m9dicts.MS_DICTS,
         Optional keyword arguments for m9dicts.convert_to, will be converted to
         the above ac_\* options respectively as needed.
     """
-    ordered = options.get("ordered", ac_ordered)
-    merge = options.get("merge", ac_merge)
-    _ntpl_cls_key = options.get("_ntpl_cls_key", ac_ntpl_cls_key)
+    opts = dict(ordered=options.get("ordered", ac_ordered),
+                merge=options.get("merge", ac_merge),
+                _ntpl_cls_key=options.get("_ntpl_cls_key", ac_ntpl_cls_key))
 
-    return m9dicts.make(obj, ordered=ordered, merge=merge,
-                        _ntpl_cls_key=_ntpl_cls_key)
+    return m9dicts.make(obj, **opts)
 
 
 def convert_to(obj, ac_ordered=True, ac_namedtuple=False,
-               ac_ntpl_cls_key="_ntpl_cls_", **options):
+               ac_ntpl_cls_key=NTPL_CLS_KEY, **options):
     """
     Convert given `obj` :: m9dict object to a dict, dict or OrderedDict if
     ac_ordered == True, or a namedtuple if ac_namedtuple == True.
@@ -66,12 +68,10 @@ def convert_to(obj, ac_ordered=True, ac_namedtuple=False,
         Optional keyword arguments for m9dicts.convert_to, will be converted to
         the above ac_\* options respectively as needed.
     """
-    ordered = options.get("ordered", ac_ordered)
-    to_namedtuple = options.get("to_namedtuple", ac_namedtuple)
-    _ntpl_cls_key = options.get("_ntpl_cls_key", ac_ntpl_cls_key)
+    opts = dict(ordered=options.get("ordered", ac_ordered),
+                to_namedtuple=options.get("to_namedtuple", ac_namedtuple),
+                _ntpl_cls_key=options.get("_ntpl_cls_key", ac_ntpl_cls_key))
 
-    return m9dicts.convert_to(obj, ordered=ordered,
-                              to_namedtuple=to_namedtuple,
-                              _ntpl_cls_key=_ntpl_cls_key)
+    return m9dicts.convert_to(obj, **opts)
 
 # vim:sw=4:ts=4:et:

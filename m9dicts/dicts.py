@@ -69,8 +69,11 @@ class UpdateWithReplaceDict(dict):
                 for key in other.keys():
                     self._update(other, key)
             else:
-                for key, val in other:  # TypeError, etc. may be raised.
-                    self._update(other, key, val)
+                try:
+                    for key, val in other:
+                        self._update(other, key, val)
+                except (ValueError, TypeError) as exc:
+                    raise type(exc)(str(exc) + " other=%r" % other)
 
         for key in another.keys():
             self._update(another, key)

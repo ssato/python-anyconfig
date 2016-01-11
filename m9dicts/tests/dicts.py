@@ -38,6 +38,17 @@ class Test_10_UpdateWithReplaceDict(unittest.TestCase):
     def test_14_update_with_kv_tuples(self):
         self.check_updated(list(self.up0.items()))
 
+    def test_16_update_with_invalid(self):
+        md0 = self.cls(self.od0)
+        self.assertTrue(isinstance(md0, self.cls))
+        try:
+            raised = False
+            md0.update(1)
+        except (ValueError, TypeError):
+            raised = True
+
+        self.assertTrue(raised)
+
     def test_20_update_with_a_odict_and_kwargs(self):
         other = self.up0.copy()
         another = TT.OrderedDict((("b", other["b"]), ))

@@ -219,9 +219,7 @@ def convert_to(obj, ordered=False, to_namedtuple=False,
     :param to_namedtuple:
         Convert `obj` to namedtuple object of which definition is created on
         the fly if True instead of dict.
-    :param _ntpl_cls_key:
-        Special keyword to embedded the class name of namedtuple object to
-        create.  See the comments in :func:`make` also.
+    :param _ntpl_cls_key: see :func:`_make_from_namedtuple`
 
     :return: A dict or namedtuple object if to_namedtuple is True
     """

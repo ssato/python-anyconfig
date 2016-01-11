@@ -30,7 +30,7 @@ PATH_SEPS = ('/', '.')
 _JSNP_GET_ARRAY_IDX_REG = re.compile(r"(?:0|[1-9][0-9]*)")
 _JSNP_SET_ARRAY_IDX = re.compile(r"(?:0|[1-9][0-9]*|-)")
 
-NAMEDTUPLE_CLS_KEY = "_namedtuple_cls_"
+NAMEDTUPLE_CLS_KEY = "namedtuple_cls__"
 
 
 def _jsnp_unescape(jsn_s):

@@ -17,4 +17,11 @@ MS_DICTS = "merge_dicts"
 MS_DICTS_AND_LISTS = "merge_dicts_and_lists"
 MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 
+# .. note::
+#    Special keyword to embedded the class name of namedtuple object to the
+#    m9dict object created. It's a hack and not elegant but I don't think there
+#    are another ways to make # same namedtuple object from the m9dict object
+#    created from it.
+NTPL_CLS_KEY = "namedtuple_cls__"
+
 # vim:sw=4:ts=4:et:

@@ -3,7 +3,8 @@
    :synopsis: dict-like objects support recursive merge operations
 """
 from .globals import (
-    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES
+    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
+    NTPL_CLS_KEY
 )  # flake8: noqa
 from .dicts import (
     UpdateWithReplaceDict, UpdateWoReplaceDict, UpdateWithMergeDict,

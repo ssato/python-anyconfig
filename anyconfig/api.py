@@ -36,6 +36,7 @@ from anyconfig.globals import LOGGER
 import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
+import anyconfig.mdicts
 import anyconfig.parser
 import anyconfig.template
 import anyconfig.utils
@@ -43,7 +44,7 @@ import anyconfig.utils
 # Import some global constants will be re-exported:
 from anyconfig.mdicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    get, set_, to_container, convert_to  # flake8: noqa
+    get, set_, to_container  # flake8: noqa
 )
 from anyconfig.schema import validate, gen_schema
 from anyconfig.utils import is_path
@@ -84,7 +85,7 @@ def _maybe_validated(cnf, schema, format_checker=None, **options):
 
     if valid:
         if options.get("ac_namedtuple", False):
-            return convert_to(cnf, to_namedtuple=True)
+            return anyconfig.mdicts.convert_to(cnf, ac_namedtuple=True)
         else:
             return cnf
 
@@ -364,20 +365,18 @@ def dump(data, path_or_stream, ac_parser=None, **options):
     """
     Save `data` as `path_or_stream`.
 
-    :param data: Config data object to dump
+    :param data: Config data object (dict[-like] or namedtuple) to dump
     :param path_or_stream: Output file path or file / file-like object
     :param ac_parser: Forced parser type or parser object
-    :param options: Keyword options such ash:
-
-        - ac_namedtuple: Convert result to nested namedtuple object if True
-        - other backend specific optional arguments, e.g. {"indent": 2} for
-          JSON loader/dumper backend
+    :param options:
+        Backend specific optional arguments, e.g. {"indent": 2} for JSON
+        loader/dumper backend
     """
     dumper = _find_dumper(path_or_stream, ac_parser)
     LOGGER.info("Dumping: %s",
                 anyconfig.utils.get_path_from_stream(path_or_stream))
-    if options.get("ac_namedtuple", False):
-        data = to_container(data, **options)
+    if anyconfig.mdicts.is_namedtuple(data):
+        data = to_container(data, **options)  # namedtuple -> dict-like
     dumper.dump(data, path_or_stream, **options)
 
 
@@ -391,7 +390,7 @@ def dumps(data, ac_parser=None, **options):
 
     :return: Backend-specific string representation for the given data
     """
-    if options.get("ac_namedtuple", False):
+    if anyconfig.mdicts.is_namedtuple(data):
         data = to_container(data, **options)
     return _find_dumper(None, ac_parser).dumps(data, **options)
 

@@ -147,6 +147,20 @@ class UpdateWithMergeDict(UpdateWithReplaceDict):
     merge_lists = False
     keep = False
 
+    def _merge_list(self, key, lst):
+        """
+        :param key: self[key] will be updated
+        :param lst: Other list to merge
+        """
+        self[key] += [x for x in lst if x not in self[key]]
+
+    def _merge_other(self, key, val):
+        """
+        :param key: self[key] will be updated
+        :param val: Other val to merge (update/replace)
+        """
+        self[key] = val  # Just overwrite it by default implementation.
+
     def _update(self, other, key, *args):
         """
         :param other: a dict[-like] object or a list of (key, value) tuples
@@ -159,9 +173,9 @@ class UpdateWithMergeDict(UpdateWithReplaceDict):
             if m9dicts.utils.is_dict_like(val0):  # It needs recursive updates.
                 self[key].update(val)
             elif self.merge_lists and _are_list_like(val, val0):
-                self[key] += [x for x in val if x not in val0]
+                self._merge_list(key, val)
             elif not self.keep:
-                self[key] = val  # Overwrite it.
+                self._merge_other(key, val)
         else:
             self[key] = val
 

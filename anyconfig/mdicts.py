@@ -20,7 +20,7 @@ NTPL_CLS_KEY = "ntpl_cls_key__"
 
 
 def to_container(obj=None, ac_ordered=False, ac_merge=m9dicts.MS_DICTS,
-                 ac_ntpl_cls_key=NTPL_CLS_KEY, **options):
+                 ac_namedtuple=False, ac_ntpl_cls_key=NTPL_CLS_KEY, **options):
     """
     Factory function to create a dict-like object[s] supports merge operation
     from a dict or any other objects.
@@ -38,16 +38,15 @@ def to_container(obj=None, ac_ordered=False, ac_merge=m9dicts.MS_DICTS,
         from multiple configuration files.
     :param _ntpl_cls_key:
         Special keyword to embedded the class name of namedtuple object to the
-        MergeableDict object created. It's a hack and not elegant but I don't
-        think there are another ways to make same namedtuple object from the
-        MergeableDict object created from it.
+        dict-like object created. It's a hack and not elegant but I don't think
+        there are another ways to make same namedtuple object from objects
+        created from it.
     :param options:
         Optional keyword arguments for m9dicts.convert_to, will be converted to
         the above ac_\* options respectively as needed.
     """
-    opts = dict(ordered=options.get("ordered", ac_ordered),
-                merge=options.get("merge", ac_merge),
-                _ntpl_cls_key=options.get("_ntpl_cls_key", ac_ntpl_cls_key))
+    opts = dict(ordered=ac_ordered, merge=ac_merge,
+                _ntpl_cls_key=ac_ntpl_cls_key)
 
     return m9dicts.make(obj, **opts)
 
@@ -68,9 +67,8 @@ def convert_to(obj, ac_ordered=True, ac_namedtuple=False,
         Optional keyword arguments for m9dicts.convert_to, will be converted to
         the above ac_\* options respectively as needed.
     """
-    opts = dict(ordered=options.get("ordered", ac_ordered),
-                to_namedtuple=options.get("to_namedtuple", ac_namedtuple),
-                _ntpl_cls_key=options.get("_ntpl_cls_key", ac_ntpl_cls_key))
+    opts = dict(ordered=ac_ordered, to_namedtuple=ac_namedtuple,
+                _ntpl_cls_key=ac_ntpl_cls_key)
 
     return m9dicts.convert_to(obj, **opts)
 

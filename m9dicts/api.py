@@ -174,10 +174,7 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
 
     :param obj: A dict or other object[s] or None
     :param ordered:
-        Create an instance of OrderedMergeableDict instead of MergeableDict If
-        it's True. Please note that OrderedMergeableDict class will be chosen
-        for namedtuple objects regardless of this argument always to keep keys
-        (fields) order.
+        Choose the class keeps key order if True or `obj` is a namedtuple.
     :param merge: see :func:`_make_from_namedtuple` (above).
     :param _ntpl_cls_key: see :func:`_make_from_namedtuple` (above).
     """
@@ -188,16 +185,14 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
     if obj is None:
         return cls()
 
-    opts = dict(ordered=ordered, merge=merge, _ntpl_cls_key=_ntpl_cls_key)
-    opts.update(options)
-
+    options.update(ordered=ordered, merge=merge, _ntpl_cls_key=_ntpl_cls_key)
     if m9dicts.utils.is_dict_like(obj):
-        return cls((k, None if v is None else make(v, **opts)) for k, v
+        return cls((k, None if v is None else make(v, **options)) for k, v
                    in obj.items())
     elif m9dicts.utils.is_namedtuple(obj):
-        return _make_from_namedtuple(obj, **opts)
+        return _make_from_namedtuple(obj, **options)
     elif m9dicts.utils.is_list_like(obj):
-        return type(obj)(make(v, **opts) for v in obj)
+        return type(obj)(make(v, **options) for v in obj)
     else:
         return obj
 

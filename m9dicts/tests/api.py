@@ -171,17 +171,4 @@ class Test_30_convert_to(unittest.TestCase):
         otpl = TT.convert_to(md0, to_namedtuple=True)
         self.assertEqual(otpl, itpl)
 
-    def test_32_namedtuple(self):
-        _point = collections.namedtuple("Point", "x y")
-        _triangle = collections.namedtuple("Triangle", "p0 p1 p2")
-        itpl = _triangle(_point(0, 0), _point(1, 0), _point(0, 1))
-        res = TT.convert_to(itpl)
-        ref = OrderedDict((("p0", OrderedDict((("x", 0), ("y", 0)))),
-                           ("p1", OrderedDict((("x", 1), ("y", 0)))),
-                           ("p2", OrderedDict((("x", 0), ("y", 1))))))
-        self.assertNotEqual(res, itpl)
-        self.assertEqual(list(res.keys()), list(ref.keys()))
-        for key in "p0 p1 p2".split():
-            self.assertEqual(list(res[key].items()), list(ref[key].items()))
-
 # vim:sw=4:ts=4:et:

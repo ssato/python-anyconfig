@@ -42,24 +42,49 @@ strategy, and some related utility functions (APIs).
 - RPMs: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
 Usage
--------
+=======
 
 APIs
-^^^^^^
+------
 
-m9dicts.make is a factory function to make m9dicts supports recursive merge operation.
+.. csv-table::
+   :header: API, Description
+   :widths: 15, 20
 
-Here are some examples of m9dicts.make usages:
+   m9dicts.make, factory function to make dict-like object supports recursive merge operation
+   m9dicts.convert_to, utility function to convert dict-like object made by m9dicts.make to other type objects
+   m9dicts.get, utility function to get item
+   m9dicts.set\_, utility function to set item
+
+m9dicts.make is a factory function to make m9dict, dict-like object supports
+recursive merge operation.
+
+Here are some examples of its usages:
+
+- Make a m9dict object:
 
 ::
 
     >>> import m9dicts
-    >>> mzero = m9dicts.make()  # It just makes an empty m9dict object.
-    >>> m9d0 = m9dicts.make(dict(a=1, b=2, c=3))   # Make from a dict.
-    >>> m9d1 = m9dicts.make(OrderedDict((("a", 1), ("b", 2)))   # Make from an OrderedDict.
+    >>> md0 = m9dicts.make()  # It just makes an empty m9dict object.
+    >>> md1 = m9dicts.make(dict(a=1, b=2, c=3))   # Make from a dict.
+    >>> md2 = m9dicts.make(OrderedDict((("x", 1), ("y", 2))),
+    ...                    ordered=True)   # Make from an OrderedDict and keep key order.
+    >>> md3 = m9dicts.make(dict(a=1), merge=m9dicts.MS_NO_REPLACE)
+
+- Merge objects:
+
+::
+
+    >>> md1.update(dict(b=0))  # md1["b"]: 2 -> 0
+    >>> md1.update(dict(c=dict(d=dict(e=[1, 2]))))  # md1["c"]: 3 -> {'d': {'e': [1, 2]}}}
+    >>> md2.update(z=3)  # md2["z"]: -> 3
+    >>> md2.keys()
+    ['x', 'y', 'z']
+    >>> md3.update(a=[1, 2])  # md4["a"]: 1 -> 1 (never updated/replaced)
 
 Default m9dict class is m9dicts.UpdateWithMergeDict and it's selectable by the
-keyword arguments 'ordered' and 'merge': 
+keyword arguments 'ordered' and 'merge':
 
 - ordered: Set True if you want to keep the order of keys of made m9dict object
 - merge: Pass one of:
@@ -69,7 +94,18 @@ keyword arguments 'ordered' and 'merge':
   - m9dicts.MS_NO_REPLACE: m9dicts.UpdateWoReplaceDict or m9dicts.UpdateWoReplaceOrderedDict will be chosen.
   - m9dicts.MS_REPLACE: m9dicts.UpdateWithReplaceDict or m9dicts.UpdateWithReplaceOrderedDict will be chosen.
 
-Please take a look at the next section for more details of each m9dict classes.
+Please take a look at the next section for more details of each classes.
+
+m9dicts.convert_to is an utility function to convert m9dict object to a dict or
+namedtuple object recursively.
+
+::
+
+    >>> md4 = m9dicts.make(OrderedDict(((m9dicts.NTPL_CLS_KEY, "Point"),
+    ...                                 ("x", 1), ("y", 2))),
+    ...                    ordered=True)
+    >>> m9dicts.convert_to(md4, to_namedtuple=True)
+    Point(x=1, y=2)
 
 m9dicts.get is to get value from nested dicts of which key is given by some
 path expressions. For example,
@@ -104,12 +140,10 @@ path expressions like followings.
 - Javascript object notation like (join keys with '.')
 - File path like (join keys with '/')
 
-m9dicts.convert_to is an utility function to convert m9dicts to a dict or namedtuple object recursively.
-
 .. [#] http://tools.ietf.org/html/rfc6901
 
 Dict types
-^^^^^^^^^^^^
+-------------
 
 m9dicts provides some m9dict (merge-able dict) classes merging (maybe nested)
 dicts recursively according to different merge strategy.
@@ -127,7 +161,12 @@ dicts recursively according to different merge strategy.
    UpdateWithMergeListsDict, No, Merge recursively like UpdateWithMergeDict but lists will be concatenated.
    UpdateWithMergeListsOrderedDict, Yes, Likewise but the order of keys are kept.
 
-See also each m9dict class in m9dicts.dicts.
+See also each m9dict class definition and doctest cases in m9dicts.dicts for
+more details.
+
+Also, it's not too difficult to make original dict-like class inherited from
+m9dict classes such as m9dicts.UpdateWithReplaceDict,
+m9dicts.UpdateWithMergeDict.
 
 Installation
 ==============
@@ -147,7 +186,13 @@ is required for python 2.6 envrionment.
 How to Install
 ----------------
 
-- pip:
+- pip from PyPI:
+
+  .. code-block:: console
+
+     $ pip install m9dicts
+
+- pip from git repo:
 
   .. code-block:: console
      
@@ -191,9 +236,5 @@ For example,
    $ WITH_COVERAGE=1 ./pkg/runtest.sh 2>&1 | tee /tmp/t.log
 
 About test-time requirements, please take a look at pkg/test_requirements.txt.
-
-.. Customization
-.. ---------------
-
 
 .. vim:sw=4:ts=4:et:

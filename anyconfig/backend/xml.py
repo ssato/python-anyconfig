@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2016 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:

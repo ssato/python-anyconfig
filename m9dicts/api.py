@@ -174,8 +174,7 @@ def _make_from_namedtuple(obj, merge=m9dicts.globals.MS_DICTS,
     return mdict
 
 
-def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
-         to_namedtuple=False, _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
+def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS, **options):
     """Factory function to create a dict-like object[s] supports merge
     operation from a dict or any other objects.
 
@@ -183,22 +182,19 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
     :param ordered:
         Choose the class keeps key order if True or `obj` is a namedtuple.
     :param merge: see :func:`_make_from_namedtuple` (above).
-    :param to_namedtuple: Convert `obj` to namedtuple instead of a dict
-    :param _ntpl_cls_key: see :func:`_make_from_namedtuple` (above).
+    :return: A dict-like object[s] supports merge operation or `obj` itself
     """
     check_merge(merge)
     cls = m9dicts.dicts.get_mdict_class(merge=merge, ordered=ordered)
     if obj is None:
         return cls()
 
-    options.update(ordered=ordered, merge=merge, _ntpl_cls_key=_ntpl_cls_key)
+    options.update(ordered=ordered, merge=merge)
     if m9dicts.utils.is_dict_like(obj):
-        if to_namedtuple:
-            return convert_to(obj, to_namedtuple=True, **options)
         return cls((k, None if v is None else make(v, **options)) for k, v
                    in obj.items())
     elif m9dicts.utils.is_namedtuple(obj):
-        return obj if to_namedtuple else _make_from_namedtuple(obj, **options)
+        return _make_from_namedtuple(obj, **options)
     elif m9dicts.utils.is_list_like(obj):
         return type(obj)(make(v, **options) for v in obj)
     else:
@@ -219,7 +215,7 @@ def convert_to(obj, ordered=False, to_namedtuple=False,
 
     :param obj: A m9dicts objects or other primitive object
     :param ordered: Create an OrderedDict instead of dict to keep the key order
-    :param to_namedtuple: see :func:`make`
+    :param to_namedtuple: Convert `obj` to namedtuple instead of a dict
     :param _ntpl_cls_key: see :func:`_make_from_namedtuple`
 
     :return: A dict or namedtuple object if to_namedtuple is True

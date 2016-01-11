@@ -147,6 +147,26 @@ def set_(dic, path, val, seps=PATH_SEPS):
     dic.update(mk_nested_dic(path, val, seps))
 
 
+def _make_from_namedtuple(obj, merge=m9dicts.globals.MS_DICTS,
+                          _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **opts):
+    """
+    :param obj: A namedtuple object
+    :param merge:
+        Specify strategy from MERGE_STRATEGIES of how to merge results loaded
+        from multiple configuration files.
+    :param _ntpl_cls_key:
+        Special keyword to embedded the class name of namedtuple object to the
+        MergeableDict object created. It's a hack and not elegant but I don't
+        think there are another ways to make same namedtuple object from the
+        MergeableDict object created from it.
+    """
+    ocls = m9dicts.dicts.get_mdict_class(merge=merge, ordered=True)
+    mdict = ocls((k, make(getattr(obj, k), **opts)) for k in obj._fields)
+    mdict[_ntpl_cls_key] = obj.__class__.__name__
+
+    return mdict
+
+
 def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
          _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **options):
     """Factory function to create a dict-like object[s] supports merge
@@ -158,14 +178,8 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
         it's True. Please note that OrderedMergeableDict class will be chosen
         for namedtuple objects regardless of this argument always to keep keys
         (fields) order.
-    :param merge:
-        Specify strategy from MERGE_STRATEGIES of how to merge results loaded
-        from multiple configuration files.
-    :param _ntpl_cls_key:
-        Special keyword to embedded the class name of namedtuple object to the
-        MergeableDict object created. It's a hack and not elegant but I don't
-        think there are another ways to make same namedtuple object from the
-        MergeableDict object created from it.
+    :param merge: see :func:`_make_from_namedtuple` (above).
+    :param _ntpl_cls_key: see :func:`_make_from_namedtuple` (above).
     """
     if merge not in m9dicts.globals.MERGE_STRATEGIES:
         raise ValueError("Wrong merge strategy: %r" % merge)
@@ -181,10 +195,7 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS,
         return cls((k, None if v is None else make(v, **opts)) for k, v
                    in obj.items())
     elif m9dicts.utils.is_namedtuple(obj):
-        ocls = m9dicts.dicts.get_mdict_class(merge=merge, ordered=True)
-        mdict = ocls((k, make(getattr(obj, k), **opts)) for k in obj._fields)
-        mdict[_ntpl_cls_key] = obj.__class__.__name__
-        return mdict
+        return _make_from_namedtuple(obj, **opts)
     elif m9dicts.utils.is_list_like(obj):
         return type(obj)(make(v, **opts) for v in obj)
     else:

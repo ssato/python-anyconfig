@@ -12,7 +12,7 @@ from .dicts import (
     UpdateWithMergeListsOrderedDict
 )  # flake8: noqa
 from .api import get, set_, make, convert_to  # flake8: noqa
-from .utils import is_dict_like
+from .utils import is_dict_like, is_namedtuple, is_list_like
 
 __author__ = "Satoru SATOH <ssato@redhat.com>"
 __version__ = "0.1.0"

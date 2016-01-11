@@ -136,9 +136,9 @@ class Test_20_make(unittest.TestCase):
         self.assertTrue(isinstance(md0["p0"], MD.UpdateWithMergeOrderedDict))
 
         for k in "p0 p1 p2".split():
-            self.assertEqual(md0[TT.NAMEDTUPLE_CLS_KEY], "Triangle")
+            self.assertEqual(md0[MG.NTPL_CLS_KEY], "Triangle")
             for k2 in "x y".split():
-                self.assertEqual(md0[k][TT.NAMEDTUPLE_CLS_KEY], "Point")
+                self.assertEqual(md0[k][MG.NTPL_CLS_KEY], "Point")
                 ref = getattr(getattr(obj, k), k2)
                 self.assertTrue(md0[k][k2] == ref,
                                 "%r vs. %r" % (md0[k][k2], ref))

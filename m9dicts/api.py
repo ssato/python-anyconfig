@@ -30,8 +30,6 @@ PATH_SEPS = ('/', '.')
 _JSNP_GET_ARRAY_IDX_REG = re.compile(r"(?:0|[1-9][0-9]*)")
 _JSNP_SET_ARRAY_IDX = re.compile(r"(?:0|[1-9][0-9]*|-)")
 
-NAMEDTUPLE_CLS_KEY = "namedtuple_cls__"
-
 
 def _jsnp_unescape(jsn_s):
     """
@@ -155,7 +153,7 @@ def check_merge(merge):
 
 
 def _make_from_namedtuple(obj, merge=m9dicts.globals.MS_DICTS,
-                          _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **opts):
+                          _ntpl_cls_key=m9dicts.globals.NTPL_CLS_KEY, **opts):
     """
     :param obj: A namedtuple object
     :param merge:
@@ -202,7 +200,7 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS, **options):
 
 
 def convert_to(obj, ordered=False, to_namedtuple=False,
-               _ntpl_cls_key=NAMEDTUPLE_CLS_KEY, **opts):
+               _ntpl_cls_key=m9dicts.globals.NTPL_CLS_KEY, **opts):
     """Convert a dict-like object[s] support merge operation to a dict or
     namedtuple object recursively. Borrowed basic idea and implementation from
     bunch.unbunchify. (bunch is distributed under MIT license same as this.)

@@ -226,18 +226,18 @@ def convert_to(obj, ordered=False, to_namedtuple=False,
     :return: A dict or namedtuple object if to_namedtuple is True
     """
     cls = m9dicts.compat.OrderedDict if ordered else dict
+    opts.update(ordered=ordered, to_namedtuple=to_namedtuple,
+                _ntpl_cls_key=_ntpl_cls_key)
     if m9dicts.utils.is_dict_like(obj):
         if not to_namedtuple:
             return cls((k, convert_to(v, **opts)) for k, v in obj.items())
 
         _name = obj.get(_ntpl_cls_key, "NamedTuple")
         _keys = [k for k in obj.keys() if k != _ntpl_cls_key]
-        _vals = [convert_to(obj[k], to_namedtuple, _ntpl_cls_key, **opts)
-                 for k in _keys]
+        _vals = [convert_to(obj[k], **opts) for k in _keys]
         return collections.namedtuple(_name, _keys)(*_vals)
     elif m9dicts.utils.is_list_like(obj):
-        return type(obj)(convert_to(v, to_namedtuple, _ntpl_cls_key, **opts)
-                         for v in obj)
+        return type(obj)(convert_to(v, **opts) for v in obj)
     else:
         return obj
 

@@ -162,11 +162,12 @@ dicts recursively according to different merge strategy.
    UpdateWithMergeListsOrderedDict, Yes, Likewise but the order of keys are kept.
 
 See also each m9dict class definition and doctest cases in m9dicts.dicts for
-more details.
+more details of each merge behavior.
 
 Also, it's not too difficult to make original dict-like class inherited from
 m9dict classes such as m9dicts.UpdateWithReplaceDict,
-m9dicts.UpdateWithMergeDict.
+m9dicts.UpdateWithMergeDict, provides base merge implementation of list and
+other primitives (the method _merge_list and _merge_other) and easy to extend.
 
 Installation
 ==============

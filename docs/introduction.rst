@@ -230,6 +230,12 @@ There is a couple of ways to install python-anyconfig:
 
     $ pip install anyconfig
 
+- pip from git repo:
+
+  .. code-block:: console
+
+     $ pip install git+https://github.com/ssato/python-anyconfig/
+
 - Build RPMs from source: It's easy to build python-anyconfig with using rpm-build and mock:
 
   .. code-block:: console

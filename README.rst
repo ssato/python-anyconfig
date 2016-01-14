@@ -52,8 +52,8 @@ APIs
 
    m9dicts.make, factory function to make dict-like object supports recursive merge operation
    m9dicts.convert_to, utility function to convert dict-like object made by m9dicts.make to other type objects
-   m9dicts.get, utility function to get item
-   m9dicts.set\_, utility function to set item
+   m9dicts.get, utility function to get item of nested dicts
+   m9dicts.set\_, utility function to set item of nested dicts
 
 m9dicts.make is a factory function to make m9dict, dict-like object supports
 recursive merge operation.
@@ -62,7 +62,7 @@ Here are some examples of its usages:
 
 - Make a m9dict object:
 
-::
+.. code-block:: console
 
     >>> import m9dicts
     >>> md0 = m9dicts.make()  # It just makes an empty m9dict object.
@@ -73,7 +73,7 @@ Here are some examples of its usages:
 
 - Merge objects:
 
-::
+.. code-block:: console
 
     >>> md1.update(dict(b=0))  # md1["b"]: 2 -> 0
     >>> md1.update(dict(c=dict(d=dict(e=[1, 2]))))  # md1["c"]: 3 -> {'d': {'e': [1, 2]}}}
@@ -98,7 +98,7 @@ Please take a look at the next section for more details of each classes.
 m9dicts.convert_to is an utility function to convert m9dict object to a dict or
 namedtuple object recursively.
 
-::
+.. code-block:: console
 
     >>> md4 = m9dicts.make(OrderedDict(((m9dicts.NTPL_CLS_KEY, "Point"),
     ...                                 ("x", 1), ("y", 2))),
@@ -109,7 +109,7 @@ namedtuple object recursively.
 m9dicts.get is to get value from nested dicts of which key is given by some
 path expressions. For example,
 
-::
+.. code-block:: console
 
     >>> d = {'a': {'b': {'c': 0, 'd': [1, 2]}}, '': 3}
     >>> get(d, '/')  # key becomes '' (empty string).
@@ -139,6 +139,13 @@ path expressions like followings.
 - Javascript object notation like (join keys with '.')
 - File path like (join keys with '/')
 
+.. code-block:: console
+
+    >>> d = dict(a=1, b=dict(c=2, ))
+    >>> m9dicts.set_(d, 'a.b.d', 3)
+    >>> d['a']['b']['d']
+    3
+
 .. [#] http://tools.ietf.org/html/rfc6901
 
 Dict types
@@ -167,6 +174,24 @@ Also, it's not too difficult to make original dict-like class inherited from
 m9dict classes such as m9dicts.UpdateWithReplaceDict,
 m9dicts.UpdateWithMergeDict, provides base merge implementation of list and
 other primitives (the method _merge_list and _merge_other) and easy to extend.
+
+.. code-block:: console
+
+    # Example to extend m9dicts.UpdateWithMergeDict.
+    >>> d0 = m9dicts.UpdateWithMergeListsDict(a=[1, 2])
+    >>> d0.update(dict(a=[1, 2, 3, 4]))
+    >>> d0
+    {'a': [1, 2, 3, 4]}
+
+    >>> class UpdateWithAppendListsDict(m9dicts.UpdateWithMergeDict):
+    ...     merge_lists = True
+    ...     def _merge_list(self, key, lst):
+    ...         self[key] += lst
+    ...
+    >>> d1 = UpdateWithAppendListsDict(a=[1, 2])
+    >>> d1.update(dict(a=[1, 2, 3, 4]))
+    >>> d1
+    {'a': [1, 2, 1, 2, 3, 4]}
 
 Installation
 ==============

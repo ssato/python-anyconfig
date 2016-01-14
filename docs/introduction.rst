@@ -50,7 +50,7 @@ configuration file[s] like the followings:
 
   # Or you can specify the format (config type) explicitly if automatic
   # detection may not work.
-  conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", "yaml")
+  conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", ac_parser="yaml")
 
   # Specify multiple config files by the list of paths. Configurations of each
   # files are merged.

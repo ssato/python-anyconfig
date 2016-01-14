@@ -199,9 +199,22 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS, **options):
         return obj
 
 
-def convert_to(obj, ordered=False, to_namedtuple=False,
-               _ntpl_cls_key=m9dicts.globals.NTPL_CLS_KEY, **opts):
-    """Convert a dict-like object[s] support merge operation to a dict or
+def _convert_to_namedtuple(obj, _ntpl_cls_key=m9dicts.globals.NTPL_CLS_KEY,
+                           **opts):
+    """Convert a dict-like object to a namedtuple.
+
+    :param obj: A m9dicts objects or other primitive object
+    :param _ntpl_cls_key: see :func:`_make_from_namedtuple`
+    """
+    _name = obj.get(_ntpl_cls_key, "NamedTuple")
+    _keys = [k for k in obj.keys() if k != _ntpl_cls_key]
+    _vals = [convert_to(obj[k], **opts) for k in _keys]
+    return collections.namedtuple(_name, _keys)(*_vals)
+
+
+def convert_to(obj, ordered=False, to_namedtuple=False, **opts):
+    """
+    Convert a dict-like object[s] support merge operation to a dict or
     namedtuple object recursively. Borrowed basic idea and implementation from
     bunch.unbunchify. (bunch is distributed under MIT license same as this.)
 
@@ -214,21 +227,20 @@ def convert_to(obj, ordered=False, to_namedtuple=False,
     :param obj: A m9dicts objects or other primitive object
     :param ordered: Create an OrderedDict instead of dict to keep the key order
     :param to_namedtuple: Convert `obj` to namedtuple instead of a dict
-    :param _ntpl_cls_key: see :func:`_make_from_namedtuple`
+    :param opts:
+        Optional keyword arguments such as _ntpl_cls_key. see
+        :func:`_make_from_namedtuple` for more its details.
 
     :return: A dict or namedtuple object if to_namedtuple is True
     """
     cls = m9dicts.compat.OrderedDict if ordered else dict
-    opts.update(ordered=ordered, to_namedtuple=to_namedtuple,
-                _ntpl_cls_key=_ntpl_cls_key)
+    opts.update(ordered=ordered, to_namedtuple=to_namedtuple)
     if m9dicts.utils.is_dict_like(obj):
-        if not to_namedtuple:
-            return cls((k, convert_to(v, **opts)) for k, v in obj.items())
-
-        _name = obj.get(_ntpl_cls_key, "NamedTuple")
-        _keys = [k for k in obj.keys() if k != _ntpl_cls_key]
-        _vals = [convert_to(obj[k], **opts) for k in _keys]
-        return collections.namedtuple(_name, _keys)(*_vals)
+        if to_namedtuple:
+            return _convert_to_namedtuple(obj, **opts)
+        else:
+            return cls((k, None if v is None else convert_to(v, **options))
+                       for k, v in obj.items())
     elif m9dicts.utils.is_list_like(obj):
         return type(obj)(convert_to(v, **opts) for v in obj)
     else:

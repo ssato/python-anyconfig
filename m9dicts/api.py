@@ -153,7 +153,8 @@ def check_merge(merge):
 
 
 def _make_from_namedtuple(obj, merge=m9dicts.globals.MS_DICTS,
-                          _ntpl_cls_key=m9dicts.globals.NTPL_CLS_KEY, **opts):
+                          _ntpl_cls_key=m9dicts.globals.NTPL_CLS_KEY,
+                          **options):
     """
     :param obj: A namedtuple object
     :param merge:
@@ -166,15 +167,35 @@ def _make_from_namedtuple(obj, merge=m9dicts.globals.MS_DICTS,
         MergeableDict object created from it.
     """
     ocls = m9dicts.dicts.get_mdict_class(merge=merge, ordered=True)
-    mdict = ocls((k, make(getattr(obj, k), **opts)) for k in obj._fields)
+    mdict = ocls((k, make(getattr(obj, k), **options)) for k in obj._fields)
     mdict[_ntpl_cls_key] = obj.__class__.__name__
 
     return mdict
 
 
+def _make_recur(obj, cls, make_fn, **options):
+    """
+    :param obj: An original mapping object
+    :param cls: Another mapping class to make/convert to
+    :param make_fn: Function to make/convert to
+    """
+    return cls((k, None if v is None else make_fn(v, **options))
+               for k, v in obj.items())
+
+
+def _make_iter(obj, make_fn, **options):
+    """
+    :param obj: An original mapping object
+    :param make_fn: Function to make/convert to
+    """
+    return type(obj)(make_fn(v, **options) for v in obj)
+
+
 def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS, **options):
-    """Factory function to create a dict-like object[s] supports merge
-    operation from a dict or any other objects.
+    """
+    Factory function to create a dict-like object[s] supports merge operation
+    from a mapping or a list of mapping objects such as dict, [dict],
+    namedtuple, [namedtuple].
 
     :param obj: A dict or other object[s] or None
     :param ordered:
@@ -189,19 +210,31 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS, **options):
 
     options.update(ordered=ordered, merge=merge)
     if m9dicts.utils.is_dict_like(obj):
-        return cls((k, None if v is None else make(v, **options)) for k, v
-                   in obj.items())
+        return _make_recur(obj, cls, make, **options)
     elif m9dicts.utils.is_namedtuple(obj):
         return _make_from_namedtuple(obj, **options)
     elif m9dicts.utils.is_list_like(obj):
-        return type(obj)(make(v, **options) for v in obj)
+        return _make_iter(obj, make, **options)
     else:
         return obj
 
 
-def convert_to(obj, ordered=False, to_namedtuple=False,
-               _ntpl_cls_key=m9dicts.globals.NTPL_CLS_KEY, **opts):
-    """Convert a dict-like object[s] support merge operation to a dict or
+def _convert_to_namedtuple(obj, _ntpl_cls_key=m9dicts.globals.NTPL_CLS_KEY,
+                           **options):
+    """Convert a dict-like object to a namedtuple.
+
+    :param obj: A m9dicts objects or other primitive object
+    :param _ntpl_cls_key: see :func:`_make_from_namedtuple`
+    """
+    _name = obj.get(_ntpl_cls_key, "NamedTuple")
+    _keys = [k for k in obj.keys() if k != _ntpl_cls_key]
+    _vals = [convert_to(obj[k], **options) for k in _keys]
+    return collections.namedtuple(_name, _keys)(*_vals)
+
+
+def convert_to(obj, ordered=False, to_namedtuple=False, **options):
+    """
+    Convert a dict-like object[s] support merge operation to a dict or
     namedtuple object recursively. Borrowed basic idea and implementation from
     bunch.unbunchify. (bunch is distributed under MIT license same as this.)
 
@@ -214,23 +247,21 @@ def convert_to(obj, ordered=False, to_namedtuple=False,
     :param obj: A m9dicts objects or other primitive object
     :param ordered: Create an OrderedDict instead of dict to keep the key order
     :param to_namedtuple: Convert `obj` to namedtuple instead of a dict
-    :param _ntpl_cls_key: see :func:`_make_from_namedtuple`
+    :param options:
+        Optional keyword arguments such as _ntpl_cls_key. see
+        :func:`_make_from_namedtuple` for more its details.
 
     :return: A dict or namedtuple object if to_namedtuple is True
     """
-    cls = m9dicts.compat.OrderedDict if ordered else dict
-    opts.update(ordered=ordered, to_namedtuple=to_namedtuple,
-                _ntpl_cls_key=_ntpl_cls_key)
+    options.update(ordered=ordered, to_namedtuple=to_namedtuple)
     if m9dicts.utils.is_dict_like(obj):
-        if not to_namedtuple:
-            return cls((k, convert_to(v, **opts)) for k, v in obj.items())
-
-        _name = obj.get(_ntpl_cls_key, "NamedTuple")
-        _keys = [k for k in obj.keys() if k != _ntpl_cls_key]
-        _vals = [convert_to(obj[k], **opts) for k in _keys]
-        return collections.namedtuple(_name, _keys)(*_vals)
+        if to_namedtuple:
+            return _convert_to_namedtuple(obj, **options)
+        else:
+            cls = m9dicts.compat.OrderedDict if ordered else dict
+            return _make_recur(obj, cls, convert_to, **options)
     elif m9dicts.utils.is_list_like(obj):
-        return type(obj)(convert_to(v, **opts) for v in obj)
+        return _make_iter(obj, convert_to, **options)
     else:
         return obj
 

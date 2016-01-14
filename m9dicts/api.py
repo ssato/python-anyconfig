@@ -173,9 +173,29 @@ def _make_from_namedtuple(obj, merge=m9dicts.globals.MS_DICTS,
     return mdict
 
 
+def _make_recur(obj, cls, make_fn, **options):
+    """
+    :param obj: An original mapping object
+    :param cls: Another mapping class to make/convert to
+    :param make_fn: Function to make/convert to
+    """
+    return cls((k, None if v is None else make_fn(v, **options))
+               for k, v in obj.items())
+
+
+def _make_iter(obj, make_fn, **options):
+    """
+    :param obj: An original mapping object
+    :param make_fn: Function to make/convert to
+    """
+    return type(obj)(make_fn(v, **options) for v in obj)
+
+
 def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS, **options):
-    """Factory function to create a dict-like object[s] supports merge
-    operation from a dict or any other objects.
+    """
+    Factory function to create a dict-like object[s] supports merge operation
+    from a mapping or a list of mapping objects such as dict, [dict],
+    namedtuple, [namedtuple].
 
     :param obj: A dict or other object[s] or None
     :param ordered:
@@ -190,12 +210,11 @@ def make(obj=None, ordered=False, merge=m9dicts.globals.MS_DICTS, **options):
 
     options.update(ordered=ordered, merge=merge)
     if m9dicts.utils.is_dict_like(obj):
-        return cls((k, None if v is None else make(v, **options)) for k, v
-                   in obj.items())
+        return _make_recur(obj, cls, make, **options)
     elif m9dicts.utils.is_namedtuple(obj):
         return _make_from_namedtuple(obj, **options)
     elif m9dicts.utils.is_list_like(obj):
-        return type(obj)(make(v, **options) for v in obj)
+        return _make_iter(obj, make, **options)
     else:
         return obj
 
@@ -234,16 +253,15 @@ def convert_to(obj, ordered=False, to_namedtuple=False, **options):
 
     :return: A dict or namedtuple object if to_namedtuple is True
     """
-    cls = m9dicts.compat.OrderedDict if ordered else dict
     options.update(ordered=ordered, to_namedtuple=to_namedtuple)
     if m9dicts.utils.is_dict_like(obj):
         if to_namedtuple:
             return _convert_to_namedtuple(obj, **options)
         else:
-            return cls((k, None if v is None else convert_to(v, **options))
-                       for k, v in obj.items())
+            cls = m9dicts.compat.OrderedDict if ordered else dict
+            return _make_recur(obj, cls, convert_to, **options)
     elif m9dicts.utils.is_list_like(obj):
-        return type(obj)(convert_to(v, **options) for v in obj)
+        return _make_iter(obj, convert_to, **options)
     else:
         return obj
 

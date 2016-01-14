@@ -177,14 +177,13 @@ other primitives (the method _merge_list and _merge_other) and easy to extend.
 
 .. code-block:: console
 
-    # Example to extend m9dicts.UpdateWithMergeDict.
+    # Example to extend m9dicts.UpdateWithMergeListsDict.
     >>> d0 = m9dicts.UpdateWithMergeListsDict(a=[1, 2])
     >>> d0.update(dict(a=[1, 2, 3, 4]))
     >>> d0
     {'a': [1, 2, 3, 4]}
 
-    >>> class UpdateWithAppendListsDict(m9dicts.UpdateWithMergeDict):
-    ...     merge_lists = True
+    >>> class UpdateWithAppendListsDict(m9dicts.UpdateWithMergeListsDict):
     ...     def _merge_list(self, key, lst):
     ...         self[key] += lst
     ...

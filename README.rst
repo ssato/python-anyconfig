@@ -160,7 +160,7 @@ dicts recursively according to different merge strategy.
 
    UpdateWithReplaceDict, No, Replace value of dict to update with other's if both have same keys on update.
    UpdateWithReplaceOrderedDict, Yes, Likewise but the order of keys are kept.
-   UpdateWoReplaceDict, No, "Never update (replace) the value of dict ot update with other's, that is, only the values it does not have the key will be added on update." 
+   UpdateWoReplaceDict, No, "Never update (replace) the value of dict ot update with other's, that is, only the values it does not have the key will be added on update."
    UpdateWoReplaceOrderedDict, Yes, Likewise but the order of keys are kept.
    UpdateWithMergeDict, No, Merge the value of dict to update with other's recursively. Behavior of merge will be vary depends on types of original and new values.
    UpdateWithMergeOrderedDict, Yes, Likewise but the order of keys are kept.
@@ -219,7 +219,7 @@ How to Install
 - pip from git repo:
 
   .. code-block:: console
-     
+
      $ pip install git+https://github.com/ssato/python-m9dicts/
 
 - make rpm and install it:

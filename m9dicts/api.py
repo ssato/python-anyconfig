@@ -239,7 +239,7 @@ def convert_to(obj, ordered=False, to_namedtuple=False, **opts):
         if to_namedtuple:
             return _convert_to_namedtuple(obj, **opts)
         else:
-            return cls((k, None if v is None else convert_to(v, **options))
+            return cls((k, None if v is None else convert_to(v, **opts))
                        for k, v in obj.items())
     elif m9dicts.utils.is_list_like(obj):
         return type(obj)(convert_to(v, **opts) for v in obj)

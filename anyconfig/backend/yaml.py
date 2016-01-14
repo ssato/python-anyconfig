@@ -10,7 +10,7 @@
 
 - Format to support: YAML, http://yaml.org
 - Requirements: PyYAML (yaml), http://pyyaml.org
-- Limitations: None obvious
+- Limitations: ac_ordered is not effective and just ignored.
 - Special options:
 
   - All keyword options of yaml.safe_load, yaml.load, yaml.safe_dump and

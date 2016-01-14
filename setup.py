@@ -7,7 +7,7 @@ import subprocess
 
 
 PACKAGE = "m9dicts"
-VERSION = "0.1.0"  # see m9dicts.__version__
+VERSION = "0.2.0"  # see m9dicts.__version__
 
 # For daily snapshot versioning mode:
 if os.environ.get("_SNAPSHOT_BUILD", None) is not None:

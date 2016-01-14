@@ -90,5 +90,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Jan 14 2016 Satoru SATOH <ssato@redhat.com> - 0.2.0-1
+- A lot of code cleanups, refactorings and fixes especially in APIs with
+  compatibility kept and changes are at the minimum
+- A lot of documentation enhancements, updates and fixes
+- A lot of test code additions and acomplish almost 100% test coverage
+- Remove python 3.2 from supported platform list
+
 * Sun Jan  3 2016 Satoru SATOH <ssato@redhat.com> - 0.1.0-1
 - Initial packaging since forked from python-anyconfig

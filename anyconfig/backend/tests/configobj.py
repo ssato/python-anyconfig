@@ -11,6 +11,8 @@ import anyconfig.backend.configobj as TT
 import anyconfig.backend.tests.ini
 import anyconfig.tests.common
 
+from anyconfig.compat import OrderedDict as ODict
+
 
 CNF_0_S = """\
 # This is the 'initial_comment'
@@ -46,15 +48,18 @@ _ML_0 = """A multiline value,
 that spans more than one line :-)
 The line breaks are included in the value."""
 
-CNF_0 = {'keyword 2': 'value 2',
-         'keyword1': 'value1',
-         'section 1': {'keyword 3': 'value 3',
-                       'keyword 4': ['value4', 'value 5', 'value 6'],
-                       'sub-section': {'keyword 5': 'value 7',
-                                       'keyword 6': _ML_0,
-                                       'sub-sub-section': {
-                                           'keyword 7': 'value 8'}}},
-         'section 2': {'keyword8': 'value 9', 'keyword9': 'value10'}}
+CNF_0 = ODict((('keyword1', 'value1'),
+               ('keyword 2', 'value 2'),
+               ('section 1',
+                ODict((('keyword 3', 'value 3'),
+                       ('keyword 4', ['value4', 'value 5', 'value 6']),
+                       ('sub-section',
+                        ODict((('keyword 5', 'value 7'),
+                               ('keyword 6', _ML_0),
+                               ('sub-sub-section',
+                                ODict((('keyword 7', 'value 8'), ))))))))),
+               ('section 2',
+                ODict((('keyword8', 'value 9'), ('keyword9', 'value10'))))))
 
 
 class Test10(anyconfig.backend.tests.ini.Test10):

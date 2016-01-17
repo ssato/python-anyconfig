@@ -12,21 +12,25 @@ import unittest
 import anyconfig.backend.ini as TT
 import anyconfig.tests.common
 
+from anyconfig.compat import OrderedDict as ODict
 from anyconfig.tests.common import dicts_equal
 
 
 CNF_0_S = """[DEFAULT]
 a: 0
 b: bbb
+c: 5
 
 [sect0]
-c: x,y,z
+d: x,y,z
 """
 
-CNF_0 = {'DEFAULT': {'a': '0', 'b': 'bbb'},
-         'sect0': {'a': '0', 'b': 'bbb', 'c': 'x,y,z'}}
-CNF_1 = {'DEFAULT': {'a': 0, 'b': 'bbb'},
-         'sect0': {'a': 0, 'b': 'bbb', 'c': ['x', 'y', 'z']}}
+CNF_0 = ODict((("DEFAULT", ODict((("a", "0"), ("b", "bbb"), ("c", "5")))),
+               ("sect0", ODict((("a", "0"), ("b", "bbb"), ("c", "5"),
+                                ("d", "x,y,z"))))))
+CNF_1 = ODict((("DEFAULT", ODict((("a", 0), ("b", "bbb"), ("c", 5)))),
+               ("sect0", ODict((("a", 0), ("b", "bbb"), ("c", 5),
+                                ("d", "x y z".split()))))))
 
 
 class Test10(unittest.TestCase):
@@ -35,6 +39,7 @@ class Test10(unittest.TestCase):
     cnf_s = CNF_0_S
     load_options = dict(allow_no_value=False, defaults=None)
     dump_options = dict()
+    is_order_kept = True
 
     def setUp(self):
         self.psr = TT.Parser()
@@ -60,6 +65,13 @@ class Test10(unittest.TestCase):
         cnf = self.psr.loads(self.psr.dumps(self.cnf, **self.dump_options))
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
         self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
+
+    def test_30_loads_with_order_kept(self):
+        cnf = self.psr.loads(self.cnf_s, ac_ordered=True)
+        if self.is_order_kept:
+            self.assertTrue(list(cnf.keys()), list(self.cnf.keys()))
+        else:
+            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 
 class Test11(Test10):
@@ -105,6 +117,7 @@ class Test20(unittest.TestCase):
     cnf = CNF_0
     cnf_s = CNF_0_S
     cnf_fn = "conf0.ini"
+    is_order_kept = True
 
     def setUp(self):
         self.psr = self.psr_cls()
@@ -141,5 +154,12 @@ class Test20(unittest.TestCase):
         cnf = self.psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
         self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
+
+    def test_50_load_with_order_kept(self):
+        cnf = self.psr.load(self.cpath, ac_ordered=True)
+        if self.is_order_kept:
+            self.assertTrue(list(cnf.keys()), list(self.cnf.keys()))
+        else:
+            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

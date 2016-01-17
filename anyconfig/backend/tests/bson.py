@@ -6,12 +6,13 @@
 import anyconfig.backend.bson as TT
 import anyconfig.backend.tests.ini
 
+from anyconfig.compat import OrderedDict as ODict
 from anyconfig.tests.common import to_bytes as _bytes
 
 
-CNF_0 = {"a": 0.1,
-         "b": _bytes("bbb"),
-         "sect0": {"c": [_bytes("x"), _bytes("y"), _bytes("z")]}}
+CNF_0 = ODict((("a", 0.1), ("b", _bytes("bbb")),
+               ("sect0",
+                ODict((("c", [_bytes("x"), _bytes("y"), _bytes("z")]), )))))
 
 
 class Test10(anyconfig.backend.tests.ini.Test10):

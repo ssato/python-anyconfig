@@ -10,13 +10,15 @@ import copy
 import anyconfig.backend.msgpack as TT
 import anyconfig.backend.tests.ini
 
+from anyconfig.compat import OrderedDict as ODict
 from anyconfig.tests.common import dicts_equal, to_bytes as _bytes
 
 
-CNF_0 = {_bytes("a"): 0.1,
-         _bytes("b"): _bytes("bbb"),
-         _bytes("sect0"): {_bytes("c"): [_bytes("x"), _bytes("y"),
-                                         _bytes("z")]}}
+CNF_0 = ODict(((_bytes("a"), 0.1),
+               (_bytes("b"), _bytes("bbb")),
+               (_bytes("sect0"),
+                ODict(((_bytes("c"),
+                        [_bytes("x"), _bytes("y"), _bytes("z")]), )))))
 
 
 class Test10(anyconfig.backend.tests.ini.Test10):

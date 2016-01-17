@@ -11,16 +11,23 @@ try:
 except ImportError:
     TT = None
 
+from anyconfig.compat import OrderedDict as ODict
+
 
 CNF_0_S = """
 a: 0
 b: bbb
+c:
+  - 1
+  - 2
+  - 3
 
 sect0:
-  c: ["x", "y", "z"]
+  d: ["x", "y", "z"]
 """
 
-CNF_0 = {'a': 0, 'b': 'bbb', 'sect0': {'c': ['x', 'y', 'z']}}
+CNF_0 = ODict((("a", 0), ("b", "bbb"), ("c", [1, 2, 3]),
+               ("sect0", ODict((("d", "x y z".split()), )))))
 
 
 if TT is not None:

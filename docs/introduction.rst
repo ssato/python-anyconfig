@@ -42,6 +42,10 @@ configuration file[s] like the followings:
   # extension) in some cases.
   conf1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
 
+  # Similar to the above but load from file object opened:
+  with open("/path/to/foo/conf.d/a.yml") as fileobj:
+      conf1_1 = anyconfig.load(fileobj)
+
   # Loaded config data is a dict-like object, for example:
   #
   #   conf1["a"] => 1
@@ -51,6 +55,10 @@ configuration file[s] like the followings:
   # Or you can specify the format (config type) explicitly if automatic
   # detection may not work.
   conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", ac_parser="yaml")
+
+  # Likewise.
+  with open("/path/to/foo/conf.d/b.conf") as fileobj:
+      conf2_2 = anyconfig.load(fileobj, ac_parser="yaml")
 
   # Specify multiple config files by the list of paths. Configurations of each
   # files are merged.
@@ -64,7 +72,7 @@ configuration file[s] like the followings:
   conf5 = anyconfig.load("/etc/foo.d/*.json")
 
   # Similar to the above, but parameters in the former config file will be simply
-  # overwritten by the later ones:
+  # overwritten by the later ones instead of merge:
   conf6 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
 
 Also, it can process configuration files which are actually

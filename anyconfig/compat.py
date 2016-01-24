@@ -32,6 +32,7 @@ except ImportError:  # python < 2.7 doesn't have it.
 
 
 IS_PYTHON_3 = sys.version_info[0] == 3
+IS_PYTHON_2_6 = sys.version_info[0] == 2 and sys.version_info[1] == 6
 ENCODING = locale.getdefaultlocale()[1]
 
 

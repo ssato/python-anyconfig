@@ -33,6 +33,33 @@ CNF_1 = ODict((("DEFAULT", ODict((("a", 0), ("b", "bbb"), ("c", 5)))),
                                 ("d", "x y z".split()))))))
 
 
+def keys_recur_itr(ndic):
+    """
+    :param ndic: Nested dict[-like] object
+    """
+    for key in ndic.keys():
+        yield key
+        if m9dicts.is_dict_like(ndic[key]):
+            for nkey in keys_recur_itr(ndic[key]):
+                yield nkey
+
+
+def list_keys_recur(ndic):
+    """
+    :param ndic: Nested dict[-like] object
+    :return: A list of keys of maybe nested dict[-like] object `ndic`.
+    """
+    return list(keys_recur_itr(ndic))
+
+
+class Test00(unittest.TestCase):
+
+    def test_list_keys_recur(self):
+        self.assertEqual(list_keys_recur(CNF_0),
+                         ['DEFAULT', 'a', 'b', 'c',
+                          'sect0', 'a', 'b', 'c', 'd'])
+
+
 class Test10(unittest.TestCase):
 
     cnf = CNF_0
@@ -69,7 +96,7 @@ class Test10(unittest.TestCase):
     def test_30_loads_with_order_kept(self):
         cnf = self.psr.loads(self.cnf_s, ac_ordered=True)
         if self.is_order_kept:
-            self.assertTrue(list(cnf.keys()), list(self.cnf.keys()))
+            self.assertTrue(list_keys_recur(cnf), list_keys_recur(self.cnf))
         else:
             self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 

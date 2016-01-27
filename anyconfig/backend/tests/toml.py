@@ -69,6 +69,7 @@ class Test10(anyconfig.backend.tests.ini.Test10):
     cnf = CNF
     cnf_s = CNF_S
     load_options = dump_options = dict(dummy="this_will_be_ignored")
+    is_order_kept = False  # ..note:: toml backend cannot do this yet.
 
     def setUp(self):
         self.psr = TT.Parser()

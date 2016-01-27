@@ -33,33 +33,6 @@ CNF_1 = ODict((("DEFAULT", ODict((("a", 0), ("b", "bbb"), ("c", 5)))),
                                 ("d", "x y z".split()))))))
 
 
-def keys_recur_itr(ndic):
-    """
-    :param ndic: Nested dict[-like] object
-    """
-    for key in ndic.keys():
-        yield key
-        if m9dicts.is_dict_like(ndic[key]):
-            for nkey in keys_recur_itr(ndic[key]):
-                yield nkey
-
-
-def list_keys_recur(ndic):
-    """
-    :param ndic: Nested dict[-like] object
-    :return: A list of keys of maybe nested dict[-like] object `ndic`.
-    """
-    return list(keys_recur_itr(ndic))
-
-
-class Test00(unittest.TestCase):
-
-    def test_list_keys_recur(self):
-        self.assertEqual(list_keys_recur(CNF_0),
-                         ['DEFAULT', 'a', 'b', 'c',
-                          'sect0', 'a', 'b', 'c', 'd'])
-
-
 class Test10(unittest.TestCase):
 
     cnf = CNF_0
@@ -96,7 +69,8 @@ class Test10(unittest.TestCase):
     def test_30_loads_with_order_kept(self):
         cnf = self.psr.loads(self.cnf_s, ac_ordered=True)
         if self.is_order_kept:
-            self.assertTrue(list_keys_recur(cnf), list_keys_recur(self.cnf))
+            self.assertTrue(dicts_equal(cnf, self.cnf, ordered=True),
+                            "\n %r\nvs.\n %r" % (cnf, self.cnf))
         else:
             self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
@@ -127,13 +101,21 @@ class Test11(Test10):
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
         self.assertTrue(isinstance(cnf, m9dicts.UpdateWithReplaceDict))
 
+    def test_30_loads_with_order_kept(self):
+        cnf = self.psr.loads(self.cnf_s, ac_parse_value=True, ac_ordered=True)
+        if self.is_order_kept:
+            self.assertTrue(dicts_equal(cnf, self.cnf, ordered=True),
+                            "\n %r\nvs.\n %r" % (cnf, self.cnf))
+        else:
+            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
 
 class Test12(Test10):
 
     test_10_loads = test_12_loads__w_options = lambda: True
     test_20_loads = test_22_loads__w_options = lambda: True
 
-    def test_12_loads__invalid_input(self):
+    def test_10_loads__invalid_input(self):
         invalid_ini = "key=name"
         self.assertRaises(Exception, self.psr.loads, invalid_ini)
 

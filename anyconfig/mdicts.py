@@ -18,7 +18,7 @@ from m9dicts import (
 
 def to_container(obj=None, ac_ordered=False, ac_merge=m9dicts.MS_DICTS,
                  ac_namedtuple=False, ac_ntpl_cls_key=NTPL_CLS_KEY, **options):
-    """
+    r"""
     Factory function to create a dict-like object[s] supports merge operation
     from a dict or any other objects.
 
@@ -50,7 +50,7 @@ def to_container(obj=None, ac_ordered=False, ac_merge=m9dicts.MS_DICTS,
 
 def convert_to(obj, ac_ordered=True, ac_namedtuple=False,
                ac_ntpl_cls_key=NTPL_CLS_KEY, **options):
-    """
+    r"""
     Convert given `obj` :: m9dict object to a dict, dict or OrderedDict if
     ac_ordered == True, or a namedtuple if ac_namedtuple == True.
 

@@ -6,4 +6,5 @@ nose
 pep8
 # :see: 2.4 What versions of Python is Pylint supporting? in
 # http://docs.pylint.org/faq.html#installation
+astroid<1.3
 pylint<1.4

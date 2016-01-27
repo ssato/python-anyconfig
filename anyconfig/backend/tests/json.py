@@ -7,7 +7,7 @@ from __future__ import absolute_import
 import anyconfig.backend.json as TT
 import anyconfig.backend.tests.ini
 
-from anyconfig.compat import OrderedDict as ODict
+from anyconfig.compat import OrderedDict as ODict, IS_PYTHON_2_6
 from anyconfig.tests.common import dicts_equal
 
 
@@ -31,6 +31,9 @@ class Test10(anyconfig.backend.tests.ini.Test10):
     cnf = CNF_0
     cnf_s = CNF_0_S
     load_options = dump_options = dict(parse_int=None, indent=3)
+
+    if IS_PYTHON_2_6:
+        is_order_kept = False  # ..note:: object_pairs_hoo is not available.
 
     def setUp(self):
         self.psr = TT.Parser()

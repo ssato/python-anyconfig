@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2016 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
@@ -34,6 +34,7 @@
 from __future__ import absolute_import
 from io import BytesIO
 
+import m9dicts.utils
 import sys
 
 import anyconfig.backend.base
@@ -74,7 +75,7 @@ def etree_to_container(root, cls, pprefix=_PARAM_PREFIX):
     tree[root.tag] = cls()
 
     if root.attrib:
-        tree[root.tag][attrs] = cls(anyconfig.compat.iteritems(root.attrib))
+        tree[root.tag][attrs] = cls(root.attrib)
 
     if root.text and root.text.strip():
         tree[root.tag][text] = root.text.strip()
@@ -88,16 +89,15 @@ def etree_to_container(root, cls, pprefix=_PARAM_PREFIX):
     return tree
 
 
-def container_to_etree(obj, cls, parent=None, pprefix=_PARAM_PREFIX):
+def container_to_etree(obj, parent=None, pprefix=_PARAM_PREFIX):
     """
-    Convert a container object to XML ElementTree.
+    Convert a dict-like object to XML ElementTree.
 
     :param obj: Container instance to convert to
-    :param cls: Container class
     :param parent: XML ElementTree parent node object or None
     :param pprefix: Special parameter name prefix
     """
-    if not isinstance(obj, (cls, dict)):
+    if not m9dicts.utils.is_dict_like(obj):
         return  # All attributes and text should be set already.
 
     (attrs, text, children) = [pprefix + x for x in ("attrs", "text",
@@ -112,11 +112,11 @@ def container_to_etree(obj, cls, parent=None, pprefix=_PARAM_PREFIX):
             for child in val:  # child should be a dict-like object.
                 for ckey, cval in anyconfig.compat.iteritems(child):
                     celem = ET.Element(ckey)
-                    container_to_etree(cval, cls, celem, pprefix)
+                    container_to_etree(cval, celem, pprefix)
                     parent.append(celem)
         else:
             elem = ET.Element(key)
-            container_to_etree(val, cls, elem, pprefix)
+            container_to_etree(val, elem, pprefix)
             return ET.ElementTree(elem)
 
 
@@ -141,56 +141,59 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
     _extensions = ["xml"]
     _open_flags = ('rb', 'wb')
 
-    def load_from_string(self, content, **kwargs):
+    def load_from_string(self, content, to_container, **kwargs):
         """
         Load config from XML snippet (a string `content`).
 
         :param content: XML snippet (a string)
+        :param to_container: callble to make a container object
         :param kwargs: optional keyword parameters passed to
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         root = ET.ElementTree(ET.fromstring(content)).getroot()
-        return etree_to_container(root, self.container)
+        return etree_to_container(root, to_container)
 
-    def load_from_path(self, filepath, **kwargs):
+    def load_from_path(self, filepath, to_container, **kwargs):
         """
         :param filepath: XML file path
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param to_container: callble to make a container object
+        :param kwargs: optional keyword parameters to be sanitized
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         root = ET.parse(filepath).getroot()
-        return etree_to_container(root, self.container)
+        return etree_to_container(root, to_container)
 
-    def load_from_stream(self, stream, **kwargs):
+    def load_from_stream(self, stream, to_container, **kwargs):
         """
         :param stream: XML file or file-like object
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param to_container: callble to make a container object
+        :param kwargs: optional keyword parameters to be sanitized
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.load_from_path(stream, **kwargs)
+        return self.load_from_path(stream, to_container, **kwargs)
 
     def dump_to_string(self, cnf, **kwargs):
         """
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters
 
         :return: string represents the configuration
         """
-        tree = container_to_etree(cnf, self.container)
+        tree = container_to_etree(cnf)
         buf = BytesIO()
         etree_write(tree, buf)
         return buf.getvalue()
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param stream: Config file or file like object write to
         :param kwargs: optional keyword parameters
         """
-        tree = container_to_etree(cnf, self.container)
+        tree = container_to_etree(cnf)
         etree_write(tree, stream)
 
 # vim:sw=4:ts=4:et:

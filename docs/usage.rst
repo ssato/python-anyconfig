@@ -1,5 +1,5 @@
-API Usage Examples
-===================
+API Usage
+==========
 
 Here are some code examples of API usage.
 
@@ -27,13 +27,13 @@ To load single config file:
 
   # Or you can specify config type explicitly as needed.
   cnf_path = "/path/to/foo/conf.d/b.conf"
-  data3 = anyconfig.load(cnf_path, "yaml")
+  data3 = anyconfig.load(cnf_path, ac_parser="yaml")
 
   # Same as above but ...
-  data4 = anyconfig.single_load(cnf_path, "yaml")
+  data4 = anyconfig.single_load(cnf_path, ac_parser="yaml")
 
   # Same as above as a result but make parser instance and pass it explicitly.
-  yml_psr = anyconfig.find_loader(None, "yaml")
+  yml_psr = anyconfig.find_loader(None, ac_parser="yaml")
   data5 = anyconfig.single_load(cnf_path, yml_psr)  # Or: anyconfig.load(...)
 
 You can pass backend (config loader) specific optional parameters to
@@ -196,6 +196,14 @@ configurations from the followings:
   .. code-block:: python
 
     {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
+
+Keep the order of configuration items
+----------------------------------------
+
+If you want to keep the order of configuration items, specify ac_order=True on
+load. Otherwise, the order of configuration items will be lost by default.
+But please note that it's not true that any backend can keep the order of keys.
+For example, JSON backend can do that but current YAML backend does not.
 
 Validation with JSON Schema
 -------------------------------

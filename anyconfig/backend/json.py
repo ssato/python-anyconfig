@@ -30,9 +30,7 @@ except ImportError:
     import simplejson as json
 
 
-_LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant",
-              "object_pairs_hook"]
-
+_LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant"]
 _DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
               "cls", "indent", "separators", "default", "sort_keys"]
 
@@ -41,6 +39,9 @@ _DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
 if not anyconfig.compat.IS_PYTHON_3:
     _LOAD_OPTS.append("encoding")
     _DUMP_OPTS.append("encoding")
+
+if not anyconfig.compat.IS_PYTHON_2_6:
+    _LOAD_OPTS.append("object_pairs_hook")
 
 
 class Parser(anyconfig.backend.base.FromStreamLoader,
@@ -56,26 +57,44 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     dump_to_string = anyconfig.backend.base.to_method(json.dumps)
     dump_to_stream = anyconfig.backend.base.to_method(json.dump)
 
-    def load_from_string(self, content, **kwargs):
+    def _load(self, load_fn, cntnt_or_strm, to_container, **opts):
+        """
+        Load JSON config from given string or stream `cntnt_or_strm`.
+
+        :param cntnt_or_strm: JSON config content or stream will provide it
+        :param to_container: callble to make a container object
+        :param opts: keyword options passed to `json.load[s]`
+
+        :return: Dict-like object holding configuration
+        """
+        if "object_pairs_hook" in self._load_opts:
+            opts["object_pairs_hook"] = anyconfig.compat.OrderedDict
+            return to_container(load_fn(cntnt_or_strm, **opts))
+        else:
+            return load_fn(cntnt_or_strm, object_hook=to_container, **opts)
+
+    def load_from_string(self, content, to_container, **opts):
         """
         Load JSON config from given string `content`.
 
-        :param content: JSON config content string
-        :param kwargs: optional keyword parameters passed to json.loads
+        :param content: JSON config content
+        :param to_container: callble to make a container object
+        :param opts: keyword options passed to `json.loads`
 
-        :return: self.container object holding configuration
+        :return: Dict-like object holding configuration
         """
-        return json.loads(content, object_hook=self.container, **kwargs)
+        return self._load(json.loads, content, to_container, **opts)
 
-    def load_from_stream(self, stream, **kwargs):
+    def load_from_stream(self, stream, to_container, **opts):
         """
-        Load JSON config from given file or file-like object `stream`.
+        Load JSON config from given stream `stream`.
 
-        :param stream: JSON file or file-like object
-        :param kwargs: optional keyword parameters passed to json.load
+        :param stream: Stream will provide JSON config content string
+        :param to_container: callble to make a container object
+        :param opts: keyword options passed to `json.load`
 
-        :return: self.container object holding configuration
+        :return: Dict-like object holding configuration
         """
-        return json.load(stream, object_hook=self.container, **kwargs)
+        return self._load(json.load, stream, to_container, **opts)
 
 # vim:sw=4:ts=4:et:

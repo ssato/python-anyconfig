@@ -28,7 +28,7 @@ import logging
 import os
 
 import anyconfig.compat
-import anyconfig.mergeabledict
+import anyconfig.mdicts
 import anyconfig.utils
 
 
@@ -79,6 +79,16 @@ def to_method(func):
     return wrapper
 
 
+def to_container_fn(**options):
+    """
+    :param options:
+        Keyword options will be passed to :fnc:`to_container` in
+        :mod:`anyconfig.mdicts` to decide which merge-able dict to
+        wrap configurations.
+    """
+    return functools.partial(anyconfig.mdicts.to_container, **options)
+
+
 class Parser(object):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
@@ -90,9 +100,6 @@ class Parser(object):
     _load_opts = []
     _dump_opts = []
     _open_flags = ('r', 'w')
-
-    container = anyconfig.mergeabledict.MergeableDict
-    to_container = container.create
 
     @classmethod
     def type(cls):
@@ -129,55 +136,68 @@ class Parser(object):
         """
         return open(filepath, cls._open_flags[1], **kwargs)
 
-    def load_from_string(self, content, **kwargs):
+    def _load_options(self, **kwargs):
+        """
+        Select backend specific loading options from `kwargs` only.
+        """
+        return mk_opt_args(self._load_opts, kwargs)
+
+    def load_from_string(self, content, to_container, **kwargs):
         """
         Load config from given string `content`.
 
         :param content: Config content string
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.container()
+        return to_container()
 
-    def load_from_path(self, filepath, **kwargs):
+    def load_from_path(self, filepath, to_container, **kwargs):
         """
         Load config from given file path `filepath`.
 
         :param filepath: Config file path
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.container()
+        return to_container()
 
-    def load_from_stream(self, stream, **kwargs):
+    def load_from_stream(self, stream, to_container, **kwargs):
         """
         Load config from given file like object `stream`.
 
         :param stream:  Config file or file like object
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.container()
+        return to_container()
 
-    def loads(self, content, **kwargs):
+    def loads(self, content, **options):
         """
         Load config from given string `content` after some checks.
 
         :param content:  Config file content
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options:
+            options will be passed to backend specific loading functions.
+            please note that options have to be sanitized w/ mk_opt_args later
+            to filter out options not  in _load_opts.
 
-        :return: self.container object holding config parameters
+        :return: dict or dict-like object holding configurations
         """
+        to_container = to_container_fn(**options)
         if not content or content is None:
-            return self.container()
+            return to_container()
 
-        kwargs = mk_opt_args(self._load_opts, kwargs)
-        return self.to_container(self.load_from_string(content, **kwargs))
+        return self.load_from_string(content, to_container,
+                                     **self._load_options(**options))
 
-    def load(self, path_or_stream, ignore_missing=False, **kwargs):
+    def load(self, path_or_stream, ignore_missing=False, **options):
         """
         Load config from a file path or a file / file-like object
         `path_or_stream` after some checks.
@@ -186,28 +206,33 @@ class Parser(object):
         :param ignore_missing:
             Ignore and just return None if given `path_or_stream` is not a file
             / file-like object (thus, it should be a file path) and does not
-            exist in actual
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+            exist in actual.
+        :param options:
+            options will be passed to backend specific loading functions.
+            please note that options have to be sanitized w/ mk_opt_args later
+            to filter out options not  in _load_opts.
 
-        :return: self.container object holding config parameters
+        :return: dict or dict-like object holding configurations
         """
-        kwargs = mk_opt_args(self._load_opts, kwargs)
+        to_container = to_container_fn(**options)
+        options = self._load_options(**options)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
             if ignore_missing and not os.path.exists(path_or_stream):
-                return self.container()
+                return to_container()
 
-            cnf = self.load_from_path(path_or_stream, **kwargs)
+            cnf = self.load_from_path(path_or_stream, to_container, **options)
         else:
-            cnf = self.load_from_stream(path_or_stream, **kwargs)
+            cnf = self.load_from_stream(path_or_stream, to_container,
+                                        **options)
 
-        return self.to_container(cnf)
+        return cnf
 
     def dump_to_string(self, cnf, **kwargs):
         """
         Dump config `cnf` to a string.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: string represents the configuration
@@ -218,7 +243,7 @@ class Parser(object):
         """
         Dump config `cnf` to a file `filepath`.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
@@ -230,7 +255,7 @@ class Parser(object):
 
         TODO: How to process socket objects same as file objects ?
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param stream:  Config file or file like object
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
@@ -240,13 +265,13 @@ class Parser(object):
         """
         Dump config `cnf` to a string.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
         :return: string represents the configuration
         """
+        cnf = anyconfig.mdicts.convert_to(cnf, **kwargs)
         kwargs = mk_opt_args(self._dump_opts, kwargs)
-        cnf = self.container.convert_to(cnf)
         return self.dump_to_string(cnf, **kwargs)
 
     def dump(self, cnf, path_or_stream, **kwargs):
@@ -254,13 +279,13 @@ class Parser(object):
         Dump config `cnf` to a filepath or file-like object
         `path_or_stream`.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param path_or_stream: Config file path or file{,-like} object
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
         """
+        cnf = anyconfig.mdicts.convert_to(cnf, **kwargs)
         kwargs = mk_opt_args(self._dump_opts, kwargs)
-        cnf = self.container.convert_to(cnf)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
             ensure_outdir_exists(path_or_stream)
@@ -277,27 +302,30 @@ class FromStringLoader(Parser):
     Parser classes inherit this class have to override the method
     :meth:`load_from_string` at least.
     """
-    def load_from_stream(self, stream, **kwargs):
+    def load_from_stream(self, stream, to_container, **kwargs):
         """
         Load config from given stream `stream`.
 
         :param stream: Config file or file-like object
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.load_from_string(stream.read(), **kwargs)
+        return self.load_from_string(stream.read(), to_container, **kwargs)
 
-    def load_from_path(self, filepath, **kwargs):
+    def load_from_path(self, filepath, to_container, **kwargs):
         """
         Load config from given file path `filepath`.
 
         :param filepath: Config file path
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.load_from_stream(self.ropen(filepath), **kwargs)
+        return self.load_from_stream(self.ropen(filepath), to_container,
+                                     **kwargs)
 
 
 class FromStreamLoader(Parser):
@@ -308,28 +336,31 @@ class FromStreamLoader(Parser):
     Parser classes inherit this class have to override the method
     :meth:`load_from_stream` at least.
     """
-    def load_from_string(self, content, **kwargs):
+    def load_from_string(self, content, to_container, **kwargs):
         """
         Load config from given string `cnf_content`.
 
         :param content: Config content string
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         return self.load_from_stream(anyconfig.compat.StringIO(content),
-                                     **kwargs)
+                                     to_container, **kwargs)
 
-    def load_from_path(self, filepath, **kwargs):
+    def load_from_path(self, filepath, to_container, **kwargs):
         """
         Load config from given file path `filepath`.
 
         :param filepath: Config file path
+        :param to_container: callble to make a container object later
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
-        return self.load_from_stream(self.ropen(filepath), **kwargs)
+        return self.load_from_stream(self.ropen(filepath), to_container,
+                                     **kwargs)
 
 
 class ToStringDumper(Parser):
@@ -345,7 +376,7 @@ class ToStringDumper(Parser):
         """
         Dump config `cnf` to a file `filepath`.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
@@ -358,7 +389,7 @@ class ToStringDumper(Parser):
 
         TODO: How to process socket objects same as file objects ?
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param stream:  Config file or file like object
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
@@ -380,10 +411,10 @@ class ToStreamDumper(Parser):
         """
         Dump config `cnf` to a string.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: self.container object holding config parameters
+        :return: Dict-like object holding config parameters
         """
         stream = self.to_stream()
         self.dump_to_stream(cnf, stream, **kwargs)
@@ -393,7 +424,7 @@ class ToStreamDumper(Parser):
         """
         Dump config `cnf` to a file `filepath`.
 
-        :param cnf: Configuration data to dump :: self.container
+        :param cnf: Configuration data to dump
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """

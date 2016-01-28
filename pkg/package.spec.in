@@ -16,6 +16,7 @@
 %endif
 
 %global with_optionals 0
+%global with_m9dicts 0
 
 # disable debuginfo
 %define debug_package %{nil}
@@ -28,7 +29,6 @@ Summary:        Generic access to configuration files in some formats
 Group:          Development/Libraries
 License:        MIT
 URL:            https://github.com/ssato/%{name}
-#Source0:        https://github.com/ssato/%{name}/tarball/master/%{name}-%{version}.tar.gz
 Source0:        %{pkgname}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
@@ -141,6 +141,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jan 29 2016 Satoru SATOH <ssato@redhat.com> - 0.4.999-1
+- change: switch to m9dicts as mearge-able dict, successor of .mergeabledict
+- enhancement: try to keep order of keys in all backends as wanted, although
+  some ones such as bson, json in python 2.6, msgpack in python 3 and yaml does
+  not work still
+- enhancement: support namedtuple <-> dict[-like] object conversion
+- fix: resolve some rpmlint warns such as macro used in the comment lines
+- fix/enhancements: add missing corner and ordered test cases
+- refactor: Refactoring all test backend test cases to simplify them
+
 * Sun Nov 22 2015 Satoru SATOH <ssato@redhat.com> - 0.4.0-1
 - fix: correct escape/unescape process in Java properties backend, closed #31
 - enhancement: Added naive impl. of JSON Pointer support (getter only)

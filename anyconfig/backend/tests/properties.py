@@ -8,6 +8,8 @@ import unittest
 import anyconfig.backend.properties as TT
 import anyconfig.backend.tests.ini
 
+from anyconfig.compat import OrderedDict as ODict
+
 
 CNF_S = """
 a = 0
@@ -17,8 +19,8 @@ sect0.c = x;y;z
 sect1.d = \\
     1,2,3
 """
-CNF = {"a": "0", "b": "bbb", "sect0.c": "x;y;z",
-       "sect1.d": "1,2,3"}
+CNF = ODict((("a", "0"), ("b", "bbb"),
+             ("sect0.c", "x;y;z"), ("sect1.d", "1,2,3")))
 
 
 class Test00(unittest.TestCase):

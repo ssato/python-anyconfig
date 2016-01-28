@@ -10,7 +10,7 @@
 
 - Format to support: YAML, http://yaml.org
 - Requirements: PyYAML (yaml), http://pyyaml.org
-- Limitations: None obvious
+- Limitations: ac_ordered is not effective and just ignored.
 - Special options:
 
   - All keyword options of yaml.safe_load, yaml.load, yaml.safe_dump and
@@ -43,14 +43,15 @@ def _yml_fnc(fname, *args, **kwargs):
     return fnc(*args, **kwargs)
 
 
-def _yml_load(stream, **kwargs):
+def _yml_load(stream, to_container, **kwargs):
     """An wrapper of yaml.safe_load and yaml.load.
 
     :param stream: a file or file-like object to load YAML content
+    :param to_container: callble to make a container object
     """
     if "ac_safe" in kwargs:  # yaml.safe_load does not process Loader opts.
         kwargs = {}
-    return _yml_fnc("load", stream, **kwargs)
+    return to_container(_yml_fnc("load", stream, **kwargs))
 
 
 def _yml_dump(cnf, stream, **kwargs):

@@ -8,15 +8,8 @@ Compatiblity module
 """
 from __future__ import absolute_import
 
-import codecs
 import itertools
-import locale
 import sys
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict  # Python 2.6
 
 try:
     from logging import NullHandler
@@ -32,7 +25,7 @@ except ImportError:  # python < 2.7 doesn't have it.
 
 
 IS_PYTHON_3 = sys.version_info[0] == 3
-ENCODING = locale.getdefaultlocale()[1]
+IS_PYTHON_2_6 = sys.version_info[0] == 2 and sys.version_info[1] == 6
 
 
 # Borrowed from library doc, 9.7.1 Itertools functions:
@@ -59,42 +52,16 @@ def py3_iteritems(dic):
     return dic.items()
 
 
-def py3_cmp(a, b):
-    """
-    >>> py3_cmp(0, 2)
-    -1
-    >>> py3_cmp(4, 4)
-    0
-    >>> py3_cmp(3, 1)
-    1
-    """
-    return (a > b) - (a < b)
-
-
-def copen(filepath, flag='r', encoding=ENCODING):
-    """
-    FIXME: How to test this ?
-
-    >>> c = copen(__file__)
-    >>> c is not None
-    True
-    """
-    return codecs.open(filepath, flag, encoding)
-
-
 # pylint: disable=redefined-builtin
 if IS_PYTHON_3:
     import configparser  # flake8: noqa
-    from collections import UserDict  # flake8: noqa
     from io import StringIO  # flake8: noqa
     iteritems = py3_iteritems
     from_iterable = itertools.chain.from_iterable
-    cmp = py3_cmp
     raw_input = input
     STR_TYPES = (str, )
 else:
     import ConfigParser as configparser  # flake8: noqa
-    from UserDict import UserDict  # flake8: noqa
     try:
         from cStringIO import StringIO  # flake8: noqa
     except ImportError:
@@ -119,8 +86,12 @@ else:
         return dic.iteritems()
 
     iteritems = py_iteritems
-    cmp = cmp
     raw_input = raw_input
     STR_TYPES = (str, unicode)
+
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict  # Python 2.6
 
 # vim:sw=4:ts=4:et:

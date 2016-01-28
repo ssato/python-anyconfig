@@ -11,16 +11,23 @@ try:
 except ImportError:
     TT = None
 
+from anyconfig.compat import OrderedDict as ODict
+
 
 CNF_0_S = """
 a: 0
 b: bbb
+c:
+  - 1
+  - 2
+  - 3
 
 sect0:
-  c: ["x", "y", "z"]
+  d: ["x", "y", "z"]
 """
 
-CNF_0 = {'a': 0, 'b': 'bbb', 'sect0': {'c': ['x', 'y', 'z']}}
+CNF_0 = ODict((("a", 0), ("b", "bbb"), ("c", [1, 2, 3]),
+               ("sect0", ODict((("d", "x y z".split()), )))))
 
 
 if TT is not None:
@@ -32,6 +39,7 @@ if TT is not None:
         cnf_s = CNF_0_S
         load_options = dict(ac_safe=True, Loader=yaml.loader.Loader)
         dump_options = dict(ac_safe=True, Dumper=yaml.dumper.Dumper)
+        is_order_kept = False  # ..note:: yaml backend cannot do this yet.
 
         def setUp(self):
             self.psr = TT.Parser()

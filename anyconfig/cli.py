@@ -9,6 +9,7 @@ from __future__ import absolute_import, print_function
 import codecs
 import locale
 import logging
+import m9dicts.utils
 import optparse
 import os
 import sys
@@ -16,7 +17,6 @@ import sys
 import anyconfig.api as API
 import anyconfig.compat
 import anyconfig.globals
-import anyconfig.mergeabledict
 import anyconfig.parser
 
 
@@ -260,7 +260,7 @@ def _output_result(cnf, outpath, otype, inpath, itype):
             else:
                 otype = itype
 
-    if anyconfig.mergeabledict.is_dict_like(cnf):
+    if m9dicts.utils.is_dict_like(cnf):
         API.dump(cnf, outpath, otype)
     else:
         _exit_with_output(str(cnf))  # Output primitive types as it is.
@@ -275,7 +275,7 @@ def main(argv=None):
 
     _check_options_and_args(parser, options, args)
 
-    cnf = API.container(os.environ.copy() if options.env else {})
+    cnf = API.to_container(os.environ.copy() if options.env else {})
     diff = API.load(args, options.itype,
                     ignore_missing=options.ignore_missing,
                     ac_merge=options.merge, ac_template=options.template,
@@ -285,9 +285,10 @@ def main(argv=None):
     cnf.update(diff)
 
     if options.args:
-        diff = API.loads(options.args, options.atype,
-                         ac_template=options.template, ac_context=cnf)
-        cnf.update(diff, options.merge)
+        diff = API.loads(options.args, ac_parser=options.atype,
+                         ac_template=options.template, ac_context=cnf,
+                         ac_merge=options.merge)
+        cnf.update(diff)
 
     _exit_if_only_to_validate(options.validate)
 

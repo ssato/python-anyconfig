@@ -33,7 +33,7 @@ else
 fi
 
 if `which pylint 2>&1 > /dev/null`; then
-    pylint_opt="--disable=invalid-name,locally-disabled"
+    pylint_opt="--disable=locally-disabled"
     test -f ${curdir}/pylintrc && \
         pylint_opt="$pylint_opt --rcfile=$curdir/pylintrc" || :
     function _pylint () { pylint ${rcopt} $@ || :; }

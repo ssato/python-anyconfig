@@ -2,6 +2,7 @@
 # Copyright (C) 2011 - 2016 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
+# pylint: disable=unused-argument,unused-import
 """Wrapper of m9dicts.
 
 .. versionadded: 0.4.99

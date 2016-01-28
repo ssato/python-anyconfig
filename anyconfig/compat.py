@@ -8,9 +8,7 @@ Compatiblity module
 """
 from __future__ import absolute_import
 
-import codecs
 import itertools
-import locale
 import sys
 
 try:
@@ -28,7 +26,6 @@ except ImportError:  # python < 2.7 doesn't have it.
 
 IS_PYTHON_3 = sys.version_info[0] == 3
 IS_PYTHON_2_6 = sys.version_info[0] == 2 and sys.version_info[1] == 6
-ENCODING = locale.getdefaultlocale()[1]
 
 
 # Borrowed from library doc, 9.7.1 Itertools functions:
@@ -53,17 +50,6 @@ def py3_iteritems(dic):
     [('a', 1), ('b', 2)]
     """
     return dic.items()
-
-
-def copen(filepath, flag='r', encoding=ENCODING):
-    """
-    FIXME: How to test this ?
-
-    >>> c = copen(__file__)
-    >>> c is not None
-    True
-    """
-    return codecs.open(filepath, flag, encoding)
 
 
 # pylint: disable=redefined-builtin

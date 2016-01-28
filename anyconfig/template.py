@@ -9,6 +9,8 @@
 """
 from __future__ import absolute_import
 
+import codecs
+import locale
 import logging
 import os
 
@@ -39,6 +41,21 @@ except ImportError:
     def tmpl_env(*args):
         """Dummy function"""
         return None
+
+
+def copen(filepath, flag='r', encoding=None):
+
+    """
+    FIXME: How to test this ?
+
+    >>> c = copen(__file__)
+    >>> c is not None
+    True
+    """
+    if encoding is None:
+        encoding = locale.getdefaultlocale()[1]
+
+    return codecs.open(filepath, flag, encoding)
 
 
 def make_template_paths(template_file, paths=None):
@@ -103,7 +120,7 @@ def render_impl(template_file, ctx=None, paths=None):
     env = tmpl_env(make_template_paths(template_file, paths))
 
     if env is None:
-        return anyconfig.compat.copen(template_file).read()
+        return copen(template_file).read()
 
     if ctx is None:
         ctx = {}

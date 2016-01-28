@@ -9,7 +9,6 @@ from __future__ import absolute_import, print_function
 import codecs
 import locale
 import logging
-import m9dicts.utils
 import optparse
 import os
 import sys
@@ -17,6 +16,7 @@ import sys
 import anyconfig.api as API
 import anyconfig.compat
 import anyconfig.globals
+import anyconfig.mdicts
 import anyconfig.parser
 
 
@@ -260,7 +260,7 @@ def _output_result(cnf, outpath, otype, inpath, itype):
             else:
                 otype = itype
 
-    if m9dicts.utils.is_dict_like(cnf):
+    if anyconfig.mdicts.is_dict_like(cnf):
         API.dump(cnf, outpath, otype)
     else:
         _exit_with_output(str(cnf))  # Output primitive types as it is.

@@ -7,7 +7,7 @@ import tempfile
 import unittest
 
 import anyconfig.compat
-import m9dicts
+import anyconfig.mdicts
 
 from anyconfig.compat import OrderedDict
 
@@ -73,8 +73,8 @@ def dicts_equal(dic, ref, ordered=False):
             return False
 
         (next_dic, next_ref) = (dic[key], ref[key])
-        if m9dicts.is_dict_like(next_ref):
-            if not m9dicts.is_dict_like(next_dic):
+        if anyconfig.mdicts.is_dict_like(next_ref):
+            if not anyconfig.mdicts.is_dict_like(next_dic):
                 return False
 
             if not dicts_equal(next_dic, next_ref):

@@ -34,11 +34,11 @@
 from __future__ import absolute_import
 from io import BytesIO
 
-import m9dicts.utils
 import sys
 
 import anyconfig.backend.base
 import anyconfig.compat
+import anyconfig.mdicts
 
 try:
     # First, try lxml which is compatible with elementtree and looks faster a
@@ -97,7 +97,7 @@ def container_to_etree(obj, parent=None, pprefix=_PARAM_PREFIX):
     :param parent: XML ElementTree parent node object or None
     :param pprefix: Special parameter name prefix
     """
-    if not m9dicts.utils.is_dict_like(obj):
+    if not anyconfig.mdicts.is_dict_like(obj):
         return  # All attributes and text should be set already.
 
     (attrs, text, children) = [pprefix + x for x in ("attrs", "text",

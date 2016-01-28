@@ -13,7 +13,8 @@ from __future__ import absolute_import
 import m9dicts
 from m9dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    NTPL_CLS_KEY, get, set_, is_namedtuple  # flake8: noqa
+    NTPL_CLS_KEY, UpdateWithReplaceDict, get, set_,
+    is_dict_like, is_namedtuple  # flake8: noqa
 )
 
 

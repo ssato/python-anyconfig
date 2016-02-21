@@ -178,8 +178,6 @@ be supported by corresponding pluggale backends like the following:
 
   - https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
 
-See also `How to write backend plugin modules` section about writing plugins.
-
 .. [#] https://pypi.python.org/pypi/simplejson
 .. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
 .. [#] https://pypi.python.org/pypi/PyYAML

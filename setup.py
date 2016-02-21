@@ -45,6 +45,7 @@ class SrpmCommand(Command):
 
     curdir = os.path.abspath(os.curdir)
     rpmspec = os.path.join(curdir, "pkg/package.spec")
+    gen_readme = os.path.join(curdir, "pkg/gen-readme.sh")
 
     def initialize_options(self):
         pass
@@ -60,6 +61,7 @@ class SrpmCommand(Command):
     def pre_sdist(self):
         c = open(self.rpmspec + ".in").read()
         open(self.rpmspec, "w").write(c.replace("@VERSION@", VERSION))
+        subprocess.check_call(self.gen_readme, shell=True)
 
     def build_rpm(self):
         rpmbuild = os.path.join(self.curdir, "pkg/rpmbuild-wrapper.sh")

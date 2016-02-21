@@ -51,8 +51,8 @@ validation/generation support.
 - PyPI: https://pypi.python.org/pypi/anyconfig
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
-I, Satoru SATOH <ssato@redhat.com>, originally developed and continue to
-maintain it with others' help [#]_ .
+I, Satoru SATOH <ssato@redhat.com>, originally developed and keep maintain it
+with others' help [#]_ .
 
 .. [#] This name took an example from the 'anydbm' python standard library.
 .. [#] see the output of `git log --pretty=format:"%an %ae" | grep -vE "Satoru SATOH" | sort | uniq`.
@@ -67,7 +67,7 @@ files in various formats:
 - anyconfig.loads() to load configuration from a string just like json.loads does
 - anyconfig.dump() to dump a configuration file from a dict or dict-like object represents configuration
 - anyconfig.dumps() to dump a configuration string from a dict or dict-like object represents configuration
-- anyconfig.validate() to validate configuration object loaded with anyconfig.load(), with JSON schema [#]_ (object) which was also loaded with anyconfig.load()
+- anyconfig.validate() to validate configuration loaded with anyconfig.load() with JSON schema [#]_ (object) also loaded with anyconfig.load(). anyconfig.load() may help loading JSON schema file[s] in any formats anyconfig supports.
 - anyconfig.gen_schema() to generate a minimum JSON schema object to validate given configuration file[s] later.
 
 It enables to load configuration file[s] in various formats in the same manner,
@@ -82,6 +82,10 @@ configuration file[s] like the followings:
   # extension) in some cases.
   conf1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
 
+  # Similar to the above but load from file object opened:
+  with open("/path/to/foo/conf.d/a.yml") as fileobj:
+      conf1_1 = anyconfig.load(fileobj)
+
   # Loaded config data is a dict-like object, for example:
   #
   #   conf1["a"] => 1
@@ -90,7 +94,11 @@ configuration file[s] like the followings:
 
   # Or you can specify the format (config type) explicitly if automatic
   # detection may not work.
-  conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", "yaml")
+  conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", ac_parser="yaml")
+
+  # Likewise.
+  with open("/path/to/foo/conf.d/b.conf") as fileobj:
+      conf2_2 = anyconfig.load(fileobj, ac_parser="yaml")
 
   # Specify multiple config files by the list of paths. Configurations of each
   # files are merged.
@@ -104,7 +112,7 @@ configuration file[s] like the followings:
   conf5 = anyconfig.load("/etc/foo.d/*.json")
 
   # Similar to the above, but parameters in the former config file will be simply
-  # overwritten by the later ones:
+  # overwritten by the later ones instead of merge:
   conf6 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
 
 Also, it can process configuration files which are actually
@@ -210,8 +218,6 @@ be supported by corresponding pluggale backends like the following:
 
   - https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
 
-See also `How to write backend plugin modules` section about writing plugins.
-
 .. [#] https://pypi.python.org/pypi/simplejson
 .. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
 .. [#] https://pypi.python.org/pypi/PyYAML
@@ -277,6 +283,12 @@ There is a couple of ways to install python-anyconfig:
 
     $ pip install anyconfig
 
+- pip from git repo:
+
+  .. code-block:: console
+
+     $ pip install git+https://github.com/ssato/python-anyconfig/
+
 - Build RPMs from source: It's easy to build python-anyconfig with using rpm-build and mock:
 
   .. code-block:: console
@@ -313,29 +325,5 @@ The following areas are still insufficient, I think.
 
 Any feedbacks, helps, suggestions are welcome! Please open github issues for
 these kind of problems also!
-
-Hacking
---------
-
-How to test
-^^^^^^^^^^^^^
-
-Run '[WITH_COVERAGE=1] ./pkg/runtest.sh [path_to_python_code]' or 'tox' for tests.
-
-About test-time requirements, please take a look at pkg/test_requirements.txt.
-
-How to write backend plugin modules
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Backend class must inherit anyconfig.backend.base.Parser or its children in
-anyconfig.backend.base module and need some members and methods such as
-:meth:`load_from_string`, :meth:`load_from_path`, :meth:`load_from_stream`,
-:meth:`dump_to_string`, :meth:`dump_to_path` and :meth:`dump_to_stream`.
-
-JSON and YAML backend modules (anyconfig.backend.{json,yaml}_) should be good
-examples to write backend modules, I think.
-
-Also, please take a look at some example backend plugin modules mentioned in
-the `Supported configuration formats`_ section.
 
 .. vim:sw=2:ts=2:et:

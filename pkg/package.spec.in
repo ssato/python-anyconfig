@@ -141,7 +141,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Fri Jan 29 2016 Satoru SATOH <ssato@redhat.com> - 0.4.999-1
+* Sun Feb 21 2016 Satoru SATOH <ssato@redhat.com> - 0.5.0-1
 - change: switch to m9dicts as mearge-able dict, successor of .mergeabledict
 - enhancement: try to keep order of keys in all backends as wanted, although
   some ones such as bson, json in python 2.6, msgpack in python 3 and yaml does

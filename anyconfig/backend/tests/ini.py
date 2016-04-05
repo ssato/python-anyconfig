@@ -119,6 +119,10 @@ class Test12(Test10):
         invalid_ini = "key=name"
         self.assertRaises(Exception, self.psr.loads, invalid_ini)
 
+    def test_20_dumps__format(self):
+        ref = self.cnf_s.replace(': ', ' = ')
+        self.assertEquals(self.psr.dumps(self.cnf), ref)
+
 
 class Test20(unittest.TestCase):
 

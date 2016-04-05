@@ -133,15 +133,15 @@ def _dumps_itr(cnf):
     """
     dkey = "DEFAULT"
     for sect, params in iteritems(cnf):
-        yield "[%s]\n" % sect
+        yield "[%s]" % sect
 
         for key, val in iteritems(params):
             if sect != dkey and dkey in cnf and cnf[dkey].get(key) == val:
                 continue  # It should be in [DEFAULT] section.
 
-            yield "%s = %s\n" % (key, _to_s(val))
+            yield "%s = %s" % (key, _to_s(val))
 
-        yield "\n"  # put an empty line just after each sections.
+        yield ''  # it will be a separator between each sections.
 
 
 def _dumps(cnf, **kwargs):

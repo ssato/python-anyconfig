@@ -38,7 +38,7 @@ if TT is not None:
         cnf = CNF_0
         cnf_s = CNF_0_S
         load_options = dict(ac_safe=True, Loader=yaml.loader.Loader)
-        dump_options = dict(ac_safe=True, Dumper=yaml.dumper.Dumper)
+        dump_options = dict(ac_safe=True)
         is_order_kept = False  # ..note:: yaml backend cannot do this yet.
 
         def setUp(self):

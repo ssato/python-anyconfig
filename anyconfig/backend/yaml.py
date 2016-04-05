@@ -25,6 +25,7 @@ from __future__ import absolute_import
 
 import yaml
 import anyconfig.backend.base
+import anyconfig.mdicts
 
 
 def _yml_fnc(fname, *args, **kwargs):
@@ -37,7 +38,7 @@ def _yml_fnc(fname, *args, **kwargs):
     :param kwargs: keyword args may contain "ac_safe" to load/dump safely
     """
     key = "ac_safe"
-    fnc = getattr(yaml, key in kwargs and r"safe\_" + fname or fname)
+    fnc = getattr(yaml, kwargs.get(key, False) and r"safe_" + fname or fname)
     kwargs = anyconfig.backend.base.mk_opt_args([k for k in kwargs.keys()
                                                  if k != key], kwargs)
     return fnc(*args, **kwargs)
@@ -60,6 +61,9 @@ def _yml_dump(cnf, stream, **kwargs):
     :param cnf: Configuration data (dict-like object) to dump
     :param stream: a file or file-like object to load YAML content
     """
+    if kwargs.get("ac_safe", False):
+        cnf = anyconfig.mdicts.convert_to(cnf, ac_ordered=False)
+
     return _yml_fnc("dump", cnf, stream, **kwargs)
 
 
@@ -71,7 +75,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _type = "yaml"
     _extensions = ["yaml", "yml"]
     _load_opts = ["Loader", "ac_safe"]
-    _dump_opts = ["stream", "Dumper"]
+    _dump_opts = ["stream", "ac_safe", "Dumper"]
 
     load_from_stream = anyconfig.backend.base.to_method(_yml_load)
     dump_to_stream = anyconfig.backend.base.to_method(_yml_dump)

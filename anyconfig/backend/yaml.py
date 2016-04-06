@@ -75,7 +75,10 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _type = "yaml"
     _extensions = ["yaml", "yml"]
     _load_opts = ["Loader", "ac_safe"]
-    _dump_opts = ["stream", "ac_safe", "Dumper"]
+    _dump_opts = ["stream", "ac_safe", "Dumper", "default_style",
+                  "default_flow_style", "canonical", "indent", "width",
+                  "allow_unicode", "line_break", "encoding", "explicit_start",
+                  "explicit_end", "version", "tags"]
 
     load_from_stream = anyconfig.backend.base.to_method(_yml_load)
     dump_to_stream = anyconfig.backend.base.to_method(_yml_dump)

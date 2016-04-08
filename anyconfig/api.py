@@ -99,7 +99,7 @@ def set_loglevel(level):
     LOGGER.setLevel(level)
 
 
-def find_loader(path_or_stream, parser_or_type=None, is_path_=None):
+def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
     """
     Find out config parser object appropriate to load from a file of given path
     or file/file-like object.

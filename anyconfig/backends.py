@@ -221,7 +221,7 @@ def find_by_type(cptype, cps=None):
     return None
 
 
-def find_parser(path_or_stream, forced_type=None, is_path_=None):
+def find_parser(path_or_stream, forced_type=None, is_path_=False):
     """
     Find out config parser object appropriate to load from a file of given path
     or file/file-like object.

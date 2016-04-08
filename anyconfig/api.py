@@ -119,6 +119,10 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
         LOGGER.error(err)
 
     if psr is None:
+        if parser_or_type is None:
+            LOGGER.warning("No parser (type) was given!")
+        else:
+            LOGGER.warning("Parser %s was not found!", str(parser_or_type))
         return None
 
     LOGGER.debug("Using config parser: %r [%s]", psr, psr.type())
@@ -318,12 +322,14 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
 
     :return: dict or dict-like object supports merge operations
     """
+    msg = "Try parsing with a built-in parser because %s"
     if ac_parser is None:
-        LOGGER.warning("No type or parser was given. Try to parse...")
+        LOGGER.warning(msg, "ac_parser was not given.")
         return anyconfig.parser.parse(content)
 
     psr = find_loader(None, ac_parser)
     if psr is None:
+        LOGGER.warning(msg, "parser '%s' was not found" % ac_parser)
         return anyconfig.parser.parse(content)
 
     schema = None

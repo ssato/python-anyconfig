@@ -5,11 +5,9 @@
 # pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs of anyconfig module.
 
-.. versionadded:: 0.4.99
-   Most keyword arguments passed to APIs are now position independent.
-
-.. versionadded:: 0.4.99
-   Added ac_namedtuple parameter to \*load and \*dump APIs.
+.. versionadded:: 0.5.0
+   - Most keyword arguments passed to APIs are now position independent.
+   - Added ac_namedtuple parameter to \*load and \*dump APIs.
 
 .. versionchanged:: 0.3
    Replaced `forced_type` optional argument of some public APIs with

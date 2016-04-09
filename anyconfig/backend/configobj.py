@@ -1,10 +1,10 @@
 #
-# Copyright (C) 2013 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2013 - 2016 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """configobj backend.
 
-.. versionchanged:: 0.4.99
+.. versionchanged:: 0.5.0
    Now loading and dumping options are detected automatically from inspection
    result if possible. Also these became not distinguished because these will
    be passed to configobj.Configuration anyway.

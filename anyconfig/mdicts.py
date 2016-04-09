@@ -5,7 +5,7 @@
 # pylint: disable=unused-argument,unused-import
 """Wrapper of m9dicts.
 
-.. versionadded: 0.4.99
+.. versionadded: 0.5.0
    Swtiched from mergeabledict to m9dicts
 """
 from __future__ import absolute_import

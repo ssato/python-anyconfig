@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015, 2016 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Ref. python -c "import bson; help(bson)"
@@ -8,7 +8,7 @@
 # pylint: disable=protected-access
 r"""BSON backend.
 
-.. versionchanged:: 0.4.99
+.. versionchanged:: 0.5.0
 
    - utilize as_class keyword argument to allow container objects made directly
      on load if C extension is not used and enabled.

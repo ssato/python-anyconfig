@@ -285,9 +285,7 @@ def main(argv=None):
     cnf.update(diff)
 
     if options.args:
-        diff = API.loads(options.args, ac_parser=options.atype,
-                         ac_template=options.template, ac_context=cnf,
-                         ac_merge=options.merge)
+        diff = anyconfig.parser.parse(options.args)
         cnf.update(diff)
 
     _exit_if_only_to_validate(options.validate)

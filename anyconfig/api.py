@@ -37,7 +37,6 @@ import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.mdicts
-import anyconfig.parser
 import anyconfig.template
 import anyconfig.utils
 
@@ -325,12 +324,12 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
     msg = "Try parsing with a built-in parser because %s"
     if ac_parser is None:
         LOGGER.warning(msg, "ac_parser was not given.")
-        return anyconfig.parser.parse(content)
+        return None
 
     psr = find_loader(None, ac_parser)
     if psr is None:
         LOGGER.warning(msg, "parser '%s' was not found" % ac_parser)
-        return anyconfig.parser.parse(content)
+        return None
 
     schema = None
     ac_schema = options.get("ac_schema", None)

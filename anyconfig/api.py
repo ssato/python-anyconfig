@@ -72,9 +72,8 @@ def _maybe_validated(cnf, schema, format_checker=None, **options):
 
     :return: Given `cnf` as it is if validation succeeds else None
     """
-    if schema is None:
-        valid = True
-    else:
+    valid = True
+    if schema:
         (valid, msg) = validate(cnf, schema, format_checker=format_checker,
                                 safe=True)
         if msg:

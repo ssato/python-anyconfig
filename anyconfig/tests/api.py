@@ -98,30 +98,32 @@ class Test_20_dumps_and_loads(unittest.TestCase):
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_40_loads_wo_type(self):
-        a = dict(requires=["bash", "zsh"])
         a_s = "requires:bash,zsh"
 
         a1 = TT.loads(a_s)
-        self.assertEqual(a1["requires"], a["requires"])
+        # a = dict(requires=["bash", "zsh"])
+        # self.assertEqual(a1["requires"], a["requires"])
+        self.assertTrue(a1 is None)
 
     def test_42_loads_w_type_not_exist(self):
-        a = dict(requires=["bash", "zsh"])
         a_s = "requires:bash,zsh"
 
         a1 = TT.loads(a_s, "type_not_exist")
-        self.assertEqual(a1["requires"], a["requires"])
+        # a = dict(requires=["bash", "zsh"])
+        # self.assertEqual(a1["requires"], a["requires"])
+        self.assertTrue(a1 is None)
 
     def test_44_loads_w_type__template(self):
         if not anyconfig.template.SUPPORTED:
             return
 
-        a = dict(requires=["bash", "zsh"])
         a_s = "requires: [{{ requires|join(', ') }}]"
         context = dict(requires=["bash", "zsh"], )
 
         a1 = TT.loads(a_s, ac_parser="yaml", ac_template=True,
                       ac_context=context)
 
+        a = dict(requires=["bash", "zsh"])
         self.assertEqual(a1["requires"], a["requires"])
 
     def test_46_loads_w_type__broken_template(self):

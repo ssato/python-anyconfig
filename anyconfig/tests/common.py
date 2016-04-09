@@ -7,9 +7,9 @@ import tempfile
 import unittest
 
 import anyconfig.compat
-import anyconfig.mdicts
 
 from anyconfig.compat import OrderedDict
+from anyconfig.mdicts import is_dict_like
 
 
 CNF_0 = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
@@ -64,22 +64,16 @@ def cleanup_workdir(workdir):
 def dicts_equal(dic, ref, ordered=False):
     """Compare (maybe nested) dicts.
     """
+    if not is_dict_like(dic) or not is_dict_like(ref):
+        return dic == ref
+
     fnc = list if ordered else len
     if fnc(dic.keys()) != fnc(ref.keys()):
         return False
 
     for key in ref.keys():
-        if key not in dic:
+        if key not in dic or not dicts_equal(dic[key], ref[key]):
             return False
-
-        (next_dic, next_ref) = (dic[key], ref[key])
-        if anyconfig.mdicts.is_dict_like(next_ref):
-            if not anyconfig.mdicts.is_dict_like(next_dic) or \
-                    not dicts_equal(next_dic, next_ref):
-                return False
-        else:
-            if next_dic != next_ref:
-                return False
 
     return True
 

@@ -21,7 +21,7 @@
 Name:           python-%{pkgname}
 Version:        @VERSION@
 Release:        1%{?dist}
-Summary:        Generic access to configuration files in some formats
+Summary:        Library provides common APIs to access to configuration files in various formats
 Group:          Development/Libraries
 License:        MIT
 URL:            https://github.com/ssato/%{name}

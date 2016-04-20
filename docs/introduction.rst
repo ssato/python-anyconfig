@@ -2,8 +2,8 @@ Introduction
 =============
 
 python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
-python library provides generic access to configuration files in various
-formats with configuration merge along with config template and schema
+python library provides common APIs to access to configuration files in various
+formats with some useful features such as contents merge, templates and schema
 validation/generation support.
 
 - Home: https://github.com/ssato/python-anyconfig
@@ -11,7 +11,7 @@ validation/generation support.
 - PyPI: https://pypi.python.org/pypi/anyconfig
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
-I, Satoru SATOH <ssato@redhat.com>, originally developed and keep maintain it
+I, Satoru SATOH <ssato@redhat.com>, developed and keep maintain this library
 with others' help [#]_ .
 
 .. [#] This name took an example from the 'anydbm' python standard library.
@@ -23,12 +23,20 @@ Features
 python-anyconfig provides very simple and unified APIs to process configuration
 files in various formats:
 
-- anyconfig.load() to load configuration files and return a dict-like object represents loaded configuration
-- anyconfig.loads() to load configuration from a string just like json.loads does
-- anyconfig.dump() to dump a configuration file from a dict or dict-like object represents configuration
-- anyconfig.dumps() to dump a configuration string from a dict or dict-like object represents configuration
-- anyconfig.validate() to validate configuration loaded with anyconfig.load() with JSON schema [#]_ (object) also loaded with anyconfig.load(). anyconfig.load() may help loading JSON schema file[s] in any formats anyconfig supports.
-- anyconfig.gen_schema() to generate a minimum JSON schema object to validate given configuration file[s] later.
+- Loading configuration files:
+
+  - anyconfig.load() loads configuration files or file/file-like objects and return a dict-like object represents loaded configuration
+  - anyconfig.loads() loads configuration from a string just like json.loads does
+
+- Dumping configuration files:
+
+  - anyconfig.dump() dumps a configuration file from a dict or dict-like object represents configuration
+  - anyconfig.dumps() dumps a configuration string from a dict or dict-like object represents configuration
+
+- Schema validation and generation of configuration files:
+
+  - anyconfig.validate() validates configuration loaded with anyconfig.load() with JSON schema [#]_ (object) also loaded with anyconfig.load(). anyconfig.load() may help loading JSON schema file[s] in any formats anyconfig supports.
+  - anyconfig.gen_schema() generates a minimum JSON schema object to validate given configuration file[s] later.
 
 It enables to load configuration file[s] in various formats in the same manner,
 and in some cases, even there is no need to take care of the actual format of

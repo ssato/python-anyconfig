@@ -12,10 +12,9 @@ validation/generation support.
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
 I, Satoru SATOH <ssato@redhat.com>, developed and keep maintain this library
-with others' help [#]_ .
+with others' help (see AUTHORS.txt for more details).
 
 .. [#] This name took an example from the 'anydbm' python standard library.
-.. [#] see the output of `git log --pretty=format:"%an %ae" | grep -vE "Satoru SATOH" | sort | uniq`.
 
 Features
 ----------

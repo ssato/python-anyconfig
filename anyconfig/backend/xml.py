@@ -58,6 +58,16 @@ _PARAM_PREFIX = "@"
 _IS_OLDER_PYTHON = sys.version_info[0] < 3 and sys.version_info[1] < 7
 
 
+def _gen_tags(pprefix=_PARAM_PREFIX):
+    """
+    Generate special prefixed tags.
+
+    :param pprefix: Special parameter name prefix
+    :return: A tuple of tags (attributes, text, children)
+    """
+    return (pprefix + x for x in ("attrs", "text", "children"))
+
+
 def etree_to_container(root, cls, pprefix=_PARAM_PREFIX):
     """
     Convert XML ElementTree to a collection of container objects.
@@ -66,8 +76,7 @@ def etree_to_container(root, cls, pprefix=_PARAM_PREFIX):
     :param cls: Container class
     :param pprefix: Special parameter name prefix
     """
-    (attrs, text, children) = [pprefix + x for x in ("attrs", "text",
-                                                     "children")]
+    (attrs, text, children) = _gen_tags(pprefix)
     tree = cls()
     if root is None:
         return tree
@@ -100,8 +109,7 @@ def container_to_etree(obj, parent=None, pprefix=_PARAM_PREFIX):
     if not anyconfig.mdicts.is_dict_like(obj):
         return  # All attributes and text should be set already.
 
-    (attrs, text, children) = [pprefix + x for x in ("attrs", "text",
-                                                     "children")]
+    (attrs, text, children) = _gen_tags(pprefix)
     for key, val in anyconfig.compat.iteritems(obj):
         if key == attrs:
             for attr, aval in anyconfig.compat.iteritems(val):

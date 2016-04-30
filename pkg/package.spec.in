@@ -139,13 +139,16 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sat Apr  9 2016 Satoru SATOH <ssato@redhat.com> - 0.5.99-1
 - fix: remove extra line breaks just after each section headers and items when
-  dumping INI format config files in ini backend
-- fix: make ac_safe option worked for dump API of yaml backend
+  dumping INI format config files in ini backend, reported by ajays20078
+- fix: make ac_safe option worked for dump API of yaml backend as expected,
+  reported by ajays20078
 - refactor: log error messages in anyconfig.find_loader always if something
   goes wrong; no parser given or given parser not found
 - fix: make anyconfig.loads returning None if no parser or parser is not found
 - change: try parsing optional arguments with anyconfig.parser.parse instead of
   anyconfig.loads in the CLI frontend
+- enhancement: improve package description in setup.py, README.rst and doc
+- enhancement: add AUTHORS.txt to list authors and contributors
 
 * Sun Feb 21 2016 Satoru SATOH <ssato@redhat.com> - 0.5.0-1
 - change: switch to m9dicts as mearge-able dict, successor of .mergeabledict
@@ -154,7 +157,7 @@ rm -rf $RPM_BUILD_ROOT
   not work still
 - enhancement: support namedtuple <-> dict[-like] object conversion
 - fix: resolve some rpmlint warns such as macro used in the comment lines
-- fix/enhancements: add missing corner and ordered test cases
+- fix/enhancement: add missing corner and ordered test cases
 - refactor: Refactoring all test backend test cases to simplify them
 
 * Sun Nov 22 2015 Satoru SATOH <ssato@redhat.com> - 0.4.0-1

@@ -38,6 +38,10 @@ python-anyconfig
    :target: https://www.openhub.net/p/python-anyconfig
    :alt: [Open HUB]
 
+.. image:: http://python-anyconfig.readthedocs.org/en/latest/?badge=latest
+   :target: http://python-anyconfig.readthedocs.org/en/latest/
+   :alt: [Doc]
+
 Introduction
 =============
 

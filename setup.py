@@ -1,13 +1,16 @@
+from __future__ import absolute_import
 from setuptools import setup, Command, find_packages
 
 import glob
 import os.path
 import os
 import subprocess
+import sys
 
+sys.path.insert(0, os.path.dirname(__file__))  # load anyconfig from this dir.
 
-PACKAGE = "anyconfig"
-VERSION = "0.5.0"  # see anyconfig.globals.VERSION
+from anyconfig.globals import PACKAGE, VERSION
+
 
 # For daily snapshot versioning mode:
 if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
@@ -98,7 +101,8 @@ _CLASSIFIERS = ["Development Status :: 4 - Beta",
 
 setup(name=PACKAGE,
       version=VERSION,
-      description="Library provides common APIs to access to configuration files in various formats",
+      description=("Library provides common APIs to access to configuration "
+                   "files " "in various formats"),
       long_description=_LONG_DESC,
       author="Satoru SATOH",
       author_email="ssato@redhat.com",
@@ -113,7 +117,6 @@ setup(name=PACKAGE,
       },
       entry_points=open(os.path.join(os.curdir,
                                      "pkg/entry_points.txt")).read(),
-      data_files=data_files,
-      )
+      data_files=data_files)
 
 # vim:sw=4:ts=4:et:

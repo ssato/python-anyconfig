@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 Satoru SATOH <ssato redhat.com>
+# Copyright (C) 2015, 2016 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
 """anyconfig.schema module.
@@ -75,7 +75,7 @@ def validate(obj, schema, **options):
     return (True, '')
 
 
-def array_to_schema_node(arr, typemap=None):
+def array_to_schema_node(arr, typemap):
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -85,16 +85,10 @@ def array_to_schema_node(arr, typemap=None):
 
     :return: Another MergeableDict instance represents JSON schema of items
     """
-    if typemap is None:
-        typemap = _SIMPLETYPE_MAP
-
-    if arr:
-        return gen_schema(arr[0], typemap)
-    else:
-        return gen_schema("str", typemap)
+    return gen_schema(arr[0] if arr else "str", ac_schema_typemap=typemap)
 
 
-def object_to_schema_nodes_iter(obj, typemap=None):
+def object_to_schema_nodes_iter(obj, typemap):
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -104,25 +98,26 @@ def object_to_schema_nodes_iter(obj, typemap=None):
 
     :yield: Another MergeableDict instance represents JSON schema of object
     """
-    if typemap is None:
-        typemap = _SIMPLETYPE_MAP
-
     for key, val in anyconfig.compat.iteritems(obj):
-        yield (key, gen_schema(val, typemap=typemap))
+        yield (key, gen_schema(val, ac_schema_typemap=typemap))
 
 
-def gen_schema(node, typemap=None):
+def gen_schema(node, **options):
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
 
-    :param node: Object node :: MergeableDict
-    :param typemap: Type to JSON schema type mappings
+    :param node: Config data object (dict[-like] or namedtuple)
+    :param options: Other keyword options such as:
 
-    :return: Another MergeableDict instance represents JSON schema of this node
+        - ac_schema_type: Specify the type of schema to generate from 'basic'
+          (basic and minimum schema) and 'strict' (more precise schema)
+        - ac_schema_typemap: Type to JSON schema type mappings
+
+    :return: A dict represents JSON schema of this node
     """
-    if typemap is None:
-        typemap = _SIMPLETYPE_MAP
+    typemap = options["ac_schema_typemap"] \
+        if "ac_schema_typemap" in options else _SIMPLETYPE_MAP
 
     ret = dict(type="null")
 

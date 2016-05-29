@@ -38,17 +38,18 @@ class Test(unittest.TestCase):
         self.assertFalse(ret)
 
     def test_20_array_to_schema_node(self):
-        scm = TT.array_to_schema_node([1])
+        scm = TT.array_to_schema_node([1], TT._SIMPLETYPE_MAP)
         ref_scm = {'type': 'integer'}
         self.assertTrue(dicts_equal(scm, ref_scm), scm)
 
     def test_22_array_to_schema_node__empty_array(self):
-        scm = TT.array_to_schema_node([])
+        scm = TT.array_to_schema_node([], TT._SIMPLETYPE_MAP)
         ref_scm = {'type': 'string'}
         self.assertTrue(dicts_equal(scm, ref_scm), scm)
 
     def test_30_object_to_schema_nodes_iter(self):
-        nscm = list(TT.object_to_schema_nodes_iter({'a': 1}))[0]
+        nscm = list(TT.object_to_schema_nodes_iter({'a': 1},
+                                                   TT._SIMPLETYPE_MAP))[0]
         ref_nscm = ('a', {'type': 'integer'})
         self.assertTrue(nscm, ref_nscm)
 

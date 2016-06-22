@@ -4,6 +4,10 @@
 #
 """anyconfig.schema module.
 
+.. versionchanged:: 0.6.99
+   allow passing `ac_schema_type` ('basic' == default or 'strict') to API
+   :func:`gen_schema` to switch type of schema object generated
+
 .. versionadded:: 0.0.11
    Added new API :func:`gen_schema` to generate schema object
 
@@ -75,31 +79,43 @@ def validate(obj, schema, **options):
     return (True, '')
 
 
-def array_to_schema_node(arr, typemap):
+def array_to_schema_node(arr, **options):
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
 
     :param arr: Array of dict or MergeableDict objects
-    :param typemap: Type to JSON schema type mappings
+    :param options: Other keyword options such as:
+
+        - ac_schema_type: Specify the type of schema to generate from 'basic'
+          (basic and minimum schema) and 'strict' (more precise schema)
+        - ac_schema_typemap: Type to JSON schema type mappings
 
     :return: Another MergeableDict instance represents JSON schema of items
     """
-    return gen_schema(arr[0] if arr else "str", ac_schema_typemap=typemap)
+    return gen_schema(arr[0] if arr else "str", **options)
 
 
-def object_to_schema_nodes_iter(obj, typemap):
+def object_to_schema_nodes_iter(obj, **options):
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
 
     :param obj: Dict or MergeableDict object
-    :param typemap: Type to JSON schema type mappings
+    :param options: Other keyword options such as:
+
+        - ac_schema_type: Specify the type of schema to generate from 'basic'
+          (basic and minimum schema) and 'strict' (more precise schema)
+        - ac_schema_typemap: Type to JSON schema type mappings
 
     :yield: Another MergeableDict instance represents JSON schema of object
     """
     for key, val in anyconfig.compat.iteritems(obj):
-        yield (key, gen_schema(val, ac_schema_typemap=typemap))
+        yield (key, gen_schema(val, **options))
+
+
+_BASIC_SCHEMA_TYPE = "basic"
+_STRICT_SCHEMA_TYPE = "strict"
 
 
 def gen_schema(node, **options):
@@ -118,6 +134,7 @@ def gen_schema(node, **options):
     """
     typemap = options["ac_schema_typemap"] \
         if "ac_schema_typemap" in options else _SIMPLETYPE_MAP
+    strict = options.get("ac_schema_type", False) == _STRICT_SCHEMA_TYPE
 
     ret = dict(type="null")
 
@@ -130,12 +147,19 @@ def gen_schema(node, **options):
         ret = dict(type=typemap[_type])
 
     elif isinstance(node, dict):
-        props = object_to_schema_nodes_iter(node, typemap)
+        props = list(object_to_schema_nodes_iter(node, **options))
         ret = dict(type=typemap[dict], properties=dict(props))
+        if strict:
+            ret["required"] = sorted(t[0] for t in props)
 
     elif _type in (list, tuple) or hasattr(node, "__iter__"):
         ret = dict(type=typemap[list],
-                   items=array_to_schema_node(node, typemap))
+                   items=array_to_schema_node(node, **options))
+        if strict:
+            items = list(node)
+            nitems = len(items)
+            ret["minItems"] = nitems
+            ret["uniqueItems"] = len(set(items)) == nitems
 
     return ret
 

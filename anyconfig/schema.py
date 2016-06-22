@@ -15,12 +15,12 @@
    Added new API :func:`validate` to validate config with JSON schema
 """
 from __future__ import absolute_import
-import anyconfig.compat
-
 try:
     import jsonschema
 except ImportError:
     pass
+
+import anyconfig.compat
 
 
 _SIMPLETYPE_MAP = {list: "array", tuple: "array",

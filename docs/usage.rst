@@ -378,7 +378,7 @@ lines of code like the followings:
    import anyconfig
 
    default = dict(foo=0, bar='1', baz=[2, 3])  # Default values
-   conf = anyconfig.container(default)  # or: anyconfig.container(**default)
+   conf = anyconfig.to_container(default)  # or: anyconfig.to_container(**default)
    conf_from_files = anyconfig.load("/path/to/config_files_dir/*.yml")
 
    conf.update(conf_from_files)
@@ -390,7 +390,7 @@ or:
 .. code-block:: python
 
    default = dict(foo=0, bar='1', baz=[2, 3])
-   conf = anyconfig.container(default)
+   conf = anyconfig.to_container(default)
    conf.update(anyconfig.load("/path/to/config_files_dir/*.yml"))
 
 Environment Variables
@@ -401,7 +401,7 @@ this:
 
 .. code-block:: python
 
-   conf = anyconfig.container(os.environ.copy())
+   conf = anyconfig.to_container(os.environ.copy())
    conf.update(anyconfig.load("/path/to/config_files_dir/*.yml"))
 
 Load from compressed files

@@ -83,6 +83,16 @@ _BASIC_SCHEMA_TYPE = "basic"
 _STRICT_SCHEMA_TYPE = "strict"
 
 
+def _process_options(**options):
+    """
+    Helper function to process keyword arguments passed to gen_schema.
+
+    :return: A tuple of (typemap :: dict, strict :: bool)
+    """
+    return (options.get("ac_schema_typemap", _SIMPLETYPE_MAP),
+            options.get("ac_schema_type", False) == _STRICT_SCHEMA_TYPE)
+
+
 def array_to_schema(arr, **options):
     """
     Generate a JSON schema object with type annotation added for given object.
@@ -96,8 +106,7 @@ def array_to_schema(arr, **options):
 
     :return: Another MergeableDict instance represents JSON schema of items
     """
-    typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
-    strict = options.get("ac_schema_type", False) == _STRICT_SCHEMA_TYPE
+    (typemap, strict) = _process_options(**options)
 
     arr = list(arr)
     scm = dict(type=typemap[list],
@@ -124,8 +133,7 @@ def object_to_schema(obj, **options):
 
     :yield: Another MergeableDict instance represents JSON schema of object
     """
-    typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
-    strict = options.get("ac_schema_type", False) == _STRICT_SCHEMA_TYPE
+    (typemap, strict) = _process_options(**options)
 
     props = dict((k, gen_schema(v, **options)) for k, v in obj.items())
     scm = dict(type=typemap[dict], properties=props)

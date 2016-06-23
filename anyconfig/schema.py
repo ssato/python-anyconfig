@@ -83,10 +83,9 @@ _BASIC_SCHEMA_TYPE = "basic"
 _STRICT_SCHEMA_TYPE = "strict"
 
 
-def array_to_schema_node(arr, **options):
+def array_to_schema(arr, **options):
     """
-    Generate a node represents JSON schema object with type annotation added
-    for given object node.
+    Generate a JSON schema object with type annotation added for given object.
 
     :param arr: Array of dict or MergeableDict objects
     :param options: Other keyword options such as:
@@ -97,7 +96,18 @@ def array_to_schema_node(arr, **options):
 
     :return: Another MergeableDict instance represents JSON schema of items
     """
-    return gen_schema(arr[0] if arr else "str", **options)
+    typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
+    strict = options.get("ac_schema_type", False) == _STRICT_SCHEMA_TYPE
+
+    scm = dict(type=typemap[list],
+               items=gen_schema(arr[0] if arr else "str", **options))
+    if strict:
+        items = list(arr)
+        nitems = len(items)
+        scm["minItems"] = nitems
+        scm["uniqueItems"] = len(set(items)) == nitems
+
+    return scm
 
 
 def object_to_schema(obj, **options):
@@ -156,13 +166,7 @@ def gen_schema(node, **options):
         ret = object_to_schema(node, **options)
 
     elif _type in (list, tuple) or hasattr(node, "__iter__"):
-        ret = dict(type=typemap[list],
-                   items=array_to_schema_node(node, **options))
-        if strict:
-            items = list(node)
-            nitems = len(items)
-            ret["minItems"] = nitems
-            ret["uniqueItems"] = len(set(items)) == nitems
+        ret = array_to_schema(node, **options)
 
     return ret
 

@@ -5,8 +5,8 @@
 """anyconfig.schema module.
 
 .. versionchanged:: 0.6.99
-   allow passing `ac_schema_type` ('basic' == default or 'strict') to API
-   :func:`gen_schema` to switch type of schema object generated
+   allow passing `ac_schema_strict` to API :func:`gen_schema` to generate more
+   strict and precise JSON schema object
 
 .. versionadded:: 0.0.11
    Added new API :func:`gen_schema` to generate schema object
@@ -79,10 +79,6 @@ def validate(obj, schema, **options):
     return (True, '')
 
 
-_BASIC_SCHEMA_TYPE = "basic"
-_STRICT_SCHEMA_TYPE = "strict"
-
-
 def _process_options(**options):
     """
     Helper function to process keyword arguments passed to gen_schema.
@@ -90,7 +86,7 @@ def _process_options(**options):
     :return: A tuple of (typemap :: dict, strict :: bool)
     """
     return (options.get("ac_schema_typemap", _SIMPLETYPE_MAP),
-            options.get("ac_schema_type", False) == _STRICT_SCHEMA_TYPE)
+            bool(options.get("ac_schema_strict", False)))
 
 
 def array_to_schema(arr, **options):
@@ -100,8 +96,7 @@ def array_to_schema(arr, **options):
     :param arr: Array of dict or MergeableDict objects
     :param options: Other keyword options such as:
 
-        - ac_schema_type: Specify the type of schema to generate from 'basic'
-          (basic and minimum schema) and 'strict' (more precise schema)
+        - ac_schema_strict: True if more strict (precise) schema is needed
         - ac_schema_typemap: Type to JSON schema type mappings
 
     :return: Another MergeableDict instance represents JSON schema of items
@@ -127,8 +122,7 @@ def object_to_schema(obj, **options):
     :param obj: Dict or MergeableDict object
     :param options: Other keyword options such as:
 
-        - ac_schema_type: Specify the type of schema to generate from 'basic'
-          (basic and minimum schema) and 'strict' (more precise schema)
+        - ac_schema_strict: True if more strict (precise) schema is needed
         - ac_schema_typemap: Type to JSON schema type mappings
 
     :yield: Another MergeableDict instance represents JSON schema of object
@@ -151,8 +145,7 @@ def gen_schema(node, **options):
     :param node: Config data object (dict[-like] or namedtuple)
     :param options: Other keyword options such as:
 
-        - ac_schema_type: Specify the type of schema to generate from 'basic'
-          (basic and minimum schema) and 'strict' (more precise schema)
+        - ac_schema_strict: True if more strict (precise) schema is needed
         - ac_schema_typemap: Type to JSON schema type mappings
 
     :return: A dict represents JSON schema of this node

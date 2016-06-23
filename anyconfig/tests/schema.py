@@ -90,7 +90,7 @@ class Test_20_GenSchema(Test_00_Base):
 
 
 def _gen_scm(val):
-    return TT.gen_schema(val, ac_schema_type="strict")
+    return TT.gen_schema(val, ac_schema_strict=True)
 
 
 class Test_30_GenStrictSchema(Test_00_Base):

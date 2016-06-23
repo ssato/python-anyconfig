@@ -99,13 +99,13 @@ def array_to_schema(arr, **options):
     typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
     strict = options.get("ac_schema_type", False) == _STRICT_SCHEMA_TYPE
 
+    arr = list(arr)
     scm = dict(type=typemap[list],
                items=gen_schema(arr[0] if arr else "str", **options))
     if strict:
-        items = list(arr)
-        nitems = len(items)
+        nitems = len(arr)
         scm["minItems"] = nitems
-        scm["uniqueItems"] = len(set(items)) == nitems
+        scm["uniqueItems"] = len(set(arr)) == nitems
 
     return scm
 

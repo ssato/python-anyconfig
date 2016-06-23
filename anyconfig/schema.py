@@ -156,14 +156,14 @@ def gen_schema(node, **options):
 
     if _type in _SIMPLE_TYPES:
         typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
-        ret = dict(type=typemap[_type])
+        scm = dict(type=typemap[_type])
 
     elif isinstance(node, dict):
-        ret = object_to_schema(node, **options)
+        scm = object_to_schema(node, **options)
 
     elif _type in (list, tuple) or hasattr(node, "__iter__"):
-        ret = array_to_schema(node, **options)
+        scm = array_to_schema(node, **options)
 
-    return ret
+    return scm
 
 # vim:sw=4:ts=4:et:

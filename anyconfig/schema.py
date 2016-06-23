@@ -149,16 +149,13 @@ def gen_schema(node, **options):
 
     :return: A dict represents JSON schema of this node
     """
-    typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
-
-    ret = dict(type="null")
-
     if node is None:
-        return ret
+        return dict(type="null")
 
     _type = type(node)
 
     if _type in _SIMPLE_TYPES:
+        typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
         ret = dict(type=typemap[_type])
 
     elif isinstance(node, dict):

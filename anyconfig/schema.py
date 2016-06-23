@@ -79,6 +79,10 @@ def validate(obj, schema, **options):
     return (True, '')
 
 
+_BASIC_SCHEMA_TYPE = "basic"
+_STRICT_SCHEMA_TYPE = "strict"
+
+
 def array_to_schema_node(arr, **options):
     """
     Generate a node represents JSON schema object with type annotation added
@@ -96,7 +100,7 @@ def array_to_schema_node(arr, **options):
     return gen_schema(arr[0] if arr else "str", **options)
 
 
-def object_to_schema_nodes_iter(obj, **options):
+def object_to_schema(obj, **options):
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -110,12 +114,15 @@ def object_to_schema_nodes_iter(obj, **options):
 
     :yield: Another MergeableDict instance represents JSON schema of object
     """
-    for key, val in anyconfig.compat.iteritems(obj):
-        yield (key, gen_schema(val, **options))
+    typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
+    strict = options.get("ac_schema_type", False) == _STRICT_SCHEMA_TYPE
 
+    props = dict((k, gen_schema(v, **options)) for k, v in obj.items())
+    scm = dict(type=typemap[dict], properties=props)
+    if strict:
+        scm["required"] = sorted(props.keys())
 
-_BASIC_SCHEMA_TYPE = "basic"
-_STRICT_SCHEMA_TYPE = "strict"
+    return scm
 
 
 def gen_schema(node, **options):
@@ -146,10 +153,7 @@ def gen_schema(node, **options):
         ret = dict(type=typemap[_type])
 
     elif isinstance(node, dict):
-        props = list(object_to_schema_nodes_iter(node, **options))
-        ret = dict(type=typemap[dict], properties=dict(props))
-        if strict:
-            ret["required"] = sorted(t[0] for t in props)
+        ret = object_to_schema(node, **options)
 
     elif _type in (list, tuple) or hasattr(node, "__iter__"):
         ret = dict(type=typemap[list],

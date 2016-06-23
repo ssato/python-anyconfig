@@ -29,6 +29,9 @@ class Test_00_Base(unittest.TestCase):
 
     opts = dict(ac_schema_typemap=TT._SIMPLETYPE_MAP)
 
+
+class Test_00_Functions(Test_00_Base):
+
     def test_20_array_to_schema_node(self):
         scm = TT.array_to_schema_node([1])
         ref_scm = {'type': 'integer'}
@@ -40,9 +43,9 @@ class Test_00_Base(unittest.TestCase):
         self.assertTrue(dicts_equal(scm, ref_scm), scm)
 
     def test_30_object_to_schema_nodes_iter(self):
-        nscm = list(TT.object_to_schema_nodes_iter({'a': 1}))[0]
-        ref_nscm = ('a', {'type': 'integer'})
-        self.assertTrue(nscm, ref_nscm)
+        scm = TT.object_to_schema({'a': 1})
+        ref = dict(type="object", properties=dict(a=dict(type="integer")))
+        self.assertTrue(dicts_equal(scm, ref), scm)
 
 
 class Test_10_Validation(Test_00_Base):

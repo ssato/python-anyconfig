@@ -32,15 +32,15 @@ class Test_00_Base(unittest.TestCase):
 
 class Test_00_Functions(Test_00_Base):
 
-    def test_20_array_to_schema_node(self):
-        scm = TT.array_to_schema_node([1])
-        ref_scm = {'type': 'integer'}
-        self.assertTrue(dicts_equal(scm, ref_scm), scm)
+    def test_20_array_to_schema(self):
+        scm = TT.array_to_schema([1])
+        ref = dict(items=dict(type="integer"), type="array")
+        self.assertTrue(dicts_equal(scm, ref), scm)
 
-    def test_22_array_to_schema_node__empty_array(self):
-        scm = TT.array_to_schema_node([])
-        ref_scm = {'type': 'string'}
-        self.assertTrue(dicts_equal(scm, ref_scm), scm)
+    def test_22_array_to_schema__empty_array(self):
+        scm = TT.array_to_schema([])
+        ref = dict(items=dict(type="string"), type="array")
+        self.assertTrue(dicts_equal(scm, ref), scm)
 
     def test_30_object_to_schema_nodes_iter(self):
         scm = TT.object_to_schema({'a': 1})

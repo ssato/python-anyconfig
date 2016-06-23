@@ -132,8 +132,7 @@ def gen_schema(node, **options):
 
     :return: A dict represents JSON schema of this node
     """
-    typemap = options["ac_schema_typemap"] \
-        if "ac_schema_typemap" in options else _SIMPLETYPE_MAP
+    typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
     strict = options.get("ac_schema_type", False) == _STRICT_SCHEMA_TYPE
 
     ret = dict(type="null")

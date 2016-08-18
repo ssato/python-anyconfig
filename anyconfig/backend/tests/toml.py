@@ -5,8 +5,6 @@
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
 
-import datetime
-
 import anyconfig.backend.toml as TT
 import anyconfig.backend.tests.ini
 
@@ -45,6 +43,8 @@ hosts = [
 ]
 """
 
+_DOB = TT.toml.loads("dob = 1979-05-27T07:32:00Z")['dob']
+
 CNF = ODict((('clients',
               ODict((('data', [['gamma', 'delta'], [1, 2]]),
                      ('hosts', ['alpha', 'omega'])))),
@@ -54,8 +54,7 @@ CNF = ODict((('clients',
                      ('ports', [8001, 8001, 8002]),
                      ('server', '192.168.1.1')))),
              ('owner',
-              ODict((('dob',
-                      datetime.datetime(1979, 5, 27, 7, 32, 0, 0, None)),
+              ODict((('dob', _DOB),
                      ('name', 'Tom Preston-Werner')))),
              ('servers',
               ODict((('alpha',

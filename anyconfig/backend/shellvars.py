@@ -18,6 +18,7 @@ Parser for simple Shell vars' definitions.
 from __future__ import absolute_import
 
 import logging
+import itertools
 import re
 
 import anyconfig.backend.base
@@ -37,22 +38,25 @@ def _parseline(line):
     ('aaa', '')
     >>> _parseline("aaa=bbb")
     ('aaa', 'bbb')
-    >>> _parseline("aaa='bbb'")
-    ('aaa', 'bbb')
-    >>> _parseline('aaa="bbb"')
-    ('aaa', 'bbb')
+    >>> _parseline("aaa='bb b'")
+    ('aaa', 'bb b')
+    >>> _parseline('aaa="bb#b"')
+    ('aaa', 'bb#b')
+    >>> _parseline('aaa="bb\\"b"')
+    ('aaa', 'bb"b')
     >>> _parseline("aaa=bbb   # ccc")
     ('aaa', 'bbb')
     """
-    match = re.match(r"^(?:\s+)?(\S+)[:=]"
-                     r"(?:(?:(?:(?:[\"'])(.+)(?:[\"']))|([^# ]+))(?:\s+)?#?)?",
-                     line)
+    match = re.match(r"^\s*(\S+)=(?:(?:"
+                     r"(?:\"(.*[^\\])\")|(?:'(.*[^\\])')|"
+                     r"(?:([^\"'#\s]+)))?)\s*#*", line)
     if not match:
         LOGGER.warning("Invalid line found: %s", line)
         return (None, None)
 
     tpl = match.groups()
-    return (tpl[0], tpl[1] or (tpl[2] or ''))
+    vals = list(itertools.dropwhile(lambda x: x is None, tpl[1:]))
+    return (tpl[0], vals[0] if vals else '')
 
 
 def load(stream, to_container=dict):

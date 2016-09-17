@@ -75,10 +75,6 @@ def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):
         if line.startswith(comment_markers):
             return None
 
-        for marker in comment_markers:
-            if marker in line:  # Then strip the rest starts w/ it.
-                line = line[:line.find(marker)].rstrip()
-
     return line
 
 

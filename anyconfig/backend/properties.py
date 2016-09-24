@@ -147,7 +147,7 @@ def load(stream, to_container=dict, comment_markers=_COMMENT_MARKERS):
     >>> load(to_strm("! " + s0))
     {}
     >>> load(to_strm("calendar.japanese.type:"))
-    {}
+    {'calendar.japanese.type': ''}
     >>> load(to_strm(s0))
     {'calendar.japanese.type': 'LocalGregorianCalendar'}
     >>> load(to_strm(s0 + "# ..."))

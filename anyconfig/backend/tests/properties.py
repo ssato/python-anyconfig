@@ -13,7 +13,7 @@ from anyconfig.compat import OrderedDict as ODict
 
 CNF_S = """
 a = 0
-b = bbb
+  b = bbb
 c:
 
 sect0.c = x;y;z

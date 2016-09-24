@@ -45,6 +45,8 @@ def _parseline(line):
     (None, None)
     >>> _parseline("aaa:")
     ('aaa', '')
+    >>> _parseline(" aaa:")
+    ('aaa', '')
     >>> _parseline("calendar.japanese.type: LocalGregorianCalendar")
     ('calendar.japanese.type', 'LocalGregorianCalendar')
 
@@ -52,7 +54,8 @@ def _parseline(line):
     # >>> _parseline("aaa")
     # ('aaa', '')
     """
-    matched = re.match(r"^(\S+)(?:\s+)?(?:(?<!\\)[:=])(?:\s+)?(.*)", line)
+    matched = re.match(r"^(?:\s+)?(\S+)(?:\s+)?(?:(?<!\\)[:=])(?:\s+)?(.*)",
+                       line)
     if not matched:
         LOGGER.warning("Invalid line found: %s", line)
         return (None, None)

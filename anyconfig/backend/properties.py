@@ -1,9 +1,12 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2016 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """
 Java properties file support.
+
+.. versionchanged:: 0.6.99
+   - Fix handling of empty values, pointed by @ajays20078
 
 .. versionadded:: 0.2
    Added native Java properties parser instead of a plugin utilizes
@@ -12,7 +15,9 @@ Java properties file support.
 - Format to support: Java Properties file, e.g.
   http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html
 - Requirements: None (built-in)
-- Limitations: None
+- Limitations:
+  - Key and value separator of white spaces is not supported
+
 - Special options: None
 """
 from __future__ import absolute_import
@@ -36,17 +41,24 @@ def _parseline(line):
         A string to parse, must not start with ' ', '#' or '!' (comment)
     :return: A tuple of (key, value), both key and value may be None
 
-    >>> _parseline("aaa")
+    >>> _parseline(" ")
     (None, None)
+    >>> _parseline("aaa:")
+    ('aaa', '')
     >>> _parseline("calendar.japanese.type: LocalGregorianCalendar")
     ('calendar.japanese.type', 'LocalGregorianCalendar')
+
+    FIXME:
+    # >>> _parseline("aaa")
+    # ('aaa', '')
     """
-    match = re.match(r"^(\S+)(?:\s+)?(?<!\\)[:=](?:\s+)?(.+)", line)
-    if not match:
+    matched = re.match(r"^(\S+)(?:\s+)?(?:(?<!\\)[:=])(?:\s+)?(.*)", line)
+    if not matched:
         LOGGER.warning("Invalid line found: %s", line)
         return (None, None)
 
-    return match.groups()
+    (key, val) = matched.groups()
+    return (key, '' if val is None else val)
 
 
 def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):

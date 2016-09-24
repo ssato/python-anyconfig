@@ -14,12 +14,13 @@ from anyconfig.compat import OrderedDict as ODict
 CNF_S = """
 a = 0
 b = bbb
+c:
 
 sect0.c = x;y;z
 sect1.d = \\
     1,2,3
 """
-CNF = ODict((("a", "0"), ("b", "bbb"),
+CNF = ODict((("a", "0"), ("b", "bbb"), ("c", ""),
              ("sect0.c", "x;y;z"), ("sect1.d", "1,2,3")))
 
 

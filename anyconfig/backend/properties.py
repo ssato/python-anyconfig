@@ -17,6 +17,7 @@ Java properties file support.
 - Requirements: None (built-in)
 - Limitations:
   - Key and value separator of white spaces is not supported
+  - Keys contain escaped white spaces is not supported
 
 - Special options: None
 """

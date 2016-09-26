@@ -66,7 +66,7 @@ def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):
     >>> _pre_process_line("! " + s0) is None
     True
     >>> _pre_process_line(s0 + "# comment")
-    'calendar.japanese.type: LocalGregorianCalendar'
+    'calendar.japanese.type: LocalGregorianCalendar# comment'
     """
     if not line:
         return None
@@ -132,7 +132,7 @@ def load(stream, to_container=dict, comment_markers=_COMMENT_MARKERS):
     >>> load(to_strm(s0))
     {'calendar.japanese.type': 'LocalGregorianCalendar'}
     >>> load(to_strm(s0 + "# ..."))
-    {'calendar.japanese.type': 'LocalGregorianCalendar'}
+    {'calendar.japanese.type': 'LocalGregorianCalendar# ...'}
     >>> s1 = r"key=a\\:b"
     >>> load(to_strm(s1))
     {'key': 'a:b'}

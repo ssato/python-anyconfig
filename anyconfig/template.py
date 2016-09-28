@@ -4,7 +4,7 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument,wrong-import-position,wrong-import-order
 """Template rendering module for jinja2-based template config files.
 """
 from __future__ import absolute_import

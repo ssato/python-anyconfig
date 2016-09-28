@@ -2,7 +2,7 @@
 # Author: Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-# pylint: disable=unused-import,import-error,invalid-name
+# pylint: disable=unused-import,import-error,invalid-name,wrong-import-position
 """
 Compatiblity module
 """

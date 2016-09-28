@@ -1,9 +1,11 @@
 #
-# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2016 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# suppress false-positive warn at '... pkg_resources ...' line:
-# pylint: disable=no-member
+# Suppress:
+# - false-positive warn at '... pkg_resources ...' line
+# - import positions after some globals are defined
+# pylint: disable=no-member,wrong-import-position
 """A module to aggregate config parser (loader/dumper) backends.
 """
 from __future__ import absolute_import

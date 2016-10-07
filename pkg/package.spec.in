@@ -137,6 +137,14 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Oct  8 2016 Satoru SATOH <ssato@redhat.com> - 0.7.0-1
+- enhancement: introduced ac_schema_type to generate more strict schema
+- enhancement: introduced shellvars backend originally suggested by ajays20078
+- fix: comment processing and some related fixes in properties backend most of
+  all reported and actual fix implementations by ajays20078; thanks a lot
+- fix: Add missing import error test cases
+- some other enhancements, refactorings and bug fixes
+
 * Sat Apr 30 2016 Satoru SATOH <ssato@redhat.com> - 0.6.0-1
 - fix: remove extra line breaks just after each section headers and items when
   dumping INI format config files in ini backend, reported by ajays20078

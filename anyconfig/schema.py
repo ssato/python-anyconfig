@@ -4,7 +4,7 @@
 #
 """anyconfig.schema module.
 
-.. versionchanged:: 0.6.99
+.. versionchanged:: 0.7.0
    allow passing `ac_schema_strict` to API :func:`gen_schema` to generate more
    strict and precise JSON schema object
 

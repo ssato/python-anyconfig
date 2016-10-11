@@ -5,7 +5,7 @@
 """
 Parser for simple Shell vars' definitions.
 
-.. versionadded:: 0.6.99
+.. versionadded:: 0.7.0
    Added an experimental parser for simple shelll vars' definitions w/o shell
    variable expansions nor complex shell statements like conditionals.
 

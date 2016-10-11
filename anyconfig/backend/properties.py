@@ -5,7 +5,7 @@
 """
 Java properties file support.
 
-.. versionchanged:: 0.6.99
+.. versionchanged:: 0.7.0
    - Fix handling of empty values, pointed by @ajays20078
    - Fix handling of values contain strings start with '#' or '!' by
      @ajays20078

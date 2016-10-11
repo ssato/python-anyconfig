@@ -137,7 +137,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Sat Oct  8 2016 Satoru SATOH <ssato@redhat.com> - 0.7.0-1
+* Tue Oct 11 2016 Satoru SATOH <ssato@redhat.com> - 0.7.0-1
 - enhancement: introduced ac_schema_type to generate more strict schema
 - enhancement: introduced shellvars backend originally suggested by ajays20078
 - fix: comment processing and some related fixes in properties backend most of

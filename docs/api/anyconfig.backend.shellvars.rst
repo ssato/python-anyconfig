@@ -1,5 +1,5 @@
-:mod:`anyconfig.backend.json`
-==============================
+:mod:`anyconfig.backend.shellvars`
+===================================
 
 .. automodule:: anyconfig.backend.shellvars
     :members:

@@ -42,7 +42,7 @@ def to_container(obj=None, ac_ordered=False, ac_merge=m9dicts.MS_DICTS,
         created from it.
     :param options:
         Optional keyword arguments for m9dicts.convert_to, will be converted to
-        the above ac_\* options respectively as needed.
+        the above ac\_\* options respectively as needed.
     """
     opts = dict(ordered=ac_ordered, merge=ac_merge,
                 _ntpl_cls_key=ac_ntpl_cls_key)
@@ -64,7 +64,7 @@ def convert_to(obj, ac_ordered=True, ac_namedtuple=False,
     :param ac_ntpl_cls_key: The name of namedtuple object
     :param options:
         Optional keyword arguments for m9dicts.convert_to, will be converted to
-        the above ac_\* options respectively as needed.
+        the above ac\_\* options respectively as needed.
     """
     opts = dict(ordered=ac_ordered, to_namedtuple=ac_namedtuple,
                 _ntpl_cls_key=ac_ntpl_cls_key)

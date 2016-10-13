@@ -159,6 +159,7 @@ module is available and the corresponding backend is ready to use:
    MessagePack, msgpack, ``msgpack-python`` [#]_, Ditto.
    TOML, toml, ``toml`` [#]_, Ditto.
    BSON, bson, bson in ``pymongo`` [#]_, Ditto.
+   B-sh, shellvars, None (native implementation with standard lib), Ditto.
 
 The supported formats of python-anyconfig on your system is able to be listed
 by 'anyconfig_cli -L' like this:

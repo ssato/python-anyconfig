@@ -1,7 +1,7 @@
-:mod:`anyconfig.mergeabledict`
+:mod:`anyconfig.mdicts`
 ===============================
 
-.. automodule:: anyconfig.mergeabledict
+.. automodule:: anyconfig.mdicts
     :members:
     :undoc-members:
     :show-inheritance:

@@ -6,7 +6,7 @@ API Details
     anyconfig.api
     anyconfig.backends
     anyconfig.backend
-    anyconfig.mergeabledict
+    anyconfig.mdicts
     anyconfig.schema
 
 :mod:`anyconfig`

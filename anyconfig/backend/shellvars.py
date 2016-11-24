@@ -47,7 +47,7 @@ def _parseline(line):
     >>> _parseline("aaa=bbb   # ccc")
     ('aaa', 'bbb')
     """
-    match = re.match(r"^\s*(\S+)=(?:(?:"
+    match = re.match(r"^\s*(export)?\s*(\S+)=(?:(?:"
                      r"(?:\"(.*[^\\])\")|(?:'(.*[^\\])')|"
                      r"(?:([^\"'#\s]+)))?)\s*#*", line)
     if not match:
@@ -55,8 +55,8 @@ def _parseline(line):
         return (None, None)
 
     tpl = match.groups()
-    vals = list(itertools.dropwhile(lambda x: x is None, tpl[1:]))
-    return (tpl[0], vals[0] if vals else '')
+    vals = list(itertools.dropwhile(lambda x: x is None, tpl[2:]))
+    return (tpl[1], vals[0] if vals else '')
 
 
 def load(stream, to_container=dict):

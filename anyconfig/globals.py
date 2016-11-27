@@ -11,6 +11,6 @@ PACKAGE = "anyconfig"
 AUTHOR = "Satoru SATOH <ssat@redhat.com>"
 VERSION = "0.7.0"
 
-LOGGER = anyconfig.init.LOGGER
+LOGGER = anyconfig.init.getLogger(PACKAGE)
 
 # vim:sw=4:ts=4:et:

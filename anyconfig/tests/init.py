@@ -11,6 +11,6 @@ import anyconfig.init as TT
 class Test(unittest.TestCase):
 
     def test_00(self):
-        self.assertTrue(isinstance(TT.LOGGER, logging.Logger))
+        self.assertTrue(isinstance(TT.getLogger(), logging.Logger))
 
 # vim:sw=4:ts=4:et:

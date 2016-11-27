@@ -14,8 +14,12 @@ CNF_S = """
 a=0
 b='bbb'   # a comment
 c="ccc"   # an another comment
+export d='ddd'  ## double comment
+ export e="eee" ### tripple comment
 """
-CNF = ODict((("a", "0"), ("b", "bbb"), ("c", "ccc")))
+CNF = ODict((
+    ("a", "0"), ("b", "bbb"), ("c", "ccc"), ("d", "ddd"), ("e", "eee")
+))
 
 
 class Test10(anyconfig.backend.tests.ini.Test10):

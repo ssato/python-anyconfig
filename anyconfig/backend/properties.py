@@ -170,11 +170,11 @@ def load(stream, to_container=dict, comment_markers=_COMMENT_MARKERS):
         if line is None or not line:
             continue
 
+        prev = ""  # re-initialize for later use.
+
         if line.endswith("\\"):
             prev += line.rstrip(" \\")
             continue
-
-        prev = ""  # re-initialize for later use.
 
         (key, val) = _parseline(line)
         if key is None:

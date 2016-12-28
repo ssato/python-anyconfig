@@ -6,7 +6,8 @@
 r"""Public APIs of anyconfig module.
 
 .. versionadded:: 0.7.99
-   Removed set_loglevel API as it does not help much.
+   - Removed set_loglevel API as it does not help much.
+   - Added :func:`open` API to open files with appropriate open mode.
 
 .. versionadded:: 0.5.0
    - Most keyword arguments passed to APIs are now position independent.
@@ -135,6 +136,29 @@ def _load_schema(**options):
         return load(ac_schema, **options)
 
     return None
+
+
+def open(path, mode=None, ac_parser=None):
+    """
+    Open given config file with appropriate open flag.
+
+    :param path: Configuration file path
+    :param mode:
+        Can be 'r' and 'rb' for reading (default) or 'w', 'wb' for writing.
+        Please note that even if you specify 'r' or 'w', it will be changed to
+        'rb' or 'wb' if the backend selected, xml and configobj for example,
+        for given config file prefer that.
+
+    :return: A file object or None on any errors
+    """
+    psr = find_loader(path, parser_or_type=ac_parser, is_path_=True)
+    if psr is None:
+        return None
+
+    if mode is not None and mode.startswith('w'):
+        return psr.wopen(path)
+
+    return psr.ropen(path)
 
 
 def single_load(path_or_stream, ac_parser=None, ac_template=False,

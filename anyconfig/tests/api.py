@@ -280,6 +280,40 @@ class Test_30_single_load(unittest.TestCase):
         self.assertTrue(cnf_3 is None)  # Validation should fail.
 
 
+class Test_32_single_load(unittest.TestCase):
+
+    cnf = dict(a=1, b="bbb", c=dict(d=[1, 2]))
+
+    def setUp(self):
+        self.workdir = anyconfig.tests.common.setup_workdir()
+
+    def tearDown(self):
+        anyconfig.tests.common.cleanup_workdir(self.workdir)
+
+    def _wopen_ropen_file(self, filename, rmode='r', wmode='w',
+                          skip_cmp_test=False):
+        cpath = os.path.join(self.workdir, filename)
+
+        with TT.open(cpath, 'w') as out:
+            TT.dump(self.cnf, out)
+            self.assertTrue(isinstance(out, file))
+            self.assertEquals(out.mode, wmode)
+
+        with TT.open(cpath, 'rb') as inp:
+            cnf1 = TT.single_load(inp)
+            self.assertTrue(isinstance(inp, file))
+            self.assertEquals(inp.mode, rmode)
+
+        if not skip_cmp_test:
+            self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
+
+    def test_10_open_json_file(self):
+        self._wopen_ropen_file("a.json")
+
+    def test_20_open_xml_file(self):
+        self._wopen_ropen_file("a.xml", 'rb', 'wb', skip_cmp_test=True)
+
+
 class Test_40_multi_load(unittest.TestCase):
 
     cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))

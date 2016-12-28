@@ -6,6 +6,7 @@
 from __future__ import absolute_import
 
 import logging
+import io
 import os
 import os.path
 import unittest
@@ -52,6 +53,13 @@ b:
         {% endfor %}
     d: {{ b.d }}
 """
+
+
+def _is_file_object(obj):
+    try:
+        return isinstance(obj, file)
+    except NameError:  # python 3.x
+        return isinstance(obj, io.IOBase)
 
 
 class Test_10_find_loader(unittest.TestCase):
@@ -296,12 +304,12 @@ class Test_32_single_load(unittest.TestCase):
 
         with TT.open(cpath, 'w') as out:
             TT.dump(self.cnf, out)
-            self.assertTrue(isinstance(out, file))
+            self.assertTrue(_is_file_object(out))
             self.assertEquals(out.mode, wmode)
 
         with TT.open(cpath, 'rb') as inp:
             cnf1 = TT.single_load(inp)
-            self.assertTrue(isinstance(inp, file))
+            self.assertTrue(_is_file_object(inp))
             self.assertEquals(inp.mode, rmode)
 
         if not skip_cmp_test:

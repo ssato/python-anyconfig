@@ -290,7 +290,7 @@ class Test_30_single_load(unittest.TestCase):
 
 class Test_32_single_load(unittest.TestCase):
 
-    cnf = dict(a=1, b="bbb", c=dict(d=[1, 2]))
+    cnf = dict(a=dict(b=1, c=dict(d=[1, 2], e="eee")))
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
@@ -298,8 +298,7 @@ class Test_32_single_load(unittest.TestCase):
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
-    def _wopen_ropen_file(self, filename, rmode='r', wmode='w',
-                          skip_cmp_test=False):
+    def _wopen_ropen_file(self, filename, rmode='r', wmode='w'):
         cpath = os.path.join(self.workdir, filename)
 
         with TT.open(cpath, 'w') as out:
@@ -311,15 +310,14 @@ class Test_32_single_load(unittest.TestCase):
             cnf1 = TT.single_load(inp)
             self.assertTrue(_is_file_object(inp))
             self.assertEquals(inp.mode, rmode)
-
-        if not skip_cmp_test:
             self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
 
     def test_10_open_json_file(self):
         self._wopen_ropen_file("a.json")
 
-    def test_20_open_xml_file(self):
-        self._wopen_ropen_file("a.xml", 'rb', 'wb', skip_cmp_test=True)
+    def test_20_open_bson_file(self):
+        if "bson" in anyconfig.backends.list_types():
+            self._wopen_ropen_file("a.bson", 'rb', 'wb')
 
 
 class Test_40_multi_load(unittest.TestCase):

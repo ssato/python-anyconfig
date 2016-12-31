@@ -54,6 +54,12 @@ b:
     d: {{ b.d }}
 """
 
+CNF_XML_1 = {
+    'config': {'@attrs': {'name': 'foo'},
+               '@children': [{'a': {'@text': '0'}},
+                             {'b': {'@attrs': {'id': 'b0'},
+                                    '@text': 'bbb'}}]}}
+
 
 def _is_file_object(obj):
     try:
@@ -290,7 +296,7 @@ class Test_30_single_load(unittest.TestCase):
 
 class Test_32_single_load(unittest.TestCase):
 
-    cnf = dict(a=dict(b=1, c=dict(d=[1, 2], e="eee")))
+    cnf = CNF_XML_1
 
     def setUp(self):
         self.workdir = anyconfig.tests.common.setup_workdir()
@@ -315,7 +321,11 @@ class Test_32_single_load(unittest.TestCase):
     def test_10_open_json_file(self):
         self._wopen_ropen_file("a.json")
 
-    def test_20_open_bson_file(self):
+    def test_20_open_xml_file(self):
+        if "bson" in anyconfig.backends.list_types():
+            self._wopen_ropen_file("a.xml", 'rb', 'wb')
+
+    def test_30_open_bson_file(self):
         if "bson" in anyconfig.backends.list_types():
             self._wopen_ropen_file("a.bson", 'rb', 'wb')
 

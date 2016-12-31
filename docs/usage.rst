@@ -305,32 +305,50 @@ Other random topics with API usage
 Suppress logging messages from anyconfig module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-anyconfig uses a global logger named 'anyconfig' [#]_ and provide an utility
-function :func:`anyconfig.set_loglevel` to set logging level of this logger
-like the followings:
+anyconfig uses a global logger named 'anyconfig' and logging messages are
+suppressed by default as NullHandler was attached to it [#]_ . If you want make
+its log messages out, you have to configure (add handler and optionally set log
+level) it like the followings.
 
-- Set log level of anyconfig module before load:
+- Set log level and handler of anyconfig module before load:
 
 .. code-block:: python
 
-  import logging
+  In [1]: import logging
 
-  logging.getLogger("anyconfig").setLevel(logging.ERROR)
+  In [2]: LOGGER = logging.getLogger("anyconfig")
 
-  import anyconfig
+  In [3]: LOGGER.addHandler(logging.StreamHandler())
 
-  ...
+  In [4]: LOGGER.setLevel(logging.ERROR)
+
+  In [5]: import anyconfig
+
+  In [6]: anyconfig.dumps(dict(a=1, b=[1,2]), "aaa")
+  No parser found for given type: aaa
+  Out[6]: '{"a": 1, "b": [1, 2]}'
+
+  In [7]:
 
 - Set log level of anyconfig module after load:
 
 .. code-block:: python
 
-  import anyconfig
-  import logging
+  In [1]: import anyconfig, logging
 
-  anyconfig.set_loglevel(logging.WARN)  # Or: anyconfig.LOGGER.setLevel(logging.ERROR)
+  In [2]: LOGGER = logging.getLogger("anyconfig")
 
-.. [#] I https://docs.python.org/2/howto/logging.html#library-config
+  In [3]: LOGGER.addHandler(logging.StreamHandler())
+
+  In [4]: anyconfig.dumps(dict(a=2, b=[1,2]), "unknown_type")
+  No parser found for given type: unknown_type
+  Parser unknown_type was not found!
+  Dump method not implemented. Fallback to json.Parser
+  Out[4]: '{"a": 2, "b": [1, 2]}'
+
+  In [5]:
+
+.. [#] https://docs.python.org/2/howto/logging.html#library-config
 
 Combination with other modules
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

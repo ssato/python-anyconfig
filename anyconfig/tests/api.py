@@ -21,7 +21,7 @@ from anyconfig.mdicts import convert_to
 
 
 # suppress logging messages.
-TT.set_loglevel(logging.CRITICAL)
+TT.LOGGER.setLevel(logging.CRITICAL)
 
 CNF_TMPL_0 = """name: {{ name|default('a') }}
 a: {{ a }}

@@ -131,7 +131,7 @@ the followings:
 from .globals import AUTHOR, VERSION
 from .api import (
     single_load, multi_load, load, loads, dump, dumps, validate, gen_schema,
-    list_types, find_loader, to_container, set_loglevel, get, set_,
+    list_types, find_loader, to_container, get, set_,
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 )
 
@@ -140,8 +140,7 @@ __version__ = VERSION
 
 __all__ = [
     "single_load", "multi_load", "load", "loads", "dump", "dumps", "validate",
-    "gen_schema", "list_types", "find_loader", "to_container",
-    "set_loglevel", "get", "set_",
+    "gen_schema", "list_types", "find_loader", "to_container", "get", "set_",
     "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
 ]
 

@@ -1,9 +1,12 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs of anyconfig module.
+
+.. versionadded:: 0.7.99
+   Removed set_loglevel API as it does not help much.
 
 .. versionadded:: 0.5.0
    - Most keyword arguments passed to APIs are now position independent.
@@ -86,13 +89,6 @@ def _maybe_validated(cnf, schema, format_checker=None, **options):
             return cnf
 
     return None
-
-
-def set_loglevel(level):
-    """
-    :param level: Log level, e.g. logging.INFO and logging.WARN.
-    """
-    LOGGER.setLevel(level)
 
 
 def find_loader(path_or_stream, parser_or_type=None, is_path_=False):

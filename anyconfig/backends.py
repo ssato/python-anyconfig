@@ -241,10 +241,10 @@ def find_parser(path_or_stream, forced_type=None, is_path_=False):
     ValueError: path_or_stream or forced_type must be some value
     >>> find_parser(None, "type_not_exist")
     Traceback (most recent call last):
-    ValueError: No parser found for type type_not_exist
+    ValueError: No parser found for type 'type_not_exist'
     >>> find_parser("cnf.ext_not_found")
     Traceback (most recent call last):
-    ValueError: No parser found for file cnf.ext_not_found
+    ValueError: No parser found for file 'cnf.ext_not_found'
 
     >>> find_parser(None, "ini")
     <class 'anyconfig.backend.ini.Parser'>

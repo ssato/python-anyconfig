@@ -21,7 +21,10 @@ import anyconfig.parser
 
 
 _ENCODING = locale.getdefaultlocale()[1]
-API.LOGGER.addHandler(logging.StreamHandler())
+
+LOGGER = logging.getLogger("anyconfig")
+LOGGER.addHandler(logging.StreamHandler())
+LOGGER.setLevel(logging.WARN)
 
 if anyconfig.compat.IS_PYTHON_3:
     import io
@@ -271,7 +274,7 @@ def main(argv=None):
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
     (parser, options, args) = parse_args(argv=argv)
-    API.LOGGER.setLevel(to_log_level(options.loglevel))
+    LOGGER.setLevel(to_log_level(options.loglevel))
 
     _check_options_and_args(parser, options, args)
 

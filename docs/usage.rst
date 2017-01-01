@@ -306,11 +306,11 @@ Suppress logging messages from anyconfig module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 anyconfig uses a global logger named 'anyconfig' and logging messages are
-suppressed by default as NullHandler was attached to it [#]_ . If you want make
-its log messages out, you have to configure (add handler and optionally set log
-level) it like the followings.
+suppressed by default as NullHandler was attached to the logger [#]_ . If you
+want to see its log messages out, you have to configure it (add handler and
+optionally set log level) like the followings.
 
-- Set log level and handler of anyconfig module before load:
+- Set the log level and handler of anyconfig module before load to print log messages such as some backend modules are not available, when it's initialized:
 
 .. code-block:: python
 

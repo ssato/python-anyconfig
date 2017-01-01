@@ -36,6 +36,33 @@ To load single config file:
   yml_psr = anyconfig.find_loader(None, ac_parser="yaml")
   data5 = anyconfig.single_load(cnf_path, yml_psr)  # Or: anyconfig.load(...)
 
+Please note that returned value may be None if something goes wrong and you'll
+have to check it before use if there are such risks.
+
+.. code-block:: console
+
+  In [1]: import anyconfig, logging
+
+  In [2]: logging.getLogger("anyconfig").addHandler(logging.StreamHandler())
+
+  In [3]: anyconfig.single_load(None) is None
+  path_or_stream or forced_type must be some value
+  Out[3]: True
+
+  In [4]: anyconfig.single_load(None, ac_parser="backend_module_not_avail")
+  No parser found for type 'backend_module_not_avail'
+  Out[4]: True
+
+  In [5]: anyconfig.single_load(None, ac_parser="not_existing_type") is None
+  No parser found for type 'not_existing_type'
+  Out[5]: True
+
+  In [6]: anyconfig.single_load("unknown_type_file.conf") is None
+  No parser found for file 'unknown_type_file.conf'
+  Out[6]: True
+
+  In [7]:
+
 You can pass backend (config loader) specific optional parameters to
 these load and dump functions as needed:
 

@@ -259,11 +259,11 @@ def find_parser(path_or_stream, forced_type=None, is_path_=False):
     if forced_type is not None:
         parser = find_by_type(forced_type)
         if parser is None:
-            raise ValueError("No parser found for type %s" % forced_type)
+            raise ValueError("No parser found for type '%s'" % forced_type)
     else:
         parser = find_by_file(path_or_stream, is_path_=is_path_)
         if parser is None:
-            raise ValueError("No parser found for file %s" % path_or_stream)
+            raise ValueError("No parser found for file '%s'" % path_or_stream)
 
     return parser
 

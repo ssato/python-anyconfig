@@ -239,33 +239,33 @@ def find_parser(path_or_stream, forced_type=None, is_path_=False):
     >>> find_parser(None)
     Traceback (most recent call last):
     ValueError: path_or_stream or forced_type must be some value
+    >>> find_parser(None, "type_not_exist")
+    Traceback (most recent call last):
+    ValueError: No parser found for type type_not_exist
+    >>> find_parser("cnf.ext_not_found")
+    Traceback (most recent call last):
+    ValueError: No parser found for file cnf.ext_not_found
 
     >>> find_parser(None, "ini")
-    (<class 'anyconfig.backend.ini.Parser'>, '')
-    >>> find_parser(None, "type_not_exist")
-    (None, 'No parser found for given type: type_not_exist')
-
+    <class 'anyconfig.backend.ini.Parser'>
     >>> find_parser("cnf.json")
-    (<class 'anyconfig.backend.json.Parser'>, '')
+    <class 'anyconfig.backend.json.Parser'>
     >>> find_parser("cnf.json", is_path_=True)
-    (<class 'anyconfig.backend.json.Parser'>, '')
-    >>> find_parser("cnf.ext_not_found")
-    (None, 'No parser found for given file: cnf.ext_not_found')
+    <class 'anyconfig.backend.json.Parser'>
     """
     if not path_or_stream and forced_type is None:
         raise ValueError("path_or_stream or forced_type must be some value")
 
-    err = ""
     if forced_type is not None:
         parser = find_by_type(forced_type)
         if parser is None:
-            err = "No parser found for given type: %s" % forced_type
+            raise ValueError("No parser found for type %s" % forced_type)
     else:
         parser = find_by_file(path_or_stream, is_path_=is_path_)
         if parser is None:
-            err = "No parser found for given file: %s" % path_or_stream
+            raise ValueError("No parser found for file %s" % path_or_stream)
 
-    return (parser, err)
+    return parser
 
 
 def list_types(cps=None):

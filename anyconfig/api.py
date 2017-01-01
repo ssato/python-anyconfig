@@ -105,20 +105,15 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
     if anyconfig.backends.is_parser(parser_or_type):
         return parser_or_type
 
-    (psr, err) = anyconfig.backends.find_parser(path_or_stream, parser_or_type,
-                                                is_path_=is_path_)
-    if err:
-        LOGGER.error(err)
-
-    if psr is None:
-        if parser_or_type is None:
-            LOGGER.warning("No parser (type) was given!")
-        else:
-            LOGGER.warning("Parser %s was not found!", str(parser_or_type))
+    try:
+        psr = anyconfig.backends.find_parser(path_or_stream,
+                                             forced_type=parser_or_type,
+                                             is_path_=is_path_)
+        LOGGER.debug("Using config parser: %r [%s]", psr, psr.type())
+        return psr()  # TBD: Passing initialization arguments.
+    except ValueError as exc:
+        LOGGER.error(str(exc))
         return None
-
-    LOGGER.debug("Using config parser: %r [%s]", psr, psr.type())
-    return psr()  # TBD: Passing initialization arguments.
 
 
 def _load_schema(**options):

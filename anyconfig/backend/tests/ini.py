@@ -109,6 +109,11 @@ class Test11(Test10):
         else:
             self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
+    def test_32_loads_with_order_kept(self):
+        cnf = self.psr.loads(self.cnf_s, ac_parse_value=True, dict_type=ODict)
+        self.assertTrue(dicts_equal(cnf, self.cnf, ordered=True),
+                        "\n %r\nvs.\n %r" % (cnf, self.cnf))
+
 
 class Test12(Test10):
 

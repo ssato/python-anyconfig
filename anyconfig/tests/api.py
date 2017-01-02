@@ -13,6 +13,7 @@ import unittest
 
 import anyconfig.api as TT
 import anyconfig.backends
+import anyconfig.mdicts
 import anyconfig.template
 import anyconfig.tests.common
 
@@ -304,19 +305,21 @@ class Test_32_single_load(unittest.TestCase):
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
-    def _load_and_dump_with_opened_files(self, filename, rmode='r', wmode='w'):
+    def _load_and_dump_with_opened_files(self, filename, rmode='r', wmode='w',
+                                         **oopts):
         cpath = os.path.join(self.workdir, filename)
 
-        with TT.open(cpath, 'w') as out:
+        with TT.open(cpath, 'w', **oopts) as out:
             TT.dump(self.cnf, out)
             self.assertTrue(_is_file_object(out))
             self.assertEquals(out.mode, wmode)
 
-        with TT.open(cpath, 'rb') as inp:
+        with TT.open(cpath, 'rb', **oopts) as inp:
             cnf1 = TT.single_load(inp)
             self.assertTrue(_is_file_object(inp))
             self.assertEquals(inp.mode, rmode)
-            self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
+            cpair = (self.cnf, cnf1)
+            self.assertTrue(dicts_equal(*cpair), "%r vs. %r" % cpair)
 
     def test_10_open_json_file(self):
         self._load_and_dump_with_opened_files("a.json")

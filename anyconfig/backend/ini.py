@@ -18,7 +18,9 @@
   - configparser in python 3 standard library:
     https://docs.python.org/3/library/configparser.html
 
-- Limitations: None obvious
+- Limitations: It cannot process nested configuration dicts correctly due to
+  the limitation of configparser module.
+
 - Special options:
 
   - Use 'ac_parse_value' boolean keyword option if you want to parse values by

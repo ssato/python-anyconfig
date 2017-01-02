@@ -136,13 +136,11 @@ def is_parser(obj):
     return isinstance(obj, anyconfig.backend.base.Parser)
 
 
-def list_parsers_by_type(cps=None):
+def _list_parsers_by_type(cps):
     """
+    :param cps: A list of parser classes
     :return: List (generator) of (config_type, [config_parser])
     """
-    if cps is None:
-        cps = PARSERS
-
     return ((t, sorted(p, key=operator.methodcaller("priority"))) for t, p
             in groupby_key(cps, operator.methodcaller("type")))
 
@@ -154,13 +152,11 @@ def _list_xppairs(xps):
                   key=operator.methodcaller("priority"))
 
 
-def list_parsers_by_extension(cps=None):
+def _list_parsers_by_extension(cps):
     """
+    :param cps: A list of parser classes
     :return: List (generator) of (config_ext, [config_parser])
     """
-    if cps is None:
-        cps = PARSERS
-
     cps_by_ext = anyconfig.utils.concat(([(x, p) for x in p.extensions()] for p
                                          in cps))
 
@@ -197,7 +193,7 @@ def find_by_file(path_or_stream, cps=None, is_path_=False):
             return None  # There is no way to detect file path.
 
     ext_ref = anyconfig.utils.get_file_extension(path_or_stream)
-    for ext, psrs in list_parsers_by_extension(cps):
+    for ext, psrs in _list_parsers_by_extension(cps):
         if ext == ext_ref:
             return psrs[-1]
 
@@ -218,7 +214,7 @@ def find_by_type(cptype, cps=None):
     if cps is None:
         cps = PARSERS
 
-    for type_, psrs in list_parsers_by_type(cps):
+    for type_, psrs in _list_parsers_by_type(cps):
         if type_ == cptype:
             return psrs[-1] or None
 
@@ -274,6 +270,6 @@ def list_types(cps=None):
     if cps is None:
         cps = PARSERS
 
-    return uniq(t for t, ps in list_parsers_by_type(cps))
+    return uniq(t for t, ps in _list_parsers_by_type(cps))
 
 # vim:sw=4:ts=4:et:

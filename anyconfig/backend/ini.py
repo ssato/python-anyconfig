@@ -30,7 +30,7 @@ import anyconfig.backend.base
 import anyconfig.parser as P
 import anyconfig.utils
 
-from anyconfig.compat import configparser, iteritems
+from anyconfig.compat import configparser, iteritems, OrderedDict
 from anyconfig.backend.base import mk_opt_args
 
 
@@ -95,6 +95,8 @@ def _load(stream, to_container=dict, sep=_SEP, **kwargs):
     :return: Dict or dict-like object represents config values
     """
     _parse_val = _parse if kwargs.get("ac_parse_value", False) else _noop
+    if kwargs.get("ac_ordered", False):
+        dict_type = to_container = OrderedDict
 
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = mk_opt_args(("defaults", "dict_type", "allow_no_value"), kwargs)

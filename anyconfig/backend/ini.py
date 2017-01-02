@@ -95,8 +95,11 @@ def _load(stream, to_container=dict, sep=_SEP, **kwargs):
     :return: Dict or dict-like object represents config values
     """
     _parse_val = _parse if kwargs.get("ac_parse_value", False) else _noop
-    if kwargs.get("ac_ordered", False):
+
+    if kwargs.get("ac_ordered", False) or kwargs.get("dict_type", False):
         kwargs["dict_type"] = to_container = OrderedDict
+    if "dict_type" not in kwargs and not kwargs.get("ac_ordered", True):
+        kwargs["dict_type"] = to_container
 
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = mk_opt_args(("defaults", "dict_type", "allow_no_value"), kwargs)

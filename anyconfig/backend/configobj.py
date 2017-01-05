@@ -11,9 +11,10 @@
 
 - Format to support: configobj, http://goo.gl/JbP2Kp (readthedocs.org)
 - Requirements: configobj (https://pypi.python.org/pypi/configobj/)
-- Limitations: It seems that configobj.ConfigObj does not receive callble to
-  make a dict objects from configurations. If it's true and then the order of
-  configurations might be lost.
+- Limitations: AFAIK, configobj does not keep the order of configuration items
+  and not have options to change this behavior like configparser, so this
+  backend does not keep the order of configuration items even if the ac_ordered
+  option was used.
 
 - Special options:
 

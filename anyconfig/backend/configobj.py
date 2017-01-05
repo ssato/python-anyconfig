@@ -20,7 +20,7 @@
   - All options except for 'infile' passed to configobj.ConfigObj.__init__
     should work.
 
-  - See also: http://goo.gl/LcVOzZ (readthedocs.org)
+  - See also: http://configobj.readthedocs.io/en/latest/configobj.html
 """
 from __future__ import absolute_import
 

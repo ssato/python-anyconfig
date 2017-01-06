@@ -14,7 +14,7 @@ To load single config file:
 
   # Config type (format) is automatically detected by filename (file
   # extension).
-  data1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
+  data1 = anyconfig.load("/path/to/foo/conf.d/a.yml"a
 
   # Loaded config data is a dict-like object.
   # examples:
@@ -35,6 +35,14 @@ To load single config file:
   # Same as above as a result but make parser instance and pass it explicitly.
   yml_psr = anyconfig.find_loader(None, ac_parser="yaml")
   data5 = anyconfig.single_load(cnf_path, yml_psr)  # Or: anyconfig.load(...)
+
+  # Same as above but open the config file explicitly before load.
+  with anyconfig.open("/path/to/foo/conf.d/a.yml") as istrm:
+      data6 = anyconfig.load(istrm)
+
+  # Same as above but with specifying config type explicitly.
+  with anyconfig.open("/path/to/foo/conf.d/a.yml", ac_parser="yaml") as istrm:
+      data7 = anyconfig.load(istrm)
 
 Please note that returned value may be None if something goes wrong and you'll
 have to check it before use if there are such risks.

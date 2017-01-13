@@ -325,7 +325,7 @@ class Test_32_single_load(unittest.TestCase):
         self._load_and_dump_with_opened_files("a.json")
 
     def test_20_open_xml_file(self):
-        if "bson" in anyconfig.backends.list_types():
+        if "xml" in anyconfig.backends.list_types():
             self._load_and_dump_with_opened_files("a.xml", 'rb', 'wb')
 
     def test_30_open_bson_file(self):

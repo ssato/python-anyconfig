@@ -335,6 +335,7 @@ class Test_32_single_load(unittest.TestCase):
     def test_40_open_yaml_file(self):
         if "yaml" in anyconfig.backends.list_types():
             self._load_and_dump_with_opened_files("a.yaml")
+            self._load_and_dump_with_opened_files("a.yml")
 
 
 class Test_40_multi_load(unittest.TestCase):

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato at redhat.com>
+# Copyright (C) 2012 - 2017 Satoru SATOH <ssato at redhat.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, no-member
@@ -312,12 +312,12 @@ class Test_32_single_load(unittest.TestCase):
         with TT.open(cpath, 'w', **oopts) as out:
             TT.dump(self.cnf, out)
             self.assertTrue(_is_file_object(out))
-            self.assertEquals(out.mode, wmode)
+            self.assertEqual(out.mode, wmode)
 
         with TT.open(cpath, 'rb', **oopts) as inp:
             cnf1 = TT.single_load(inp)
             self.assertTrue(_is_file_object(inp))
-            self.assertEquals(inp.mode, rmode)
+            self.assertEqual(inp.mode, rmode)
             cpair = (self.cnf, cnf1)
             self.assertTrue(dicts_equal(*cpair), "%r vs. %r" % cpair)
 

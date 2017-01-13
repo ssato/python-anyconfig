@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring, protected-access
@@ -126,7 +126,7 @@ class Test12(Test10):
 
     def test_20_dumps__format(self):
         ref = self.cnf_s.replace(': ', ' = ')
-        self.assertEquals(self.psr.dumps(self.cnf), ref)
+        self.assertEqual(self.psr.dumps(self.cnf), ref)
 
 
 class Test20(unittest.TestCase):

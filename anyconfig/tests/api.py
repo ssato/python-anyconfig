@@ -332,6 +332,10 @@ class Test_32_single_load(unittest.TestCase):
         if "bson" in anyconfig.backends.list_types():
             self._load_and_dump_with_opened_files("a.bson", 'rb', 'wb')
 
+    def test_40_open_yaml_file(self):
+        if "yaml" in anyconfig.backends.list_types():
+            self._load_and_dump_with_opened_files("a.yaml")
+
 
 class Test_40_multi_load(unittest.TestCase):
 

@@ -25,8 +25,8 @@
 """
 from __future__ import absolute_import
 
-import configobj
 import inspect
+import configobj
 import anyconfig.backend.base
 import anyconfig.mdicts
 

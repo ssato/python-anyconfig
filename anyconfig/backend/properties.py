@@ -45,26 +45,26 @@ def _parseline(line):
     :return: A tuple of (key, value), both key and value may be None
 
     >>> _parseline(" ")
-    (None, None)
+    (None, '')
     >>> _parseline("aaa:")
     ('aaa', '')
     >>> _parseline(" aaa:")
     ('aaa', '')
+    >>> _parseline("aaa")
+    ('aaa', '')
+    >>> _parseline("url = http://localhost")
+    ('url', 'http://localhost')
     >>> _parseline("calendar.japanese.type: LocalGregorianCalendar")
     ('calendar.japanese.type', 'LocalGregorianCalendar')
-
-    FIXME:
-    # >>> _parseline("aaa")
-    # ('aaa', '')
     """
-    matched = re.match(r"^(?:\s+)?(\S+)(?:\s+)?(?:(?<!\\)[:=])(?:\s+)?(.*)",
-                       line)
-    if not matched:
-        LOGGER.warning("Invalid line found: %s", line)
-        return (None, None)
+    pair = re.split(r"(?:\s+)?(?:(?<!\\)[=:])", line.strip(), 1)
+    key = pair[0].rstrip()
 
-    (key, val) = matched.groups()
-    return (key, '' if val is None else val)
+    if len(pair) < 2:
+        LOGGER.warning("Invalid line found: %s", line)
+        return (key or None, '')
+
+    return (key, pair[1].strip())
 
 
 def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):

@@ -24,4 +24,6 @@ MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 #    created from it.
 NTPL_CLS_KEY = "namedtuple_cls__"
 
+TO_TYPES = (NAMED_TUPLE_TYPE, RELATIONS_TYPE) = ("namedtuple", "relations")
+
 # vim:sw=4:ts=4:et:

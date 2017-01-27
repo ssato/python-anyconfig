@@ -13,7 +13,7 @@ from __future__ import absolute_import
 import m9dicts
 from m9dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    NTPL_CLS_KEY, UpdateWithReplaceDict, get, set_,
+    NTPL_CLS_KEY, NAMED_TUPLE_TYPE, UpdateWithReplaceDict, get, set_,
     is_dict_like, is_namedtuple  # flake8: noqa
 )
 
@@ -66,8 +66,8 @@ def convert_to(obj, ac_ordered=True, ac_namedtuple=False,
         Optional keyword arguments for m9dicts.convert_to, will be converted to
         the above ac\_\* options respectively as needed.
     """
-    opts = dict(ordered=ac_ordered, to_namedtuple=ac_namedtuple,
-                _ntpl_cls_key=ac_ntpl_cls_key)
+    opts = dict(ordered=ac_ordered, _ntpl_cls_key=ac_ntpl_cls_key,
+                to_type=(NAMED_TUPLE_TYPE if ac_namedtuple else None))
 
     return m9dicts.convert_to(obj, **opts)
 

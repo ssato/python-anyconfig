@@ -88,7 +88,7 @@ these load and dump functions as needed:
 Also it's possible:
 
 - to load a config which is actually a Jinja2 [#]_ template file, the file will be rendered before load. See `Template config support`_ section for more details.
-- to validate a config file with a JSON schema [#]_ before load. See `Validation with JSON Schema`_ section for more details.
+- to validate a config file with a JSON schema [#]_ before load. See `Validation with and/or generate JSON Schema`_ section for more details.
 
 .. note:: The returned object is an instance of m9dicts.UpdateWithMergeDict
    class by default, to support recursive merge operations needed when loading

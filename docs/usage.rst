@@ -240,8 +240,8 @@ load. Otherwise, the order of configuration items will be lost by default.
 But please note that it's not true that any backend can keep the order of keys.
 For example, JSON backend can do that but current YAML backend does not.
 
-Validation with JSON Schema
--------------------------------
+Validation with and/or generate JSON Schema
+----------------------------------------------
 
 If you have jsonschema [#]_ installed, you can validate config files with using
 anyconfig.validate() since 0.0.10.
@@ -270,6 +270,25 @@ It's also possible to validate config files during load:
   # Validate config loaded from multiple config files with JSON schema
   # (schema.json) while loading them.
   conf2 = anyconfig.load("conf.d/*.yml", ac_schema="/c/d/e/schema.json")
+
+And even if you don't have any JSON schema files, don't worry ;-), anyconfig
+*can generate* the schema for your config files on demand and you can save it
+in any formats anyconfig supports.
+
+.. code-block:: python
+
+  # Generate a simple JSON schema file from config file loaded.
+  conf1 = anyconfig.load("/path/to/conf1.json")
+  schema1 = anyconfig.gen_schema(conf1)
+  anyconfig.dump(schema1, "/path/to/schema1.yml")
+
+  # Generate more strict (precise) JSON schema file from config file loaded.
+  schema2 = anyconfig.gen_schema(conf1, ac_schema_strict=True)
+  anyconfig.dump(schema2, "/path/to/schema2.json")
+
+.. note:: If you just want to generate JSON schema from your config files, then
+   you don't need to install jsonschema in advance because *anyconfig can
+   generate JSON schema without jsonschema module*.
 
 .. [#] https://pypi.python.org/pypi/jsonschema
 

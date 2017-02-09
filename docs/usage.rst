@@ -44,32 +44,29 @@ To load single config file:
   with anyconfig.open("/path/to/foo/conf.d/a.yml", ac_parser="yaml") as istrm:
       data7 = anyconfig.load(istrm)
 
-Please note that returned value may be None if something goes wrong and you'll
-have to check it before use if there are such risks.
+Exceptions may be raised if something goes wrong. Then, you have to have to
+catch them if you want to process more.
 
 .. code-block:: console
 
-  In [1]: import anyconfig, logging
-
-  In [2]: logging.getLogger("anyconfig").addHandler(logging.StreamHandler())
-
-  In [3]: anyconfig.single_load(None) is None
-  path_or_stream or forced_type must be some value
-  Out[3]: True
-
-  In [4]: anyconfig.single_load(None, ac_parser="backend_module_not_avail")
-  No parser found for type 'backend_module_not_avail'
-  Out[4]: True
-
-  In [5]: anyconfig.single_load(None, ac_parser="not_existing_type") is None
-  No parser found for type 'not_existing_type'
-  Out[5]: True
-
-  In [6]: anyconfig.single_load("unknown_type_file.conf") is None
-  No parser found for file 'unknown_type_file.conf'
-  Out[6]: True
-
-  In [7]:
+  >>> import anyconfig
+  >>> anyconfig.single_load(None)
+  Traceback (most recent call last):
+    ...
+  ValueError: path_or_stream or forced_type must be some value
+  >>> anyconfig.single_load(None, ac_parser="backend_module_not_avail")
+  Traceback (most recent call last):
+    ...
+  anyconfig.backends.UnknownParserTypeError: No parser found for type 'backend_module_not_avail'
+  >>> anyconfig.single_load(None, ac_parser="not_existing_type")
+  Traceback (most recent call last):
+    ...
+  anyconfig.backends.UnknownParserTypeError: No parser found for type 'not_existing_type'
+  >>> anyconfig.single_load("unknown_type_file.conf") is None
+  Traceback (most recent call last):
+    ...
+  anyconfig.backends.UnknownFileTypeError: No parser found for file 'unknown_type_file.conf'
+  >>>
 
 You can pass backend (config loader) specific optional parameters to
 these load and dump functions as needed:

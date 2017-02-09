@@ -132,7 +132,8 @@ from .globals import AUTHOR, VERSION
 from .api import (
     single_load, multi_load, load, loads, dump, dumps, validate, gen_schema,
     list_types, find_loader, to_container, get, set_, open,
-    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
+    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS,
+    UnknownParserTypeError, UnknownFileTypeError
 )
 
 __author__ = AUTHOR
@@ -143,6 +144,7 @@ __all__ = [
     "gen_schema", "list_types", "find_loader", "to_container",
     "get", "set_", "open",
     "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
+    "UnknownParserTypeError", "UnknownFileTypeError"
 ]
 
 # vim:sw=4:ts=4:et:

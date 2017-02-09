@@ -90,9 +90,13 @@ class Test_10_find_loader(unittest.TestCase):
                 self._assert_isinstance(TT.find_loader("dummy." + ext), psr,
                                         "ext=%s, psr=%r" % (ext, psr))
 
-    def test_30_find_loader__not_found(self):
-        self.assertEqual(TT.find_loader("a.cnf", "type_not_exist"), None)
-        self.assertEqual(TT.find_loader("dummy.ext_not_found"), None)
+    def test_30_find_loader__unknown_parser_type(self):
+        self.assertRaises(TT.UnknownParserTypeError,
+                          TT.find_loader, "a.cnf", "type_not_exist")
+
+    def test_40_find_loader__unknown_file_type(self):
+        self.assertRaises(TT.UnknownFileTypeError,
+                          TT.find_loader, "dummy.ext_not_found")
 
 
 class Test_20_dumps_and_loads(unittest.TestCase):
@@ -108,10 +112,6 @@ class Test_20_dumps_and_loads(unittest.TestCase):
                        ensure_ascii=False)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
-    def test_32_dumps_and_loads__w_options__no_dumper(self):
-        cnf = TT.loads(TT.dumps(self.cnf, "type_not_exist"), "json")
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-
     def test_40_loads_wo_type(self):
         a_s = "requires:bash,zsh"
 
@@ -122,11 +122,8 @@ class Test_20_dumps_and_loads(unittest.TestCase):
 
     def test_42_loads_w_type_not_exist(self):
         a_s = "requires:bash,zsh"
-
-        a1 = TT.loads(a_s, "type_not_exist")
-        # a = dict(requires=["bash", "zsh"])
-        # self.assertEqual(a1["requires"], a["requires"])
-        self.assertTrue(a1 is None)
+        self.assertRaises(TT.UnknownParserTypeError,
+                          TT.loads, a_s, "type_not_exist")
 
     def test_44_loads_w_type__template(self):
         if not anyconfig.template.SUPPORTED:
@@ -199,7 +196,8 @@ class Test_30_single_load(unittest.TestCase):
         self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
 
     def test_12_dump_and_single_load__no_parser(self):
-        self.assertEqual(TT.single_load("dummy.ext_not_exist"), None)
+        self.assertRaises(TT.UnknownFileTypeError,
+                          TT.single_load, "dummy.ext_not_exist")
 
     def test_13_dump_and_single_load__namedtuple(self):
         if not IS_PYTHON_3:  # TODO: it does not work with python3.

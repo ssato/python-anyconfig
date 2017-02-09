@@ -8,6 +8,12 @@ r"""Public APIs of anyconfig module.
 .. versionadded:: 0.7.99
    - Removed set_loglevel API as it does not help much.
    - Added :func:`open` API to open files with appropriate open mode.
+   - Added custom exception classes, :class:UnknownParserTypeError and
+     :class:UnknownFileTypeError to express specific errors.
+   - Change behavior of the API :func:`find_loader` and others to make them
+     fail firt and raise exceptions (ValueError, UnknownParserTypeError or
+     UnknownFileTypeError) as much as possible if wrong parser type for uknown
+     file type was given.
 
 .. versionadded:: 0.5.0
    - Most keyword arguments passed to APIs are now position independent.
@@ -43,6 +49,9 @@ import anyconfig.template
 import anyconfig.utils
 
 # Import some global constants will be re-exported:
+from anyconfig.backends import (
+    UnknownParserTypeError, UnknownFileTypeError
+)
 from anyconfig.mdicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
     get, set_, to_container  # flake8: noqa
@@ -112,9 +121,8 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
                                              is_path_=is_path_)
         LOGGER.debug("Using config parser: %r [%s]", psr, psr.type())
         return psr()  # TBD: Passing initialization arguments.
-    except ValueError as exc:
-        LOGGER.error(str(exc))
-        return None
+    except (ValueError, UnknownParserTypeError, UnknownFileTypeError):
+        raise
 
 
 def _load_schema(**options):
@@ -152,9 +160,6 @@ def open(path, mode=None, ac_parser=None):
     :return: A file object or None on any errors
     """
     psr = find_loader(path, parser_or_type=ac_parser, is_path_=True)
-    if psr is None:
-        return None
-
     if mode is not None and mode.startswith('w'):
         return psr.wopen(path)
 
@@ -195,9 +200,6 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
         filepath = anyconfig.utils.get_path_from_stream(path_or_stream)
 
     psr = find_loader(path_or_stream, ac_parser, is_path_)
-    if psr is None:
-        return None
-
     schema = _load_schema(ac_template=ac_template, ac_context=ac_context,
                           **options)
     options["ac_schema"] = None  # It's not needed now.
@@ -339,10 +341,6 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
         return None
 
     psr = find_loader(None, ac_parser)
-    if psr is None:
-        LOGGER.warning(msg, "parser '%s' was not found" % ac_parser)
-        return None
-
     schema = None
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
@@ -371,13 +369,7 @@ def _find_dumper(path_or_stream, ac_parser=None):
 
     :return: Parser-inherited class object
     """
-    psr = find_loader(path_or_stream, ac_parser)
-
-    if psr is None or not getattr(psr, "dump", False):
-        LOGGER.warning("Dump method not implemented. Fallback to json.Parser")
-        psr = anyconfig.backend.json.Parser()
-
-    return psr
+    return find_loader(path_or_stream, ac_parser)
 
 
 def dump(data, path_or_stream, ac_parser=None, **options):

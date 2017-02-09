@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2011 - 2015 Red Hat, Inc.
-# Copyright (C) 2011 - 2016 Satoru SATOH <ssato redhat.com>
+# Copyright (C) 2011 - 2017 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
 # pylint: disable=import-error,unused-import

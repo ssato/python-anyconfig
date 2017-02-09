@@ -1,9 +1,13 @@
 #
 # Copyright (C) 2011 - 2015 Red Hat, Inc.
-# Copyright (C) 2011 - 2016 Satoru SATOH <ssato redhat.com>
+# Copyright (C) 2011 - 2017 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
 """Functions operate on m9dicts objects.
+
+.. versionchanged: 0.4.0
+   Rmove the new API introduced in the previous release to convert dict[s] to
+   relations because it's not stable enough.
 
 .. versionchanged: 0.3.0
    Extended and changed :fun:`convert_to` API to support conversion from
@@ -27,7 +31,6 @@ import re
 import m9dicts.compat
 import m9dicts.globals
 import m9dicts.dicts
-import m9dicts.relations
 import m9dicts.utils
 
 
@@ -260,19 +263,14 @@ def convert_to(obj, ordered=False, to_type=None, **options):
 
         - _ntpl_cls_key to specify nametuple class key. see
           :func:`_make_from_namedtuple` for more its details.
-        - rel_name to specify relation name of the top level relation
 
     :return:
-        A dict or namedtuple object if to_type == NAMED_TUPLE_TYPE or relations
-        list if to_type == RELATIONS_TYPE
+        A dict or namedtuple object if to_type == NAMED_TUPLE_TYPE
     """
     options.update(ordered=ordered, to_type=to_type)
     if m9dicts.utils.is_dict_like(obj):
         if to_type == m9dicts.globals.NAMED_TUPLE_TYPE:
             return _convert_to_namedtuple(obj, **options)
-        if to_type == m9dicts.globals.RELATIONS_TYPE:
-            rel_name = options.get("rel_name", None)
-            return m9dicts.relations.dict_to_rels(obj, name=rel_name)
         else:
             cls = m9dicts.compat.OrderedDict if ordered else dict
             return _make_recur(obj, cls, convert_to, **options)

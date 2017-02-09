@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2011 - 2015 Red Hat, Inc.
-# Copyright (C) 2011 - 2016 Satoru SATOH <ssato redhat.com>
+# Copyright (C) 2011 - 2017 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
 # .. note:: suppress warning about import error of ordereddict only for py-2.6.
@@ -24,6 +24,6 @@ MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 #    created from it.
 NTPL_CLS_KEY = "namedtuple_cls__"
 
-TO_TYPES = (NAMED_TUPLE_TYPE, RELATIONS_TYPE) = ("namedtuple", "relations")
+TO_TYPES = (NAMED_TUPLE_TYPE, ) = ("namedtuple", )
 
 # vim:sw=4:ts=4:et:

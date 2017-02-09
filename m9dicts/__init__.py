@@ -4,7 +4,7 @@
 """
 from .globals import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    NTPL_CLS_KEY, NAMED_TUPLE_TYPE, RELATIONS_TYPE
+    NTPL_CLS_KEY, NAMED_TUPLE_TYPE
 )  # flake8: noqa
 from .dicts import (
     UpdateWithReplaceDict, UpdateWoReplaceDict, UpdateWithMergeDict,
@@ -16,6 +16,6 @@ from .api import get, set_, make, convert_to  # flake8: noqa
 from .utils import is_dict_like, is_namedtuple, is_list_like
 
 __author__ = "Satoru SATOH <ssato@redhat.com>"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 # vim:sw=4:ts=4:et:

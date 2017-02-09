@@ -69,6 +69,20 @@ for e in pkg_resources.iter_entry_points("anyconfig_backends"):
         continue
 
 
+class UnknownParserTypeError(RuntimeError):
+    """Raise if no parsers were found for given type."""
+    def __init__(self, forced_type):
+        msg = "No parser found for type '%s'" % forced_type
+        super(UnknownParserTypeError, self).__init__(msg)
+
+
+class UnknownFileTypeError(RuntimeError):
+    """Raise if not parsers were found for given file path."""
+    def __init__(self, path):
+        msg = "No parser found for file '%s'" % path
+        super(UnknownFileTypeError, self).__init__(msg)
+
+
 def fst(tpl):
     """
     >>> fst((0, 1))
@@ -233,15 +247,17 @@ def find_parser(path_or_stream, forced_type=None, is_path_=False):
 
     :return: A tuple of (Parser class or None, "" or error message)
 
-    >>> find_parser(None)
+    >>> find_parser(None)  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
     ValueError: path_or_stream or forced_type must be some value
-    >>> find_parser(None, "type_not_exist")
+    >>> find_parser(None, "type_not_exist"
+    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ValueError: No parser found for type 'type_not_exist'
-    >>> find_parser("cnf.ext_not_found")
+    UnknownParserTypeError: No parser found for type 'type_not_exist'
+    >>> find_parser("cnf.ext_not_found"
+    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ValueError: No parser found for file 'cnf.ext_not_found'
+    UnknownFileTypeError: No parser found for file 'cnf.ext_not_found'
 
     >>> find_parser(None, "ini")
     <class 'anyconfig.backend.ini.Parser'>
@@ -256,11 +272,11 @@ def find_parser(path_or_stream, forced_type=None, is_path_=False):
     if forced_type is not None:
         parser = find_by_type(forced_type)
         if parser is None:
-            raise ValueError("No parser found for type '%s'" % forced_type)
+            raise UnknownParserTypeError(forced_type)
     else:
         parser = find_by_file(path_or_stream, is_path_=is_path_)
         if parser is None:
-            raise ValueError("No parser found for file '%s'" % path_or_stream)
+            raise UnknownFileTypeError(path_or_stream)
 
     return parser
 

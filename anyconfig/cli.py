@@ -250,21 +250,30 @@ def _output_result(cnf, outpath, otype, inpath, itype):
     :param inpath: Input file path
     :param itype: Input type or None
     """
+    msg = ("Specify inpath and/or outpath type[s] with -I/--itype "
+           "or -O/--otype option explicitly")
+    fmsg = ("Uknown file type and cannot detect appropriate backend "
+            "from its extension, '%s'")
     if not outpath or outpath == "-":
         outpath = sys.stdout
         if otype is None:
             if itype is None:
                 try:
                     otype = API.find_loader(inpath).type()
-                except AttributeError:
-                    _exit_with_output("Specify inpath and/or outpath type[s] "
-                                      "with -I/--itype or -O/--otype option "
-                                      "explicitly", 1)
+                except API.UnknownFileTypeError:
+                    _exit_with_output((fmsg % inpath) + msg, 1)
+                except ValueError:
+                    _exit_with_output(msg, 1)
             else:
                 otype = itype
 
     if anyconfig.mdicts.is_dict_like(cnf):
-        API.dump(cnf, outpath, otype)
+        try:
+            API.dump(cnf, outpath, otype)
+        except API.UnknownFileTypeError:
+            _exit_with_output(fmsg % outpath, 1)
+        except API.UnknownParserTypeError:
+            _exit_with_output("Invalid output type '%s'" % otype, 1)
     else:
         _exit_with_output(str(cnf))  # Output primitive types as it is.
 
@@ -279,11 +288,17 @@ def main(argv=None):
     _check_options_and_args(parser, options, args)
 
     cnf = API.to_container(os.environ.copy() if options.env else {})
-    diff = API.load(args, options.itype,
-                    ignore_missing=options.ignore_missing,
-                    ac_merge=options.merge, ac_template=options.template,
-                    ac_schema=options.schema)
-
+    try:
+        diff = API.load(args, options.itype,
+                        ignore_missing=options.ignore_missing,
+                        ac_merge=options.merge,
+                        ac_template=options.template,
+                        ac_schema=options.schema)
+    except API.UnknownParserTypeError:
+        _exit_with_output("Wrong input type '%s'" % options.itype, 1)
+    except API.UnknownFileTypeError:
+        _exit_with_output("No appropriate backend was found for given file "
+                          "'%s'" % options.itype, 1)
     _exit_if_load_failure(diff, "Failed to load: args=%s" % ", ".join(args))
     cnf.update(diff)
 

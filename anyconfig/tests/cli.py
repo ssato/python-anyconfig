@@ -267,25 +267,26 @@ class Test_50_others(Test_20_Base):
         infile = os.path.join(self.workdir, "a.json")
         anyconfig.api.dump(a, infile)
 
-        exited = False
         outfile = os.path.join(self.workdir, "out.conf")
-        _run("-o", outfile, infile)
-        self.assertFalse(exited)
+        self.run_and_check_exit_code(["-o", outfile, infile], 1)
 
     def test_30_no_itype_and_otype(self):
-        exited = False
         outfile = os.path.join(self.workdir, "out.conf")
-        _run("-o", outfile, "in.conf")
-        self.assertFalse(exited)
+        self.run_and_check_exit_code(["-o", outfile, "in.conf"], 1)
 
     def test_40_no_inputs__w_env_option(self):
         infile = "/dev/null"
         output = os.path.join(self.workdir, "out.yml")
 
-        if anyconfig.api.find_loader(infile, "yaml") is None:
+        try:
+            anyconfig.api.find_loader(infile, "yaml")
+        except anyconfig.api.UnknownParserTypeError:
             return
 
-        TT.main(["dummy", "--silent", "--env", "-o", output, infile])
+        self.run_and_check_exit_code(["--silent", "--env", "-o",
+                                      output, infile], 1)
+        return
+
         data = anyconfig.api.load(output)
 
         for env_var, env_val in os.environ.items():

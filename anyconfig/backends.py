@@ -163,13 +163,19 @@ def _list_parsers_by_extension(cps):
     return ((x, _list_xppairs(xps)) for x, xps in groupby_key(cps_by_ext, fst))
 
 
-def find_by_file(path_or_stream, cps=None, is_path_=False):
+_PARSERS_BY_TYPE = tuple(_list_parsers_by_type(PARSERS))
+_PARSERS_BY_EXT = tuple(_list_parsers_by_extension(PARSERS))
+
+
+def find_by_file(path_or_stream, cps=_PARSERS_BY_EXT, is_path_=False):
     """
     Find config parser by the extension of file `path_or_stream`, file path or
     stream (a file or file-like objects).
 
     :param path_or_stream: Config file path or file/file-like object
-    :param cps: A list of pairs :: (type, parser_class)
+    :param cps:
+        A tuple of pairs of (type, parser_class) or None if you want to compute
+        this value dynamically.
     :param is_path_: True if given `path_or_stream` is a file path
 
     :return: Config Parser class found
@@ -185,7 +191,7 @@ def find_by_file(path_or_stream, cps=None, is_path_=False):
     <class 'anyconfig.backend.json.Parser'>
     """
     if cps is None:
-        cps = PARSERS
+        cps = _list_parsers_by_extension(PARSERS)
 
     if not is_path_ and not anyconfig.utils.is_path(path_or_stream):
         path_or_stream = anyconfig.utils.get_path_from_stream(path_or_stream)
@@ -193,32 +199,27 @@ def find_by_file(path_or_stream, cps=None, is_path_=False):
             return None  # There is no way to detect file path.
 
     ext_ref = anyconfig.utils.get_file_extension(path_or_stream)
-    for ext, psrs in _list_parsers_by_extension(cps):
-        if ext == ext_ref:
-            return psrs[-1]
-
-    return None
+    return next((psrs[-1] for ext, psrs in cps if ext == ext_ref), None)
 
 
-def find_by_type(cptype, cps=None):
+def find_by_type(cptype, cps=_PARSERS_BY_TYPE):
     """
     Find config parser by file's extension.
 
     :param cptype: Config file's type
-    :param cps: A list of pairs :: (type, parser_class)
+    :param cps:
+        A list of pairs (type, parser_class) or None if you want to compute
+        this value dynamically.
+
     :return: Config Parser class found
 
     >>> find_by_type("missing_type") is None
     True
     """
     if cps is None:
-        cps = PARSERS
+        cps = _list_parsers_by_type(PARSERS)
 
-    for type_, psrs in _list_parsers_by_type(cps):
-        if type_ == cptype:
-            return psrs[-1] or None
-
-    return None
+    return next((psrs[-1] or None for t, psrs in cps if t == cptype), None)
 
 
 def find_parser(path_or_stream, forced_type=None, is_path_=False):

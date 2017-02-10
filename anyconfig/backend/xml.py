@@ -62,7 +62,7 @@ def _gen_tags(pprefix=_PARAM_PREFIX):
     Generate special prefixed tags.
 
     :param pprefix: Special parameter name prefix
-    :return: A tuple of tags (attributes, text, children)
+    :return: Generator to yield tag for each of (attributes, text, children)
     """
     return (pprefix + x for x in ("attrs", "text", "children"))
 

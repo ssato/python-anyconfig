@@ -80,20 +80,20 @@ def etree_to_container(root, to_container=dict, pprefix=_PARAM_PREFIX):
     if root is None:
         return tree
 
-    tree[root.tag] = to_container()
+    troot = tree[root.tag] = to_container()
 
     if root.attrib:
-        tree[root.tag][attrs] = to_container(root.attrib)
+        troot[attrs] = to_container(root.attrib)
 
     if root.text and root.text.strip():
-        tree[root.tag][text] = root.text.strip()
+        troot[text] = root.text.strip()
 
     if len(root):  # It has children.
         # Note: Configuration item cannot have both attributes and values
         # (list) at the same time in current implementation:
         kwargs = dict(to_container=to_container, pprefix=pprefix)
-        tree[root.tag][children] = [etree_to_container(c, **kwargs) for c
-                                    in root]
+        troot[children] = [etree_to_container(c, **kwargs) for c in root]
+
     return tree
 
 

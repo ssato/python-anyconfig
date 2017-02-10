@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2016 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
@@ -91,6 +91,14 @@ def _tweak_ns(tag, nspaces):
     """
     :param tag: XML tag element
     :param nspaces: A namespaces dict, {uri: prefix}
+
+    >>> _tweak_ns("a", {})
+    'a'
+    >>> _tweak_ns("a", {"http://example.com/ns/val/": "val"})
+    'a'
+    >>> _tweak_ns("{http://example.com/ns/val/}a",
+    ...           {"http://example.com/ns/val/": "val"})
+    'val:a'
     """
     if nspaces:
         matched = _ET_NS_RE.match(tag)
@@ -141,24 +149,28 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
 
     subtree = tree[_tweak_ns(elem.tag, nspaces)] = to_container()
     (attrs, text, children) = tags if tags else _gen_tags()
-    _has_children = len(elem)
+    _num_of_children = len(elem)
 
     if elem.attrib:
         subtree[attrs] = to_container(elem.attrib)
 
     if elem.text:
         elem.text = elem.text.strip()
-        if not _has_children and not elem.attrib:  # Only this text element.
-            # Treat as special for later convenience.
-            tree[list(tree.keys())[0]] = elem.text
-        else:
-            subtree[text] = elem.text
+        if elem.text:
+            if not _num_of_children and not elem.attrib:
+                # .. note:: Treat as special case for later convenience.
+                tree[elem.tag] = elem.text
+            else:
+                subtree[text] = elem.text
 
-    if _has_children:
+    if _num_of_children:
         # Note: Configuration item cannot have both attributes and values
         # (list) at the same time in current implementation:
         args = (to_container, nspaces, tags)
-        subtree[children] = [elem_to_container(c, *args) for c in elem]
+        if _num_of_children == 1:  # .. note:: Another special case.
+            tree[elem.tag] = [elem_to_container(c, *args) for c in elem][0]
+        else:
+            subtree[children] = [elem_to_container(c, *args) for c in elem]
 
     return tree
 

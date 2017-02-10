@@ -147,7 +147,12 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
         subtree[attrs] = to_container(elem.attrib)
 
     if elem.text:
-        subtree[text] = elem.text = elem.text.strip()
+        elem.text = elem.text.strip()
+        if not _has_children and not elem.attrib:  # Only this text element.
+            # Treat as special for later convenience.
+            tree[list(tree.keys())[0]] = elem.text
+        else:
+            subtree[text] = elem.text
 
     if _has_children:
         # Note: Configuration item cannot have both attributes and values
@@ -170,11 +175,13 @@ def container_to_etree(obj, parent=None, pprefix=_PREFIX):
         return  # All attributes and text should be set already.
 
     (attrs, text, children) = _gen_tags(pprefix)
+    _has_attr_or_child = any(k in (attrs, children) for k in obj.keys())
+
     for key, val in anyconfig.compat.iteritems(obj):
         if key == attrs:
             for attr, aval in anyconfig.compat.iteritems(val):
                 parent.set(attr, aval)
-        elif key == text:
+        elif key == text or _has_attr_or_child:
             parent.text = val
         elif key == children:
             for child in val:  # child should be a dict-like object.

@@ -238,7 +238,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
 
         :return: Dict-like object holding config parameters
         """
-        root = ET.ElementTree(ET.fromstring(content)).getroot()
+        root = ET.fromstring(content)
         nspaces = _namespaces_from_file(anyconfig.compat.StringIO(content))
         return root_to_container(root, to_container, nspaces)
 

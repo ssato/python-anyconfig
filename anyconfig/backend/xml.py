@@ -34,6 +34,7 @@
 from __future__ import absolute_import
 from io import BytesIO
 
+import re
 import sys
 try:
     # First, try lxml which is compatible with elementtree and looks faster a
@@ -50,54 +51,114 @@ import anyconfig.compat
 import anyconfig.mdicts
 
 
-_PARAM_PREFIX = "@"
+_PREFIX = "@"
 
 # It seems that ET.ElementTree.write() cannot process a parameter
 # 'xml_declaration' in older python < 2.7:
 _IS_OLDER_PYTHON = sys.version_info[0] < 3 and sys.version_info[1] < 7
 
+_ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
-def _gen_tags(pprefix=_PARAM_PREFIX):
+
+def flip(tpl):
+    """
+    >>> flip((1, 2))
+    (2, 1)
+    """
+    return (tpl[1], tpl[0])
+
+
+def _namespaces_from_file(xmlfile):
+    """
+    :param xmlfile: XML file or file-like object
+    :return: {namespace_uri: namespace_prefix} or {}
+    """
+    return dict(flip(t) for _, t
+                in ET.iterparse(xmlfile, events=["start-ns"]))
+
+
+def _gen_tags(pprefix=_PREFIX):
     """
     Generate special prefixed tags.
 
     :param pprefix: Special parameter name prefix
-    :return: Generator to yield tag for each of (attributes, text, children)
+    :return: A tuple of prefixed (attributes, text, children)
     """
-    return (pprefix + x for x in ("attrs", "text", "children"))
+    return tuple(pprefix + x for x in ("attrs", "text", "children"))
 
 
-def etree_to_container(root, to_container=dict, pprefix=_PARAM_PREFIX):
+def _tweak_ns(tag, nspaces):
     """
-    Convert XML ElementTree to a collection of container objects.
+    :param tag: XML tag element
+    :param nspaces: A namespaces dict, {uri: prefix}
+    """
+    if nspaces:
+        matched = _ET_NS_RE.match(tag)
+        if matched:
+            (uri, tag) = matched.groups()
+            prefix = nspaces.get(uri, False)
+            if prefix:
+                return "%s:%s" % (prefix, tag)
+
+    return tag
+
+
+def root_to_container(root, to_container, nspaces, pprefix=_PREFIX):
+    """
+    Convert XML ElementTree Root Element to a collection of container objects.
 
     :param root: etree root object or None
     :param to_container: callble to make a container object
+    :param nspaces: A namespaces dict, {uri: prefix}
     :param pprefix: Special parameter name prefix
     """
-    (attrs, text, children) = _gen_tags(pprefix)
     tree = to_container()
     if root is None:
         return tree
 
-    troot = tree[root.tag] = to_container()
+    if nspaces is None:
+        nspaces = dict()
 
-    if root.attrib:
-        troot[attrs] = to_container(root.attrib)
+    if nspaces:
+        for uri, prefix in nspaces.items():
+            root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
 
-    if root.text and root.text.strip():
-        troot[text] = root.text.strip()
+    return elem_to_container(root, to_container, nspaces, _gen_tags(pprefix))
 
-    if len(root):  # It has children.
+
+def elem_to_container(elem, to_container, nspaces, tags=False):
+    """
+    Convert XML ElementTree Element to a collection of container objects.
+
+    :param elem: etree elem object or None
+    :param to_container: callble to make a container object
+    :param nspaces: A namespaces dict, {uri: prefix}
+    :param tags: (attrs, text, children) parameter names
+    """
+    tree = to_container()
+    if elem is None:
+        return tree
+
+    subtree = tree[_tweak_ns(elem.tag, nspaces)] = to_container()
+    (attrs, text, children) = tags if tags else _gen_tags()
+    _has_children = len(elem)
+
+    if elem.attrib:
+        subtree[attrs] = to_container(elem.attrib)
+
+    if elem.text:
+        subtree[text] = elem.text = elem.text.strip()
+
+    if _has_children:
         # Note: Configuration item cannot have both attributes and values
         # (list) at the same time in current implementation:
-        kwargs = dict(to_container=to_container, pprefix=pprefix)
-        troot[children] = [etree_to_container(c, **kwargs) for c in root]
+        args = (to_container, nspaces, tags)
+        subtree[children] = [elem_to_container(c, *args) for c in elem]
 
     return tree
 
 
-def container_to_etree(obj, parent=None, pprefix=_PARAM_PREFIX):
+def container_to_etree(obj, parent=None, pprefix=_PREFIX):
     """
     Convert a dict-like object to XML ElementTree.
 
@@ -159,7 +220,8 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         :return: Dict-like object holding config parameters
         """
         root = ET.ElementTree(ET.fromstring(content)).getroot()
-        return etree_to_container(root, to_container=to_container)
+        nspaces = _namespaces_from_file(anyconfig.compat.StringIO(content))
+        return root_to_container(root, to_container, nspaces)
 
     def load_from_path(self, filepath, to_container, **kwargs):
         """
@@ -170,7 +232,8 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         :return: Dict-like object holding config parameters
         """
         root = ET.parse(filepath).getroot()
-        return etree_to_container(root, to_container=to_container)
+        nspaces = _namespaces_from_file(filepath)
+        return root_to_container(root, to_container, nspaces)
 
     def load_from_stream(self, stream, to_container, **kwargs):
         """

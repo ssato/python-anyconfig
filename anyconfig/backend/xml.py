@@ -35,11 +35,6 @@ from __future__ import absolute_import
 from io import BytesIO
 
 import sys
-
-import anyconfig.backend.base
-import anyconfig.compat
-import anyconfig.mdicts
-
 try:
     # First, try lxml which is compatible with elementtree and looks faster a
     # lot. See also: http://getpython3.com/diveintopython3/xml.html
@@ -49,6 +44,10 @@ except ImportError:
         import xml.etree.ElementTree as ET
     except ImportError:
         import elementtree.ElementTree as ET
+
+import anyconfig.backend.base
+import anyconfig.compat
+import anyconfig.mdicts
 
 
 _PARAM_PREFIX = "@"

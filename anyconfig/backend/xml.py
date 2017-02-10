@@ -67,23 +67,23 @@ def _gen_tags(pprefix=_PARAM_PREFIX):
     return (pprefix + x for x in ("attrs", "text", "children"))
 
 
-def etree_to_container(root, cls, pprefix=_PARAM_PREFIX):
+def etree_to_container(root, to_container=dict, pprefix=_PARAM_PREFIX):
     """
     Convert XML ElementTree to a collection of container objects.
 
     :param root: etree root object or None
-    :param cls: Container class
+    :param to_container: callble to make a container object
     :param pprefix: Special parameter name prefix
     """
     (attrs, text, children) = _gen_tags(pprefix)
-    tree = cls()
+    tree = to_container()
     if root is None:
         return tree
 
-    tree[root.tag] = cls()
+    tree[root.tag] = to_container()
 
     if root.attrib:
-        tree[root.tag][attrs] = cls(root.attrib)
+        tree[root.tag][attrs] = to_container(root.attrib)
 
     if root.text and root.text.strip():
         tree[root.tag][text] = root.text.strip()
@@ -91,9 +91,9 @@ def etree_to_container(root, cls, pprefix=_PARAM_PREFIX):
     if len(root):  # It has children.
         # Note: Configuration item cannot have both attributes and values
         # (list) at the same time in current implementation:
-        tree[root.tag][children] = [etree_to_container(c, cls, pprefix)
-                                    for c in root]
-
+        kwargs = dict(to_container=to_container, pprefix=pprefix)
+        tree[root.tag][children] = [etree_to_container(c, **kwargs) for c
+                                    in root]
     return tree
 
 
@@ -159,7 +159,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         :return: Dict-like object holding config parameters
         """
         root = ET.ElementTree(ET.fromstring(content)).getroot()
-        return etree_to_container(root, to_container)
+        return etree_to_container(root, to_container=to_container)
 
     def load_from_path(self, filepath, to_container, **kwargs):
         """
@@ -170,7 +170,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         :return: Dict-like object holding config parameters
         """
         root = ET.parse(filepath).getroot()
-        return etree_to_container(root, to_container)
+        return etree_to_container(root, to_container=to_container)
 
     def load_from_stream(self, stream, to_container, **kwargs):
         """

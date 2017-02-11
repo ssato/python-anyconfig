@@ -57,7 +57,7 @@ b:
 
 CNF_XML_1 = {
     'config': {'@attrs': {'name': 'foo'},
-               '@children': [{'a': {'@text': '0'}},
+               '@children': [{'a': '0'},
                              {'b': {'@attrs': {'id': 'b0'},
                                     '@text': 'bbb'}}]}}
 
@@ -323,7 +323,6 @@ class Test_32_single_load(unittest.TestCase):
         self._load_and_dump_with_opened_files("a.json")
 
     def test_20_open_xml_file(self):
-        return  # TODO
         if "xml" in anyconfig.backends.list_types():
             self._load_and_dump_with_opened_files("a.xml", 'rb', 'wb')
 

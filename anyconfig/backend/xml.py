@@ -35,7 +35,8 @@
 
   - XML specific features (namespace, etc.) may not be processed correctly.
 
-- Special Options: None supported
+- Special Options:
+  - pprefix: Specify parameter prefix for attributes, text and children nodes.
 """
 from __future__ import absolute_import
 from io import BytesIO
@@ -250,6 +251,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
     _type = "xml"
     _extensions = ["xml"]
     _open_flags = ('rb', 'wb')
+    _load_opts = _dump_opts = ["pprefix"]
 
     def load_from_string(self, content, to_container, **kwargs):
         """
@@ -263,7 +265,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         """
         root = ET.fromstring(content)
         nspaces = _namespaces_from_file(anyconfig.compat.StringIO(content))
-        return root_to_container(root, to_container, nspaces)
+        return root_to_container(root, to_container, nspaces, **kwargs)
 
     def load_from_path(self, filepath, to_container, **kwargs):
         """
@@ -275,7 +277,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         """
         root = ET.parse(filepath).getroot()
         nspaces = _namespaces_from_file(filepath)
-        return root_to_container(root, to_container, nspaces)
+        return root_to_container(root, to_container, nspaces, **kwargs)
 
     def load_from_stream(self, stream, to_container, **kwargs):
         """
@@ -294,7 +296,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
 
         :return: string represents the configuration
         """
-        tree = container_to_etree(cnf)
+        tree = container_to_etree(cnf, **kwargs)
         buf = BytesIO()
         etree_write(tree, buf)
         return buf.getvalue()
@@ -305,7 +307,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         :param stream: Config file or file like object write to
         :param kwargs: optional keyword parameters
         """
-        tree = container_to_etree(cnf)
+        tree = container_to_etree(cnf, **kwargs)
         etree_write(tree, stream)
 
 # vim:sw=4:ts=4:et:

@@ -64,6 +64,12 @@ class Test_10(unittest.TestCase):
         root = TT.ET.XML("<a x='X'>A</a>")
         self.assertEqual(TT.elem_to_container(root, dict, {}), ref)
 
+    def test_50_root_to_container__text_attrs_pprefix(self):
+        ref = dict(a={"_attrs": {'x': 'X'}, "_text": "A"})
+        root = TT.ET.XML("<a x='X'>A</a>")
+        self.assertEqual(TT.root_to_container(root, dict, {}, pprefix='_'),
+                         ref)
+
 
 def tree_to_string(tree):
     return TT.ET.tostring(tree.getroot())
@@ -78,6 +84,12 @@ class Test_20(unittest.TestCase):
         ref = to_bytes('<a x="X" y="Y">A</a>')
         obj = dict(a={"@attrs": {'x': 'X', 'y': 'Y'}, "@text": "A"})
         res = TT.container_to_etree(obj)
+        self.assertEqual(tree_to_string(res), ref)
+
+    def test_12_container_to_etree__text_attrs_pprefix(self):
+        ref = to_bytes('<a x="X" y="Y">A</a>')
+        obj = dict(a={"_attrs": {'x': 'X', 'y': 'Y'}, "_text": "A"})
+        res = TT.container_to_etree(obj, pprefix='_')
         self.assertEqual(tree_to_string(res), ref)
 
     def test_20_container_to_etree__child(self):

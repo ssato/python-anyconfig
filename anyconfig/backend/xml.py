@@ -258,14 +258,18 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         """
         Load config from XML snippet (a string `content`).
 
-        :param content: XML snippet (a string)
+        :param content:
+            XML snippet string of str (python 2) or bytes (python 3) type
         :param to_container: callble to make a container object
         :param kwargs: optional keyword parameters passed to
 
         :return: Dict-like object holding config parameters
         """
         root = ET.fromstring(content)
-        stream = anyconfig.compat.StringIO(content)
+        if anyconfig.compat.IS_PYTHON_3:
+            stream = BytesIO(content)
+        else:
+            stream = anyconfig.compat.StringIO(content)
         nspaces = _namespaces_from_file(stream)
         return root_to_container(root, to_container, nspaces, **kwargs)
 

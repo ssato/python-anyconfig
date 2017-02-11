@@ -184,16 +184,19 @@ def container_to_etree(obj, parent=None, pprefix=_PREFIX):
     :param pprefix: Special parameter name prefix
     """
     if not anyconfig.mdicts.is_dict_like(obj):
+        if parent is not None and obj:
+            parent.text = obj  # Parent is a leaf text node.
         return  # All attributes and text should be set already.
 
     (attrs, text, children) = _gen_tags(pprefix)
     _has_attr_or_child = any(k in (attrs, children) for k in obj.keys())
 
     for key, val in anyconfig.compat.iteritems(obj):
+        print "parent=%r, key=%s, val=%r" % (parent, key, val)
         if key == attrs:
             for attr, aval in anyconfig.compat.iteritems(val):
                 parent.set(attr, aval)
-        elif key == text or _has_attr_or_child:
+        elif key == text:
             parent.text = val
         elif key == children:
             for child in val:  # child should be a dict-like object.
@@ -201,6 +204,11 @@ def container_to_etree(obj, parent=None, pprefix=_PREFIX):
                     celem = ET.Element(ckey)
                     container_to_etree(cval, celem, pprefix)
                     parent.append(celem)
+        elif parent is not None:
+            elem = ET.Element(key)
+            container_to_etree(val, elem, pprefix)
+            parent.append(elem)
+            return ET.ElementTree(parent)
         else:
             elem = ET.Element(key)
             container_to_etree(val, elem, pprefix)

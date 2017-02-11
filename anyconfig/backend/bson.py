@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015, 2016 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Ref. python -c "import bson; help(bson)"
@@ -20,6 +20,7 @@ r"""BSON backend.
 
 - Format to support: BSON, http://bsonspec.org
 - Requirements: bson in pymongo, https://pypi.python.org/pypi/pymongo/
+- Development Status: 3 - Alpha
 - Limitations: It seems that the APIs of bson.decode\* were changed a lot in
   the current version (3.2) of python-bson in pymongo and this backend might
   not work with it. I don't have a time to test with that latest version yet

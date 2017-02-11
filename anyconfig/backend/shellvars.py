@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2016 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """
@@ -12,6 +12,7 @@ Parser for simple Shell vars' definitions.
 - Format to support: Simple shell variables' definitions w/o any shell variable
   expansions nor complex shell statements such as conditionals, etc.
 - Requirements: None (built-in)
+- Development Status :: 3 - Alpha
 - Limitations: Currently, it only supports a varialbe defined in a line.
 - Special options: None
 """

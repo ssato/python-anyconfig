@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 - 2016 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2013 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """configobj backend.
@@ -11,6 +11,7 @@
 
 - Format to support: configobj, http://goo.gl/JbP2Kp (readthedocs.org)
 - Requirements: configobj (https://pypi.python.org/pypi/configobj/)
+- Development Status :: 4 - Beta
 - Limitations: AFAIK, configobj does not keep the order of configuration items
   and not have options to change this behavior like configparser, so this
   backend does not keep the order of configuration items even if the ac_ordered

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """YAML backend.
@@ -10,6 +10,7 @@
 
 - Format to support: YAML, http://yaml.org
 - Requirements: PyYAML (yaml), http://pyyaml.org
+- Development Status :: 5 - Production/Stable
 - Limitations: ac_ordered is not effective and just ignored.
 - Special options:
 

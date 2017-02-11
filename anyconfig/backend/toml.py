@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Ref. python -c "import toml; help(toml); ..."
@@ -11,6 +11,7 @@
 
 - Format to support: TOML, https://github.com/toml-lang/toml
 - Requirements: (python) toml module, https://github.com/uiri/toml
+- Development Status :: 4 - Beta
 - Limitations: None obvious
 - Special options:
 

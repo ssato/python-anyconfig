@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Ref. python -c "import json; help(json)"
@@ -9,6 +9,7 @@
 
 - Format to support: JSON, http://www.json.org
 - Requirements: json in python standard library (>= python 2.6) or simplejson
+- Development Status :: 5 - Production/Stable
 - Limitations: None obvious
 - Special options:
 

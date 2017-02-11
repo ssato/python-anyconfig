@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2016 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """
@@ -17,6 +17,7 @@ Java properties file support.
 - Format to support: Java Properties file, e.g.
   http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html
 - Requirements: None (built-in)
+- Development Status :: 4 - Beta
 - Limitations:
   - Key and value separator of white spaces is not supported
   - Keys contain escaped white spaces is not supported

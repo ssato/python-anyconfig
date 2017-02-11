@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Ref. python -c "import msgpack; help(msgpack.Unpacker); help(msgpack.Packer)"
@@ -10,6 +10,7 @@
 
 - Format to support: MessagePack, http://msgpack.org
 - Requirements: msgpack-python (https://pypi.python.org/pypi/msgpack-python)
+- Development Status :: 4 - Beta
 - Limitations: None obvious
 - Special options:
 

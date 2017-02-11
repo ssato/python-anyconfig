@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 #  pylint: disable=unused-argument
@@ -18,6 +18,7 @@
   - configparser in python 3 standard library:
     https://docs.python.org/3/library/configparser.html
 
+- Development Status :: 4 - Beta
 - Limitations: It cannot process nested configuration dicts correctly due to
   the limitation of configparser module.
 

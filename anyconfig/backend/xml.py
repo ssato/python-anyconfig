@@ -55,9 +55,6 @@ import anyconfig.mdicts
 
 _PREFIX = "@"
 
-# It seems that ET.ElementTree.write() cannot process a parameter
-# 'xml_declaration' in older python < 2.7:
-_IS_OLDER_PYTHON = sys.version_info[0] < 3 and sys.version_info[1] < 7
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
 
@@ -228,10 +225,14 @@ def etree_write(tree, stream):
     """
     Write XML ElementTree `root` content into `stream`.
 
+    .. note:
+       It seems that ET.ElementTree.write() cannot process a parameter
+       'xml_declaration' in python 2.6.
+
     :param tree: XML ElementTree object
     :param stream: File or file-like object can write to
     """
-    if _IS_OLDER_PYTHON:
+    if anyconfig.compat.IS_PYTHON_2_6:
         tree.write(stream, encoding='UTF-8')
     else:
         tree.write(stream, encoding='UTF-8', xml_declaration=True)

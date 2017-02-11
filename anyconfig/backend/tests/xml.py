@@ -34,32 +34,32 @@ class Test_00(unittest.TestCase):
 
 class Test_10(unittest.TestCase):
 
-    def test_elem_to_container__None(self):
+    def test_10_elem_to_container__None(self):
         self.assertEqual(TT.elem_to_container(None, dict, {}), dict())
 
-    def test_root_to_container__None(self):
+    def test_10_root_to_container__None(self):
         self.assertEqual(TT.root_to_container(None, dict, {}), dict())
 
-    def test_elem_to_container__attrs(self):
+    def test_20_elem_to_container__attrs(self):
         ref = dict(a={"@attrs": dict(x='1', y='y')})
         root = TT.ET.XML("<a x='1' y='y'/>")
         self.assertEqual(TT.elem_to_container(root, dict, {}), ref)
 
-    def test_elem_to_container__child(self):
+    def test_30_elem_to_container__child(self):
         ref = dict(a=dict(b="b"))
         root = TT.ET.XML("<a><b>b</b></a>")
         self.assertEqual(TT.elem_to_container(root, dict, {}), ref)
 
-    def test_elem_to_container__children(self):
+    def test_32_elem_to_container__children(self):
         ref = {'a': {'@children': [{'b': 'b'}, {'c': 'c'}]}}
         root = TT.ET.XML("<a><b>b</b><c>c</c></a>")
         self.assertEqual(TT.elem_to_container(root, dict, {}), ref)
 
-    def test_elem_to_container__text(self):
+    def test_40_elem_to_container__text(self):
         root = TT.ET.XML("<a>A</a>")
         self.assertEqual(TT.elem_to_container(root, dict, {}), {'a': 'A'})
 
-    def test_elem_to_container__text_attrs(self):
+    def test_42_elem_to_container__text_attrs(self):
         ref = dict(a={"@attrs": {'x': 'X'}, "@text": "A"})
         root = TT.ET.XML("<a x='X'>A</a>")
         self.assertEqual(TT.elem_to_container(root, dict, {}), ref)

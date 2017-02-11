@@ -11,7 +11,7 @@ import anyconfig.backend.tests.ini
 import anyconfig.tests.common
 import anyconfig.compat
 
-from anyconfig.tests.common import dicts_equal
+from anyconfig.tests.common import dicts_equal, to_bytes
 
 
 XML_W_NS_S = """
@@ -75,7 +75,7 @@ class Test_20(unittest.TestCase):
         self.assertTrue(TT.container_to_etree(None) is None)
 
     def test_10_container_to_etree__text_attrs(self):
-        ref = '<a x="X" y="Y">A</a>'
+        ref = to_bytes('<a x="X" y="Y">A</a>')
         obj = dict(a={"@attrs": {'x': 'X', 'y': 'Y'}, "@text": "A"})
         res = TT.container_to_etree(obj)
         self.assertEqual(tree_to_string(res), ref)
@@ -83,7 +83,7 @@ class Test_20(unittest.TestCase):
     def test_20_container_to_etree__child(self):
         return  # TODO
 
-        ref = "<a><b>b</b></a>"
+        ref = to_bytes("<a><b>b</b></a>")
         obj = dict(a=dict(b="b"))
         res = TT.container_to_etree(obj)
         self.assertEqual(tree_to_string(res), ref)
@@ -91,7 +91,7 @@ class Test_20(unittest.TestCase):
     def test_22_container_to_etree__children(self):
         return  # TODO
 
-        ref = "<a><b>b</b><c>c</c></a>"
+        ref = to_bytes("<a><b>b</b><c>c</c></a>")
         obj = {'a': {'@children': [{'b': 'b'}, {'c': 'c'}]}}
         res = TT.container_to_etree(obj)
         self.assertEqual(tree_to_string(res), ref)

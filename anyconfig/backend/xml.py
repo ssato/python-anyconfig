@@ -265,7 +265,8 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         :return: Dict-like object holding config parameters
         """
         root = ET.fromstring(content)
-        nspaces = _namespaces_from_file(anyconfig.compat.StringIO(content))
+        stream = anyconfig.compat.StringIO(content)
+        nspaces = _namespaces_from_file(stream)
         return root_to_container(root, to_container, nspaces, **kwargs)
 
     def load_from_path(self, filepath, to_container, **kwargs):

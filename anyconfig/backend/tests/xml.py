@@ -22,6 +22,22 @@ XML_W_NS_S = """
 </a>
 """
 
+CNF_0 = {'config': {'@attrs': {'name': 'foo'},
+                    '@children': [{'a': '0'},
+                                  {'b': {'@attrs': {'id': 'b0'},
+                                         '@text': 'bbb'}},
+                                  {'sect0': {'c': 'x, y, z'}}]}}
+CNF_0_S = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<config name='foo'>
+  <a>0</a>
+  <b id="b0">bbb</b>
+  <sect0>
+    <c>x, y, z</c>
+  </sect0>
+</config>
+"""
+
 
 class Test_00(unittest.TestCase):
 
@@ -103,5 +119,32 @@ class Test_20(unittest.TestCase):
         obj = {'a': {'@children': [{'b': 'b'}, {'c': 'c'}]}}
         res = TT.container_to_etree(obj)
         self.assertEqual(tree_to_string(res), ref)
+
+
+class Test10(anyconfig.backend.tests.ini.Test10):
+
+    cnf = CNF_0
+    cnf_s = CNF_0_S
+    load_options = dump_options = dict(pprefix='@')
+
+    def setUp(self):
+        self.psr = TT.Parser()
+
+
+class Test20(anyconfig.backend.tests.ini.Test20):
+
+    psr_cls = TT.Parser
+    cnf = CNF_0
+    cnf_s = CNF_0_S
+    cnf_fn = "conf0.xml"
+
+    def test_12_load__w_options(self):
+        cnf = self.psr.load(self.cpath, parse_int=None)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+    def test_22_dump__w_special_option(self):
+        self.psr.dump(self.cnf, self.cpath, parse_int=None, indent=3)
+        cnf = self.psr.load(self.cpath)
+        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

@@ -120,29 +120,6 @@ def _tweak_ns(tag, nspaces):
     return tag
 
 
-def root_to_container(root, to_container, nspaces, pprefix=_PREFIX):
-    """
-    Convert XML ElementTree Root Element to a collection of container objects.
-
-    :param root: etree root object or None
-    :param to_container: callble to make a container object
-    :param nspaces: A namespaces dict, {uri: prefix}
-    :param pprefix: Special parameter name prefix
-    """
-    tree = to_container()
-    if root is None:
-        return tree
-
-    if nspaces is None:
-        nspaces = dict()
-
-    if nspaces:
-        for uri, prefix in nspaces.items():
-            root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
-
-    return elem_to_container(root, to_container, nspaces, _gen_tags(pprefix))
-
-
 def elem_to_container(elem, to_container, nspaces, tags=False):
     """
     Convert XML ElementTree Element to a collection of container objects.
@@ -182,6 +159,29 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
             subtree[children] = [elem_to_container(c, *args) for c in elem]
 
     return tree
+
+
+def root_to_container(root, to_container, nspaces, pprefix=_PREFIX):
+    """
+    Convert XML ElementTree Root Element to a collection of container objects.
+
+    :param root: etree root object or None
+    :param to_container: callble to make a container object
+    :param nspaces: A namespaces dict, {uri: prefix}
+    :param pprefix: Special parameter name prefix
+    """
+    tree = to_container()
+    if root is None:
+        return tree
+
+    if nspaces is None:
+        nspaces = dict()
+
+    if nspaces:
+        for uri, prefix in nspaces.items():
+            root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
+
+    return elem_to_container(root, to_container, nspaces, _gen_tags(pprefix))
 
 
 def container_to_etree(obj, parent=None, pprefix=_PREFIX):

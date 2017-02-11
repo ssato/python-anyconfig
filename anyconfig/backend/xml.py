@@ -200,7 +200,6 @@ def container_to_etree(obj, parent=None, pprefix=_PREFIX):
 
     (attrs, text, children) = _gen_tags(pprefix)
     for key, val in anyconfig.compat.iteritems(obj):
-        print "parent=%r, key=%s, val=%r" % (parent, key, val)
         if key == attrs:
             for attr, aval in anyconfig.compat.iteritems(val):
                 parent.set(attr, aval)

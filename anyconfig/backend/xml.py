@@ -35,7 +35,6 @@ from __future__ import absolute_import
 from io import BytesIO
 
 import re
-import sys
 try:
     # First, try lxml which is compatible with elementtree and looks faster a
     # lot. See also: http://getpython3.com/diveintopython3/xml.html

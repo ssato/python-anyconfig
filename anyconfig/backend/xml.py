@@ -57,6 +57,7 @@ except ImportError:
 import anyconfig.backend.base
 import anyconfig.compat
 import anyconfig.mdicts
+import anyconfig.utils
 
 
 _PREFIX = "@"
@@ -287,7 +288,10 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
 
         :return: Dict-like object holding config parameters
         """
-        return self.load_from_path(stream, to_container, **kwargs)
+        root = ET.parse(stream).getroot()
+        path = anyconfig.utils.get_path_from_stream(stream)
+        nspaces = _namespaces_from_file(path)
+        return root_to_container(root, to_container, nspaces, **kwargs)
 
     def dump_to_string(self, cnf, **kwargs):
         """

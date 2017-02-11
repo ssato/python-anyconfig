@@ -6,6 +6,11 @@
 # pylint: disable=import-error
 """XML files parser backend, should be available always.
 
+.. versionchanged:: 0.7.99
+   - Try to make a nested dict w/o extra dict having keys of attrs, text and
+     children from XML string/file as much as possible.
+   - Support namespaces partially.
+
 .. versionchanged:: 0.1.0
    Added XML dump support.
 
@@ -16,6 +21,7 @@
   - xml.etree.ElementTree in standard lib if python >= 2.5
   - elementtree.ElementTree (otherwise)
 
+- Development Status: 3 - Alpha
 - Limitations:
 
   - '<prefix>attrs', '<prefix>text' and '<prefix>children' are used as special

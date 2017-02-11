@@ -6,6 +6,7 @@ python:
     - 3.3
     - 3.4
     - 3.5
+    - 3.6
 # see: http://docs.travis-ci.com/user/caching/#pip-cache
 cache: pip
 #matrix:

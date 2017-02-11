@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, invalid-name
+# pylint: disable=missing-docstring, invalid-name, protected-access
 from __future__ import absolute_import
 import unittest
 
@@ -81,16 +81,12 @@ class Test_20(unittest.TestCase):
         self.assertEqual(tree_to_string(res), ref)
 
     def test_20_container_to_etree__child(self):
-        return  # TODO
-
         ref = to_bytes("<a><b>b</b></a>")
         obj = dict(a=dict(b="b"))
         res = TT.container_to_etree(obj)
         self.assertEqual(tree_to_string(res), ref)
 
     def test_22_container_to_etree__children(self):
-        return  # TODO
-
         ref = to_bytes("<a><b>b</b><c>c</c></a>")
         obj = {'a': {'@children': [{'b': 'b'}, {'c': 'c'}]}}
         res = TT.container_to_etree(obj)

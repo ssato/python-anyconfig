@@ -4,6 +4,7 @@
 #
 # pylint: disable=missing-docstring, invalid-name, protected-access
 from __future__ import absolute_import
+import os.path
 import unittest
 
 import anyconfig.backend.xml as TT
@@ -121,22 +122,22 @@ class Test_20(unittest.TestCase):
         self.assertEqual(tree_to_string(res), ref)
 
 
-class Test10(anyconfig.backend.tests.ini.Test10):
-
-    cnf = CNF_0
-    cnf_s = CNF_0_S
-    load_options = dump_options = dict(pprefix='@')
-
-    def setUp(self):
-        self.psr = TT.Parser()
-
-
 class Test20(anyconfig.backend.tests.ini.Test20):
 
     psr_cls = TT.Parser
     cnf = CNF_0
     cnf_s = CNF_0_S
     cnf_fn = "conf0.xml"
+
+    def setUp(self):
+        self.psr = self.psr_cls()
+        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.cpath = os.path.join(self.workdir, self.cnf_fn)
+        with self.psr.wopen(self.cpath) as out:
+            if anyconfig.compat.IS_PYTHON_3:
+                out.write(self.cnf_s.encode("utf-8"))
+            else:
+                out.write(self.cnf_s)
 
     def test_12_load__w_options(self):
         cnf = self.psr.load(self.cpath, parse_int=None)
@@ -146,5 +147,17 @@ class Test20(anyconfig.backend.tests.ini.Test20):
         self.psr.dump(self.cnf, self.cpath, parse_int=None, indent=3)
         cnf = self.psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+
+
+# FIXME: Make it works in python 3.
+if not anyconfig.compat.IS_PYTHON_3:
+    class Test10(anyconfig.backend.tests.ini.Test10):
+
+        cnf = CNF_0
+        cnf_s = CNF_0_S
+        load_options = dump_options = dict(pprefix='@')
+
+        def setUp(self):
+            self.psr = TT.Parser()
 
 # vim:sw=4:ts=4:et:

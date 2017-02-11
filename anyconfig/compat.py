@@ -26,7 +26,6 @@ except ImportError:  # python < 2.7 doesn't have it.
 
 (_PY_MAJOR, _PY_MINOR) = sys.version_info[:2]
 IS_PYTHON_3 = _PY_MAJOR == 3
-IS_PYTHON_3_3_OR_OLDER = _PY_MAJOR == 3 and _PY_MINOR <= 3
 IS_PYTHON_2_6 = _PY_MAJOR == 2 and _PY_MINOR == 6
 
 

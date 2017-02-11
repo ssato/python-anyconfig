@@ -58,8 +58,17 @@ _PREFIX = "@"
 _IS_OLDER_PYTHON = sys.version_info[0] < 3 and sys.version_info[1] < 7
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
-# Avoid bug in python 3.{2,3}. See also: http://bugs.python.org/issue9257
-_EVS = b"start-ns" if anyconfig.compat.IS_PYTHON_3_3_OR_OLDER else "start-ns"
+
+def _iterparse(xmlfile):
+    """
+    Avoid bug in python 3.{2,3}. See http://bugs.python.org/issue9257.
+
+    :param xmlfile: XML file or file-like object
+    """
+    try:
+        return ET.iterparse(xmlfile, events=("start-ns", ))
+    except TypeError:
+        return ET.iterparse(xmlfile, events=(b"start-ns", ))
 
 
 def flip(tpl):
@@ -75,7 +84,7 @@ def _namespaces_from_file(xmlfile):
     :param xmlfile: XML file or file-like object
     :return: {namespace_uri: namespace_prefix} or {}
     """
-    return dict(flip(t) for _, t in ET.iterparse(xmlfile, events=(_EVS, )))
+    return dict(flip(t) for _, t in _iterparse(xmlfile))
 
 
 def _gen_tags(pprefix=_PREFIX):

@@ -24,13 +24,11 @@ files in various formats:
 
 - Loading configuration files:
 
-  **anyconfig.load** (path_specs, ac_parser=None, ac_template=False,
-  ac_context=None, \*\*options)
+  **anyconfig.load** (path_specs, ac_parser=None, ac_template=False, ac_context=None, \*\*options)
     loads configuration files or file/file-like objects and return a dict-like
     object represents loaded configuration.
 
-  **anyconfig.loads** (content, ac_parser=None, ac_template=False,
-  ac_context=None, \*\*options)
+  **anyconfig.loads** (content, ac_parser=None, ac_template=False, ac_context=None, \*\*options)
     loads configuration from a string just like json.loads does.
 
 - Dumping configuration files:

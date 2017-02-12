@@ -84,7 +84,7 @@ def to_method(func):
 def to_container_fn(**options):
     """
     :param options:
-        Keyword options will be passed to :fnc:`to_container` in
+        Keyword options will be passed to :func:`to_container` in
         :mod:`anyconfig.mdicts` to decide which merge-able dict to
         wrap configurations.
     """

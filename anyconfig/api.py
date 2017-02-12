@@ -5,7 +5,7 @@
 # pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs of anyconfig module.
 
-.. versionadded:: 0.7.99
+.. versionadded:: 0.8.0
 
    - Removed set_loglevel API as it does not help much.
    - Added :func:`open` API to open files with appropriate open mode.

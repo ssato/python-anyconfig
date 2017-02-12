@@ -32,7 +32,7 @@
 
 History:
 
-.. versionchanged:: 0.7.99
+.. versionchanged:: 0.8.0
 
    - Try to make a nested dict w/o extra dict having keys of attrs, text and
      children from XML string/file as much as possible.

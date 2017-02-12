@@ -77,7 +77,7 @@ class Test(unittest.TestCase):
             try:
                 TT.render(ng_t, ctx, ask=False)
                 assert False  # force raising an exception.
-            except RuntimeError:
+            except TT.TemplateNotFound:
                 pass
 
     def test_24_render__wo_paths(self):

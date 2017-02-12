@@ -5,6 +5,18 @@
 """
 Java properties file support.
 
+- Format to support: Java Properties file, e.g.
+  http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html
+- Requirements: None (built-in)
+- Development Status :: 4 - Beta
+- Limitations:
+  - Key and value separator of white spaces is not supported
+  - Keys contain escaped white spaces is not supported
+
+- Special options: None
+
+History:
+
 .. versionchanged:: 0.7.0
 
    - Fix handling of empty values, pointed by @ajays20078
@@ -15,16 +27,6 @@ Java properties file support.
 
    - Added native Java properties parser instead of a plugin utilizes
      pyjavaproperties module.
-
-- Format to support: Java Properties file, e.g.
-  http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html
-- Requirements: None (built-in)
-- Development Status :: 4 - Beta
-- Limitations:
-  - Key and value separator of white spaces is not supported
-  - Keys contain escaped white spaces is not supported
-
-- Special options: None
 """
 from __future__ import absolute_import
 

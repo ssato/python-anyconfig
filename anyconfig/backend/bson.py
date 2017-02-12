@@ -8,16 +8,6 @@
 # pylint: disable=protected-access
 r"""BSON backend.
 
-.. versionchanged:: 0.5.0
-
-   - utilize as_class keyword argument to allow container objects made directly
-     on load if C extension is not used and enabled.
-   - _load_opts() was removed because C extension looks forced to be enalbed
-     if bson.has_c() == True, that is, C extension was built. see also:
-     https://jira.mongodb.org/browse/PYTHON-379
-
-.. versionadded:: 0.1.0
-
 - Format to support: BSON, http://bsonspec.org
 - Requirements: bson in pymongo, https://pypi.python.org/pypi/pymongo/
 - Development Status: 3 - Alpha
@@ -31,6 +21,18 @@ r"""BSON backend.
     (load{s,}) of :class:`bson.BSON` except for as_class should just work.
 
   - See also: https://api.mongodb.org/python/current/api/bson/
+
+History:
+
+.. versionchanged:: 0.5.0
+
+   - utilize as_class keyword argument to allow container objects made directly
+     on load if C extension is not used and enabled.
+   - _load_opts() was removed because C extension looks forced to be enalbed
+     if bson.has_c() == True, that is, C extension was built. see also:
+     https://jira.mongodb.org/browse/PYTHON-379
+
+.. versionadded:: 0.1.0
 """
 from __future__ import absolute_import
 

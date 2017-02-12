@@ -5,11 +5,6 @@
 # pylint: disable=unused-argument
 """Abstract implementation of backend modules.
 
-.. versionchanged:: 0.2
-   The methods :meth:`load_impl`, :meth:`dump_impl` are deprecated and replaced
-   with :meth:`load_from_stream` and :meth:`load_from_path`,
-   :meth:`dump_to_string` and :meth:`dump_to_path` respectively.
-
 Backend module must implement a parser class inherits :class:`Parser` or its
 children classes of this module and override all or some of the methods as
 needed:
@@ -20,6 +15,13 @@ needed:
   - :meth:`dump_to_string`: Dump config as a string
   - :meth:`dump_to_stream`: Dump config to a file or file-like object
   - :meth:`dump_to_path`: Dump config to a file of given path
+
+History:
+
+.. versionchanged:: 0.2
+   The methods :meth:`load_impl`, :meth:`dump_impl` are deprecated and replaced
+   with :meth:`load_from_stream` and :meth:`load_from_path`,
+   :meth:`dump_to_string` and :meth:`dump_to_path` respectively.
 """
 from __future__ import absolute_import
 

@@ -7,8 +7,6 @@
 # pylint: disable=unused-argument
 """TOML backend.
 
-.. versionadded:: 0.1.0
-
 - Format to support: TOML, https://github.com/toml-lang/toml
 - Requirements: (python) toml module, https://github.com/uiri/toml
 - Development Status :: 4 - Beta
@@ -17,6 +15,10 @@
 
   - toml.load{s,} only accept '_dict' keyword option but it's used already to
     pass callable to make a container object.
+
+History:
+
+.. versionadded:: 0.1.0
 """
 from __future__ import absolute_import
 

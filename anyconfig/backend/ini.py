@@ -5,10 +5,6 @@
 #  pylint: disable=unused-argument
 """INI or INI like config files backend.
 
-.. versionchanged:: 0.3
-   Introduce 'ac_parse_value' keyword option to switch behaviors, same as
-   original configparser and rich backend parsing each parameter values.
-
 - Format to support: INI or INI like ones
 - Requirements: It should be available always.
 
@@ -26,6 +22,12 @@
 
   - Use 'ac_parse_value' boolean keyword option if you want to parse values by
     custom parser, anyconfig.backend.ini._parse.
+
+History:
+
+.. versionchanged:: 0.3
+   Introduce 'ac_parse_value' keyword option to switch behaviors, same as
+   original configparser and rich backend parsing each parameter values.
 """
 from __future__ import absolute_import
 

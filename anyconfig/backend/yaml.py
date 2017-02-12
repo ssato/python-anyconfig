@@ -4,10 +4,6 @@
 #
 """YAML backend.
 
-.. versionchanged:: 0.3
-   Changed special keyword option 'ac_safe' from 'safe' to avoid possibility of
-   option conflicts in the future.
-
 - Format to support: YAML, http://yaml.org
 - Requirements: PyYAML (yaml), http://pyyaml.org
 - Development Status :: 5 - Production/Stable
@@ -21,6 +17,12 @@
     and yaml.safe_dump instead of yaml.load and yaml.dump
 
   - See also: http://pyyaml.org/wiki/PyYAMLDocumentation
+
+History:
+
+.. versionchanged:: 0.3
+   Changed special keyword option 'ac_safe' from 'safe' to avoid possibility of
+   option conflicts in the future.
 """
 from __future__ import absolute_import
 

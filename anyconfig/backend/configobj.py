@@ -4,11 +4,6 @@
 #
 """configobj backend.
 
-.. versionchanged:: 0.5.0
-   Now loading and dumping options are detected automatically from inspection
-   result if possible. Also these became not distinguished because these will
-   be passed to configobj.Configuration anyway.
-
 - Format to support: configobj, http://goo.gl/JbP2Kp (readthedocs.org)
 - Requirements: configobj (https://pypi.python.org/pypi/configobj/)
 - Development Status :: 4 - Beta
@@ -23,6 +18,13 @@
     should work.
 
   - See also: http://configobj.readthedocs.io/en/latest/configobj.html
+
+History:
+
+.. versionchanged:: 0.5.0
+   Now loading and dumping options are detected automatically from inspection
+   result if possible. Also these became not distinguished because these will
+   be passed to configobj.Configuration anyway.
 """
 from __future__ import absolute_import
 

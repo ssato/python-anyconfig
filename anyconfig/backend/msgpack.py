@@ -6,8 +6,6 @@
 #
 """MessagePack file backend.
 
-.. versionadded:: 0.0.11
-
 - Format to support: MessagePack, http://msgpack.org
 - Requirements: msgpack-python (https://pypi.python.org/pypi/msgpack-python)
 - Development Status :: 4 - Beta
@@ -18,6 +16,10 @@
     and file_like should work.
 
   - See also: http://pythonhosted.org/msgpack-python/api.html
+
+History:
+
+.. versionadded:: 0.0.11
 """
 from __future__ import absolute_import
 

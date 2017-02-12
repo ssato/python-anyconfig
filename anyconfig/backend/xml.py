@@ -6,16 +6,6 @@
 # pylint: disable=import-error
 """XML files parser backend, should be available always.
 
-.. versionchanged:: 0.7.99
-
-   - Try to make a nested dict w/o extra dict having keys of attrs, text and
-     children from XML string/file as much as possible.
-   - Support namespaces partially.
-
-.. versionchanged:: 0.1.0
-
-   - Added XML dump support.
-
 - Format to support: XML, e.g. http://www.w3.org/TR/xml11/
 - Requirements: one of the followings
 
@@ -39,6 +29,18 @@
 
 - Special Options:
   - pprefix: Specify parameter prefix for attributes, text and children nodes.
+
+History:
+
+.. versionchanged:: 0.7.99
+
+   - Try to make a nested dict w/o extra dict having keys of attrs, text and
+     children from XML string/file as much as possible.
+   - Support namespaces partially.
+
+.. versionchanged:: 0.1.0
+
+   - Added XML dump support.
 """
 from __future__ import absolute_import
 from io import BytesIO

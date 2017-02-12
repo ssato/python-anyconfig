@@ -146,7 +146,7 @@ def _load_schema(**options):
     return None
 
 
-def open(path, mode=None, ac_parser=None):
+def open(path, mode=None, ac_parser=None, **options):
     """
     Open given config file with appropriate open flag.
 
@@ -156,14 +156,18 @@ def open(path, mode=None, ac_parser=None):
         Please note that even if you specify 'r' or 'w', it will be changed to
         'rb' or 'wb' if the backend selected, xml and configobj for example,
         for given config file prefer that.
+    :param options:
+        Optional keyword arguments passed to the internal file opening API of
+        each backends such like 'buffering' optional parameter passed to
+        builtin 'open' function.
 
     :return: A file object or None on any errors
     """
     psr = find_loader(path, parser_or_type=ac_parser, is_path_=True)
     if mode is not None and mode.startswith('w'):
-        return psr.wopen(path)
+        return psr.wopen(path, **options)
 
-    return psr.ropen(path)
+    return psr.ropen(path, **options)
 
 
 def single_load(path_or_stream, ac_parser=None, ac_template=False,

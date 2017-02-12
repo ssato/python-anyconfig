@@ -34,6 +34,11 @@ BuildRequires:  python-setuptools
 BuildRequires:  python-docutils
 BuildRequires:  python-sphinx
 BuildRequires:  make
+BuildRequires:  python-bson
+BuildRequires:  python-configobj
+BuildRequires:  python-msgpack
+BuildRequires:  python-toml
+BuildRequires:  PyYAML
 %endif
 Requires:       PyYAML
 Requires:       python-setuptools
@@ -53,6 +58,7 @@ Requires:       python-toml
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
+BuildRequires:  python3-PyYAML
 %endif
 
 %description

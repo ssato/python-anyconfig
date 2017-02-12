@@ -356,7 +356,7 @@ Other random topics with API usage
 Suppress logging messages from anyconfig module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-anyconfig uses a global logger named 'anyconfig' and logging messages are
+anyconfig uses a global logger named **anyconfig** and logging messages are
 suppressed by default as NullHandler was attached to the logger [#]_ . If you
 want to see its log messages out, you have to configure it (add handler and
 optionally set log level) like the followings.
@@ -477,8 +477,8 @@ Load from compressed files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Since 0.2.0, python-anyconfig can load configuration from file or file-like
-object (called 'stream' internally). And this should help loading
-configurations from compressed files.
+object, called *stream* internally. And this should help loading configurations
+from compressed files.
 
 - Loading from a compressed JSON config file:
 

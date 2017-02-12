@@ -48,18 +48,18 @@ Introduction
 
 python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
 python library provides common APIs to access to configuration files in various
-formats with some useful features such as contents merge, templates and support for schema
-validation/generation.
+formats with some useful features such as contents merge, templates and schema
+validation/generation support.
 
 - Home: https://github.com/ssato/python-anyconfig
 - (Latest) Doc: http://python-anyconfig.readthedocs.org/en/latest/
 - PyPI: https://pypi.python.org/pypi/anyconfig
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
-Satoru SATOH <ssato@redhat.com>, developed and maintain this library
-with the help of others (see AUTHORS.txt for more details).
+I, Satoru SATOH <ssato@redhat.com>, developed and keep maintain this library
+with others' help (see AUTHORS.txt for more details).
 
-.. [#] The name follows the pattern of 'anydbm' from the python standard library.
+.. [#] This name took an example from the 'anydbm' python standard library.
 
 Features
 ----------
@@ -69,21 +69,44 @@ files in various formats:
 
 - Loading configuration files:
 
-  - anyconfig.load() loads configuration files or file/file-like objects and return a dict-like object represents loaded configuration
-  - anyconfig.loads() loads configuration from a string just like json.loads does
+  **anyconfig.load** (path_specs, ac_parser=None, ac_template=False, ac_context=None, \*\*options)
+    loads configuration files or file/file-like objects and return a dict-like
+    object represents loaded configuration.
+
+  **anyconfig.loads** (content, ac_parser=None, ac_template=False, ac_context=None, \*\*options)
+    loads configuration from a string just like json.loads does.
 
 - Dumping configuration files:
 
-  - anyconfig.dump() dumps a configuration file from a dict or dict-like object represents configuration
-  - anyconfig.dumps() dumps a configuration string from a dict or dict-like object represents configuration
+  **anyconfig.dump** (data, path_or_stream, ac_parser=None, \*\*options)
+    dumps a configuration file from a dict or dict-like object represents
+    configuration.
+
+  **anyconfig.dumps** (data, ac_parser=None, \*\*options)
+    dumps a configuration string from a dict or dict-like object represents
+    configuration.
+
+- Open configuration files:
+
+  **anyconfig.open** (path, mode=None, ac_parser=None, \*\*options)
+    open configuration files with suitable flags and return file/file-like
+    objects, and this object can be passed to the anyconfig.load().
 
 - Schema validation and generation of configuration files:
 
-  - anyconfig.validate() validates configuration loaded with anyconfig.load() with JSON schema [#]_ (object) also loaded with anyconfig.load(). anyconfig.load() may help loading JSON schema file[s] in any formats anyconfig supports.
-  - anyconfig.gen_schema() generates a minimum JSON schema object to validate given configuration file[s] later.
+  **anyconfig.validate** (data, schema, \*\*options)
+    validates configuration loaded with anyconfig.load() with JSON schema [#]_
+    (object) also loaded with anyconfig.load(). anyconfig.load() may help
+    loading JSON schema file[s] in any formats anyconfig supports.
 
-It enables loading configuration file[s] in various formats in the same manner,
-and in some cases, it is transparent to the actual format of
+  **anyconfig.gen_schema** (data, \*\*options)
+    generates a dict or dict-like object represents a minimum JSON schema to
+    validate given configuration file[s] later. Of course, this result object
+    can be serialized into any format including JSON with anyconfig.dump or
+    anyconfig.dumps.
+
+It enables to load configuration file[s] in various formats in the same manner,
+and in some cases, even there is no need to take care of the actual format of
 configuration file[s] like the followings:
 
 .. code-block:: python
@@ -109,11 +132,11 @@ configuration file[s] like the followings:
   conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", ac_parser="yaml")
 
   # Likewise.
-  with open("/path/to/foo/conf.d/b.conf") as fileobj:
+  with anyconfig.open("/path/to/foo/conf.d/b.conf") as fileobj:
       conf2_2 = anyconfig.load(fileobj, ac_parser="yaml")
 
   # Specify multiple config files by the list of paths. Configurations of each
-  # file are merged.
+  # files are merged.
   conf3 = anyconfig.load(["/etc/foo.d/a.json", "/etc/foo.d/b.json"])
 
   # Similar to the above but all or one of config file[s] is/are missing:
@@ -123,15 +146,15 @@ configuration file[s] like the followings:
   # Specify config files by glob path pattern:
   conf5 = anyconfig.load("/etc/foo.d/*.json")
 
-  # Similar to the above, but parameters will simply be
-  # overwritten by declaration in later files (instead of merged):
+  # Similar to the above, but parameters in the former config file will be simply
+  # overwritten by the later ones instead of merge:
   conf6 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
 
 Also, it can process configuration files which are actually
 `jinja2-based template <http://jinja.pocoo.org>`_ files:
 
-- Enables loading a substantial configuration rendered from half-baked configuration template files when a context is supplied
-- Enables loading a series of configuration files indirectly 'include'-d from a/some configuration file[s] with using jinja2's 'include' directive.
+- Enables to load a substantial configuration rendered from half-baked configuration template files with given context
+- Enables to load a series of configuration files indirectly 'include'-d from a/some configuration file[s] with using jinja2's 'include' directive.
 
 .. code-block:: console
 
@@ -150,8 +173,8 @@ Also, it can process configuration files which are actually
   In [6]: anyconfig.load("/tmp/b.yml", ac_template=True, ac_context=dict(a='ccc'))
   Out[6]: {'a': 'ccc'}
 
-And python-anyconfig enables validation of configuration files in various formats
-by using JSON schema as follows:
+And python-anyconfig enables to validate configuration files in various format
+with using JSON schema like the followings:
 
 .. code-block:: python
 
@@ -175,10 +198,10 @@ by using JSON schema as follows:
   scm4 = anyconfig.gen_schema(conf4)
   scm4_s = anyconfig.dumps(scm4, "json")
 
-Finally, python-anyconfig provides a CLI tool called
+And in the last place, python-anyconfig provides a CLI tool called
 anyconfig_cli to process configuration files and:
 
-- Convert a/multiple configuration file[s] to a different format
+- Convert a/multiple configuration file[s] to another configuration files in different format
 - Get configuration value in a/multiple configuration file[s]
 - Validate configuration file[s] with JSON schema
 - Generate minimum JSON schema file to validate given configuration file[s]
@@ -196,17 +219,17 @@ module is available and the corresponding backend is ready to use:
    :widths: 10, 10, 30, 40
 
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
-   Ini-like, ini, ``configparser`` (standard lib), Ditto.
-   Java properties [#]_ , properties, None (native implementation with standard lib), Ditto.
-   XML, xml, ``lxml`` [#]_ or ``ElementTree``, Ditto.
+   Ini-like, ini, ``configparser`` (standard lib), do.
+   Java properties [#]_ , properties, None (native implementation with standard lib), do.
+   XML, xml, ``lxml`` [#]_ or ``ElementTree``, do.
    YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.
-   ConifgObj, configobj, ``configobj`` [#]_, Ditto.
-   MessagePack, msgpack, ``msgpack-python`` [#]_, Ditto.
-   TOML, toml, ``toml`` [#]_, Ditto.
-   BSON, bson, bson in ``pymongo`` [#]_, Ditto.
-   B-sh, shellvars, None (native implementation with standard lib), Ditto.
+   ConifgObj, configobj, ``configobj`` [#]_, do.
+   MessagePack, msgpack, ``msgpack-python`` [#]_, do.
+   TOML, toml, ``toml`` [#]_, do.
+   BSON, bson, bson in ``pymongo`` [#]_, do.
+   B-sh, shellvars, None (native implementation with standard lib), do.
 
-The supported formats of python-anyconfig on your system can be listed
+The supported formats of python-anyconfig on your system is able to be listed
 by 'anyconfig_cli -L' like this:
 
 .. code-block:: console
@@ -224,8 +247,8 @@ or with the API 'anyconfig.list_types()' will show them:
 
    In [9]:
 
-It utilizes the plugin mechanism provided by setuptools [#]_ and other formats may
-be supported by corresponding pluggable backends like the following:
+It utilizes plugin mechanism provided by setuptools [#]_ and other formats may
+be supported by corresponding pluggale backends like the following:
 
 - Java properties backend utilizes pyjavaproperties [#]_ (just an example implementation):
 
@@ -250,10 +273,10 @@ Requirements
 
 Many runtime dependencies are resolved dynamically and python-anyconfig just
 disables specific features if required dependencies are not satisfied.
-Therefore, only the python standard library is required to install and use
-python-anyconfig at its most minimal.
+Therefore, only python standard library is required to install and use
+python-anyconfig at minimum.
 
-The following packages need to be installed along with python-anyconfig to
+The following packages need to be installed along with python-anycofig to
 enable the features.
 
 .. csv-table::
@@ -279,11 +302,11 @@ There is a couple of ways to install python-anyconfig:
 
 - Binary RPMs:
 
-  If you're a Fedora or Red Hat Enterprise Linux user, you can install RPMs from
+  If you're Fedora or Red Hat Enterprise Linux user, you can install RPMs from
   the copr repository,
   http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/.
 
-  If you're running Fedora, you might enable this repo with DNF's
+  If what you're running is Fedora, maybe you can enable this repo with DNF's
   copr plugin's help [#]_ like this:
 
   .. code-block:: console
@@ -316,11 +339,11 @@ There is a couple of ways to install python-anyconfig:
 
   and install built RPMs.
 
-- Build from source: Of course you can build and/or install python modules in the usual way such as 'python setup.py bdist', 'pip install git+https://github.com/ssato/python-anyconfig/' and so on.
+- Build from source: Of course you can build and/or install python modules in usual way such like 'python setup.py bdist', 'pip install git+https://github.com/ssato/python-anyconfig/' and so on.
 
 .. [#] http://dnf-plugins-core.readthedocs.org/en/latest/copr.html
 
-Help and feedback
+Help and feedbak
 -----------------
 
 If you have any issues / feature request / bug reports with python-anyconfig,

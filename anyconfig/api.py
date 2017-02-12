@@ -6,6 +6,7 @@
 r"""Public APIs of anyconfig module.
 
 .. versionadded:: 0.7.99
+
    - Removed set_loglevel API as it does not help much.
    - Added :func:`open` API to open files with appropriate open mode.
    - Added custom exception classes, :class:UnknownParserTypeError and
@@ -16,25 +17,30 @@ r"""Public APIs of anyconfig module.
      file type was given.
 
 .. versionadded:: 0.5.0
+
    - Most keyword arguments passed to APIs are now position independent.
    - Added ac_namedtuple parameter to \*load and \*dump APIs.
 
 .. versionchanged:: 0.3
-   Replaced `forced_type` optional argument of some public APIs with
-   `ac_parser` to allow skip of config parser search by passing parser object
-   previously found and instantiated.
 
-   Also removed some optional arguments, `ignore_missing`, `merge` and
-   `marker`, from definitions of some public APIs as these may not be changed
-   from default in common use cases.
+   - Replaced `forced_type` optional argument of some public APIs with
+     `ac_parser` to allow skip of config parser search by passing parser object
+     previously found and instantiated.
+
+     Also removed some optional arguments, `ignore_missing`, `merge` and
+     `marker`, from definitions of some public APIs as these may not be changed
+     from default in common use cases.
 
 .. versionchanged:: 0.2
-   Now APIs :func:`find_loader`, :func:`single_load`, :func:`multi_load`,
-   :func:`load` and :func:`dump` can process a file/file-like object or a list
-   of file/file-like objects instead of a file path or a list of file paths.
+
+   - Now APIs :func:`find_loader`, :func:`single_load`, :func:`multi_load`,
+     :func:`load` and :func:`dump` can process a file/file-like object or a
+     list of file/file-like objects instead of a file path or a list of file
+     paths.
 
 .. versionadded:: 0.2
-   Export factory method (create) of anyconfig.mergeabledict.MergeableDict
+
+   - Export factory method (create) of anyconfig.mergeabledict.MergeableDict
 """
 from __future__ import absolute_import
 

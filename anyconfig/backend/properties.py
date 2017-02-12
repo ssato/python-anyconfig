@@ -6,13 +6,15 @@
 Java properties file support.
 
 .. versionchanged:: 0.7.0
+
    - Fix handling of empty values, pointed by @ajays20078
    - Fix handling of values contain strings start with '#' or '!' by
      @ajays20078
 
 .. versionadded:: 0.2
-   Added native Java properties parser instead of a plugin utilizes
-   pyjavaproperties module.
+
+   - Added native Java properties parser instead of a plugin utilizes
+     pyjavaproperties module.
 
 - Format to support: Java Properties file, e.g.
   http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html

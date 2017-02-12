@@ -264,6 +264,21 @@ def _output_type_by_input_path(inpath, itype, fmsg):
     return otype
 
 
+def _try_dump(cnf, outpath, otype, fmsg):
+    """
+    :param cnf: Configuration object to print out
+    :param outpath: Output file path or None
+    :param otype: Output type or None
+    :param fmsg: message if it cannot detect otype by `inpath`
+    """
+    try:
+        API.dump(cnf, outpath, otype)
+    except API.UnknownFileTypeError:
+        _exit_with_output(fmsg % outpath, 1)
+    except API.UnknownParserTypeError:
+        _exit_with_output("Invalid output type '%s'" % otype, 1)
+
+
 def _output_result(cnf, outpath, otype, inpath, itype):
     """
     :param cnf: Configuration object to print out
@@ -274,20 +289,16 @@ def _output_result(cnf, outpath, otype, inpath, itype):
     """
     fmsg = ("Uknown file type and cannot detect appropriate backend "
             "from its extension, '%s'")
+
+    if not anyconfig.mdicts.is_dict_like(cnf):
+        _exit_with_output(str(cnf))  # Print primitive types as it is.
+
     if not outpath or outpath == "-":
         outpath = sys.stdout
         if otype is None:
             otype = _output_type_by_input_path(inpath, itype, fmsg)
 
-    if anyconfig.mdicts.is_dict_like(cnf):
-        try:
-            API.dump(cnf, outpath, otype)
-        except API.UnknownFileTypeError:
-            _exit_with_output(fmsg % outpath, 1)
-        except API.UnknownParserTypeError:
-            _exit_with_output("Invalid output type '%s'" % otype, 1)
-    else:
-        _exit_with_output(str(cnf))  # Output primitive types as it is.
+    _try_dump(cnf, outpath, otype, fmsg)
 
 
 def main(argv=None):

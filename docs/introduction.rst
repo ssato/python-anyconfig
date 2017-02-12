@@ -176,15 +176,15 @@ module is available and the corresponding backend is ready to use:
    :widths: 10, 10, 30, 40
 
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
-   Ini-like, ini, ``configparser`` (standard lib), Ditto.
-   Java properties [#]_ , properties, None (native implementation with standard lib), Ditto.
-   XML, xml, ``lxml`` [#]_ or ``ElementTree``, Ditto.
+   Ini-like, ini, ``configparser`` (standard lib), do.
+   Java properties [#]_ , properties, None (native implementation with standard lib), do.
+   XML, xml, ``lxml`` [#]_ or ``ElementTree``, do.
    YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.
-   ConifgObj, configobj, ``configobj`` [#]_, Ditto.
-   MessagePack, msgpack, ``msgpack-python`` [#]_, Ditto.
-   TOML, toml, ``toml`` [#]_, Ditto.
-   BSON, bson, bson in ``pymongo`` [#]_, Ditto.
-   B-sh, shellvars, None (native implementation with standard lib), Ditto.
+   ConifgObj, configobj, ``configobj`` [#]_, do.
+   MessagePack, msgpack, ``msgpack-python`` [#]_, do.
+   TOML, toml, ``toml`` [#]_, do.
+   BSON, bson, bson in ``pymongo`` [#]_, do.
+   B-sh, shellvars, None (native implementation with standard lib), do.
 
 The supported formats of python-anyconfig on your system is able to be listed
 by 'anyconfig_cli -L' like this:

@@ -141,7 +141,7 @@ def render(filepath, ctx=None, paths=None, ask=False):
         return render_impl(filepath, ctx, paths)
     except TemplateNotFound as mtmpl:
         if not ask:
-            raise RuntimeError("Template Not found: " + str(mtmpl))
+            raise
 
         usr_tmpl = anyconfig.compat.raw_input("\n*** Missing template "
                                               "'%s'. Please enter absolute "

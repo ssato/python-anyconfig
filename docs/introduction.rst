@@ -24,22 +24,43 @@ files in various formats:
 
 - Loading configuration files:
 
-  - anyconfig.load() loads configuration files or file/file-like objects and return a dict-like object represents loaded configuration
-  - anyconfig.loads() loads configuration from a string just like json.loads does
+  **anyconfig.load** (path_specs, ac_parser=None, ac_template=False,
+  ac_context=None, \*\*options)
+    loads configuration files or file/file-like objects and return a dict-like
+    object represents loaded configuration.
+
+  **anyconfig.loads** (content, ac_parser=None, ac_template=False,
+  ac_context=None, \*\*options)
+    loads configuration from a string just like json.loads does.
 
 - Dumping configuration files:
 
-  - anyconfig.dump() dumps a configuration file from a dict or dict-like object represents configuration
-  - anyconfig.dumps() dumps a configuration string from a dict or dict-like object represents configuration
+  **anyconfig.dump** (data, path_or_stream, ac_parser=None, \*\*options)
+    dumps a configuration file from a dict or dict-like object represents
+    configuration.
+
+  **anyconfig.dumps** (data, ac_parser=None, \*\*options)
+    dumps a configuration string from a dict or dict-like object represents
+    configuration.
 
 - Open configuration files:
 
-  - anyconfig.open() open configuration files with suitable flags and return file/file-like objects, and this object can be passed to the anyconfig.load().
+  **anyconfig.open** (path, mode=None, ac_parser=None, \*\*options)
+    open configuration files with suitable flags and return file/file-like
+    objects, and this object can be passed to the anyconfig.load().
 
 - Schema validation and generation of configuration files:
 
-  - anyconfig.validate() validates configuration loaded with anyconfig.load() with JSON schema [#]_ (object) also loaded with anyconfig.load(). anyconfig.load() may help loading JSON schema file[s] in any formats anyconfig supports.
-  - anyconfig.gen_schema() generates a minimum JSON schema object to validate given configuration file[s] later.
+  **anyconfig.validate** (data, schema, \*\*options)
+    validates configuration loaded with anyconfig.load() with JSON schema [#]_
+    (object) also loaded with anyconfig.load(). anyconfig.load() may help
+    loading JSON schema file[s] in any formats anyconfig supports.
+
+  **anyconfig.gen_schema** (data, \*\*options)
+    generates a dict or dict-like object represents a minimum JSON schema to
+    validate given configuration file[s] later. Of course, this result object
+    can be serialized into any format including JSON with anyconfig.dump or
+    anyconfig.dumps.
 
 It enables to load configuration file[s] in various formats in the same manner,
 and in some cases, even there is no need to take care of the actual format of

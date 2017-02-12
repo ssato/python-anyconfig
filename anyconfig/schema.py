@@ -38,13 +38,13 @@ if not anyconfig.compat.IS_PYTHON_3:
         pass
 
 
-def validate(obj, schema, **options):
+def validate(data, schema, **options):
     """
     Validate target object with given schema object, loaded from JSON schema.
 
     See also: https://python-jsonschema.readthedocs.org/en/latest/validate/
 
-    :parae obj: Target object (a dict or a dict-like object) to validate
+    :parae data: Target object (a dict or a dict-like object) to validate
     :param schema: Schema object (a dict or a dict-like object)
         instantiated from schema JSON file or schema JSON string
     :param options: Other keyword options such as:
@@ -64,7 +64,7 @@ def validate(obj, schema, **options):
         if format_checker is None:
             format_checker = jsonschema.FormatChecker()  # :raises: NameError
         try:
-            jsonschema.validate(obj, schema, format_checker=format_checker)
+            jsonschema.validate(data, schema, format_checker=format_checker)
             return (True, '')
         except (jsonschema.ValidationError, jsonschema.SchemaError,
                 Exception) as exc:
@@ -137,12 +137,12 @@ def object_to_schema(obj, **options):
     return scm
 
 
-def gen_schema(node, **options):
+def gen_schema(data, **options):
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
 
-    :param node: Config data object (dict[-like] or namedtuple)
+    :param data: Configuration data object (dict[-like] or namedtuple)
     :param options: Other keyword options such as:
 
         - ac_schema_strict: True if more strict (precise) schema is needed
@@ -150,20 +150,20 @@ def gen_schema(node, **options):
 
     :return: A dict represents JSON schema of this node
     """
-    if node is None:
+    if data is None:
         return dict(type="null")
 
-    _type = type(node)
+    _type = type(data)
 
     if _type in _SIMPLE_TYPES:
         typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
         scm = dict(type=typemap[_type])
 
-    elif isinstance(node, dict):
-        scm = object_to_schema(node, **options)
+    elif isinstance(data, dict):
+        scm = object_to_schema(data, **options)
 
-    elif _type in (list, tuple) or hasattr(node, "__iter__"):
-        scm = array_to_schema(node, **options)
+    elif _type in (list, tuple) or hasattr(data, "__iter__"):
+        scm = array_to_schema(data, **options)
 
     return scm
 

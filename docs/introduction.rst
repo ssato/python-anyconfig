@@ -32,6 +32,10 @@ files in various formats:
   - anyconfig.dump() dumps a configuration file from a dict or dict-like object represents configuration
   - anyconfig.dumps() dumps a configuration string from a dict or dict-like object represents configuration
 
+- Open configuration files:
+
+  - anyconfig.open() open configuration files with suitable flags and return file/file-like objects, and this object can be passed to the anyconfig.load().
+
 - Schema validation and generation of configuration files:
 
   - anyconfig.validate() validates configuration loaded with anyconfig.load() with JSON schema [#]_ (object) also loaded with anyconfig.load(). anyconfig.load() may help loading JSON schema file[s] in any formats anyconfig supports.
@@ -64,7 +68,7 @@ configuration file[s] like the followings:
   conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", ac_parser="yaml")
 
   # Likewise.
-  with open("/path/to/foo/conf.d/b.conf") as fileobj:
+  with anyconfig.open("/path/to/foo/conf.d/b.conf") as fileobj:
       conf2_2 = anyconfig.load(fileobj, ac_parser="yaml")
 
   # Specify multiple config files by the list of paths. Configurations of each

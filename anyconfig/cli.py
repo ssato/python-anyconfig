@@ -242,6 +242,28 @@ def _do_get(cnf, get_path):
     return cnf
 
 
+def _output_type_by_input_path(inpath, itype, fmsg):
+    """
+    :param inpath: Input file path
+    :param itype: Input type or None
+    :param fmsg: message if it cannot detect otype by `inpath`
+    :return: Output type :: str
+    """
+    msg = ("Specify inpath and/or outpath type[s] with -I/--itype "
+           "or -O/--otype option explicitly")
+    if itype is None:
+        try:
+            otype = API.find_loader(inpath).type()
+        except API.UnknownFileTypeError:
+            _exit_with_output((fmsg % inpath) + msg, 1)
+        except ValueError:
+            _exit_with_output(msg, 1)
+    else:
+        otype = itype
+
+    return otype
+
+
 def _output_result(cnf, outpath, otype, inpath, itype):
     """
     :param cnf: Configuration object to print out
@@ -250,22 +272,12 @@ def _output_result(cnf, outpath, otype, inpath, itype):
     :param inpath: Input file path
     :param itype: Input type or None
     """
-    msg = ("Specify inpath and/or outpath type[s] with -I/--itype "
-           "or -O/--otype option explicitly")
     fmsg = ("Uknown file type and cannot detect appropriate backend "
             "from its extension, '%s'")
     if not outpath or outpath == "-":
         outpath = sys.stdout
         if otype is None:
-            if itype is None:
-                try:
-                    otype = API.find_loader(inpath).type()
-                except API.UnknownFileTypeError:
-                    _exit_with_output((fmsg % inpath) + msg, 1)
-                except ValueError:
-                    _exit_with_output(msg, 1)
-            else:
-                otype = itype
+            otype = _output_type_by_input_path(inpath, itype, fmsg)
 
     if anyconfig.mdicts.is_dict_like(cnf):
         try:

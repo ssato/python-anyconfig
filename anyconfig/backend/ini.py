@@ -91,16 +91,11 @@ def _to_s(val, sep=", "):
         return str(val)
 
 
-def _load(stream, to_container=dict, sep=_SEP, **kwargs):
+def _make_parser(to_container, **kwargs):
     """
-    :param stream: File or file-like object provides ini-style conf
     :param to_container: any callable to make container
-    :param sep: Seprator string
-
-    :return: Dict or dict-like object represents config values
+    :return: (to_container, keyword args to be used, parser object)
     """
-    _parse_val = _parse if kwargs.get("ac_parse_value", False) else _noop
-
     if kwargs.get("ac_ordered", False) or kwargs.get("dict_type", False):
         kwargs["dict_type"] = to_container = OrderedDict
     if "dict_type" not in kwargs and not kwargs.get("ac_ordered", True):
@@ -118,6 +113,20 @@ def _load(stream, to_container=dict, sep=_SEP, **kwargs):
         #    'allow_no_value' option parameter, and TypeError will be thrown.
         kwargs_0 = mk_opt_args(("defaults", "dict_type"), kwargs)
         parser = configparser.SafeConfigParser(**kwargs_0)
+
+    return (to_container, kwargs_1, parser)
+
+
+def _load(stream, to_container=dict, sep=_SEP, **kwargs):
+    """
+    :param stream: File or file-like object provides ini-style conf
+    :param to_container: any callable to make container
+    :param sep: Seprator string
+
+    :return: Dict or dict-like object represents config values
+    """
+    (to_container, kwargs_1, parser) = _make_parser(to_container, **kwargs)
+    _parse_val = _parse if kwargs.get("ac_parse_value", False) else _noop
 
     cnf = to_container()
     parser.readfp(stream, **kwargs_1)

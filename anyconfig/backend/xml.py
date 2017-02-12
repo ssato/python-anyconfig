@@ -131,6 +131,14 @@ def _tweak_ns(tag, nspaces):
     return tag
 
 
+def _elem_strip_text(elem):
+    """
+    :param elem: etree elem object
+    """
+    if elem.text:
+        elem.text = elem.text.strip()
+
+
 def elem_to_container(elem, to_container, nspaces, tags=False):
     """
     Convert XML ElementTree Element to a collection of container objects.
@@ -147,18 +155,17 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
     subtree = tree[_tweak_ns(elem.tag, nspaces)] = to_container()
     (attrs, text, children) = tags if tags else _gen_tags()
     _num_of_children = len(elem)
+    _elem_strip_text(elem)
 
     if elem.attrib:
         subtree[attrs] = to_container(elem.attrib)
 
     if elem.text:
-        elem.text = elem.text.strip()
-        if elem.text:
-            if not _num_of_children and not elem.attrib:
-                # .. note:: Treat as special case for later convenience.
-                tree[elem.tag] = elem.text
-            else:
-                subtree[text] = elem.text
+        if _num_of_children or elem.attrib:
+            subtree[text] = elem.text
+        else:
+            # .. note:: Treat as special case for later convenience.
+            tree[elem.tag] = elem.text
 
     if _num_of_children:
         # Note: Configuration item cannot have both attributes and values

@@ -137,6 +137,26 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Feb 12 2017 Satoru SATOH <ssato@redhat.com> - 0.7.99-1
+- api: remove 'set_loglevel' API
+- api: add 'open' API to open files with correct open mode, derived from the
+  issue reported by ajays20078, thanks!
+- change: now all API calls may fail if it could not find the appropriate
+  backend and cannot process more
+- change: add python 3.6 support
+- change: drop python 3.2 support
+- enhancement: add development status headers to all backend modules' code
+- change: [ini] Keep order of items as much as possible if ac_ordered == True
+- change: [properties] Fix the parser in mind key and value seprators
+  correctly, original issue was reported by meticulous, thanks!
+- change: [shellvars] Added to load vars in b-shell (bash) scripts
+- change: [xml] make use of cElementTree (C version of ElementTree) if possible
+- change: [xml] treat some cases as special to avoid extra node added and
+  simplify the result dict as muc h as possible
+- enhancement: update docs to add notes of the new 'open' API, section about
+  logging, notes of JSON schema generation and so on
+- A lot of other enhancements, refactorings and bug fixes
+
 * Tue Oct 11 2016 Satoru SATOH <ssato@redhat.com> - 0.7.0-1
 - enhancement: introduced ac_schema_type to generate more strict schema
 - enhancement: introduced shellvars backend originally suggested by ajays20078

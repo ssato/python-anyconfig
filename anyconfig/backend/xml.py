@@ -195,6 +195,34 @@ def root_to_container(root, to_container, nspaces, pprefix=_PREFIX):
     return elem_to_container(root, to_container, nspaces, _gen_tags(pprefix))
 
 
+def _elem_from_descendants(children, pprefix=_PREFIX):
+    """
+    :param children: A list of child dict objects
+    :param pprefix: Special parameter name prefix
+    """
+    for child in children:  # child should be a dict-like object.
+        for ckey, cval in anyconfig.compat.iteritems(child):
+            celem = ET.Element(ckey)
+            container_to_etree(cval, parent=celem, pprefix=pprefix)
+            yield celem
+
+
+def _make_etree(key, val, parent=None, pprefix=_PREFIX):
+    """
+    :param key: Key of current child (dict{,-like} object)
+    :param val: Value of current child (dict{,-like} object)
+    :param parent: XML ElementTree parent node object or None
+    :param pprefix: Special parameter name prefix
+    """
+    elem = ET.Element(key)
+    container_to_etree(val, parent=elem, pprefix=pprefix)
+    if parent is None:  # 'elem' is the top level etree.
+        return ET.ElementTree(elem)
+    else:
+        parent.append(elem)
+        return ET.ElementTree(parent)
+
+
 def container_to_etree(obj, parent=None, pprefix=_PREFIX):
     """
     Convert a dict-like object to XML ElementTree.
@@ -216,20 +244,10 @@ def container_to_etree(obj, parent=None, pprefix=_PREFIX):
         elif key == text:
             parent.text = val
         elif key == children:
-            for child in val:  # child should be a dict-like object.
-                for ckey, cval in anyconfig.compat.iteritems(child):
-                    celem = ET.Element(ckey)
-                    container_to_etree(cval, celem, pprefix)
-                    parent.append(celem)
-        elif parent is not None:
-            elem = ET.Element(key)
-            container_to_etree(val, elem, pprefix)
-            parent.append(elem)
-            return ET.ElementTree(parent)
+            for celem in _elem_from_descendants(val, pprefix=pprefix):
+                parent.append(celem)
         else:
-            elem = ET.Element(key)
-            container_to_etree(val, elem, pprefix)
-            return ET.ElementTree(elem)
+            return _make_etree(key, val, parent=parent, pprefix=pprefix)
 
 
 def etree_write(tree, stream):

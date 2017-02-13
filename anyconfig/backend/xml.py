@@ -148,35 +148,35 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
     :param nspaces: A namespaces dict, {uri: prefix}
     :param tags: (attrs, text, children) parameter names
     """
-    tree = to_container()
+    dic = to_container()
     if elem is None:
-        return tree
+        return dic
 
-    subtree = tree[_tweak_ns(elem.tag, nspaces)] = to_container()
+    subdic = dic[_tweak_ns(elem.tag, nspaces)] = to_container()
     (attrs, text, children) = tags if tags else _gen_tags()
     _num_of_children = len(elem)
     _elem_strip_text(elem)
 
     if elem.attrib:
-        subtree[attrs] = to_container(elem.attrib)
+        subdic[attrs] = to_container(elem.attrib)
 
     if elem.text:
         if _num_of_children or elem.attrib:
-            subtree[text] = elem.text
+            subdic[text] = elem.text
         else:
             # .. note:: Treat as special case for later convenience.
-            tree[elem.tag] = elem.text
+            dic[elem.tag] = elem.text
 
     if _num_of_children:
         # Note: Configuration item cannot have both attributes and values
         # (list) at the same time in current implementation:
         args = (to_container, nspaces, tags)
         if _num_of_children == 1:  # .. note:: Another special case.
-            tree[elem.tag] = [elem_to_container(c, *args) for c in elem][0]
+            dic[elem.tag] = [elem_to_container(c, *args) for c in elem][0]
         else:
-            subtree[children] = [elem_to_container(c, *args) for c in elem]
+            subdic[children] = [elem_to_container(c, *args) for c in elem]
 
-    return tree
+    return dic
 
 
 def root_to_container(root, to_container, nspaces, pprefix=_PREFIX):

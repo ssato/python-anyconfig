@@ -61,6 +61,9 @@ class Test_10(unittest.TestCase):
     def test_10_root_to_container__None(self):
         self.assertEqual(TT.root_to_container(None, dict, {}), dict())
 
+    def test_12_elem_to_container__empty(self):
+        self.assertEqual(_xml_to_container("<a/>"), dict(a=None))
+
     def test_20_elem_to_container__attrs(self):
         ref = dict(a={"@attrs": dict(x='1', y='y')})
         self.assertEqual(_xml_to_container("<a x='1' y='y'/>"), ref)

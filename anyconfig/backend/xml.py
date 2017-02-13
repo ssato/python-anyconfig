@@ -168,12 +168,12 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
             dic[elem.tag] = elem.text
 
     if _num_of_children:
-        items = [elem_to_container(c, to_container, nspaces, tags=tags)
+        subdics = [elem_to_container(c, to_container, nspaces, tags=tags)
                  for c in elem]
         if _num_of_children == 1:  # .. note:: Another special case.
-            dic[elem.tag] = items[0]
+            dic[elem.tag] = subdics[0]
         else:
-            subdic[children] = items
+            subdic[children] = subdics
 
     elif not elem.text and not elem.attrib:  # ex. <tag/>.
         dic[elem.tag] = None

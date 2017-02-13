@@ -58,10 +58,13 @@ b:
 CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},
                         'a': '0',
                         'b': {'@attrs': {'id': 'b0'}, '@text': 'bbb'},
-                        'list1': {'@children': [{'item': '0'},
-                                                {'item': '1'},
-                                                {'item': '2'}]},
-                        'sect0': {'c': 'x, y, z'}}}
+                        'c': None,
+                        'sect0': {'d': 'x, y, z'},
+                        'list1': [{'item': '0'}, {'item': '1'},
+                                  {'item': '2'}],
+                        'list2': {'@attrs': {'id': 'list2'},
+                                  '@children': [{'item': 'i'},
+                                                {'item': 'j'}]}}}
 
 
 def _is_file_object(obj):

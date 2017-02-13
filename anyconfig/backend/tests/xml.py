@@ -49,6 +49,10 @@ class Test_00(unittest.TestCase):
         self.assertTrue(dicts_equal(TT._namespaces_from_file(xmlfile), ref))
 
 
+def _xml_to_container(snippet, **opts):
+    return TT.elem_to_container(TT.ET.XML(snippet), dict, {}, **opts)
+
+
 class Test_10(unittest.TestCase):
 
     def test_10_elem_to_container__None(self):
@@ -59,32 +63,27 @@ class Test_10(unittest.TestCase):
 
     def test_20_elem_to_container__attrs(self):
         ref = dict(a={"@attrs": dict(x='1', y='y')})
-        root = TT.ET.XML("<a x='1' y='y'/>")
-        self.assertEqual(TT.elem_to_container(root, dict, {}), ref)
+        self.assertEqual(_xml_to_container("<a x='1' y='y'/>"), ref)
 
     def test_30_elem_to_container__child(self):
         ref = dict(a=dict(b="b"))
-        root = TT.ET.XML("<a><b>b</b></a>")
-        self.assertEqual(TT.elem_to_container(root, dict, {}), ref)
+        self.assertEqual(_xml_to_container("<a><b>b</b></a>"), ref)
 
     def test_32_elem_to_container__children(self):
         ref = {'a': {'@children': [{'b': 'b'}, {'c': 'c'}]}}
-        root = TT.ET.XML("<a><b>b</b><c>c</c></a>")
-        self.assertEqual(TT.elem_to_container(root, dict, {}), ref)
+        self.assertEqual(_xml_to_container("<a><b>b</b><c>c</c></a>"), ref)
 
     def test_40_elem_to_container__text(self):
-        root = TT.ET.XML("<a>A</a>")
-        self.assertEqual(TT.elem_to_container(root, dict, {}), {'a': 'A'})
+        self.assertEqual(_xml_to_container("<a>A</a>"), {'a': 'A'})
 
     def test_42_elem_to_container__text_attrs(self):
         ref = dict(a={"@attrs": {'x': 'X'}, "@text": "A"})
-        root = TT.ET.XML("<a x='X'>A</a>")
-        self.assertEqual(TT.elem_to_container(root, dict, {}), ref)
+        self.assertEqual(_xml_to_container("<a x='X'>A</a>"), ref)
 
     def test_50_root_to_container__text_attrs_pprefix(self):
         ref = dict(a={"_attrs": {'x': 'X'}, "_text": "A"})
-        root = TT.ET.XML("<a x='X'>A</a>")
-        self.assertEqual(TT.root_to_container(root, dict, {}, pprefix='_'),
+        self.assertEqual(TT.root_to_container(TT.ET.XML("<a x='X'>A</a>"),
+                                              dict, {}, pprefix='_'),
                          ref)
 
 

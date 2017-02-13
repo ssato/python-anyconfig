@@ -207,6 +207,8 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
         else:  # .. note:: Process yet anohter special cases first.
             if _dicts_have_unique_keys([subdic] + subdics):
                 dic[elem.tag] = _sum_dicts([subdic] + subdics, to_container)
+            elif not subdic:  # Only these children.
+                dic[elem.tag] = subdics
             else:
                 subdic[children] = subdics
 
@@ -254,12 +256,16 @@ def _elem_from_descendants(children, pprefix=_PREFIX):
 def _get_or_update_parent(key, val, parent=None, pprefix=_PREFIX):
     """
     :param key: Key of current child (dict{,-like} object)
-    :param val: Value of current child (dict{,-like} object)
+    :param val: Value of current child (dict{,-like} object or [dict{,...}])
     :param parent: XML ElementTree parent node object or None
     :param pprefix: Special parameter name prefix
     """
     elem = ET.Element(key)
-    container_to_etree(val, parent=elem, pprefix=pprefix)
+
+    vals = val if anyconfig.utils.is_iterable(val) else [val]
+    for val in vals:
+        container_to_etree(val, parent=elem, pprefix=pprefix)
+
     if parent is None:  # 'elem' is the top level etree.
         return elem
     else:

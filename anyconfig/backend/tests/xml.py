@@ -28,9 +28,10 @@ CNF_0 = {'config': {'@attrs': {'name': 'foo'},
                     'b': {'@attrs': {'id': 'b0'}, '@text': 'bbb'},
                     'c': None,
                     'sect0': {'d': 'x, y, z'},
-                    'list1': {'@children': [{'item': '0'},
-                                            {'item': '1'},
-                                            {'item': '2'}]}}}
+                    'list1': [{'item': '0'}, {'item': '1'}, {'item': '2'}],
+                    'list2': {'@attrs': {'id': 'list2'},
+                              '@children': [{'item': 'i'},
+                                            {'item': 'j'}]}}}
 
 CNF_0_S = """\
 <?xml version="1.0" encoding="UTF-8"?>
@@ -46,6 +47,10 @@ CNF_0_S = """\
     <item>1</item>
     <item>2</item>
   </list1>
+  <list2 id="list2">
+    <item>i</item>
+    <item>j</item>
+  </list2>
 </config>
 """
 
@@ -83,12 +88,16 @@ class Test_10(unittest.TestCase):
         self.assertEqual(_xml_to_container("<a><b>b</b></a>"), ref)
 
     def test_32_elem_to_container__children__same_keys(self):
-        ref = {'a': {'@children': [{'b': '1'}, {'b': '2'}]}}
+        ref = {'a': [{'b': '1'}, {'b': '2'}]}
         self.assertEqual(_xml_to_container("<a><b>1</b><b>2</b></a>"), ref)
 
     def test_34_elem_to_container__children(self):
         ref = {'a': {'b': 'b', 'c': 'c'}}
         self.assertEqual(_xml_to_container("<a><b>b</b><c>c</c></a>"), ref)
+
+    def test_36_elem_to_container__children__same_keys_w_text(self):
+        ref = {'a': {'@text': 'aaa', '@children': [{'b': '1'}, {'b': '2'}]}}
+        self.assertEqual(_xml_to_container("<a>aaa<b>1</b><b>2</b></a>"), ref)
 
     def test_40_elem_to_container__text(self):
         self.assertEqual(_xml_to_container("<a>A</a>"), {'a': 'A'})

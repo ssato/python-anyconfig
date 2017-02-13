@@ -139,6 +139,38 @@ def _elem_strip_text(elem):
         elem.text = elem.text.strip()
 
 
+def _dicts_have_unique_keys(dics):
+    """
+    :param dics: [<dict or dict-like object>], must not be [] or [{...}]
+    :return: True if all keys of each dict of `dics` are unique
+
+    # Enable the followings if to allow dics is [], [{...}]:
+    # >>> all(_dicts_have_unique_keys([d]) for [d]
+    # ...     in ({}, {'a': 0}, {'a': 1, 'b': 0}))
+    # True
+    # >>> _dicts_have_unique_keys([{}, {'a': 1}, {'b': 2, 'c': 0}])
+    # True
+
+    >>> _dicts_have_unique_keys([{}, {'a': 1}, {'a': 2}])
+    False
+    >>> _dicts_have_unique_keys([{}, {'a': 1}, {'b': 2}, {'b': 3, 'c': 0}])
+    False
+    >>> _dicts_have_unique_keys([{}, {}])
+    True
+    """
+    key_itr = anyconfig.compat.from_iterable(d.keys() for d in dics)
+    return len(set(key_itr)) == sum(len(d) for d in dics)
+
+
+def _sum_dicts(dics, to_container=dict):
+    """
+    :param dics: [<dict/-like object must not have same keys each other>]
+    :param to_container: callble to make a container object
+    """
+    dic_itr = anyconfig.compat.from_iterable(d.items() for d in dics)
+    return to_container(anyconfig.compat.OrderedDict(dic_itr))
+
+
 def elem_to_container(elem, to_container, nspaces, tags=False):
     """
     Convert XML ElementTree Element to a collection of container objects.
@@ -169,11 +201,14 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
 
     if _num_of_children:
         subdics = [elem_to_container(c, to_container, nspaces, tags=tags)
-                   for c in elem]
+                   for c in elem]  # :: [<container>]
         if _num_of_children == 1:  # .. note:: Another special case.
             dic[elem.tag] = subdics[0]
-        else:
-            subdic[children] = subdics
+        else:  # .. note:: Process yet anohter special cases first.
+            if _dicts_have_unique_keys([subdic] + subdics):
+                dic[elem.tag] = _sum_dicts([subdic] + subdics, to_container)
+            else:
+                subdic[children] = subdics
 
     elif not elem.text and not elem.attrib:  # ex. <tag/>.
         dic[elem.tag] = None
@@ -216,7 +251,7 @@ def _elem_from_descendants(children, pprefix=_PREFIX):
             yield celem
 
 
-def _make_etree(key, val, parent=None, pprefix=_PREFIX):
+def _get_or_update_parent(key, val, parent=None, pprefix=_PREFIX):
     """
     :param key: Key of current child (dict{,-like} object)
     :param val: Value of current child (dict{,-like} object)
@@ -226,10 +261,10 @@ def _make_etree(key, val, parent=None, pprefix=_PREFIX):
     elem = ET.Element(key)
     container_to_etree(val, parent=elem, pprefix=pprefix)
     if parent is None:  # 'elem' is the top level etree.
-        return ET.ElementTree(elem)
+        return elem
     else:
         parent.append(elem)
-        return ET.ElementTree(parent)
+        return parent
 
 
 def container_to_etree(obj, parent=None, pprefix=_PREFIX):
@@ -256,7 +291,10 @@ def container_to_etree(obj, parent=None, pprefix=_PREFIX):
             for celem in _elem_from_descendants(val, pprefix=pprefix):
                 parent.append(celem)
         else:
-            return _make_etree(key, val, parent=parent, pprefix=pprefix)
+            parent = _get_or_update_parent(key, val, parent=parent,
+                                           pprefix=pprefix)
+
+    return ET.ElementTree(parent)
 
 
 def etree_write(tree, stream):

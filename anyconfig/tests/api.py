@@ -55,11 +55,13 @@ b:
     d: {{ b.d }}
 """
 
-CNF_XML_1 = {
-    'config': {'@attrs': {'name': 'foo'},
-               '@children': [{'a': '0'},
-                             {'b': {'@attrs': {'id': 'b0'},
-                                    '@text': 'bbb'}}]}}
+CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},
+                        'a': '0',
+                        'b': {'@attrs': {'id': 'b0'}, '@text': 'bbb'},
+                        'list1': {'@children': [{'item': '0'},
+                                                {'item': '1'},
+                                                {'item': '2'}]},
+                        'sect0': {'c': 'x, y, z'}}}
 
 
 def _is_file_object(obj):

@@ -168,13 +168,13 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
             dic[elem.tag] = elem.text
 
     if _num_of_children:
-        # Note: Configuration item cannot have both attributes and values
-        # (list) at the same time in current implementation:
         args = (to_container, nspaces, tags)
+        items = [elem_to_container(c, *args) for c in elem]
         if _num_of_children == 1:  # .. note:: Another special case.
-            dic[elem.tag] = [elem_to_container(c, *args) for c in elem][0]
+            dic[elem.tag] = items[0]
         else:
-            subdic[children] = [elem_to_container(c, *args) for c in elem]
+            subdic[children] = items
+
     elif not elem.text and not elem.attrib:  # ex. <tag/>.
         dic[elem.tag] = None
 

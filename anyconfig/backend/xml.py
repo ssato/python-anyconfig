@@ -169,7 +169,7 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
 
     if _num_of_children:
         subdics = [elem_to_container(c, to_container, nspaces, tags=tags)
-                 for c in elem]
+                   for c in elem]
         if _num_of_children == 1:  # .. note:: Another special case.
             dic[elem.tag] = subdics[0]
         else:

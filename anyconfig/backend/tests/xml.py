@@ -26,7 +26,8 @@ XML_W_NS_S = """
 CNF_0 = {'config': {'@attrs': {'name': 'foo'},
                     'a': '0',
                     'b': {'@attrs': {'id': 'b0'}, '@text': 'bbb'},
-                    'sect0': {'c': 'x, y, z'},
+                    'c': None,
+                    'sect0': {'d': 'x, y, z'},
                     'list1': {'@children': [{'item': '0'},
                                             {'item': '1'},
                                             {'item': '2'}]}}}
@@ -36,8 +37,9 @@ CNF_0_S = """\
 <config name='foo'>
   <a>0</a>
   <b id="b0">bbb</b>
+  <c/>
   <sect0>
-    <c>x, y, z</c>
+    <d>x, y, z</d>
   </sect0>
   <list1>
     <item>0</item>

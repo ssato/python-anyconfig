@@ -175,6 +175,8 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
             dic[elem.tag] = [elem_to_container(c, *args) for c in elem][0]
         else:
             subdic[children] = [elem_to_container(c, *args) for c in elem]
+    elif not elem.text and not elem.attrib:  # ex. <tag/>.
+        dic[elem.tag] = None
 
     return dic
 

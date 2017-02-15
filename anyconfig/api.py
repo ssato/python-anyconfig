@@ -5,6 +5,9 @@
 # pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs of anyconfig module.
 
+.. versionadded:: 0.8.2
+   - Added new API, version to provide version information.
+
 .. versionadded:: 0.8.0
 
    - Removed set_loglevel API as it does not help much.
@@ -50,6 +53,7 @@ from anyconfig.globals import LOGGER
 import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
+import anyconfig.globals
 import anyconfig.mdicts
 import anyconfig.template
 import anyconfig.utils
@@ -105,6 +109,13 @@ def _maybe_validated(cnf, schema, format_checker=None, **options):
             return cnf
 
     return None
+
+
+def version():
+    """
+    :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
+    """
+    return anyconfig.globals.VERSION.split('.')
 
 
 def find_loader(path_or_stream, parser_or_type=None, is_path_=False):

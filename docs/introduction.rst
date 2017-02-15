@@ -176,7 +176,7 @@ module is available and the corresponding backend is ready to use:
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
    Ini-like, ini, ``configparser`` (standard lib), do.
    Java properties [#]_ , properties, None (native implementation with standard lib), do.
-   XML, xml, ``lxml`` [#]_ or ``ElementTree``, do.
+   XML, xml, ``ElementTree``, do.
    YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.
    ConifgObj, configobj, ``configobj`` [#]_, do.
    MessagePack, msgpack, ``msgpack-python`` [#]_, do.
@@ -212,7 +212,6 @@ be supported by corresponding pluggale backends like the following:
 .. [#] https://pypi.python.org/pypi/simplejson
 .. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
 .. [#] https://pypi.python.org/pypi/PyYAML
-.. [#] https://pypi.python.org/pypi/lxml
 .. [#] https://pypi.python.org/pypi/configobj
 .. [#] https://pypi.python.org/pypi/msgpack-python
 .. [#] https://pypi.python.org/pypi/toml

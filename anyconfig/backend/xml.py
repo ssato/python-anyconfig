@@ -9,7 +9,7 @@
 - Format to support: XML, e.g. http://www.w3.org/TR/xml11/
 - Requirements: one of the followings
 
-  - lxml2.etree if available
+  - xml.etree.cElementTree in standard lib if python >= 2.5
   - xml.etree.ElementTree in standard lib if python >= 2.5
   - elementtree.ElementTree (otherwise)
 
@@ -47,16 +47,11 @@ from io import BytesIO
 
 import re
 try:
-    # First, try lxml which is compatible with elementtree and looks faster a
-    # lot. See also: http://getpython3.com/diveintopython3/xml.html
-    from lxml2 import etree as ET
+    import xml.etree.cElementTree as ET
 except ImportError:
-    try:
-        import xml.etree.cElementTree as ET
-    except ImportError:
-        import xml.etree.ElementTree as ET
-    except ImportError:
-        import elementtree.ElementTree as ET
+    import xml.etree.ElementTree as ET
+except ImportError:
+    import elementtree.ElementTree as ET
 
 import anyconfig.backend.base
 import anyconfig.compat

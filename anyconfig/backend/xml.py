@@ -28,6 +28,7 @@
   - XML specific features (namespace, etc.) may not be processed correctly.
 
 - Special Options:
+
   - pprefix: Specify parameter prefix for attributes, text and children nodes.
 
 History:
@@ -166,21 +167,22 @@ def _sum_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
-def elem_to_container(elem, to_container, nspaces, tags=False):
+def elem_to_container(elem, to_container, nspaces, **options):
     """
     Convert XML ElementTree Element to a collection of container objects.
 
     :param elem: etree elem object or None
     :param to_container: callble to make a container object
     :param nspaces: A namespaces dict, {uri: prefix}
-    :param tags: (attrs, text, children) parameter names
+    :param options: Keyword options
+        - tags: (attrs, text, children) parameter names
     """
     dic = to_container()
     if elem is None:
         return dic
 
     subdic = dic[_tweak_ns(elem.tag, nspaces)] = to_container()
-    (attrs, text, children) = tags if tags else _gen_tags()
+    (attrs, text, children) = options.get("tags", _gen_tags())
     _num_of_children = len(elem)
     _elem_strip_text(elem)
 
@@ -195,7 +197,7 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
             dic[elem.tag] = elem.text
 
     if _num_of_children:
-        subdics = [elem_to_container(c, to_container, nspaces, tags=tags)
+        subdics = [elem_to_container(c, to_container, nspaces, **options)
                    for c in elem]  # :: [<container>]
         if _num_of_children == 1:  # .. note:: Another special case.
             dic[elem.tag] = subdics[0]
@@ -213,14 +215,15 @@ def elem_to_container(elem, to_container, nspaces, tags=False):
     return dic
 
 
-def root_to_container(root, to_container, nspaces, pprefix=_PREFIX):
+def root_to_container(root, to_container, nspaces, **options):
     """
     Convert XML ElementTree Root Element to a collection of container objects.
 
     :param root: etree root object or None
     :param to_container: callble to make a container object
     :param nspaces: A namespaces dict, {uri: prefix}
-    :param pprefix: Special parameter name prefix
+    :param options: Keyword options,
+        - pprefix: Special parameter name prefix
     """
     tree = to_container()
     if root is None:
@@ -233,7 +236,9 @@ def root_to_container(root, to_container, nspaces, pprefix=_PREFIX):
         for uri, prefix in nspaces.items():
             root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
 
-    return elem_to_container(root, to_container, nspaces, _gen_tags(pprefix))
+    tags = _gen_tags(options.get("pprefix", _PREFIX))
+    return elem_to_container(root, to_container, nspaces, tags=tags,
+                             **options)
 
 
 def _elem_from_descendants(children, pprefix=_PREFIX):

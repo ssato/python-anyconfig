@@ -162,6 +162,7 @@ def _sum_dicts(dics, to_container=dict):
     """
     :param dics: [<dict/-like object must not have same keys each other>]
     :param to_container: callble to make a container object
+    :return: <container> object
     """
     dic_itr = anyconfig.compat.from_iterable(d.items() for d in dics)
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
@@ -199,15 +200,13 @@ def elem_to_container(elem, to_container, nspaces, **options):
     if _num_of_children:
         subdics = [elem_to_container(c, to_container, nspaces, **options)
                    for c in elem]  # :: [<container>]
-        if _num_of_children == 1:  # .. note:: Another special case.
-            dic[elem.tag] = subdics[0]
-        else:  # .. note:: Process yet anohter special cases first.
-            if _dicts_have_unique_keys([subdic] + subdics):
-                dic[elem.tag] = _sum_dicts([subdic] + subdics, to_container)
-            elif not subdic:  # Only these children.
-                dic[elem.tag] = subdics
-            else:
-                subdic[children] = subdics
+        # .. note:: Another special case can omit extra <children> node.
+        if _dicts_have_unique_keys([subdic] + subdics):
+            dic[elem.tag] = _sum_dicts([subdic] + subdics, to_container)
+        elif not subdic:  # Only these children.
+            dic[elem.tag] = subdics
+        else:
+            subdic[children] = subdics
 
     elif not elem.text and not elem.attrib:  # ex. <tag/>.
         dic[elem.tag] = None

@@ -236,9 +236,9 @@ def root_to_container(root, to_container, nspaces, **options):
         for uri, prefix in nspaces.items():
             root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
 
-    tags = _gen_tags(options.get("pprefix", _PREFIX))
-    return elem_to_container(root, to_container, nspaces, tags=tags,
-                             **options)
+    if "tags" not in options:
+        options["tags"] = _gen_tags(options.get("pprefix", _PREFIX))
+    return elem_to_container(root, to_container, nspaces, **options)
 
 
 def _elem_from_descendants(children, pprefix=_PREFIX):

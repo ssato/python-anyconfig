@@ -161,7 +161,7 @@ def _dicts_have_unique_keys(dics):
     return len(set(key_itr)) == sum(len(d) for d in dics)
 
 
-def _sum_dicts(dics, to_container=dict):
+def _merge_dicts(dics, to_container=dict):
     """
     :param dics: [<dict/-like object must not have same keys each other>]
     :param to_container: callble to make a container object
@@ -190,7 +190,7 @@ def _process_children(elem, dic, subdic, children, to_container=dict,
     # .. note:: Another special case can omit extra <children> node.
     sdics = [subdic] + subdics
     if _dicts_have_unique_keys(sdics):
-        dic[elem.tag] = _sum_dicts(sdics, to_container)
+        dic[elem.tag] = _merge_dicts(sdics, to_container)
     elif not subdic:  # No attrs nor text and only these children.
         dic[elem.tag] = subdics
     else:

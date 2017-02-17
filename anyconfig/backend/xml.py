@@ -188,15 +188,15 @@ def elem_to_container(elem, to_container=dict, **options):
     _num_of_children = len(elem)
     _elem_strip_text(elem)
 
-    if elem.attrib:
-        subdic[attrs] = to_container(elem.attrib)
-
     if elem.text:
         if _num_of_children or elem.attrib:
             subdic[text] = elem.text
         else:
             # .. note:: Treat as special case for later convenience.
             dic[elem.tag] = elem.text
+
+    if elem.attrib:
+        subdic[attrs] = to_container(elem.attrib)
 
     if _num_of_children:
         subdics = [elem_to_container(c, to_container=to_container, **options)

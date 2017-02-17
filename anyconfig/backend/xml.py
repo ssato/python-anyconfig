@@ -187,11 +187,10 @@ def _process_children(elem, dic, subdic, children, to_container=dict,
     """
     subdics = [elem_to_container(c, to_container=to_container, **options)
                for c in elem]
-    # .. note:: Another special case can omit extra <children> node.
     sdics = [subdic] + subdics
-    if _dicts_have_unique_keys(sdics):
+    if _dicts_have_unique_keys(sdics):  # ex. <a><b>1</b><c>c</c></a>
         dic[elem.tag] = _merge_dicts(sdics, to_container)
-    elif not subdic:  # No attrs nor text and only these children.
+    elif not subdic:  # There are no attrs nor text and only these children.
         dic[elem.tag] = subdics
     else:
         subdic[children] = subdics
@@ -200,6 +199,14 @@ def _process_children(elem, dic, subdic, children, to_container=dict,
 def elem_to_container(elem, to_container=dict, **options):
     """
     Convert XML ElementTree Element to a collection of container objects.
+
+    Elements are transformed to a node under special tagged nodes, attrs, text
+    and children, to store the type of these elements basically, however, in
+    some special cases like the followings, these nodes are attached to the
+    parent node directly for later convenience.
+
+    - There is only text element
+    - There are only children elements each has unique keys among all
 
     :param elem: etree elem object or None
     :param to_container: callble to make a container object
@@ -220,8 +227,7 @@ def elem_to_container(elem, to_container=dict, **options):
         if _num_of_children or elem.attrib:
             subdic[text] = elem.text
         else:
-            # .. note:: Treat as special case for later convenience.
-            dic[elem.tag] = elem.text
+            dic[elem.tag] = elem.text  # ex. <a>text</a>
 
     if elem.attrib:
         subdic[attrs] = to_container(elem.attrib)

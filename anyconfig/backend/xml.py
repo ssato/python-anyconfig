@@ -32,6 +32,8 @@
   - pprefix: Specify parameter prefix for attributes, text and children nodes.
   - tags: Special parameter names to distinguish between attributes, text and
     children nodes.
+  - merge_attrs: Merge attributes and mix with children nodes. Please note that
+    information of attributes are lost after loaded.
 
 History:
 
@@ -171,6 +173,25 @@ def _merge_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
+def _attrs_to_container(elem, dic, subdic, to_container=dict, nchildren=0,
+                        attrs="@attrs", **options):
+    """
+    :param elem: etree elem object or None
+    :param dic: <container> (dict[-like]) object converted from elem
+    :param subdic: Sub <container> object converted from elem
+    :param nchildren: Number of children elements
+    :param options:
+        Keyword options, see the description of :func:`elem_to_container` for
+        more details.
+
+    :return: None but updating dic and subdic as side effects
+    """
+    if not elem.text and not nchildren and options.get("merge_attrs"):
+        dic[elem.tag] = to_container(elem.attrib)
+    else:
+        subdic[attrs] = to_container(elem.attrib)
+
+
 def _process_children(elem, dic, subdic, children, to_container=dict,
                       **options):
     """
@@ -213,6 +234,8 @@ def elem_to_container(elem, to_container=dict, **options):
     :param options: Keyword options
         - nspaces: A namespaces dict, {uri: prefix} or None
         - tags: (attrs, text, children) parameter names
+        - merge_attrs: Merge attributes and mix with children nodes, and the
+          information of attributes are lost after its transformation.
     """
     dic = to_container()
     if elem is None:
@@ -230,7 +253,9 @@ def elem_to_container(elem, to_container=dict, **options):
             dic[elem.tag] = elem.text  # ex. <a>text</a>
 
     if elem.attrib:
-        subdic[attrs] = to_container(elem.attrib)
+        _attrs_to_container(elem, dic, subdic, to_container=to_container,
+                            nchildren=_num_of_children, attrs=attrs,
+                            **options)
 
     if _num_of_children:
         _process_children(elem, dic, subdic, children, to_container=dict,

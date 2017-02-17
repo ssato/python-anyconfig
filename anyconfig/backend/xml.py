@@ -160,6 +160,13 @@ def _merge_dicts(dics, to_container=dict):
     :param dics: [<dict/-like object must not have same keys each other>]
     :param to_container: callble to make a container object
     :return: <container> object
+
+    >>> _merge_dicts(({}, ))
+    {}
+    >>> _merge_dicts(({'a': 1}, ))
+    {'a': 1}
+    >>> sorted(kv for kv in _merge_dicts(({'a': 1}, {'b': 2})).items())
+    [('a', 1), ('b', 2)]
     """
     dic_itr = anyconfig.compat.from_iterable(d.items() for d in dics)
     return to_container(anyconfig.compat.OrderedDict(dic_itr))

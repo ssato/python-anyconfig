@@ -75,6 +75,19 @@ class Test_00(unittest.TestCase):
         self.assertTrue(dicts_equal(dic, {"a": 'A'}))
         self.assertTrue(not subdic)
 
+    def test_22__process_elem_text__wo_attrs_and_children_parse(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
+        TT._process_elem_text(elem, dic, subdic, text="#text",
+                              ac_parse_value=True)
+        self.assertTrue(dicts_equal(dic, {"a": 'A'}))
+        self.assertTrue(not subdic)
+
+        (elem, dic, subdic) = (TT.ET.XML("<a>1</a>"), {}, {})
+        TT._process_elem_text(elem, dic, subdic, text="#text",
+                              ac_parse_value=True)
+        self.assertTrue(dicts_equal(dic, {"a": 1}))
+        self.assertTrue(not subdic)
+
     def test_24__process_elem_text__w_attrs(self):
         (elem, dic, subdic) = (TT.ET.XML("<a id='1'>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")

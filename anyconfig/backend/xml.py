@@ -103,10 +103,10 @@ def _gen_tags(pprefix=_PREFIX):
     return tuple(pprefix + x for x in ("attrs", "text", "children"))
 
 
-def _tweak_ns(tag, nspaces):
+def _tweak_ns(tag, nspaces=None):
     """
     :param tag: XML tag element
-    :param nspaces: A namespaces dict, {uri: prefix}
+    :param nspaces: A namespaces dict, {uri: prefix} or None
 
     >>> _tweak_ns("a", {})
     'a'
@@ -168,13 +168,13 @@ def _sum_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
-def elem_to_container(elem, to_container, nspaces, **options):
+def elem_to_container(elem, to_container, nspaces=None, **options):
     """
     Convert XML ElementTree Element to a collection of container objects.
 
     :param elem: etree elem object or None
     :param to_container: callble to make a container object
-    :param nspaces: A namespaces dict, {uri: prefix}
+    :param nspaces: A namespaces dict, {uri: prefix} or None
     :param options: Keyword options
         - tags: (attrs, text, children) parameter names
     """
@@ -182,7 +182,7 @@ def elem_to_container(elem, to_container, nspaces, **options):
     if elem is None:
         return dic
 
-    subdic = dic[_tweak_ns(elem.tag, nspaces)] = to_container()
+    subdic = dic[_tweak_ns(elem.tag, nspaces=nspaces)] = to_container()
     (attrs, text, children) = options.get("tags", _gen_tags())
     _num_of_children = len(elem)
     _elem_strip_text(elem)
@@ -198,8 +198,8 @@ def elem_to_container(elem, to_container, nspaces, **options):
             dic[elem.tag] = elem.text
 
     if _num_of_children:
-        subdics = [elem_to_container(c, to_container, nspaces, **options)
-                   for c in elem]  # :: [<container>]
+        subdics = [elem_to_container(c, to_container, nspaces=nspaces,
+                                     **options) for c in elem]
         # .. note:: Another special case can omit extra <children> node.
         if _dicts_have_unique_keys([subdic] + subdics):
             dic[elem.tag] = _sum_dicts([subdic] + subdics, to_container)
@@ -214,13 +214,13 @@ def elem_to_container(elem, to_container, nspaces, **options):
     return dic
 
 
-def root_to_container(root, to_container, nspaces, **options):
+def root_to_container(root, to_container, nspaces=None, **options):
     """
     Convert XML ElementTree Root Element to a collection of container objects.
 
     :param root: etree root object or None
     :param to_container: callble to make a container object
-    :param nspaces: A namespaces dict, {uri: prefix}
+    :param nspaces: A namespaces dict, {uri: prefix} or None
     :param options: Keyword options,
         - pprefix: Special parameter name prefix
     """
@@ -228,16 +228,13 @@ def root_to_container(root, to_container, nspaces, **options):
     if root is None:
         return tree
 
-    if nspaces is None:
-        nspaces = dict()
-
     if nspaces:
         for uri, prefix in nspaces.items():
             root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
 
     if "tags" not in options:
         options["tags"] = _gen_tags(options.get("pprefix", _PREFIX))
-    return elem_to_container(root, to_container, nspaces, **options)
+    return elem_to_container(root, to_container, nspaces=nspaces, **options)
 
 
 def _elem_from_descendants(children, pprefix=_PREFIX):
@@ -328,14 +325,14 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
     _open_flags = ('rb', 'wb')
     _load_opts = _dump_opts = ["pprefix"]
 
-    def load_from_string(self, content, to_container, **kwargs):
+    def load_from_string(self, content, to_container, **opts):
         """
         Load config from XML snippet (a string `content`).
 
         :param content:
             XML snippet string of str (python 2) or bytes (python 3) type
         :param to_container: callble to make a container object
-        :param kwargs: optional keyword parameters passed to
+        :param opts: optional keyword parameters passed to
 
         :return: Dict-like object holding config parameters
         """
@@ -345,52 +342,52 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         else:
             stream = anyconfig.compat.StringIO(content)
         nspaces = _namespaces_from_file(stream)
-        return root_to_container(root, to_container, nspaces, **kwargs)
+        return root_to_container(root, to_container, nspaces=nspaces, **opts)
 
-    def load_from_path(self, filepath, to_container, **kwargs):
+    def load_from_path(self, filepath, to_container, **opts):
         """
         :param filepath: XML file path
         :param to_container: callble to make a container object
-        :param kwargs: optional keyword parameters to be sanitized
+        :param opts: optional keyword parameters to be sanitized
 
         :return: Dict-like object holding config parameters
         """
         root = ET.parse(filepath).getroot()
         nspaces = _namespaces_from_file(filepath)
-        return root_to_container(root, to_container, nspaces, **kwargs)
+        return root_to_container(root, to_container, nspaces=nspaces, **opts)
 
-    def load_from_stream(self, stream, to_container, **kwargs):
+    def load_from_stream(self, stream, to_container, **opts):
         """
         :param stream: XML file or file-like object
         :param to_container: callble to make a container object
-        :param kwargs: optional keyword parameters to be sanitized
+        :param opts: optional keyword parameters to be sanitized
 
         :return: Dict-like object holding config parameters
         """
         root = ET.parse(stream).getroot()
         path = anyconfig.utils.get_path_from_stream(stream)
         nspaces = _namespaces_from_file(path)
-        return root_to_container(root, to_container, nspaces, **kwargs)
+        return root_to_container(root, to_container, nspaces=nspaces, **opts)
 
-    def dump_to_string(self, cnf, **kwargs):
+    def dump_to_string(self, cnf, **opts):
         """
         :param cnf: Configuration data to dump
-        :param kwargs: optional keyword parameters
+        :param opts: optional keyword parameters
 
         :return: string represents the configuration
         """
-        tree = container_to_etree(cnf, **kwargs)
+        tree = container_to_etree(cnf, **opts)
         buf = BytesIO()
         etree_write(tree, buf)
         return buf.getvalue()
 
-    def dump_to_stream(self, cnf, stream, **kwargs):
+    def dump_to_stream(self, cnf, stream, **opts):
         """
         :param cnf: Configuration data to dump
         :param stream: Config file or file like object write to
-        :param kwargs: optional keyword parameters
+        :param opts: optional keyword parameters
         """
-        tree = container_to_etree(cnf, **kwargs)
+        tree = container_to_etree(cnf, **opts)
         etree_write(tree, stream)
 
 # vim:sw=4:ts=4:et:

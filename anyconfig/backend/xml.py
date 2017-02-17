@@ -252,14 +252,13 @@ def elem_to_container(elem, to_container=dict, **options):
         else:
             dic[elem.tag] = elem.text  # ex. <a>text</a>
 
+    options.update(to_container=to_container, nchildren=_num_of_children,
+                   attrs=attrs)
     if elem.attrib:
-        _attrs_to_container(elem, dic, subdic, to_container=to_container,
-                            nchildren=_num_of_children, attrs=attrs,
-                            **options)
+        _attrs_to_container(elem, dic, subdic, **options)
 
     if _num_of_children:
-        _process_children(elem, dic, subdic, children, to_container=dict,
-                          **options)
+        _process_children(elem, dic, subdic, children, **options)
     elif not elem.text and not elem.attrib:  # ex. <tag/>.
         dic[elem.tag] = None
 

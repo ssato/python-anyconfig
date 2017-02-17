@@ -57,7 +57,7 @@ CNF_0_S = """\
 
 class Test_00(unittest.TestCase):
 
-    def test__namespaces_from_file(self):
+    def test_10__namespaces_from_file(self):
         ref = {"http://example.com/ns/config": '',
                "http://example.com/ns/config/val": "val"}
         xmlfile = anyconfig.compat.StringIO(XML_W_NS_S)

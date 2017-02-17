@@ -103,10 +103,11 @@ def _gen_tags(pprefix=_PREFIX):
     return tuple(pprefix + x for x in ("attrs", "text", "children"))
 
 
-def _tweak_ns(tag, nspaces=None):
+def _tweak_ns(tag, nspaces=None, **options):
     """
     :param tag: XML tag element
     :param nspaces: A namespaces dict, {uri: prefix} or None
+    :param options: Extra keyword options
 
     >>> _tweak_ns("a", {})
     'a'
@@ -168,21 +169,21 @@ def _sum_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
-def elem_to_container(elem, to_container, nspaces=None, **options):
+def elem_to_container(elem, to_container=dict, **options):
     """
     Convert XML ElementTree Element to a collection of container objects.
 
     :param elem: etree elem object or None
     :param to_container: callble to make a container object
-    :param nspaces: A namespaces dict, {uri: prefix} or None
     :param options: Keyword options
+        - nspaces: A namespaces dict, {uri: prefix} or None
         - tags: (attrs, text, children) parameter names
     """
     dic = to_container()
     if elem is None:
         return dic
 
-    subdic = dic[_tweak_ns(elem.tag, nspaces=nspaces)] = to_container()
+    subdic = dic[_tweak_ns(elem.tag, **options)] = to_container()
     (attrs, text, children) = options.get("tags", _gen_tags())
     _num_of_children = len(elem)
     _elem_strip_text(elem)
@@ -198,8 +199,8 @@ def elem_to_container(elem, to_container, nspaces=None, **options):
             dic[elem.tag] = elem.text
 
     if _num_of_children:
-        subdics = [elem_to_container(c, to_container, nspaces=nspaces,
-                                     **options) for c in elem]
+        subdics = [elem_to_container(c, to_container=to_container, **options)
+                   for c in elem]
         # .. note:: Another special case can omit extra <children> node.
         sdics = [subdic] + subdics
         if _dicts_have_unique_keys(sdics):
@@ -215,7 +216,7 @@ def elem_to_container(elem, to_container, nspaces=None, **options):
     return dic
 
 
-def root_to_container(root, to_container, nspaces=None, **options):
+def root_to_container(root, to_container=dict, nspaces=None, **options):
     """
     Convert XML ElementTree Root Element to a collection of container objects.
 
@@ -235,7 +236,8 @@ def root_to_container(root, to_container, nspaces=None, **options):
 
     if "tags" not in options:
         options["tags"] = _gen_tags(options.get("pprefix", _PREFIX))
-    return elem_to_container(root, to_container, nspaces=nspaces, **options)
+    return elem_to_container(root, to_container=to_container, nspaces=nspaces,
+                             **options)
 
 
 def _elem_from_descendants(children, pprefix=_PREFIX):
@@ -343,7 +345,8 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         else:
             stream = anyconfig.compat.StringIO(content)
         nspaces = _namespaces_from_file(stream)
-        return root_to_container(root, to_container, nspaces=nspaces, **opts)
+        return root_to_container(root, to_container=to_container,
+                                 nspaces=nspaces, **opts)
 
     def load_from_path(self, filepath, to_container, **opts):
         """
@@ -355,7 +358,8 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         """
         root = ET.parse(filepath).getroot()
         nspaces = _namespaces_from_file(filepath)
-        return root_to_container(root, to_container, nspaces=nspaces, **opts)
+        return root_to_container(root, to_container=to_container,
+                                 nspaces=nspaces, **opts)
 
     def load_from_stream(self, stream, to_container, **opts):
         """
@@ -368,7 +372,8 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         root = ET.parse(stream).getroot()
         path = anyconfig.utils.get_path_from_stream(stream)
         nspaces = _namespaces_from_file(path)
-        return root_to_container(root, to_container, nspaces=nspaces, **opts)
+        return root_to_container(root, to_container=to_container,
+                                 nspaces=nspaces, **opts)
 
     def dump_to_string(self, cnf, **opts):
         """

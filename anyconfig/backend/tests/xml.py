@@ -65,16 +65,16 @@ class Test_00(unittest.TestCase):
 
 
 def _xml_to_container(snippet, **opts):
-    return TT.elem_to_container(TT.ET.XML(snippet), dict, {}, **opts)
+    return TT.elem_to_container(TT.ET.XML(snippet), to_container=dict, **opts)
 
 
 class Test_10(unittest.TestCase):
 
     def test_10_elem_to_container__None(self):
-        self.assertEqual(TT.elem_to_container(None, dict, {}), dict())
+        self.assertEqual(TT.elem_to_container(None), dict())
 
     def test_10_root_to_container__None(self):
-        self.assertEqual(TT.root_to_container(None, dict, {}), dict())
+        self.assertEqual(TT.root_to_container(None), dict())
 
     def test_12_elem_to_container__empty(self):
         self.assertEqual(_xml_to_container("<a/>"), dict(a=None))

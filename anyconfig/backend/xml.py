@@ -34,6 +34,7 @@
     children nodes.
   - merge_attrs: Merge attributes and mix with children nodes. Please note that
     information of attributes are lost after loaded.
+  - ac_parse_value: Try to parse values, elements' text and attributes.
 
 History:
 
@@ -62,6 +63,7 @@ import anyconfig.backend.base
 import anyconfig.compat
 import anyconfig.mdicts
 import anyconfig.utils
+import anyconfig.parser
 
 
 _PREFIX = "@"
@@ -172,6 +174,12 @@ def _merge_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
+def _noop(val):
+    """
+    :return: Just return given `val`
+    """
+    return val
+
 def _process_elem_text(elem, dic, subdic, text="@text", **options):
     """
     :param elem: ET Element object which has elem.text
@@ -183,12 +191,17 @@ def _process_elem_text(elem, dic, subdic, text="@text", **options):
 
     :return: None but updating elem.text, dic and subdic as side effects
     """
+    if options.get("ac_parse_value", False):
+        _parse = anyconfig.parser.parse_single
+    else:
+        _parse = _noop
+
     elem.text = elem.text.strip()
     if elem.text:
         if len(elem) or elem.attrib:
-            subdic[text] = elem.text
+            subdic[text] = _parse(elem.text)
         else:
-            dic[elem.tag] = elem.text  # ex. <a>text</a>
+            dic[elem.tag] = _parse(elem.text)  # ex. <a>text</a>
 
 
 def _process_elem_attrs(elem, dic, subdic, to_container=dict, attrs="@attrs",

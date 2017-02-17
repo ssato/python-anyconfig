@@ -30,6 +30,8 @@
 - Special Options:
 
   - pprefix: Specify parameter prefix for attributes, text and children nodes.
+  - tags: Special parameter names to distinguish between attributes, text and
+    children nodes.
 
 History:
 

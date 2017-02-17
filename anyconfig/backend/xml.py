@@ -173,7 +173,7 @@ def _merge_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
-def _attrs_to_container(elem, dic, subdic, to_container=dict, nchildren=0,
+def _process_attributes(elem, dic, subdic, to_container=dict, nchildren=0,
                         attrs="@attrs", **options):
     """
     :param elem: etree elem object or None
@@ -255,7 +255,7 @@ def elem_to_container(elem, to_container=dict, **options):
     options.update(to_container=to_container, nchildren=_num_of_children,
                    attrs=attrs)
     if elem.attrib:
-        _attrs_to_container(elem, dic, subdic, **options)
+        _process_attributes(elem, dic, subdic, **options)
 
     if _num_of_children:
         _process_children(elem, dic, subdic, children, **options)

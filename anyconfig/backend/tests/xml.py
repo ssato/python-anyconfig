@@ -69,7 +69,7 @@ class Test_00(unittest.TestCase):
         self.assertTrue(not dic)
         self.assertTrue(not subdic)
 
-    def test_22__process_elem_text__wo_attrs_nor_children(self):
+    def test_22__process_elem_text__wo_attrs_and_children(self):
         (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")
         self.assertEqual(dic.get("a", None), 'A')
@@ -86,6 +86,24 @@ class Test_00(unittest.TestCase):
         TT._process_elem_text(elem, dic, subdic, nchildren=1, text="#text")
         self.assertTrue(not dic)
         self.assertEqual(subdic.get("#text", None), 'A')
+
+    def test_30__process_elem_attrs__wo_text_and_children(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})
+        TT._process_elem_attrs(elem, dic, subdic)
+        self.assertTrue(not dic)
+        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": 'A'}}))
+
+    def test_32__process_elem_attrs__w_text(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a id='A'>AAA</a>"), {}, {})
+        TT._process_elem_attrs(elem, dic, subdic)
+        self.assertTrue(not dic)
+        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": 'A'}}))
+
+    def test_34__process_elem_attrs__merge_attrs(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})
+        TT._process_elem_attrs(elem, dic, subdic, merge_attrs=True)
+        self.assertTrue(dicts_equal(dic, {"a": {"id": 'A'}}))
+        self.assertTrue(not subdic)
 
 
 def _xml_to_container(snippet, **opts):

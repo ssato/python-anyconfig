@@ -132,14 +132,6 @@ def _tweak_ns(tag, nspaces=None, **options):
     return tag
 
 
-def _elem_strip_text(elem):
-    """
-    :param elem: etree elem object
-    """
-    if elem.text:
-        elem.text = elem.text.strip()
-
-
 def _dicts_have_unique_keys(dics):
     """
     :param dics: [<dict or dict-like object>], must not be [] or [{...}]
@@ -173,6 +165,26 @@ def _merge_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
+def _process_text(elem, dic, subdic, nchildren=0, text="@text", **options):
+    """
+    :param elem: etree elem object or None
+    :param dic: <container> (dict[-like]) object converted from elem
+    :param subdic: Sub <container> object converted from elem
+    :param nchildren: Number of children elements
+    :param options:
+        Keyword options, see the description of :func:`elem_to_container` for
+        more details.
+
+    :return: None but updating elem.text, dic and subdic as side effects
+    """
+    elem.text = elem.text.strip()
+    if elem.text:
+        if nchildren or elem.attrib:
+            subdic[text] = elem.text
+        else:
+            dic[elem.tag] = elem.text  # ex. <a>text</a>
+
+
 def _process_attributes(elem, dic, subdic, to_container=dict, nchildren=0,
                         attrs="@attrs", **options):
     """
@@ -192,14 +204,14 @@ def _process_attributes(elem, dic, subdic, to_container=dict, nchildren=0,
         subdic[attrs] = to_container(elem.attrib)
 
 
-def _process_children(elem, dic, subdic, children, to_container=dict,
-                      **options):
+def _process_children(elem, dic, subdic, to_container=dict,
+                      children="@children", **options):
     """
     :param elem: etree elem object or None
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
-    :param children: Tag for children nodes
     :param to_container: callble to make a container object
+    :param children: Tag for children nodes
     :param options:
         Keyword options, see the description of :func:`elem_to_container` for
         more details.
@@ -244,20 +256,17 @@ def elem_to_container(elem, to_container=dict, **options):
     subdic = dic[_tweak_ns(elem.tag, **options)] = to_container()
     (attrs, text, children) = options.get("tags", _gen_tags())
     nchildren = len(elem)
-    _elem_strip_text(elem)
 
+    options.update(to_container=to_container, nchildren=nchildren,
+                   attrs=attrs, text=text, children=children)
     if elem.text:
-        if nchildren or elem.attrib:
-            subdic[text] = elem.text
-        else:
-            dic[elem.tag] = elem.text  # ex. <a>text</a>
+        _process_text(elem, dic, subdic, **options)
 
-    options.update(to_container=to_container, nchildren=nchildren, attrs=attrs)
     if elem.attrib:
         _process_attributes(elem, dic, subdic, **options)
 
     if nchildren:
-        _process_children(elem, dic, subdic, children, **options)
+        _process_children(elem, dic, subdic, **options)
     elif not elem.text and not elem.attrib:  # ex. <tag/>.
         dic[elem.tag] = None
 

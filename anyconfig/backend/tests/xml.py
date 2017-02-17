@@ -63,6 +63,30 @@ class Test_00(unittest.TestCase):
         xmlfile = anyconfig.compat.StringIO(XML_W_NS_S)
         self.assertTrue(dicts_equal(TT._namespaces_from_file(xmlfile), ref))
 
+    def test_20__process_elem_text__whitespaces(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a> </a>"), {}, {})
+        TT._process_elem_text(elem, dic, subdic)
+        self.assertTrue(not dic)
+        self.assertTrue(not subdic)
+
+    def test_22__process_elem_text__wo_attrs_nor_children(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
+        TT._process_elem_text(elem, dic, subdic, text="#text")
+        self.assertEqual(dic.get("a", None), 'A')
+        self.assertTrue(not subdic)
+
+    def test_24__process_elem_text__w_attrs(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a id='1'>A</a>"), {}, {})
+        TT._process_elem_text(elem, dic, subdic, text="#text")
+        self.assertTrue(not dic)
+        self.assertEqual(subdic.get("#text", None), 'A')
+
+    def test_24__process_elem_text__w_children(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
+        TT._process_elem_text(elem, dic, subdic, nchildren=1, text="#text")
+        self.assertTrue(not dic)
+        self.assertEqual(subdic.get("#text", None), 'A')
+
 
 def _xml_to_container(snippet, **opts):
     return TT.elem_to_container(TT.ET.XML(snippet), to_container=dict, **opts)

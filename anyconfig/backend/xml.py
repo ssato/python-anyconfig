@@ -169,6 +169,32 @@ def _sum_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
+def _process_children(elem, dic, subdic, children, to_container=dict,
+                      **options):
+    """
+    :param elem: etree elem object or None
+    :param dic: <container> (dict[-like]) object converted from elem
+    :param subdic: Sub <container> object converted from elem
+    :param children: Tag for children nodes
+    :param to_container: callble to make a container object
+    :param options:
+        Keyword options, see the description of :func:`elem_to_container` for
+        more details.
+
+    :return: None but updating dic and subdic as side effects
+    """
+    subdics = [elem_to_container(c, to_container=to_container, **options)
+               for c in elem]
+    # .. note:: Another special case can omit extra <children> node.
+    sdics = [subdic] + subdics
+    if _dicts_have_unique_keys(sdics):
+        dic[elem.tag] = _sum_dicts(sdics, to_container)
+    elif not subdic:  # No attrs nor text and only these children.
+        dic[elem.tag] = subdics
+    else:
+        subdic[children] = subdics
+
+
 def elem_to_container(elem, to_container=dict, **options):
     """
     Convert XML ElementTree Element to a collection of container objects.
@@ -199,17 +225,8 @@ def elem_to_container(elem, to_container=dict, **options):
         subdic[attrs] = to_container(elem.attrib)
 
     if _num_of_children:
-        subdics = [elem_to_container(c, to_container=to_container, **options)
-                   for c in elem]
-        # .. note:: Another special case can omit extra <children> node.
-        sdics = [subdic] + subdics
-        if _dicts_have_unique_keys(sdics):
-            dic[elem.tag] = _sum_dicts(sdics, to_container)
-        elif not subdic:  # Only these children.
-            dic[elem.tag] = subdics
-        else:
-            subdic[children] = subdics
-
+        _process_children(elem, dic, subdic, children, to_container=dict,
+                          **options)
     elif not elem.text and not elem.attrib:  # ex. <tag/>.
         dic[elem.tag] = None
 

@@ -3,7 +3,7 @@
 # License: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
-# pylint: disable=import-error
+# pylint: disable=import-error, duplicate-except
 """XML files parser backend, should be available always.
 
 - Format to support: XML, e.g. http://www.w3.org/TR/xml11/
@@ -213,7 +213,8 @@ def _process_elem_attrs(elem, dic, subdic, to_container=dict, nchildren=0,
 
 
 def _process_children_elems(elem, dic, subdic, to_container=dict,
-                            children="@children", **options):
+                            children="@children", attrs="@attrs",
+                            **options):
     """
     :param elem: ET Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
@@ -228,7 +229,9 @@ def _process_children_elems(elem, dic, subdic, to_container=dict,
     """
     subdics = [elem_to_container(c, to_container=to_container, **options)
                for c in elem]
-    sdics = [subdic] + subdics
+    merge_attrs = options.get("merge_attrs", False)
+    sdics = [to_container(elem.attrib) if merge_attrs else subdic] + subdics
+
     if _dicts_have_unique_keys(sdics):  # ex. <a><b>1</b><c>c</c></a>
         dic[elem.tag] = _merge_dicts(sdics, to_container)
     elif not subdic:  # There are no attrs nor text and only these children.

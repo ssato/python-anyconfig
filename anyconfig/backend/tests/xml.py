@@ -128,6 +128,14 @@ class Test_00(unittest.TestCase):
         self.assertTrue(dicts_equal(dic, {"a": {"x": "X", "y": "Y"}}))
         self.assertTrue(not subdic)
 
+    def test_46__process_children_elems__w_merge_attrs(self):
+        elem = TT.ET.XML("<a z='Z'><x>X</x><y>Y</y></a>")
+        dic = {"a": {"@attrs": {"z": "Z"}}}
+        subdic = dic["a"]["@attrs"]
+        TT._process_children_elems(elem, dic, subdic, merge_attrs=True)
+        self.assertTrue(dicts_equal(dic, {"a": {"x": "X", "y": "Y",
+                                                "z": "Z"}}), dic)
+
 
 def _xml_to_container(snippet, **opts):
     return TT.elem_to_container(TT.ET.XML(snippet), to_container=dict, **opts)

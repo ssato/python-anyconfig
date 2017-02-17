@@ -72,20 +72,20 @@ class Test_00(unittest.TestCase):
     def test_22__process_elem_text__wo_attrs_and_children(self):
         (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")
-        self.assertEqual(dic.get("a", None), 'A')
+        self.assertTrue(dicts_equal(dic, {"a": 'A'}))
         self.assertTrue(not subdic)
 
     def test_24__process_elem_text__w_attrs(self):
         (elem, dic, subdic) = (TT.ET.XML("<a id='1'>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")
         self.assertTrue(not dic)
-        self.assertEqual(subdic.get("#text", None), 'A')
+        self.assertTrue(dicts_equal(subdic, {"#text": 'A'}))
 
     def test_24__process_elem_text__w_children(self):
         (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, nchildren=1, text="#text")
         self.assertTrue(not dic)
-        self.assertEqual(subdic.get("#text", None), 'A')
+        self.assertTrue(dicts_equal(subdic, {"#text": 'A'}))
 
     def test_30__process_elem_attrs__wo_text_and_children(self):
         (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})

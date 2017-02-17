@@ -201,8 +201,9 @@ def elem_to_container(elem, to_container, nspaces=None, **options):
         subdics = [elem_to_container(c, to_container, nspaces=nspaces,
                                      **options) for c in elem]
         # .. note:: Another special case can omit extra <children> node.
-        if _dicts_have_unique_keys([subdic] + subdics):
-            dic[elem.tag] = _sum_dicts([subdic] + subdics, to_container)
+        sdics = [subdic] + subdics
+        if _dicts_have_unique_keys(sdics):
+            dic[elem.tag] = _sum_dicts(sdics, to_container)
         elif not subdic:  # Only these children.
             dic[elem.tag] = subdics
         else:

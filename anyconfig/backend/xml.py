@@ -181,6 +181,16 @@ def _noop(val):
     return val
 
 
+def _parse_fn(**options):
+    """
+    :return: Parser function
+    """
+    if options.get("ac_parse_value", False):
+        return anyconfig.parser.parse_single
+    else:
+        return _noop
+
+
 def _process_elem_text(elem, dic, subdic, text="@text", **options):
     """
     :param elem: ET Element object which has elem.text
@@ -192,11 +202,7 @@ def _process_elem_text(elem, dic, subdic, text="@text", **options):
 
     :return: None but updating elem.text, dic and subdic as side effects
     """
-    if options.get("ac_parse_value", False):
-        _parse = anyconfig.parser.parse_single
-    else:
-        _parse = _noop
-
+    _parse = _parse_fn(**options)
     elem.text = elem.text.strip()
     if elem.text:
         if len(elem) or elem.attrib:

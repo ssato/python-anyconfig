@@ -168,7 +168,7 @@ def _merge_dicts(dics, to_container=dict):
 def _process_elem_text(elem, dic, subdic, nchildren=0, text="@text",
                        **options):
     """
-    :param elem: etree elem object or None
+    :param elem: ET Element object which has elem.text
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
     :param nchildren: Number of children elements
@@ -189,7 +189,7 @@ def _process_elem_text(elem, dic, subdic, nchildren=0, text="@text",
 def _process_elem_attrs(elem, dic, subdic, to_container=dict, nchildren=0,
                         attrs="@attrs", **options):
     """
-    :param elem: etree elem object or None
+    :param elem: ET Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
     :param nchildren: Number of children elements
@@ -208,7 +208,7 @@ def _process_elem_attrs(elem, dic, subdic, to_container=dict, nchildren=0,
 def _process_children_elems(elem, dic, subdic, to_container=dict,
                             children="@children", **options):
     """
-    :param elem: etree elem object or None
+    :param elem: ET Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
     :param to_container: callble to make a container object
@@ -242,7 +242,7 @@ def elem_to_container(elem, to_container=dict, **options):
     - There is only text element
     - There are only children elements each has unique keys among all
 
-    :param elem: etree elem object or None
+    :param elem: ET Element object or None
     :param to_container: callble to make a container object
     :param options: Keyword options
         - nspaces: A namespaces dict, {uri: prefix} or None

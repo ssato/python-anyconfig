@@ -105,6 +105,29 @@ class Test_00(unittest.TestCase):
         self.assertTrue(dicts_equal(dic, {"a": {"id": 'A'}}))
         self.assertTrue(not subdic)
 
+    def test_40__process_children_elems__root(self):
+        (elem, dic, subdic) = (TT.ET.XML("<list><i>A</i><i>B</i></list>"), {},
+                               {})
+        TT._process_children_elems(elem, dic, subdic)
+        self.assertTrue(dicts_equal(dic, {"list": [{"i": "A"}, {"i": "B"}]}))
+        self.assertTrue(not subdic)
+
+    def test_42__process_children_elems__w_attr(self):
+        (elem, dic) = (TT.ET.XML("<list id='xyz'><i>A</i><i>B</i></list>"), {})
+        subdic = {"id": "xyz"}
+        ref = subdic.copy()
+        ref.update({"#children": [{"i": "A"}, {"i": "B"}]})
+
+        TT._process_children_elems(elem, dic, subdic, children="#children")
+        self.assertTrue(not dic)
+        self.assertTrue(dicts_equal(subdic, ref), subdic)
+
+    def test_44__process_children_elems__w_children_have_unique_keys(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a><x>X</x><y>Y</y></a>"), {}, {})
+        TT._process_children_elems(elem, dic, subdic)
+        self.assertTrue(dicts_equal(dic, {"a": {"x": "X", "y": "Y"}}))
+        self.assertTrue(not subdic)
+
 
 def _xml_to_container(snippet, **opts):
     return TT.elem_to_container(TT.ET.XML(snippet), to_container=dict, **opts)

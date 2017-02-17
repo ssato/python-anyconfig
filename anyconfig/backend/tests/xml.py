@@ -82,8 +82,8 @@ class Test_00(unittest.TestCase):
         self.assertTrue(dicts_equal(subdic, {"#text": 'A'}))
 
     def test_24__process_elem_text__w_children(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
-        TT._process_elem_text(elem, dic, subdic, nchildren=1, text="#text")
+        (elem, dic, subdic) = (TT.ET.XML("<a>A<b/></a>"), {}, {})
+        TT._process_elem_text(elem, dic, subdic, text="#text")
         self.assertTrue(not dic)
         self.assertTrue(dicts_equal(subdic, {"#text": 'A'}))
 

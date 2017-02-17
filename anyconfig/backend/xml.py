@@ -172,13 +172,11 @@ def _merge_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
-def _process_elem_text(elem, dic, subdic, nchildren=0, text="@text",
-                       **options):
+def _process_elem_text(elem, dic, subdic, text="@text", **options):
     """
     :param elem: ET Element object which has elem.text
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
-    :param nchildren: Number of children elements
     :param options:
         Keyword options, see the description of :func:`elem_to_container` for
         more details.
@@ -187,34 +185,32 @@ def _process_elem_text(elem, dic, subdic, nchildren=0, text="@text",
     """
     elem.text = elem.text.strip()
     if elem.text:
-        if nchildren or elem.attrib:
+        if len(elem) or elem.attrib:
             subdic[text] = elem.text
         else:
             dic[elem.tag] = elem.text  # ex. <a>text</a>
 
 
-def _process_elem_attrs(elem, dic, subdic, to_container=dict, nchildren=0,
-                        attrs="@attrs", **options):
+def _process_elem_attrs(elem, dic, subdic, to_container=dict, attrs="@attrs",
+                        **options):
     """
     :param elem: ET Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
-    :param nchildren: Number of children elements
     :param options:
         Keyword options, see the description of :func:`elem_to_container` for
         more details.
 
     :return: None but updating dic and subdic as side effects
     """
-    if not elem.text and not nchildren and options.get("merge_attrs"):
+    if not elem.text and not len(elem) and options.get("merge_attrs"):
         dic[elem.tag] = to_container(elem.attrib)
     else:
         subdic[attrs] = to_container(elem.attrib)
 
 
 def _process_children_elems(elem, dic, subdic, to_container=dict,
-                            children="@children", attrs="@attrs",
-                            **options):
+                            children="@children", **options):
     """
     :param elem: ET Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
@@ -266,17 +262,16 @@ def elem_to_container(elem, to_container=dict, **options):
 
     subdic = dic[_tweak_ns(elem.tag, **options)] = to_container()
     (attrs, text, children) = options.get("tags", _gen_tags())
-    nchildren = len(elem)
 
-    options.update(to_container=to_container, nchildren=nchildren,
-                   attrs=attrs, text=text, children=children)
+    options.update(to_container=to_container, attrs=attrs, text=text,
+                   children=children)
     if elem.text:
         _process_elem_text(elem, dic, subdic, **options)
 
     if elem.attrib:
         _process_elem_attrs(elem, dic, subdic, **options)
 
-    if nchildren:
+    if len(elem):
         _process_children_elems(elem, dic, subdic, **options)
     elif not elem.text and not elem.attrib:  # ex. <tag/>.
         dic[elem.tag] = None

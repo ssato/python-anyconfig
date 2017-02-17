@@ -180,6 +180,7 @@ def _noop(val):
     """
     return val
 
+
 def _process_elem_text(elem, dic, subdic, text="@text", **options):
     """
     :param elem: ET Element object which has elem.text

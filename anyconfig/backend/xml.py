@@ -243,21 +243,20 @@ def elem_to_container(elem, to_container=dict, **options):
 
     subdic = dic[_tweak_ns(elem.tag, **options)] = to_container()
     (attrs, text, children) = options.get("tags", _gen_tags())
-    _num_of_children = len(elem)
+    nchildren = len(elem)
     _elem_strip_text(elem)
 
     if elem.text:
-        if _num_of_children or elem.attrib:
+        if nchildren or elem.attrib:
             subdic[text] = elem.text
         else:
             dic[elem.tag] = elem.text  # ex. <a>text</a>
 
-    options.update(to_container=to_container, nchildren=_num_of_children,
-                   attrs=attrs)
+    options.update(to_container=to_container, nchildren=nchildren, attrs=attrs)
     if elem.attrib:
         _process_attributes(elem, dic, subdic, **options)
 
-    if _num_of_children:
+    if nchildren:
         _process_children(elem, dic, subdic, children, **options)
     elif not elem.text and not elem.attrib:  # ex. <tag/>.
         dic[elem.tag] = None

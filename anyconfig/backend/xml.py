@@ -29,9 +29,8 @@
 
 - Special Options:
 
-  - pprefix: Specify parameter prefix for attributes, text and children nodes.
-  - tags: Special parameter names to distinguish between attributes, text and
-    children nodes.
+  - tags: A dict provide special parameter names to distinguish between
+    attributes, text and children nodes.
   - merge_attrs: Merge attributes and mix with children nodes. Please note that
     information of attributes are lost after loaded.
   - ac_parse_value: Try to parse values, elements' text and attributes.
@@ -51,6 +50,7 @@ History:
 from __future__ import absolute_import
 from io import BytesIO
 
+import operator
 import re
 try:
     import xml.etree.cElementTree as ET
@@ -66,7 +66,6 @@ import anyconfig.utils
 import anyconfig.parser
 
 
-_PREFIX = "@"
 _TAGS = dict(attrs="@attrs", text="@text", children="@children")
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
@@ -97,16 +96,6 @@ def _namespaces_from_file(xmlfile):
     :return: {namespace_uri: namespace_prefix} or {}
     """
     return dict(flip(t) for _, t in _iterparse(xmlfile))
-
-
-def _gen_tags(pprefix=_PREFIX):
-    """
-    Generate special prefixed tags.
-
-    :param pprefix: Special parameter name prefix
-    :return: A tuple of prefixed (attributes, text, children)
-    """
-    return tuple(pprefix + x for x in ("attrs", "text", "children"))
 
 
 def _tweak_ns(tag, nspaces=None, **options):
@@ -304,6 +293,18 @@ def elem_to_container(elem, to_container=dict, **options):
     return dic
 
 
+def _complement_tag_options(options):
+    """
+    :param options: Keyword options :: dict
+    """
+    if not all(nt in options for nt in _TAGS.keys()):
+        tags = options.get("tags", {})
+        for ntype, tag in _TAGS.items():
+            options[ntype] = (tags if ntype in tags else _TAGS)[ntype]
+
+    return options
+
+
 def root_to_container(root, to_container=dict, nspaces=None, **options):
     """
     Convert XML ElementTree Root Element to a collection of container objects.
@@ -323,38 +324,34 @@ def root_to_container(root, to_container=dict, nspaces=None, **options):
         for uri, prefix in nspaces.items():
             root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
 
-    tags = options.get("tags", {})
-    for node_type, tag in _TAGS.items():
-        options[node_type] = (tags if node_type in tags else _TAGS)[node_type]
-
     return elem_to_container(root, to_container=to_container, nspaces=nspaces,
-                             **options)
+                             **_complement_tag_options(options))
 
 
-def _elem_from_descendants(children, pprefix=_PREFIX):
+def _elem_from_descendants(children_nodes, **options):
     """
-    :param children: A list of child dict objects
-    :param pprefix: Special parameter name prefix
+    :param children_nodes: A list of child dict objects
+    :param options: Keyword options, see :func:`container_to_etree`
     """
-    for child in children:  # child should be a dict-like object.
+    for child in children_nodes:  # child should be a dict-like object.
         for ckey, cval in anyconfig.compat.iteritems(child):
             celem = ET.Element(ckey)
-            container_to_etree(cval, parent=celem, pprefix=pprefix)
+            container_to_etree(cval, parent=celem, **options)
             yield celem
 
 
-def _get_or_update_parent(key, val, parent=None, pprefix=_PREFIX):
+def _get_or_update_parent(key, val, parent=None, **options):
     """
     :param key: Key of current child (dict{,-like} object)
     :param val: Value of current child (dict{,-like} object or [dict{,...}])
     :param parent: XML ElementTree parent node object or None
-    :param pprefix: Special parameter name prefix
+    :param options: Keyword options, see :func:`container_to_etree`
     """
     elem = ET.Element(key)
 
     vals = val if anyconfig.utils.is_iterable(val) else [val]
     for val in vals:
-        container_to_etree(val, parent=elem, pprefix=pprefix)
+        container_to_etree(val, parent=elem, **options)
 
     if parent is None:  # 'elem' is the top level etree.
         return elem
@@ -363,20 +360,27 @@ def _get_or_update_parent(key, val, parent=None, pprefix=_PREFIX):
         return parent
 
 
-def container_to_etree(obj, parent=None, pprefix=_PREFIX):
+_ATC = ("attrs", "text", "children")
+
+
+def container_to_etree(obj, parent=None, **options):
     """
     Convert a dict-like object to XML ElementTree.
 
     :param obj: Container instance to convert to
     :param parent: XML ElementTree parent node object or None
-    :param pprefix: Special parameter name prefix
+    :param options: Keyword options,
+        - tags: Dict of tags for special nodes to keep XML info, attributes,
+          text and children nodes, e.g. {"attrs": "@attrs", "text": "#text"}
     """
     if not anyconfig.mdicts.is_dict_like(obj):
         if parent is not None and obj:
             parent.text = obj  # Parent is a leaf text node.
         return  # All attributes and text should be set already.
 
-    (attrs, text, children) = _gen_tags(pprefix)
+    options = _complement_tag_options(options)
+    (attrs, text, children) = operator.itemgetter(*_ATC)(options)
+
     for key, val in anyconfig.compat.iteritems(obj):
         if key == attrs:
             for attr, aval in anyconfig.compat.iteritems(val):
@@ -384,11 +388,11 @@ def container_to_etree(obj, parent=None, pprefix=_PREFIX):
         elif key == text:
             parent.text = val
         elif key == children:
-            for celem in _elem_from_descendants(val, pprefix=pprefix):
+            for celem in _elem_from_descendants(val, **options):
                 parent.append(celem)
         else:
             parent = _get_or_update_parent(key, val, parent=parent,
-                                           pprefix=pprefix)
+                                           **options)
 
     return ET.ElementTree(parent)
 

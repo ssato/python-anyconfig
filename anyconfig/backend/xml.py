@@ -174,21 +174,14 @@ def _merge_dicts(dics, to_container=dict):
     return to_container(anyconfig.compat.OrderedDict(dic_itr))
 
 
-def _noop(val):
+def _parse_text(val, **options):
     """
-    :return: Just return given `val`
+    :return: Parsed value or value itself depends on `ac_parse_value`
     """
-    return val
-
-
-def _parse_fn(**options):
-    """
-    :return: Parser function
-    """
-    if options.get("ac_parse_value", False):
-        return anyconfig.parser.parse_single
+    if val and options.get("ac_parse_value", False):
+        return anyconfig.parser.parse_single(val)
     else:
-        return _noop
+        return val
 
 
 def _process_elem_text(elem, dic, subdic, text="@text", **options):
@@ -202,13 +195,26 @@ def _process_elem_text(elem, dic, subdic, text="@text", **options):
 
     :return: None but updating elem.text, dic and subdic as side effects
     """
-    _parse = _parse_fn(**options)
     elem.text = elem.text.strip()
     if elem.text:
+        etext = _parse_text(elem.text, **options)
         if len(elem) or elem.attrib:
-            subdic[text] = _parse(elem.text)
+            subdic[text] = etext
         else:
-            dic[elem.tag] = _parse(elem.text)  # ex. <a>text</a>
+            dic[elem.tag] = etext  # Only text, e.g. <a>text</a>
+
+
+def _parse_attrs(elem, to_container=dict, **options):
+    """
+    :param elem: ET Element object has attributes (elem.attrib)
+    :param to_container: callble to make a container object
+    :return: Parsed value or value itself depends on `ac_parse_value`
+    """
+    if options.get("ac_parse_value", False):
+        return to_container(dict((k, anyconfig.parser.parse_single(v))
+                                 for k, v in elem.attrib.items()))
+    else:
+        return to_container(elem.attrib)
 
 
 def _process_elem_attrs(elem, dic, subdic, to_container=dict, attrs="@attrs",
@@ -223,10 +229,11 @@ def _process_elem_attrs(elem, dic, subdic, to_container=dict, attrs="@attrs",
 
     :return: None but updating dic and subdic as side effects
     """
+    adic = _parse_attrs(elem, to_container=to_container, **options)
     if not elem.text and not len(elem) and options.get("merge_attrs"):
-        dic[elem.tag] = to_container(elem.attrib)
+        dic[elem.tag] = adic
     else:
-        subdic[attrs] = to_container(elem.attrib)
+        subdic[attrs] = adic
 
 
 def _process_children_elems(elem, dic, subdic, to_container=dict,

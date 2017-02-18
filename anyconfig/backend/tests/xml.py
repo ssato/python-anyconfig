@@ -118,6 +118,22 @@ class Test_00(unittest.TestCase):
         self.assertTrue(dicts_equal(dic, {"a": {"id": 'A'}}))
         self.assertTrue(not subdic)
 
+    def test_36__process_elem_attrs__wo_text_and_children_parse(self):
+        (elem, dic, subdic) = (TT.ET.XML("<a id='1'/>"), {}, {})
+        TT._process_elem_attrs(elem, dic, subdic, ac_parse_value=True)
+        self.assertTrue(not dic)
+        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": 1}}))
+
+        (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})
+        TT._process_elem_attrs(elem, dic, subdic, ac_parse_value=True)
+        self.assertTrue(not dic)
+        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": 'A'}}))
+
+        (elem, dic, subdic) = (TT.ET.XML("<a id='true'/>"), {}, {})
+        TT._process_elem_attrs(elem, dic, subdic, ac_parse_value=True)
+        self.assertTrue(not dic)
+        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": True}}))
+
     def test_40__process_children_elems__root(self):
         (elem, dic, subdic) = (TT.ET.XML("<list><i>A</i><i>B</i></list>"), {},
                                {})

@@ -250,17 +250,17 @@ def _process_children_elems(elem, dic, subdic, to_container=dict,
 
     :return: None but updating dic and subdic as side effects
     """
-    subdics = [elem_to_container(c, to_container=to_container, **options)
+    cdics = [elem_to_container(c, to_container=to_container, **options)
                for c in elem]
     merge_attrs = options.get("merge_attrs", False)
-    sdics = [to_container(elem.attrib) if merge_attrs else subdic] + subdics
+    sdics = [to_container(elem.attrib) if merge_attrs else subdic] + cdics
 
     if _dicts_have_unique_keys(sdics):  # ex. <a><b>1</b><c>c</c></a>
         dic[elem.tag] = _merge_dicts(sdics, to_container)
     elif not subdic:  # There are no attrs nor text and only these children.
-        dic[elem.tag] = subdics
+        dic[elem.tag] = cdics
     else:
-        subdic[children] = subdics
+        subdic[children] = cdics
 
 
 def elem_to_container(elem, to_container=dict, **options):

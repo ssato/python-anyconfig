@@ -67,7 +67,7 @@ import anyconfig.parser
 
 
 _PREFIX = "@"
-
+_TAGS = dict(attrs="@attrs", text="@text", children="@children")
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
 
@@ -279,7 +279,7 @@ def elem_to_container(elem, to_container=dict, **options):
     :param to_container: callble to make a container object
     :param options: Keyword options
         - nspaces: A namespaces dict, {uri: prefix} or None
-        - tags: (attrs, text, children) parameter names
+        - attrs, text, children: Tags for special nodes to keep XML info
         - merge_attrs: Merge attributes and mix with children nodes, and the
           information of attributes are lost after its transformation.
     """
@@ -288,10 +288,8 @@ def elem_to_container(elem, to_container=dict, **options):
         return dic
 
     subdic = dic[_tweak_ns(elem.tag, **options)] = to_container()
-    (attrs, text, children) = options.get("tags", _gen_tags())
+    options["to_container"] = to_container
 
-    options.update(to_container=to_container, attrs=attrs, text=text,
-                   children=children)
     if elem.text:
         _process_elem_text(elem, dic, subdic, **options)
 
@@ -314,7 +312,8 @@ def root_to_container(root, to_container=dict, nspaces=None, **options):
     :param to_container: callble to make a container object
     :param nspaces: A namespaces dict, {uri: prefix} or None
     :param options: Keyword options,
-        - pprefix: Special parameter name prefix
+        - tags: Dict of tags for special nodes to keep XML info, attributes,
+          text and children nodes, e.g. {"attrs": "@attrs", "text": "#text"}
     """
     tree = to_container()
     if root is None:
@@ -324,8 +323,10 @@ def root_to_container(root, to_container=dict, nspaces=None, **options):
         for uri, prefix in nspaces.items():
             root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
 
-    if "tags" not in options:
-        options["tags"] = _gen_tags(options.get("pprefix", _PREFIX))
+    for node_type, tag in _TAGS.items():
+        if not options.get(node_type, False):
+            options[node_type] = tag
+
     return elem_to_container(root, to_container=to_container, nspaces=nspaces,
                              **options)
 

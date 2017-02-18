@@ -211,7 +211,8 @@ class Test_10(unittest.TestCase):
     def test_50_root_to_container__text_attrs_pprefix(self):
         ref = dict(a={"_attrs": {'x': 'X'}, "_text": "A"})
         self.assertEqual(TT.root_to_container(TT.ET.XML("<a x='X'>A</a>"),
-                                              dict, {}, pprefix='_'),
+                                              dict, {}, attrs="_attrs",
+                                              text="_text"),
                          ref)
 
 

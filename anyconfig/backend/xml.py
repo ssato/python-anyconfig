@@ -240,7 +240,7 @@ def _process_children_elems(elem, dic, subdic, to_container=dict,
     :return: None but updating dic and subdic as side effects
     """
     cdics = [elem_to_container(c, to_container=to_container, **options)
-               for c in elem]
+             for c in elem]
     merge_attrs = options.get("merge_attrs", False)
     sdics = [to_container(elem.attrib) if merge_attrs else subdic] + cdics
 

@@ -421,7 +421,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
     _type = "xml"
     _extensions = ["xml"]
     _open_flags = ('rb', 'wb')
-    _load_opts = _dump_opts = ["pprefix"]
+    _load_opts = _dump_opts = ["tags", "merge_attrs", "ac_parse_value"]
 
     def load_from_string(self, content, to_container, **opts):
         """

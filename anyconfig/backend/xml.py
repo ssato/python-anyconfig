@@ -37,6 +37,11 @@
 
 History:
 
+.. versionchanged:: 0.8.99
+
+   - Add special options, tags, merge_attrs and ac_parse_value
+   - Remove special option, pprefix which conflicts another option tags
+
 .. versionchanged:: 0.8.0
 
    - Try to make a nested dict w/o extra dict having keys of attrs, text and

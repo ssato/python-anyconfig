@@ -323,9 +323,9 @@ def root_to_container(root, to_container=dict, nspaces=None, **options):
         for uri, prefix in nspaces.items():
             root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
 
+    tags = options.get("tags", {})
     for node_type, tag in _TAGS.items():
-        if not options.get(node_type, False):
-            options[node_type] = tag
+        options[node_type] = (tags if node_type in tags else _TAGS)[node_type]
 
     return elem_to_container(root, to_container=to_container, nspaces=nspaces,
                              **options)

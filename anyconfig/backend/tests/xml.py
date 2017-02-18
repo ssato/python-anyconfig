@@ -255,7 +255,7 @@ class Test10(anyconfig.backend.tests.ini.Test10):
 
     cnf = CNF_0
     cnf_s = CNF_0_S.encode("utf-8")
-    load_options = dump_options = dict(pprefix='@')
+    load_options = dump_options = dict(ac_parse_value=False)
 
     def setUp(self):
         self.psr = TT.Parser()
@@ -279,11 +279,11 @@ class Test20(anyconfig.backend.tests.ini.Test20):
                 out.write(self.cnf_s)
 
     def test_12_load__w_options(self):
-        cnf = self.psr.load(self.cpath, parse_int=None)
+        cnf = self.psr.load(self.cpath, ac_parse_value=False)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 
     def test_22_dump__w_special_option(self):
-        self.psr.dump(self.cnf, self.cpath, parse_int=None, indent=3)
+        self.psr.dump(self.cnf, self.cpath, ac_parse_value=False)
         cnf = self.psr.load(self.cpath)
         self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
 

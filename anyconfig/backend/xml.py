@@ -383,7 +383,10 @@ def container_to_etree(obj, parent=None, **options):
         - tags: Dict of tags for special nodes to keep XML info, attributes,
           text and children nodes, e.g. {"attrs": "@attrs", "text": "#text"}
     """
+    _str = str if options.get("ac_parse_value") else anyconfig.utils.noop
+
     if not anyconfig.mdicts.is_dict_like(obj):
+        obj = _str(obj)
         if parent is not None and obj:
             parent.text = obj  # Parent is a leaf text node.
         return  # All attributes and text should be set already.
@@ -394,15 +397,14 @@ def container_to_etree(obj, parent=None, **options):
     for key, val in anyconfig.compat.iteritems(obj):
         if key == attrs:
             for attr, aval in anyconfig.compat.iteritems(val):
-                parent.set(attr, aval)
+                parent.set(attr, _str(aval))
         elif key == text:
-            parent.text = val
+            parent.text = _str(val)
         elif key == children:
             for celem in _elem_from_descendants(val, **options):
                 parent.append(celem)
         else:
-            parent = _get_or_update_parent(key, val, parent=parent,
-                                           **options)
+            parent = _get_or_update_parent(key, val, parent=parent, **options)
 
     return ET.ElementTree(parent)
 

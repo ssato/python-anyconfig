@@ -169,7 +169,7 @@ def _xml_to_container(snippet, **opts):
     return TT.elem_to_container(TT.ET.XML(snippet), to_container=dict, **opts)
 
 
-class Test_10(unittest.TestCase):
+class Test_00_1(unittest.TestCase):
 
     def test_10_elem_to_container__None(self):
         self.assertEqual(TT.elem_to_container(None), dict())
@@ -219,7 +219,7 @@ def tree_to_string(tree):
     return TT.ET.tostring(tree.getroot())
 
 
-class Test_20(unittest.TestCase):
+class Test_00_2(unittest.TestCase):
 
     def test_00_container_to_etree__None(self):
         self.assertTrue(TT.container_to_etree(None) is None)

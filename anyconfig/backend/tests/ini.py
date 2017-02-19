@@ -44,35 +44,33 @@ class Test10(unittest.TestCase):
     def setUp(self):
         self.psr = TT.Parser()
 
+    def _assert_dicts_equal(self, cnf, ordered=False, instance_check=False):
+        self.assertTrue(dicts_equal(cnf, self.cnf, ordered=ordered),
+                        "\n %r\nvs.\n %r" % (cnf, self.cnf))
+        if instance_check:
+            self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+
     def test_10_loads(self):
         cnf = self.psr.loads(self.cnf_s)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf, instance_check=True)
 
     def test_12_loads__w_options(self):
         cnf = self.psr.loads(self.cnf_s, **self.load_options)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf, instance_check=True)
 
     def test_20_dumps(self):
         cnf_s = self.psr.dumps(self.cnf)
         self.assertTrue(cnf_s)
         cnf = self.psr.loads(cnf_s)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf, instance_check=True)
 
     def test_22_dumps__w_options(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf, **self.dump_options))
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf, instance_check=True)
 
     def test_30_loads_with_order_kept(self):
         cnf = self.psr.loads(self.cnf_s, ac_ordered=True)
-        if self.is_order_kept:
-            self.assertTrue(dicts_equal(cnf, self.cnf, ordered=True),
-                            "\n %r\nvs.\n %r" % (cnf, self.cnf))
-        else:
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+        self._assert_dicts_equal(cnf, ordered=self.is_order_kept)
 
 
 class Test11(Test10):
@@ -81,38 +79,29 @@ class Test11(Test10):
 
     def test_10_loads(self):
         cnf = self.psr.loads(self.cnf_s, ac_parse_value=True)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf, instance_check=True)
 
     def test_12_loads__w_options(self):
         cnf = self.psr.loads(self.cnf_s, ac_parse_value=True,
                              **self.load_options)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf, instance_check=True)
 
     def test_20_dumps(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf), ac_parse_value=True)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf, instance_check=True)
 
     def test_22_dumps__w_options(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf, **self.dump_options),
                              ac_parse_value=True)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf, instance_check=True)
 
     def test_30_loads_with_order_kept(self):
         cnf = self.psr.loads(self.cnf_s, ac_parse_value=True, ac_ordered=True)
-        if self.is_order_kept:
-            self.assertTrue(dicts_equal(cnf, self.cnf, ordered=True),
-                            "\n %r\nvs.\n %r" % (cnf, self.cnf))
-        else:
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+        self._assert_dicts_equal(cnf, ordered=self.is_order_kept)
 
     def test_32_loads_with_order_kept(self):
         cnf = self.psr.loads(self.cnf_s, ac_parse_value=True, dict_type=ODict)
-        self.assertTrue(dicts_equal(cnf, self.cnf, ordered=True),
-                        "\n %r\nvs.\n %r" % (cnf, self.cnf))
+        self._assert_dicts_equal(cnf, ordered=True)
 
 
 class Test12(Test10):
@@ -147,31 +136,32 @@ class Test20(unittest.TestCase):
     def tearDown(self):
         anyconfig.tests.common.cleanup_workdir(self.workdir)
 
+    def _assert_dicts_equal(self, cnf):
+        self.assertTrue(dicts_equal(cnf, self.cnf),
+                        "\n %r\nvs.\n %r" % (cnf, self.cnf))
+        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+
     def test_10_load(self):
         cnf = self.psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf)
 
     def test_20_dump(self):
         self.psr.dump(self.cnf, self.cpath)
         cnf = self.psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf)
 
     def test_30_load__from_stream(self):
         with self.psr.ropen(self.cpath) as strm:
             cnf = self.psr.load(strm)
 
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf)
 
     def test_40_dump__to_stream(self):
         with self.psr.wopen(self.cpath) as strm:
             self.psr.dump(self.cnf, strm)
 
         cnf = self.psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        self._assert_dicts_equal(cnf)
 
     def test_50_load_with_order_kept(self):
         cnf = self.psr.load(self.cpath, ac_ordered=True)

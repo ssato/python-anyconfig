@@ -32,7 +32,6 @@ CNF_0 = {'config': {'@attrs': {'name': 'foo'},
                     'list2': {'@attrs': {'id': 'list2'},
                               '@children': [{'item': 'i'},
                                             {'item': 'j'}]}}}
-
 CNF_0_S = """\
 <?xml version="1.0" encoding="UTF-8"?>
 <config name='foo'>
@@ -280,11 +279,11 @@ class Test20(anyconfig.backend.tests.ini.Test20):
 
     def test_12_load__w_options(self):
         cnf = self.psr.load(self.cpath, ac_parse_value=False)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+        self._assert_dicts_equal(cnf)
 
     def test_22_dump__w_special_option(self):
         self.psr.dump(self.cnf, self.cpath, ac_parse_value=False)
         cnf = self.psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+        self._assert_dicts_equal(cnf)
 
 # vim:sw=4:ts=4:et:

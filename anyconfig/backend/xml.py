@@ -31,8 +31,10 @@
 
   - tags: A dict provide special parameter names to distinguish between
     attributes, text and children nodes.
+
   - merge_attrs: Merge attributes and mix with children nodes. Please note that
     information of attributes are lost after loaded.
+
   - ac_parse_value: Try to parse values, elements' text and attributes.
 
 History:
@@ -272,6 +274,7 @@ def elem_to_container(elem, to_container=dict, **options):
     :param elem: ET Element object or None
     :param to_container: callble to make a container object
     :param options: Keyword options
+
         - nspaces: A namespaces dict, {uri: prefix} or None
         - attrs, text, children: Tags for special nodes to keep XML info
         - merge_attrs: Merge attributes and mix with children nodes, and the
@@ -318,6 +321,7 @@ def root_to_container(root, to_container=dict, nspaces=None, **options):
     :param to_container: callble to make a container object
     :param nspaces: A namespaces dict, {uri: prefix} or None
     :param options: Keyword options,
+
         - tags: Dict of tags for special nodes to keep XML info, attributes,
           text and children nodes, e.g. {"attrs": "@attrs", "text": "#text"}
     """
@@ -375,6 +379,7 @@ def container_to_etree(obj, parent=None, **options):
     :param obj: Container instance to convert to
     :param parent: XML ElementTree parent node object or None
     :param options: Keyword options,
+
         - tags: Dict of tags for special nodes to keep XML info, attributes,
           text and children nodes, e.g. {"attrs": "@attrs", "text": "#text"}
     """

@@ -386,7 +386,7 @@ def container_to_etree(obj, parent=None, **options):
     _str = str if options.get("ac_parse_value") else anyconfig.utils.noop
 
     if not anyconfig.mdicts.is_dict_like(obj):
-        obj = _str(obj)
+        obj = False if obj is None else _str(obj)
         if parent is not None and obj:
             parent.text = obj  # Parent is a leaf text node.
         return  # All attributes and text should be set already.

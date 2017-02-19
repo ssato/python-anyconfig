@@ -126,7 +126,7 @@ def _load(stream, to_container=dict, sep=_SEP, **kwargs):
     :return: Dict or dict-like object represents config values
     """
     (to_container, kwargs_1, parser) = _make_parser(to_container, **kwargs)
-    _parse_val = _parse if kwargs.get("ac_parse_value", False) else _noop
+    parse = _parse if kwargs.get("ac_parse_value") else anyconfig.utils.noop
 
     cnf = to_container()
     parser.readfp(stream, **kwargs_1)
@@ -136,12 +136,12 @@ def _load(stream, to_container=dict, sep=_SEP, **kwargs):
     if defaults:
         cnf["DEFAULT"] = to_container()
         for key, val in iteritems(defaults):
-            cnf["DEFAULT"][key] = _parse_val(val, sep)
+            cnf["DEFAULT"][key] = parse(val, sep)
 
     for sect in parser.sections():
         cnf[sect] = to_container()
         for key, val in parser.items(sect):
-            cnf[sect][key] = _parse_val(val, sep)
+            cnf[sect][key] = parse(val, sep)
 
     return cnf
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """Misc utility routines for anyconfig module.
@@ -13,6 +13,19 @@ import types
 import anyconfig.compat
 
 
+# pylint: disable=unused-argument
+def noop(val, *args, **kwargs):
+    """A function does nothing.
+
+    >>> noop(1)
+    1
+    """
+    # It means nothing but can suppress 'Unused argument' pylint warns.
+    # (val, args, kwargs)[0]
+    return val
+
+
+# pylint: enable=unused-argument
 def get_file_extension(file_path):
     """
     >>> get_file_extension("/a/b/c")

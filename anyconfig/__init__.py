@@ -3,7 +3,7 @@
    :platform: Unix, Windows
    :synopsis: Generic interface to loaders for various config file formats.
 
-python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
+python-anyconfig is a `MIT licensed <http://opensource.org/licenses/MIT>`_
 python library provides common APIs to access to configuration files in various
 formats with some useful features such as contents merge, templates and schema
 validation/generation support.

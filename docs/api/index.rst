@@ -13,4 +13,5 @@ API Details
 -----------------
 
 .. automodule:: anyconfig
+   :noindex:
 

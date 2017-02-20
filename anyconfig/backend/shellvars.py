@@ -104,7 +104,7 @@ def load(stream, to_container=dict):
 class Parser(anyconfig.backend.base.FromStreamLoader,
              anyconfig.backend.base.ToStreamDumper):
     """
-    Parser for Java properties files.
+    Parser for Shell variable definition files.
     """
     _type = "shellvars"
 

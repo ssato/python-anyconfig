@@ -143,6 +143,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Feb 20 2017 Satoru SATOH <ssato@redhat.com> - 0.8.2-1
+- fix/enhancement: [xml] A lot of code cleanups, fixes and enhancements
+- doc: fix indentations and other misc fixes
+- A lot of other enhancements, refactorings and bug fixes
+
 * Sun Feb 12 2017 Satoru SATOH <ssato@redhat.com> - 0.8.1-1
 - fix: doc indentations and other misc fixes
 - fix: do not build doc in the RPM SPEC to avoid possible docutils bug

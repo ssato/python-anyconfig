@@ -13,7 +13,7 @@
   - xml.etree.ElementTree in standard lib if python >= 2.5
   - elementtree.ElementTree (otherwise)
 
-- Development Status: 3 - Alpha
+- Development Status :: 4 - Beta
 - Limitations:
 
   - '<prefix>attrs', '<prefix>text' and '<prefix>children' are used as special

@@ -305,11 +305,18 @@ def elem_to_container(elem, to_container=dict, **options):
 def _complement_tag_options(options):
     """
     :param options: Keyword options :: dict
+
+    >>> ref = _TAGS.copy()
+    >>> ref["text"] = "#text"
+    >>> opts = _complement_tag_options({"tags": {"text": ref["text"]}})
+    >>> del opts["tags"]  # To simplify comparison.
+    >>> sorted(opts.items())
+    [('attrs', '@attrs'), ('children', '@children'), ('text', '#text')]
     """
     if not all(nt in options for nt in _TAGS.keys()):
         tags = options.get("tags", {})
         for ntype, tag in _TAGS.items():
-            options[ntype] = (tags if ntype in tags else _TAGS)[ntype]
+            options[ntype] = tags.get(ntype, tag)
 
     return options
 

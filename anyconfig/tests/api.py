@@ -135,13 +135,12 @@ class Test_20_dumps_and_loads(unittest.TestCase):
             return
 
         a_s = "requires: [{{ requires|join(', ') }}]"
-        context = dict(requires=["bash", "zsh"], )
+        reqs = dict(requires=["bash", "zsh"])
 
         a1 = TT.loads(a_s, ac_parser="yaml", ac_template=True,
-                      ac_context=context)
+                      ac_context=reqs)
 
-        a = dict(requires=["bash", "zsh"])
-        self.assertEqual(a1["requires"], a["requires"])
+        self.assertEqual(a1["requires"], reqs["requires"])
 
     def test_46_loads_w_type__broken_template(self):
         if not anyconfig.template.SUPPORTED:

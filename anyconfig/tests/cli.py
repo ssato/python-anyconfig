@@ -283,10 +283,8 @@ class Test_50_others(Test_20_Base):
         except anyconfig.api.UnknownParserTypeError:
             return
 
-        self.run_and_check_exit_code(["--silent", "--env", "-o",
-                                      output, infile], 1)
-        return
-
+        self.run_and_check_exit_code(["--silent", "--env", "-I", "yaml",
+                                      "-o", output, infile], 1)
         data = anyconfig.api.load(output)
 
         for env_var, env_val in os.environ.items():

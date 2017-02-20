@@ -29,20 +29,21 @@
 
 - Special Options:
 
-  - tags: A dict provide special parameter names to distinguish between
-    attributes, text and children nodes.
+  - ac_parse_value: Try to parse values, elements' text and attributes.
 
   - merge_attrs: Merge attributes and mix with children nodes. Please note that
-    information of attributes are lost after loaded.
+    information of attributes are lost after load if this option is used.
 
-  - ac_parse_value: Try to parse values, elements' text and attributes.
+  - tags: A dict provide special parameter names to distinguish between
+    attributes, text and children nodes. Default is {"attrs": "@attrs", "text":
+    "@text", "children": "@children"}.
 
 History:
 
 .. versionchanged:: 0.8.99
 
    - Add special options, tags, merge_attrs and ac_parse_value
-   - Remove special option, pprefix which conflicts another option tags
+   - Remove special option, pprefix which conflicts with another option tags
 
 .. versionchanged:: 0.8.0
 

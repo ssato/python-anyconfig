@@ -6,6 +6,7 @@
 r"""Public APIs of anyconfig module.
 
 .. versionadded:: 0.8.2
+
    - Added new API, version to provide version information.
 
 .. versionadded:: 0.8.0

@@ -118,7 +118,7 @@ configuration file[s] like the followings:
   conf1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
 
   # Similar to the above but load from file object opened:
-  with open("/path/to/foo/conf.d/a.yml") as fileobj:
+  with anyconfig.open("/path/to/foo/conf.d/a.yml") as fileobj:
       conf1_1 = anyconfig.load(fileobj)
 
   # Loaded config data is a dict-like object, for example:
@@ -221,7 +221,7 @@ module is available and the corresponding backend is ready to use:
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
    Ini-like, ini, ``configparser`` (standard lib), do.
    Java properties [#]_ , properties, None (native implementation with standard lib), do.
-   XML, xml, ``lxml`` [#]_ or ``ElementTree``, do.
+   XML, xml, ``ElementTree``, do.
    YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.
    ConifgObj, configobj, ``configobj`` [#]_, do.
    MessagePack, msgpack, ``msgpack-python`` [#]_, do.
@@ -257,7 +257,6 @@ be supported by corresponding pluggale backends like the following:
 .. [#] https://pypi.python.org/pypi/simplejson
 .. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
 .. [#] https://pypi.python.org/pypi/PyYAML
-.. [#] https://pypi.python.org/pypi/lxml
 .. [#] https://pypi.python.org/pypi/configobj
 .. [#] https://pypi.python.org/pypi/msgpack-python
 .. [#] https://pypi.python.org/pypi/toml
@@ -339,7 +338,7 @@ There is a couple of ways to install python-anyconfig:
 
   and install built RPMs.
 
-- Build from source: Of course you can build and/or install python modules in usual way such like 'python setup.py bdist', 'pip install git+https://github.com/ssato/python-anyconfig/' and so on.
+- Build from source: Of course you can build and/or install python modules in usual way such like 'python setup.py bdist'.
 
 .. [#] http://dnf-plugins-core.readthedocs.org/en/latest/copr.html
 

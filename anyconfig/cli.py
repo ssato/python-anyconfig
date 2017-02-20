@@ -301,16 +301,11 @@ def _output_result(cnf, outpath, otype, inpath, itype):
     _try_dump(cnf, outpath, otype, fmsg)
 
 
-def main(argv=None):
+def _load_diff(args, options):
     """
-    :param argv: Argument list to parse or None (sys.argv will be set).
+    :param args: Extra argument list
+    :param options: :class:`optparse.Values` object
     """
-    (parser, options, args) = parse_args(argv=argv)
-    LOGGER.setLevel(to_log_level(options.loglevel))
-
-    _check_options_and_args(parser, options, args)
-
-    cnf = API.to_container(os.environ.copy() if options.env else {})
     try:
         diff = API.load(args, options.itype,
                         ignore_missing=options.ignore_missing,
@@ -323,6 +318,21 @@ def main(argv=None):
         _exit_with_output("No appropriate backend was found for given file "
                           "'%s'" % options.itype, 1)
     _exit_if_load_failure(diff, "Failed to load: args=%s" % ", ".join(args))
+
+    return diff
+
+
+def main(argv=None):
+    """
+    :param argv: Argument list to parse or None (sys.argv will be set).
+    """
+    (parser, options, args) = parse_args(argv=argv)
+    LOGGER.setLevel(to_log_level(options.loglevel))
+
+    _check_options_and_args(parser, options, args)
+
+    cnf = API.to_container(os.environ.copy() if options.env else {})
+    diff = _load_diff(args, options)
     cnf.update(diff)
 
     if options.args:

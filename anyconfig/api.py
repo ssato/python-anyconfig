@@ -193,6 +193,11 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
     """
     Load single config file.
 
+    .. note::
+
+       :func:`load` is a preferable alternative and this API should be used
+       only if there is a need to emphasize given file path is single one.
+
     :param path_or_stream: Configuration file path or file / file-like object
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
@@ -246,6 +251,11 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
                **options):
     """
     Load multiple config files.
+
+    .. note::
+
+       :func:`load` is a preferable alternative and this API should be used
+       only if there is a need to emphasize given file paths are multiple ones.
 
     The first argument `paths` may be a list of config file paths or
     a glob pattern specifying that. That is, if a.yml, b.yml and c.yml are in

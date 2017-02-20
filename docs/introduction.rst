@@ -73,7 +73,7 @@ configuration file[s] like the followings:
   conf1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
 
   # Similar to the above but load from file object opened:
-  with open("/path/to/foo/conf.d/a.yml") as fileobj:
+  with anyconfig.open("/path/to/foo/conf.d/a.yml") as fileobj:
       conf1_1 = anyconfig.load(fileobj)
 
   # Loaded config data is a dict-like object, for example:

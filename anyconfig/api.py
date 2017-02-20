@@ -13,8 +13,8 @@ r"""Public APIs of anyconfig module.
 
    - Removed set_loglevel API as it does not help much.
    - Added :func:`open` API to open files with appropriate open mode.
-   - Added custom exception classes, :class:UnknownParserTypeError and
-     :class:UnknownFileTypeError to express specific errors.
+   - Added custom exception classes, :class:`UnknownParserTypeError` and
+     :class:`UnknownFileTypeError` to express specific errors.
    - Change behavior of the API :func:`find_loader` and others to make them
      fail firt and raise exceptions (ValueError, UnknownParserTypeError or
      UnknownFileTypeError) as much as possible if wrong parser type for uknown

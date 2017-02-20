@@ -40,7 +40,7 @@
 
 History:
 
-.. versionchanged:: 0.8.99
+.. versionchanged:: 0.8.2
 
    - Add special options, tags, merge_attrs and ac_parse_value
    - Remove special option, pprefix which conflicts with another option tags

@@ -293,7 +293,7 @@ There is a couple of ways to install python-anyconfig:
 
   and install built RPMs.
 
-- Build from source: Of course you can build and/or install python modules in usual way such like 'python setup.py bdist', 'pip install git+https://github.com/ssato/python-anyconfig/' and so on.
+- Build from source: Of course you can build and/or install python modules in usual way such like 'python setup.py bdist'.
 
 .. [#] http://dnf-plugins-core.readthedocs.org/en/latest/copr.html
 

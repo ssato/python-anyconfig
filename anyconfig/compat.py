@@ -61,6 +61,7 @@ if IS_PYTHON_3:
     from_iterable = itertools.chain.from_iterable
     raw_input = input
     STR_TYPES = (str, )
+    izip = zip
 else:
     import ConfigParser as configparser  # flake8: noqa
     try:
@@ -89,6 +90,7 @@ else:
     iteritems = py_iteritems
     raw_input = raw_input
     STR_TYPES = (str, unicode)
+    izip = itertools.izip
 
 try:
     from collections import OrderedDict

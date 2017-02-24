@@ -244,6 +244,7 @@ enable the features.
    MessagePack load/dump, msgpack-python, none
    TOML load/dump, toml, none
    BSON load/dump, bson, bson from pymongo package may work and bson [#]_ does not
+   CBOR load/dump, cbor, none
    Template config, Jinja2 [#]_ , none
    Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
 

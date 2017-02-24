@@ -183,6 +183,7 @@ module is available and the corresponding backend is ready to use:
    TOML, toml, ``toml`` [#]_, do.
    BSON, bson, bson in ``pymongo`` [#]_, do.
    B-sh, shellvars, None (native implementation with standard lib), do.
+   CBOR, cbor, ``cbor_py`` [#]_, do.
 
 The supported formats of python-anyconfig on your system is able to be listed
 by 'anyconfig_cli -L' like this:
@@ -216,6 +217,7 @@ be supported by corresponding pluggale backends like the following:
 .. [#] https://pypi.python.org/pypi/msgpack-python
 .. [#] https://pypi.python.org/pypi/toml
 .. [#] https://pypi.python.org/pypi/pymongo
+.. [#] https://pypi.python.org/pypi/cbor
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 .. [#] https://pypi.python.org/pypi/pyjavaproperties
 

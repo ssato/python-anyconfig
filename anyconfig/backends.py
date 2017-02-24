@@ -120,28 +120,6 @@ def groupby_key(itr, keyfunc):
     return itertools.groupby(sorted(itr, key=keyfunc), key=keyfunc)
 
 
-def uniq(iterable, **kwopts):
-    """sorted + uniq
-
-    .. note::
-       sorted(set(iterable), key=iterable.index) cannot be used for any
-       iterables (generator, a list of dicts, etc.), I guess.
-
-    :param iterable: Iterable objects, a list, generator, iterator, etc.
-    :param kwopts: Keyword options passed to sorted()
-    :return: a sorted list of items in iterable
-
-    >>> uniq([1, 2, 3, 1, 2])
-    [1, 2, 3]
-    >>> uniq((i for i in (2, 10, 3, 2, 5, 1, 7, 3)))
-    [1, 2, 3, 5, 7, 10]
-    >>> uniq(({str(i): i} for i in (2, 10, 3, 2, 5, 1, 7, 3)),
-    ...      key=lambda d: int(list(d.keys())[0]))
-    [{'1': 1}, {'2': 2}, {'3': 3}, {'5': 5}, {'7': 7}, {'10': 10}]
-    """
-    return [t[0] for t in itertools.groupby(sorted(iterable, **kwopts))]
-
-
 def is_parser(obj):
     """
     :return: True if given `obj` is an instance of parser.
@@ -287,12 +265,12 @@ def find_parser(path_or_stream, forced_type=None, is_path_=False):
     return parser
 
 
-def list_types(cps=None):
+def list_types(cps=_PARSERS_BY_TYPE):
     """List available config types.
     """
     if cps is None:
-        cps = PARSERS
+        cps = _list_parsers_by_type(PARSERS)
 
-    return uniq(t for t, ps in _list_parsers_by_type(cps))
+    return sorted(set(zip(*cps)[0]))
 
 # vim:sw=4:ts=4:et:

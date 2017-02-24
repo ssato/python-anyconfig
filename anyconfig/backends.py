@@ -62,6 +62,12 @@ try:
 except ImportError:
     LOGGER.info(_NA_MSG, "bson module in pymongo package", "BSON")
 
+try:
+    import anyconfig.backend.cbor
+    PARSERS.append(anyconfig.backend.cbor.Parser)
+except ImportError:
+    LOGGER.info(_NA_MSG, "cbor module in cbor package", "CBOR")
+
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):
     try:
         PARSERS.append(e.load())

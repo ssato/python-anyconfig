@@ -285,7 +285,8 @@ def elem_to_container(elem, to_container=dict, **options):
     if elem is None:
         return dic
 
-    subdic = dic[_tweak_ns(elem.tag, **options)] = to_container()
+    elem.tag = _tweak_ns(elem.tag, **options)  # {ns}tag -> ns_prefix:tag
+    subdic = dic[elem.tag] = to_container()
     options["to_container"] = to_container
 
     if elem.text:

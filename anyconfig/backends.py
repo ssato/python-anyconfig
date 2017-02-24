@@ -271,6 +271,6 @@ def list_types(cps=_PARSERS_BY_TYPE):
     if cps is None:
         cps = _list_parsers_by_type(PARSERS)
 
-    return sorted(set(zip(*cps)[0]))
+    return sorted(set(next(anyconfig.compat.izip(*cps))))
 
 # vim:sw=4:ts=4:et:

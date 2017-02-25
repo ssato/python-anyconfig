@@ -21,12 +21,14 @@ import anyconfig.utils
 import anyconfig.backend.base
 import anyconfig.backend.ini
 import anyconfig.backend.json
+import anyconfig.backend.pickle
 import anyconfig.backend.properties
 import anyconfig.backend.shellvars
 import anyconfig.backend.xml
 
 LOGGER = logging.getLogger(__name__)
 PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json.Parser,
+           anyconfig.backend.pickle.Parser,
            anyconfig.backend.properties.Parser,
            anyconfig.backend.shellvars.Parser, anyconfig.backend.xml.Parser]
 

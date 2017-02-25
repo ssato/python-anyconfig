@@ -10,6 +10,7 @@
    anyconfig.backend.ini
    anyconfig.backend.json
    anyconfig.backend.msgpack
+   anyconfig.backend.pickle
    anyconfig.backend.properties
    anyconfig.backend.shellvars
    anyconfig.backend.toml

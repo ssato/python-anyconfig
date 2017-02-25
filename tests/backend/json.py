@@ -5,10 +5,10 @@
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
 import anyconfig.backend.json as TT
-import anyconfig.backend.tests.ini
+import tests.backend.ini
 
 from anyconfig.compat import OrderedDict as ODict, IS_PYTHON_2_6
-from anyconfig.tests.common import dicts_equal
+from tests.common import dicts_equal
 
 
 CNF_0_S = """{
@@ -26,7 +26,7 @@ CNF_0 = ODict((("a", 0), ("b", "bbb"), ("c", 5),
                ("sect0", ODict((("d", ["x", "y", "z"]), )))))
 
 
-class Test10(anyconfig.backend.tests.ini.Test10):
+class Test10(tests.backend.ini.Test10):
 
     cnf = CNF_0
     cnf_s = CNF_0_S
@@ -39,7 +39,7 @@ class Test10(anyconfig.backend.tests.ini.Test10):
         self.psr = TT.Parser()
 
 
-class Test20(anyconfig.backend.tests.ini.Test20):
+class Test20(tests.backend.ini.Test20):
 
     psr_cls = TT.Parser
     cnf = CNF_0

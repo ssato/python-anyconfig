@@ -8,8 +8,8 @@ from __future__ import absolute_import
 import os.path
 
 import anyconfig.backend.configobj as TT
-import anyconfig.backend.tests.ini
-import anyconfig.tests.common
+import tests.backend.ini
+import tests.common
 
 from anyconfig.compat import OrderedDict as ODict
 
@@ -62,7 +62,7 @@ CNF_0 = ODict((('keyword1', 'value1'),
                 ODict((('keyword8', 'value 9'), ('keyword9', 'value10'))))))
 
 
-class Test10(anyconfig.backend.tests.ini.Test10):
+class Test10(tests.backend.ini.Test10):
 
     cnf = CNF_0
     cnf_s = CNF_0_S
@@ -73,7 +73,7 @@ class Test10(anyconfig.backend.tests.ini.Test10):
         self.psr = TT.Parser()
 
 
-class Test20(anyconfig.backend.tests.ini.Test20):
+class Test20(tests.backend.ini.Test20):
 
     psr_cls = TT.Parser
     cnf = CNF_0
@@ -82,7 +82,7 @@ class Test20(anyconfig.backend.tests.ini.Test20):
 
     def setUp(self):
         self.psr = TT.Parser()
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
         self.cpath = os.path.join(self.workdir, self.cnf_fn)
         open(self.cpath, 'w').write(self.cnf_s)
 

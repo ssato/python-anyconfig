@@ -9,11 +9,11 @@ import os.path
 import unittest
 
 import anyconfig.backend.ini as TT
-import anyconfig.tests.common
+import tests.common
 
 from anyconfig.compat import OrderedDict as ODict
 from anyconfig.mdicts import UpdateWithReplaceDict
-from anyconfig.tests.common import dicts_equal
+from tests.common import dicts_equal
 
 
 CNF_0_S = """[DEFAULT]
@@ -128,13 +128,13 @@ class Test20(unittest.TestCase):
 
     def setUp(self):
         self.psr = self.psr_cls()
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
         self.cpath = os.path.join(self.workdir, self.cnf_fn)
         with self.psr.wopen(self.cpath) as out:
             out.write(self.cnf_s)
 
     def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(self.workdir)
 
     def _assert_dicts_equal(self, cnf):
         self.assertTrue(dicts_equal(cnf, self.cnf),

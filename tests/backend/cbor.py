@@ -10,11 +10,11 @@ try:
 except ImportError:
     TT = None
 
-import anyconfig.backend.tests.ini
+import tests.backend.ini
 
 
 if TT is not None:
-    class Test10(anyconfig.backend.tests.ini.Test10):
+    class Test10(tests.backend.ini.Test10):
 
         cnf = dict(a=0, b="bbb", c=5, sect0=dict(d=["x", "y", "z"]))
         cnf_s = TT.cbor.dumps(cnf)
@@ -27,7 +27,7 @@ if TT is not None:
 
 # pylint: disable=pointless-string-statement
 """ TODO:
-class Test20(anyconfig.backend.tests.ini.Test20):
+class Test20(tests.backend.ini.Test20):
 
     psr_cls = TT.Parser
     cnf = CNF_0

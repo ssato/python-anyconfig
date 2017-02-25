@@ -8,11 +8,11 @@ import os.path
 import unittest
 
 import anyconfig.backend.xml as TT
-import anyconfig.backend.tests.ini
-import anyconfig.tests.common
+import tests.backend.ini
+import tests.common
 import anyconfig.compat
 
-from anyconfig.tests.common import dicts_equal, to_bytes
+from tests.common import dicts_equal, to_bytes
 
 
 XML_W_NS_S = """
@@ -254,7 +254,7 @@ class Test_00_2(unittest.TestCase):
         self.assertEqual(tree_to_string(res), ref)
 
 
-class Test10(anyconfig.backend.tests.ini.Test10):
+class Test10(tests.backend.ini.Test10):
 
     cnf = CNF_0
     cnf_s = CNF_0_S.encode("utf-8")
@@ -264,7 +264,7 @@ class Test10(anyconfig.backend.tests.ini.Test10):
         self.psr = TT.Parser()
 
 
-class Test20(anyconfig.backend.tests.ini.Test20):
+class Test20(tests.backend.ini.Test20):
 
     psr_cls = TT.Parser
     cnf = CNF_0
@@ -273,7 +273,7 @@ class Test20(anyconfig.backend.tests.ini.Test20):
 
     def setUp(self):
         self.psr = self.psr_cls()
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
         self.cpath = os.path.join(self.workdir, self.cnf_fn)
         with self.psr.wopen(self.cpath) as out:
             if anyconfig.compat.IS_PYTHON_3:

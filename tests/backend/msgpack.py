@@ -8,10 +8,10 @@ from __future__ import absolute_import
 import copy
 
 import anyconfig.backend.msgpack as TT
-import anyconfig.backend.tests.ini
+import tests.backend.ini
 
 from anyconfig.compat import OrderedDict as ODict, IS_PYTHON_3
-from anyconfig.tests.common import dicts_equal, to_bytes as _bytes
+from tests.common import dicts_equal, to_bytes as _bytes
 
 
 CNF_0 = ODict(((_bytes("a"), 0.1),
@@ -21,7 +21,7 @@ CNF_0 = ODict(((_bytes("a"), 0.1),
                         [_bytes("x"), _bytes("y"), _bytes("z")]), )))))
 
 
-class Test10(anyconfig.backend.tests.ini.Test10):
+class Test10(tests.backend.ini.Test10):
 
     cnf = CNF_0
     cnf_s = TT.msgpack.packb(CNF_0)
@@ -47,7 +47,7 @@ class Test10(anyconfig.backend.tests.ini.Test10):
         self.assertTrue(dicts_equal(cnf, ref), str(cnf))
 
 
-class Test20(anyconfig.backend.tests.ini.Test20):
+class Test20(tests.backend.ini.Test20):
 
     psr_cls = TT.Parser
     cnf = CNF_0

@@ -5,7 +5,7 @@
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
 import anyconfig.backend.shellvars as TT
-import anyconfig.backend.tests.ini
+import tests.backend.ini
 
 from anyconfig.compat import OrderedDict as ODict
 
@@ -22,7 +22,7 @@ CNF = ODict((
 ))
 
 
-class Test10(anyconfig.backend.tests.ini.Test10):
+class Test10(tests.backend.ini.Test10):
 
     cnf = CNF
     cnf_s = CNF_S
@@ -31,7 +31,7 @@ class Test10(anyconfig.backend.tests.ini.Test10):
         self.psr = TT.Parser()
 
 
-class Test20(anyconfig.backend.tests.ini.Test20):
+class Test20(tests.backend.ini.Test20):
 
     psr_cls = TT.Parser
     cnf = CNF

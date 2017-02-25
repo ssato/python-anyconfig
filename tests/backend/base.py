@@ -10,7 +10,7 @@ import os.path
 import unittest
 
 import anyconfig.backend.base as TT  # stands for test target
-import anyconfig.tests.common
+import tests.common
 
 
 MZERO = TT.to_container_fn()()
@@ -41,10 +41,10 @@ class Test00(unittest.TestCase):
 class Test10(unittest.TestCase):
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
 
     def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(self.workdir)
 
     def test_10_ensure_outdir_exists(self):
         TT.LOGGER.setLevel(TT.logging.WARN)  # suppress info/debug log msgs.

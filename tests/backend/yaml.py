@@ -5,7 +5,7 @@
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
 
-import anyconfig.backend.tests.ini
+import tests.backend.ini
 try:
     import anyconfig.backend.yaml as TT
 except ImportError:
@@ -33,7 +33,7 @@ CNF_0 = ODict((("a", 0), ("b", "bbb"), ("c", [1, 2, 3]),
 if TT is not None:
     import yaml
 
-    class Test10(anyconfig.backend.tests.ini.Test10):
+    class Test10(tests.backend.ini.Test10):
 
         cnf = CNF_0
         cnf_s = CNF_0_S
@@ -44,7 +44,7 @@ if TT is not None:
         def setUp(self):
             self.psr = TT.Parser()
 
-    class Test20(anyconfig.backend.tests.ini.Test20):
+    class Test20(tests.backend.ini.Test20):
 
         psr_cls = TT.Parser
         cnf = CNF_0

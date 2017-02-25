@@ -175,6 +175,7 @@ module is available and the corresponding backend is ready to use:
 
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
    Ini-like, ini, ``configparser`` (standard lib), do.
+   Pickle, pickle, ``pickle`` (standard lib), do.
    Java properties [#]_ , properties, None (native implementation with standard lib), do.
    XML, xml, ``ElementTree``, do.
    YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.

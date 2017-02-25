@@ -41,7 +41,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :param content_or_strm: CBOR config content or stream will provide it
         :param to_container: callble to make a container object
-        :param opts: keyword options passed to `json.load[s]`
+        :param opts: keyword options passed to `cbor.load[s]`
 
         :return: Dict-like object holding configuration
         """
@@ -53,7 +53,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :param content: CBOR config content
         :param to_container: callble to make a container object
-        :param opts: keyword options passed to `json.loads`
+        :param opts: keyword options passed to `cbor.loads`
 
         :return: Dict-like object holding configuration
         """
@@ -65,7 +65,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :param stream: Stream will provide CBOR config content string
         :param to_container: callble to make a container object
-        :param opts: keyword options passed to `json.load`
+        :param opts: keyword options passed to `cbor.load`
 
         :return: Dict-like object holding configuration
         """

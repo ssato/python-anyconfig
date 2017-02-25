@@ -23,23 +23,27 @@ XML_W_NS_S = """
 </a>
 """
 
-CNF_0 = {'config': {'@attrs': {'name': 'foo'},
-                    'a': '0',
-                    'b': {'@attrs': {'id': 'b0'}, '@text': 'bbb'},
-                    'c': None,
-                    'sect0': {'d': 'x, y, z'},
+CNF_0 = {'config': {'@attrs': {'val:name': 'foo',
+                               'xmlns': 'http://example.com/ns/cnf',
+                               'xmlns:val': 'http://example.com/ns/cnf/val'},
+                    'val:a': '0',
+                    'val:b': {'@attrs': {'id': 'b0'}, '@text': 'bbb'},
+                    'val:c': None,
+                    'sect0': {'val:d': 'x, y, z'},
                     'list1': [{'item': '0'}, {'item': '1'}, {'item': '2'}],
                     'list2': {'@attrs': {'id': 'list2'},
                               '@children': [{'item': 'i'},
                                             {'item': 'j'}]}}}
 CNF_0_S = """\
 <?xml version="1.0" encoding="UTF-8"?>
-<config name='foo'>
-  <a>0</a>
-  <b id="b0">bbb</b>
-  <c/>
+<config xmlns="http://example.com/ns/cnf"
+        xmlns:val="http://example.com/ns/cnf/val"
+        val:name='foo'>
+  <val:a>0</val:a>
+  <val:b id="b0">bbb</val:b>
+  <val:c/>
   <sect0>
-    <d>x, y, z</d>
+    <val:d>x, y, z</val:d>
   </sect0>
   <list1>
     <item>0</item>

@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from setuptools import setup, Command, find_packages
+from setuptools import setup, Command
 
 import glob
 import os.path
@@ -109,7 +109,7 @@ setup(name=PACKAGE,
       license="MIT",
       url="https://github.com/ssato/python-anyconfig",
       classifiers=_CLASSIFIERS,
-      packages=find_packages(),
+      packages=["anyconfig", "m9dicts"],
       include_package_data=True,
       cmdclass={
           "srpm": SrpmCommand,

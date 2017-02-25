@@ -8,7 +8,7 @@ from __future__ import absolute_import
 import unittest
 import anyconfig.schema as TT
 
-from anyconfig.tests.common import dicts_equal
+from tests.common import dicts_equal
 
 
 class Test_00_Base(unittest.TestCase):

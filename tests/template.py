@@ -9,7 +9,7 @@ import unittest
 import mock
 
 import anyconfig.template as TT
-import anyconfig.tests.common
+import tests.common
 
 
 C_1 = """A char is 'a'.
@@ -29,13 +29,13 @@ class Test(unittest.TestCase):
     templates = TMPLS
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
         for fname, tmpl_s, _ctx in self.templates:
             fpath = os.path.join(self.workdir, fname)
             open(fpath, 'w').write(tmpl_s)
 
     def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(self.workdir)
 
     def test_10_render_impl__wo_paths(self):
         if TT.SUPPORTED:

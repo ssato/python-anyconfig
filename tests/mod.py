@@ -7,16 +7,16 @@ import os.path
 import unittest
 
 import anyconfig as TT
-import anyconfig.tests.common
+import tests.common
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
 
     def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(self.workdir)
 
     def test_10_dump_and_load(self):
         obj = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))

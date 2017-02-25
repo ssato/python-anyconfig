@@ -15,9 +15,9 @@ import anyconfig.api as TT
 import anyconfig.backends
 import anyconfig.mdicts
 import anyconfig.template
-import anyconfig.tests.common
+import tests.common
 
-from anyconfig.tests.common import CNF_0, SCM_0, dicts_equal
+from tests.common import CNF_0, SCM_0, dicts_equal
 from anyconfig.compat import OrderedDict, IS_PYTHON_3
 from anyconfig.mdicts import convert_to
 
@@ -176,10 +176,10 @@ class Test_30_single_load(unittest.TestCase):
     cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
 
     def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(self.workdir)
 
     def test_10_dump_and_single_load(self):
         cpath = os.path.join(self.workdir, "a.json")
@@ -302,10 +302,10 @@ class Test_32_single_load(unittest.TestCase):
     cnf = CNF_XML_1
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
 
     def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(self.workdir)
 
     def _load_and_dump_with_opened_files(self, filename, rmode='r', wmode='w',
                                          **oopts):
@@ -345,10 +345,10 @@ class Test_40_multi_load(unittest.TestCase):
     cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
 
     def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(self.workdir)
 
     def test_10_dump_and_multi_load__default_merge_strategy(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
@@ -543,10 +543,10 @@ class Test_50_load_and_dump(unittest.TestCase):
     cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
+        self.workdir = tests.common.setup_workdir()
 
     def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(self.workdir)
 
     def test_30_dump_and_load(self):
         a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")

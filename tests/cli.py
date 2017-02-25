@@ -12,15 +12,15 @@ import unittest
 import anyconfig.cli as TT
 import anyconfig.api
 import anyconfig.template
-import anyconfig.tests.common
-import anyconfig.tests.api
+import tests.common
+import tests.api
 
-from anyconfig.tests.common import CNF_0
+from tests.common import CNF_0
 
 
-CNF_0_PATH = os.path.join(anyconfig.tests.common.selfdir(), "00-cnf.yml")
-SCM_0_PATH = os.path.join(anyconfig.tests.common.selfdir(), "00-scm.yml")
-CNF_TMPL_0 = anyconfig.tests.api.CNF_TMPL_1
+CNF_0_PATH = os.path.join(tests.common.selfdir(), "00-cnf.yml")
+SCM_0_PATH = os.path.join(tests.common.selfdir(), "00-scm.yml")
+CNF_TMPL_0 = tests.api.CNF_TMPL_1
 
 
 def _run(*args):
@@ -56,12 +56,12 @@ class Test_10(Test_00_Base):
 class Test_20_Base(Test_00_Base):
 
     def setUp(self):
-        self.workdir = anyconfig.tests.common.setup_workdir()
-        self.script = os.path.join(anyconfig.tests.common.selfdir(),
+        self.workdir = tests.common.setup_workdir()
+        self.script = os.path.join(tests.common.selfdir(),
                                    "..", "cli.py")
 
     def tearDown(self):
-        anyconfig.tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(self.workdir)
 
     def _assert_run_and_exit(self, *args):
         raised = False
@@ -238,7 +238,7 @@ class Test_40_multi_inputs(Test_20_Base):
         if not anyconfig.template.SUPPORTED:
             return
 
-        curdir = anyconfig.tests.common.selfdir()
+        curdir = tests.common.selfdir()
 
         infile = os.path.join(curdir, "*template-c*.yml")
         output = os.path.join(self.workdir, "output.yml")

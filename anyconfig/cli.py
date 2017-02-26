@@ -204,6 +204,11 @@ def _check_options_and_args(parser, options, args):
         if options.list:
             tlist = ", ".join(API.list_types())
             _exit_with_output("Supported config types: " + tlist)
+        elif options.env:
+            cnf = API.to_container(os.environ.copy())
+            _output_result(cnf, options.output, options.otype or "json",
+                           None, None)
+            sys.exit(0)
         else:
             parser.print_usage()
             sys.exit(1)

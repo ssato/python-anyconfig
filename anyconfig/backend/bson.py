@@ -69,7 +69,7 @@ class Parser(anyconfig.backend.base.FromStringLoader,
             # .. note::
             #    The order of loaded configuration keys may be lost but
             #    there is no way to avoid that, AFAIK.
-            objs = to_container(bson.decode_all(content))
+            objs = [to_container(x) for x in bson.decode_all(content)]
 
         return objs[0] if objs else None
 

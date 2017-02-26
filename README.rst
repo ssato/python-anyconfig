@@ -214,22 +214,31 @@ Supported configuration formats
 python-anyconfig supports various (configuration) file formats if the required
 module is available and the corresponding backend is ready to use:
 
-.. csv-table:: Supported formats
-   :header: "Format", "Type", "Requirement", "Notes"
-   :widths: 10, 10, 30, 40
+- Supported formats enabled by default:
 
-   JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_, Enabled by default.
-   Ini-like, ini, ``configparser`` (standard lib), do.
-   Pickle, pickle, ``pickle`` (standard lib), do.
-   Java properties [#]_ , properties, None (native implementation with standard lib), do.
-   XML, xml, ``ElementTree`` (standard lib), do.
-   YAML, yaml, ``PyYAML`` [#]_, Enabled automatically if the left requirement is satisfied.
-   ConifgObj, configobj, ``configobj`` [#]_, do.
-   MessagePack, msgpack, ``msgpack-python`` [#]_, do.
-   TOML, toml, ``toml`` [#]_, do.
-   BSON, bson, bson in ``pymongo`` [#]_, do.
-   B-sh, shellvars, None (native implementation with standard lib), do.
-   CBOR, cbor, ``cbor_py`` [#]_, do.
+.. csv-table::
+   :header: "Format", "Type", "Requirement"
+   :widths: 15, 10, 40
+
+   JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_
+   Ini-like, ini, ``configparser`` (standard lib)
+   Pickle, pickle, ``pickle`` (standard lib)
+   XML, xml, ``ElementTree`` (standard lib)
+   Java properties [#]_ , properties, None (native implementation with standard lib)
+   B-sh, shellvars, None (native implementation with standard lib)
+
+- Supported formats enabled automatically if requirements are satisfied:
+
+.. csv-table::
+   :header: "Format", "Type", "Requirement"
+   :widths: 15, 10, 40
+
+   YAML, yaml, ``PyYAML`` [#]_
+   ConifgObj, configobj, ``configobj`` [#]_
+   MessagePack, msgpack, ``msgpack-python`` [#]_
+   TOML, toml, ``toml`` [#]_
+   BSON, bson, bson in ``pymongo`` [#]_
+   CBOR, cbor, ``cbor_py`` [#]_
 
 The supported formats of python-anyconfig on your system is able to be listed
 by 'anyconfig_cli -L' like this:

@@ -58,11 +58,11 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     dump_to_string = anyconfig.backend.base.to_method(json.dumps)
     dump_to_stream = anyconfig.backend.base.to_method(json.dump)
 
-    def _load(self, load_fn, cntnt_or_strm, to_container, **opts):
+    def _load(self, load_fn, content_or_strm, to_container, **opts):
         """
-        Load JSON config from given string or stream `cntnt_or_strm`.
+        Load JSON config from given string or stream `content_or_strm`.
 
-        :param cntnt_or_strm: JSON config content or stream will provide it
+        :param content_or_strm: JSON config content or stream will provide it
         :param to_container: callble to make a container object
         :param opts: keyword options passed to `json.load[s]`
 
@@ -70,9 +70,9 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
         """
         if "object_pairs_hook" in self._load_opts:
             opts["object_pairs_hook"] = anyconfig.compat.OrderedDict
-            return to_container(load_fn(cntnt_or_strm, **opts))
+            return to_container(load_fn(content_or_strm, **opts))
         else:
-            return load_fn(cntnt_or_strm, object_hook=to_container, **opts)
+            return load_fn(content_or_strm, object_hook=to_container, **opts)
 
     def load_from_string(self, content, to_container, **opts):
         """

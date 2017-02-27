@@ -20,7 +20,7 @@ class Test_00_Functions(unittest.TestCase):
                 self.assertEquals(TT.filter_({"a": {"b": 2}},
                                              ac_filter="a.b"),
                                   2)
-        except NameError:
+        except (NameError, AttributeError):
             pass
 
 # vim:sw=4:ts=4:et:

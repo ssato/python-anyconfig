@@ -25,7 +25,7 @@ def filter_(data, **options):
 
     :parae data: Target object (a dict or a dict-like object) to filter
     :param options: Keyword option may include the followings:
-        
+
         - ac_filter: JMESPath expression string
 
     :return: Maybe filtered data
@@ -40,7 +40,7 @@ def filter_(data, **options):
     except ValueError as exc:  # jmespath.exceptions.*Error inherit from it.
         LOGGER.warn("Failed to compile or search: exp=%s, exc=%r",
                     expression, exc)
-    except NameError:
+    except (NameError, AttributeError):
         LOGGER.warn("Filter module (jmespath) is not available. Do nothing.")
 
     return data

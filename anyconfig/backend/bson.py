@@ -4,8 +4,6 @@
 #
 # Ref. python -c "import bson; help(bson)"
 #
-# Access to bson._use_c is required to switch loading options:
-# pylint: disable=protected-access
 r"""BSON backend:
 
 - Format to support: BSON, http://bsonspec.org

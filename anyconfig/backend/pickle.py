@@ -40,6 +40,19 @@ else:
     DUMP_OPTS = ["protocol"]
 
 
+def load_with_fn(load_fn, content_or_strm, to_container, **opts):
+    """
+    Load pickled config from given string or stream `content_or_strm`.
+
+    :param content_or_strm: pickled config content or stream provides it
+    :param to_container: callble to make a container object
+    :param opts: keyword options passed to `pickle.load[s]`
+
+    :return: Dict-like object holding configuration
+    """
+    return to_container(load_fn(content_or_strm, **opts))
+
+
 class Parser(anyconfig.backend.base.FromStreamLoader,
              anyconfig.backend.base.ToStreamDumper):
     """
@@ -53,18 +66,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
     dump_to_string = anyconfig.backend.base.to_method(pickle.dumps)
     dump_to_stream = anyconfig.backend.base.to_method(pickle.dump)
-
-    def _load(self, load_fn, content_or_strm, to_container, **opts):
-        """
-        Load Pickle config from given string or stream `content_or_strm`.
-
-        :param content_or_strm: Pickled config content or stream provides it
-        :param to_container: callble to make a container object
-        :param opts: keyword options passed to `pickle.load[s]`
-
-        :return: Dict-like object holding configuration
-        """
-        return to_container(load_fn(content_or_strm, **opts))
+    _load = anyconfig.backend.base.to_method(load_with_fn)
 
     def load_from_string(self, content, to_container, **opts):
         """

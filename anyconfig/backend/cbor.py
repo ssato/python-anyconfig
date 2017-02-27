@@ -24,6 +24,8 @@ import cbor
 import anyconfig.backend.base
 import anyconfig.compat
 
+from anyconfig.backend.pickle import load_with_fn
+
 
 class Parser(anyconfig.backend.base.FromStreamLoader,
              anyconfig.backend.base.ToStreamDumper):
@@ -38,18 +40,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
     dump_to_string = anyconfig.backend.base.to_method(cbor.dumps)
     dump_to_stream = anyconfig.backend.base.to_method(cbor.dump)
-
-    def _load(self, load_fn, content_or_strm, to_container, **opts):
-        """
-        Load CBOR config from given string or stream `content_or_strm`.
-
-        :param content_or_strm: CBOR config content or stream will provide it
-        :param to_container: callble to make a container object
-        :param opts: keyword options passed to `cbor.load[s]`
-
-        :return: Dict-like object holding configuration
-        """
-        return to_container(load_fn(content_or_strm, **opts))
+    _load = anyconfig.backend.base.to_method(load_with_fn)
 
     def load_from_string(self, content, to_container, **opts):
         """

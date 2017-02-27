@@ -62,6 +62,15 @@ def make_configobj(cnf, **kwargs):
     return cobj
 
 
+def load(path_or_strm, to_container, **opts):
+    """
+    :param path_or_strm: input config file path or file/file-like object
+    :param to_container: callble to make a container object
+    :param opts: keyword options passed to :class:`configobj.ConfigObj`
+    """
+    return to_container(configobj.ConfigObj(path_or_strm, **opts))
+
+
 class Parser(anyconfig.backend.base.FromStreamLoader,
              anyconfig.backend.base.ToStreamDumper):
     """
@@ -73,13 +82,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _dump_opts = _LOAD_OPTS  # Likewise.
     _open_flags = ('rb', 'wb')
 
-    def __load(self, path_or_strm, to_container, **kwargs):
-        """
-        :param path_or_strm: input config file path or file/file-like object
-        """
-        return to_container(configobj.ConfigObj(path_or_strm, **kwargs))
-
-    load_from_path = load_from_stream = __load
+    load_from_path = load_from_stream = anyconfig.backend.base.to_method(load)
 
     def dump_to_string(self, cnf, **kwargs):
         """

@@ -112,7 +112,8 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
         """
         Load config from given file like object `stream`.
 
-        :param stream: A file or file like object of Java properties files
+        :param stream:
+            A file or file like object of shell scripts define shell variables
         :param to_container: callble to make a container object
         :param kwargs: optional keyword parameters (ignored)
 
@@ -124,8 +125,8 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
         """
         Dump config `cnf` to a file or file-like object `stream`.
 
-        :param cnf: Java properties config data to dump
-        :param stream: Java properties file or file like object
+        :param cnf: Shell variables data to dump
+        :param stream: Shell script file or file like object
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in anyconfig.compat.iteritems(cnf):

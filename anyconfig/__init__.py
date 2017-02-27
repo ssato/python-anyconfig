@@ -1,4 +1,6 @@
-"""
+# For `anyconfig.open`:
+# pylint: disable=redefined-builtin
+r"""
 .. module:: anyconfig
    :platform: Unix, Windows
    :synopsis: Generic interface to loaders for various config file formats.

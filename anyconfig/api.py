@@ -164,6 +164,7 @@ def _load_schema(**options):
     return None
 
 
+# pylint: disable=redefined-builtin
 def open(path, mode=None, ac_parser=None, **options):
     """
     Open given config file with appropriate open flag.

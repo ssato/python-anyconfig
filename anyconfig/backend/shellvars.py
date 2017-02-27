@@ -2,8 +2,7 @@
 # Copyright (C) 2016 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""
-Parser for simple Shell vars' definitions.
+r"""Simple Shell vars' definitions backend:
 
 - Format to support: Simple shell variables' definitions w/o any shell variable
   expansions nor complex shell statements such as conditionals, etc.
@@ -12,11 +11,12 @@ Parser for simple Shell vars' definitions.
 - Limitations: Currently, it only supports a varialbe defined in a line.
 - Special options: None
 
-History:
+Changelog:
 
 .. versionadded:: 0.7.0
-   Added an experimental parser for simple shelll vars' definitions w/o shell
-   variable expansions nor complex shell statements like conditionals.
+
+   - Added an experimental parser for simple shelll vars' definitions w/o shell
+     variable expansions nor complex shell statements like conditionals.
 """
 from __future__ import absolute_import
 

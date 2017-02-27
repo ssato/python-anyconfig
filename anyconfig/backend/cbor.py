@@ -2,7 +2,7 @@
 # Copyright (C) 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""CBOR backend.
+r"""CBOR backend:
 
 - Format to support: CBOR, http://cbor.io, https://tools.ietf.org/html/rfc7049
 - Requirements: cbor, https://pypi.python.org/pypi/cbor
@@ -12,6 +12,10 @@
 
   - All options of cbor.load{s,} and cbor.dump{s,} should work.
   - See also: https://github.com/brianolson/cbor_py/blob/master/cbor/cbor.py
+
+Changelog:
+
+    .. versionadded:: 0.8.3
 """
 from __future__ import absolute_import
 

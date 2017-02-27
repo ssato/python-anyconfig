@@ -3,10 +3,10 @@
 # License: MIT
 #
 #  pylint: disable=unused-argument
-"""INI or INI like config files backend.
+r"""INI backend:
 
 - Format to support: INI or INI like ones
-- Requirements: It should be available always.
+- Requirements: The following standard module which should be available always.
 
   - ConfigParser in python 2 standard library:
     https://docs.python.org/2.7/library/configparser.html
@@ -16,18 +16,19 @@
 
 - Development Status :: 4 - Beta
 - Limitations: It cannot process nested configuration dicts correctly due to
-  the limitation of configparser module.
+  the limitation of the module and the format ifself.
 
 - Special options:
 
   - Use 'ac_parse_value' boolean keyword option if you want to parse values by
     custom parser, anyconfig.backend.ini._parse.
 
-History:
+Changelog:
 
 .. versionchanged:: 0.3
-   Introduce 'ac_parse_value' keyword option to switch behaviors, same as
-   original configparser and rich backend parsing each parameter values.
+
+   - Introduce 'ac_parse_value' keyword option to switch behaviors, same as
+     original configparser and rich backend parsing each parameter values.
 """
 from __future__ import absolute_import
 
@@ -109,7 +110,7 @@ def _make_parser(to_container, **kwargs):
         parser = configparser.SafeConfigParser(**kwargs_0)
     except TypeError:
         # .. note::
-        #    It seems ConfigPaser.*ConfigParser in python 2.6 does not support
+        #    It seems ConfigParser.*ConfigParser in python 2.6 does not support
         #    'allow_no_value' option parameter, and TypeError will be thrown.
         kwargs_0 = mk_opt_args(("defaults", "dict_type"), kwargs)
         parser = configparser.SafeConfigParser(**kwargs_0)

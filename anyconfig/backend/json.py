@@ -5,7 +5,7 @@
 # Ref. python -c "import json; help(json)"
 #
 # pylint: disable=import-error
-"""JSON file backend.
+r"""JSON backend:
 
 - Format to support: JSON, http://www.json.org
 - Requirements: json in python standard library (>= python 2.6) or simplejson
@@ -19,6 +19,10 @@
   - See also: https://docs.python.org/3/library/json.html or
     https://docs.python.org/2/library/json.html dependent on the python version
     to use.
+
+Changelog:
+
+    .. versionadded:: 0.0.1
 """
 from __future__ import absolute_import
 

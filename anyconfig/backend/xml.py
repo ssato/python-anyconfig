@@ -4,7 +4,7 @@
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
 # pylint: disable=import-error, duplicate-except
-"""XML files parser backend, should be available always.
+r"""XML backend:
 
 - Format to support: XML, e.g. http://www.w3.org/TR/xml11/
 - Requirements: one of the followings
@@ -16,10 +16,9 @@
 - Development Status :: 4 - Beta
 - Limitations:
 
-  - '<prefix>attrs', '<prefix>text' and '<prefix>children' are used as special
-    parameter to keep XML structure of original data. You have to cusomize
-    <prefix> (default: '@') if any config parameters conflict with some of
-    them.
+  - special node '@attrs', '@text' and '@children' are used to keep XML
+    structure of original data. You have to cusomize them with 'tags' keyword
+    option to avoid any config parameters conflict with some of them.
 
   - Some data or structures of original XML file may be lost if make it backed
     to XML file; XML file - (anyconfig.load) -> config - (anyconfig.dump) ->
@@ -38,7 +37,7 @@
     attributes, text and children nodes. Default is {"attrs": "@attrs", "text":
     "@text", "children": "@children"}.
 
-History:
+Changelog:
 
 .. versionchanged:: 0.8.2
 

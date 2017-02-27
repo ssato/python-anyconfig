@@ -2,7 +2,7 @@
 # Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""YAML backend.
+r"""YAML backend:
 
 - Format to support: YAML, http://yaml.org
 - Requirements: PyYAML (yaml), http://pyyaml.org
@@ -18,11 +18,12 @@
 
   - See also: http://pyyaml.org/wiki/PyYAMLDocumentation
 
-History:
+Changelog:
 
 .. versionchanged:: 0.3
-   Changed special keyword option 'ac_safe' from 'safe' to avoid possibility of
-   option conflicts in the future.
+
+   - Changed special keyword option 'ac_safe' from 'safe' to avoid
+     possibility of option conflicts in the future.
 """
 from __future__ import absolute_import
 

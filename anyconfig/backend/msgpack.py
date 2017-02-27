@@ -4,10 +4,10 @@
 #
 # Ref. python -c "import msgpack; help(msgpack.Unpacker); help(msgpack.Packer)"
 #
-"""MessagePack file backend.
+r"""MessagePack backend:
 
 - Format to support: MessagePack, http://msgpack.org
-- Requirements: msgpack-python (https://pypi.python.org/pypi/msgpack-python)
+- Requirements: msgpack-python, https://pypi.python.org/pypi/msgpack-python
 - Development Status :: 4 - Beta
 - Limitations: None obvious
 - Special options:
@@ -17,9 +17,9 @@
 
   - See also: http://pythonhosted.org/msgpack-python/api.html
 
-History:
+Changelog:
 
-.. versionadded:: 0.0.11
+    .. versionadded:: 0.0.11
 """
 from __future__ import absolute_import
 

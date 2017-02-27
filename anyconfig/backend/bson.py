@@ -6,7 +6,7 @@
 #
 # Access to bson._use_c is required to switch loading options:
 # pylint: disable=protected-access
-r"""BSON backend.
+r"""BSON backend:
 
 - Format to support: BSON, http://bsonspec.org
 - Requirements: bson in pymongo, https://pypi.python.org/pypi/pymongo/
@@ -22,17 +22,18 @@ r"""BSON backend.
 
   - See also: https://api.mongodb.org/python/current/api/bson/
 
-History:
+Changelog:
 
 .. versionchanged:: 0.5.0
 
    - utilize as_class keyword argument to allow container objects made directly
      on load if C extension is not used and enabled.
-   - _load_opts() was removed because C extension looks forced to be enalbed
-     if bson.has_c() == True, that is, C extension was built. see also:
-     https://jira.mongodb.org/browse/PYTHON-379
 
-.. versionadded:: 0.1.0
+   - _load_opts() was removed because C extension looks forced to be enalbed if
+     bson.has_c() == True, that is, C extension was built, installed and used.
+     see also: https://jira.mongodb.org/browse/PYTHON-379
+
+    .. versionadded:: 0.1.0
 """
 from __future__ import absolute_import
 

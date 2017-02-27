@@ -2,7 +2,7 @@
 # Copyright (C) 2013 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""configobj backend.
+r"""Configobj backend:
 
 - Format to support: configobj, http://goo.gl/JbP2Kp (readthedocs.org)
 - Requirements: configobj (https://pypi.python.org/pypi/configobj/)
@@ -19,12 +19,13 @@
 
   - See also: http://configobj.readthedocs.io/en/latest/configobj.html
 
-History:
+Chnagelog:
 
 .. versionchanged:: 0.5.0
-   Now loading and dumping options are detected automatically from inspection
-   result if possible. Also these became not distinguished because these will
-   be passed to configobj.Configuration anyway.
+
+   - Now loading and dumping options are detected automatically from inspection
+     result if possible. Also these became not distinguished because these will
+     be passed to configobj.Configuration anyway.
 """
 from __future__ import absolute_import
 

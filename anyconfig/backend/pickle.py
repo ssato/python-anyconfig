@@ -2,7 +2,7 @@
 # Copyright (C) 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""Pickle backend.
+r"""Pickle backend:
 
 - Format to support: Pickle
 - Requirements: It should be available always.
@@ -16,6 +16,10 @@
 - Development Status :: 4 - Beta
 - Limitations: None obvious
 - Special options: All options of pickle.{load{s,},dump{s,}} should work.
+
+Changelog:
+
+    .. versionadded:: 0.8.3
 """
 from __future__ import absolute_import
 

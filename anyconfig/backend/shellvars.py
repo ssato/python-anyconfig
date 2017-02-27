@@ -107,6 +107,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     Parser for Shell variable definition files.
     """
     _type = "shellvars"
+    _ordered = True
 
     def load_from_stream(self, stream, to_container, **kwargs):
         """

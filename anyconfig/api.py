@@ -244,7 +244,7 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
             LOGGER.warning("Failed to compile %s, fallback to no template "
                            "mode, exc=%r", path_or_stream, exc)
 
-    cnf = psr.load(path_or_stream, **options)
+    cnf = to_container(psr.load(path_or_stream, **options), **options)
     return _maybe_validated(cnf, schema, **options)
 
 
@@ -321,6 +321,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
         if cups:
             cnf.update(cups)
 
+    # Disabled for a while: convert to normal dicts, dict or OrderedDict.
+    # cnf = anyconfig.mdicts.convert_to(cnf, **options)
     return _maybe_validated(cnf, schema, **options)
 
 

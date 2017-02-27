@@ -34,6 +34,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     """
     _type = "toml"
     _extensions = ["toml"]
+    _ordered = True
 
     dump_to_string = to_method(toml.dumps)
     dump_to_stream = to_method(toml.dump)

@@ -42,6 +42,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _dump_opts = ["default", "encoding", "unicode_errors", "use_single_float",
                   "autoreset", "use_bin_type"]
     _open_flags = ('rb', 'wb')
+    _ordered = True
 
     dump_to_string = to_method(msgpack.packb)
     dump_to_stream = to_method(msgpack.pack)

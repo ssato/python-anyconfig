@@ -443,6 +443,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
     _extensions = ["xml"]
     _open_flags = ('rb', 'wb')
     _load_opts = _dump_opts = ["tags", "merge_attrs", "ac_parse_value"]
+    _ordered = True
 
     def load_from_string(self, content, to_container, **opts):
         """

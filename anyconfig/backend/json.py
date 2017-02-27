@@ -58,6 +58,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _extensions = ["json", "jsn", "js"]
     _load_opts = _LOAD_OPTS
     _dump_opts = _DUMP_OPTS
+    _ordered = True
 
     dump_to_string = anyconfig.backend.base.to_method(json.dumps)
     dump_to_stream = anyconfig.backend.base.to_method(json.dump)
@@ -73,7 +74,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
         :return: Dict-like object holding configuration
         """
         if "object_pairs_hook" in self._load_opts:
-            opts["object_pairs_hook"] = anyconfig.compat.OrderedDict
+            opts["object_pairs_hook"] = self._container_fn(**opts)
             return to_container(load_fn(content_or_strm, **opts))
         else:
             return load_fn(content_or_strm, object_hook=to_container, **opts)

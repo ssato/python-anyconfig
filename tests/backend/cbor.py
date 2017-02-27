@@ -19,7 +19,6 @@ if TT is not None:
         cnf = dict(a=0, b="bbb", c=5, sect0=dict(d=["x", "y", "z"]))
         cnf_s = TT.cbor.dumps(cnf)
         load_options = dump_options = dict(sort_keys=False)
-        is_order_kept = False
 
         def setUp(self):
             self.psr = TT.Parser()

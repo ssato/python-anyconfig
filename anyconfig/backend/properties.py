@@ -198,6 +198,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     """
     _type = "properties"
     _extensions = ["properties"]
+    _ordered = True
 
     def load_from_stream(self, stream, to_container, **kwargs):
         """

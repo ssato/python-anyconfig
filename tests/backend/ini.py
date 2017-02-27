@@ -12,7 +12,6 @@ import anyconfig.backend.ini as TT
 import tests.common
 
 from anyconfig.compat import OrderedDict as ODict
-from anyconfig.mdicts import UpdateWithReplaceDict
 from tests.common import dicts_equal
 
 
@@ -39,7 +38,7 @@ class Test10(unittest.TestCase):
     cnf_s = CNF_0_S
     load_options = dict(allow_no_value=False, defaults=None)
     dump_options = dict()
-    is_order_kept = True
+    is_order_kept = TT.Parser.ordered()
 
     def setUp(self):
         self.psr = TT.Parser()
@@ -48,7 +47,8 @@ class Test10(unittest.TestCase):
         self.assertTrue(dicts_equal(cnf, self.cnf, ordered=ordered),
                         "\n %r\nvs.\n %r" % (cnf, self.cnf))
         if instance_check:
-            self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+            cls = ODict if self.is_order_kept and ordered else dict
+            self.assertTrue(isinstance(cnf, cls))
 
     def test_10_loads(self):
         cnf = self.psr.loads(self.cnf_s)
@@ -136,10 +136,12 @@ class Test20(unittest.TestCase):
     def tearDown(self):
         tests.common.cleanup_workdir(self.workdir)
 
-    def _assert_dicts_equal(self, cnf):
+    def _assert_dicts_equal(self, cnf, ordered=False, instance_check=False):
         self.assertTrue(dicts_equal(cnf, self.cnf),
                         "\n %r\nvs.\n %r" % (cnf, self.cnf))
-        self.assertTrue(isinstance(cnf, UpdateWithReplaceDict))
+        if instance_check:
+            cls = ODict if self.is_order_kept and ordered else dict
+            self.assertTrue(isinstance(cnf, cls))
 
     def test_10_load(self):
         cnf = self.psr.load(self.cpath)

@@ -49,6 +49,7 @@ class Parser(anyconfig.backend.base.FromStringLoader,
     _load_opts = [] if bson.has_c() else ["tz_aware", "uuid_subtype"]
     _dump_opts = ["check_keys", "uuid_subtype"]
     _open_flags = ('rb', 'wb')
+    _ordered = not bson.has_c()
 
     dump_to_string = anyconfig.backend.base.to_method(bson.BSON.encode)
 

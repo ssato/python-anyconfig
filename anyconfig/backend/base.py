@@ -3,7 +3,7 @@
 # License: MIT
 #
 # pylint: disable=unused-argument
-"""Abstract implementation of backend modules.
+r"""Abstract implementation of backend modules:
 
 Backend module must implement a parser class inherits :class:`Parser` or its
 children classes of this module and override all or some of the methods as
@@ -16,12 +16,18 @@ needed:
   - :meth:`dump_to_stream`: Dump config to a file or file-like object
   - :meth:`dump_to_path`: Dump config to a file of given path
 
-History:
+Changelog:
+
+.. versionchanged:: 0.8.3
+
+   - Add `_ordered` membmer and a class method :meth:` ordered to the class
+     :class:`Parser`.
 
 .. versionchanged:: 0.2
-   The methods :meth:`load_impl`, :meth:`dump_impl` are deprecated and replaced
-   with :meth:`load_from_stream` and :meth:`load_from_path`,
-   :meth:`dump_to_string` and :meth:`dump_to_path` respectively.
+
+   - The methods :meth:`load_impl`, :meth:`dump_impl` are deprecated and
+     replaced with :meth:`load_from_stream` and :meth:`load_from_path`,
+     :meth:`dump_to_string` and :meth:`dump_to_path` respectively.
 """
 from __future__ import absolute_import
 
@@ -81,16 +87,6 @@ def to_method(func):
     return wrapper
 
 
-def to_container_fn(**options):
-    """
-    :param options:
-        Keyword options will be passed to :func:`to_container` in
-        :mod:`anyconfig.mdicts` to decide which merge-able dict to
-        wrap configurations.
-    """
-    return functools.partial(anyconfig.mdicts.to_container, **options)
-
-
 class Parser(object):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
@@ -102,6 +98,7 @@ class Parser(object):
     _load_opts = []
     _dump_opts = []
     _open_flags = ('r', 'w')
+    _ordered = False
 
     @classmethod
     def type(cls):
@@ -125,6 +122,13 @@ class Parser(object):
         return cls._extensions
 
     @classmethod
+    def ordered(cls):
+        """
+        :return: True if parser can keep the order of keys else False.
+        """
+        return cls._ordered
+
+    @classmethod
     def ropen(cls, filepath, **kwargs):
         """
         :param filepath: Path to file to open to read data
@@ -143,6 +147,16 @@ class Parser(object):
         Select backend specific loading options from `kwargs` only.
         """
         return mk_opt_args(self._load_opts, kwargs)
+
+    def _container_fn(self, **options):
+        """
+        :param options: Keyword options may contain 'ac_ordered'.
+        :return: Factory (class or function) to make an container.
+        """
+        if self.ordered() and options.get("ac_ordered", False):
+            return anyconfig.compat.OrderedDict
+        else:
+            return dict
 
     def load_from_string(self, content, to_container, **kwargs):
         """
@@ -192,7 +206,7 @@ class Parser(object):
 
         :return: dict or dict-like object holding configurations
         """
-        to_container = to_container_fn(**options)
+        to_container = self._container_fn(**options)
         if not content or content is None:
             return to_container()
 
@@ -216,7 +230,7 @@ class Parser(object):
 
         :return: dict or dict-like object holding configurations
         """
-        to_container = to_container_fn(**options)
+        to_container = self._container_fn(**options)
         options = self._load_options(**options)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):

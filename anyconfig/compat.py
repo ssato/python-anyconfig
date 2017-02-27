@@ -8,6 +8,7 @@ Compatiblity module
 """
 from __future__ import absolute_import
 
+import inspect
 import itertools
 import sys
 
@@ -62,6 +63,7 @@ if IS_PYTHON_3:
     raw_input = input
     STR_TYPES = (str, )
     izip = zip
+    getargspec = inspect.getfullargspec
 else:
     import ConfigParser as configparser  # flake8: noqa
     try:
@@ -91,6 +93,7 @@ else:
     raw_input = raw_input
     STR_TYPES = (str, unicode)
     izip = itertools.izip
+    getargspec = inspect.getargspec
 
 try:
     from collections import OrderedDict

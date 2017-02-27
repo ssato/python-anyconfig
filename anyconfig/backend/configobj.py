@@ -29,14 +29,15 @@ Chnagelog:
 """
 from __future__ import absolute_import
 
-import inspect
 import configobj
 import anyconfig.backend.base
 import anyconfig.mdicts
 
+from anyconfig.compat import getargspec
+
 
 try:
-    _LOAD_OPTS = [a for a in inspect.getargspec(configobj.ConfigObj).args
+    _LOAD_OPTS = [a for a in getargspec(configobj.ConfigObj).args
                   if a not in "self infile".split()]
 except (TypeError, AttributeError):
     _LOAD_OPTS = ("options configspec encoding interpolation raise_errors"

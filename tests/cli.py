@@ -275,16 +275,8 @@ class Test_50_others(Test_20_Base):
         self.run_and_check_exit_code(["-o", outfile, "in.conf"], 1)
 
     def test_40_no_inputs__w_env_option(self):
-        infile = "/dev/null"
-        output = os.path.join(self.workdir, "out.yml")
-
-        try:
-            anyconfig.api.find_loader(infile, "yaml")
-        except anyconfig.api.UnknownParserTypeError:
-            return
-
-        self.run_and_check_exit_code(["--silent", "--env", "-I", "yaml",
-                                      "-o", output, infile], 1)
+        output = os.path.join(self.workdir, "out.json")
+        self.run_and_check_exit_code(["--silent", "--env", "-o", output], 0)
         data = anyconfig.api.load(output)
 
         for env_var, env_val in os.environ.items():

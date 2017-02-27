@@ -5,6 +5,10 @@
 # pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs of anyconfig module.
 
+.. versionadded:: 0.8.3
+
+   - Added ac_filter keyword option to filter data with JMESPath expression.
+
 .. versionadded:: 0.8.2
 
    - Added new API, version to provide version information.
@@ -54,6 +58,7 @@ from anyconfig.globals import LOGGER
 import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
+import anyconfig.filter
 import anyconfig.globals
 import anyconfig.mdicts
 import anyconfig.template
@@ -284,6 +289,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
           - ac_marker (marker): Globbing marker to detect paths patterns.
           - ac_namedtuple: Convert result to nested namedtuple object if True
           - ac_schema: JSON schema file path to validate given config file
+          - ac_filter: JMESPath expression to filter data
 
         - Common backend options:
 
@@ -323,7 +329,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
     # Disabled for a while: convert to normal dicts, dict or OrderedDict.
     # cnf = anyconfig.mdicts.convert_to(cnf, **options)
-    return _maybe_validated(cnf, schema, **options)
+    cnf = _maybe_validated(cnf, schema, **options)
+    return anyconfig.filter.filter_(cnf, **options)
 
 
 def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
@@ -351,9 +358,10 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
                           ac_template=ac_template, ac_context=ac_context,
                           **options)
     else:
-        return single_load(path_specs, ac_parser=ac_parser,
-                           ac_template=ac_template, ac_context=ac_context,
-                           **options)
+        cnf = single_load(path_specs, ac_parser=ac_parser,
+                          ac_template=ac_template, ac_context=ac_context,
+                          **options)
+        return anyconfig.filter.filter_(cnf, **options)
 
 
 def loads(content, ac_parser=None, ac_template=False, ac_context=None,
@@ -391,8 +399,9 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
             LOGGER.warning("Failed to compile and fallback to no template "
                            "mode: '%s', exc=%r", content[:50] + '...', exc)
 
-    cnf = psr.loads(content, **options)
-    return _maybe_validated(cnf, schema, **options)
+    cnf = to_container(psr.loads(content, **options), **options)
+    cnf = _maybe_validated(cnf, schema, **options)
+    return anyconfig.filter.filter_(cnf, **options)
 
 
 def _find_dumper(path_or_stream, ac_parser=None):

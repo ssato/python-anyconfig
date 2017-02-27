@@ -211,10 +211,10 @@ anyconfig_cli to process configuration files and:
 Supported configuration formats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-python-anyconfig supports various (configuration) file formats if the required
-module is available and the corresponding backend is ready to use:
+python-anyconfig supports various file formats if requirements are satisfied
+and backends in charge are enabled and ready to use:
 
-- Supported formats enabled by default:
+- Always supported formats of which backends are enabled by default:
 
 .. csv-table::
    :header: "Format", "Type", "Requirement"
@@ -227,7 +227,7 @@ module is available and the corresponding backend is ready to use:
    Java properties [#]_ , properties, None (native implementation with standard lib)
    B-sh, shellvars, None (native implementation with standard lib)
 
-- Supported formats enabled automatically if requirements are satisfied:
+- Supported formats of which backends are enabled automatically if requirements are satisfied:
 
 .. csv-table::
    :header: "Format", "Type", "Requirement"
@@ -240,7 +240,7 @@ module is available and the corresponding backend is ready to use:
    BSON, bson, bson in ``pymongo`` [#]_
    CBOR, cbor, ``cbor_py`` [#]_
 
-The supported formats of python-anyconfig on your system is able to be listed
+The supported formats of python-anyconfig on your system are able to be listed
 by 'anyconfig_cli -L' like this:
 
 .. code-block:: console

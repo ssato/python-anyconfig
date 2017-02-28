@@ -246,29 +246,26 @@ class Test_40_multi_inputs(Test_20_Base):
         TT.main(["dummy", "--silent", "--template", "-o", output, infile])
 
 
-class Test_50_others(Test_20_Base):
+class Test_50_others_w_input(Test_20_Base):
+
+    def setUp(self):
+        super(Test_50_others_w_input, self).setUp()
+        dic = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
+        self.infile = os.path.join(self.workdir, "a.json")
+        anyconfig.api.dump(dic, self.infile)
 
     def test_10_output_wo_output_option_w_otype(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        infile = os.path.join(self.workdir, "a.json")
-        anyconfig.api.dump(a, infile)
-
-        self.run_and_check_exit_code(["--otype", "json", infile])
+        self.run_and_check_exit_code(["--otype", "json", self.infile])
 
     def test_12_output_wo_output_option_and_otype_w_itype(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        infile = os.path.join(self.workdir, "a.json")
-        anyconfig.api.dump(a, infile)
-
-        self.run_and_check_exit_code(["--itype", "json", infile])
+        self.run_and_check_exit_code(["--itype", "json", self.infile])
 
     def test_20_no_out_dumper(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
-        infile = os.path.join(self.workdir, "a.json")
-        anyconfig.api.dump(a, infile)
-
         outfile = os.path.join(self.workdir, "out.conf")
-        self.run_and_check_exit_code(["-o", outfile, infile], 1)
+        self.run_and_check_exit_code(["-o", outfile, self.infile], 1)
+
+
+class Test_50_others_wo_input(Test_20_Base):
 
     def test_30_no_itype_and_otype(self):
         outfile = os.path.join(self.workdir, "out.conf")

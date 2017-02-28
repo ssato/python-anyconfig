@@ -74,6 +74,14 @@ It can process config files in any formats supported in your environment and:
                           output it instead of (merged) configuration.
 
     Get/set options:
+      -Q QUERY, --query=QUERY
+                          Query with JMESPath expression language. See
+                          http://jmespath.org for more about JMESPath
+                          expression. This option is not used with --get option
+                          at the same time. Please note that python module to
+                          support JMESPath expression
+                          (https://pypi.python.org/pypi/jmespath/) is required
+                          to use this option
       --get=GET           Specify key path to get part of config, for example, '
                           --get a.b.c' to config {'a': {'b': {'c': 0, 'd': 1}}}
                           gives 0 and '--get a.b' to the same config gives {'c':
@@ -313,8 +321,8 @@ validate the config like this:
   Validation failed1
   $
 
-Get/set - extract or set part of input config
-------------------------------------------------
+Query/Get/set - extract or set part of input config
+------------------------------------------------------
 
 Here is usage examples of --get option of anyconfig_cli:
 
@@ -334,7 +342,10 @@ Here is usage examples of --get option of anyconfig_cli:
   xyz
   $ anyconfig_cli /tmp/a.yml --get b.c --silent
   ['aaa', 'bbb']
-  $
+  $ anyconfig_cli /tmp/a.yml --query d.e.g --silent
+  True
+  $ anyconfig_cli /tmp/a.yml --query 'b.c[::-1]' --silent
+  ['bbb', 'aaa']
 
 and an usage example of --set option of anyconfig_cli with same input:
 

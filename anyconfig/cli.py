@@ -95,12 +95,19 @@ If this option is not set, original parser is used: 'K:V' will become {K: V},
 become {K_0: V_0, K_1: V_1} (where the tyep of K is str, type of V is one of
 Int, str, etc."""
 
+_QUERY_HELP = ("Query with JMESPath expression language. See "
+               "http://jmespath.org for more about JMESPath expression. "
+               "This option is not used with --get option at the same time. "
+               "Please note that python module to support JMESPath "
+               "expression (https://pypi.python.org/pypi/jmespath/) is "
+               "required to use this option")
 _GET_HELP = ("Specify key path to get part of config, for example, "
              "'--get a.b.c' to config {'a': {'b': {'c': 0, 'd': 1}}} "
              "gives 0 and '--get a.b' to the same config gives "
              "{'c': 0, 'd': 1}. Path expression can be JSON Pointer "
              "expression (http://tools.ietf.org/html/rfc6901) such like "
-             "'', '/a~1b', '/m~0n'.")
+             "'', '/a~1b', '/m~0n'. "
+             "This option is not used with --query option at the same time. ")
 _SET_HELP = ("Specify key path to set (update) part of config, for "
              "example, '--set a.b.c=1' to a config {'a': {'b': {'c': 0, "
              "'d': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.")
@@ -144,7 +151,8 @@ def parse_args(argv=None, defaults=None):
                          "and output it instead of (merged) configuration.")
     parser.add_option_group(spog)
 
-    gspog = optparse.OptionGroup(parser, "Get/set options")
+    gspog = optparse.OptionGroup(parser, "Query/Get/set options")
+    gspog.add_option("-Q", "--query", help=_QUERY_HELP)
     gspog.add_option("", "--get", help=_GET_HELP)
     gspog.add_option("", "--set", help=_SET_HELP)
     parser.add_option_group(gspog)
@@ -232,6 +240,15 @@ def _exit_if_only_to_validate(only_to_validate):
     """
     if only_to_validate:
         _exit_with_output("Validation succeds")
+
+
+def _do_query(cnf, exp):
+    """
+    :param cnf: Configuration object to print out
+    :param exp: A string represents JMESPath expression to query loaded data
+    :return: Query result object if no error
+    """
+    return API.query(cnf, exp)
 
 
 def _do_get(cnf, get_path):
@@ -349,7 +366,9 @@ def main(argv=None):
     if options.gen_schema:
         cnf = API.gen_schema(cnf)
 
-    if options.get:
+    if options.query:
+        cnf = _do_query(cnf, options.query)
+    elif options.get:
         cnf = _do_get(cnf, options.get)
 
     if options.set:

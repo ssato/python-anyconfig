@@ -8,6 +8,7 @@ r"""Public APIs of anyconfig module.
 .. versionadded:: 0.8.3
 
    - Added ac_query keyword option to query data with JMESPath expression.
+   - Added experimental query api to query data with JMESPath expression.
 
 .. versionadded:: 0.8.2
 

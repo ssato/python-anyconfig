@@ -153,6 +153,18 @@ with using JSON schema like the followings:
   scm4 = anyconfig.gen_schema(conf4)
   scm4_s = anyconfig.dumps(scm4, "json")
 
+And you can query loaded data with JMESPath [#]_ expression:
+
+.. code-block:: python
+
+  In [2]: dic = dict(a=dict(b=[dict(c="C", d=0)]))
+
+  In [3]: anyconfig.loads(anyconfig.dumps(dic, ac_parser="json"),
+     ...:                 ac_parser="json", ac_query="a.b[0].c")
+  Out[3]: u'C'
+
+  In [4]:
+
 And in the last place, python-anyconfig provides a CLI tool called
 anyconfig_cli to process configuration files and:
 
@@ -162,6 +174,7 @@ anyconfig_cli to process configuration files and:
 - Generate minimum JSON schema file to validate given configuration file[s]
 
 .. [#] http://json-schema.org
+.. [#] http://jmespath.org
 
 Supported configuration formats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -257,10 +270,12 @@ enable the features.
    CBOR load/dump, cbor, none
    Template config, Jinja2 [#]_ , none
    Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
+   Query with JMESPath expression, jmespath [#]_ , none
 
 .. [#] https://pypi.python.org/pypi/bson/
 .. [#] https://pypi.python.org/pypi/Jinja2/
 .. [#] https://pypi.python.org/pypi/jsonschema/
+.. [#] https://pypi.python.org/pypi/jmespath/
 
 How to install
 ^^^^^^^^^^^^^^^^

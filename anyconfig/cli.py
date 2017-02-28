@@ -56,7 +56,8 @@ Examples:
     -A obsoletes:syscnf;conflicts:syscnf-old
   %prog /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
   %prog '/etc/foo.d/*.json' -M noreplace
-  # Get/set part of input config
+  # Query/Get/set part of input config
+  %prog '/etc/foo.d/*.json' --query 'locs[?state == 'T'].name | sort(@)'
   %prog '/etc/foo.d/*.json' --get a.b.c
   %prog '/etc/foo.d/*.json' --set a.b.c=1
   # Validate with JSON schema or generate JSON schema:

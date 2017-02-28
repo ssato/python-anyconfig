@@ -449,4 +449,16 @@ def dumps(data, ac_parser=None, **options):
         data = to_container(data, **options)
     return _find_dumper(None, ac_parser).dumps(data, **options)
 
+
+def query(data, expression, **options):
+    """
+    API just wraps :func:`anyconfig.query.query`.
+
+    :param data: Config data object to query
+    :param options: Ignored in current implementation
+
+    :return: Query result object may be primitive (int, str, etc.) or dict.
+    """
+    return anyconfig.query.query(data, ac_query=expression)
+
 # vim:sw=4:ts=4:et:

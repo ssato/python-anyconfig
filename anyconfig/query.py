@@ -2,11 +2,11 @@
 # Copyright (C) 2017 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-"""anyconfig.filter module.
+"""anyconfig.query module.
 
 .. versionadded:: 0.8.3
 
-   - Added to filter config data with JMESPath, http://jmespath.org
+   - Added to query config data with JMESPath expression, http://jmespath.org
 """
 from __future__ import absolute_import
 try:
@@ -17,20 +17,20 @@ except ImportError:
 from anyconfig.globals import LOGGER
 
 
-def filter_(data, **options):
+def query(data, **options):
     """
     Filter data with given JMESPath expression.
 
     See also: https://github.com/jmespath/jmespath.py and http://jmespath.org.
 
-    :parae data: Target object (a dict or a dict-like object) to filter
-    :param options: Keyword option may include the followings:
+    :parae data: Target object (a dict or a dict-like object) to query
+    :param options:
+        Keyword option may include 'ac_query' which is a string represents
+        JMESPath expression.
 
-        - ac_filter: JMESPath expression string
-
-    :return: Maybe filtered data
+    :return: Maybe queried result data, primitive (int, str, ...) or dict
     """
-    expression = options.get("ac_filter", None)
+    expression = options.get("ac_query", None)
     if expression is None or not expression:
         return data
 

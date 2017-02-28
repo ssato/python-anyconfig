@@ -681,4 +681,20 @@ class Test_50_load_and_dump(unittest.TestCase):
         cnf1 = TT.single_load(cpath, ac_schema=spath)
         self.assertTrue(dicts_equal(cnf, cnf1), str(cnf1))
 
+    def test_40_load_w_query(self):
+        cnf_path = os.path.join(self.workdir, "cnf.json")
+        TT.dump(CNF_0, cnf_path)
+
+        try:
+            if TT.query.jmespath:
+                self.assertEqual(TT.load(cnf_path, ac_query="a"), 1)
+                self.assertEqual(TT.load(cnf_path, ac_query="b.b"), [1, 2])
+                self.assertEqual(TT.load(cnf_path, ac_query="b.b[1]"), 2)
+                self.assertEqual(TT.load(cnf_path, ac_query="b.b[1:]"), [2])
+                self.assertEqual(TT.load(cnf_path, ac_query="b.b[::-1]"),
+                                 [2, 1])
+                self.assertEqual(TT.load(cnf_path, ac_query="length(b.b)"), 2)
+        except (NameError, AttributeError):
+            pass  # jmespath is not available.
+
 # vim:sw=4:ts=4:et:

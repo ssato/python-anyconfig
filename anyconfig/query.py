@@ -2,7 +2,9 @@
 # Copyright (C) 2017 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
-"""anyconfig.query module.
+r"""anyconfig.query module to support query data with JMESPath expressions.
+
+Changelog:
 
 .. versionadded:: 0.8.3
 

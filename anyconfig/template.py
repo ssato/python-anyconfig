@@ -69,6 +69,7 @@ def make_template_paths(template_file, paths=None):
 
     :param template_file: Absolute or relative path to the template file
     :param paths: A list of template search paths
+    :return: List of template paths ([str])
 
     >>> make_template_paths("/path/to/a/template")
     ['/path/to/a']
@@ -91,6 +92,7 @@ def render_s(tmpl_s, ctx=None, paths=None):
     :param tmpl_s: Template string
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
+    :return: Compiled result (str)
 
     >>> render_s("aaa") == "aaa"
     True
@@ -116,6 +118,7 @@ def render_impl(template_file, ctx=None, paths=None):
     """
     :param template_file: Absolute or relative path to the template file
     :param ctx: Context dict needed to instantiate templates
+    :return: Compiled result (str)
     """
     env = tmpl_env(make_template_paths(template_file, paths))
 
@@ -136,6 +139,7 @@ def render(filepath, ctx=None, paths=None, ask=False):
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
     :param ask: Ask user for missing template location if True
+    :return: Compiled result (str)
     """
     try:
         return render_impl(filepath, ctx, paths)

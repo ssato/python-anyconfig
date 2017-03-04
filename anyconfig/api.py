@@ -372,11 +372,11 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
         Optional keyword arguments. See also the description of `options` in
         `single_load` function.
 
-    :return: dict or dict-like object supports merge operations
+    :return: dict or dict-like object supports merge operations or None
     """
-    msg = "Try parsing with a built-in parser because %s"
     if ac_parser is None:
-        LOGGER.warning(msg, "ac_parser was not given.")
+        LOGGER.warning("ac_parser was not given but it's must to find correct "
+                       "parser to load configurations from string.")
         return None
 
     psr = find_loader(None, ac_parser)

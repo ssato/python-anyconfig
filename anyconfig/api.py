@@ -7,6 +7,8 @@ r"""Public APIs of anyconfig module.
 
 .. versionadded:: 0.8.3
 
+   - Added ac_dict keyword option to pass dict factory (any callable like
+     function or class) to make dict-like object in backend parsers.
    - Added ac_query keyword option to query data with JMESPath expression.
    - Added experimental query api to query data with JMESPath expression.
 
@@ -214,6 +216,8 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
 
         - Common options:
 
+          - ac_dict: callable (function or class) to make a dict or dict-like
+            object, dict and OrderedDict for example, or None
           - ac_schema: JSON schema file path to validate given config file
           - ac_namedtuple: Convert result to nested namedtuple object if True
 
@@ -277,6 +281,9 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
         - Common options:
 
+          - ac_dict: callable (function or class) to make a dict or dict-like
+            object, dict and OrderedDict for example
+
           - ac_merge (merge): Specify strategy of how to merge results loaded
             from multiple configuration files. See the doc of :mod:`m9dicts`
             for more details of strategies. The default is m9dicts.MS_DICTS.
@@ -319,8 +326,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     return anyconfig.query.query(cnf, **options)
 
 
-def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
-         **options):
+def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
+         ac_context=None, **options):
     r"""
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
@@ -328,6 +335,9 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
     :param path_specs: Configuration file path or paths or its pattern such as
         r'/a/b/\*.json' or a list of files/file-like objects
     :param ac_parser: Forced parser type or parser object
+    :param ac_dict:
+        callable (function or class) to make a dict or dict-like object, dict
+        and OrderedDict for example, or None
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
@@ -340,21 +350,24 @@ def load(path_specs, ac_parser=None, ac_template=False, ac_context=None,
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
     if is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
-        return multi_load(path_specs, ac_parser=ac_parser,
+        return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                           ac_template=ac_template, ac_context=ac_context,
                           **options)
     else:
-        cnf = single_load(path_specs, ac_parser=ac_parser,
+        cnf = single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                           ac_template=ac_template, ac_context=ac_context,
                           **options)
         return anyconfig.query.query(cnf, **options)
 
 
-def loads(content, ac_parser=None, ac_template=False, ac_context=None,
-          **options):
+def loads(content, ac_parser=None, ac_dict=dict, ac_template=False,
+          ac_context=None, **options):
     """
     :param content: Configuration file's content
     :param ac_parser: Forced parser type or parser object
+    :param ac_dict:
+        callable (function or class) to make a dict or dict-like object, dict
+        and OrderedDict for example, or None
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: Context dict to instantiate template
@@ -374,8 +387,9 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
         options["ac_schema"] = None
-        schema = loads(ac_schema, ac_parser=psr, ac_template=ac_template,
-                       ac_context=ac_context, **options)
+        schema = loads(ac_schema, ac_parser=psr, ac_dict=ac_dict,
+                       ac_template=ac_template, ac_context=ac_context,
+                       **options)
 
     if ac_template:
         compiled = anyconfig.template.try_render(content=content,
@@ -383,7 +397,8 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
         if compiled is not None:
             content = compiled
 
-    cnf = to_container(psr.loads(content, **options), **options)
+    cnf = to_container(psr.loads(content, ac_dict=ac_dict, **options),
+                       **options)
     cnf = _maybe_validated(cnf, schema, **options)
     return anyconfig.query.query(cnf, **options)
 

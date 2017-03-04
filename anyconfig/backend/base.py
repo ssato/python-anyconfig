@@ -153,8 +153,9 @@ class Parser(object):
         :param options: Keyword options may contain 'ac_ordered'.
         :return: Factory (class or function) to make an container.
         """
-        if options.get("ac_dict", False):
-            return options["ac_dict"]  # Higher priority than ac_ordered.
+        ac_dict = options.get("ac_dict", False)
+        if ac_dict and callable(ac_dict):
+            return ac_dict  # Higher priority than ac_ordered.
         elif self.ordered() and options.get("ac_ordered", False):
             return anyconfig.compat.OrderedDict
         else:

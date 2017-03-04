@@ -235,7 +235,6 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
     psr = find_loader(path_or_stream, ac_parser, is_path_)
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
-    options["ac_schema"] = None  # It's not needed now.
 
     LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:

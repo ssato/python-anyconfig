@@ -48,15 +48,15 @@ def _yml_fnc(fname, *args, **kwargs):
     return fnc(*args, **kwargs)
 
 
-def _yml_load(stream, to_container, **kwargs):
+def _yml_load(stream, container, **kwargs):
     """An wrapper of yaml.safe_load and yaml.load.
 
     :param stream: a file or file-like object to load YAML content
-    :param to_container: callble to make a container object
+    :param container: callble to make a container object
     """
     if "ac_safe" in kwargs:  # yaml.safe_load does not process Loader opts.
         kwargs = {}
-    return to_container(_yml_fnc("load", stream, **kwargs))
+    return container(_yml_fnc("load", stream, **kwargs))
 
 
 def _yml_dump(cnf, stream, **kwargs):

@@ -42,28 +42,28 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     dump_to_stream = anyconfig.backend.base.to_method(cbor.dump)
     _load = anyconfig.backend.base.to_method(load_with_fn)
 
-    def load_from_string(self, content, to_container, **opts):
+    def load_from_string(self, content, container, **opts):
         """
         Load CBOR config from given string `content`.
 
         :param content: CBOR config content
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `cbor.loads`
 
         :return: Dict-like object holding configuration
         """
-        return self._load(cbor.loads, content, to_container, **opts)
+        return self._load(cbor.loads, content, container, **opts)
 
-    def load_from_stream(self, stream, to_container, **opts):
+    def load_from_stream(self, stream, container, **opts):
         """
         Load CBOR config from given stream `stream`.
 
         :param stream: Stream will provide CBOR config content string
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `cbor.load`
 
         :return: Dict-like object holding configuration
         """
-        return self._load(cbor.load, stream, to_container, **opts)
+        return self._load(cbor.load, stream, container, **opts)
 
 # vim:sw=4:ts=4:et:

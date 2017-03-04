@@ -40,17 +40,17 @@ else:
     DUMP_OPTS = ["protocol"]
 
 
-def load_with_fn(load_fn, content_or_strm, to_container, **opts):
+def load_with_fn(load_fn, content_or_strm, container, **opts):
     """
     Load pickled config from given string or stream `content_or_strm`.
 
     :param content_or_strm: pickled config content or stream provides it
-    :param to_container: callble to make a container object
+    :param container: callble to make a container object
     :param opts: keyword options passed to `pickle.load[s]`
 
     :return: Dict-like object holding configuration
     """
-    return to_container(load_fn(content_or_strm, **opts))
+    return container(load_fn(content_or_strm, **opts))
 
 
 class Parser(anyconfig.backend.base.FromStreamLoader,
@@ -68,28 +68,28 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     dump_to_stream = anyconfig.backend.base.to_method(pickle.dump)
     _load = anyconfig.backend.base.to_method(load_with_fn)
 
-    def load_from_string(self, content, to_container, **opts):
+    def load_from_string(self, content, container, **opts):
         """
         Load Pickle config from given string `content`.
 
         :param content: Pickled config content
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `pickle.loads`
 
         :return: Dict-like object holding configuration
         """
-        return self._load(pickle.loads, content, to_container, **opts)
+        return self._load(pickle.loads, content, container, **opts)
 
-    def load_from_stream(self, stream, to_container, **opts):
+    def load_from_stream(self, stream, container, **opts):
         """
         Load Pickle config from given stream `stream`.
 
         :param stream: Stream will provide Pickled config content string
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `pickle.load`
 
         :return: Dict-like object holding configuration
         """
-        return self._load(pickle.load, stream, to_container, **opts)
+        return self._load(pickle.load, stream, container, **opts)
 
 # vim:sw=4:ts=4:et:

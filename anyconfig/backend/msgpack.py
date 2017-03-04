@@ -47,28 +47,28 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     dump_to_string = to_method(msgpack.packb)
     dump_to_stream = to_method(msgpack.pack)
 
-    def load_from_string(self, content, to_container, **opts):
+    def load_from_string(self, content, container, **opts):
         """
         Load config from given (byte) string `content`.
 
         :param content: MessagePack-ed config content
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `msgpack.unpackb`
 
         :return: Dict-like object holding configuration
         """
-        return msgpack.unpackb(content, object_hook=to_container, **opts)
+        return msgpack.unpackb(content, object_hook=container, **opts)
 
-    def load_from_stream(self, stream, to_container, **opts):
+    def load_from_stream(self, stream, container, **opts):
         """
         Load JSON config from given stream `stream`.
 
         :param stream: Stream will provide MessagePack-ed config content string
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `msgpack.unpack`
 
         :return: Dict-like object holding configuration
         """
-        return msgpack.unpack(stream, object_hook=to_container, **opts)
+        return msgpack.unpack(stream, object_hook=container, **opts)
 
 # vim:sw=4:ts=4:et:

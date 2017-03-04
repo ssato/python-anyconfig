@@ -53,23 +53,23 @@ class Parser(anyconfig.backend.base.FromStringLoader,
 
     dump_to_string = anyconfig.backend.base.to_method(bson.BSON.encode)
 
-    def load_from_string(self, content, to_container, **kwargs):
+    def load_from_string(self, content, container, **kwargs):
         """
         Load BSON config from given string `content`.
 
         :param content: BSON config content in bytes data string
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param kwargs: optional keyword parameters
 
         :return: Dict-like object holding config parameters
         """
         if self._load_opts:  # indicates that C extension is not used.
-            objs = bson.decode_all(content, as_class=to_container, **kwargs)
+            objs = bson.decode_all(content, as_class=container, **kwargs)
         else:
             # .. note::
             #    The order of loaded configuration keys may be lost but
             #    there is no way to avoid that, AFAIK.
-            objs = [to_container(x) for x in bson.decode_all(content)]
+            objs = [container(x) for x in bson.decode_all(content)]
 
         return objs[0] if objs else None
 

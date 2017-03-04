@@ -62,13 +62,13 @@ def _parseline(line):
     return (tpl[1], vals[0] if vals else '')
 
 
-def load(stream, to_container=dict):
+def load(stream, container=dict):
     """
     Load and parse a file or file-like object `stream` provides simple shell
     variables' definitions.
 
     :param stream: A file or file like object
-    :param to_container:
+    :param container:
         Factory function to create a dict-like object to store properties
     :return: Dict-like object holding shell variables' definitions
 
@@ -84,7 +84,7 @@ def load(stream, to_container=dict):
     >>> load(to_strm("aaa=bbb # ..."))
     {'aaa': 'bbb'}
     """
-    ret = to_container()
+    ret = container()
 
     for line in stream.readlines():
         line = line.rstrip()
@@ -109,18 +109,18 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _type = "shellvars"
     _ordered = True
 
-    def load_from_stream(self, stream, to_container, **kwargs):
+    def load_from_stream(self, stream, container, **kwargs):
         """
         Load config from given file like object `stream`.
 
         :param stream:
             A file or file like object of shell scripts define shell variables
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param kwargs: optional keyword parameters (ignored)
 
         :return: Dict-like object holding config parameters
         """
-        return load(stream, to_container=to_container)
+        return load(stream, container=container)
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """

@@ -92,15 +92,15 @@ def _to_s(val, sep=", "):
         return str(val)
 
 
-def _make_parser(to_container, **kwargs):
+def _make_parser(container, **kwargs):
     """
-    :param to_container: any callable to make container
-    :return: (to_container, keyword args to be used, parser object)
+    :param container: any callable to make container
+    :return: (container, keyword args to be used, parser object)
     """
     if kwargs.get("ac_ordered", False) or kwargs.get("dict_type", False):
-        kwargs["dict_type"] = to_container = OrderedDict
+        kwargs["dict_type"] = container = OrderedDict
     if "dict_type" not in kwargs and not kwargs.get("ac_ordered", True):
-        kwargs["dict_type"] = to_container
+        kwargs["dict_type"] = container
 
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = mk_opt_args(("defaults", "dict_type", "allow_no_value"), kwargs)
@@ -115,32 +115,32 @@ def _make_parser(to_container, **kwargs):
         kwargs_0 = mk_opt_args(("defaults", "dict_type"), kwargs)
         parser = configparser.SafeConfigParser(**kwargs_0)
 
-    return (to_container, kwargs_1, parser)
+    return (container, kwargs_1, parser)
 
 
-def _load(stream, to_container=dict, sep=_SEP, **kwargs):
+def _load(stream, container=dict, sep=_SEP, **kwargs):
     """
     :param stream: File or file-like object provides ini-style conf
-    :param to_container: any callable to make container
+    :param container: any callable to make container
     :param sep: Seprator string
 
     :return: Dict or dict-like object represents config values
     """
-    (to_container, kwargs_1, parser) = _make_parser(to_container, **kwargs)
+    (container, kwargs_1, parser) = _make_parser(container, **kwargs)
     parse = _parse if kwargs.get("ac_parse_value") else anyconfig.utils.noop
 
-    cnf = to_container()
+    cnf = container()
     parser.readfp(stream, **kwargs_1)
 
     # .. note:: Process DEFAULT config parameters as special ones.
     defaults = parser.defaults()
     if defaults:
-        cnf["DEFAULT"] = to_container()
+        cnf["DEFAULT"] = container()
         for key, val in iteritems(defaults):
             cnf["DEFAULT"][key] = parse(val, sep)
 
     for sect in parser.sections():
-        cnf[sect] = to_container()
+        cnf[sect] = container()
         for key, val in parser.items(sect):
             cnf[sect][key] = parse(val, sep)
 
@@ -186,16 +186,16 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
     dump_to_string = anyconfig.backend.base.to_method(_dumps)
 
-    def load_from_stream(self, stream, to_container, **options):
+    def load_from_stream(self, stream, container, **options):
         """
         Load config from given file like object `stream`.
 
         :param stream:  Config file or file like object
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param options: optional keyword arguments
 
         :return: Dict-like object holding config parameters
         """
-        return _load(stream, to_container=to_container, **options)
+        return _load(stream, container=container, **options)
 
 # vim:sw=4:ts=4:et:

@@ -63,44 +63,44 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     dump_to_string = anyconfig.backend.base.to_method(json.dumps)
     dump_to_stream = anyconfig.backend.base.to_method(json.dump)
 
-    def _load(self, load_fn, content_or_strm, to_container, **opts):
+    def _load(self, load_fn, content_or_strm, container, **opts):
         """
         Load JSON config from given string or stream `content_or_strm`.
 
         :param content_or_strm: JSON config content or stream will provide it
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `json.load[s]`
 
         :return: Dict-like object holding configuration
         """
         if "object_pairs_hook" in self._load_opts:
             opts["object_pairs_hook"] = self._container_factory(**opts)
-            return to_container(load_fn(content_or_strm, **opts))
+            return container(load_fn(content_or_strm, **opts))
         else:
-            return load_fn(content_or_strm, object_hook=to_container, **opts)
+            return load_fn(content_or_strm, object_hook=container, **opts)
 
-    def load_from_string(self, content, to_container, **opts):
+    def load_from_string(self, content, container, **opts):
         """
         Load JSON config from given string `content`.
 
         :param content: JSON config content
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `json.loads`
 
         :return: Dict-like object holding configuration
         """
-        return self._load(json.loads, content, to_container, **opts)
+        return self._load(json.loads, content, container, **opts)
 
-    def load_from_stream(self, stream, to_container, **opts):
+    def load_from_stream(self, stream, container, **opts):
         """
         Load JSON config from given stream `stream`.
 
         :param stream: Stream will provide JSON config content string
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `json.load`
 
         :return: Dict-like object holding configuration
         """
-        return self._load(json.load, stream, to_container, **opts)
+        return self._load(json.load, stream, container, **opts)
 
 # vim:sw=4:ts=4:et:

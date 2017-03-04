@@ -35,6 +35,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _type = "toml"
     _extensions = ["toml"]
     _ordered = True
+    _dict_options = ["_dict"]
 
     dump_to_string = to_method(toml.dumps)
     dump_to_stream = to_method(toml.dump)
@@ -49,7 +50,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :return: Dict-like object holding configuration
         """
-        return toml.loads(content, _dict=container, **opts)
+        return toml.loads(content, **opts)
 
     def load_from_stream(self, stream, container, **opts):
         """
@@ -61,6 +62,6 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :return: Dict-like object holding configuration
         """
-        return toml.load(stream, _dict=container, **opts)
+        return toml.load(stream, **opts)
 
 # vim:sw=4:ts=4:et:

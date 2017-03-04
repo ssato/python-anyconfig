@@ -214,8 +214,8 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
 
         - Common options:
 
-          - ac_namedtuple: Convert result to nested namedtuple object if True
           - ac_schema: JSON schema file path to validate given config file
+          - ac_namedtuple: Convert result to nested namedtuple object if True
 
         - Common backend options:
 

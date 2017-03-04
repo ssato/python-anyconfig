@@ -38,6 +38,7 @@ except ImportError:
 _LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant"]
 _DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
               "cls", "indent", "separators", "default", "sort_keys"]
+_DICT_OPTS = ["object_hook"]
 
 # It seems that 'encoding' argument is not allowed in json.load[s] and
 # json.dump[s] in JSON module in python 3.x.
@@ -47,6 +48,7 @@ if not anyconfig.compat.IS_PYTHON_3:
 
 if not anyconfig.compat.IS_PYTHON_2_6:
     _LOAD_OPTS.append("object_pairs_hook")
+    _DICT_OPTS.insert(0, "object_pairs_hook")  # Higher prio. than object_hook
 
 
 class Parser(anyconfig.backend.base.FromStreamLoader,
@@ -59,6 +61,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _load_opts = _LOAD_OPTS
     _dump_opts = _DUMP_OPTS
     _ordered = True
+    _dict_options = _DICT_OPTS
 
     dump_to_string = anyconfig.backend.base.to_method(json.dumps)
     dump_to_stream = anyconfig.backend.base.to_method(json.dump)
@@ -73,11 +76,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :return: Dict-like object holding configuration
         """
-        if "object_pairs_hook" in self._load_opts:
-            opts["object_pairs_hook"] = self._container_factory(**opts)
-            return container(load_fn(content_or_strm, **opts))
-        else:
-            return load_fn(content_or_strm, object_hook=container, **opts)
+        return load_fn(content_or_strm, **opts)
 
     def load_from_string(self, content, container, **opts):
         """

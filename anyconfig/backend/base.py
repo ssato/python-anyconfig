@@ -106,7 +106,7 @@ class Parser(object):
     _dump_opts = []
     _open_flags = ('r', 'w')
     _ordered = False
-    _dict_option = None
+    _dict_options = []
 
     @classmethod
     def type(cls):
@@ -150,11 +150,18 @@ class Parser(object):
         """
         return open(filepath, cls._open_flags[1], **kwargs)
 
-    def _load_options(self, **kwargs):
+    def _load_options(self, container, **options):
         """
-        Select backend specific loading options from `kwargs` only.
+        Select backend specific loading options.
         """
-        return mk_opt_args(self._load_opts, kwargs)
+        # Force set dict option if available in backend. For example,
+        # options["cls"] will be OrderedDict if 'container' was OrderedDict
+        # in JSON backend.
+        if self._dict_options:
+            for opt in (o for o in self._dict_options if o not in options):
+                options[opt] = container
+
+        return mk_opt_args(self._load_opts, options)
 
     def _container_factory(self, **options):
         """
@@ -165,12 +172,13 @@ class Parser(object):
         :return: Factory (class or function) to make an container.
         """
         ac_dict = options.get("ac_dict", False)
-        _dict = options.get(self._dict_option, False)
+        _dicts = [x for x in (options.get(o) for o in self._dict_options)
+                  if x]
 
         if ac_dict and callable(ac_dict):
             return ac_dict  # Higher priority than ac_ordered.
-        elif _dict and callable(_dict):
-            return _dict
+        elif _dicts and callable(_dicts[0]):
+            return _dicts[0]
         elif self.ordered() and options.get("ac_ordered", False):
             return anyconfig.compat.OrderedDict
         else:
@@ -229,7 +237,8 @@ class Parser(object):
             return container()
 
         return self.load_from_string(content, container,
-                                     **self._load_options(**options))
+                                     **self._load_options(container,
+                                                          **options))
 
     def load(self, path_or_stream, ignore_missing=False, **options):
         """
@@ -249,7 +258,7 @@ class Parser(object):
         :return: dict or dict-like object holding configurations
         """
         container = self._container_factory(**options)
-        options = self._load_options(**options)
+        options = self._load_options(container, **options)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
             if ignore_missing and not os.path.exists(path_or_stream):

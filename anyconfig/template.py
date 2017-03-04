@@ -153,4 +153,20 @@ def render(filepath, ctx=None, paths=None, ask=False):
 
         return render_impl(usr_tmpl, ctx, paths)
 
+
+def try_render(filepath, **options):
+    """
+    Compile and render template and return the result as a string.
+
+    :param options: Keyword options passed to :func:`render` defined above.
+    :return: Compiled result (str) or None
+    """
+    LOGGER.debug("Compiling: %s", filepath)
+    try:
+        return render(filepath, **options)
+    except Exception as exc:
+        LOGGER.warning("Failed to compile '%s'. It may not be a template.\n"
+                       "exc=%r", filepath, exc)
+        return None
+
 # vim:sw=4:ts=4:et:

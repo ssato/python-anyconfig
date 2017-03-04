@@ -106,6 +106,7 @@ class Parser(object):
     _dump_opts = []
     _open_flags = ('r', 'w')
     _ordered = False
+    _dict_option = None
 
     @classmethod
     def type(cls):
@@ -157,12 +158,19 @@ class Parser(object):
 
     def _container_factory(self, **options):
         """
+        The order of prirorities are ac_dict, backend specific dict class
+        option, ac_ordered.
+
         :param options: Keyword options may contain 'ac_ordered'.
         :return: Factory (class or function) to make an container.
         """
         ac_dict = options.get("ac_dict", False)
+        _dict = options.get(self._dict_option, False)
+
         if ac_dict and callable(ac_dict):
             return ac_dict  # Higher priority than ac_ordered.
+        elif _dict and callable(_dict):
+            return _dict
         elif self.ordered() and options.get("ac_ordered", False):
             return anyconfig.compat.OrderedDict
         else:

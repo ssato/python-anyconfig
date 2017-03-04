@@ -13,7 +13,7 @@ import anyconfig.backend.base as TT  # stands for test target
 import tests.common
 
 
-MZERO = TT.Parser()._container_fn()()
+MZERO = TT.Parser()._container_factory()()
 
 
 class Test00(unittest.TestCase):

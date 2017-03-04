@@ -303,22 +303,13 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     cnf = to_container(ac_context, **options)
     same_type = anyconfig.utils.are_same_file_types(paths)
 
-    if is_path(paths) and marker in paths:
-        paths = anyconfig.utils.sglob(paths)
-
-    for path in paths:
+    for path in anyconfig.utils.norm_paths(paths):
         opts = options.copy()
         opts["ac_namedtuple"] = False  # Disabled within this loop.
-        # Nested patterns like ['*.yml', '/a/b/c.yml'].
-        if is_path(path) and marker in path:
-            cups = multi_load(path, ac_parser=ac_parser,
-                              ac_template=ac_template, ac_context=cnf, **opts)
-        else:
-            if same_type:
-                ac_parser = find_loader(path, ac_parser, is_path(path))
-            cups = single_load(path, ac_parser=ac_parser,
-                               ac_template=ac_template, ac_context=cnf, **opts)
-
+        if same_type:
+            ac_parser = find_loader(path, ac_parser, is_path(path))
+        cups = single_load(path, ac_parser=ac_parser,
+                           ac_template=ac_template, ac_context=cnf, **opts)
         if cups:
             cnf.update(cups)
 

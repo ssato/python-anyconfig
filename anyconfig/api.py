@@ -149,7 +149,7 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
         raise
 
 
-def _load_schema(**options):
+def _maybe_schema(**options):
     """
     :param options: Optional keyword arguments such as
 
@@ -233,8 +233,8 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
         filepath = anyconfig.utils.get_path_from_stream(path_or_stream)
 
     psr = find_loader(path_or_stream, ac_parser, is_path_)
-    schema = _load_schema(ac_template=ac_template, ac_context=ac_context,
-                          **options)
+    schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
+                           **options)
     options["ac_schema"] = None  # It's not needed now.
 
     LOGGER.info("Loading: %s", filepath)
@@ -297,8 +297,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     :return: dict or dict-like object supports merge operations
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
-    schema = _load_schema(ac_template=ac_template, ac_context=ac_context,
-                          **options)
+    schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
+                           **options)
     options["ac_schema"] = None  # It's not needed now.
 
     cnf = to_container(ac_context, **options)

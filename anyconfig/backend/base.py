@@ -148,7 +148,7 @@ class Parser(object):
         """
         return mk_opt_args(self._load_opts, kwargs)
 
-    def _container_fn(self, **options):
+    def _container_factory(self, **options):
         """
         :param options: Keyword options may contain 'ac_ordered'.
         :return: Factory (class or function) to make an container.
@@ -209,7 +209,7 @@ class Parser(object):
 
         :return: dict or dict-like object holding configurations
         """
-        container = self._container_fn(**options)
+        container = self._container_factory(**options)
         if not content or content is None:
             return container()
 
@@ -233,7 +233,7 @@ class Parser(object):
 
         :return: dict or dict-like object holding configurations
         """
-        container = self._container_fn(**options)
+        container = self._container_factory(**options)
         options = self._load_options(**options)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):

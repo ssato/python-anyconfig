@@ -74,7 +74,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
         :return: Dict-like object holding configuration
         """
         if "object_pairs_hook" in self._load_opts:
-            opts["object_pairs_hook"] = self._container_fn(**opts)
+            opts["object_pairs_hook"] = self._container_factory(**opts)
             return to_container(load_fn(content_or_strm, **opts))
         else:
             return load_fn(content_or_strm, object_hook=to_container, **opts)

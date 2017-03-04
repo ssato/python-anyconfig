@@ -87,6 +87,13 @@ def to_method(func):
     return wrapper
 
 
+def _not_implemented(*args, **kwargs):
+    """
+    Utility function to raise NotImplementedError.
+    """
+    raise NotImplementedError()
+
+
 class Parser(object):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
@@ -171,7 +178,7 @@ class Parser(object):
 
         :return: Dict-like object holding config parameters
         """
-        return container()
+        _not_implemented(self, content, container, **kwargs)
 
     def load_from_path(self, filepath, container, **kwargs):
         """
@@ -183,7 +190,7 @@ class Parser(object):
 
         :return: Dict-like object holding config parameters
         """
-        return container()
+        _not_implemented(self, filepath, container, **kwargs)
 
     def load_from_stream(self, stream, container, **kwargs):
         """
@@ -195,7 +202,7 @@ class Parser(object):
 
         :return: Dict-like object holding config parameters
         """
-        return container()
+        _not_implemented(self, stream, container, **kwargs)
 
     def loads(self, content, **options):
         """
@@ -255,7 +262,7 @@ class Parser(object):
 
         :return: string represents the configuration
         """
-        pass
+        _not_implemented(self, cnf, **kwargs)
 
     def dump_to_path(self, cnf, filepath, **kwargs):
         """
@@ -265,7 +272,7 @@ class Parser(object):
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
-        pass
+        _not_implemented(self, cnf, filepath, **kwargs)
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """
@@ -277,7 +284,7 @@ class Parser(object):
         :param stream:  Config file or file like object
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
-        pass
+        _not_implemented(self, cnf, stream, **kwargs)
 
     def dumps(self, cnf, **kwargs):
         """

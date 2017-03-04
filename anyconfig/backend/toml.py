@@ -39,28 +39,28 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     dump_to_string = to_method(toml.dumps)
     dump_to_stream = to_method(toml.dump)
 
-    def load_from_string(self, content, to_container, **opts):
+    def load_from_string(self, content, container, **opts):
         """
         Load TOML config from given string `content`.
 
         :param content: TOML config content
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `toml.loads`
 
         :return: Dict-like object holding configuration
         """
-        return toml.loads(content, _dict=to_container, **opts)
+        return toml.loads(content, _dict=container, **opts)
 
-    def load_from_stream(self, stream, to_container, **opts):
+    def load_from_stream(self, stream, container, **opts):
         """
         Load TOML config from given stream `stream`.
 
         :param stream: Stream will provide config content string
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: keyword options passed to `toml.load`
 
         :return: Dict-like object holding configuration
         """
-        return toml.load(stream, _dict=to_container, **opts)
+        return toml.load(stream, _dict=container, **opts)
 
 # vim:sw=4:ts=4:et:

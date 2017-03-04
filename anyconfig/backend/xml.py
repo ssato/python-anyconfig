@@ -153,10 +153,10 @@ def _dicts_have_unique_keys(dics):
     return len(set(key_itr)) == sum(len(d) for d in dics)
 
 
-def _merge_dicts(dics, to_container=dict):
+def _merge_dicts(dics, container=dict):
     """
     :param dics: [<dict/-like object must not have same keys each other>]
-    :param to_container: callble to make a container object
+    :param container: callble to make a container object
     :return: <container> object
 
     >>> _merge_dicts(({}, ))
@@ -167,7 +167,7 @@ def _merge_dicts(dics, to_container=dict):
     [('a', 1), ('b', 2)]
     """
     dic_itr = anyconfig.compat.from_iterable(d.items() for d in dics)
-    return to_container(anyconfig.compat.OrderedDict(dic_itr))
+    return container(anyconfig.compat.OrderedDict(dic_itr))
 
 
 def _parse_text(val, **options):
@@ -200,21 +200,21 @@ def _process_elem_text(elem, dic, subdic, text="@text", **options):
             dic[elem.tag] = etext  # Only text, e.g. <a>text</a>
 
 
-def _parse_attrs(elem, to_container=dict, **options):
+def _parse_attrs(elem, container=dict, **options):
     """
     :param elem: ET Element object has attributes (elem.attrib)
-    :param to_container: callble to make a container object
+    :param container: callble to make a container object
     :return: Parsed value or value itself depends on `ac_parse_value`
     """
     adic = dict((_tweak_ns(a, **options), v) for a, v in elem.attrib.items())
     if options.get("ac_parse_value", False):
-        return to_container(dict((k, anyconfig.parser.parse_single(v))
-                                 for k, v in adic.items()))
+        return container(dict((k, anyconfig.parser.parse_single(v))
+                              for k, v in adic.items()))
     else:
-        return to_container(adic)
+        return container(adic)
 
 
-def _process_elem_attrs(elem, dic, subdic, to_container=dict, attrs="@attrs",
+def _process_elem_attrs(elem, dic, subdic, container=dict, attrs="@attrs",
                         **options):
     """
     :param elem: ET Element object or None
@@ -226,20 +226,20 @@ def _process_elem_attrs(elem, dic, subdic, to_container=dict, attrs="@attrs",
 
     :return: None but updating dic and subdic as side effects
     """
-    adic = _parse_attrs(elem, to_container=to_container, **options)
+    adic = _parse_attrs(elem, container=container, **options)
     if not elem.text and not len(elem) and options.get("merge_attrs"):
         dic[elem.tag] = adic
     else:
         subdic[attrs] = adic
 
 
-def _process_children_elems(elem, dic, subdic, to_container=dict,
+def _process_children_elems(elem, dic, subdic, container=dict,
                             children="@children", **options):
     """
     :param elem: ET Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
-    :param to_container: callble to make a container object
+    :param container: callble to make a container object
     :param children: Tag for children nodes
     :param options:
         Keyword options, see the description of :func:`elem_to_container` for
@@ -247,20 +247,20 @@ def _process_children_elems(elem, dic, subdic, to_container=dict,
 
     :return: None but updating dic and subdic as side effects
     """
-    cdics = [elem_to_container(c, to_container=to_container, **options)
+    cdics = [elem_to_container(c, container=container, **options)
              for c in elem]
     merge_attrs = options.get("merge_attrs", False)
-    sdics = [to_container(elem.attrib) if merge_attrs else subdic] + cdics
+    sdics = [container(elem.attrib) if merge_attrs else subdic] + cdics
 
     if _dicts_have_unique_keys(sdics):  # ex. <a><b>1</b><c>c</c></a>
-        dic[elem.tag] = _merge_dicts(sdics, to_container)
+        dic[elem.tag] = _merge_dicts(sdics, container)
     elif not subdic:  # There are no attrs nor text and only these children.
         dic[elem.tag] = cdics
     else:
         subdic[children] = cdics
 
 
-def elem_to_container(elem, to_container=dict, **options):
+def elem_to_container(elem, container=dict, **options):
     """
     Convert XML ElementTree Element to a collection of container objects.
 
@@ -273,7 +273,7 @@ def elem_to_container(elem, to_container=dict, **options):
     - There are only children elements each has unique keys among all
 
     :param elem: ET Element object or None
-    :param to_container: callble to make a container object
+    :param container: callble to make a container object
     :param options: Keyword options
 
         - nspaces: A namespaces dict, {uri: prefix} or None
@@ -281,13 +281,13 @@ def elem_to_container(elem, to_container=dict, **options):
         - merge_attrs: Merge attributes and mix with children nodes, and the
           information of attributes are lost after its transformation.
     """
-    dic = to_container()
+    dic = container()
     if elem is None:
         return dic
 
     elem.tag = _tweak_ns(elem.tag, **options)  # {ns}tag -> ns_prefix:tag
-    subdic = dic[elem.tag] = to_container()
-    options["to_container"] = to_container
+    subdic = dic[elem.tag] = container()
+    options["container"] = container
 
     if elem.text:
         _process_elem_text(elem, dic, subdic, **options)
@@ -322,19 +322,19 @@ def _complement_tag_options(options):
     return options
 
 
-def root_to_container(root, to_container=dict, nspaces=None, **options):
+def root_to_container(root, container=dict, nspaces=None, **options):
     """
     Convert XML ElementTree Root Element to a collection of container objects.
 
     :param root: etree root object or None
-    :param to_container: callble to make a container object
+    :param container: callble to make a container object
     :param nspaces: A namespaces dict, {uri: prefix} or None
     :param options: Keyword options,
 
         - tags: Dict of tags for special nodes to keep XML info, attributes,
           text and children nodes, e.g. {"attrs": "@attrs", "text": "#text"}
     """
-    tree = to_container()
+    tree = container()
     if root is None:
         return tree
 
@@ -342,7 +342,7 @@ def root_to_container(root, to_container=dict, nspaces=None, **options):
         for uri, prefix in nspaces.items():
             root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
 
-    return elem_to_container(root, to_container=to_container, nspaces=nspaces,
+    return elem_to_container(root, container=container, nspaces=nspaces,
                              **_complement_tag_options(options))
 
 
@@ -445,13 +445,13 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
     _load_opts = _dump_opts = ["tags", "merge_attrs", "ac_parse_value"]
     _ordered = True
 
-    def load_from_string(self, content, to_container, **opts):
+    def load_from_string(self, content, container, **opts):
         """
         Load config from XML snippet (a string `content`).
 
         :param content:
             XML snippet string of str (python 2) or bytes (python 3) type
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: optional keyword parameters passed to
 
         :return: Dict-like object holding config parameters
@@ -462,26 +462,26 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         else:
             stream = anyconfig.compat.StringIO(content)
         nspaces = _namespaces_from_file(stream)
-        return root_to_container(root, to_container=to_container,
+        return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)
 
-    def load_from_path(self, filepath, to_container, **opts):
+    def load_from_path(self, filepath, container, **opts):
         """
         :param filepath: XML file path
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: optional keyword parameters to be sanitized
 
         :return: Dict-like object holding config parameters
         """
         root = ET.parse(filepath).getroot()
         nspaces = _namespaces_from_file(filepath)
-        return root_to_container(root, to_container=to_container,
+        return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)
 
-    def load_from_stream(self, stream, to_container, **opts):
+    def load_from_stream(self, stream, container, **opts):
         """
         :param stream: XML file or file-like object
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param opts: optional keyword parameters to be sanitized
 
         :return: Dict-like object holding config parameters
@@ -489,7 +489,7 @@ class Parser(anyconfig.backend.base.ToStreamDumper):
         root = ET.parse(stream).getroot()
         path = anyconfig.utils.get_path_from_stream(stream)
         nspaces = _namespaces_from_file(path)
-        return root_to_container(root, to_container=to_container,
+        return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)
 
     def dump_to_string(self, cnf, **opts):

@@ -131,13 +131,13 @@ def escape(in_s):
     return ''.join(_escape_char(c) for c in in_s)
 
 
-def load(stream, to_container=dict, comment_markers=_COMMENT_MARKERS):
+def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     """
     Load and parse Java properties file given as a fiel or file-like object
     `stream`.
 
     :param stream: A file or file like object of Java properties files
-    :param to_container:
+    :param container:
         Factory function to create a dict-like object to store properties
     :param comment_markers: Comment markers, e.g. '#' (hash)
     :return: Dict-like object holding properties
@@ -165,7 +165,7 @@ def load(stream, to_container=dict, comment_markers=_COMMENT_MARKERS):
     >>> load(to_strm(s2))
     {'application/postscript': 'x=Postscript File;y=.eps,.ps'}
     """
-    ret = to_container()
+    ret = container()
     prev = ""
 
     for line in stream.readlines():
@@ -200,17 +200,17 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _extensions = ["properties"]
     _ordered = True
 
-    def load_from_stream(self, stream, to_container, **kwargs):
+    def load_from_stream(self, stream, container, **kwargs):
         """
         Load config from given file like object `stream`.
 
         :param stream: A file or file like object of Java properties files
-        :param to_container: callble to make a container object
+        :param container: callble to make a container object
         :param kwargs: optional keyword parameters (ignored)
 
         :return: Dict-like object holding config parameters
         """
-        return load(stream, to_container=to_container)
+        return load(stream, container=container)
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """

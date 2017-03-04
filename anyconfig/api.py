@@ -240,7 +240,8 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
 
     LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:
-        content = anyconfig.template.try_render(filepath, ctx=ac_context)
+        content = anyconfig.template.try_render(filepath=filepath,
+                                                ctx=ac_context)
         if content is not None:
             cnf = to_container(psr.loads(content, **options), **options)
             return _maybe_validated(cnf, schema, **options)
@@ -388,12 +389,10 @@ def loads(content, ac_parser=None, ac_template=False, ac_context=None,
                        ac_context=ac_context, **options)
 
     if ac_template:
-        try:
-            LOGGER.debug("Compiling")
-            content = anyconfig.template.render_s(content, ac_context)
-        except Exception as exc:
-            LOGGER.warning("Failed to compile and fallback to no template "
-                           "mode: '%s', exc=%r", content[:50] + '...', exc)
+        compiled = anyconfig.template.try_render(content=content,
+                                                 ctx=ac_context)
+        if compiled is not None:
+            content = compiled
 
     cnf = to_container(psr.loads(content, **options), **options)
     cnf = _maybe_validated(cnf, schema, **options)

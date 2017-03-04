@@ -172,6 +172,46 @@ def are_same_file_types(paths):
     return all(_try_to_get_extension(p) == ext for p in paths[1:])
 
 
+def _norm_paths_itr(paths, marker='*'):
+    """Iterator version of :func:`norm_paths`.
+    """
+    for path in paths:
+        if is_path(path):
+            if marker in path:  # glob path pattern
+                for ppath in sglob(path):
+                    yield ppath
+            else:
+                yield path  # a simple file path
+        else:  # A file or file-like object
+            yield path
+
+
+def norm_paths(paths, marker='*'):
+    """
+    :param paths:
+        A glob path pattern string, or a list consists of path strings or glob
+        path pattern strings or file objects
+    :param marker: Glob marker character or string, e.g. '*'
+    :return: List of path strings
+
+    >>> norm_paths([])
+    []
+    >>> norm_paths("/usr/lib/a/b.conf /etc/a/b.conf /run/a/b.conf".split())
+    ['/usr/lib/a/b.conf', '/etc/a/b.conf', '/run/a/b.conf']
+    >>> paths_s = os.path.join(os.path.dirname(__file__), "u*.py")
+    >>> ref = sglob(paths_s)
+    >>> assert norm_paths(paths_s) == ref
+    >>> ref = ["/etc/a.conf"] + ref
+    >>> assert norm_paths(["/etc/a.conf", paths_s]) == ref
+    >>> strm = anyconfig.compat.StringIO()
+    >>> assert norm_paths(["/etc/a.conf", strm]) == ["/etc/a.conf", strm]
+    """
+    if is_path(paths) and marker in paths:
+        return sglob(paths)
+
+    return list(_norm_paths_itr(paths, marker=marker))
+
+
 # pylint: disable=unused-argument
 def noop(val, *args, **kwargs):
     """A function does nothing.

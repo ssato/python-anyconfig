@@ -36,7 +36,7 @@ import anyconfig.backend.base
 import anyconfig.parser as P
 import anyconfig.utils
 
-from anyconfig.compat import configparser, iteritems, OrderedDict
+from anyconfig.compat import configparser, iteritems
 from anyconfig.backend.base import mk_opt_args
 
 
@@ -94,14 +94,9 @@ def _to_s(val, sep=", "):
 
 def _make_parser(container, **kwargs):
     """
-    :param container: any callable to make container
+    :param container: any callable to make dict or dict-like object
     :return: (container, keyword args to be used, parser object)
     """
-    if kwargs.get("ac_ordered", False) or kwargs.get("dict_type", False):
-        kwargs["dict_type"] = container = OrderedDict
-    if "dict_type" not in kwargs and not kwargs.get("ac_ordered", True):
-        kwargs["dict_type"] = container
-
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = mk_opt_args(("defaults", "dict_type", "allow_no_value"), kwargs)
     kwargs_1 = mk_opt_args(("filename", ), kwargs)
@@ -118,7 +113,7 @@ def _make_parser(container, **kwargs):
     return (container, kwargs_1, parser)
 
 
-def _load(stream, container=dict, sep=_SEP, **kwargs):
+def _load(stream, container, sep=_SEP, **kwargs):
     """
     :param stream: File or file-like object provides ini-style conf
     :param container: any callable to make container
@@ -183,6 +178,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _extensions = ["ini"]
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename",
                   "ac_parse_value"]
+    _dict_options = ["dict_type"]
 
     dump_to_string = anyconfig.backend.base.to_method(_dumps)
 
@@ -196,6 +192,6 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :return: Dict-like object holding config parameters
         """
-        return _load(stream, container=container, **options)
+        return _load(stream, container, **options)
 
 # vim:sw=4:ts=4:et:

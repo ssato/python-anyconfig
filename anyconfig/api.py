@@ -281,10 +281,10 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
             from multiple configuration files. See the doc of :mod:`m9dicts`
             for more details of strategies. The default is m9dicts.MS_DICTS.
 
-          - ac_marker (marker): Globbing marker to detect paths patterns.
-          - ac_namedtuple: Convert result to nested namedtuple object if True
           - ac_schema: JSON schema file path to validate given config file
           - ac_query: JMESPath expression to query data
+          - ac_marker (marker): Globbing marker to detect paths patterns.
+          - ac_namedtuple: Convert result to nested namedtuple object if True
 
         - Common backend options:
 

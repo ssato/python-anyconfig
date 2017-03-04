@@ -158,19 +158,28 @@ def render(filepath, ctx=None, paths=None, ask=False):
         return render_impl(usr_tmpl, ctx, paths)
 
 
-def try_render(filepath, **options):
+def try_render(filepath=None, content=None, **options):
     """
     Compile and render template and return the result as a string.
 
+    :param filepath: Absolute or relative path to the template file
+    :param content: Template content (str)
     :param options: Keyword options passed to :func:`render` defined above.
     :return: Compiled result (str) or None
     """
-    LOGGER.debug("Compiling: %s", filepath)
+    if filepath is None and content is None:
+        raise ValueError("Either 'path' or 'content' must be some value!")
+
+    tmpl_s = filepath or content[:10] + " ..."
+    LOGGER.debug("Compiling: %s", tmpl_s)
     try:
-        return render(filepath, **options)
+        if content is None:
+            return render(filepath, **options)
+        else:
+            return render_s(content, **options)
     except Exception as exc:
         LOGGER.warning("Failed to compile '%s'. It may not be a template.\n"
-                       "exc=%r", filepath, exc)
+                       "exc=%r", tmpl_s, exc)
         return None
 
 # vim:sw=4:ts=4:et:

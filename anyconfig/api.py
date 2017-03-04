@@ -298,7 +298,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
-    options["ac_schema"] = None  # It's not needed now.
+    options["ac_schema"] = None  # Avoid to load schema more than twice.
 
     cnf = to_container(ac_context, **options)
     same_type = anyconfig.utils.are_same_file_types(paths)

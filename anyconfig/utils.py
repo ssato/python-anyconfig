@@ -83,11 +83,15 @@ def concat(xss):
     return list(anyconfig.compat.from_iterable(xs for xs in xss))
 
 
-def ensure_expandusr(path):
+def normpath(path):
+    """Normalize path.
+
+    - eliminating double slashes, etc. (os.path.normpath)
+    - ensure paths contain ~[user]/ expanded.
+
+    :param path: Path string :: str
     """
-    Ensure paths contain ~[user]/ expanded.
-    """
-    return os.path.expanduser(path) if '~' in path else path
+    return os.path.normpath(os.path.expanduser(path) if '~' in path else path)
 
 
 def is_path(path_or_stream):

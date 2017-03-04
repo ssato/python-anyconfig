@@ -228,8 +228,7 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
     """
     is_path_ = is_path(path_or_stream)
     if is_path_:
-        path_or_stream = anyconfig.utils.ensure_expandusr(path_or_stream)
-        filepath = path_or_stream
+        filepath = path_or_stream = anyconfig.utils.normpath(path_or_stream)
     else:
         filepath = anyconfig.utils.get_path_from_stream(path_or_stream)
 

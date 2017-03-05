@@ -12,7 +12,6 @@ import anyconfig.backend.ini as TT
 import tests.common
 
 from anyconfig.compat import OrderedDict as ODict
-from tests.common import dicts_equal
 
 
 CNF_0_S = """[DEFAULT]
@@ -51,7 +50,7 @@ class Test10(unittest.TestCase):
                             ccls=dict, ref=False):
         if not ref:
             ref = self.cnf
-        self.assertTrue(dicts_equal(cnf, ref, ordered=ordered),
+        self.assertTrue(tests.common.dicts_equal(cnf, ref, ordered=ordered),
                         "\n %r\nvs.\n %r" % (cnf, ref))
         if instance_check:
             cls = ODict if self.is_order_kept and ordered else ccls
@@ -104,7 +103,8 @@ class Test11(Test10):
                                  ref=CNF_0)
 
     def test_16_loads__w_dict_factory(self):
-        return  # FIXME.
+        if self.cnf:
+            return  # FIXME.
         cnf = self.psr.loads(self.cnf_s, dict_type=MyDict, ac_parse_value=True)
         self._assert_dicts_equal(cnf, instance_check=True, ccls=MyDict)
 
@@ -162,7 +162,8 @@ class Test20(unittest.TestCase):
                             ref=False):
         if not ref:
             ref = self.cnf
-        self.assertTrue(dicts_equal(cnf, ref), "\n %r\nvs.\n %r" % (cnf, ref))
+        self.assertTrue(tests.common.dicts_equal(cnf, ref),
+                        "\n %r\nvs.\n %r" % (cnf, ref))
         if instance_check:
             cls = ODict if self.is_order_kept and ordered else dict
             self.assertTrue(isinstance(cnf, cls))
@@ -194,6 +195,6 @@ class Test20(unittest.TestCase):
         if self.is_order_kept:
             self.assertTrue(list(cnf.keys()), list(self.cnf.keys()))
         else:
-            self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+            self.assertTrue(tests.common.dicts_equal(cnf, self.cnf), str(cnf))
 
 # vim:sw=4:ts=4:et:

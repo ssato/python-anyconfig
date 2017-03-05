@@ -35,24 +35,31 @@ class MyDict(ODict):
     pass
 
 
-class Test10(unittest.TestCase):
+class TestBase(unittest.TestCase):
 
+    psr_cls = TT.Parser
     cnf = CNF_0
     cnf_s = CNF_0_S
-    load_options = dict(allow_no_value=False, defaults=None)
-    dump_options = dict()
-    is_order_kept = TT.Parser.ordered()
 
     def setUp(self):
-        self.psr = TT.Parser()
+        self.psr = self.psr_cls()
+
+    def ordered(self):
+        return self.psr.ordered()
 
     def _assert_dicts_equal(self, cnf, ordered=False, ccls=dict, ref=False):
         if not ref:
             ref = self.cnf
         self.assertTrue(tests.common.dicts_equal(cnf, ref, ordered=ordered),
                         "\n %r\nvs.\n %r" % (cnf, ref))
-        cls = ODict if self.is_order_kept and ordered else ccls
+        cls = ODict if self.ordered() and ordered else ccls
         self.assertTrue(isinstance(cnf, cls))
+
+
+class Test10(TestBase):
+
+    load_options = dict(allow_no_value=False, defaults=None)
+    dump_options = dict()
 
     def test_10_loads(self):
         cnf = self.psr.loads(self.cnf_s)
@@ -74,7 +81,7 @@ class Test10(unittest.TestCase):
 
     def test_30_loads_with_order_kept(self):
         cnf = self.psr.loads(self.cnf_s, ac_ordered=True)
-        self._assert_dicts_equal(cnf, ordered=self.is_order_kept)
+        self._assert_dicts_equal(cnf, ordered=self.ordered())
 
 
 class Test11(Test10):
@@ -115,7 +122,7 @@ class Test11(Test10):
 
     def test_30_loads_with_order_kept(self):
         cnf = self.psr.loads(self.cnf_s, ac_parse_value=True, ac_ordered=True)
-        self._assert_dicts_equal(cnf, ordered=self.is_order_kept)
+        self._assert_dicts_equal(cnf, ordered=self.ordered())
 
     def test_32_loads_with_order_kept(self):
         cnf = self.psr.loads(self.cnf_s, ac_parse_value=True, dict_type=ODict)
@@ -136,13 +143,9 @@ class Test12(Test10):
         self.assertEqual(self.psr.dumps(self.cnf), ref)
 
 
-class Test20(unittest.TestCase):
+class Test20(TestBase):
 
-    psr_cls = TT.Parser
-    cnf = CNF_0
-    cnf_s = CNF_0_S
     cnf_fn = "conf0.ini"
-    is_order_kept = True
 
     def setUp(self):
         self.psr = self.psr_cls()
@@ -161,7 +164,7 @@ class Test20(unittest.TestCase):
         self.assertTrue(tests.common.dicts_equal(cnf, ref),
                         "\n %r\nvs.\n %r" % (cnf, ref))
         if instance_check:
-            cls = ODict if self.is_order_kept and ordered else dict
+            cls = ODict if self.ordered() and ordered else dict
             self.assertTrue(isinstance(cnf, cls))
 
     def test_10_load(self):
@@ -188,7 +191,7 @@ class Test20(unittest.TestCase):
 
     def test_50_load_with_order_kept(self):
         cnf = self.psr.load(self.cpath, ac_ordered=True)
-        if self.is_order_kept:
+        if self.ordered():
             self.assertTrue(list(cnf.keys()), list(self.cnf.keys()))
         else:
             self.assertTrue(tests.common.dicts_equal(cnf, self.cnf), str(cnf))

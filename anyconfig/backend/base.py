@@ -137,6 +137,13 @@ class Parser(object):
         return cls._ordered
 
     @classmethod
+    def dict_options(cls):
+        """
+        :return: List of dict factory options
+        """
+        return cls._dict_options
+
+    @classmethod
     def ropen(cls, filepath, **kwargs):
         """
         :param filepath: Path to file to open to read data
@@ -157,8 +164,8 @@ class Parser(object):
         # Force set dict option if available in backend. For example,
         # options["cls"] will be OrderedDict if 'container' was OrderedDict
         # in JSON backend.
-        if self._dict_options:
-            for opt in (o for o in self._dict_options if o not in options):
+        if self.dict_options():
+            for opt in (o for o in self.dict_options() if o not in options):
                 options[opt] = container
 
         return mk_opt_args(self._load_opts, options)
@@ -172,7 +179,7 @@ class Parser(object):
         :return: Factory (class or function) to make an container.
         """
         ac_dict = options.get("ac_dict", False)
-        _dicts = [x for x in (options.get(o) for o in self._dict_options)
+        _dicts = [x for x in (options.get(o) for o in self.dict_options())
                   if x]
 
         if ac_dict and callable(ac_dict):

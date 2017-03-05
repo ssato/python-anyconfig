@@ -35,7 +35,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     """
     _type = "msgpack"
     _extensions = []
-    _load_opts = ["read_size", "use_list", "object_pairs_hook", "list_hook",
+    _load_opts = ["read_size", "use_list", "object_hook", "list_hook",
                   "encoding", "unicode_errors", "max_buffer_size", "ext_hook",
                   "max_str_len", "max_bin_len", "max_array_len", "max_map_len",
                   "max_ext_len", "object_pairs_hook"]
@@ -43,7 +43,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
                   "autoreset", "use_bin_type"]
     _open_flags = ('rb', 'wb')
     _ordered = True
-    _dict_options = ["object_hook"]
+    _dict_options = ["object_pairs_hook"]  # Exclusive with object_hook
 
     dump_to_string = to_method(msgpack.packb)
     dump_to_stream = to_method(msgpack.pack)

@@ -32,6 +32,10 @@ CNF_1 = ODict((("DEFAULT", ODict((("a", 0), ("b", "bbb"), ("c", 5)))),
                                 ("d", "x y z".split()))))))
 
 
+class MyDict(ODict):
+    pass
+
+
 class Test10(unittest.TestCase):
 
     cnf = CNF_0
@@ -43,11 +47,14 @@ class Test10(unittest.TestCase):
     def setUp(self):
         self.psr = TT.Parser()
 
-    def _assert_dicts_equal(self, cnf, ordered=False, instance_check=False):
-        self.assertTrue(dicts_equal(cnf, self.cnf, ordered=ordered),
-                        "\n %r\nvs.\n %r" % (cnf, self.cnf))
+    def _assert_dicts_equal(self, cnf, ordered=False, instance_check=False,
+                            ccls=dict, ref=False):
+        if not ref:
+            ref = self.cnf
+        self.assertTrue(dicts_equal(cnf, ref, ordered=ordered),
+                        "\n %r\nvs.\n %r" % (cnf, ref))
         if instance_check:
-            cls = ODict if self.is_order_kept and ordered else dict
+            cls = ODict if self.is_order_kept and ordered else ccls
             self.assertTrue(isinstance(cnf, cls))
 
     def test_10_loads(self):
@@ -85,6 +92,16 @@ class Test11(Test10):
         cnf = self.psr.loads(self.cnf_s, ac_parse_value=True,
                              **self.load_options)
         self._assert_dicts_equal(cnf, instance_check=True)
+
+    def test_14_loads__w_dict_factory(self):
+        cnf = self.psr.loads(self.cnf_s, dict_type=MyDict)
+        self._assert_dicts_equal(cnf, instance_check=True, ccls=MyDict,
+                                 ref=CNF_0)
+
+    def test_16_loads__w_dict_factory(self):
+        return  # FIXME.
+        cnf = self.psr.loads(self.cnf_s, dict_type=MyDict, ac_parse_value=True)
+        self._assert_dicts_equal(cnf, instance_check=True, ccls=MyDict)
 
     def test_20_dumps(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf), ac_parse_value=True)
@@ -136,9 +153,11 @@ class Test20(unittest.TestCase):
     def tearDown(self):
         tests.common.cleanup_workdir(self.workdir)
 
-    def _assert_dicts_equal(self, cnf, ordered=False, instance_check=False):
-        self.assertTrue(dicts_equal(cnf, self.cnf),
-                        "\n %r\nvs.\n %r" % (cnf, self.cnf))
+    def _assert_dicts_equal(self, cnf, ordered=False, instance_check=False,
+                            ref=False):
+        if not ref:
+            ref = self.cnf
+        self.assertTrue(dicts_equal(cnf, ref), "\n %r\nvs.\n %r" % (cnf, ref))
         if instance_check:
             cls = ODict if self.is_order_kept and ordered else dict
             self.assertTrue(isinstance(cnf, cls))

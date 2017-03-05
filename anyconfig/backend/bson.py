@@ -10,9 +10,9 @@ r"""BSON backend:
 - Requirements: bson in pymongo, https://pypi.python.org/pypi/pymongo/
 - Development Status: 3 - Alpha
 - Limitations: It seems that the APIs of bson.decode\* were changed a lot in
-  the current version (3.2) of python-bson in pymongo and this backend might
+  the current version (3.3) of python-bson in pymongo and this backend might
   not work with it. I don't have a time to test with that latest version yet
-  and it's only tested with the older one, 2.5.2.
+  and it's only tested with the older one, 3.3.1.
 - Special options:
 
   - All keyword options for :meth:`encode` (dump{s,}) and :meth:`decode`
@@ -21,6 +21,11 @@ r"""BSON backend:
   - See also: https://api.mongodb.org/python/current/api/bson/
 
 Changelog:
+
+.. versionchanged:: 0.8.3
+
+   - follow changes of options of bson.BSON.{encode,decode} in its upstream and
+     changed or added some keyword options including ones for bson.CodecOptions
 
 .. versionchanged:: 0.5.0
 
@@ -39,6 +44,20 @@ import bson
 import anyconfig.backend.base
 
 
+_CO_OPTIONS = ("document_class", "tz_aware", "uuid_representation",
+               "unicode_decode_error_handler", "tzinfo")
+
+
+def _codec_options(**options):
+    """
+    bson.BSON.{decode{,_all},encode} can receive bson.CodecOptions.
+
+    :return: :class:`~bson.CodecOptions`
+    """
+    opts = anyconfig.backend.base.mk_opt_args(_CO_OPTIONS, options)
+    return bson.CodecOptions(**opts)
+
+
 class Parser(anyconfig.backend.base.FromStringLoader,
              anyconfig.backend.base.ToStringDumper):
     """
@@ -46,13 +65,21 @@ class Parser(anyconfig.backend.base.FromStringLoader,
     """
     _type = "bson"
     _extensions = ["bson", "bsn"]  # Temporary.
-    _load_opts = [] if bson.has_c() else ["tz_aware", "uuid_subtype"]
-    _dump_opts = ["check_keys", "uuid_subtype"]
+    _load_opts = [] if bson.has_c() else ["codec_options"]
+    _dump_opts = [] if bson.has_c() else ["check_keys", "codec_options"]
     _open_flags = ('rb', 'wb')
-    _ordered = not bson.has_c()
-    _dict_options = ["as_class"]
+    _ordered = True
 
-    dump_to_string = anyconfig.backend.base.to_method(bson.BSON.encode)
+    def _load_options(self, container, **options):
+        """
+        :param container: callble to make a container object later
+        """
+        if "codec_options" not in options:
+            options.setdefault("document_class", container)
+            if any(k in options for k in _CO_OPTIONS):
+                options["codec_options"] = _codec_options(**options)
+
+        return anyconfig.backend.base.mk_opt_args(self._load_opts, options)
 
     def load_from_string(self, content, container, **kwargs):
         """
@@ -65,7 +92,7 @@ class Parser(anyconfig.backend.base.FromStringLoader,
         :return: Dict-like object holding config parameters
         """
         if self._load_opts:  # indicates that C extension is not used.
-            objs = bson.decode_all(content, as_class=container, **kwargs)
+            objs = bson.decode_all(content, **kwargs)
         else:
             # .. note::
             #    The order of loaded configuration keys may be lost but
@@ -73,5 +100,22 @@ class Parser(anyconfig.backend.base.FromStringLoader,
             objs = [container(x) for x in bson.decode_all(content)]
 
         return objs[0] if objs else None
+
+    def dump_to_string(self, data, **options):
+        """Dump BSON data `data` to a string.
+
+        :param data: BSON Data to dump
+        :param options: optional keyword parameters to be sanitized
+        :return: string represents the configuration
+        """
+        if self._dump_opts:
+            container = self._container_factory(**options)
+            opts = self._load_options(container, **options)
+            for key in self._dump_opts:
+                if options.get(key, False):
+                    opts[key] = options[key]
+            return bson.BSON.encode(data, *opts)
+        else:
+            return bson.BSON.encode(data)
 
 # vim:sw=4:ts=4:et:

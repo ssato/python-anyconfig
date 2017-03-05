@@ -58,7 +58,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :return: Dict-like object holding configuration
         """
-        return msgpack.unpackb(content, **opts)
+        return container(msgpack.unpackb(content, **opts))
 
     def load_from_stream(self, stream, container, **opts):
         """
@@ -70,6 +70,6 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :return: Dict-like object holding configuration
         """
-        return msgpack.unpack(stream, **opts)
+        return container(msgpack.unpack(stream, **opts))
 
 # vim:sw=4:ts=4:et:

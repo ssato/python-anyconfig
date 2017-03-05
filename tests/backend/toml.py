@@ -34,8 +34,8 @@ enabled = true
   ip = "10.0.0.2"
   dc = "eqdc10"
 
-  [clients]
-  data = [ ["gamma", "delta"], [1, 2] ]
+[clients]
+data = [ ["gamma", "delta"], [1, 2] ]
 
 hosts = [
   "alpha",
@@ -45,23 +45,23 @@ hosts = [
 
 _DOB = TT.toml.loads("dob = 1979-05-27T07:32:00Z")['dob']
 
-CNF = ODict((('clients',
-              ODict((('data', [['gamma', 'delta'], [1, 2]]),
-                     ('hosts', ['alpha', 'omega'])))),
-             ('database',
-              ODict((('connection_max', 5000),
-                     ('enabled', True),
-                     ('ports', [8001, 8001, 8002]),
-                     ('server', '192.168.1.1')))),
+CNF = ODict((('title', 'TOML Example'),
              ('owner',
-              ODict((('dob', _DOB),
-                     ('name', 'Tom Preston-Werner')))),
+              ODict((('name', 'Tom Preston-Werner'),
+                     ('dob', _DOB)))),
+             ('database',
+              ODict((('server', '192.168.1.1'),
+                     ('ports', [8001, 8001, 8002]),
+                     ('connection_max', 5000),
+                     ('enabled', True)))),
              ('servers',
               ODict((('alpha',
-                      ODict((('dc', 'eqdc10'), ('ip', '10.0.0.1')))),
+                      ODict((('ip', '10.0.0.1'), ('dc', 'eqdc10')))),
                      ('beta',
-                      ODict((('dc', 'eqdc10'), ('ip', '10.0.0.2'))))))),
-             ('title', 'TOML Example')))
+                      ODict((('ip', '10.0.0.2'), ('dc', 'eqdc10'))))))),
+             ('clients',
+              ODict((('data', [['gamma', 'delta'], [1, 2]]),
+                     ('hosts', ['alpha', 'omega']))))))
 
 
 class Test10(tests.backend.ini.Test10):
@@ -69,7 +69,6 @@ class Test10(tests.backend.ini.Test10):
     cnf = CNF
     cnf_s = CNF_S
     load_options = dump_options = dict(dummy="this_will_be_ignored")
-    is_order_kept = False  # ..note:: toml backend cannot do this yet.
 
     def setUp(self):
         self.psr = TT.Parser()

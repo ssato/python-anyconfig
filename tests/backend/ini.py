@@ -98,6 +98,11 @@ class Test11(Test10):
         self._assert_dicts_equal(cnf, instance_check=True, ccls=MyDict,
                                  ref=CNF_0)
 
+    def test_15_loads__w_dict_factory(self):
+        cnf = self.psr.loads(self.cnf_s, ac_dict=MyDict)
+        self._assert_dicts_equal(cnf, instance_check=True, ccls=MyDict,
+                                 ref=CNF_0)
+
     def test_16_loads__w_dict_factory(self):
         return  # FIXME.
         cnf = self.psr.loads(self.cnf_s, dict_type=MyDict, ac_parse_value=True)

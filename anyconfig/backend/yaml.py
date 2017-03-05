@@ -28,11 +28,16 @@ Changelog:
 from __future__ import absolute_import
 
 import yaml
+try:
+    from yaml import CSafeLoader as Loader
+except ImportError:
+    from yaml import SafeLoader as Loader
+
 import anyconfig.backend.base
 import anyconfig.mdicts
 
 
-def _set_dict_constructor(container):
+def _set_dict_constructor(container, loader=Loader):
     """
     Force set container (dict, OrderedDict, ...) used to construct python
     object from yaml node internally.
@@ -42,13 +47,33 @@ def _set_dict_constructor(container):
 
     :param container: Set container used internally
     """
-    def container_factory(loader, node):
-        """Constructor to be used to construct python object from yaml node.
-        """
-        return container(loader.construct_pairs(node))
+    def construct_mapping(loader, node, deep=False):
+        """Constructor to construct python object from yaml mapping node.
 
-    yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-                         container_factory)
+        :seealso: :meth:`yaml.BaseConstructor.construct_mapping`
+        """
+        if not isinstance(node, yaml.MappingNode):
+            msg = "expected a mapping node, but found %s" % node.id
+            raise yaml.constructor.ConstructorError(None, None, msg,
+                                                    node.start_mark)
+        mapping = container()
+        for key_node, value_node in node.value:
+            key = loader.construct_object(key_node, deep=deep)
+            try:
+                hash(key)
+            except TypeError, exc:
+                eargs = ("while constructing a mapping",
+                         node.start_mark,
+                         "found unacceptable key (%s)" % exc,
+                         key_node.start_mark)
+                raise yaml.constructor.ConstructorError(*eargs)
+            value = loader.construct_object(value_node, deep=deep)
+            mapping[key] = value
+
+        return mapping
+
+    loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+                           construct_mapping)
 
 
 def _yml_fnc(fname, *args, **kwargs):
@@ -77,8 +102,9 @@ def _yml_load(stream, container, **kwargs):
         kwargs = {}
     else:
         maybe_container = kwargs.get("ac_dict", None)
+        loader = kwargs.get("Loader", Loader)
         if maybe_container is not None and callable(maybe_container):
-            _set_dict_constructor(maybe_container)
+            _set_dict_constructor(maybe_container, loader=loader)
             container = maybe_container
 
     return container(_yml_fnc("load", stream, **kwargs))

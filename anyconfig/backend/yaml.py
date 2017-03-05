@@ -32,6 +32,25 @@ import anyconfig.backend.base
 import anyconfig.mdicts
 
 
+def _set_dict_constructor(container):
+    """
+    Force set container (dict, OrderedDict, ...) used to construct python
+    object from yaml node internally.
+
+    .. note::
+       It cannot be used with ac_safe keyword option at the same time yet.
+
+    :param container: Set container used internally
+    """
+    def container_factory(loader, node):
+        """Constructor to be used to construct python object from yaml node.
+        """
+        return container(loader.construct_pairs(node))
+
+    yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+                         container_factory)
+
+
 def _yml_fnc(fname, *args, **kwargs):
     """An wrapper of yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
 
@@ -56,6 +75,12 @@ def _yml_load(stream, container, **kwargs):
     """
     if "ac_safe" in kwargs:  # yaml.safe_load does not process Loader opts.
         kwargs = {}
+    else:
+        maybe_container = kwargs.get("ac_dict", None)
+        if maybe_container is not None and callable(maybe_container):
+            _set_dict_constructor(maybe_container)
+            container = maybe_container
+
     return container(_yml_fnc("load", stream, **kwargs))
 
 
@@ -83,6 +108,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
                   "default_flow_style", "canonical", "indent", "width",
                   "allow_unicode", "line_break", "encoding", "explicit_start",
                   "explicit_end", "version", "tags"]
+    # _ordered = True  # Not yet.
 
     load_from_stream = anyconfig.backend.base.to_method(_yml_load)
     dump_to_stream = anyconfig.backend.base.to_method(_yml_dump)

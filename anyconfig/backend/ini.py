@@ -41,6 +41,10 @@ from anyconfig.backend.base import mk_opt_args
 
 
 _SEP = ','
+try:
+    DEFAULTSECT = configparser.DEFAULTSECT
+except AttributeError:
+    DEFAULTSECT = "DEFAULT"
 
 
 def _noop(val, *args, **kwargs):
@@ -130,9 +134,9 @@ def _load(stream, container, sep=_SEP, **kwargs):
     # .. note:: Process DEFAULT config parameters as special ones.
     defaults = parser.defaults()
     if defaults:
-        cnf["DEFAULT"] = container()
+        cnf[DEFAULTSECT] = container()
         for key, val in iteritems(defaults):
-            cnf["DEFAULT"][key] = parse(val, sep)
+            cnf[DEFAULTSECT][key] = parse(val, sep)
 
     for sect in parser.sections():
         cnf[sect] = container()
@@ -142,11 +146,10 @@ def _load(stream, container, sep=_SEP, **kwargs):
     return cnf
 
 
-def _dumps_itr(cnf):
+def _dumps_itr(cnf, dkey=DEFAULTSECT):
     """
     :param cnf: Configuration data to dump
     """
-    dkey = "DEFAULT"
     for sect, params in iteritems(cnf):
         yield "[%s]" % sect
 

@@ -162,8 +162,8 @@ class Parser(object):
         Select backend specific loading options.
         """
         # Force set dict option if available in backend. For example,
-        # options["cls"] will be OrderedDict if 'container' was OrderedDict
-        # in JSON backend.
+        # options["object_hook"] will be OrderedDict if 'container' was
+        # OrderedDict in JSON backend.
         if self.dict_options():
             for opt in (o for o in self.dict_options() if o not in options):
                 options[opt] = container

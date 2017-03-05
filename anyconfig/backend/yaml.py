@@ -63,7 +63,7 @@ def _setup_loader_and_dumper(container, loader=Loader, dumper=Dumper):
             key = loader.construct_object(key_node, deep=deep)
             try:
                 hash(key)
-            except TypeError, exc:
+            except TypeError as exc:
                 eargs = ("while constructing a mapping",
                          node.start_mark,
                          "found unacceptable key (%s)" % exc,

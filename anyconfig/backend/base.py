@@ -243,9 +243,8 @@ class Parser(object):
         if not content or content is None:
             return container()
 
-        return self.load_from_string(content, container,
-                                     **self._load_options(container,
-                                                          **options))
+        options = self._load_options(container, **options)
+        return self.load_from_string(content, container, **options)
 
     def load(self, path_or_stream, ignore_missing=False, **options):
         """

@@ -35,7 +35,8 @@ except ImportError:
     import simplejson as json
 
 
-_LOAD_OPTS = ["cls", "parse_float", "parse_int", "parse_constant"]
+_LOAD_OPTS = ["cls", "object_hook", "parse_float", "parse_int",
+              "parse_constant"]
 _DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
               "cls", "indent", "separators", "default", "sort_keys"]
 _DICT_OPTS = ["object_hook"]

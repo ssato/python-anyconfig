@@ -29,15 +29,15 @@ from __future__ import absolute_import
 
 import yaml
 try:
-    from yaml import CSafeLoader as Loader
+    from yaml import CSafeLoader as Loader, CSafeDumper as Dumper
 except ImportError:
-    from yaml import SafeLoader as Loader
+    from yaml import SafeLoader as Loader, SafeDumper as Dumper
 
 import anyconfig.backend.base
 import anyconfig.mdicts
 
 
-def _set_dict_constructor(container, loader=Loader):
+def _setup_loader_and_dumper(container, loader=Loader, dumper=Dumper):
     """
     Force set container (dict, OrderedDict, ...) used to construct python
     object from yaml node internally.
@@ -47,6 +47,8 @@ def _set_dict_constructor(container, loader=Loader):
 
     :param container: Set container used internally
     """
+    map_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
+
     def construct_mapping(loader, node, deep=False):
         """Constructor to construct python object from yaml mapping node.
 
@@ -72,8 +74,13 @@ def _set_dict_constructor(container, loader=Loader):
 
         return mapping
 
-    loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-                           construct_mapping)
+    def container_representer(dumper, data):
+        """Container representer.
+        """
+        return dumper.represent_mapping(map_tag, data.items())
+
+    loader.add_constructor(map_tag, construct_mapping)
+    dumper.add_representer(container, container_representer)
 
 
 def _yml_fnc(fname, *args, **kwargs):
@@ -103,8 +110,10 @@ def _yml_load(stream, container, **kwargs):
     else:
         maybe_container = kwargs.get("ac_dict", None)
         loader = kwargs.get("Loader", Loader)
+        dumper = kwargs.get("Dumper", Dumper)
         if maybe_container is not None and callable(maybe_container):
-            _set_dict_constructor(maybe_container, loader=loader)
+            _setup_loader_and_dumper(maybe_container, loader=loader,
+                                     dumper=dumper)
             container = maybe_container
 
     return container(_yml_fnc("load", stream, **kwargs))

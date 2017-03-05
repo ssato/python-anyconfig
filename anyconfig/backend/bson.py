@@ -50,6 +50,7 @@ class Parser(anyconfig.backend.base.FromStringLoader,
     _dump_opts = ["check_keys", "uuid_subtype"]
     _open_flags = ('rb', 'wb')
     _ordered = not bson.has_c()
+    _dict_options = ["as_class"]
 
     dump_to_string = anyconfig.backend.base.to_method(bson.BSON.encode)
 

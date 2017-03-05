@@ -96,10 +96,20 @@ def _to_s(val, sep=", "):
         return str(val)
 
 
-def _make_parser(container, **kwargs):
+def _parsed_items(items, sep=_SEP, **options):
     """
-    :param container: any callable to make dict or dict-like object
-    :return: (container, keyword args to be used, parser object)
+    :param items: List of pairs, [(key, value)], or generator yields pairs
+    :param sep: Seprator string
+    :return: Generator to yield (key, value) pair of `dic`
+    """
+    parse = _parse if options.get("ac_parse_value") else anyconfig.utils.noop
+    for key, val in items:
+        yield (key, parse(val, sep))
+
+
+def _make_parser(**kwargs):
+    """
+    :return: (keyword args to be used, parser object)
     """
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = mk_opt_args(("defaults", "dict_type", "allow_no_value"), kwargs)
@@ -114,34 +124,30 @@ def _make_parser(container, **kwargs):
         kwargs_0 = mk_opt_args(("defaults", "dict_type"), kwargs)
         parser = configparser.SafeConfigParser(**kwargs_0)
 
-    return (container, kwargs_1, parser)
+    return (kwargs_1, parser)
 
 
-def _load(stream, container, sep=_SEP, **kwargs):
+def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
     """
     :param stream: File or file-like object provides ini-style conf
     :param container: any callable to make container
     :param sep: Seprator string
+    :param dkey: Default section name
 
     :return: Dict or dict-like object represents config values
     """
-    (container, kwargs_1, parser) = _make_parser(container, **kwargs)
-    parse = _parse if kwargs.get("ac_parse_value") else anyconfig.utils.noop
+    (kwargs_1, psr) = _make_parser(**kwargs)
+    psr.readfp(stream, **kwargs_1)
 
     cnf = container()
-    parser.readfp(stream, **kwargs_1)
+    kwargs["sep"] = sep
 
-    # .. note:: Process DEFAULT config parameters as special ones.
-    defaults = parser.defaults()
+    defaults = psr.defaults()
     if defaults:
-        cnf[DEFAULTSECT] = container()
-        for key, val in iteritems(defaults):
-            cnf[DEFAULTSECT][key] = parse(val, sep)
+        cnf[dkey] = container(_parsed_items(iteritems(defaults), **kwargs))
 
-    for sect in parser.sections():
-        cnf[sect] = container()
-        for key, val in parser.items(sect):
-            cnf[sect][key] = parse(val, sep)
+    for sect in psr.sections():
+        cnf[sect] = container(_parsed_items(psr.items(sect), **kwargs))
 
     return cnf
 
@@ -184,17 +190,6 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _dict_options = ["dict_type"]
 
     dump_to_string = anyconfig.backend.base.to_method(_dumps)
-
-    def load_from_stream(self, stream, container, **options):
-        """
-        Load config from given file like object `stream`.
-
-        :param stream:  Config file or file like object
-        :param container: callble to make a container object
-        :param options: optional keyword arguments
-
-        :return: Dict-like object holding config parameters
-        """
-        return _load(stream, container, **options)
+    load_from_stream = anyconfig.backend.base.to_method(_load)
 
 # vim:sw=4:ts=4:et:

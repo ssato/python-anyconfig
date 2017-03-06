@@ -164,9 +164,8 @@ class Parser(object):
         # Force set dict option if available in backend. For example,
         # options["object_hook"] will be OrderedDict if 'container' was
         # OrderedDict in JSON backend.
-        if self.dict_options():
-            for opt in (o for o in self.dict_options() if o not in options):
-                options[opt] = container
+        for opt in self.dict_options():
+            options.setdefault(opt, container)
 
         return mk_opt_args(self._load_opts, options)
 

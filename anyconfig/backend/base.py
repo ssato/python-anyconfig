@@ -99,6 +99,16 @@ class Parser(object):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
     and members.
+
+    - _type: Parser type indicate which format it supports
+    - _priority: Priority to select it if there are other parsers of same type
+    - _extensions: File extensions of formats it supports
+    - _load_opts: Backend specific options on load
+    - _dump_opts: Backend specific options on dump
+    - _open_flags: Opening flags to read and write files
+    - _ordered: True if the parser keep the order of items by default
+    - _dict_options:
+        Backend specific options to pass custom dict class to save results
     """
     _type = None
     _priority = 0   # 0 (lowest priority) .. 99  (highest priority)

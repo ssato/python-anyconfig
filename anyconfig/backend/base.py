@@ -477,4 +477,112 @@ class ToStreamDumper(Parser):
         with self.wopen(filepath) as out:
             self.dump_to_stream(cnf, out, **kwargs)
 
+
+def load_with_fn(load_fn, content_or_strm, container, **options):
+    """
+    Load data from given string or stream `content_or_strm`.
+
+    :param load_fn: Callable to load data
+    :param content_or_strm: data content or stream provides it
+    :param container: callble to make a container object
+    :param options: keyword options passed to `load_fn`
+
+    :return: container object holding data
+    """
+    return container(load_fn(content_or_strm, **options))
+
+
+def dump_with_fn(dump_fn, data, stream, **options):
+    """
+    Dump `data` to a string if `stream` is None, or dump `data` to a file or
+    file-like object `stream`.
+
+    :param dump_fn: Callable to dump data
+    :param data: Data to dump
+    :param stream:  File or file like object or None
+    :param options: optional keyword parameters
+
+    :return: String represents data if stream is None or None
+    """
+    if stream is None:
+        return dump_fn(data, **options)
+
+    dump_fn(data, stream, **options)
+
+
+class StringStreamFnParser(FromStreamLoader, ToStreamDumper):
+    """
+    Abstract parser utilizes load and dump functions each backend module
+    provides such like json.load{,s} and json.dump{,s} in JSON backend.
+
+    Parser classes inherit this class must define the followings.
+
+    - _load_from_string_fn: Callable to load data from string
+    - _load_from_stream_fn: Callable to load data from stream (file object)
+    - _dump_to_string_fn: Callable to dump data to string
+    - _dump_to_stream_fn: Callable to dump data to stream (file object)
+
+    .. note::
+       Callables have to be wrapped with :func:`to_method` to make `self`
+       passed to the methods created from them ignoring it.
+
+    :seealso: :class:`anyconfig.backend.json.Parser`
+    """
+    _load_from_string_fn = None
+    _load_from_stream_fn = None
+    _dump_to_string_fn = None
+    _dump_to_stream_fn = None
+
+    _load_with_fn = to_method(load_with_fn)
+    _dump_with_fn = to_method(dump_with_fn)
+
+    def load_from_string(self, content, container, **options):
+        """
+        Load configuration data from given string `content`.
+
+        :param content: Configuration string
+        :param container: callble to make a container object
+        :param options: keyword options passed to `_load_from_string_fn`
+
+        :return: container object holding the configuration data
+        """
+        return self._load_with_fn(self._load_from_string_fn, content,
+                                  container, **options)
+
+    def load_from_stream(self, stream, container, **options):
+        """
+        Load data from given stream `stream`.
+
+        :param stream: Stream provides configuration data
+        :param container: callble to make a container object
+        :param options: keyword options passed to `_load_from_stream_fn`
+
+        :return: container object holding the configuration data
+        """
+        return self._load_with_fn(self._load_from_stream_fn, stream,
+                                  container, **options)
+
+    def dump_to_string(self, data, **options):
+        """
+        Dump `data` to a string.
+
+        :param data: Data to dump
+        :param options: optional keyword parameters
+
+        :return: String represents given data
+        """
+        return self._dump_with_fn(self._dump_to_string_fn, data, None,
+                                  **options)
+
+    def dump_to_stream(self, data, stream, **options):
+        """
+        Dump `data` to a file or file-like object `stream`.
+
+        :param data: Data to dump
+        :param stream:  File or file like object
+        :param options: optional keyword parameters
+        """
+        self._dump_with_fn(self._dump_to_stream_fn, data, stream,
+                           **options)
+
 # vim:sw=4:ts=4:et:

@@ -40,21 +40,7 @@ else:
     DUMP_OPTS = ["protocol"]
 
 
-def load_with_fn(load_fn, content_or_strm, container, **opts):
-    """
-    Load pickled config from given string or stream `content_or_strm`.
-
-    :param content_or_strm: pickled config content or stream provides it
-    :param container: callble to make a container object
-    :param opts: keyword options passed to `pickle.load[s]`
-
-    :return: Dict-like object holding configuration
-    """
-    return container(load_fn(content_or_strm, **opts))
-
-
-class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.ToStreamDumper):
+class Parser(anyconfig.backend.base.StringStreamFnParser):
     """
     Parser for Pickle files.
     """
@@ -64,32 +50,9 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _dump_opts = DUMP_OPTS
     _open_flags = ('rb', 'wb')
 
-    dump_to_string = anyconfig.backend.base.to_method(pickle.dumps)
-    dump_to_stream = anyconfig.backend.base.to_method(pickle.dump)
-    _load = anyconfig.backend.base.to_method(load_with_fn)
-
-    def load_from_string(self, content, container, **opts):
-        """
-        Load Pickle config from given string `content`.
-
-        :param content: Pickled config content
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `pickle.loads`
-
-        :return: Dict-like object holding configuration
-        """
-        return self._load(pickle.loads, content, container, **opts)
-
-    def load_from_stream(self, stream, container, **opts):
-        """
-        Load Pickle config from given stream `stream`.
-
-        :param stream: Stream will provide Pickled config content string
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `pickle.load`
-
-        :return: Dict-like object holding configuration
-        """
-        return self._load(pickle.load, stream, container, **opts)
+    _load_from_string_fn = anyconfig.backend.base.to_method(pickle.loads)
+    _load_from_stream_fn = anyconfig.backend.base.to_method(pickle.load)
+    _dump_to_string_fn = anyconfig.backend.base.to_method(pickle.dumps)
+    _dump_to_stream_fn = anyconfig.backend.base.to_method(pickle.dump)
 
 # vim:sw=4:ts=4:et:

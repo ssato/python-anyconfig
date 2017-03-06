@@ -360,7 +360,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
         return anyconfig.query.query(cnf, **options)
 
 
-def loads(content, ac_parser=None, ac_dict=dict, ac_template=False,
+def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
           ac_context=None, **options):
     """
     :param content: Configuration file's content

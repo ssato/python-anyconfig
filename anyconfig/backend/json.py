@@ -26,13 +26,13 @@ Changelog:
 """
 from __future__ import absolute_import
 
-import anyconfig.backend.base
-import anyconfig.compat
-
 try:
     import json
 except ImportError:
     import simplejson as json
+
+import anyconfig.backend.base
+import anyconfig.compat
 
 
 _LOAD_OPTS = ["cls", "object_hook", "parse_float", "parse_int",

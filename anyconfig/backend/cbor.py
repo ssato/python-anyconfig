@@ -24,13 +24,9 @@ import cbor
 import anyconfig.backend.base
 import anyconfig.compat
 
-from anyconfig.backend.pickle import load_with_fn
 
-
-class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.ToStreamDumper):
-    """
-    Parser for CBOR files.
+class Parser(anyconfig.backend.base.StringStreamFnParser):
+    """Parser for CBOR files.
     """
     _type = "cbor"
     _extensions = ["cbor"]
@@ -38,32 +34,9 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _dump_opts = ["sort_keys"]
     _open_flags = ('rb', 'wb')
 
-    dump_to_string = anyconfig.backend.base.to_method(cbor.dumps)
-    dump_to_stream = anyconfig.backend.base.to_method(cbor.dump)
-    _load = anyconfig.backend.base.to_method(load_with_fn)
-
-    def load_from_string(self, content, container, **opts):
-        """
-        Load CBOR config from given string `content`.
-
-        :param content: CBOR config content
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `cbor.loads`
-
-        :return: Dict-like object holding configuration
-        """
-        return self._load(cbor.loads, content, container, **opts)
-
-    def load_from_stream(self, stream, container, **opts):
-        """
-        Load CBOR config from given stream `stream`.
-
-        :param stream: Stream will provide CBOR config content string
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `cbor.load`
-
-        :return: Dict-like object holding configuration
-        """
-        return self._load(cbor.load, stream, container, **opts)
+    _load_from_string_fn = anyconfig.backend.base.to_method(cbor.loads)
+    _load_from_stream_fn = anyconfig.backend.base.to_method(cbor.load)
+    _dump_to_string_fn = anyconfig.backend.base.to_method(cbor.dumps)
+    _dump_to_stream_fn = anyconfig.backend.base.to_method(cbor.dump)
 
 # vim:sw=4:ts=4:et:

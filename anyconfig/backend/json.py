@@ -52,8 +52,7 @@ if not anyconfig.compat.IS_PYTHON_2_6:
     _DICT_OPTS.insert(0, "object_pairs_hook")  # Higher prio. than object_hook
 
 
-class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.ToStreamDumper):
+class Parser(anyconfig.backend.base.StringStreamFnParser):
     """
     Parser for JSON files.
     """
@@ -64,43 +63,9 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _ordered = True
     _dict_options = _DICT_OPTS
 
-    dump_to_string = anyconfig.backend.base.to_method(json.dumps)
-    dump_to_stream = anyconfig.backend.base.to_method(json.dump)
-
-    def _load(self, load_fn, content_or_strm, container, **opts):
-        """
-        Load JSON config from given string or stream `content_or_strm`.
-
-        :param content_or_strm: JSON config content or stream will provide it
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `json.load[s]`
-
-        :return: Dict-like object holding configuration
-        """
-        return load_fn(content_or_strm, **opts)
-
-    def load_from_string(self, content, container, **opts):
-        """
-        Load JSON config from given string `content`.
-
-        :param content: JSON config content
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `json.loads`
-
-        :return: Dict-like object holding configuration
-        """
-        return self._load(json.loads, content, container, **opts)
-
-    def load_from_stream(self, stream, container, **opts):
-        """
-        Load JSON config from given stream `stream`.
-
-        :param stream: Stream will provide JSON config content string
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `json.load`
-
-        :return: Dict-like object holding configuration
-        """
-        return self._load(json.load, stream, container, **opts)
+    _load_from_string_fn = anyconfig.backend.base.to_method(json.loads)
+    _load_from_stream_fn = anyconfig.backend.base.to_method(json.load)
+    _dump_to_string_fn = anyconfig.backend.base.to_method(json.dumps)
+    _dump_to_stream_fn = anyconfig.backend.base.to_method(json.dump)
 
 # vim:sw=4:ts=4:et:

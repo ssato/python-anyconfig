@@ -397,8 +397,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
         if compiled is not None:
             content = compiled
 
-    cnf = to_container(psr.loads(content, ac_dict=ac_dict, **options),
-                       **options)
+    cnf = psr.loads(content, ac_dict=ac_dict, **options)
     cnf = _maybe_validated(cnf, schema, **options)
     return anyconfig.query.query(cnf, **options)
 

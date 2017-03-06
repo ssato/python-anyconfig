@@ -20,8 +20,9 @@ Changelog:
 
 .. versionchanged:: 0.8.3
 
-   - Add `_ordered` membmer and a class method :meth:` ordered to the class
+   - Add `_ordered` membmer and a class method :meth:` ordered to
      :class:`Parser`.
+   - Add `_dict_options` member to the class :class:`Parser`.
 
 .. versionchanged:: 0.2
 

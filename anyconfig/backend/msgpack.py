@@ -28,8 +28,7 @@ import anyconfig.backend.base
 from anyconfig.backend.base import to_method
 
 
-class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.ToStreamDumper):
+class Parser(anyconfig.backend.base.StringStreamFnParser):
     """
     Loader/Dumper for MessagePack files.
     """
@@ -45,31 +44,9 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _ordered = True
     _dict_options = ["object_pairs_hook"]  # Exclusive with object_hook
 
-    dump_to_string = to_method(msgpack.packb)
-    dump_to_stream = to_method(msgpack.pack)
-
-    def load_from_string(self, content, container, **opts):
-        """
-        Load config from given (byte) string `content`.
-
-        :param content: MessagePack-ed config content
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `msgpack.unpackb`
-
-        :return: Dict-like object holding configuration
-        """
-        return container(msgpack.unpackb(content, **opts))
-
-    def load_from_stream(self, stream, container, **opts):
-        """
-        Load JSON config from given stream `stream`.
-
-        :param stream: Stream will provide MessagePack-ed config content string
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `msgpack.unpack`
-
-        :return: Dict-like object holding configuration
-        """
-        return container(msgpack.unpack(stream, **opts))
+    _load_from_string_fn = to_method(msgpack.unpackb)
+    _load_from_stream_fn = to_method(msgpack.unpack)
+    _dump_to_string_fn = to_method(msgpack.packb)
+    _dump_to_stream_fn = to_method(msgpack.pack)
 
 # vim:sw=4:ts=4:et:

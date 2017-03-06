@@ -27,8 +27,7 @@ import anyconfig.backend.base
 from anyconfig.backend.base import to_method
 
 
-class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.ToStreamDumper):
+class Parser(anyconfig.backend.base.StringStreamFnParser):
     """
     TOML parser.
     """
@@ -37,31 +36,9 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _ordered = True
     _load_opts = _dump_opts = _dict_options = ["_dict"]
 
-    dump_to_string = to_method(toml.dumps)
-    dump_to_stream = to_method(toml.dump)
-
-    def load_from_string(self, content, container, **opts):
-        """
-        Load TOML config from given string `content`.
-
-        :param content: TOML config content
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `toml.loads`
-
-        :return: Dict-like object holding configuration
-        """
-        return toml.loads(content, **opts)
-
-    def load_from_stream(self, stream, container, **opts):
-        """
-        Load TOML config from given stream `stream`.
-
-        :param stream: Stream will provide config content string
-        :param container: callble to make a container object
-        :param opts: keyword options passed to `toml.load`
-
-        :return: Dict-like object holding configuration
-        """
-        return toml.load(stream, **opts)
+    _load_from_string_fn = to_method(toml.loads)
+    _load_from_stream_fn = to_method(toml.load)
+    _dump_to_string_fn = to_method(toml.dumps)
+    _dump_to_stream_fn = to_method(toml.dump)
 
 # vim:sw=4:ts=4:et:

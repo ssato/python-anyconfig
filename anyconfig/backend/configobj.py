@@ -31,7 +31,6 @@ from __future__ import absolute_import
 
 import configobj
 import anyconfig.backend.base
-import anyconfig.mdicts
 
 from anyconfig.compat import getargspec
 
@@ -55,7 +54,6 @@ def make_configobj(cnf, **kwargs):
 
     :return: An initialized configobj.ConfigObj instance
     """
-    cnf = anyconfig.mdicts.convert_to(cnf, ac_ordered=False)
     cobj = configobj.ConfigObj(**kwargs)
     cobj.update(cnf)
 

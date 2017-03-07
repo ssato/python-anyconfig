@@ -240,7 +240,7 @@ def _update_with_merge(self, other, key, val=None, merge_lists=False,
         self[key] = val
 
 
-def _update_with_merge_lists(self, other, key, val=None):
+def _update_with_merge_lists(self, other, key, val=None, **options):
     """
     Similar to _update_with_merge but merge lists always.
 
@@ -251,7 +251,7 @@ def _update_with_merge_lists(self, other, key, val=None):
 
     :return: None but `self` will be updated
     """
-    _update_with_merge(self, other, key, val=val, merge_lists=True)
+    _update_with_merge(self, other, key, val=val, merge_lists=True, **options)
 
 
 _MERGE_FNS = {MS_REPLACE: _update_with_replace,
@@ -295,21 +295,21 @@ def merge(self, other, ac_merge=MS_DICTS, **options):
             raise type(exc)("%s other=%r" % (str(exc), other))
 
 
-def _make_recur(obj, make_fn, ac_ordered=False, cls=None, **options):
+def _make_recur(obj, make_fn, ac_ordered=False, ac_dict=None, **options):
     """
     :param obj: A mapping objects or other primitive object
     :param make_fn: Function to make/convert to
     :param ac_ordered: Use OrderedDict instead of dict to keep order of items
-    :param cls: Convert `obj` to `cls` object instead of a dict.
+    :param ac_dict: Callable to convert `obj` to mapping object
     :param options: Optional keyword arguments.
 
-    :return: A dict or OrderedDict or object of `cls`
+    :return: Mapping object
     """
-    if cls is None:
-        cls = anyconfig.compat.OrderedDict if ac_ordered else dict
+    if ac_dict is None:
+        ac_dict = anyconfig.compat.OrderedDict if ac_ordered else dict
 
-    return cls((k, None if v is None else make_fn(v, **options))
-               for k, v in obj.items())
+    return ac_dict((k, None if v is None else make_fn(v, **options))
+                   for k, v in obj.items())
 
 
 def _make_iter(obj, make_fn, **options):
@@ -318,12 +318,12 @@ def _make_iter(obj, make_fn, **options):
     :param make_fn: Function to make/convert to
     :param options: Optional keyword arguments.
 
-    :return: A dict or OrderedDict or object of `cls`
+    :return: Mapping object
     """
     return type(obj)(make_fn(v, **options) for v in obj)
 
 
-def convert_to(obj, ac_ordered=False, cls=None, **options):
+def convert_to(obj, ac_ordered=False, ac_dict=None, **options):
     """
     Convert a mapping objects to a dict or object of `to_type` recursively.
     Borrowed basic idea and implementation from bunch.unbunchify. (bunch is
@@ -331,7 +331,7 @@ def convert_to(obj, ac_ordered=False, cls=None, **options):
 
     :param obj: A mapping objects or other primitive object
     :param ac_ordered: Use OrderedDict instead of dict to keep order of items
-    :param cls: Convert `obj` to `cls` object instead of a dict.
+    :param ac_dict: Callable to convert `obj` to mapping object
     :param options: Optional keyword arguments.
 
     :return: A dict or OrderedDict or object of `cls`
@@ -342,7 +342,7 @@ def convert_to(obj, ac_ordered=False, cls=None, **options):
     >>> convert_to(OD((('a', OD((('b', OD((('c', 1), ))), ))), )), cls=dict)
     {'a': {'b': {'c': 1}}}
     """
-    options.update(ac_ordered=ac_ordered, cls=cls)
+    options.update(ac_ordered=ac_ordered, ac_dict=ac_dict)
     if anyconfig.utils.is_dict_like(obj):
         return _make_recur(obj, convert_to, **options)
     elif anyconfig.utils.is_list_like(obj):

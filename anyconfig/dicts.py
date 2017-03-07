@@ -6,6 +6,10 @@
 # License: MIT
 #
 r"""Utility functions to operate on mapping objects such as get, set and merge.
+
+.. versionadded: 0.8.3
+   define _update_* and merge functions based on classes in :mod:`m9dicts.dicts`
+
 """
 from __future__ import absolute_import
 import functools

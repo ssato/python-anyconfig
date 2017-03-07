@@ -236,7 +236,7 @@ def is_dict_like(obj):
     False
     >>> is_dict_like({})
     True
-    >>> is_dict_like(m9dicts.compat.OrderedDict((('a', 1), ('b', 2))))
+    >>> is_dict_like(anyconfig.compat.OrderedDict((('a', 1), ('b', 2))))
     True
     """
     return isinstance(obj, (dict, collections.Mapping))  # any others?

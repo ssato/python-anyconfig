@@ -123,7 +123,7 @@ class Test_20_dumps_and_loads(unittest.TestCase):
         self.assert_dicts_equal(res, self.cnf)
 
     def test_30_dumps_and_loads__w_options(self):
-        cnf = TT.loads(TT.dumps(self.cnf, "json", indent=2), "json",
+        res = TT.loads(TT.dumps(self.cnf, "json", indent=2), "json",
                        ensure_ascii=False)
         self.assert_dicts_equal(res, self.cnf)
 

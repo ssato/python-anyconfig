@@ -34,7 +34,6 @@ except ImportError:
     from yaml import SafeLoader as Loader, SafeDumper as Dumper
 
 import anyconfig.backend.base
-import anyconfig.mdicts
 
 
 def _setup_loader_and_dumper(container, loader=Loader, dumper=Dumper):
@@ -122,12 +121,11 @@ def _yml_load(stream, container, **kwargs):
 def _yml_dump(cnf, stream, **kwargs):
     """An wrapper of yaml.safe_dump and yaml.dump.
 
-    :param cnf: Configuration data (dict-like object) to dump
-    :param stream: a file or file-like object to load YAML content
+    :param cnf: Mapping object to dump
+    :param stream: a file or file-like object to dump YAML data
     """
     if kwargs.get("ac_safe", False):
-        cnf = anyconfig.mdicts.convert_to(cnf, ac_ordered=False)
-
+        cnf = anyconfig.dicts.convert_to(cnf)
     return _yml_fnc("dump", cnf, stream, **kwargs)
 
 

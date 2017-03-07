@@ -79,7 +79,33 @@ def _not_implemented(*args, **kwargs):
     raise NotImplementedError()
 
 
-class Parser(object):
+class TextFilesParserMixin(object):
+    """Mixin Parser class to open text configuration files.
+    """
+    _open_flags = ('r', 'w')
+
+    @classmethod
+    def dict_options(cls):
+        """
+        :return: List of dict factory options
+        """
+        return cls._dict_options
+
+    @classmethod
+    def ropen(cls, filepath, **kwargs):
+        """
+        :param filepath: Path to file to open to read data
+        """
+        return open(filepath, cls._open_flags[0], **kwargs)
+
+
+class BinaryFilesParserMixin(TextFilesParserMixin):
+    """Mixin Parser class to open binary configuration files.
+    """
+    _open_flags = ('rb', 'wb')
+
+
+class Parser(TextFilesParserMixin):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
     and members.
@@ -99,7 +125,6 @@ class Parser(object):
     _extensions = []
     _load_opts = []
     _dump_opts = []
-    _open_flags = ('r', 'w')
     _ordered = False
     _dict_options = []
 
@@ -130,20 +155,6 @@ class Parser(object):
         :return: True if parser can keep the order of keys else False.
         """
         return cls._ordered
-
-    @classmethod
-    def dict_options(cls):
-        """
-        :return: List of dict factory options
-        """
-        return cls._dict_options
-
-    @classmethod
-    def ropen(cls, filepath, **kwargs):
-        """
-        :param filepath: Path to file to open to read data
-        """
-        return open(filepath, cls._open_flags[0], **kwargs)
 
     @classmethod
     def wopen(cls, filepath, **kwargs):

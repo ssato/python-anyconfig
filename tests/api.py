@@ -177,33 +177,32 @@ class Test_20_dumps_and_loads(TestBase):
         self.assertTrue(cnf_2 is None, cnf_2)
 
 
-class Test_30_single_load(unittest.TestCase):
-
-    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+class TestBaseWithIO(TestBase):
 
     def setUp(self):
         self.workdir = tests.common.setup_workdir()
+        self.a_path = os.path.join(self.workdir, "a.json")
+        self.exp = copy.deepcopy(self.dic)
 
     def tearDown(self):
         tests.common.cleanup_workdir(self.workdir)
 
+
+class Test_30_single_load(TestBaseWithIO):
+
     def test_10_dump_and_single_load(self):
-        cpath = os.path.join(self.workdir, "a.json")
+        TT.dump(self.cnf, self.a_path)
+        self.assertTrue(os.path.exists(self.a_path))
 
-        TT.dump(self.cnf, cpath)
-        self.assertTrue(os.path.exists(cpath))
-        cnf1 = TT.single_load(cpath)
-
-        self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
+        res = TT.single_load(self.a_path)
+        self.assert_dicts_equal(res, self.cnf)
 
     def test_11_dump_and_single_load__to_from_stream(self):
-        cpath = os.path.join(self.workdir, "a.json")
+        TT.dump(self.cnf, TT.open(self.a_path, mode='w'))
+        self.assertTrue(os.path.exists(self.a_path))
 
-        TT.dump(self.cnf, open(cpath, 'w'))
-        self.assertTrue(os.path.exists(cpath))
-        cnf1 = TT.single_load(open(cpath))
-
-        self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
+        res = TT.single_load(TT.open(self.a_path))
+        self.assert_dicts_equal(res, self.cnf)
 
     def test_12_dump_and_single_load__no_parser(self):
         self.assertRaises(TT.UnknownFileTypeError,
@@ -222,7 +221,7 @@ class Test_30_single_load(unittest.TestCase):
 
         cnf_s = "name: '{{ name'"  # Should cause template renering error.
         cpath = os.path.join(self.workdir, "a.yaml")
-        open(cpath, 'w').write(cnf_s)
+        TT.open(cpath, mode='w').write(cnf_s)
 
         cnf = TT.single_load(cpath, ac_template=True, ac_context=dict(a=1))
         self.assertEqual(cnf["name"], "{{ name")
@@ -232,10 +231,10 @@ class Test_30_single_load(unittest.TestCase):
             return
 
         cpath = os.path.join(self.workdir, "a.yaml")
-        open(cpath, 'w').write(CNF_TMPL_0)
+        TT.open(cpath, mode='w').write(CNF_TMPL_0)
 
         cnf = TT.single_load(cpath, ac_template=True, ac_context=self.cnf)
-        self.assertTrue(dicts_equal(self.cnf, cnf), str(cnf))
+        self.assert_dicts_equal(cnf, self.cnf)
 
         spath = os.path.join(self.workdir, "scm.json")
         TT.dump(dict(type="integer"), spath)  # Validation should fail.
@@ -333,11 +332,10 @@ class Test_32_single_load(unittest.TestCase):
             self._load_and_dump_with_opened_files("a.yml")
 
 
-class TestMultiLoadBase(TestBase):
+class TestBaseWithIOMultiFiles(TestBaseWithIO):
 
     def setUp(self):
-        self.workdir = tests.common.setup_workdir()
-        self.a_path = os.path.join(self.workdir, "a.json")
+        super(TestBaseWithIOMultiFiles, self).setUp()
         self.b_path = os.path.join(self.workdir, "b.json")
         self.g_path = os.path.join(self.workdir, "*.json")
 
@@ -346,11 +344,8 @@ class TestMultiLoadBase(TestBase):
         exp["name"] = self.dic["name"]
         self.exp = exp
 
-    def tearDown(self):
-        tests.common.cleanup_workdir(self.workdir)
 
-
-class Test_40_multi_load_with_strategies(TestMultiLoadBase):
+class Test_40_multi_load_with_strategies(TestBaseWithIOMultiFiles):
 
     def _check_multi_load_with_strategy(self, exp, merge=TT.MS_DICTS):
         TT.dump(self.dic, self.a_path)
@@ -403,7 +398,7 @@ class Test_40_multi_load_with_strategies(TestMultiLoadBase):
             self.assertTrue(1 == 1)  # To suppress warn of pylint.
 
 
-class Test_42_multi_load(TestMultiLoadBase):
+class Test_42_multi_load(TestBaseWithIOMultiFiles):
 
     def test_10_multi_load__empty_path_list(self):
         self.assertEqual(TT.multi_load([]), NULL_CNTNR)
@@ -463,7 +458,7 @@ class Test_42_multi_load(TestMultiLoadBase):
         self.assert_dicts_equal(res1, self.exp)
 
 
-class Test_50_load_and_dump(TestMultiLoadBase):
+class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
 
     def test_30_dump_and_load(self):
         TT.dump(self.dic, self.a_path)

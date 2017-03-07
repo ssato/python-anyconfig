@@ -43,21 +43,6 @@ import anyconfig.utils
 LOGGER = logging.getLogger(__name__)
 
 
-def mk_opt_args(keys, kwargs):
-    """
-    Make optional kwargs valid and optimized for each backend.
-
-    :param keys: optional argument names
-    :param kwargs: keyword arguements to process
-
-    >>> mk_opt_args(("aaa", ), dict(aaa=1, bbb=2))
-    {'aaa': 1}
-    >>> mk_opt_args(("aaa", ), dict(bbb=2))
-    {}
-    """
-    return dict((k, kwargs[k]) for k in keys if k in kwargs)
-
-
 def ensure_outdir_exists(filepath):
     """
     Make dir to dump `filepath` if that dir does not exist.
@@ -177,7 +162,7 @@ class Parser(object):
         for opt in self.dict_options():
             options.setdefault(opt, container)
 
-        return mk_opt_args(self._load_opts, options)
+        return anyconfig.utils.filter_options(self._load_opts, options)
 
     def _container_factory(self, **options):
         """
@@ -243,8 +228,9 @@ class Parser(object):
         :param content:  Config file content
         :param options:
             options will be passed to backend specific loading functions.
-            please note that options have to be sanitized w/ mk_opt_args later
-            to filter out options not  in _load_opts.
+            please note that options have to be sanitized w/
+            :func:`~anyconfig.utils.filter_options` later to filter out options
+            not in _load_opts.
 
         :return: dict or dict-like object holding configurations
         """
@@ -267,8 +253,9 @@ class Parser(object):
             exist in actual.
         :param options:
             options will be passed to backend specific loading functions.
-            please note that options have to be sanitized w/ mk_opt_args later
-            to filter out options not  in _load_opts.
+            please note that options have to be sanitized w/
+            :func:`~anyconfig.utils.filter_options` later to filter out options
+            not in _load_opts.
 
         :return: dict or dict-like object holding configurations
         """
@@ -327,7 +314,7 @@ class Parser(object):
 
         :return: string represents the configuration
         """
-        kwargs = mk_opt_args(self._dump_opts, kwargs)
+        kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
         return self.dump_to_string(cnf, **kwargs)
 
     def dump(self, cnf, path_or_stream, **kwargs):
@@ -340,7 +327,7 @@ class Parser(object):
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
         """
-        kwargs = mk_opt_args(self._dump_opts, kwargs)
+        kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
             ensure_outdir_exists(path_or_stream)

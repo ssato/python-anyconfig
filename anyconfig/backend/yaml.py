@@ -34,6 +34,7 @@ except ImportError:
     from yaml import SafeLoader as Loader, SafeDumper as Dumper
 
 import anyconfig.backend.base
+import anyconfig.utils
 
 
 def _setup_loader_and_dumper(container, loader=Loader, dumper=Dumper):
@@ -93,8 +94,8 @@ def _yml_fnc(fname, *args, **kwargs):
     """
     key = "ac_safe"
     fnc = getattr(yaml, kwargs.get(key, False) and r"safe_" + fname or fname)
-    kwargs = anyconfig.backend.base.mk_opt_args([k for k in kwargs.keys()
-                                                 if k != key], kwargs)
+    kwargs = anyconfig.utils.filter_options([k for k in kwargs.keys()
+                                             if k != key], kwargs)
     return fnc(*args, **kwargs)
 
 

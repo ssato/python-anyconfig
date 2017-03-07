@@ -4,6 +4,9 @@
 #
 """anyconfig.schema module.
 
+.. versionchanged:: 0.8.3
+   Replace format_checker with cls option
+
 .. versionchanged:: 0.7.0
    allow passing `ac_schema_strict` to API :func:`gen_schema` to generate more
    strict and precise JSON schema object
@@ -38,7 +41,7 @@ if not anyconfig.compat.IS_PYTHON_3:
         pass
 
 
-def validate(data, schema, **options):
+def validate(data, schema, cls=None, **options):
     """
     Validate target object with given schema object, loaded from JSON schema.
 
@@ -47,10 +50,11 @@ def validate(data, schema, **options):
     :parae data: Target object (a dict or a dict-like object) to validate
     :param schema: Schema object (a dict or a dict-like object)
         instantiated from schema JSON file or schema JSON string
-    :param options: Other keyword options such as:
+    :param cls:
+        The class inherits :class:`~jsonschema.IValidator` that will be used to
+        validate the instance.
 
-        - format_checker: A format property checker object of which class is
-          inherited from jsonschema.FormatChecker, it's default if None given.
+    :param options: Other keyword options such as:
 
         - safe: Exception (jsonschema.ValidationError or jsonschema.SchemaError
           or others) will be thrown during validation process due to any
@@ -59,12 +63,11 @@ def validate(data, schema, **options):
 
     :return: (True if validation succeeded else False, error message)
     """
-    format_checker = options.get("format_checker", None)
+    if not isinstance(cls, jsonschema.IValidator):
+        cls = None
     try:
-        if format_checker is None:
-            format_checker = jsonschema.FormatChecker()  # :raises: NameError
         try:
-            jsonschema.validate(data, schema, format_checker=format_checker)
+            jsonschema.validate(data, schema, cls=cls, **options)
             return (True, '')
         except (jsonschema.ValidationError, jsonschema.SchemaError,
                 Exception) as exc:

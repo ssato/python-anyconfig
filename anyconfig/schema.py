@@ -41,7 +41,7 @@ if not anyconfig.compat.IS_PYTHON_3:
         pass
 
 
-def validate(data, schema, cls=None, **options):
+def validate(data, schema, **options):
     """
     Validate target object with given schema object, loaded from JSON schema.
 
@@ -50,10 +50,6 @@ def validate(data, schema, cls=None, **options):
     :parae data: Target object (a dict or a dict-like object) to validate
     :param schema: Schema object (a dict or a dict-like object)
         instantiated from schema JSON file or schema JSON string
-    :param cls:
-        The class inherits :class:`~jsonschema.IValidator` that will be used to
-        validate the instance.
-
     :param options: Other keyword options such as:
 
         - safe: Exception (jsonschema.ValidationError or jsonschema.SchemaError
@@ -63,11 +59,9 @@ def validate(data, schema, cls=None, **options):
 
     :return: (True if validation succeeded else False, error message)
     """
-    if not isinstance(cls, jsonschema.IValidator):
-        cls = None
     try:
         try:
-            jsonschema.validate(data, schema, cls=cls, **options)
+            jsonschema.validate(data, schema, **options)
             return (True, '')
         except (jsonschema.ValidationError, jsonschema.SchemaError,
                 Exception) as exc:

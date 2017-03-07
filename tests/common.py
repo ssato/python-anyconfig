@@ -9,7 +9,7 @@ import unittest
 import anyconfig.compat
 
 from anyconfig.compat import OrderedDict
-from anyconfig.mdicts import is_dict_like
+from anyconfig.utils import is_dict_like
 
 
 CNF_0 = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))

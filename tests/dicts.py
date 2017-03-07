@@ -68,7 +68,7 @@ class Test_10_get(unittest.TestCase):
 
 class Test_10_update_with_replace(unittest.TestCase):
 
-    strategy = TT.MS_REPLACE
+    ac_merge = TT.MS_REPLACE
 
     dic = OrderedDict((("a", 1), ("b", [1, 3]), ("c", "abc"), ("f", None)))
     other = OrderedDict((("a", 2), ("b", [0, 1]),
@@ -85,7 +85,7 @@ class Test_10_update_with_replace(unittest.TestCase):
 
     def assert_updated(self, other):
         dic = self.dic.copy()
-        TT.merge(dic, other, strategy=self.strategy)
+        TT.merge(dic, other, ac_merge=self.ac_merge)
         self.assert_dicts_equal(dic, other, self.dic)
 
     def test_10_update_with_a_odict(self):
@@ -109,7 +109,7 @@ class Test_10_update_with_replace(unittest.TestCase):
 
 class Test_20_update_wo_replace(Test_10_update_with_replace):
 
-    strategy = TT.MS_NO_REPLACE
+    ac_merge = TT.MS_NO_REPLACE
 
     def assert_dicts_equal(self, dic, upd, ref):
         if not is_dict_like(upd):
@@ -122,7 +122,7 @@ class Test_20_update_wo_replace(Test_10_update_with_replace):
 
 class Test_30_update_with_merge(Test_10_update_with_replace):
 
-    strategy = TT.MS_DICTS
+    ac_merge = TT.MS_DICTS
     replaced_keys = "a b d".split()
 
     def assert_dicts_equal(self, dic, upd, ref):
@@ -138,7 +138,7 @@ class Test_30_update_with_merge(Test_10_update_with_replace):
 
 class Test_32_update_with_merge_lists(Test_10_update_with_replace):
 
-    strategy = TT.MS_DICTS_AND_LISTS
+    ac_merge = TT.MS_DICTS_AND_LISTS
 
     def assert_dicts_equal(self, dic, upd, ref):
         if not is_dict_like(upd):

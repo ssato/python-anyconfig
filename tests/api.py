@@ -347,6 +347,11 @@ class TestMultiLoadBase(TestBase):
         self.b_path = os.path.join(self.workdir, "b.json")
         self.g_path = os.path.join(self.workdir, "*.json")
 
+        exp = copy.deepcopy(self.upd)  # Assume MS_DICTS strategy was used.
+        exp["b"]["c"] = self.dic["b"]["c"]
+        exp["name"] = self.dic["name"]
+        self.exp = exp
+
     def tearDown(self):
         tests.common.cleanup_workdir(self.workdir)
 
@@ -406,14 +411,6 @@ class Test_40_multi_load_with_strategies(TestMultiLoadBase):
 
 class Test_42_multi_load(TestMultiLoadBase):
 
-    def setUp(self):
-        super(Test_42_multi_load, self).setUp()
-
-        exp = copy.deepcopy(self.upd)  # Assume MS_DICTS strategy was used.
-        exp["b"]["c"] = self.dic["b"]["c"]
-        exp["name"] = self.dic["name"]
-        self.exp = exp
-
     def test_10_multi_load__empty_path_list(self):
         self.assertEqual(TT.multi_load([]), NULL_CNTNR)
 
@@ -472,102 +469,52 @@ class Test_42_multi_load(TestMultiLoadBase):
         self.assert_dicts_equal(res1, self.exp)
 
 
-class Test_50_load_and_dump(unittest.TestCase):
-
-    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-
-    def setUp(self):
-        self.workdir = tests.common.setup_workdir()
-
-    def tearDown(self):
-        tests.common.cleanup_workdir(self.workdir)
+class Test_50_load_and_dump(TestMultiLoadBase):
 
     def test_30_dump_and_load(self):
-        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
-        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+        TT.dump(self.dic, self.a_path)
+        TT.dump(self.upd, self.b_path)
 
-        a_path = os.path.join(self.workdir, "a.json")
-        b_path = os.path.join(self.workdir, "b.json")
+        self.assertTrue(os.path.exists(self.a_path))
+        self.assertTrue(os.path.exists(self.b_path))
 
-        TT.dump(a, a_path)
-        self.assertTrue(os.path.exists(a_path))
+        res = TT.load(self.a_path)
+        self.assert_dicts_equal(res, self.dic)
 
-        TT.dump(b, b_path)
-        self.assertTrue(os.path.exists(b_path))
+        res = TT.load(self.g_path)
+        self.assert_dicts_equal(res, self.exp)
 
-        a1 = TT.load(a_path)
-
-        self.assertEqual(a1["name"], a["name"])
-        self.assertEqual(a1["a"], a["a"])
-        self.assertEqual(a1["b"]["b"], a["b"]["b"])
-        self.assertEqual(a1["b"]["c"], a["b"]["c"])
-
-        a2 = TT.load(os.path.join(self.workdir, '*.json'))
-
-        self.assertEqual(a2["name"], a["name"])
-        self.assertEqual(a2["a"], b["a"])
-        self.assertEqual(a2["b"]["b"], [1, 2, 3, 4, 5])
-        self.assertEqual(a2["b"]["c"], a["b"]["c"])
-        self.assertEqual(a2["b"]["d"], b["b"]["d"])
-
-        a3 = TT.load([a_path, b_path])
-
-        self.assertEqual(a3["name"], a["name"])
-        self.assertEqual(a3["a"], b["a"])
-        self.assertEqual(a3["b"]["b"], [1, 2, 3, 4, 5])
-        self.assertEqual(a3["b"]["c"], a["b"]["c"])
-        self.assertEqual(a3["b"]["d"], b["b"]["d"])
+        res = TT.load([self.a_path, self.b_path])
+        self.assert_dicts_equal(res, self.exp)
 
     def test_31_dump_and_load__to_from_stream(self):
-        cnf = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
-        cpath = os.path.join(self.workdir, "a.json")
+        with TT.open(self.a_path, mode='w') as strm:
+            TT.dump(self.dic, strm)
 
-        with open(cpath, 'w') as strm:
-            TT.dump(cnf, strm)
+        self.assertTrue(os.path.exists(self.a_path))
 
-        self.assertTrue(os.path.exists(cpath))
-
-        with open(cpath, 'r') as strm:
-            cnf1 = TT.load(strm, ac_parser="json")
-
-        self.assertTrue(dicts_equal(cnf, cnf1),
-                        "cnf vs. cnf1: %s\n\n%s" % (str(cnf), str(cnf1)))
+        with TT.open(self.a_path) as strm:
+            res = TT.load(strm, ac_parser="json")
+            self.assert_dicts_equal(res, self.dic)
 
     def test_32_dump_and_load__w_options(self):
-        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
-        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+        TT.dump(self.dic, self.a_path, indent=2)
+        self.assertTrue(os.path.exists(self.a_path))
 
-        a_path = os.path.join(self.workdir, "a.json")
-        b_path = os.path.join(self.workdir, "b.json")
+        TT.dump(self.upd, self.b_path, indent=2)
+        self.assertTrue(os.path.exists(self.b_path))
 
-        TT.dump(a, a_path, indent=2)
-        self.assertTrue(os.path.exists(a_path))
+        res = TT.load(self.a_path, parse_int=int)
+        dic = copy.deepcopy(self.dic)
+        self.assert_dicts_equal(res, dic)
 
-        TT.dump(b, b_path, indent=2)
-        self.assertTrue(os.path.exists(b_path))
+        res = TT.load(self.g_path, parse_int=int)
+        exp = copy.deepcopy(self.exp)
+        self.assert_dicts_equal(res, exp)
 
-        a1 = TT.load(a_path, parse_int=int)
-
-        self.assertEqual(a1["name"], a["name"])
-        self.assertEqual(a1["a"], a["a"])
-        self.assertEqual(a1["b"]["b"], a["b"]["b"])
-        self.assertEqual(a1["b"]["c"], a["b"]["c"])
-
-        a2 = TT.load(os.path.join(self.workdir, '*.json'), parse_int=int)
-
-        self.assertEqual(a2["name"], a["name"])
-        self.assertEqual(a2["a"], b["a"])
-        self.assertEqual(a2["b"]["b"], [1, 2, 3, 4, 5])
-        self.assertEqual(a2["b"]["c"], a["b"]["c"])
-        self.assertEqual(a2["b"]["d"], b["b"]["d"])
-
-        a3 = TT.load([a_path, b_path], parse_int=int)
-
-        self.assertEqual(a3["name"], a["name"])
-        self.assertEqual(a3["a"], b["a"])
-        self.assertEqual(a3["b"]["b"], [1, 2, 3, 4, 5])
-        self.assertEqual(a3["b"]["c"], a["b"]["c"])
-        self.assertEqual(a3["b"]["d"], b["b"]["d"])
+        res = TT.load([self.a_path, self.b_path], parse_int=int)
+        exp = copy.deepcopy(self.exp)
+        self.assert_dicts_equal(res, exp)
 
     def test_34_load__ignore_missing(self):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")

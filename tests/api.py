@@ -108,6 +108,9 @@ class Test_10_find_loader(unittest.TestCase):
 
 class TestBase(unittest.TestCase):
 
+    dic = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+    upd = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"), e=0)
+
     def assert_dicts_equal(self, dic, ref):
         self.assertTrue(dicts_equal(dic, ref),
                         "%r\nvs.\n%r" % (dic, ref))
@@ -337,9 +340,6 @@ class Test_32_single_load(unittest.TestCase):
 
 
 class TestMultiLoadBase(TestBase):
-
-    dic = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
-    upd = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"), e=0)
 
     def setUp(self):
         self.workdir = tests.common.setup_workdir()

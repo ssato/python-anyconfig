@@ -108,7 +108,7 @@ class Test_10_find_loader(unittest.TestCase):
 
 class TestBase(unittest.TestCase):
 
-    dic = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+    cnf = dic = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
     upd = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"), e=0)
 
     def assert_dicts_equal(self, dic, ref):
@@ -118,24 +118,18 @@ class TestBase(unittest.TestCase):
 
 class Test_20_dumps_and_loads(unittest.TestCase):
 
-    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-
     def test_30_dumps_and_loads(self):
-        cnf = TT.loads(TT.dumps(self.cnf, "json"), "json")
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+        res = TT.loads(TT.dumps(self.cnf, "json"), "json")
+        self.assert_dicts_equal(res, self.cnf)
 
     def test_30_dumps_and_loads__w_options(self):
         cnf = TT.loads(TT.dumps(self.cnf, "json", indent=2), "json",
                        ensure_ascii=False)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
+        self.assert_dicts_equal(res, self.cnf)
 
     def test_40_loads_wo_type(self):
-        a_s = "requires:bash,zsh"
-
-        a1 = TT.loads(a_s)
-        # a = dict(requires=["bash", "zsh"])
-        # self.assertEqual(a1["requires"], a["requires"])
-        self.assertTrue(a1 is None)
+        cnf_s = "requires:bash,zsh"
+        self.assertTrue(TT.loads(cnf_s) is None)
 
     def test_42_loads_w_type_not_exist(self):
         a_s = "requires:bash,zsh"

@@ -434,13 +434,13 @@ def etree_write(tree, stream):
         tree.write(stream, encoding='UTF-8', xml_declaration=True)
 
 
-class Parser(anyconfig.backend.base.ToStreamDumper):
+class Parser(anyconfig.backend.base.ToStreamDumper,
+             anyconfig.backend.base.BinaryFilesParserMixin):
     """
     Parser for XML files.
     """
     _type = "xml"
     _extensions = ["xml"]
-    _open_flags = ('rb', 'wb')
     _load_opts = _dump_opts = ["tags", "merge_attrs", "ac_parse_value"]
     _ordered = True
 

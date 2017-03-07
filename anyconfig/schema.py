@@ -24,6 +24,7 @@ except ImportError:
     pass
 
 import anyconfig.compat
+import anyconfig.utils
 
 
 _SIMPLETYPE_MAP = {list: "array", tuple: "array",
@@ -41,7 +42,7 @@ if not anyconfig.compat.IS_PYTHON_3:
         pass
 
 
-def validate(data, schema, **options):
+def validate(data, schema, safe=True, **options):
     """
     Validate target object with given schema object, loaded from JSON schema.
 
@@ -59,14 +60,15 @@ def validate(data, schema, **options):
 
     :return: (True if validation succeeded else False, error message)
     """
+    options = anyconfig.utils.filter_options(("cls", ), options)
     try:
         try:
             jsonschema.validate(data, schema, **options)
             return (True, '')
         except (jsonschema.ValidationError, jsonschema.SchemaError,
                 Exception) as exc:
-            if options.get("safe", True):
-                return (False, str(exc))
+            if safe:
+                return (False, str(exc))  # Validation was failed.
             else:
                 raise
 

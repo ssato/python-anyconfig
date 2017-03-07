@@ -6,5 +6,4 @@ include docs/api/*.*
 include pkg/*
 include setup.py
 recursive-include anyconfig *.py
-recursive-include m9dicts *.py
 recursive-include tests *.py *.yml *.txt

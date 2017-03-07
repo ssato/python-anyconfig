@@ -11,10 +11,9 @@ r"""Public APIs of anyconfig module.
      function or class) to make dict-like object in backend parsers.
    - Added ac_query keyword option to query data with JMESPath expression.
    - Added experimental query api to query data with JMESPath expression.
-   - Removed ac_namedtuple keyword option; it's not the job to convert results
-     to namedtuple objects anyconfig should do, I think.
+   - Removed ac_namedtuple keyword option.
    - Export :func:`merge`.
-   - Stop exporting :func:`to_container` which was removed.
+   - Stop exporting :func:`to_container` which was deprecated and removed.
 
 .. versionadded:: 0.8.2
 
@@ -98,7 +97,7 @@ def _is_paths(maybe_paths):
 
 def _maybe_validated(cnf, schema, format_checker=None, **options):
     """
-    :param cnf: Configuration object
+    :param cnf: Mapping object represents configuration data
     :param schema: JSON schema object
     :param format_checker: A format property checker object of which class is
         inherited from jsonschema.FormatChecker, it's default if None given.
@@ -128,14 +127,17 @@ def version():
 
 def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
     """
-    Find out config parser object appropriate to load from a file of given path
-    or file/file-like object.
+    Find out parser object appropriate to load configuration from a file of
+    given path or file or file-like object.
 
-    :param path_or_stream: Configuration file path or file / file-like object
-    :param parser_or_type: Forced configuration parser type or parser object
-    :param is_path_: True if given `path_or_stream` is a file path
+    :param path_or_stream: Configuration file path or file or file-like object
+    :param parser_or_type:
+        Forced configuration parser type or parser object itself
+    :param is_path_: Specify True if given `path_or_stream` is a file path
 
-    :return: Config parser instance or None
+    :return:
+        An instance of a class inherits :class:`~anyconfig.backend.base.Parser`
+        or None
     """
     if anyconfig.backends.is_parser(parser_or_type):
         return parser_or_type
@@ -156,8 +158,8 @@ def _maybe_schema(**options):
 
         - ac_template: Assume configuration file may be a template file and try
           to compile it AAR if True
-        - ac_context: A dict presents context to instantiate template
-        - ac_schema: JSON schema file path to validate given config file
+        - ac_context: Mapping object presents context to instantiate template
+        - ac_schema: JSON schema file path to validate configuration files
     """
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
@@ -174,16 +176,16 @@ def _maybe_schema(**options):
 # pylint: disable=redefined-builtin
 def open(path, mode=None, ac_parser=None, **options):
     """
-    Open given config file with appropriate open flag.
+    Open given configuration file with appropriate open flag.
 
     :param path: Configuration file path
     :param mode:
         Can be 'r' and 'rb' for reading (default) or 'w', 'wb' for writing.
         Please note that even if you specify 'r' or 'w', it will be changed to
-        'rb' or 'wb' if the backend selected, xml and configobj for example,
-        for given config file prefer that.
+        'rb' or 'wb' if selected backend, xml and configobj for example, for
+        given config file prefer that.
     :param options:
-        Optional keyword arguments passed to the internal file opening API of
+        Optional keyword arguments passed to the internal file opening APIs of
         each backends such like 'buffering' optional parameter passed to
         builtin 'open' function.
 
@@ -199,25 +201,34 @@ def open(path, mode=None, ac_parser=None, **options):
 def single_load(path_or_stream, ac_parser=None, ac_template=False,
                 ac_context=None, **options):
     """
-    Load single config file.
+    Load single configuration file.
 
     .. note::
 
        :func:`load` is a preferable alternative and this API should be used
        only if there is a need to emphasize given file path is single one.
 
-    :param path_or_stream: Configuration file path or file / file-like object
-    :param ac_parser: Forced parser type or parser object
-    :param ac_template: Assume configuration file may be a template file and
-        try to compile it AAR if True
+    :param path_or_stream: Configuration file path or file or file-like object
+    :param ac_parser: Forced parser type or parser object itself
+    :param ac_template:
+        Assume configuration file may be a template file and try to compile it
+        AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param options: Optional keyword arguments such as:
 
-        - Common options:
+        - Options common with :func:`multi_load` and :func:`load`:
 
-          - ac_dict: callable (function or class) to make a dict or dict-like
-            object, dict and OrderedDict for example, or None
+          - ac_dict: callable (function or class) to make mapping object will
+            be returned as a result or None. If not given or ac_dict is None,
+            default mapping object used to store resutls is dict or
+            :class:`~collections.OrderedDict` if ac_ordered is True and
+            selected backend can keep the order of items in mapping objects.
+
+          - ac_ordered: True if you want to keep resuls ordered. Please note
+            that order of items may be lost depends on backend used.
+
           - ac_schema: JSON schema file path to validate given config file
+          - ac_query: JMESPath expression to query data
 
         - Common backend options:
 
@@ -226,7 +237,7 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
-    :return: dict or dict-like object supports merge operations
+    :return: Mapping object
     """
     is_path_ = is_path(path_or_stream)
     if is_path_:
@@ -269,26 +280,39 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
       multi_load("/etc/foo/conf.d/*.yml")
 
-    :param paths: List of config file paths or a glob pattern to list paths, or
-        a list of file/file-like objects
+    :param paths:
+        List of configuration file paths or a glob pattern to list of these
+        paths, or a list of file or file-like objects
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
-    :param ac_context: A dict presents context to instantiate template
+    :param ac_context: Mapping object presents context to instantiate template
     :param options: Optional keyword arguments:
 
-        - Common options:
+        - Options common with :func:`multi_load` and :func:`load`:
+
+          - ac_dict: callable (function or class) to make mapping object will
+            be returned as a result or None. If not given or ac_dict is None,
+            default mapping object used to store resutls is dict or
+            :class:`~collections.OrderedDict` if ac_ordered is True and
+            selected backend can keep the order of items in mapping objects.
+
+          - ac_ordered: True if you want to keep resuls ordered. Please note
+            that order of items may be lost depends on backend used.
+
+          - ac_schema: JSON schema file path to validate given config file
+          - ac_query: JMESPath expression to query data
 
           - ac_dict: callable (function or class) to make a dict or dict-like
             object, dict and OrderedDict for example
+
+        - Options specific to this function and :func:`load`:
 
           - ac_merge (merge): Specify strategy of how to merge results loaded
             from multiple configuration files. See the doc of
             :mod:`anyconfig.dicts` for more details of strategies. The default
             is anyconfig.dicts.MS_DICTS.
 
-          - ac_schema: JSON schema file path to validate given config file
-          - ac_query: JMESPath expression to query data
           - ac_marker (marker): Globbing marker to detect paths patterns.
 
         - Common backend options:
@@ -337,16 +361,20 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
         r'/a/b/\*.json' or a list of files/file-like objects
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:
-        callable (function or class) to make a dict or dict-like object, dict
-        and OrderedDict for example, or None
+        callable (function or class) to make mapping object will be returned as
+        a result or None. If not given or ac_dict is None, default mapping
+        object used to store resutls is dict or
+        :class:`~collections.OrderedDict` if ac_ordered is True and selected
+        backend can keep the order of items in mapping objects.
+
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param options:
         Optional keyword arguments. See also the description of `options` in
-        `multi_load` function.
+        :func:`multi_load` function.
 
-    :return: dict or dict-like object supports merge operations
+    :return: Mapping object or any query result might be primitive objects
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
@@ -367,16 +395,19 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
     :param content: Configuration file's content
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:
-        callable (function or class) to make a dict or dict-like object, dict
-        and OrderedDict for example, or None
+        callable (function or class) to make mapping object will be returned as
+        a result or None. If not given or ac_dict is None, default mapping
+        object used to store resutls is dict or
+        :class:`~collections.OrderedDict` if ac_ordered is True and selected
+        backend can keep the order of items in mapping objects.
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: Context dict to instantiate template
     :param options:
         Optional keyword arguments. See also the description of `options` in
-        `single_load` function.
+        :func:`single_load` function.
 
-    :return: dict or dict-like object supports merge operations or None
+    :return: Mapping object or any query result might be primitive objects
     """
     if ac_parser is None:
         LOGGER.warning("ac_parser was not given but it's must to find correct "
@@ -405,12 +436,12 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
 
 def _find_dumper(path_or_stream, ac_parser=None):
     """
-    Find configuration parser to dump data.
+    Find parser to dump configuration data.
 
     :param path_or_stream: Output file path or file / file-like object
     :param ac_parser: Forced parser type or parser object
 
-    :return: Parser-inherited class object
+    :return: Parser object
     """
     return find_loader(path_or_stream, ac_parser)
 

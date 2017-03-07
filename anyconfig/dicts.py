@@ -158,7 +158,7 @@ def _are_list_like(*objs):
     return all(anyconfig.utils.is_list_like(obj) for obj in objs)
 
 
-def _update_with_replace(self, other, key, val=None):
+def _update_with_replace(self, other, key, val=None, **options):
     """
     Replace value of a mapping object `self` with `other` has if both have same
     keys on update. Otherwise, just keep the value of `self`.
@@ -173,7 +173,7 @@ def _update_with_replace(self, other, key, val=None):
     self[key] = other[key] if val is None else val
 
 
-def _update_wo_replace(self, other, key, val=None):
+def _update_wo_replace(self, other, key, val=None, **options):
     """
     Never update (replace) the value of `self` with `other`'s, that is, only
     the values `self` does not have its key will be added on update.
@@ -205,7 +205,8 @@ def _merge_other(self, key, val):
     self[key] = val  # Just overwrite it by default implementation.
 
 
-def _update_with_merge(self, other, key, val=None, merge_lists=False):
+def _update_with_merge(self, other, key, val=None, merge_lists=False,
+                       **options):
     """
     Merge the value of self with other's recursively. Behavior of merge will be
     vary depends on types of original and new values.
@@ -215,7 +216,7 @@ def _update_with_merge(self, other, key, val=None, merge_lists=False):
 
     :param other: a dict[-like] object or a list of (key, value) tuples
     :param key: key of mapping object to update
-    :param val: value to update self alternatively
+    :param val: value to update self[key]
     :param merge_lists:
         Merge not only dicts but also lists. For example,
 
@@ -230,9 +231,7 @@ def _update_with_merge(self, other, key, val=None, merge_lists=False):
     if key in self:
         val0 = self[key]  # Original value
         if anyconfig.utils.is_dict_like(val0):  # It needs recursive updates.
-            for key in val:
-                _update_with_merge(self[key], other, key,
-                                   merge_lists=merge_lists)
+            merge(self[key], val, merge_lists=merge_lists, **options)
         elif merge_lists and _are_list_like(val, val0):
             _merge_list(self, key, val)
         else:
@@ -255,7 +254,6 @@ def _update_with_merge_lists(self, other, key, val=None):
     _update_with_merge(self, other, key, val=val, merge_lists=True)
 
 
-# Mapppings: (merge_strategy, ordered?) : update function
 _MERGE_FNS = {MS_REPLACE: _update_with_replace,
               MS_NO_REPLACE: _update_wo_replace,
               MS_DICTS: _update_with_merge,
@@ -267,11 +265,7 @@ def _get_update_fn(strategy):
     Select dict-like class based on merge strategy and orderness of keys.
 
     :param merge: Specify strategy from MERGE_STRATEGIES of how to merge dicts.
-    :param ordered:
-        The class keeps the order of insertion keys such as
-        UpdateWoReplaceOrderedDict will be chosen if True.
-
-    :return: The dict class object
+    :return: Callable to update objects
     """
     try:
         return _MERGE_FNS[strategy]
@@ -287,34 +281,32 @@ def merge(self, other, ac_merge=MS_DICTS, **options):
     :param others: a list of dict[-like] objects or (key, value) tuples
     :param another: optional keyword arguments to update self more
     :param ac_merge: Merge strategy to choose
-
-    .. seealso:: Document of dict.update
     """
     _update_fn = _get_update_fn(ac_merge)
 
     if hasattr(other, "keys"):
         for key in other:
-            _update_fn(self, other, key)
+            _update_fn(self, other, key, **options)
     else:
         try:
             for key, val in other:
-                _update_fn(self, other, key, val)
+                _update_fn(self, other, key, val=val, **options)
         except (ValueError, TypeError) as exc:  # Re-raise w/ info.
             raise type(exc)("%s other=%r" % (str(exc), other))
 
 
-def _make_recur(obj, make_fn, ordered=False, cls=None, **options):
+def _make_recur(obj, make_fn, ac_ordered=False, cls=None, **options):
     """
     :param obj: A mapping objects or other primitive object
     :param make_fn: Function to make/convert to
-    :param ordered: Create an OrderedDict instead of dict to keep the key order
+    :param ac_ordered: Use OrderedDict instead of dict to keep order of items
     :param cls: Convert `obj` to `cls` object instead of a dict.
     :param options: Optional keyword arguments.
 
     :return: A dict or OrderedDict or object of `cls`
     """
     if cls is None:
-        cls = anyconfig.compat.OrderedDict if ordered else dict
+        cls = anyconfig.compat.OrderedDict if ac_ordered else dict
 
     return cls((k, None if v is None else make_fn(v, **options))
                for k, v in obj.items())
@@ -331,14 +323,14 @@ def _make_iter(obj, make_fn, **options):
     return type(obj)(make_fn(v, **options) for v in obj)
 
 
-def convert_to(obj, ordered=False, cls=None, **options):
+def convert_to(obj, ac_ordered=False, cls=None, **options):
     """
     Convert a mapping objects to a dict or object of `to_type` recursively.
     Borrowed basic idea and implementation from bunch.unbunchify. (bunch is
     distributed under MIT license same as this.)
 
     :param obj: A mapping objects or other primitive object
-    :param ordered: Create an OrderedDict instead of dict to keep the key order
+    :param ac_ordered: Use OrderedDict instead of dict to keep order of items
     :param cls: Convert `obj` to `cls` object instead of a dict.
     :param options: Optional keyword arguments.
 
@@ -350,7 +342,7 @@ def convert_to(obj, ordered=False, cls=None, **options):
     >>> convert_to(OD((('a', OD((('b', OD((('c', 1), ))), ))), )), cls=dict)
     {'a': {'b': {'c': 1}}}
     """
-    options.update(ordered=ordered, cls=cls)
+    options.update(ac_ordered=ac_ordered, cls=cls)
     if anyconfig.utils.is_dict_like(obj):
         return _make_recur(obj, convert_to, **options)
     elif anyconfig.utils.is_list_like(obj):

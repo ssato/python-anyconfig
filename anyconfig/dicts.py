@@ -143,7 +143,7 @@ def set_(dic, path, val, seps=PATH_SEPS):
     >>> d['a']['b']['d']
     3
     """
-    merge(dic, mk_nested_dic(path, val, seps), strategy=MS_DICTS)
+    merge(dic, mk_nested_dic(path, val, seps), ac_merge=MS_DICTS)
 
 
 def _are_list_like(*objs):
@@ -279,17 +279,18 @@ def _get_update_fn(strategy):
         raise ValueError("Wrong merge strategy: %r" % strategy)
 
 
-def merge(self, other, strategy=MS_DICTS):
+def merge(self, other, ac_merge=MS_DICTS, **options):
     """
     Update (merge) a mapping object `self` with other mapping object or an
-    iterable yields (key, value) tuples based on strategy `strategy`.
+    iterable yields (key, value) tuples based on merge strategy `ac_merge`.
 
     :param others: a list of dict[-like] objects or (key, value) tuples
     :param another: optional keyword arguments to update self more
+    :param ac_merge: Merge strategy to choose
 
     .. seealso:: Document of dict.update
     """
-    _update_fn = _get_update_fn(strategy)
+    _update_fn = _get_update_fn(ac_merge)
 
     if hasattr(other, "keys"):
         for key in other:

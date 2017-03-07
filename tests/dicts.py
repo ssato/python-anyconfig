@@ -7,6 +7,7 @@
 # pylint: disable=missing-docstring,invalid-name,protected-access
 from __future__ import absolute_import
 
+import copy
 import unittest
 import anyconfig.dicts as TT
 
@@ -84,7 +85,7 @@ class Test_10_update_with_replace(unittest.TestCase):
                             if k not in upd))
 
     def assert_updated(self, other):
-        dic = self.dic.copy()
+        dic = copy.deepcopy(self.dic)
         TT.merge(dic, other, ac_merge=self.ac_merge)
         self.assert_dicts_equal(dic, other, self.dic)
 
@@ -148,5 +149,46 @@ class Test_32_update_with_merge_lists(Test_10_update_with_replace):
         self.assertEqual(dic["c"], upd["c"])  # Overwritten.
         self.assertTrue(all(dic[k] == ref[k] for k in ref.keys()
                             if k not in upd))
+
+
+class Test_40_merge(unittest.TestCase):
+
+    dic = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+    upd = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"), e="E")
+
+    def test_10_update_with_replace(self):
+        dic = copy.deepcopy(self.dic)
+        exp = copy.deepcopy(self.upd)
+        exp["name"] = dic["name"]
+
+        TT.merge(dic, self.upd, ac_merge=TT.MS_REPLACE)
+        self.assertTrue(dicts_equal(dic, exp))
+
+    def test_20_update_wo_replace(self):
+        dic = copy.deepcopy(self.dic)
+        exp = copy.deepcopy(self.dic)
+        exp["e"] = self.upd["e"]
+
+        TT.merge(dic, self.upd, ac_merge=TT.MS_NO_REPLACE)
+        self.assertTrue(dicts_equal(dic, exp))
+
+    def test_30_update_with_merge(self):
+        dic = copy.deepcopy(self.dic)
+        exp = copy.deepcopy(self.upd)
+        exp["b"]["c"] = dic["b"]["c"]
+        exp["name"] = dic["name"]
+
+        TT.merge(dic, self.upd, ac_merge=TT.MS_DICTS)
+        self.assertTrue(dicts_equal(dic, exp))
+
+    def test_40_update_with_merge_lists(self):
+        dic = copy.deepcopy(self.dic)
+        exp = copy.deepcopy(self.upd)
+        exp["b"]["b"] = [0] + exp["b"]["b"]
+        exp["b"]["c"] = dic["b"]["c"]
+        exp["name"] = dic["name"]
+
+        TT.merge(dic, self.upd, ac_merge=TT.MS_DICTS_AND_LISTS)
+        self.assertTrue(dicts_equal(dic, exp))
 
 # vim:sw=4:ts=4:et:

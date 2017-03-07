@@ -11,6 +11,10 @@ r"""Public APIs of anyconfig module.
      function or class) to make dict-like object in backend parsers.
    - Added ac_query keyword option to query data with JMESPath expression.
    - Added experimental query api to query data with JMESPath expression.
+   - Removed ac_namedtuple keyword option; it's not the job to convert results
+     to namedtuple objects anyconfig should do, I think.
+   - Export :func:`merge`.
+   - Stop exporting :func:`to_container` which was removed.
 
 .. versionadded:: 0.8.2
 
@@ -63,7 +67,7 @@ import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.query
 import anyconfig.globals
-import anyconfig.mdicts
+import anyconfig.dicts
 import anyconfig.template
 import anyconfig.utils
 
@@ -71,9 +75,9 @@ import anyconfig.utils
 from anyconfig.backends import (
     UnknownParserTypeError, UnknownFileTypeError
 )
-from anyconfig.mdicts import (
+from anyconfig.dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    get, set_, to_container  # flake8: noqa
+    get, set_, merge # flake8: noqa
 )
 from anyconfig.schema import validate, gen_schema
 from anyconfig.utils import is_path
@@ -98,9 +102,7 @@ def _maybe_validated(cnf, schema, format_checker=None, **options):
     :param schema: JSON schema object
     :param format_checker: A format property checker object of which class is
         inherited from jsonschema.FormatChecker, it's default if None given.
-    :param options: Keyword options such as:
-
-        - ac_namedtuple: Convert result to nested namedtuple object if True
+    :param options: Keyword options
 
     :return: Given `cnf` as it is if validation succeeds else None
     """
@@ -112,10 +114,7 @@ def _maybe_validated(cnf, schema, format_checker=None, **options):
             LOGGER.warning(msg)
 
     if valid:
-        if options.get("ac_namedtuple", False):
-            return anyconfig.mdicts.convert_to(cnf, ac_namedtuple=True)
-        else:
-            return cnf
+        return cnf
 
     return None
 
@@ -219,7 +218,6 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
           - ac_dict: callable (function or class) to make a dict or dict-like
             object, dict and OrderedDict for example, or None
           - ac_schema: JSON schema file path to validate given config file
-          - ac_namedtuple: Convert result to nested namedtuple object if True
 
         - Common backend options:
 
@@ -245,10 +243,10 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
         content = anyconfig.template.try_render(filepath=filepath,
                                                 ctx=ac_context)
         if content is not None:
-            cnf = to_container(psr.loads(content, **options), **options)
+            cnf = psr.loads(content, **options)
             return _maybe_validated(cnf, schema, **options)
 
-    cnf = to_container(psr.load(path_or_stream, **options), **options)
+    cnf = psr.load(path_or_stream, **options)
     return _maybe_validated(cnf, schema, **options)
 
 
@@ -285,13 +283,13 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
             object, dict and OrderedDict for example
 
           - ac_merge (merge): Specify strategy of how to merge results loaded
-            from multiple configuration files. See the doc of :mod:`m9dicts`
-            for more details of strategies. The default is m9dicts.MS_DICTS.
+            from multiple configuration files. See the doc of
+            :mod:`anyconfig.dicts` for more details of strategies. The default
+            is anyconfig.dicts.MS_DICTS.
 
           - ac_schema: JSON schema file path to validate given config file
           - ac_query: JMESPath expression to query data
           - ac_marker (marker): Globbing marker to detect paths patterns.
-          - ac_namedtuple: Convert result to nested namedtuple object if True
 
         - Common backend options:
 
@@ -300,28 +298,31 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
-    :return: dict or dict-like object supports merge operations
+    :return: Mapping object or any query result might be primitive objects
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
     options["ac_schema"] = None  # Avoid to load schema more than twice.
 
-    cnf = to_container(ac_context, **options)
-    same_type = anyconfig.utils.are_same_file_types(paths)
+    paths = anyconfig.utils.norm_paths(paths, marker=marker)
+    if anyconfig.utils.are_same_file_types(paths):
+        ac_parser = find_loader(paths[0], ac_parser, is_path(paths[0]))
 
-    for path in anyconfig.utils.norm_paths(paths):
+    cnf = ac_context
+    for path in paths:
         opts = options.copy()
-        opts["ac_namedtuple"] = False  # Disabled within this loop.
-        if same_type:
-            ac_parser = find_loader(path, ac_parser, is_path(path))
         cups = single_load(path, ac_parser=ac_parser,
                            ac_template=ac_template, ac_context=cnf, **opts)
         if cups:
-            cnf.update(cups)
+            if cnf is None:
+                cnf = cups
+            else:
+                merge(cnf, cups, **options)
 
-    # Disabled for a while: convert to normal dicts, dict or OrderedDict.
-    # cnf = anyconfig.mdicts.convert_to(cnf, **options)
+    if cnf is None:
+        return anyconfig.dicts.convert_to({}, **options)
+
     cnf = _maybe_validated(cnf, schema, **options)
     return anyconfig.query.query(cnf, **options)
 
@@ -418,7 +419,7 @@ def dump(data, path_or_stream, ac_parser=None, **options):
     """
     Save `data` as `path_or_stream`.
 
-    :param data: Config data object (dict[-like] or namedtuple) to dump
+    :param data: A mapping object may have configurations data to dump
     :param path_or_stream: Output file path or file / file-like object
     :param ac_parser: Forced parser type or parser object
     :param options:
@@ -428,8 +429,6 @@ def dump(data, path_or_stream, ac_parser=None, **options):
     dumper = _find_dumper(path_or_stream, ac_parser)
     LOGGER.info("Dumping: %s",
                 anyconfig.utils.get_path_from_stream(path_or_stream))
-    if anyconfig.mdicts.is_namedtuple(data):
-        data = to_container(data, **options)  # namedtuple -> dict-like
     dumper.dump(data, path_or_stream, **options)
 
 
@@ -443,8 +442,6 @@ def dumps(data, ac_parser=None, **options):
 
     :return: Backend-specific string representation for the given data
     """
-    if anyconfig.mdicts.is_namedtuple(data):
-        data = to_container(data, **options)
     return _find_dumper(None, ac_parser).dumps(data, **options)
 
 

@@ -95,20 +95,17 @@ def _is_paths(maybe_paths):
     return False  # Not an iterable at least.
 
 
-def _maybe_validated(cnf, schema, format_checker=None, **options):
+def _maybe_validated(cnf, schema, **options):
     """
     :param cnf: Mapping object represents configuration data
     :param schema: JSON schema object
-    :param format_checker: A format property checker object of which class is
-        inherited from jsonschema.FormatChecker, it's default if None given.
-    :param options: Keyword options
+    :param options: Keyword options passed to :func:`~jsonschema.validate`
 
     :return: Given `cnf` as it is if validation succeeds else None
     """
     valid = True
     if schema:
-        (valid, msg) = validate(cnf, schema, format_checker=format_checker,
-                                safe=True)
+        (valid, msg) = validate(cnf, schema, safe=True, **options)
         if msg:
             LOGGER.warning(msg)
 

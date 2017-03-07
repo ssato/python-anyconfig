@@ -109,7 +109,7 @@ setup(name=PACKAGE,
       license="MIT",
       url="https://github.com/ssato/python-anyconfig",
       classifiers=_CLASSIFIERS,
-      packages=["anyconfig", "m9dicts"],
+      packages=["anyconfig"],
       include_package_data=True,
       cmdclass={
           "srpm": SrpmCommand,

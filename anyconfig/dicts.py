@@ -267,6 +267,8 @@ def _get_update_fn(strategy):
     :param merge: Specify strategy from MERGE_STRATEGIES of how to merge dicts.
     :return: Callable to update objects
     """
+    if strategy is None:
+        strategy = MS_DICTS
     try:
         return _MERGE_FNS[strategy]
     except KeyError:

@@ -116,7 +116,7 @@ class TestBase(unittest.TestCase):
                         "%r\nvs.\n%r" % (dic, ref))
 
 
-class Test_20_dumps_and_loads(unittest.TestCase):
+class Test_20_dumps_and_loads(TestBase):
 
     def test_30_dumps_and_loads(self):
         res = TT.loads(TT.dumps(self.cnf, "json"), "json")

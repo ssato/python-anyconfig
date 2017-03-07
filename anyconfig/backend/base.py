@@ -37,7 +37,6 @@ import logging
 import os
 
 import anyconfig.compat
-import anyconfig.mdicts
 import anyconfig.utils
 
 
@@ -328,7 +327,6 @@ class Parser(object):
 
         :return: string represents the configuration
         """
-        cnf = anyconfig.mdicts.convert_to(cnf, **kwargs)
         kwargs = mk_opt_args(self._dump_opts, kwargs)
         return self.dump_to_string(cnf, **kwargs)
 
@@ -342,7 +340,6 @@ class Parser(object):
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
         """
-        cnf = anyconfig.mdicts.convert_to(cnf, **kwargs)
         kwargs = mk_opt_args(self._dump_opts, kwargs)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):

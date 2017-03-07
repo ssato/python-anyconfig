@@ -42,6 +42,7 @@ from __future__ import absolute_import
 
 import bson
 import anyconfig.backend.base
+import anyconfig.utils
 
 
 _CO_OPTIONS = ("document_class", "tz_aware", "uuid_representation",
@@ -54,7 +55,7 @@ def _codec_options(**options):
 
     :return: :class:`~bson.CodecOptions`
     """
-    opts = anyconfig.backend.base.mk_opt_args(_CO_OPTIONS, options)
+    opts = anyconfig.utils.filter_options(_CO_OPTIONS, options)
     return bson.CodecOptions(**opts)
 
 
@@ -79,7 +80,7 @@ class Parser(anyconfig.backend.base.FromStringLoader,
             if any(k in options for k in _CO_OPTIONS):
                 options["codec_options"] = _codec_options(**options)
 
-        return anyconfig.backend.base.mk_opt_args(self._load_opts, options)
+        return anyconfig.utils.filter_options(self._load_opts, options)
 
     def load_from_string(self, content, container, **kwargs):
         """

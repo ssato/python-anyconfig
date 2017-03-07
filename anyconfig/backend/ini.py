@@ -37,7 +37,7 @@ import anyconfig.parser as P
 import anyconfig.utils
 
 from anyconfig.compat import configparser, iteritems
-from anyconfig.backend.base import mk_opt_args
+from anyconfig.utils import filter_options
 
 
 _SEP = ','
@@ -112,8 +112,9 @@ def _make_parser(**kwargs):
     :return: (keyword args to be used, parser object)
     """
     # Optional arguements for configparser.SafeConfigParser{,readfp}
-    kwargs_0 = mk_opt_args(("defaults", "dict_type", "allow_no_value"), kwargs)
-    kwargs_1 = mk_opt_args(("filename", ), kwargs)
+    kwargs_0 = filter_options(("defaults", "dict_type", "allow_no_value"),
+                              kwargs)
+    kwargs_1 = filter_options(("filename", ), kwargs)
 
     try:
         parser = configparser.SafeConfigParser(**kwargs_0)
@@ -121,7 +122,7 @@ def _make_parser(**kwargs):
         # .. note::
         #    It seems ConfigParser.*ConfigParser in python 2.6 does not support
         #    'allow_no_value' option parameter, and TypeError will be thrown.
-        kwargs_0 = mk_opt_args(("defaults", "dict_type"), kwargs)
+        kwargs_0 = filter_options(("defaults", "dict_type"), kwargs)
         parser = configparser.SafeConfigParser(**kwargs_0)
 
     return (kwargs_1, parser)

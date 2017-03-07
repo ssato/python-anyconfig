@@ -16,8 +16,8 @@ import sys
 import anyconfig.api as API
 import anyconfig.compat
 import anyconfig.globals
-import anyconfig.mdicts
 import anyconfig.parser
+import anyconfig.utils
 
 
 _ENCODING = locale.getdefaultlocale()[1]
@@ -313,7 +313,7 @@ def _output_result(cnf, outpath, otype, inpath, itype):
     fmsg = ("Uknown file type and cannot detect appropriate backend "
             "from its extension, '%s'")
 
-    if not anyconfig.mdicts.is_dict_like(cnf):
+    if not anyconfig.utils.is_dict_like(cnf):
         _exit_with_output(str(cnf))  # Print primitive types as it is.
 
     if not outpath or outpath == "-":

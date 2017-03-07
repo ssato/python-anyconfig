@@ -25,14 +25,13 @@ import anyconfig.backend.base
 import anyconfig.compat
 
 
-class Parser(anyconfig.backend.base.StringStreamFnParser):
+class Parser(anyconfig.backend.base.StringStreamFnParser,
+             anyconfig.backend.base.BinaryFilesParserMixin):
     """Parser for CBOR files.
     """
     _type = "cbor"
     _extensions = ["cbor"]
-    _load_opts = []
     _dump_opts = ["sort_keys"]
-    _open_flags = ('rb', 'wb')
 
     _load_from_string_fn = anyconfig.backend.base.to_method(cbor.loads)
     _load_from_stream_fn = anyconfig.backend.base.to_method(cbor.load)

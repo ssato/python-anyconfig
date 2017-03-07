@@ -40,7 +40,8 @@ else:
     DUMP_OPTS = ["protocol"]
 
 
-class Parser(anyconfig.backend.base.StringStreamFnParser):
+class Parser(anyconfig.backend.base.StringStreamFnParser,
+             anyconfig.backend.base.BinaryFilesParserMixin):
     """
     Parser for Pickle files.
     """
@@ -48,7 +49,6 @@ class Parser(anyconfig.backend.base.StringStreamFnParser):
     _extensions = ["pkl", "pickle"]
     _load_opts = LOAD_OPTS
     _dump_opts = DUMP_OPTS
-    _open_flags = ('rb', 'wb')
 
     _load_from_string_fn = anyconfig.backend.base.to_method(pickle.loads)
     _load_from_stream_fn = anyconfig.backend.base.to_method(pickle.load)

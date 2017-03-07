@@ -60,7 +60,8 @@ def _codec_options(**options):
 
 
 class Parser(anyconfig.backend.base.FromStringLoader,
-             anyconfig.backend.base.ToStringDumper):
+             anyconfig.backend.base.ToStringDumper,
+             anyconfig.backend.base.BinaryFilesParserMixin):
     """
     Loader/Dumper of BSON files.
     """
@@ -68,7 +69,6 @@ class Parser(anyconfig.backend.base.FromStringLoader,
     _extensions = ["bson", "bsn"]  # Temporary.
     _load_opts = [] if bson.has_c() else ["codec_options"]
     _dump_opts = [] if bson.has_c() else ["check_keys", "codec_options"]
-    _open_flags = ('rb', 'wb')
     _ordered = not bson.has_c()
 
     def _load_options(self, container, **options):

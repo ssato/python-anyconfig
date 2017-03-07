@@ -70,7 +70,8 @@ def load(path_or_strm, container, **opts):
 
 
 class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.ToStreamDumper):
+             anyconfig.backend.base.ToStreamDumper,
+             anyconfig.backend.base.BinaryFilesParserMixin):
     """
     Parser for Ini-like config files which configobj supports.
     """
@@ -78,7 +79,6 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _priority = 10
     _load_opts = _LOAD_OPTS  # options on dump will be just ignored.
     _dump_opts = _LOAD_OPTS  # Likewise.
-    _open_flags = ('rb', 'wb')
     _ordered = True
 
     load_from_path = load_from_stream = anyconfig.backend.base.to_method(load)

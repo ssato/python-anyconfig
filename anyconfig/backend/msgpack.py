@@ -28,7 +28,8 @@ import anyconfig.backend.base
 from anyconfig.backend.base import to_method
 
 
-class Parser(anyconfig.backend.base.StringStreamFnParser):
+class Parser(anyconfig.backend.base.StringStreamFnParser,
+             anyconfig.backend.base.BinaryFilesParserMixin):
     """
     Loader/Dumper for MessagePack files.
     """
@@ -40,7 +41,6 @@ class Parser(anyconfig.backend.base.StringStreamFnParser):
                   "max_ext_len", "object_pairs_hook"]
     _dump_opts = ["default", "encoding", "unicode_errors", "use_single_float",
                   "autoreset", "use_bin_type"]
-    _open_flags = ('rb', 'wb')
     _ordered = True
     _dict_options = ["object_pairs_hook"]  # Exclusive with object_hook
 

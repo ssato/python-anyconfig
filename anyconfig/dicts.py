@@ -309,6 +309,8 @@ def _make_recur(obj, make_fn, ordered=False, cls=None, **options):
     :param ordered: Create an OrderedDict instead of dict to keep the key order
     :param cls: Convert `obj` to `cls` object instead of a dict.
     :param options: Optional keyword arguments.
+
+    :return: A dict or OrderedDict or object of `cls`
     """
     if cls is None:
         cls = anyconfig.compat.OrderedDict if ordered else dict
@@ -322,6 +324,8 @@ def _make_iter(obj, make_fn, **options):
     :param obj: A mapping objects or other primitive object
     :param make_fn: Function to make/convert to
     :param options: Optional keyword arguments.
+
+    :return: A dict or OrderedDict or object of `cls`
     """
     return type(obj)(make_fn(v, **options) for v in obj)
 
@@ -337,7 +341,13 @@ def convert_to(obj, ordered=False, cls=None, **options):
     :param cls: Convert `obj` to `cls` object instead of a dict.
     :param options: Optional keyword arguments.
 
-    :return: A dict or OrderedDict or object of `to_type`
+    :return: A dict or OrderedDict or object of `cls`
+
+    >>> OD = anyconfig.compat.OrderedDict
+    >>> convert_to(OD((('a', 1) ,)), cls=dict)
+    {'a': 1}
+    >>> convert_to(OD((('a', OD((('b', OD((('c', 1), ))), ))), )), cls=dict)
+    {'a': {'b': {'c': 1}}}
     """
     options.update(ordered=ordered, cls=cls)
     if anyconfig.utils.is_dict_like(obj):

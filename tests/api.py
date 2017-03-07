@@ -14,6 +14,7 @@ import unittest
 
 import anyconfig.api as TT
 import anyconfig.backends
+import anyconfig.compat
 import anyconfig.dicts
 import anyconfig.template
 import tests.common
@@ -69,6 +70,10 @@ CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},
 NULL_CNTNR = TT.anyconfig.dicts.convert_to({})
 
 
+class MyODict(anyconfig.compat.OrderedDict):
+    pass
+
+
 def _is_file_object(obj):
     try:
         return isinstance(obj, file)
@@ -111,8 +116,8 @@ class TestBase(unittest.TestCase):
     cnf = dic = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
     upd = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"), e=0)
 
-    def assert_dicts_equal(self, dic, ref):
-        self.assertTrue(dicts_equal(dic, ref),
+    def assert_dicts_equal(self, dic, ref, ordered=False):
+        self.assertTrue(dicts_equal(dic, ref, ordered=ordered),
                         "%r\nvs.\n%r" % (dic, ref))
 
 
@@ -288,6 +293,24 @@ class Test_30_single_load(TestBaseWithIO):
         cnf_3 = TT.single_load(cnf_2_path, ac_schema=scm_path)
         self.assertTrue(cnf_3 is None)  # Validation should fail.
 
+    def test_20_dump_and_single_load__w_ordered_option(self):
+        TT.dump(self.cnf, self.a_path)
+        self.assertTrue(os.path.exists(self.a_path))
+
+        # It works w/ JSON backend but some backend cannot keep the order of
+        # items and the tests might fail.
+        res = TT.single_load(self.a_path, ac_ordered=True)
+        self.assert_dicts_equal(res, self.cnf, ordered=True)
+        self.assertTrue(isinstance(res, anyconfig.compat.OrderedDict))
+
+    def test_22_dump_and_single_load__w_ac_dict_option(self):
+        TT.dump(self.cnf, self.a_path)
+        self.assertTrue(os.path.exists(self.a_path))
+
+        res = TT.single_load(self.a_path, ac_dict=MyODict)
+        self.assert_dicts_equal(res, self.cnf, ordered=True)
+        self.assertTrue(isinstance(res, MyODict))
+
 
 class Test_32_single_load(unittest.TestCase):
 
@@ -456,6 +479,14 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
 
         self.assert_dicts_equal(res0, self.exp)
         self.assert_dicts_equal(res1, self.exp)
+
+    def test_60_multi_load__w_ac_dict_option(self):
+        TT.dump(self.dic, self.a_path)
+        TT.dump(self.upd, self.b_path)
+
+        res = TT.multi_load(self.g_path, ac_dict=MyODict)
+        self.assert_dicts_equal(res, self.exp)
+        self.assertTrue(isinstance(res, MyODict))
 
 
 class Test_50_load_and_dump(TestBaseWithIOMultiFiles):

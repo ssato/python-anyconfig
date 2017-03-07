@@ -12,7 +12,6 @@
 %endif
 
 %global with_optionals 0
-%global with_m9dicts 0
 
 # disable debuginfo
 %define debug_package %{nil}

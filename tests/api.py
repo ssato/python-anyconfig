@@ -553,7 +553,7 @@ class Test_50_load_and_dump(TestMultiLoadBase):
         TT.dump(scm, spath)
 
         cnf1 = TT.single_load(cpath, ac_schema=spath)
-        self.assertTrue(dicts_equal(cnf, cnf1), str(cnf1))
+        self.assert_dicts_equal(cnf, cnf1)
 
     def test_40_load_w_query(self):
         cnf_path = os.path.join(self.workdir, "cnf.json")

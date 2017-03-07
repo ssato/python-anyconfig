@@ -5,6 +5,7 @@
 # pylint: disable=missing-docstring, invalid-name, no-member
 from __future__ import absolute_import
 
+import copy
 import logging
 import io
 import os
@@ -13,13 +14,11 @@ import unittest
 
 import anyconfig.api as TT
 import anyconfig.backends
-import anyconfig.mdicts
+import anyconfig.dicts
 import anyconfig.template
 import tests.common
 
 from tests.common import CNF_0, SCM_0, dicts_equal
-from anyconfig.compat import OrderedDict, IS_PYTHON_3
-from anyconfig.mdicts import convert_to
 
 
 # suppress logging messages.
@@ -53,6 +52,7 @@ b:
         - {{ x }}
         {% endfor %}
     d: {{ b.d }}
+e: 0
 """
 
 CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},
@@ -65,6 +65,8 @@ CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},
                         'list2': {'@attrs': {'id': 'list2'},
                                   '@children': [{'item': 'i'},
                                                 {'item': 'j'}]}}}
+
+NULL_CNTNR = TT.anyconfig.dicts.convert_to({})
 
 
 def _is_file_object(obj):
@@ -102,6 +104,13 @@ class Test_10_find_loader(unittest.TestCase):
     def test_40_find_loader__unknown_file_type(self):
         self.assertRaises(TT.UnknownFileTypeError,
                           TT.find_loader, "dummy.ext_not_found")
+
+
+class TestBase(unittest.TestCase):
+
+    def assert_dicts_equal(self, dic, ref):
+        self.assertTrue(dicts_equal(dic, ref),
+                        "%r\nvs.\n%r" % (dic, ref))
 
 
 class Test_20_dumps_and_loads(unittest.TestCase):
@@ -203,25 +212,12 @@ class Test_30_single_load(unittest.TestCase):
         self.assertRaises(TT.UnknownFileTypeError,
                           TT.single_load, "dummy.ext_not_exist")
 
-    def test_13_dump_and_single_load__namedtuple(self):
-        if not IS_PYTHON_3:  # TODO: it does not work with python3.
-            cpath = os.path.join(self.workdir, "a.json")
-            cnf = OrderedDict(sorted(self.cnf.items()))
-            cnf0 = convert_to(cnf, ac_namedtuple=True)
-
-            TT.dump(cnf0, cpath)
-            self.assertTrue(os.path.exists(cpath))
-
-            cnf1 = TT.single_load(cpath, ac_namedtuple=True)
-            self.assertTrue(cnf0 == cnf1, "\n%r ->\n%r" % (cnf0, cnf1))
-
     def test_14_single_load__ignore_missing(self):
-        null_cntnr = TT.to_container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
         self.assertEqual(TT.single_load(cpath, "ini", ignore_missing=True),
-                         null_cntnr)
+                         NULL_CNTNR)
 
     def test_15_single_load__fail_to_render_template(self):
         if not anyconfig.template.SUPPORTED:
@@ -340,202 +336,140 @@ class Test_32_single_load(unittest.TestCase):
             self._load_and_dump_with_opened_files("a.yml")
 
 
-class Test_40_multi_load(unittest.TestCase):
+class TestMultiLoadBase(TestBase):
 
-    cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+    dic = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+    upd = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"), e=0)
 
     def setUp(self):
         self.workdir = tests.common.setup_workdir()
+        self.a_path = os.path.join(self.workdir, "a.json")
+        self.b_path = os.path.join(self.workdir, "b.json")
+        self.g_path = os.path.join(self.workdir, "*.json")
 
     def tearDown(self):
         tests.common.cleanup_workdir(self.workdir)
 
-    def test_10_dump_and_multi_load__default_merge_strategy(self):
-        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
-        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
 
-        a_path = os.path.join(self.workdir, "a.json")
-        b_path = os.path.join(self.workdir, "b.json")
-        g_path = os.path.join(self.workdir, "*.json")
+class Test_40_multi_load_with_strategies(TestMultiLoadBase):
 
-        TT.dump(a, a_path)
-        TT.dump(b, b_path)
+    def _check_multi_load_with_strategy(self, exp, merge=TT.MS_DICTS):
+        TT.dump(self.dic, self.a_path)
+        TT.dump(self.upd, self.b_path)
 
-        a0 = TT.multi_load(g_path)
-        a02 = TT.multi_load([g_path, b_path])
+        self.assertTrue(os.path.exists(self.a_path))
+        self.assertTrue(os.path.exists(self.b_path))
 
-        self.assertEqual(a0["name"], a["name"])
-        self.assertEqual(a0["a"], b["a"])
-        self.assertEqual(a0["b"]["b"], b["b"]["b"])
-        self.assertEqual(a0["b"]["c"], a["b"]["c"])
-        self.assertEqual(a0["b"]["d"], b["b"]["d"])
+        res0 = TT.multi_load(self.g_path, ac_merge=merge)
+        res1 = TT.multi_load([self.g_path, self.b_path], ac_merge=merge)
 
-        self.assertEqual(a02["name"], a["name"])
-        self.assertEqual(a02["a"], b["a"])
-        self.assertEqual(a02["b"]["b"], b["b"]["b"])
-        self.assertEqual(a02["b"]["c"], a["b"]["c"])
-        self.assertEqual(a02["b"]["d"], b["b"]["d"])
+        self.assertTrue(res0)
+        self.assertTrue(res1)
 
-        a1 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_DICTS)
+        self.assert_dicts_equal(res0, exp)
+        self.assert_dicts_equal(res1, exp)
 
-        self.assertEqual(a1["name"], a["name"])
-        self.assertEqual(a1["a"], b["a"])
-        self.assertEqual(a1["b"]["b"], b["b"]["b"])
-        self.assertEqual(a1["b"]["c"], a["b"]["c"])
-        self.assertEqual(a1["b"]["d"], b["b"]["d"])
+    def test_10_default_merge_strategy(self):
+        exp = copy.deepcopy(self.upd)
+        exp["b"]["c"] = self.dic["b"]["c"]
+        exp["name"] = self.dic["name"]
 
-    def test_12_dump_and_multi_load__default_merge_strategy(self):
-        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
-        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+        self._check_multi_load_with_strategy(exp, merge=None)
+        self._check_multi_load_with_strategy(exp)
 
-        a_path = os.path.join(self.workdir, "a.json")
-        b_path = os.path.join(self.workdir, "b.json")
-        g_path = os.path.join(self.workdir, "*.json")
+    def test_20_merge_dicts_and_lists(self):
+        exp = copy.deepcopy(self.upd)
+        exp["b"]["b"] = [0] + self.upd["b"]["b"]
+        exp["b"]["c"] = self.dic["b"]["c"]
+        exp["name"] = self.dic["name"]
+        self._check_multi_load_with_strategy(exp, merge=TT.MS_DICTS_AND_LISTS)
 
-        TT.dump(a, a_path)
-        TT.dump(b, b_path)
+    def test_30_merge_with_replace(self):
+        exp = copy.deepcopy(self.upd)
+        exp["name"] = self.dic["name"]
+        self._check_multi_load_with_strategy(exp, merge=TT.MS_REPLACE)
 
-        a2 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_DICTS_AND_LISTS)
+    def test_40_merge_wo_replace(self):
+        exp = copy.deepcopy(self.dic)
+        exp["e"] = self.upd["e"]
+        self._check_multi_load_with_strategy(exp, merge=TT.MS_NO_REPLACE)
 
-        self.assertEqual(a2["name"], a["name"])
-        self.assertEqual(a2["a"], b["a"])
-        self.assertEqual(a2["b"]["b"], [0, 1, 2, 3, 4, 5])
-        self.assertEqual(a2["b"]["c"], a["b"]["c"])
-        self.assertEqual(a2["b"]["d"], b["b"]["d"])
-
-        a3 = TT.multi_load(g_path)
-
-        self.assertEqual(a3["name"], a["name"])
-        self.assertEqual(a3["a"], b["a"])
-        self.assertEqual(a3["b"]["b"], b["b"]["b"])
-        self.assertEqual(a3["b"]["c"], a["b"]["c"])
-        self.assertEqual(a3["b"]["d"], b["b"]["d"])
-
-        a4 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_REPLACE)
-
-        self.assertEqual(a4["name"], a["name"])
-        self.assertEqual(a4["a"], b["a"])
-        self.assertEqual(a4["b"]["b"], b["b"]["b"])
-        self.assertFalse("c" in a4["b"])
-        self.assertEqual(a4["b"]["d"], b["b"]["d"])
-
-        a5 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_NO_REPLACE)
-
-        self.assertEqual(a5["name"], a["name"])
-        self.assertEqual(a5["a"], a["a"])
-        self.assertEqual(a5["b"]["b"], a["b"]["b"])
-        self.assertEqual(a5["b"]["c"], a["b"]["c"])
-        self.assertFalse("d" in a5["b"])
-
-    def test_14_multi_load__wrong_merge_strategy(self):
+    def test_60_wrong_merge_strategy(self):
+        cpath = os.path.join(self.workdir, "a.json")
+        TT.dump(dict(a=1, b=2), cpath)
         try:
-            TT.multi_load("/dummy/*.json", ac_merge="merge_st_not_exist")
+            TT.multi_load([cpath, cpath], ac_merge="merge_st_not_exist")
             raise RuntimeError("Wrong merge strategy was not handled!")
         except ValueError:
             self.assertTrue(1 == 1)  # To suppress warn of pylint.
 
-    def test_15_multi_load__empty_path_list(self):
-        self.assertEqual(TT.multi_load([]), TT.to_container())
 
-    def test_16_dump_and_multi_load__mixed_file_types(self):
-        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
-        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+class Test_42_multi_load(TestMultiLoadBase):
 
-        a_path = os.path.join(self.workdir, "a.json")
-        b_path = os.path.join(self.workdir, "b.yml")
+    def setUp(self):
+        super(Test_42_multi_load, self).setUp()
 
-        TT.dump(a, a_path)
-        TT.dump(b, b_path)
+        exp = copy.deepcopy(self.upd)  # Assume MS_DICTS strategy was used.
+        exp["b"]["c"] = self.dic["b"]["c"]
+        exp["name"] = self.dic["name"]
+        self.exp = exp
 
-        cnf = TT.multi_load([a_path, b_path])
+    def test_10_multi_load__empty_path_list(self):
+        self.assertEqual(TT.multi_load([]), NULL_CNTNR)
 
-        self.assertEqual(cnf["name"], a["name"])
-        self.assertEqual(cnf["a"], b["a"])
-        self.assertEqual(cnf["b"]["b"], b["b"]["b"])
-        self.assertEqual(cnf["b"]["c"], a["b"]["c"])
-        self.assertEqual(cnf["b"]["d"], b["b"]["d"])
+    def test_20_dump_and_multi_load__mixed_file_types(self):
+        c_path = os.path.join(self.workdir, "c.yml")
 
-    def test_18_dump_and_multi_load__namedtuple(self):
-        a = convert_to(dict(a=1, b=dict(b=[0, 1], c="C"), name="a"),
-                       ac_namedtuple=True)
-        b = convert_to(dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D")),
-                       ac_namedtuple=True)
+        TT.dump(self.dic, self.a_path)  # JSON
+        try:
+            TT.dump(self.upd, c_path)  # YAML
+        except (TT.UnknownParserTypeError, TT.UnknownFileTypeError):
+            return  # YAML backend is not available in this env.
 
-        a_path = os.path.join(self.workdir, "a.json")
-        b_path = os.path.join(self.workdir, "b.yml")
+        self.assertTrue(os.path.exists(self.a_path))
+        self.assertTrue(os.path.exists(c_path))
 
-        TT.dump(a, a_path)
-        TT.dump(b, b_path)
-        cnf = TT.multi_load([a_path, b_path], ac_namedtuple=True)
+        res = TT.multi_load([self.a_path, c_path])
+        self.assert_dicts_equal(res, self.exp)
 
-        self.assertEqual(cnf.name, a.name)
-        self.assertEqual(cnf.a, b.a)
-        self.assertEqual(cnf.b.b, b.b.b)
-        self.assertEqual(cnf.b.c, a.b.c)
-        self.assertEqual(cnf.b.d, b.b.d)
+    def test_30_dump_and_multi_load__to_from_stream(self):
+        TT.dump(self.dic, self.a_path)
+        TT.dump(self.upd, self.b_path)
 
-    def test_20_dump_and_multi_load__to_from_stream(self):
-        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
-        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+        res = TT.multi_load([TT.open(self.a_path), TT.open(self.b_path)])
+        self.assert_dicts_equal(res, self.exp)
 
-        a_path = os.path.join(self.workdir, "a.json")
-        b_path = os.path.join(self.workdir, "b.json")
-
-        TT.dump(a, open(a_path, 'w'))
-        TT.dump(b, open(b_path, 'w'))
-        self.assertTrue(os.path.exists(a_path))
-        self.assertTrue(os.path.exists(b_path))
-
-        cnf = TT.multi_load([open(a_path), open(b_path)])
-
-        self.assertEqual(cnf["name"], a["name"])
-        self.assertEqual(cnf["a"], b["a"])
-        self.assertEqual(cnf["b"]["b"], b["b"]["b"])
-        self.assertEqual(cnf["b"]["c"], a["b"]["c"])
-        self.assertEqual(cnf["b"]["d"], b["b"]["d"])
-
-    def test_30_multi_load__ignore_missing(self):
-        null_cntnr = TT.to_container()
+    def test_40_multi_load__ignore_missing(self):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
         self.assertEqual(TT.multi_load([cpath], ac_parser="ini",
                                        ignore_missing=True),
-                         null_cntnr)
+                         NULL_CNTNR)
 
-    def test_40_multi_load__templates(self):
+    def test_50_multi_load__templates(self):
         if not anyconfig.template.SUPPORTED:
             return
 
-        a = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
-        b = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+        ctx = self.dic.copy()
+        TT.merge(ctx, self.upd, ac_merge=TT.MS_DICTS)
 
-        ma = TT.to_container(a, ac_merge=TT.MS_DICTS)
-        ma.update(b)
+        a_path = self.a_path.replace(".json", ".yml")
+        b_path = self.b_path.replace(".json", ".yml")
+        g_path = self.g_path.replace(".json", ".yml")
 
-        a_path = os.path.join(self.workdir, "a.yml")
-        b_path = os.path.join(self.workdir, "b.yml")
-        g_path = os.path.join(self.workdir, "*.yml")
+        TT.open(a_path, mode='w').write(CNF_TMPL_1)
+        TT.open(b_path, mode='w').write(CNF_TMPL_2)
 
-        open(a_path, 'w').write(CNF_TMPL_1)
-        open(b_path, 'w').write(CNF_TMPL_2)
+        opts = dict(ac_merge=TT.MS_DICTS, ac_template=True, ac_context=ctx)
+        try:
+            res0 = TT.multi_load(g_path, **opts)
+            res1 = TT.multi_load([g_path, b_path], **opts)
+        except (TT.UnknownParserTypeError, TT.UnknownFileTypeError):
+            return
 
-        a0 = TT.multi_load(g_path, ac_merge=TT.MS_DICTS, ac_template=True,
-                           ac_context=ma)
-        a02 = TT.multi_load([g_path, b_path], ac_merge=TT.MS_DICTS,
-                            ac_template=True, ac_context=ma)
-
-        self.assertEqual(a0["name"], a["name"])
-        self.assertEqual(a0["a"], b["a"])
-        self.assertEqual(a0["b"]["b"], b["b"]["b"])
-        self.assertEqual(a0["b"]["c"], a["b"]["c"])
-        self.assertEqual(a0["b"]["d"], b["b"]["d"])
-
-        self.assertEqual(a02["name"], a["name"])
-        self.assertEqual(a02["a"], b["a"])
-        self.assertEqual(a02["b"]["b"], b["b"]["b"])
-        self.assertEqual(a02["b"]["c"], a["b"]["c"])
-        self.assertEqual(a02["b"]["d"], b["b"]["d"])
+        self.assert_dicts_equal(res0, self.exp)
+        self.assert_dicts_equal(res1, self.exp)
 
 
 class Test_50_load_and_dump(unittest.TestCase):
@@ -636,13 +570,12 @@ class Test_50_load_and_dump(unittest.TestCase):
         self.assertEqual(a3["b"]["d"], b["b"]["d"])
 
     def test_34_load__ignore_missing(self):
-        null_cntnr = TT.to_container()
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
         self.assertEqual(TT.load([cpath], ac_parser="ini",
                                  ignore_missing=True),
-                         null_cntnr)
+                         NULL_CNTNR)
 
     def test_36_load_w_validation(self):
         cnf_path = os.path.join(self.workdir, "cnf.json")

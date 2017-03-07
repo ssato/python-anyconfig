@@ -214,7 +214,7 @@ def _check_options_and_args(parser, options, args):
             tlist = ", ".join(API.list_types())
             _exit_with_output("Supported config types: " + tlist)
         elif options.env:
-            cnf = API.to_container(os.environ.copy())
+            cnf = os.environ.copy()
             _output_result(cnf, options.output, options.otype or "json",
                            None, None)
             sys.exit(0)
@@ -354,13 +354,13 @@ def main(argv=None):
 
     _check_options_and_args(parser, options, args)
 
-    cnf = API.to_container(os.environ.copy() if options.env else {})
+    cnf = os.environ.copy() if options.env else {}
     diff = _load_diff(args, options)
-    cnf.update(diff)
+    API.merge(cnf, diff)
 
     if options.args:
         diff = anyconfig.parser.parse(options.args)
-        cnf.update(diff)
+        API.merge(cnf, diff)
 
     _exit_if_only_to_validate(options.validate)
 

@@ -81,6 +81,14 @@ class Test_10_dumps_and_loads(TestBase):
             cnf = self.psr.loads(self.cnf_s, ac_dict=MyDict)
             self._assert_dicts_equal(cnf, cls=MyDict)
 
+    def test_20_loads_with_dict_option(self):
+        if self.is_ready():
+            dopts = self.psr.dict_options()
+            if dopts:
+                opts = {dopts[0]: MyDict}
+                cnf = self.psr.loads(self.cnf_s, **opts)
+                self._assert_dicts_equal(cnf, cls=MyDict)
+
     def test_30_dumps(self):
         if self.is_ready():
             cnf_s = self.psr.dumps(self.cnf)

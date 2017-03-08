@@ -5,7 +5,9 @@
 # License: MIT
 #
 # pylint: disable=unused-argument,wrong-import-position,wrong-import-order
-"""Template rendering module for jinja2-based template config files.
+"""anyconfig.template module
+
+Template rendering module for jinja2-based template config files.
 """
 from __future__ import absolute_import
 

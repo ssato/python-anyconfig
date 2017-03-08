@@ -387,6 +387,7 @@ The following areas are still insufficient, I think.
 
 - Make python-anyconfig robust for invalid inputs
 - Make python-anyconfig scaled: some functions are limited by max recursion depth.
+- Make python-anyconfig processing files faster: current implementation might be too complex and it causes the processing slower than expected.
 - Documentation:
 
   - Especially API docs need more fixes and enhancements! CLI doc is non-fulfilling also.

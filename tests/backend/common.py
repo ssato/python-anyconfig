@@ -3,6 +3,7 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
 import copy
@@ -10,7 +11,9 @@ import os.path
 import unittest
 
 import tests.common
+
 from anyconfig.compat import OrderedDict
+from tests.common import to_bytes as _bytes
 
 
 CNF_0 = OrderedDict((("DEFAULT", OrderedDict((("a", "0"), ("b", "bbb"),
@@ -20,6 +23,10 @@ CNF_0 = OrderedDict((("DEFAULT", OrderedDict((("a", "0"), ("b", "bbb"),
                                             ("d", "x,y,z"))))))
 CNF_1 = copy.deepcopy(CNF_0)
 CNF_1["sect0"]["d"] = CNF_1["sect0"]["d"].split()
+
+CNF_2 = OrderedDict((("a", 0.1), ("b", _bytes("bbb")),
+                     ("sect0", OrderedDict((("c", [_bytes("x"), _bytes("y"),
+                                                   _bytes("z")]), )))))
 
 
 class MyDict(dict):

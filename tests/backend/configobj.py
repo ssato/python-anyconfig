@@ -1,15 +1,13 @@
 #
-# Copyright (C) 2013 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2013 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
-import os.path
-
 import anyconfig.backend.configobj as TT
-import tests.backend.ini
-import tests.common
+import tests.backend.common as TBC
 
 from anyconfig.compat import OrderedDict as ODict
 
@@ -62,28 +60,21 @@ CNF_0 = ODict((('keyword1', 'value1'),
                 ODict((('keyword8', 'value 9'), ('keyword9', 'value10'))))))
 
 
-class Test10(tests.backend.ini.Test10):
+class HasParserTrait(TBC.HasParserTrait):
 
+    psr = TT.Parser()
     cnf = CNF_0
     cnf_s = CNF_0_S
+
+
+class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
+
     load_options = dict(raise_errors=True)
     dump_options = dict(indent_type="  ")
 
-    def setUp(self):
-        self.psr = TT.Parser()
 
+class Test_20(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
-class Test20(tests.backend.ini.Test20):
-
-    psr_cls = TT.Parser
-    cnf = CNF_0
-    cnf_s = CNF_0_S
-    cnf_fn = "conf0.ini"
-
-    def setUp(self):
-        self.psr = TT.Parser()
-        self.workdir = tests.common.setup_workdir()
-        self.cpath = os.path.join(self.workdir, self.cnf_fn)
-        open(self.cpath, 'w').write(self.cnf_s)
+    pass
 
 # vim:sw=4:ts=4:et:

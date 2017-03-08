@@ -4,15 +4,15 @@ API Details
 .. toctree::
 
     anyconfig.api
-    anyconfig.backends
     anyconfig.backend
+    anyconfig.backends
     anyconfig.cli
     anyconfig.compat
+    anyconfig.dicts
     anyconfig.globals
     anyconfig.init
     anyconfig.parser
     anyconfig.query
-    anyconfig.dicts
     anyconfig.schema
     anyconfig.template
     anyconfig.utils

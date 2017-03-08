@@ -25,6 +25,8 @@ from __future__ import absolute_import
 
 import msgpack
 import anyconfig.backend.base
+import anyconfig.compat
+
 from anyconfig.backend.base import to_method
 
 
@@ -41,7 +43,7 @@ class Parser(anyconfig.backend.base.StringStreamFnParser,
                   "max_ext_len", "object_pairs_hook"]
     _dump_opts = ["default", "encoding", "unicode_errors", "use_single_float",
                   "autoreset", "use_bin_type"]
-    _ordered = True
+    _ordered = not anyconfig.compat.IS_PYTHON_3  # TODO.
     _dict_options = ["object_pairs_hook"]  # Exclusive with object_hook
 
     _load_from_string_fn = to_method(msgpack.unpackb)

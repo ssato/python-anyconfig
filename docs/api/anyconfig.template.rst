@@ -1,5 +1,5 @@
 :mod:`anyconfig.template`
---========================
+==========================
 
 .. automodule:: anyconfig.template
     :members:

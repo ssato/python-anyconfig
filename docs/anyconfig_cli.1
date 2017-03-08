@@ -44,6 +44,10 @@ original parser is used: 'K:V' will become {K: V},
 (where the tyep of K is str, type of V is one of Int,
 str, etc.
 .TP
+\fB\-\-query\fR=\fIQUERY\fR
+Specify JMESPath expression to query part of config, for example,
+if a config {'a': {'b': {'c': 0, 'd': [1, 2, 3]}}} '--query
+a.b.d[0]' gives 1 and '--query a.b' gives {'c': 0, 'd': [1, 2, 3]}.
 \fB\-\-get\fR=\fIGET\fR
 Specify key path to get part of config, for example,
 if a config {'a': {'b': {'c': 0, 'd': 1}}} '--get

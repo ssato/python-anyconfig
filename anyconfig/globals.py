@@ -9,7 +9,7 @@ import anyconfig.init
 
 PACKAGE = "anyconfig"
 AUTHOR = "Satoru SATOH <ssato@redhat.com>"
-VERSION = "0.8.2"
+VERSION = "0.9.0"
 
 LOGGER = anyconfig.init.getLogger(PACKAGE)
 

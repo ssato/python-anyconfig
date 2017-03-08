@@ -58,4 +58,23 @@ class Test10(unittest.TestCase):
         TT.ensure_outdir_exists("a.txt")
         self.assertFalse(os.path.exists(os.path.dirname("a.txt")))
 
+
+class Test20(unittest.TestCase):
+
+    def test_10_TextFilesMixin_ropen(self):
+        with TT.TextFilesMixin.ropen("/dev/null") as fileobj:
+            self.assertEqual(fileobj.mode, 'r')
+
+    def test_10_TextFilesMixin_wopen(self):
+        with TT.TextFilesMixin.wopen("/dev/null") as fileobj:
+            self.assertEqual(fileobj.mode, 'w')
+
+    def test_20_BinaryFilesMixin_ropen(self):
+        with TT.BinaryFilesMixin.ropen("/dev/null") as fileobj:
+            self.assertEqual(fileobj.mode, 'rb')
+
+    def test_20_BinaryFilesMixin_wopen(self):
+        with TT.BinaryFilesMixin.wopen("/dev/null") as fileobj:
+            self.assertEqual(fileobj.mode, 'wb')
+
 # vim:sw=4:ts=4:et:

@@ -21,13 +21,13 @@ d: x,y,z
 """
 
 
-class HasParserAndConfigStrTrait(object):
+class HasParserTrait(object):
 
     psr = TT.Parser()
     cnf_s = CNF_0_S
 
 
-class Test_10(TBC.Test_10_dumps_and_loads, HasParserAndConfigStrTrait):
+class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
     psr = TT.Parser()
     cnf_s = CNF_0_S
@@ -50,7 +50,7 @@ class Test_10(TBC.Test_10_dumps_and_loads, HasParserAndConfigStrTrait):
         self._assert_dicts_equal(cnf, ref=ref)
 
 
-class Test_20(TBC.Test_20_dump_and_load, HasParserAndConfigStrTrait):
+class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
 
     pass
 

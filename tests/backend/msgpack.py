@@ -8,9 +8,17 @@ from __future__ import absolute_import
 
 # import copy
 import anyconfig.backend.msgpack as TT
+import anyconfig.compat
 import tests.backend.common as TBC
 
-# from tests.common import to_bytes as _bytes
+from tests.common import to_bytes as _bytes
+
+
+CNF = dict(((_bytes("a"), 0.1),
+            (_bytes("b"), _bytes("bbb")),
+            (_bytes("sect0"),
+             dict(((_bytes("c"),
+                    [_bytes("x"), _bytes("y"), _bytes("z")]), )))))
 
 
 class HasParserTrait(TBC.HasParserTrait):
@@ -19,10 +27,14 @@ class HasParserTrait(TBC.HasParserTrait):
     cnf = TBC.CNF_2
     cnf_s = TT.msgpack.packb(cnf)
 
+    if anyconfig.compat.IS_PYTHON_3:
+        cnf = CNF
+
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
     load_options = dict(use_single_float=True)
+
 
 # pylint: disable=pointless-string-statement
 """

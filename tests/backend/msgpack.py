@@ -1,72 +1,62 @@
 #
-# Copyright (C) 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2017 Red Hat, Inc.
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 from __future__ import absolute_import
 
-import copy
-
+# import copy
 import anyconfig.backend.msgpack as TT
-import tests.backend.ini
+import tests.backend.common as TBC
 
-from anyconfig.compat import OrderedDict as ODict, IS_PYTHON_3
-from tests.common import dicts_equal, to_bytes as _bytes
-
-
-CNF_0 = ODict(((_bytes("a"), 0.1),
-               (_bytes("b"), _bytes("bbb")),
-               (_bytes("sect0"),
-                ODict(((_bytes("c"),
-                        [_bytes("x"), _bytes("y"), _bytes("z")]), )))))
+# from tests.common import to_bytes as _bytes
 
 
-class Test10(tests.backend.ini.Test10):
+class HasParserTrait(TBC.HasParserTrait):
 
-    cnf = CNF_0
-    cnf_s = TT.msgpack.packb(CNF_0)
+    psr = TT.Parser()
+    cnf = TBC.CNF_2
+    cnf_s = TT.msgpack.packb(cnf)
 
-    if IS_PYTHON_3:
-        is_order_kept = False  # FIXME: Make it work w/ python 3.
 
-    def setUp(self):
-        self.psr = TT.Parser()
+class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
-    def test_12_loads__w_options(self):
+    load_options = dict(use_single_float=True)
+
+# pylint: disable=pointless-string-statement
+"""
+TODO:
+
+    def test_40_loads_with_options(self):
         cnf = self.psr.loads(self.cnf_s, use_list=False)
         ref = copy.deepcopy(self.cnf)
         ref[_bytes("sect0")][_bytes("c")] = (_bytes("x"), _bytes("y"),
                                              _bytes("z"))
-        self.assertTrue(dicts_equal(cnf, ref), str(cnf))
+        self._assert_dicts_equal(cnf, ref)
 
-    def test_22_dumps__w_options(self):
+    def test_42_dumps_with_options(self):
         cnf = self.psr.loads(self.psr.dumps(self.cnf, use_single_float=True))
         ref = copy.deepcopy(self.cnf)
         ref[_bytes("a")] = cnf[_bytes("a")]  # single float value.
-        self.assertFalse(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(dicts_equal(cnf, ref), str(cnf))
+        self._assert_dicts_equal(cnf, ref)
 
 
-class Test20(tests.backend.ini.Test20):
+class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
 
-    psr_cls = TT.Parser
-    cnf = CNF_0
-    cnf_s = TT.msgpack.packb(CNF_0)
-    cnf_fn = "conf0.msgpack"
-
-    def test_12_load__w_options(self):
-        cnf = self.psr.load(self.cpath, use_list=False)
+    def test_40_load_with_options(self):
+        cnf = self.psr.load(self.cnf_path, use_list=False)
         ref = copy.deepcopy(self.cnf)
         ref[_bytes("sect0")][_bytes("c")] = (_bytes("x"), _bytes("y"),
                                              _bytes("z"))
-        self.assertTrue(dicts_equal(cnf, ref), str(cnf))
+        self._assert_dicts_equal(cnf, ref)
 
-    def test_22_dump_w_special_option(self):
-        self.psr.dump(self.cnf, self.cpath, use_single_float=True)
-        cnf = self.psr.load(self.cpath)
+    def test_42_dump_with_special_option(self):
+        self.psr.dump(self.cnf, self.cnf_path, use_single_float=True)
+        cnf = self.psr.load(self.cnf_path)
         ref = copy.deepcopy(self.cnf)
         ref[_bytes("a")] = cnf[_bytes("a")]  # single float value.
-        self.assertFalse(dicts_equal(cnf, self.cnf), str(cnf))
-        self.assertTrue(dicts_equal(cnf, ref), str(cnf))
+        self._assert_dicts_equal(cnf, ref)
+"""
 
 # vim:sw=4:ts=4:et:

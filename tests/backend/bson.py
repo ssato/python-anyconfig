@@ -1,27 +1,19 @@
 #
 # Copyright (C) 2015 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2017 Red Hat, Inc.
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
-# pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
 import anyconfig.backend.bson as TT
 import tests.backend.common as TBC
 
-from anyconfig.compat import OrderedDict
-from tests.common import to_bytes as _bytes
-
-
-CNF_0 = OrderedDict((("a", 0.1), ("b", _bytes("bbb")),
-                     ("sect0", OrderedDict((("c", [_bytes("x"), _bytes("y"),
-                                                   _bytes("z")]), )))))
-
 
 class HasParserTrait(TBC.HasParserTrait):
 
     psr = TT.Parser()
-    cnf = CNF_0
+    cnf = TBC.CNF_2
     cnf_s = TT.bson.BSON.encode(cnf)
 
 

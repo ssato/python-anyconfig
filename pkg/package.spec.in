@@ -157,10 +157,12 @@ rm -rf $RPM_BUILD_ROOT
   with container keyword argument and 'ac_dict' alternates it
 - fix: [properties] remove the member _dict_options 'container' which conflicts
   with container keyword argument and 'ac_dict' alternates it
-- enhancement: make backend implementations not depends on container class
+- enhancement: make backend implementations not depends on container class and
 - enhancement: move test cases in anyconfig/tests/ to tests/ and consolidate
   backend tests; now most backend parser should be checked in same manner
 - enhancement: [cli] add -Q/--query option to query with JMESPath expression
+- refactor: enhance and consolidate common functions into backend base class
+  and implement backend parsers more declarative and with less code
 - doc: add short description of ac_query keyword argument for *load* APIs
 - doc: add tables to explain some keyword options for load/dump APIs
 - doc: add JMESpath usage section

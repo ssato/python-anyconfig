@@ -68,8 +68,24 @@ catch them if you want to process more.
   anyconfig.backends.UnknownFileTypeError: No parser found for file 'unknown_type_file.conf'
   >>>
 
-You can pass backend (config loader) specific optional parameters to
-these load and dump functions as needed:
+Here is a brief summary of keyword options prefixed with 'ac\_' to change the
+behavior on load.
+
+.. csv-table::
+   :header: Option, Type, Note
+   :widths: 10, 20, 40
+
+   ac_parser, str or :class:`anyconfig.backend.base.Parser`, Forced parser type or parser object
+   ac_dict, mapping object, "Any callable (function or class) to make mapping object will be returned as a result or None. If not given or ac_dict is None, default mapping object used to store resutls is dict or :class:`~collections.OrderedDict` if ac_ordered is True and selected backend can keep the order of items in mapping objects."
+   ac_ordered, bool, True to keep resuls ordered. Please note that order of items in results may be lost depends on backend used.
+   ac_template, bool, Assume given file may be a template file and try to compile it AAR if True
+   ac_context, mapping object, Mapping object presents context to instantiate template
+   ac_schema, str, JSON schema file path to validate given config file
+   ac_query, str, JMESPath expression to query data
+
+You can pass backend (config loader) specific keyword options to these load and
+dump functions as needed along with the above anyconfig specific keyword
+options:
 
 .. code-block:: python
 
@@ -82,17 +98,21 @@ these load and dump functions as needed:
   #    ...
   data6 = anyconfig.load("foo.json", parse_float=None)
 
+Allowed keyword options depend on backend, so please take a look at each
+backend API docs for more details about it.
+
 Also it's possible:
 
 - to load a config which is actually a Jinja2 [#]_ template file, the file will be rendered before load. See `Template config support`_ section for more details.
 - to validate a config file with a JSON schema [#]_ before load. See `Validation with and/or generate JSON Schema`_ section for more details.
+- to search and filter results with a JMESPath expression [#]_ after load. See `Query results with JMESPath expression`_ section for more details.
 
 .. note::
-   The returned object is a mapping object, that is, dict or
-   collections.OrderedDict objects by default.
+   The returned object is a mapping object, dict or collections.OrderedDict object by default.
 
 .. [#] http://jinja.pocoo.org
 .. [#] http://json-schema.org
+.. [#] http://jmespath.org
 
 Loading multiple config files
 -------------------------------
@@ -229,13 +249,28 @@ configurations from the followings:
 
     {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
 
+And here is a brief summary of keyword options prefixed with 'ac\_' in addition
+to the keyword options explained `Loading single config file`_ section to
+change the behavior on load multiple files.
+
+.. csv-table::
+   :header: Option, Type, Note
+   :widths: 10, 20, 40
+
+   ac_merge, str, One of anyconfig.dicts.MERGE_STRATEGIES to select strategy of how to merge results loaded from multiple configuration files. See the doc of :mod:`anyconfig.dicts` for more details of strategies. The default is anyconfig.dicts.MS_DICTS.
+   ac_marker, str, Globbing marker to detect paths patterns. '*' by default.
+
 Keep the order of configuration items
 ----------------------------------------
 
 If you want to keep the order of configuration items, specify ac_order=True on
-load. Otherwise, the order of configuration items will be lost by default.
-But please note that it's not true that any backend can keep the order of keys.
-For example, JSON backend can do that but current YAML backend does not.
+load or specify ac_dict to any mapping object can save the order of items such
+like :class:`collections.OrderedDict`. Otherwise, the order of configuration
+items will be lost by default.
+
+Please note that it's not true that any backend can keep the order of keys.
+For example, JSON backend can do that but current YAML backend does not due to
+the limitation of YAML module it using.
 
 Validation with and/or generate JSON Schema
 ----------------------------------------------
@@ -350,6 +385,36 @@ And another one:
 
 .. [#] Jinja2 template engine (http://jinja.pocoo.org) and its language (http://jinja.pocoo.org/docs/dev/)
 
+Query results with JMESPath expression
+-------------------------------------------
+
+anyconfig supports to query result mapping object with JMESPath expression
+since 0.8.3 like the following example [#]_ .
+
+.. code-block:: console
+
+  >>> yaml_s = """\
+  ... locations:
+  ...   - name: Seattle
+  ...     state: WA
+  ...   - name: New York
+  ...     state: NY
+  ...   - name: Olympia
+  ...     state: WA
+  ... """
+  >>> query = "locations[?state == 'WA'].name | sort(@) | {WashingtonCities: join(', ', @)}"
+  >>> anyconfig.loads(yaml_s, ac_parser="yaml", ac_query=query)
+   {'WashingtonCities': 'Olympia, Seattle'}
+  >>>
+
+Different from other libraries can process JMESPath expressions, anyconfig can
+query data of any formats it supports, with help of the jmespath support
+library [#]_ . That is, you can query XML, YAML, BSON, Toml, and, of course
+JSON files with JMESPath expression.
+
+.. [#] This example is borrowed from JMESPath home, http://jmespath.org
+.. [#] https://github.com/jmespath/jmespath.py
+
 Other random topics with API usage
 -----------------------------------
 
@@ -383,7 +448,7 @@ optionally set log level) like the followings.
 
 - Set log level of anyconfig module after load:
 
-.. code-block:: python
+.. code-block:: console
 
   In [1]: import anyconfig, logging
 
@@ -446,11 +511,9 @@ lines of code like the followings:
 
    import anyconfig
 
-   default = dict(foo=0, bar='1', baz=[2, 3])  # Default values
-   conf = anyconfig.to_container(default)  # or: anyconfig.to_container(**default)
+   conf = dict(foo=0, bar='1', baz=[2, 3])  # Default values
    conf_from_files = anyconfig.load("/path/to/config_files_dir/*.yml")
-
-   conf.update(conf_from_files)
+   anyconfig.merge(conf, conf_from_files)  # conf will be updated.
 
    # Use `conf` ... 
 
@@ -458,9 +521,8 @@ or:
 
 .. code-block:: python
 
-   default = dict(foo=0, bar='1', baz=[2, 3])
-   conf = anyconfig.to_container(default)
-   conf.update(anyconfig.load("/path/to/config_files_dir/*.yml"))
+   conf = dict(foo=0, bar='1', baz=[2, 3])
+   anyconfig.merge(conf, anyconfig.load("/path/to/config_files_dir/*.yml"))
 
 Environment Variables
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -470,8 +532,8 @@ this:
 
 .. code-block:: python
 
-   conf = anyconfig.to_container(os.environ.copy())
-   conf.update(anyconfig.load("/path/to/config_files_dir/*.yml"))
+   conf = os.environ.copy()
+   anyconfig.merge(conf, anyconfig.load("/path/to/config_files_dir/*.yml"))
 
 Load from compressed files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

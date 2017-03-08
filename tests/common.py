@@ -67,7 +67,7 @@ def dicts_equal(dic, ref, ordered=False):
     if not is_dict_like(dic) or not is_dict_like(ref):
         return dic == ref
 
-    fnc = list if ordered else len
+    fnc = list if ordered else sorted
     if fnc(dic.keys()) != fnc(ref.keys()):
         return False
 

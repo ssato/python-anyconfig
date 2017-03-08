@@ -8,7 +8,7 @@ import anyconfig.init
 
 
 PACKAGE = "anyconfig"
-AUTHOR = "Satoru SATOH <ssat@redhat.com>"
+AUTHOR = "Satoru SATOH <ssato@redhat.com>"
 VERSION = "0.8.2"
 
 LOGGER = anyconfig.init.getLogger(PACKAGE)

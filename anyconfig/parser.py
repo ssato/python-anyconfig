@@ -114,9 +114,10 @@ def parse_attrlist_0(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     :param vs_sep:  char to separate values
     :param as_sep:  char to separate attributes
 
-    :return: a list of tuples of (key, value | [value])
-        where key = (Int | String | ...),
-              value = (Int | Bool | String | ...) | [Int | Bool | String | ...]
+    :return:
+        a list of tuples of (key, value | [value])
+            where key = (Int | String | ...),
+            value = (Int | Bool | String | ...) | [Int | Bool | String | ...]
 
     >>> parse_attrlist_0("a:1")
     [('a', 1)]

@@ -85,18 +85,18 @@ class TextFilesParserMixin(object):
     _open_flags = ('r', 'w')
 
     @classmethod
-    def dict_options(cls):
-        """
-        :return: List of dict factory options
-        """
-        return cls._dict_options
-
-    @classmethod
     def ropen(cls, filepath, **kwargs):
         """
         :param filepath: Path to file to open to read data
         """
         return open(filepath, cls._open_flags[0], **kwargs)
+
+    @classmethod
+    def wopen(cls, filepath, **kwargs):
+        """
+        :param filepath: Path to file to open to write data to
+        """
+        return open(filepath, cls._open_flags[1], **kwargs)
 
 
 class BinaryFilesParserMixin(TextFilesParserMixin):
@@ -157,11 +157,11 @@ class Parser(TextFilesParserMixin):
         return cls._ordered
 
     @classmethod
-    def wopen(cls, filepath, **kwargs):
+    def dict_options(cls):
         """
-        :param filepath: Path to file to open to write data to
+        :return: List of dict factory options
         """
-        return open(filepath, cls._open_flags[1], **kwargs)
+        return cls._dict_options
 
     def _load_options(self, container, **options):
         """

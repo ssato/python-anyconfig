@@ -21,7 +21,7 @@ d: x,y,z
 """
 
 
-class HasParserTrait(object):
+class HasParserTrait(TBC.HasParserTrait):
 
     psr = TT.Parser()
     cnf_s = CNF_0_S
@@ -29,13 +29,7 @@ class HasParserTrait(object):
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
-    psr = TT.Parser()
-    cnf_s = CNF_0_S
     load_options = dict(allow_no_value=False, defaults=None)
-
-    def test_40_loads_with_dict_type_option(self):
-        cnf = self.psr.loads(self.cnf_s, dict_type=TBC.MyDict)
-        self._assert_dicts_equal(cnf, cls=TBC.MyDict)
 
     def test_42_loads_invalid_input(self):
         invalid_cnf_s = "key=name"  # No section.

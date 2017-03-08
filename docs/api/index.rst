@@ -10,9 +10,9 @@ API Details
     anyconfig.compat
     anyconfig.globals
     anyconfig.init
-    anyconfig.mdicts
     anyconfig.parser
     anyconfig.query
+    anyconfig.dicts
     anyconfig.schema
     anyconfig.template
     anyconfig.utils

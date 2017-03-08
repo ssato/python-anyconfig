@@ -1,14 +1,17 @@
 #
 # Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2017 Red Hat, Inc.
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=ungrouped-imports
 from __future__ import absolute_import
+
 import unittest
 import anyconfig.backend.properties as TT
-import tests.backend.ini
+import tests.backend.common as TBC
 
-from anyconfig.compat import OrderedDict as ODict
+from anyconfig.compat import OrderedDict
 
 
 CNF_S = """
@@ -25,12 +28,19 @@ val1,\\
 val2,\\
 val3
 """
-CNF = ODict((("a", "0"), ("b", "bbb"), ("c", ""),
-             ("sect0.c", "x;y;z"), ("sect1.d", "1,2,3"),
-             ("d", "val1,val2,val3")))
+CNF = OrderedDict((("a", "0"), ("b", "bbb"), ("c", ""),
+                   ("sect0.c", "x;y;z"), ("sect1.d", "1,2,3"),
+                   ("d", "val1,val2,val3")))
 
 
-class Test00(unittest.TestCase):
+class HasParserTrait(TBC.HasParserTrait):
+
+    psr = TT.Parser()
+    cnf = CNF
+    cnf_s = CNF_S
+
+
+class Test_00(unittest.TestCase):
 
     def test_10_unescape(self):
         exp = "aaa:bbb"
@@ -48,22 +58,14 @@ class Test00(unittest.TestCase):
         self.assertEqual(res, exp, res)
 
 
-class Test10(tests.backend.ini.Test10):
+class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
-    cnf = CNF
-    cnf_s = CNF_S
     load_options = dict(comment_markers=("//", "#", "!"))
     dump_options = dict(dummy_opt="this_will_be_ignored")
 
-    def setUp(self):
-        self.psr = TT.Parser()
 
+class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
 
-class Test20(tests.backend.ini.Test20):
-
-    psr_cls = TT.Parser
-    cnf = CNF
-    cnf_s = CNF_S
-    cnf_fn = "conf.properties"
+    pass
 
 # vim:sw=4:ts=4:et:

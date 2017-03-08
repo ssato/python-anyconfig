@@ -142,7 +142,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Wed Mar  8 2017 Satoru SATOH <ssato@redhat.com> - 0.9.0-1
+* Thu Mar  9 2017 Satoru SATOH <ssato@redhat.com> - 0.9.0-1
 - api: remove m9dicts dependency and utilize anyconfig.dicts.* instead
 - api: export merge (anyconfig.dicts.merge) instead of to_container which was
   deprecated and removed

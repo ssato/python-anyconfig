@@ -71,7 +71,7 @@ def load(path_or_strm, container, **opts):
 
 class Parser(anyconfig.backend.base.FromStreamLoader,
              anyconfig.backend.base.ToStreamDumper,
-             anyconfig.backend.base.BinaryFilesParserMixin):
+             anyconfig.backend.base.BinaryFilesMixin):
     """
     Parser for Ini-like config files which configobj supports.
     """

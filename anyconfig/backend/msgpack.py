@@ -29,7 +29,7 @@ from anyconfig.backend.base import to_method
 
 
 class Parser(anyconfig.backend.base.StringStreamFnParser,
-             anyconfig.backend.base.BinaryFilesParserMixin):
+             anyconfig.backend.base.BinaryFilesMixin):
     """
     Loader/Dumper for MessagePack files.
     """

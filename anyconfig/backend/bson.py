@@ -61,7 +61,7 @@ def _codec_options(**options):
 
 class Parser(anyconfig.backend.base.FromStringLoader,
              anyconfig.backend.base.ToStringDumper,
-             anyconfig.backend.base.BinaryFilesParserMixin):
+             anyconfig.backend.base.BinaryFilesMixin):
     """
     Loader/Dumper of BSON files.
     """

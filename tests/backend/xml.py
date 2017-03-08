@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
@@ -5,13 +6,10 @@
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports,protected-access
 from __future__ import absolute_import
-import os.path
 import unittest
-
 import anyconfig.backend.xml as TT
 import anyconfig.compat
 import tests.backend.common as TBC
-import tests.common
 
 from tests.common import dicts_equal, to_bytes
 
@@ -35,7 +33,7 @@ CNF_0 = {'config': {'@attrs': {'val:name': 'foo',
                     'list2': {'@attrs': {'id': 'list2'},
                               '@children': [{'item': 'i'},
                                             {'item': 'j'}]}}}
-CNF_0_S = """\
+CNF_0_S = to_bytes("""\
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://example.com/ns/cnf"
         xmlns:val="http://example.com/ns/cnf/val"
@@ -56,7 +54,7 @@ CNF_0_S = """\
     <item>j</item>
   </list2>
 </config>
-"""
+""")
 
 
 class Test_00(unittest.TestCase):
@@ -259,7 +257,7 @@ class HasParserTrait(TBC.HasParserTrait):
 
     psr = TT.Parser()
     cnf = CNF_0
-    cnf_s = CNF_0_S.encode("utf-8")
+    cnf_s = CNF_0_S
 
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
@@ -267,21 +265,7 @@ class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
     load_options = dump_options = dict(ac_parse_value=False)
 
 
-class TestBaseWithIO(TBC.TestBaseWithIO, HasParserTrait):
-
-    def setUp(self):
-        super(TestBaseWithIO, self).setUp()
-        self.workdir = tests.common.setup_workdir()
-        self.cnf_path = os.path.join(self.workdir, "cnf_0.xml")
-
-        with self.psr.wopen(self.cnf_path) as out:
-            if anyconfig.compat.IS_PYTHON_3:
-                out.write(self.cnf_s.encode("utf-8"))
-            else:
-                out.write(self.cnf_s)
-
-
-class Test_20(TestBaseWithIO, TBC.Test_20_dump_and_load):
+class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
 
     def test_40_load_w_options(self):
         cnf = self.psr.load(self.cnf_path, ac_parse_value=False)

@@ -21,8 +21,6 @@ CNF_0 = OrderedDict((("DEFAULT", OrderedDict((("a", "0"), ("b", "bbb"),
 CNF_1 = copy.deepcopy(CNF_0)
 CNF_1["sect0"]["d"] = CNF_1["sect0"]["d"].split()
 
-PARSER_CLS = None
-
 
 class MyDict(dict):
     pass
@@ -30,17 +28,16 @@ class MyDict(dict):
 
 class HasParserTrait(object):
 
-    psr = None      # Must be a parser instance
+    psr = None  # Must be a parser instance.
+    cnf_s = None  # Do.
+    cnf = cnf_0 = CNF_0
+    cnf_1 = CNF_1
 
     def is_ready(self):
         return self.psr is not None
 
 
 class TestBase(unittest.TestCase, HasParserTrait):
-
-    def setUp(self):
-        self.cnf = self.cnf_0 = globals()["CNF_0"]
-        self.cnf_1 = globals()["CNF_1"]
 
     def _assert_dicts_equal(self, cnf, ordered=False, cls=None, ref=None):
         if ref is None:
@@ -53,12 +50,7 @@ class TestBase(unittest.TestCase, HasParserTrait):
                         "cnf: %r vs. cls: %r" % (cnf, cls))
 
 
-class HasConfigStrTrait(object):
-
-    cnf_s = None  # Must be a str represents self.cnf in children classes.
-
-
-class Test_10_dumps_and_loads(TestBase, HasConfigStrTrait):
+class Test_10_dumps_and_loads(TestBase):
 
     load_options = {}  # Must be set to a dict in children classes.
     dump_options = {}  # Do.
@@ -102,7 +94,7 @@ class Test_10_dumps_and_loads(TestBase, HasConfigStrTrait):
             self._assert_dicts_equal(cnf)
 
 
-class TestBaseWithIO(TestBase, HasConfigStrTrait):
+class TestBaseWithIO(TestBase):
 
     def setUp(self):
         super(TestBaseWithIO, self).setUp()

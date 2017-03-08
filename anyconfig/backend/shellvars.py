@@ -108,7 +108,6 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     """
     _type = "shellvars"
     _ordered = True
-    _dict_options = ["container"]
 
     def load_from_stream(self, stream, container, **kwargs):
         """

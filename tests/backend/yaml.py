@@ -1,20 +1,19 @@
 #
 # Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2017 Red Hat, Inc.
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
-import tests.backend.ini
-try:
-    import anyconfig.backend.yaml as TT
-except ImportError:
-    TT = None
+import anyconfig.backend.yaml as TT
+import tests.backend.common as TBC
 
-from anyconfig.compat import OrderedDict as ODict
+from anyconfig.compat import OrderedDict
 
 
-CNF_0_S = """
+CNF_S = """
 a: 0
 b: bbb
 c:
@@ -26,31 +25,25 @@ sect0:
   d: ["x", "y", "z"]
 """
 
-CNF_0 = ODict((("a", 0), ("b", "bbb"), ("c", [1, 2, 3]),
-               ("sect0", ODict((("d", "x y z".split()), )))))
+CNF = OrderedDict((("a", 0), ("b", "bbb"), ("c", [1, 2, 3]),
+                   ("sect0", OrderedDict((("d", "x y z".split()), )))))
 
 
-if TT is not None:
-    import yaml
+class HasParserTrait(TBC.HasParserTrait):
 
-    class Test10(tests.backend.ini.Test10):
+    psr = TT.Parser()
+    cnf = CNF
+    cnf_s = CNF_S
 
-        cnf = CNF_0
-        cnf_s = CNF_0_S
-        load_options = dict(ac_safe=True, Loader=yaml.loader.Loader)
-        dump_options = dict(ac_safe=True)
-        is_order_kept = False  # ..note:: yaml backend cannot do this yet.
 
-        def setUp(self):
-            self.psr = TT.Parser()
+class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
-    class Test20(tests.backend.ini.Test20):
+    load_options = dict(ac_safe=True, Loader=TT.yaml.loader.Loader)
+    dump_options = dict(ac_safe=True)
 
-        psr_cls = TT.Parser
-        cnf = CNF_0
-        cnf_s = CNF_0_S
-        cnf_fn = "test0.yml"
-        # load_options = Test10.load_options
-        # dump_options = Test20.load_options
+
+class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
+
+    pass
 
 # vim:sw=4:ts=4:et:

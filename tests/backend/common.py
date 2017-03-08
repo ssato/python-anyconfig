@@ -71,21 +71,25 @@ class Test_10_dumps_and_loads(TestBase):
     def test_12_loads_with_options(self):
         if self.is_ready():
             cnf = self.psr.loads(self.cnf_s, **self.load_options)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
     def test_14_loads_with_invalid_options(self):
         if self.is_ready():
             cnf = self.psr.loads(self.cnf_s, not_exist_option_a=True)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
     def test_16_loads_with_ac_ordered_option(self):
         if self.is_ready():
             cnf = self.psr.loads(self.cnf_s, ac_ordered=True)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf, ordered=self.psr.ordered())
 
     def test_18_loads_with_ac_dict_option(self):
         if self.is_ready():
             cnf = self.psr.loads(self.cnf_s, ac_dict=MyDict)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf, cls=MyDict)
             # for debug:
             # raise RuntimeError("psr=%r, cnf=%r" % (self.psr, self.cnf))
@@ -96,6 +100,7 @@ class Test_10_dumps_and_loads(TestBase):
             if dopts:
                 opts = {dopts[0]: MyDict}
                 cnf = self.psr.loads(self.cnf_s, **opts)
+                self.assertTrue(cnf)
                 self._assert_dicts_equal(cnf, cls=MyDict)
 
     def test_30_dumps(self):
@@ -103,6 +108,7 @@ class Test_10_dumps_and_loads(TestBase):
             cnf_s = self.psr.dumps(self.cnf)
             self.assertTrue(cnf_s)  # Check if it's not empty.
             cnf = self.psr.loads(cnf_s)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
     def test_32_dumps_with_options(self):
@@ -135,6 +141,7 @@ class Test_20_dump_and_load(TestBaseWithIO):
     def test_10_load(self):
         if self.is_ready():
             cnf = self.psr.load(self.cnf_path)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
     def test_12_load_from_stream(self):
@@ -142,22 +149,26 @@ class Test_20_dump_and_load(TestBaseWithIO):
             with self.psr.ropen(self.cnf_path) as strm:
                 cnf = self.psr.load(strm)
 
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
     def test_14_load_with_ac_ordered_option(self):
         if self.is_ready():
             cnf = self.psr.load(self.cnf_path, ac_ordered=True)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf, ordered=self.psr.ordered())
 
     def test_16_load_with_ac_dict_option(self):
         if self.is_ready():
             cnf = self.psr.load(self.cnf_path, ac_dict=MyDict)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf, cls=MyDict)
 
     def test_30_dump(self):
         if self.is_ready():
             self.psr.dump(self.cnf, self.cnf_path)
             cnf = self.psr.load(self.cnf_path)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
     def test_32_dump_to_stream(self):
@@ -166,6 +177,7 @@ class Test_20_dump_and_load(TestBaseWithIO):
                 self.psr.dump(self.cnf, strm)
 
             cnf = self.psr.load(self.cnf_path)
+            self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
 # vim:sw=4:ts=4:et:

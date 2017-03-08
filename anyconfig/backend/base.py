@@ -79,8 +79,13 @@ def _not_implemented(*args, **kwargs):
     raise NotImplementedError()
 
 
-class TextFilesParserMixin(object):
-    """Mixin Parser class to open text configuration files.
+class TextFilesMixin(object):
+    """Mixin class to open configuration files as a plain text.
+
+    Arguments of :func:`open` is different depends on python versions.
+
+    - python 2: https://docs.python.org/2/library/functions.html#open
+    - python 3: https://docs.python.org/3/library/functions.html#open
     """
     _open_flags = ('r', 'w')
 
@@ -99,13 +104,13 @@ class TextFilesParserMixin(object):
         return open(filepath, cls._open_flags[1], **kwargs)
 
 
-class BinaryFilesParserMixin(TextFilesParserMixin):
-    """Mixin Parser class to open binary configuration files.
+class BinaryFilesMixin(TextFilesMixin):
+    """Mixin class to open binary (byte string) configuration files.
     """
     _open_flags = ('rb', 'wb')
 
 
-class Parser(TextFilesParserMixin):
+class Parser(TextFilesMixin):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
     and members.

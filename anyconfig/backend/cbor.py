@@ -26,7 +26,7 @@ import anyconfig.compat
 
 
 class Parser(anyconfig.backend.base.StringStreamFnParser,
-             anyconfig.backend.base.BinaryFilesParserMixin):
+             anyconfig.backend.base.BinaryFilesMixin):
     """Parser for CBOR files.
     """
     _type = "cbor"

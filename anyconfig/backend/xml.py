@@ -435,7 +435,7 @@ def etree_write(tree, stream):
 
 
 class Parser(anyconfig.backend.base.ToStreamDumper,
-             anyconfig.backend.base.BinaryFilesParserMixin):
+             anyconfig.backend.base.BinaryFilesMixin):
     """
     Parser for XML files.
     """

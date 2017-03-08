@@ -41,7 +41,7 @@ else:
 
 
 class Parser(anyconfig.backend.base.StringStreamFnParser,
-             anyconfig.backend.base.BinaryFilesParserMixin):
+             anyconfig.backend.base.BinaryFilesMixin):
     """
     Parser for Pickle files.
     """

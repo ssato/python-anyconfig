@@ -142,6 +142,32 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Mar  8 2017 Satoru SATOH <ssato@redhat.com> - 0.9.0-1
+- api: remove m9dicts dependency and utilize anyconfig.dicts.* instead
+- api: export merge (anyconfig.dicts.merge) instead of to_container which was
+  deprecated and removed
+- api: add 'ac_dict' keyword option for *load* APIs to be used in backends
+- api: add experimental new API 'query', just an wrapper for .query.query
+  actually with JMESPath expressions
+- api: do not convert resuls from load APIs with to_container any more
+- fix: [xml] ensure {namespace}:{tag,attribute} converted to
+  namespace_prefix:{tag,attribute} on load
+- fix/enhancement: [xml] Some more code cleanups, fixes and enhancements
+- fix: [shellvars] remove the member _dict_options 'container' which conflicts
+  with container keyword argument and 'ac_dict' alternates it
+- fix: [properties] remove the member _dict_options 'container' which conflicts
+  with container keyword argument and 'ac_dict' alternates it
+- enhancement: make backend implementations not depends on container class
+- enhancement: move test cases in anyconfig/tests/ to tests/ and consolidate
+  backend tests; now most backend parser should be checked in same manner
+- enhancement: [cli] add -Q/--query option to query with JMESPath expression
+- doc: add short description of ac_query keyword argument for *load* APIs
+- doc: add tables to explain some keyword options for load/dump APIs
+- doc: add JMESpath usage section
+- doc: add some --query usage examples
+- doc: add some missing module docs and misc fixes
+- A lot of other enhancements, refactorings and bug fixes
+
 * Mon Feb 20 2017 Satoru SATOH <ssato@redhat.com> - 0.8.2-1
 - fix/enhancement: [xml] A lot of code cleanups, fixes and enhancements
 - doc: fix indentations and other misc fixes

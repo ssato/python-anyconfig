@@ -1,41 +1,43 @@
 #
 # Copyright (C) 2016 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2017 Red Hat, Inc.
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=ungrouped-imports
 from __future__ import absolute_import
+
 import anyconfig.backend.shellvars as TT
-import tests.backend.ini
+import tests.backend.common as TBC
 
-from anyconfig.compat import OrderedDict as ODict
+from anyconfig.compat import OrderedDict
 
 
-CNF_S = """
+CNF_S = """\
 a=0
 b='bbb'   # a comment
 c="ccc"   # an another comment
 export d='ddd'  ## double comment
  export e="eee" ### tripple comment
 """
-CNF = ODict((
-    ("a", "0"), ("b", "bbb"), ("c", "ccc"), ("d", "ddd"), ("e", "eee")
-))
+CNF = OrderedDict((("a", "0"), ("b", "bbb"), ("c", "ccc"), ("d", "ddd"),
+                   ("e", "eee")))
 
 
-class Test10(tests.backend.ini.Test10):
+class HasParserTrait(TBC.HasParserTrait):
 
+    psr = TT.Parser()
     cnf = CNF
     cnf_s = CNF_S
 
-    def setUp(self):
-        self.psr = TT.Parser()
+
+class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
+
+    pass
 
 
-class Test20(tests.backend.ini.Test20):
+class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
 
-    psr_cls = TT.Parser
-    cnf = CNF
-    cnf_s = CNF_S
-    cnf_fn = "conf.sh"
+    pass
 
 # vim:sw=4:ts=4:et:

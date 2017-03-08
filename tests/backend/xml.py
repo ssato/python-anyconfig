@@ -2,15 +2,16 @@
 # Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, invalid-name, protected-access
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=ungrouped-imports,protected-access
 from __future__ import absolute_import
 import os.path
 import unittest
 
 import anyconfig.backend.xml as TT
-import tests.backend.ini
-import tests.common
 import anyconfig.compat
+import tests.backend.common as TBC
+import tests.common
 
 from tests.common import dicts_equal, to_bytes
 
@@ -254,40 +255,41 @@ class Test_00_2(unittest.TestCase):
         self.assertEqual(tree_to_string(res), ref)
 
 
-class Test10(tests.backend.ini.Test10):
+class HasParserTrait(TBC.HasParserTrait):
 
+    psr = TT.Parser()
     cnf = CNF_0
     cnf_s = CNF_0_S.encode("utf-8")
+
+
+class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
+
     load_options = dump_options = dict(ac_parse_value=False)
 
-    def setUp(self):
-        self.psr = TT.Parser()
 
-
-class Test20(tests.backend.ini.Test20):
-
-    psr_cls = TT.Parser
-    cnf = CNF_0
-    cnf_s = CNF_0_S
-    cnf_fn = "conf0.xml"
+class TestBaseWithIO(TBC.TestBaseWithIO, HasParserTrait):
 
     def setUp(self):
-        self.psr = self.psr_cls()
+        super(TestBaseWithIO, self).setUp()
         self.workdir = tests.common.setup_workdir()
-        self.cpath = os.path.join(self.workdir, self.cnf_fn)
-        with self.psr.wopen(self.cpath) as out:
+        self.cnf_path = os.path.join(self.workdir, "cnf_0.xml")
+
+        with self.psr.wopen(self.cnf_path) as out:
             if anyconfig.compat.IS_PYTHON_3:
                 out.write(self.cnf_s.encode("utf-8"))
             else:
                 out.write(self.cnf_s)
 
-    def test_12_load__w_options(self):
-        cnf = self.psr.load(self.cpath, ac_parse_value=False)
+
+class Test_20(TestBaseWithIO, TBC.Test_20_dump_and_load):
+
+    def test_40_load_w_options(self):
+        cnf = self.psr.load(self.cnf_path, ac_parse_value=False)
         self._assert_dicts_equal(cnf)
 
-    def test_22_dump__w_special_option(self):
-        self.psr.dump(self.cnf, self.cpath, ac_parse_value=False)
-        cnf = self.psr.load(self.cpath)
+    def test_42_dump_with_special_option(self):
+        self.psr.dump(self.cnf, self.cnf_path, ac_parse_value=False)
+        cnf = self.psr.load(self.cnf_path)
         self._assert_dicts_equal(cnf)
 
 # vim:sw=4:ts=4:et:

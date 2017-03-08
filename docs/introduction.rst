@@ -47,6 +47,12 @@ files in various formats:
     open configuration files with suitable flags and return file/file-like
     objects, and this object can be passed to the anyconfig.load().
 
+- Merge dicts:
+
+  **anyconfig.merge** (self, other, ac_merge=MS_DICTS, \*\*options)
+    Update (merge) a mapping object self with other mapping object or an
+    iterable yields (key, value) tuples based on merge strategy ac_merge.
+
 - Schema validation and generation of configuration files:
 
   **anyconfig.validate** (data, schema, \*\*options)

@@ -2,41 +2,27 @@
 # Copyright (C) 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 from __future__ import absolute_import
 
-try:
-    import anyconfig.backend.cbor as TT
-except ImportError:
-    TT = None
-
-import tests.backend.ini
+import anyconfig.backend.cbor as TT
+import tests.backend.common as TBC
 
 
-if TT is not None:
-    class Test10(tests.backend.ini.Test10):
+class HasParserTrait(TBC.HasParserTrait):
 
-        cnf = dict(a=0, b="bbb", c=5, sect0=dict(d=["x", "y", "z"]))
-        cnf_s = TT.cbor.dumps(cnf)
-        load_options = dump_options = dict(sort_keys=False)
-
-        def setUp(self):
-            self.psr = TT.Parser()
+    psr = TT.Parser()
+    cnf = dict(a=0, b="bbb", c=5, sect0=dict(d=["x", "y", "z"]))
+    cnf_s = TT.cbor.dumps(cnf)
 
 
-# pylint: disable=pointless-string-statement
-""" TODO:
-class Test20(tests.backend.ini.Test20):
+class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
-    psr_cls = TT.Parser
-    cnf = CNF_0
-    cnf_s = CNF_0_S
-    cnf_fn = "conf0.cbor"
+    load_options = dump_options = dict(sort_keys=False)
 
-    def test_22_dump__w_special_option(self):
-        self.psr.dump(self.cnf, self.cpath, sort_keys=True)
-        cnf = self.psr.load(self.cpath)
-        self.assertTrue(dicts_equal(cnf, self.cnf), str(cnf))
-"""
+
+class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
+
+    pass
 
 # vim:sw=4:ts=4:et:

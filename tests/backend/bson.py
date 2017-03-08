@@ -1,39 +1,40 @@
 #
-# Copyright (C) 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
-import anyconfig.backend.bson as TT
-import tests.backend.ini
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=ungrouped-imports
+from __future__ import absolute_import
 
-from anyconfig.compat import OrderedDict as ODict, IS_PYTHON_3
+import anyconfig.backend.bson as TT
+import tests.backend.common as TBC
+
+from anyconfig.compat import OrderedDict
 from tests.common import to_bytes as _bytes
 
 
-CNF_0 = ODict((("a", 0.1), ("b", _bytes("bbb")),
-               ("sect0",
-                ODict((("c", [_bytes("x"), _bytes("y"), _bytes("z")]), )))))
+CNF_0 = OrderedDict((("a", 0.1), ("b", _bytes("bbb")),
+                     ("sect0", OrderedDict((("c", [_bytes("x"), _bytes("y"),
+                                                   _bytes("z")]), )))))
 
 
-class Test10(tests.backend.ini.Test10):
+class HasParserTrait(TBC.HasParserTrait):
 
+    psr = TT.Parser()
     cnf = CNF_0
-    cnf_s = TT.bson.BSON.encode(CNF_0)
-    load_options = dict(as_class=dict)
-    dump_options = dict(check_keys=True)
-
-    if IS_PYTHON_3:
-        is_order_kept = False  # FIXME: Make it work w/ python 3.
-
-    def setUp(self):
-        self.psr = TT.Parser()
+    cnf_s = TT.bson.BSON.encode(cnf)
 
 
-class Test20(tests.backend.ini.Test20):
+class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
-    psr_cls = TT.Parser
-    cnf = CNF_0
-    cnf_s = TT.bson.BSON.encode(CNF_0)
-    cnf_fn = "conf0.bson"
+    # Can't if bson.has_c():
+    # load_options = dict(as_class=dict)
+    # dump_options = dict(check_keys=True)
+    pass
+
+
+class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
+
+    pass
 
 # vim:sw=4:ts=4:et:

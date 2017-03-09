@@ -168,11 +168,10 @@ class Test_00(unittest.TestCase):
                                                 "z": "Z"}}), dic)
 
 
-def _xml_to_container(snippet, **opts):
-    return TT.elem_to_container(TT.ET.XML(snippet), to_container=dict, **opts)
-
-
 class Test_00_1(unittest.TestCase):
+
+    def _assert_eq_dic_from_snippet(self, snippet, ref, **opts):
+        self.assertEqual(TT.elem_to_container(TT.ET.XML(snippet), **opts), ref)
 
     def test_10_elem_to_container__None(self):
         self.assertEqual(TT.elem_to_container(None), dict())
@@ -181,34 +180,34 @@ class Test_00_1(unittest.TestCase):
         self.assertEqual(TT.root_to_container(None), dict())
 
     def test_12_elem_to_container__empty(self):
-        self.assertEqual(_xml_to_container("<a/>"), dict(a=None))
+        self._assert_eq_dic_from_snippet("<a/>", dict(a=None))
 
     def test_20_elem_to_container__attrs(self):
         ref = dict(a={"@attrs": dict(x='1', y='y')})
-        self.assertEqual(_xml_to_container("<a x='1' y='y'/>"), ref)
+        self._assert_eq_dic_from_snippet("<a x='1' y='y'/>", ref)
 
     def test_30_elem_to_container__child(self):
         ref = dict(a=dict(b="b"))
-        self.assertEqual(_xml_to_container("<a><b>b</b></a>"), ref)
+        self._assert_eq_dic_from_snippet("<a><b>b</b></a>", ref)
 
     def test_32_elem_to_container__children__same_keys(self):
         ref = {'a': [{'b': '1'}, {'b': '2'}]}
-        self.assertEqual(_xml_to_container("<a><b>1</b><b>2</b></a>"), ref)
+        self._assert_eq_dic_from_snippet("<a><b>1</b><b>2</b></a>", ref)
 
     def test_34_elem_to_container__children(self):
         ref = {'a': {'b': 'b', 'c': 'c'}}
-        self.assertEqual(_xml_to_container("<a><b>b</b><c>c</c></a>"), ref)
+        self._assert_eq_dic_from_snippet("<a><b>b</b><c>c</c></a>", ref)
 
     def test_36_elem_to_container__children__same_keys_w_text(self):
         ref = {'a': {'@text': 'aaa', '@children': [{'b': '1'}, {'b': '2'}]}}
-        self.assertEqual(_xml_to_container("<a>aaa<b>1</b><b>2</b></a>"), ref)
+        self._assert_eq_dic_from_snippet("<a>aaa<b>1</b><b>2</b></a>", ref)
 
     def test_40_elem_to_container__text(self):
-        self.assertEqual(_xml_to_container("<a>A</a>"), {'a': 'A'})
+        self._assert_eq_dic_from_snippet("<a>A</a>", {'a': 'A'})
 
     def test_42_elem_to_container__text_attrs(self):
         ref = dict(a={"@attrs": {'x': 'X'}, "@text": "A"})
-        self.assertEqual(_xml_to_container("<a x='X'>A</a>"), ref)
+        self._assert_eq_dic_from_snippet("<a x='X'>A</a>", ref)
 
     def test_50_root_to_container__text_attrs_tags(self):
         ref = dict(a={"_attrs": {'x': 'X'}, "_text": "A"})

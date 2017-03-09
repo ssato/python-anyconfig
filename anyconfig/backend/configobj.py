@@ -65,6 +65,8 @@ def load(path_or_strm, container, **opts):
     :param path_or_strm: input config file path or file/file-like object
     :param container: callble to make a container object
     :param opts: keyword options passed to :class:`configobj.ConfigObj`
+
+    :return: Mapping object
     """
     return container(configobj.ConfigObj(path_or_strm, **opts))
 

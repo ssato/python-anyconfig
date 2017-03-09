@@ -104,6 +104,8 @@ def _yml_load(stream, container, **kwargs):
 
     :param stream: a file or file-like object to load YAML content
     :param container: callble to make a container object
+
+    :return: Mapping object
     """
     if "ac_safe" in kwargs:  # yaml.safe_load does not process Loader opts.
         kwargs = {}
@@ -116,7 +118,8 @@ def _yml_load(stream, container, **kwargs):
                                      dumper=dumper)
             container = maybe_container
 
-    return container(_yml_fnc("load", stream, **kwargs))
+    ret = _yml_fnc("load", stream, **kwargs)
+    return container() if ret is None else container(ret)
 
 
 def _yml_dump(cnf, stream, **kwargs):

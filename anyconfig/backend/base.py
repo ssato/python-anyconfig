@@ -499,7 +499,8 @@ def load_with_fn(load_fn, content_or_strm, container, **options):
 
     :return: container object holding data
     """
-    return container(load_fn(content_or_strm, **options))
+    ret = load_fn(content_or_strm, **options)
+    return container() if ret is None else container(ret)
 
 
 def dump_with_fn(dump_fn, data, stream, **options):

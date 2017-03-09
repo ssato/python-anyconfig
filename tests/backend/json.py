@@ -37,6 +37,7 @@ class HasParserTrait(TBC.HasParserTrait):
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
     load_options = dump_options = dict(parse_int=None, indent=2)
+    empty_patterns = ['', '{}', '[]', 'null']
 
 
 class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):

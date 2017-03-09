@@ -61,6 +61,7 @@ class Test_10_dumps_and_loads(TestBase):
 
     load_options = {}  # Must be set to a dict in children classes.
     dump_options = {}  # Do.
+    empty_patterns = ['']  # Do.
 
     def test_10_loads(self):
         if self.is_ready():
@@ -102,6 +103,12 @@ class Test_10_dumps_and_loads(TestBase):
                 cnf = self.psr.loads(self.cnf_s, **opts)
                 self.assertTrue(cnf)
                 self._assert_dicts_equal(cnf, cls=MyDict)
+
+    def test_22_loads_empty_data(self):
+        if self.is_ready():
+            for pat in self.empty_patterns:
+                cnf = self.psr.loads(pat)
+                self.assertEqual(cnf, dict())
 
     def test_30_dumps(self):
         if self.is_ready():

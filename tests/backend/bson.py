@@ -22,6 +22,7 @@ class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
     # Can't if bson.has_c():
     # load_options = dict(as_class=dict)
     # dump_options = dict(check_keys=True)
+    # empty_patterns = ['']
     pass
 
 

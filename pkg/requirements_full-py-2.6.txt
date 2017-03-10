@@ -1,9 +1,12 @@
 #Jinja2  # Disabled until all errors during tests are resolved.
 PyYAML
+cbor
 configobj
+jmespath
 jsonschema
 msgpack-python
 ordereddict
 pymongo
+setuptools
 simplejson
 toml

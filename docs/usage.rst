@@ -258,7 +258,7 @@ change the behavior on load multiple files.
    :widths: 10, 20, 40
 
    ac_merge, str, One of anyconfig.dicts.MERGE_STRATEGIES to select strategy of how to merge results loaded from multiple configuration files. See the doc of :mod:`anyconfig.dicts` for more details of strategies. The default is anyconfig.dicts.MS_DICTS.
-   ac_marker, str, Globbing marker to detect paths patterns. '*' by default.
+   ac_marker, str, Glob marker string to detect paths patterns. '*' by default.
 
 Keep the order of configuration items
 ----------------------------------------
@@ -268,15 +268,16 @@ load or specify ac_dict to any mapping object can save the order of items such
 like :class:`collections.OrderedDict`. Otherwise, the order of configuration
 items will be lost by default.
 
-Please note that it's not true that any backend can keep the order of keys.
-For example, JSON backend can do that but current YAML backend does not due to
-the limitation of YAML module it using.
+Please note that anyconfig.load APIs sometimes cannot keep the order of items
+in the original data even if ac_order=True was specified because used backend
+or module cannot keep that. For example, JSON backend can keep items but
+current YAML backend does not due to the limitation of YAML module it using.
 
 Validation with and/or generate JSON Schema
 ----------------------------------------------
 
-If you have jsonschema [#]_ installed, you can validate config files with using
-anyconfig.validate() since 0.0.10.
+If jsonschema [#]_ is installed and available, you can validate config files
+with using anyconfig.validate() since 0.0.10.
 
 .. code-block:: python
 
@@ -291,7 +292,7 @@ anyconfig.validate() since 0.0.10.
   schema2 = anyconfig.load("/path/to/schema.yml")
   (rc, err) = anyconfig.validate(conf2, schema2)
 
-It's also possible to validate config files during load:
+It's also able to validate config files during load:
 
 .. code-block:: python
 
@@ -327,9 +328,9 @@ in any formats anyconfig supports.
 Template config support
 ---------------------------
 
-anyconfig module supports template config files since 0.0.6.
-That is, config files written in Jinja2 template [#]_ will be compiled before
-loading w/ backend module.
+anyconfig supports template config files since 0.0.6.  That is, config files
+written in Jinja2 template [#]_ will be compiled before loading w/ backend
+module.
 
 .. note:: Template config support is disabled by default to avoid side effects when processing config files of jinja2 template or having some expressions similar to jinaj2 template syntax.
 

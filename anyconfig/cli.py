@@ -6,10 +6,10 @@
 """
 from __future__ import absolute_import, print_function
 
+import argparse
 import codecs
 import locale
 import logging
-import optparse
 import os
 import sys
 
@@ -43,26 +43,26 @@ else:
     sys.stderr = codecs.getwriter(_ENCODING)(sys.stderr)
 
 USAGE = """\
-%prog [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
+%(prog)s [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]
 
 Examples:
-  %prog --list  # -> Supported config types: configobj, ini, json, ...
+  %(prog)s --list  # -> Supported config types: configobj, ini, json, ...
   # Merge and/or convert input config to output config [file]
-  %prog -I yaml -O yaml /etc/xyz/conf.d/a.conf
-  %prog -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
-  %prog '/etc/xyz/conf.d/*.json' -o xyz.yml \\
+  %(prog)s -I yaml -O yaml /etc/xyz/conf.d/a.conf
+  %(prog)s -I yaml '/etc/xyz/conf.d/*.conf' -o xyz.conf --otype json
+  %(prog)s '/etc/xyz/conf.d/*.json' -o xyz.yml \\
     --atype json -A '{"obsoletes": "syscnf", "conflicts": "syscnf-old"}'
-  %prog '/etc/xyz/conf.d/*.json' -o xyz.yml \\
+  %(prog)s '/etc/xyz/conf.d/*.json' -o xyz.yml \\
     -A obsoletes:syscnf;conflicts:syscnf-old
-  %prog /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
-  %prog '/etc/foo.d/*.json' -M noreplace
+  %(prog)s /etc/foo.json /etc/foo/conf.d/x.json /etc/foo/conf.d/y.json
+  %(prog)s '/etc/foo.d/*.json' -M noreplace
   # Query/Get/set part of input config
-  %prog '/etc/foo.d/*.json' --query 'locs[?state == 'T'].name | sort(@)'
-  %prog '/etc/foo.d/*.json' --get a.b.c
-  %prog '/etc/foo.d/*.json' --set a.b.c=1
+  %(prog)s '/etc/foo.d/*.json' --query 'locs[?state == 'T'].name | sort(@)'
+  %(prog)s '/etc/foo.d/*.json' --get a.b.c
+  %(prog)s '/etc/foo.d/*.json' --set a.b.c=1
   # Validate with JSON schema or generate JSON schema:
-  %prog --validate -S foo.conf.schema.yml '/etc/foo.d/*.xml'
-  %prog --gen-schema '/etc/foo.d/*.xml' -o foo.conf.schema.yml"""
+  %(prog)s --validate -S foo.conf.schema.yml '/etc/foo.d/*.xml'
+  %(prog)s --gen-schema '/etc/foo.d/*.xml' -o foo.conf.schema.yml"""
 
 DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
                 otype=None, atype=None, merge=API.MS_DICTS,
@@ -114,10 +114,8 @@ _SET_HELP = ("Specify key path to set (update) part of config, for "
              "'d': 1}}} gives {'a': {'b': {'c': 1, 'd': 1}}}.")
 
 
-def parse_args(argv=None, defaults=None):
+def make_parser(defaults=None):
     """
-    Make up an option and arguments parser.
-
     :param defaults: Default option values
     """
     if defaults is None:
@@ -133,61 +131,56 @@ def parse_args(argv=None, defaults=None):
     mt_help = "Select strategy to merge multiple configs from " + \
         mts_s + " [%(merge)s]" % defaults
 
-    parser = optparse.OptionParser(USAGE, version="%%prog %s" %
-                                   anyconfig.globals.VERSION)
+    parser = argparse.ArgumentParser(USAGE)
     parser.set_defaults(**defaults)
 
-    lpog = optparse.OptionGroup(parser, "List specific options")
-    lpog.add_option("-L", "--list", help="List supported config types",
-                    action="store_true")
-    parser.add_option_group(lpog)
+    parser.add_argument("inputs", type=str, nargs='*', help="Input files")
+    parser.add_argument("--version", action="version",
+                        version="%%(prog)s %s" % anyconfig.globals.VERSION)
 
-    spog = optparse.OptionGroup(parser, "Schema specific options")
-    spog.add_option("", "--validate", action="store_true",
-                    help="Only validate input files and do not output. "
-                         "You must specify schema file with -S/--schema "
-                         "option.")
-    spog.add_option("", "--gen-schema", action="store_true",
-                    help="Generate JSON schema for givne config file[s] "
-                         "and output it instead of (merged) configuration.")
-    parser.add_option_group(spog)
+    lpog = parser.add_argument_group("List specific options")
+    lpog.add_argument("-L", "--list", action="store_true",
+                      help="List supported config types")
 
-    gspog = optparse.OptionGroup(parser, "Query/Get/set options")
-    gspog.add_option("-Q", "--query", help=_QUERY_HELP)
-    gspog.add_option("", "--get", help=_GET_HELP)
-    gspog.add_option("", "--set", help=_SET_HELP)
-    parser.add_option_group(gspog)
+    spog = parser.add_argument_group("Schema specific options")
+    spog.add_argument("--validate", action="store_true",
+                      help="Only validate input files and do not output. "
+                           "You must specify schema file with -S/--schema "
+                           "option.")
+    spog.add_argument("--gen-schema", action="store_true",
+                      help="Generate JSON schema for givne config file[s] "
+                           "and output it instead of (merged) configuration.")
 
-    parser.add_option("-o", "--output", help="Output file path")
-    parser.add_option("-I", "--itype", choices=ctypes,
-                      help=(type_help % "Input"))
-    parser.add_option("-O", "--otype", choices=ctypes,
-                      help=(type_help % "Output"))
-    parser.add_option("-M", "--merge", choices=mts, help=mt_help)
-    parser.add_option("-A", "--args", help="Argument configs to override")
-    parser.add_option("", "--atype", choices=ctypes,
-                      help=_ATYPE_HELP_FMT % ctypes_s)
+    gspog = parser.add_argument_group("Query/Get/set options")
+    gspog.add_argument("-Q", "--query", help=_QUERY_HELP)
+    gspog.add_argument("--get", help=_GET_HELP)
+    gspog.add_argument("--set", help=_SET_HELP)
 
-    parser.add_option("-x", "--ignore-missing", action="store_true",
-                      help="Ignore missing input files")
-    parser.add_option("-T", "--template", action="store_true",
-                      help="Enable template config support")
-    parser.add_option("-E", "--env", action="store_true",
-                      help="Load configuration defaults from "
-                           "environment values")
-    parser.add_option("-S", "--schema", help="Specify Schema file[s] path")
-    parser.add_option("-s", "--silent", action="store_const", dest="loglevel",
-                      const=0, help="Silent or quiet mode")
-    parser.add_option("-q", "--quiet", action="store_const", dest="loglevel",
-                      const=0, help="Same as --silent option")
-    parser.add_option("-v", "--verbose", action="store_const", dest="loglevel",
-                      const=2, help="Verbose mode")
+    parser.add_argument("-o", "--output", help="Output file path")
+    parser.add_argument("-I", "--itype", choices=ctypes,
+                        help=(type_help % "Input"))
+    parser.add_argument("-O", "--otype", choices=ctypes,
+                        help=(type_help % "Output"))
+    parser.add_argument("-M", "--merge", choices=mts, help=mt_help)
+    parser.add_argument("-A", "--args", help="Argument configs to override")
+    parser.add_argument("--atype", choices=ctypes,
+                        help=_ATYPE_HELP_FMT % ctypes_s)
 
-    if argv is None:
-        argv = sys.argv
-
-    (options, args) = parser.parse_args(argv[1:])
-    return (parser, options, args)
+    parser.add_argument("-x", "--ignore-missing", action="store_true",
+                        help="Ignore missing input files")
+    parser.add_argument("-T", "--template", action="store_true",
+                        help="Enable template config support")
+    parser.add_argument("-E", "--env", action="store_true",
+                        help="Load configuration defaults from "
+                             "environment values")
+    parser.add_argument("-S", "--schema", help="Specify Schema file[s] path")
+    parser.add_argument("-s", "--silent", action="store_const",
+                        dest="loglevel", const=0, help="Silent or quiet mode")
+    parser.add_argument("-q", "--quiet", action="store_const", dest="loglevel",
+                        const=0, help="Same as --silent option")
+    parser.add_argument("-v", "--verbose", action="store_const",
+                        dest="loglevel", const=2, help="Verbose mode")
+    return parser
 
 
 def _exit_with_output(content, exit_code=0):
@@ -201,28 +194,26 @@ def _exit_with_output(content, exit_code=0):
     sys.exit(exit_code)
 
 
-def _check_options_and_args(parser, options, args):
+def _check_options_and_args(parser, args):
     """
     Show supported config format types or usage.
 
     :param parser: Option parser object
-    :param options: Options optparse.OptionParser.parse_args returns
-    :param args: Arguments optparse.OptionParser.parse_args returns
+    :param args: Arguments argparse.ArgumentParser.parse_args returns
     """
-    if not args:
-        if options.list:
+    if not args.inputs:
+        if args.list:
             tlist = ", ".join(API.list_types())
             _exit_with_output("Supported config types: " + tlist)
-        elif options.env:
+        elif args.env:
             cnf = os.environ.copy()
-            _output_result(cnf, options.output, options.otype or "json",
-                           None, None)
+            _output_result(cnf, args.output, args.otype or "json", None, None)
             sys.exit(0)
         else:
             parser.print_usage()
             sys.exit(1)
 
-    if options.validate and options.schema is None:
+    if args.validate and args.schema is None:
         _exit_with_output("--validate option requires --scheme option", 1)
 
 
@@ -324,23 +315,23 @@ def _output_result(cnf, outpath, otype, inpath, itype):
     _try_dump(cnf, outpath, otype, fmsg)
 
 
-def _load_diff(args, options):
+def _load_diff(args):
     """
-    :param args: Extra argument list
-    :param options: :class:`optparse.Values` object
+    :param args: :class:`~argparse.Namespace` object
     """
     try:
-        diff = API.load(args, options.itype,
-                        ignore_missing=options.ignore_missing,
-                        ac_merge=options.merge,
-                        ac_template=options.template,
-                        ac_schema=options.schema)
+        diff = API.load(args.inputs, args.itype,
+                        ignore_missing=args.ignore_missing,
+                        ac_merge=args.merge,
+                        ac_template=args.template,
+                        ac_schema=args.schema)
     except API.UnknownParserTypeError:
-        _exit_with_output("Wrong input type '%s'" % options.itype, 1)
+        _exit_with_output("Wrong input type '%s'" % args.itype, 1)
     except API.UnknownFileTypeError:
         _exit_with_output("No appropriate backend was found for given file "
-                          "'%s'" % options.itype, 1)
-    _exit_if_load_failure(diff, "Failed to load: args=%s" % ", ".join(args))
+                          "'%s'" % args.itype, 1)
+    _exit_if_load_failure(diff,
+                          "Failed to load: args=%s" % ", ".join(args.inputs))
 
     return diff
 
@@ -349,34 +340,35 @@ def main(argv=None):
     """
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
-    (parser, options, args) = parse_args(argv=argv)
-    LOGGER.setLevel(to_log_level(options.loglevel))
+    parser = make_parser()
+    args = parser.parse_args((argv if argv else sys.argv)[1:])
+    LOGGER.setLevel(to_log_level(args.loglevel))
 
-    _check_options_and_args(parser, options, args)
+    _check_options_and_args(parser, args)
 
-    cnf = os.environ.copy() if options.env else {}
-    diff = _load_diff(args, options)
+    cnf = os.environ.copy() if args.env else {}
+    diff = _load_diff(args)
     API.merge(cnf, diff)
 
-    if options.args:
-        diff = anyconfig.parser.parse(options.args)
+    if args.args:
+        diff = anyconfig.parser.parse(args.args)
         API.merge(cnf, diff)
 
-    _exit_if_only_to_validate(options.validate)
+    _exit_if_only_to_validate(args.validate)
 
-    if options.gen_schema:
+    if args.gen_schema:
         cnf = API.gen_schema(cnf)
 
-    if options.query:
-        cnf = _do_query(cnf, options.query)
-    elif options.get:
-        cnf = _do_get(cnf, options.get)
+    if args.query:
+        cnf = _do_query(cnf, args.query)
+    elif args.get:
+        cnf = _do_get(cnf, args.get)
 
-    if options.set:
-        (key, val) = options.set.split('=')
+    if args.set:
+        (key, val) = args.set.split('=')
         API.set_(cnf, key, anyconfig.parser.parse(val))
 
-    _output_result(cnf, options.output, options.otype, args[0], options.itype)
+    _output_result(cnf, args.output, args.otype, args.inputs, args.itype)
 
 
 if __name__ == '__main__':

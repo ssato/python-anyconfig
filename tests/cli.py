@@ -27,7 +27,21 @@ def _run(*args):
     TT.main(["dummy", "--silent"] + list(args))
 
 
-class Test_00_Base(unittest.TestCase):
+class Test_00(unittest.TestCase):
+    """
+
+    >>> psr = TT.make_parser()
+    >>> assert isinstance(psr, TT.argparse.ArgumentParser)
+    >>> psr.parse_args([])  # doctest: +NORMALIZE_WHITESPACE
+    Namespace(args=None, atype=None, env=False, gen_schema=False, get=None,
+              ignore_missing=False, inputs=[], itype=None, list=False,
+              loglevel=1, merge='merge_dicts', otype=None, output=None,
+              query=None, schema=None, set=None, template=False,
+              validate=False)
+    """
+
+
+class RunTestBase(unittest.TestCase):
 
     def run_and_check_exit_code(self, args=None, code=0, _not=False,
                                 exc_cls=SystemExit):
@@ -38,7 +52,7 @@ class Test_00_Base(unittest.TestCase):
             (self.assertNotEqual if _not else self.assertEqual)(ecode, code)
 
 
-class Test_10(Test_00_Base):
+class Test_10(RunTestBase):
 
     def test_10_show_usage(self):
         self.run_and_check_exit_code(["--help"])
@@ -53,7 +67,7 @@ class Test_10(Test_00_Base):
         self.run_and_check_exit_code(["--list"])
 
 
-class Test_20_Base(Test_00_Base):
+class Test_20_Base(RunTestBase):
 
     def setUp(self):
         self.workdir = tests.common.setup_workdir()

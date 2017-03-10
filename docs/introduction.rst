@@ -3,16 +3,17 @@ Introduction
 
 python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
 python library provides common APIs to access to configuration files in various
-formats with some useful features such as contents merge, templates and schema
-validation/generation support.
+formats with some useful features such as contents merge, templates, schema
+validation and generation and query support.
 
 - Home: https://github.com/ssato/python-anyconfig
-- (Latest) Doc: http://python-anyconfig.readthedocs.org/en/latest/
-- PyPI: https://pypi.python.org/pypi/anyconfig
-- Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
+- Author: Satoru SATOH <ssat@redhat.com>
+- License: MIT
+- Document: http://python-anyconfig.readthedocs.org/en/latest/
+- Download:
 
-I, Satoru SATOH <ssato@redhat.com>, developed and keep maintain this library
-with others' help (see AUTHORS.txt for more details).
+  - PyPI: https://pypi.python.org/pypi/anyconfig
+  - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
 .. [#] This name took an example from the 'anydbm' python standard library.
 
@@ -20,7 +21,7 @@ Features
 ----------
 
 python-anyconfig provides very simple and unified APIs to process configuration
-files in various formats:
+files in various formats and related functions:
 
 - Loading configuration files:
 
@@ -50,8 +51,9 @@ files in various formats:
 - Merge dicts:
 
   **anyconfig.merge** (self, other, ac_merge=MS_DICTS, \*\*options)
-    Update (merge) a mapping object self with other mapping object or an
-    iterable yields (key, value) tuples based on merge strategy ac_merge.
+    Update (merge) a mapping object `self` with other mapping object `other` or
+    an iterable `other` yields (key, value) tuples based on merge strategy
+    ac_merge.
 
 - Schema validation and generation of configuration files:
 
@@ -62,8 +64,8 @@ files in various formats:
 
   **anyconfig.gen_schema** (data, \*\*options)
     generates a dict or dict-like object represents a minimum JSON schema to
-    validate given configuration file[s] later. Of course, this result object
-    can be serialized into any format including JSON with anyconfig.dump or
+    validate given configuration file[s] later. This result object can be
+    serialized to any formats including JSON with anyconfig.dump or
     anyconfig.dumps.
 
 It enables to load configuration file[s] in various formats in the same manner,
@@ -342,7 +344,7 @@ The following areas are still insufficient, I think.
 
 - Make python-anyconfig robust for invalid inputs
 - Make python-anyconfig scaled: some functions are limited by max recursion depth.
-- Make python-anyconfig processing files faster: current implementation might be too complex and it causes the processing slower than expected.
+- Make python-anyconfig run faster: current implementation might be too complex and it run slower than expected as a result.
 - Documentation:
 
   - Especially API docs need more fixes and enhancements! CLI doc is non-fulfilling also.

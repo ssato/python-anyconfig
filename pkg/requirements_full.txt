@@ -2,7 +2,9 @@ Jinja2
 PyYAML
 cbor
 configobj
+jmespath
 jsonschema
 msgpack-python
 pymongo
 toml
+setuptools

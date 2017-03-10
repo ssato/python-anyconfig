@@ -226,14 +226,6 @@ def _exit_if_load_failure(cnf, msg):
         _exit_with_output(msg, 1)
 
 
-def _exit_if_only_to_validate(only_to_validate):
-    """
-    :param only_to_validate: True if it's only to validate
-    """
-    if only_to_validate:
-        _exit_with_output("Validation succeds")
-
-
 def _do_query(cnf, exp):
     """
     :param cnf: Configuration object to print out
@@ -354,7 +346,8 @@ def main(argv=None):
         diff = anyconfig.parser.parse(args.args)
         API.merge(cnf, diff)
 
-    _exit_if_only_to_validate(args.validate)
+    if args.validate:
+        _exit_with_output("Validation succeds")
 
     if args.gen_schema:
         cnf = API.gen_schema(cnf)

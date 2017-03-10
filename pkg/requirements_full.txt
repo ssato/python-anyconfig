@@ -6,5 +6,5 @@ jmespath
 jsonschema
 msgpack-python
 pymongo
-toml
 setuptools
+toml

@@ -53,8 +53,7 @@ class TestBase(unittest.TestCase, HasParserTrait):
                         "\n %r\nvs.\n %r" % (cnf, ref))
         if cls is None:
             cls = OrderedDict if ordered else dict
-        self.assertTrue(isinstance(cnf, cls),
-                        "cnf: %r vs. cls: %r" % (cnf, cls))
+        self.assertTrue(isinstance(cnf, cls), "cnf=%r, cls=%r" % (cnf, cls))
 
 
 class Test_10_dumps_and_loads(TestBase):
@@ -93,7 +92,7 @@ class Test_10_dumps_and_loads(TestBase):
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf, cls=MyDict)
             # for debug:
-            # raise RuntimeError("psr=%r, cnf=%r" % (self.psr, self.cnf))
+            # raise RuntimeError("psr=%r, cnf=%r" % (self.psr, cnf))
 
     def test_20_loads_with_dict_option(self):
         if self.is_ready():

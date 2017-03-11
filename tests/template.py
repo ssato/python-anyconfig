@@ -109,4 +109,12 @@ class Test(unittest.TestCase):
             self.assertNotEqual(c_r, "aaa")
             self.assertEqual(c_r, self.templates[0][-1])
 
+    def test_30_try_render_with_empty_filepath_and_content(self):
+        if TT.SUPPORTED:
+            try:
+                TT.try_render()
+            except ValueError:
+                exc_was_raised = True
+            self.assertTrue(exc_was_raised)
+
 # vim:sw=4:ts=4:et:

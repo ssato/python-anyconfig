@@ -119,6 +119,14 @@ class Test_30_single_input(Test_20_Base):
         x = anyconfig.api.load(output)
         self.assertEqual(x, d['a']['b'])
 
+    def test_31_w_get_option_failure(self):
+        (key, no_get_q) = ('a', "wrong_key_0.wrong_key_1")
+        infile = os.path.join(self.workdir, "a.json")
+        anyconfig.api.dump({key: "A"}, infile)
+        self.assertTrue(os.path.exists(infile))
+
+        self.run_and_check_exit_code(["--get", no_get_q, infile], 1)
+
     def test_32_w_set_option(self):
         d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))
 

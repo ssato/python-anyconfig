@@ -215,14 +215,18 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
 
         - Options common with :func:`multi_load` and :func:`load`:
 
-          - ac_dict: callable (function or class) to make mapping object will
-            be returned as a result or None. If not given or ac_dict is None,
-            default mapping object used to store resutls is dict or
-            :class:`~collections.OrderedDict` if ac_ordered is True and
-            selected backend can keep the order of items in mapping objects.
+          - ac_dict: callable (function or class) to make mapping objects from
+            loaded data if the selected backend can customize that such as JSON
+            which supports that with 'object_pairs_hook' option, or None. If
+            this option was not given or None, dict or :class:`OrderedDict`
+            will be used to make result as mapping object depends on if
+            ac_ordered (see below) is True and selected backend can keep the
+            order of items loaded. See also :meth:`_container_factory` of
+            :class:`~anyconfig.backend.base.Parser` for more implementation
+            details.
 
           - ac_ordered: True if you want to keep resuls ordered. Please note
-            that order of items may be lost depends on backend used.
+            that order of items may be lost depends on the selected backend.
 
           - ac_schema: JSON schema file path to validate given config file
           - ac_query: JMESPath expression to query data

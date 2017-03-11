@@ -286,6 +286,11 @@ class Test_50_others_w_input(Test_20_Base):
         outfile = os.path.join(self.workdir, "out.conf")
         self.run_and_check_exit_code(["-o", outfile, self.infile], 1)
 
+    def test_22_no_out_dumper_nor_itype(self):
+        infile = self.infile.replace(".json", ".conf")
+        outfile = os.path.join(self.workdir, "out.conf")
+        self.run_and_check_exit_code(["-o", outfile, infile], 1)
+
     def test_30_w_query_option(self):
         self.run_and_check_exit_code(["-Q", "b.b[::-1]", self.infile], 0)
 

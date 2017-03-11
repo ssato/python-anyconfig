@@ -51,9 +51,14 @@ class TestBase(unittest.TestCase, HasParserTrait):
             ref = self.cnf
         self.assertTrue(tests.common.dicts_equal(cnf, ref, ordered=ordered),
                         "\n %r\nvs.\n %r" % (cnf, ref))
-        if cls is None:
+        # .. note::
+        #    `cnf` may not be an instance of `cls` even if ac_dict option was
+        #    given because parsers may not allow customize dict class to used
+        #    for making results.
+        if cls is None or not self.psr.dict_options():
             cls = OrderedDict if ordered else dict
-        self.assertTrue(isinstance(cnf, cls), "cnf=%r, cls=%r" % (cnf, cls))
+        self.assertTrue(isinstance(cnf, cls),
+                        "cnf=%r [type: %r], cls=%r" % (cnf, type(cnf), cls))
 
 
 class Test_10_dumps_and_loads(TestBase):
@@ -92,7 +97,8 @@ class Test_10_dumps_and_loads(TestBase):
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf, cls=MyDict)
             # for debug:
-            # raise RuntimeError("psr=%r, cnf=%r" % (self.psr, cnf))
+            # raise RuntimeError("psr=%r, cnf=%r "
+            #                    "[%r]" % (self.psr, cnf, type(cnf)))
 
     def test_20_loads_with_dict_option(self):
         if self.is_ready():

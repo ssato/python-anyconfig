@@ -192,7 +192,7 @@ class Parser(TextFilesMixin):
         _dicts = [x for x in (options.get(o) for o in self.dict_options())
                   if x]
 
-        if ac_dict and callable(ac_dict):
+        if self.dict_options() and ac_dict and callable(ac_dict):
             return ac_dict  # Higher priority than ac_ordered.
         elif _dicts and callable(_dicts[0]):
             return _dicts[0]

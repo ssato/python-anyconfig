@@ -70,6 +70,7 @@ class Parser(anyconfig.backend.base.FromStringLoader,
     _load_opts = [] if bson.has_c() else ["codec_options"]
     _dump_opts = [] if bson.has_c() else ["check_keys", "codec_options"]
     _ordered = not bson.has_c()
+    _dict_options = [] if bson.has_c() else ["document_class"]
 
     def _load_options(self, container, **options):
         """

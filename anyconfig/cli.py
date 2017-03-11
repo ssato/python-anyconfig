@@ -194,13 +194,17 @@ def _exit_with_output(content, exit_code=0):
     sys.exit(exit_code)
 
 
-def _check_options_and_args(parser, args):
+def _parse_args(argv):
     """
     Show supported config format types or usage.
 
-    :param parser: Option parser object
-    :param args: Arguments argparse.ArgumentParser.parse_args returns
+    :param argv: Argument list to parse or None (sys.argv will be set).
+    :return: argparse.Namespace object or None (exit before return)
     """
+    parser = make_parser()
+    args = parser.parse_args(argv)
+    LOGGER.setLevel(to_log_level(args.loglevel))
+
     if not args.inputs:
         if args.list:
             tlist = ", ".join(API.list_types())
@@ -215,6 +219,8 @@ def _check_options_and_args(parser, args):
 
     if args.validate and args.schema is None:
         _exit_with_output("--validate option requires --scheme option", 1)
+
+    return args
 
 
 def _exit_if_load_failure(cnf, msg):
@@ -332,11 +338,7 @@ def main(argv=None):
     """
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
-    parser = make_parser()
-    args = parser.parse_args((argv if argv else sys.argv)[1:])
-    LOGGER.setLevel(to_log_level(args.loglevel))
-
-    _check_options_and_args(parser, args)
+    _parse_args((argv if argv else sys.argv)[1:])
 
     cnf = os.environ.copy() if args.env else {}
     diff = _load_diff(args)

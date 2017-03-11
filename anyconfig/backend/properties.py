@@ -199,7 +199,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _type = "properties"
     _extensions = ["properties"]
     _ordered = True
-    _dict_options = ["ac_dict"]
+    _dict_opts = ["ac_dict"]
 
     def load_from_stream(self, stream, container, **kwargs):
         """

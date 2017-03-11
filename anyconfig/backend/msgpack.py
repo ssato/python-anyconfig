@@ -44,7 +44,7 @@ class Parser(anyconfig.backend.base.StringStreamFnParser,
     _dump_opts = ["default", "encoding", "unicode_errors", "use_single_float",
                   "autoreset", "use_bin_type"]
     _ordered = not anyconfig.compat.IS_PYTHON_3  # TODO.
-    _dict_options = ["object_pairs_hook"]  # Exclusive with object_hook
+    _dict_opts = ["object_pairs_hook"]  # Exclusive with object_hook
 
     _load_from_string_fn = to_method(msgpack.unpackb)
     _load_from_stream_fn = to_method(msgpack.unpack)

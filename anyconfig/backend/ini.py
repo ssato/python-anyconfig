@@ -188,7 +188,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _extensions = ["ini"]
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename",
                   "ac_parse_value"]
-    _dict_options = ["dict_type"]
+    _dict_opts = ["dict_type"]
 
     dump_to_string = anyconfig.backend.base.to_method(_dumps)
     load_from_stream = anyconfig.backend.base.to_method(_load)

@@ -142,9 +142,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Sat Mar 11 2017 Satoru SATOH <ssato@redhat.com> - 0.9.1-1
+* Sun Mar 12 2017 Satoru SATOH <ssato@redhat.com> - 0.9.1-1
+- fix: correct behavior around ac_dict to ignore ac_dict if backend cannot
+  support to customize dict to be used in making results from loaded data.
 - fix: check if result mapping objects are not None in some backend to avoid
   critical errors and add such test cases
+- change: [cli] switch from optparse to argparse as it is deprecated
 - doc: minor expression updates
 
 * Thu Mar  9 2017 Satoru SATOH <ssato@redhat.com> - 0.9.0-1

@@ -213,7 +213,8 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
     :param ac_context: A dict presents context to instantiate template
     :param options: Optional keyword arguments such as:
 
-        - Options common with :func:`multi_load` and :func:`load`:
+        - Options common in :func:`single_load`, :func:`multi_load`,
+          :func:`load` and :func:`loads`:
 
           - ac_dict: callable (function or class) to make mapping objects from
             loaded data if the selected backend can customize that such as JSON
@@ -290,22 +291,9 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     :param ac_context: Mapping object presents context to instantiate template
     :param options: Optional keyword arguments:
 
-        - Options common with :func:`multi_load` and :func:`load`:
-
-          - ac_dict: callable (function or class) to make mapping object will
-            be returned as a result or None. If not given or ac_dict is None,
-            default mapping object used to store resutls is dict or
-            :class:`~collections.OrderedDict` if ac_ordered is True and
-            selected backend can keep the order of items in mapping objects.
-
-          - ac_ordered: True if you want to keep resuls ordered. Please note
-            that order of items may be lost depends on backend used.
-
-          - ac_schema: JSON schema file path to validate given config file
-          - ac_query: JMESPath expression to query data
-
-          - ac_dict: callable (function or class) to make a dict or dict-like
-            object, dict and OrderedDict for example
+        - ac_dict, ac_ordered, ac_schema and ac_query are the options common in
+          :func:`single_load`, :func:`multi_load`, :func:`load`: and
+          :func:`loads`. See the descriptions of them in :func:`single_load`.
 
         - Options specific to this function and :func:`load`:
 
@@ -373,7 +361,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     :param ac_context: A dict presents context to instantiate template
     :param options:
         Optional keyword arguments. See also the description of `options` in
-        :func:`multi_load` function.
+        :func:`single_load` and :func:`multi_load`
 
     :return: Mapping object or any query result might be primitive objects
     """

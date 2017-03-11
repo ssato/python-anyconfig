@@ -353,13 +353,11 @@ def main(argv=None):
 
     if args.gen_schema:
         cnf = API.gen_schema(cnf)
-
-    if args.query:
+    elif args.query:
         cnf = _do_query(cnf, args.query)
     elif args.get:
         cnf = _do_get(cnf, args.get)
-
-    if args.set:
+    elif args.set:
         (key, val) = args.set.split('=')
         API.set_(cnf, key, anyconfig.parser.parse(val))
 

@@ -232,15 +232,6 @@ def _exit_if_load_failure(cnf, msg):
         _exit_with_output(msg, 1)
 
 
-def _do_query(cnf, exp):
-    """
-    :param cnf: Configuration object to print out
-    :param exp: A string represents JMESPath expression to query loaded data
-    :return: Query result object if no error
-    """
-    return API.query(cnf, exp)
-
-
 def _do_get(cnf, get_path):
     """
     :param cnf: Configuration object to print out
@@ -334,12 +325,28 @@ def _load_diff(args):
     return diff
 
 
+def _do_filter(cnf, args):
+    """
+    :param cnf: Mapping object represents configuration data
+    :param args: :class:`~argparse.Namespace` object
+    :return: `cnf` may be updated
+    """
+    if args.query:
+        cnf = API.query(cnf, args.query)
+    elif args.get:
+        cnf = _do_get(cnf, args.get)
+    elif args.set:
+        (key, val) = args.set.split('=')
+        API.set_(cnf, key, anyconfig.parser.parse(val))
+
+    return cnf
+
+
 def main(argv=None):
     """
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
-    _parse_args((argv if argv else sys.argv)[1:])
-
+    args = _parse_args((argv if argv else sys.argv)[1:])
     cnf = os.environ.copy() if args.env else {}
     diff = _load_diff(args)
     API.merge(cnf, diff)
@@ -351,15 +358,7 @@ def main(argv=None):
     if args.validate:
         _exit_with_output("Validation succeds")
 
-    if args.gen_schema:
-        cnf = API.gen_schema(cnf)
-    elif args.query:
-        cnf = _do_query(cnf, args.query)
-    elif args.get:
-        cnf = _do_get(cnf, args.get)
-    elif args.set:
-        (key, val) = args.set.split('=')
-        API.set_(cnf, key, anyconfig.parser.parse(val))
+    cnf = API.gen_schema(cnf) if args.gen_schema else _do_filter(cnf, args)
 
     _output_result(cnf, args.output, args.otype, args.inputs, args.itype)
 

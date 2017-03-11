@@ -18,6 +18,11 @@ needed:
 
 Changelog:
 
+.. versionchanged:: 0.9.1
+
+   - Rename the member _dict_options to `_dict_opts` to make consistent w/
+     other members such as _load_opts.
+
 .. versionchanged:: 0.8.3
 
    - Add `_ordered` membmer and a class method :meth:` ordered to
@@ -122,8 +127,8 @@ class Parser(TextFilesMixin):
     - _dump_opts: Backend specific options on dump
     - _open_flags: Opening flags to read and write files
     - _ordered: True if the parser keep the order of items by default
-    - _dict_options:
-        Backend specific options to pass custom dict class to save results
+    - _dict_opts:
+        Backend specific options to customize dict class to make results
     """
     _type = None
     _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
@@ -131,7 +136,7 @@ class Parser(TextFilesMixin):
     _load_opts = []
     _dump_opts = []
     _ordered = False
-    _dict_options = []
+    _dict_opts = []
 
     @classmethod
     def type(cls):
@@ -166,7 +171,7 @@ class Parser(TextFilesMixin):
         """
         :return: List of dict factory options
         """
-        return cls._dict_options
+        return cls._dict_opts
 
     def _load_options(self, container, **options):
         """

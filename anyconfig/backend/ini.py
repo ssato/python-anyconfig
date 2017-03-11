@@ -47,15 +47,6 @@ except AttributeError:
     DEFAULTSECT = "DEFAULT"
 
 
-def _noop(val, *args, **kwargs):
-    """
-    Parser does nothing.
-    """
-    # It means nothing but can suppress 'Unused argument' pylint warns.
-    # (val, args, kwargs)[0]
-    return val
-
-
 def _parse(val_s, sep=_SEP):
     """
     FIXME: May be too naive implementation.

@@ -108,12 +108,14 @@ def _customized_dumper(container, dumper=Dumper):
         """
         return dumper.represent_mapping(mapping_tag, data.items())
 
-    if not anyconfig.compat.IS_PYTHON_3:
-        def ustr_representer(dumper, data):
-            tag = "tag:yaml.org,2002:python/unicode"
-            return dumper.represent_scalar(tag, data)
+    def ustr_representer(dumper, data):
+        tag = "tag:yaml.org,2002:python/unicode"
+        return dumper.represent_scalar(tag, data)
 
+    try:
         dumper.add_representer(unicode, ustr_representer)
+    except NameError:
+        pass
 
     if type(container) != dict:
         dumper.add_representer(container, container_representer)

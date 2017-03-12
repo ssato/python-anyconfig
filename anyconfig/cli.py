@@ -131,7 +131,7 @@ def make_parser(defaults=None):
     mt_help = "Select strategy to merge multiple configs from " + \
         mts_s + " [%(merge)s]" % defaults
 
-    parser = argparse.ArgumentParser(USAGE)
+    parser = argparse.ArgumentParser(usage=USAGE)
     parser.set_defaults(**defaults)
 
     parser.add_argument("inputs", type=str, nargs='*', help="Input files")

@@ -173,7 +173,7 @@ class Test_30_single_input(Test_20_Base):
     def test_54_gen_schema_and_validate_with_it(self):
         cnf = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
         infile = os.path.join(self.workdir, "cnf.json")
-        output = os.path.join(self.workdir, "out.yaml")
+        output = os.path.join(self.workdir, "out.json")
         anyconfig.api.dump(cnf, infile)
 
         self.run_and_check_exit_code(["--gen-schema", "-o", output, infile], 0)

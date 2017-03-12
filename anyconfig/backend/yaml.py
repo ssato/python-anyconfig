@@ -94,6 +94,16 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
 
         return mapping
 
+    tag = "tag:yaml.org,2002:python/unicode"
+
+    def construct_ustr(loader, node):
+        return loader.construct_scalar(node)
+
+    try:
+        loader.add_constructor(tag, construct_ustr)
+    except NameError:
+        pass
+
     if type(container) != dict:
         loader.add_constructor(mapping_tag, construct_mapping)
     return loader

@@ -2,6 +2,8 @@
 # Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# type() is used to exactly match check instead of isinstance here.
+# pylint: disable=unidiomatic-typecheck
 r"""YAML backend:
 
 - Format to support: YAML, http://yaml.org
@@ -9,12 +11,7 @@ r"""YAML backend:
 - Development Status :: 5 - Production/Stable
 - Limitations:
 
-  - If 'ac_dict' was specified on load, it must be specified on dump also to
-    keep the order of items.
-
-  - Resuls is not ordered as expected even if 'ac_ordered' was given. Use
-    'ac_dict' to specify any ordred mapping class such as OrderedDict if you
-    want to so.
+  - Resuls is not ordered even if 'ac_ordered' or 'ac_dict' was given.
 
 - Special options:
 
@@ -44,7 +41,11 @@ except ImportError:
     from yaml import SafeLoader as Loader, Dumper
 
 import anyconfig.backend.base
+import anyconfig.compat
 import anyconfig.utils
+
+
+_MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
 
 def _filter_from_options(key, options):
@@ -61,14 +62,11 @@ def _filter_from_options(key, options):
                                            if k != key], options)
 
 
-def _customized_loader(container, loader=Loader):
+def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
     """
     Create or update loader with making given callble `container` to make
     mapping objects such as dict and OrderedDict, used to construct python
     object from yaml mapping node internally.
-
-    .. note::
-       It cannot be used with ac_safe keyword option at the same time.
 
     :param container: Set container used internally
     """
@@ -96,8 +94,8 @@ def _customized_loader(container, loader=Loader):
 
         return mapping
 
-    mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
-    loader.add_constructor(mapping_tag, construct_mapping)
+    if type(container) != dict:
+        loader.add_constructor(mapping_tag, construct_mapping)
     return loader
 
 
@@ -105,14 +103,20 @@ def _customized_dumper(container, dumper=Dumper):
     """
     Coutnerpart of :func:`_customized_loader` for dumpers.
     """
-    mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
-
-    def container_representer(dumper, data):
+    def container_representer(dumper, data, mapping_tag=_MAPPING_TAG):
         """Container representer.
         """
         return dumper.represent_mapping(mapping_tag, data.items())
 
-    dumper.add_representer(container, container_representer)
+    if not anyconfig.compat.IS_PYTHON_3:
+        def ustr_representer(dumper, data):
+            tag = "tag:yaml.org,2002:python/unicode"
+            return dumper.represent_scalar(tag, data)
+
+        dumper.add_representer(unicode, ustr_representer)
+
+    if type(container) != dict:
+        dumper.add_representer(container, container_representer)
     return dumper
 
 
@@ -143,11 +147,11 @@ def _yml_load(stream, container, **options):
     elif not options.get("Loader"):
         maybe_container = options.get("ac_dict", False)
         if maybe_container and callable(maybe_container):
-            options["Loader"] = _customized_loader(maybe_container)
             container = maybe_container
-        options = _filter_from_options("ac_dict", options)
 
-    ret = _yml_fnc("load", stream, **options)
+        options["Loader"] = _customized_loader(container)
+
+    ret = _yml_fnc("load", stream, **_filter_from_options("ac_dict", options))
     return container() if ret is None else container(ret)
 
 
@@ -157,12 +161,16 @@ def _yml_dump(cnf, stream, **options):
     :param cnf: Mapping object to dump
     :param stream: a file or file-like object to dump YAML data
     """
-    ac_dict = options.get("ac_dict", False)
-    if ac_dict and callable(ac_dict):
-        options["Dumper"] = _customized_dumper(ac_dict)
-    elif not options.get("Dumper", False) and type(cnf) != dict:
-        cnf = anyconfig.dicts.convert_to(cnf, ac_dict=dict)
+    if options.get("ac_safe", False):
+        options = {}
+    elif not options.get("Dumper", False):
+        # TODO: Any other way to get its constructor?
+        cnf_type = type(cnf)
+        maybe_container = options.get("ac_dict", cnf_type)
+        options["Dumper"] = _customized_dumper(maybe_container)
 
+    # Type information and the order of items are lost on dump currently.
+    cnf = anyconfig.dicts.convert_to(cnf, ac_dict=dict)
     options = _filter_from_options("ac_dict", options)
     return _yml_fnc("dump", cnf, stream, **options)
 
@@ -175,7 +183,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
     _type = "yaml"
     _extensions = ["yaml", "yml"]
     _load_opts = ["Loader", "ac_safe", "ac_dict"]
-    _dump_opts = ["stream", "ac_safe", "ac_dict", "Dumper", "default_style",
+    _dump_opts = ["stream", "ac_safe", "Dumper", "default_style",
                   "default_flow_style", "canonical", "indent", "width",
                   "allow_unicode", "line_break", "encoding", "explicit_start",
                   "explicit_end", "version", "tags"]

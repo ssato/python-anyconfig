@@ -147,6 +147,7 @@ rm -rf $RPM_BUILD_ROOT
   support to customize dict to be used in making results from loaded data.
 - fix: check if result mapping objects are not None in some backend to avoid
   critical errors and add such test cases
+- fix: [yaml] make ac_ordered and ac_dict worked on load
 - change: [cli] switch from optparse to argparse as it is deprecated
 - doc: minor expression updates
 

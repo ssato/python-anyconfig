@@ -245,9 +245,9 @@ def _do_get(cnf, get_path):
     return cnf
 
 
-def _output_type_by_input_path(inpath, itype, fmsg):
+def _output_type_by_input_path(inpaths, itype, fmsg):
     """
-    :param inpath: Input file path
+    :param inpaths: List of input file paths
     :param itype: Input type or None
     :param fmsg: message if it cannot detect otype by `inpath`
     :return: Output type :: str
@@ -256,10 +256,10 @@ def _output_type_by_input_path(inpath, itype, fmsg):
            "or -O/--otype option explicitly")
     if itype is None:
         try:
-            otype = API.find_loader(inpath).type()
+            otype = API.find_loader(inpaths[0]).type()
         except API.UnknownFileTypeError:
-            _exit_with_output((fmsg % inpath) + msg, 1)
-        except ValueError:
+            _exit_with_output((fmsg % inpaths[0]) + msg, 1)
+        except (ValueError, IndexError):
             _exit_with_output(msg, 1)
     else:
         otype = itype
@@ -282,12 +282,12 @@ def _try_dump(cnf, outpath, otype, fmsg):
         _exit_with_output("Invalid output type '%s'" % otype, 1)
 
 
-def _output_result(cnf, outpath, otype, inpath, itype):
+def _output_result(cnf, outpath, otype, inpaths, itype):
     """
     :param cnf: Configuration object to print out
     :param outpath: Output file path or None
     :param otype: Output type or None
-    :param inpath: Input file path
+    :param inpaths: List of input file paths
     :param itype: Input type or None
     """
     fmsg = ("Uknown file type and cannot detect appropriate backend "
@@ -299,7 +299,7 @@ def _output_result(cnf, outpath, otype, inpath, itype):
     if not outpath or outpath == "-":
         outpath = sys.stdout
         if otype is None:
-            otype = _output_type_by_input_path(inpath, itype, fmsg)
+            otype = _output_type_by_input_path(inpaths, itype, fmsg)
 
     _try_dump(cnf, outpath, otype, fmsg)
 
@@ -360,7 +360,8 @@ def main(argv=None):
 
     cnf = API.gen_schema(cnf) if args.gen_schema else _do_filter(cnf, args)
 
-    _output_result(cnf, args.output, args.otype, args.inputs, args.itype)
+    if args.inputs:
+        _output_result(cnf, args.output, args.otype, args.inputs, args.itype)
 
 
 if __name__ == '__main__':

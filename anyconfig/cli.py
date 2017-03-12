@@ -359,9 +359,7 @@ def main(argv=None):
         _exit_with_output("Validation succeds")
 
     cnf = API.gen_schema(cnf) if args.gen_schema else _do_filter(cnf, args)
-
-    if args.inputs:
-        _output_result(cnf, args.output, args.otype, args.inputs, args.itype)
+    _output_result(cnf, args.output, args.otype, args.inputs, args.itype)
 
 
 if __name__ == '__main__':

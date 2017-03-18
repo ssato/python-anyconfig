@@ -345,6 +345,27 @@ def root_to_container(root, container=dict, nspaces=None, **options):
                              **_complement_tag_options(options))
 
 
+def _to_string_fn(**options):
+    """
+    :param options: Keyword options might have 'ac_parse_value' key
+    :param to_string: Callable to convert value to string
+    """
+    return str if options.get("ac_parse_value") else anyconfig.utils.noop
+
+
+def _elem_set_attrs(obj, parent, to_string):
+    """
+    :param obj: Container instance gives attributes of XML Element
+    :param parent: XML ElementTree parent node object
+    :param to_string: Callable to convert value to string or None
+    :param options: Keyword options, see :func:`container_to_etree`
+
+    :return: None but parent will be modified
+    """
+    for attr, val in anyconfig.compat.iteritems(obj):
+        parent.set(attr, to_string(val))
+
+
 def _elem_from_descendants(children_nodes, **options):
     """
     :param children_nodes: A list of child dict objects
@@ -391,7 +412,7 @@ def container_to_etree(obj, parent=None, **options):
         - tags: Dict of tags for special nodes to keep XML info, attributes,
           text and children nodes, e.g. {"attrs": "@attrs", "text": "#text"}
     """
-    _str = str if options.get("ac_parse_value") else anyconfig.utils.noop
+    _str = _to_string_fn(**options)
 
     if not anyconfig.utils.is_dict_like(obj):
         obj = False if obj is None else _str(obj)
@@ -404,8 +425,7 @@ def container_to_etree(obj, parent=None, **options):
 
     for key, val in anyconfig.compat.iteritems(obj):
         if key == attrs:
-            for attr, aval in anyconfig.compat.iteritems(val):
-                parent.set(attr, _str(aval))
+            _elem_set_attrs(val, parent, _str)
         elif key == text:
             parent.text = _str(val)
         elif key == children:

@@ -378,10 +378,11 @@ def _elem_from_descendants(children_nodes, **options):
             yield celem
 
 
-def _get_or_update_parent(key, val, parent=None, **options):
+def _get_or_update_parent(key, val, to_str, parent=None, **options):
     """
     :param key: Key of current child (dict{,-like} object)
     :param val: Value of current child (dict{,-like} object or [dict{,...}])
+    :param to_str: Callable to convert value to string
     :param parent: XML ElementTree parent node object or None
     :param options: Keyword options, see :func:`container_to_etree`
     """
@@ -389,7 +390,7 @@ def _get_or_update_parent(key, val, parent=None, **options):
 
     vals = val if anyconfig.utils.is_iterable(val) else [val]
     for val in vals:
-        container_to_etree(val, parent=elem, **options)
+        container_to_etree(val, parent=elem, to_str=to_str, **options)
 
     if parent is None:  # 'elem' is the top level etree.
         return elem
@@ -401,21 +402,23 @@ def _get_or_update_parent(key, val, parent=None, **options):
 _ATC = ("attrs", "text", "children")
 
 
-def container_to_etree(obj, parent=None, **options):
+def container_to_etree(obj, parent=None, to_str=None, **options):
     """
     Convert a dict-like object to XML ElementTree.
 
     :param obj: Container instance to convert to
     :param parent: XML ElementTree parent node object or None
+    :param to_str: Callable to convert value to string or None
     :param options: Keyword options,
 
         - tags: Dict of tags for special nodes to keep XML info, attributes,
           text and children nodes, e.g. {"attrs": "@attrs", "text": "#text"}
     """
-    _str = _to_str_fn(**options)
+    if to_str is None:
+        to_str = _to_str_fn(**options)
 
     if not anyconfig.utils.is_dict_like(obj):
-        obj = False if obj is None else _str(obj)
+        obj = False if obj is None else to_str(obj)
         if parent is not None and obj:
             parent.text = obj  # Parent is a leaf text node.
         return  # All attributes and text should be set already.
@@ -425,14 +428,15 @@ def container_to_etree(obj, parent=None, **options):
 
     for key, val in anyconfig.compat.iteritems(obj):
         if key == attrs:
-            _elem_set_attrs(val, parent, _str)
+            _elem_set_attrs(val, parent, to_str)
         elif key == text:
-            parent.text = _str(val)
+            parent.text = to_str(val)
         elif key == children:
             for celem in _elem_from_descendants(val, **options):
                 parent.append(celem)
         else:
-            parent = _get_or_update_parent(key, val, parent=parent, **options)
+            parent = _get_or_update_parent(key, val, to_str, parent=parent,
+                                           **options)
 
     return ET.ElementTree(parent)
 

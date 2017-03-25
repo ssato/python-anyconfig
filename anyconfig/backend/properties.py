@@ -31,6 +31,7 @@ Changelog:
 from __future__ import absolute_import
 
 import logging
+import os
 import re
 
 import anyconfig.backend.base
@@ -222,6 +223,6 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in anyconfig.compat.iteritems(cnf):
-            stream.write("%s = %s\n" % (key, escape(val)))
+            stream.write("%s = %s%s" % (key, escape(val), os.linesep))
 
 # vim:sw=4:ts=4:et:

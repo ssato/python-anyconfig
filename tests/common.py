@@ -47,10 +47,11 @@ def cleanup_workdir(workdir):
     """
     FIXME: Danger!
 
+    >>> from os import linesep as lsep
     >>> workdir = setup_workdir()
     >>> os.path.exists(workdir)
     True
-    >>> open(os.path.join(workdir, "workdir.stamp"), 'w').write("OK!\n")
+    >>> open(os.path.join(workdir, "workdir.stamp"), 'w').write("OK!" + lsep)
     >>> cleanup_workdir(workdir)
     >>> os.path.exists(workdir)
     False

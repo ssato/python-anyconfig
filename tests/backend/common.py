@@ -10,6 +10,8 @@ import copy
 import os.path
 import unittest
 
+from os import linesep as lsep
+
 import tests.common
 
 from anyconfig.compat import OrderedDict
@@ -50,7 +52,7 @@ class TestBase(unittest.TestCase, HasParserTrait):
         if ref is None:
             ref = self.cnf
         self.assertTrue(tests.common.dicts_equal(cnf, ref, ordered=ordered),
-                        "\n %r\nvs.\n %r" % (cnf, ref))
+                        "%s %r%svs.%s %r" % (lsep, cnf, lsep, lsep, ref))
         # .. note::
         #    `cnf` may not be an instance of `cls` even if ac_dict option was
         #    given because parsers may not allow customize dict class to used

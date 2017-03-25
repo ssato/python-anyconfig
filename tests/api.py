@@ -118,7 +118,7 @@ class TestBase(unittest.TestCase):
 
     def assert_dicts_equal(self, dic, ref, ordered=False):
         self.assertTrue(dicts_equal(dic, ref, ordered=ordered),
-                        "%r\nvs.\n%r" % (dic, ref))
+                        "%r%s vs.%s%r" % (dic, os.linesep, os.linesep, ref))
 
 
 class Test_20_dumps_and_loads(TestBase):

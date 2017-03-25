@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring, unused-variable
@@ -17,7 +17,7 @@ A char is 'b'.
 A char is 'c'.
 """
 
-TMPLS = [('00.j2', "{% include '10.j2' %}\n", C_1),
+TMPLS = [('00.j2', "{% include '10.j2' %}" + os.linesep, C_1),
          ('10.j2', """{% for c in ['a', 'b', 'c'] -%}
 A char is '{{ c }}'.
 {% endfor %}

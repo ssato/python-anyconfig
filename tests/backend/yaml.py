@@ -7,6 +7,7 @@
 # pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
+import os
 import anyconfig.backend.yaml as TT
 import tests.backend.common as TBC
 
@@ -40,7 +41,7 @@ class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
     load_options = dict(ac_safe=True, Loader=TT.yaml.loader.Loader)
     dump_options = dict(ac_safe=True)
-    empty_patterns = ['', ' ', "#\n#\n"]
+    empty_patterns = ['', ' ', "#%s#%s" % (os.linesep, os.linesep)]
 
 
 class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):

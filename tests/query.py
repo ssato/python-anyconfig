@@ -5,6 +5,7 @@
 # pylint: disable=missing-docstring, invalid-name
 from __future__ import absolute_import
 
+import os
 import unittest
 import anyconfig.query as TT
 
@@ -14,7 +15,8 @@ from tests.common import dicts_equal
 class Test_00_Functions(unittest.TestCase):
 
     def _assert_dicts_equal(self, dic, ref):
-        self.assertTrue(dicts_equal(dic, ref), "%r\nvs.\n%r" % (dic, ref))
+        self.assertTrue(dicts_equal(dic, ref),
+                        "%r%s vs.%s%r" % (dic, os.linesep, os.linesep, ref))
 
     def test_10_query(self):
         try:

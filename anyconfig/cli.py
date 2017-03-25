@@ -190,7 +190,7 @@ def _exit_with_output(content, exit_code=0):
     :param content: content to print out
     :param exit_code: Exit code
     """
-    (sys.stdout if exit_code == 0 else sys.stderr).write(content + "\n")
+    (sys.stdout if exit_code == 0 else sys.stderr).write(content + os.linesep)
     sys.exit(exit_code)
 
 

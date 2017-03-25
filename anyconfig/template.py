@@ -149,7 +149,8 @@ def render(filepath, ctx=None, paths=None, ask=False):
         if not ask:
             raise
 
-        usr_tmpl = anyconfig.compat.raw_input("\n*** Missing template "
+        usr_tmpl = anyconfig.compat.raw_input(os.linesep + ""
+                                              "*** Missing template "
                                               "'%s'. Please enter absolute "
                                               "or relative path starting from "
                                               "'.' to the template file: " %
@@ -180,8 +181,8 @@ def try_render(filepath=None, content=None, **options):
         else:
             return render_s(content, **options)
     except Exception as exc:
-        LOGGER.warning("Failed to compile '%s'. It may not be a template.\n"
-                       "exc=%r", tmpl_s, exc)
+        LOGGER.warning("Failed to compile '%s'. It may not be a template.%s"
+                       "exc=%r", tmpl_s, os.linesep, exc)
         return None
 
 # vim:sw=4:ts=4:et:

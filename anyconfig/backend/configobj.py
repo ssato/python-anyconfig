@@ -29,6 +29,7 @@ Chnagelog:
 """
 from __future__ import absolute_import
 
+import os
 import configobj
 import anyconfig.backend.base
 
@@ -94,7 +95,7 @@ class Parser(anyconfig.backend.base.FromStreamLoader,
 
         :return: string represents the configuration
         """
-        return '\n'.join(make_configobj(cnf, **kwargs).write())
+        return os.linesep.join(make_configobj(cnf, **kwargs).write())
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """

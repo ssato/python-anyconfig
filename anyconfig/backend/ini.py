@@ -32,6 +32,7 @@ Changelog:
 """
 from __future__ import absolute_import
 
+import os
 import anyconfig.backend.base
 import anyconfig.parser as P
 import anyconfig.utils
@@ -167,7 +168,7 @@ def _dumps(cnf, **kwargs):
 
     :return: String representation of `cnf` object in INI format
     """
-    return '\n'.join(l for l in _dumps_itr(cnf))
+    return os.linesep.join(l for l in _dumps_itr(cnf))
 
 
 class Parser(anyconfig.backend.base.FromStreamLoader,

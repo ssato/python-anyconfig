@@ -104,21 +104,23 @@ def _namespaces_from_file(xmlfile):
     return dict(flip(t) for _, t in _iterparse(xmlfile))
 
 
-def _tweak_ns(tag, nspaces=None, **options):
+def _tweak_ns(tag, **options):
     """
     :param tag: XML tag element
-    :param nspaces: A namespaces dict, {uri: prefix} or None
-    :param options: Extra keyword options
+    :param nspaces: A namespaces dict, {uri: prefix}
+    :param options: Extra keyword options may contain 'nspaces' keyword option
+    provide a namespace dict, {uri: prefix}
 
-    >>> _tweak_ns("a", {})
+    >>> _tweak_ns("a", nspaces={})
     'a'
-    >>> _tweak_ns("a", {"http://example.com/ns/val/": "val"})
+    >>> _tweak_ns("a", nspaces={"http://example.com/ns/val/": "val"})
     'a'
     >>> _tweak_ns("{http://example.com/ns/val/}a",
-    ...           {"http://example.com/ns/val/": "val"})
+    ...           nspaces={"http://example.com/ns/val/": "val"})
     'val:a'
     """
-    if nspaces:
+    nspaces = options.get("nspaces", None)
+    if nspaces is not None:
         matched = _ET_NS_RE.match(tag)
         if matched:
             (uri, tag) = matched.groups()

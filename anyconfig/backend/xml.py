@@ -339,7 +339,7 @@ def root_to_container(root, container=dict, nspaces=None, **options):
     if root is None:
         return tree
 
-    if nspaces:
+    if nspaces is not None:
         for uri, prefix in nspaces.items():
             root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
 

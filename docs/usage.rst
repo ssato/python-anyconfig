@@ -62,7 +62,7 @@ catch them if you want to process more.
   Traceback (most recent call last):
     ...
   anyconfig.backends.UnknownParserTypeError: No parser found for type 'not_existing_type'
-  >>> anyconfig.single_load("unknown_type_file.conf") is None
+  >>> anyconfig.single_load("unknown_type_file.conf")
   Traceback (most recent call last):
     ...
   anyconfig.backends.UnknownFileTypeError: No parser found for file 'unknown_type_file.conf'

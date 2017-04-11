@@ -82,7 +82,7 @@ behavior on load.
    :widths: 10, 20, 40
 
    ac_parser, str or :class:`anyconfig.backend.base.Parser`, Forced parser type or parser object
-   ac_dict, mapping object, "Any callable (function or class) to make mapping object will be returned as a result or None. If not given or ac_dict is None, default mapping object used to store resutls is dict or :class:`~collections.OrderedDict` if ac_ordered is True and selected backend can keep the order of items in mapping objects."
+   ac_dict, callable, "Any callable (function or class) to make mapping object will be returned as a result or None. If not given or ac_dict is None, default mapping object used to store resutls is dict or :class:`~collections.OrderedDict` if ac_ordered is True and selected backend can keep the order of items in mapping objects."
    ac_ordered, bool, True to keep resuls ordered. Please note that order of items in results may be lost depends on backend used.
    ac_template, bool, Assume given file may be a template file and try to compile it AAR if True
    ac_context, mapping object, Mapping object presents context to instantiate template

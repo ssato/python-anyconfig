@@ -6,7 +6,7 @@ Here are some code examples of API usage.
 Loading single config file
 ----------------------------
 
-To load single config file:
+Here are some example code to load single config file:
 
 .. code-block:: python
 
@@ -14,7 +14,7 @@ To load single config file:
 
   # Config type (format) is automatically detected by filename (file
   # extension).
-  data1 = anyconfig.load("/path/to/foo/conf.d/a.yml"a
+  data1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
 
   # Loaded config data is a dict-like object.
   # examples:
@@ -44,8 +44,11 @@ To load single config file:
   with anyconfig.open("/path/to/foo/conf.d/a.yml", ac_parser="yaml") as istrm:
       data7 = anyconfig.load(istrm)
 
-Exceptions may be raised if something goes wrong. Then, you have to have to
-catch them if you want to process more.
+Exceptions raised on load
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Exception may be raised if something goes wrong. Then, you have to catch them
+if you want to process more w/ errors ignored or handled.
 
 .. code-block:: console
 
@@ -67,6 +70,9 @@ catch them if you want to process more.
     ...
   anyconfig.backends.UnknownFileTypeError: No parser found for file 'unknown_type_file.conf'
   >>>
+
+Common and backend specific Keyword options on load single config file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Here is a brief summary of keyword options prefixed with 'ac\_' to change the
 behavior on load.
@@ -101,7 +107,10 @@ options:
 Allowed keyword options depend on backend, so please take a look at each
 backend API docs for more details about it.
 
-Also it's possible:
+Others topics on load
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Anyconfig also enables:
 
 - to load a config which is actually a Jinja2 [#]_ template file, the file will be rendered before load. See `Template config support`_ section for more details.
 - to validate a config file with a JSON schema [#]_ before load. See `Validation with and/or generate JSON Schema`_ section for more details.
@@ -117,7 +126,7 @@ Also it's possible:
 Loading multiple config files
 -------------------------------
 
-To load multiple config files:
+Here are some example code to load multiple config files:
 
 .. code-block:: python
 
@@ -141,6 +150,9 @@ To load multiple config files:
   # Similar to the above but parameters in the former config file will be simply
   # overwritten by the later ones:
   data5 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
+
+Strategies to merge data loaded from multiple config files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 On loading multiple config files, you can choose 'strategy' to merge
 configurations from the followings:
@@ -249,9 +261,13 @@ configurations from the followings:
 
     {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
 
-And here is a brief summary of keyword options prefixed with 'ac\_' in addition
-to the keyword options explained `Loading single config file`_ section to
-change the behavior on load multiple files.
+Common and backend specific Keyword options on load multiple config files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Here is a brief summary of keyword options prefixed with 'ac\_' in addition to
+the keyword options explained in the `Common and backend specific Keyword
+options on load single config file`_  section to change the behavior on load
+multiple files.
 
 .. csv-table::
    :header: Option, Type, Note
@@ -265,13 +281,15 @@ Keep the order of configuration items
 
 If you want to keep the order of configuration items, specify ac_order=True on
 load or specify ac_dict to any mapping object can save the order of items such
-like :class:`collections.OrderedDict`. Otherwise, the order of configuration
+like :class:`collections.OrderedDict` (or
+:class:`~anyconfig.compat.OrderedDict`). Otherwise, the order of configuration
 items will be lost by default.
 
 Please note that anyconfig.load APIs sometimes cannot keep the order of items
-in the original data even if ac_order=True was specified because used backend
-or module cannot keep that. For example, JSON backend can keep items but
-current YAML backend does not due to the limitation of YAML module it using.
+in the original data even if ac_order=True or ac_dict=<ordereddict> was
+specified because used backend or module cannot keep that. For example, JSON
+backend can keep items but current YAML backend does not due to the limitation
+of YAML module it using.
 
 Validation with and/or generate JSON Schema
 ----------------------------------------------

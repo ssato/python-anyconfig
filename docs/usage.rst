@@ -276,6 +276,78 @@ multiple files.
    ac_merge, str, One of anyconfig.dicts.MERGE_STRATEGIES to select strategy of how to merge results loaded from multiple configuration files. See the doc of :mod:`anyconfig.dicts` for more details of strategies. The default is anyconfig.dicts.MS_DICTS.
    ac_marker, str, Glob marker string to detect paths patterns. '*' by default.
 
+Dumping config data
+---------------------
+
+A pair of APIs are provided to dump config data loaded w/ using loading APIs as
+described previously and corresponding to them.
+
+- :func:`dumps`: Dump data as a string
+- :func:`dump`: Dump data to file of which path was given or file-like object opened
+
+.. note::
+
+   To specify the format or backend type w/ ac_parser keyword option is
+   necessary for :func:`dumps` API because anyconfig cannot determine the type
+   w/o it.
+
+Like loading APIs, you can pass common and backend specific keyword options to them.
+
+- common keyword options: ac_parser to determine which backend to use
+- backend specific keyword options: see each backends' details
+
+Here are some examples of these usage:
+
+.. code-block:: python
+
+  In [1]: s = """a: A
+     .....: b:
+     .....:   - b0: 0
+     .....:   - b1: 1
+     .....: c:
+     .....:   d:
+     .....:     e: E
+     .....: """
+
+  In [2]: cnf = anyconfig.loads(s, ac_parser="yaml")
+
+  In [3]: cnf
+  Out[3]: {'a': 'A', 'b': [{'b0': 0}, {'b1': 1}], 'c': {'d': {'e': 'E'}}}
+
+  In [4]: anyconfig.dumps(cnf, ac_parser="yaml")  # ac_parser option is necessary.
+  Out[4]: 'a: A\nc:\n  d: {e: E}\nb:\n- {b0: 0}\n- {b1: 1}\n'
+
+  In [5]: print(anyconfig.dumps(cnf, ac_parser="yaml"))
+  a: A
+  c:
+    d: {e: E}
+  b:
+  - {b0: 0}
+  - {b1: 1}
+
+  In [6]: print(anyconfig.dumps(cnf, ac_parser="json"))
+  {"a": "A", "c": {"d": {"e": "E"}}, "b": [{"b0": 0}, {"b1": 1}]}
+
+  In [7]: print(anyconfig.dumps(cnf, ac_parser="ini"))  # It cannot!
+  ---------------------------------------------------------------------------
+  AttributeError                            Traceback (most recent call last)
+  <ipython-input-228-2b2771a44a7e> in <module>()
+  ----> 1 print(anyconfig.dumps(cnf, ac_parser="ini"))
+      ...
+  AttributeError: 'str' object has no attribute 'iteritems'
+
+  In [8]: print(anyconfig.dumps(cnf, ac_parser="configobj"))
+  a = A
+  b = {'b0': 0}, {'b1': 1}
+  [c]
+  [[d]]
+  e = E
+
+  In [9]:
+
+Like this example, it's not always possible to dump data to any formats because
+of limitations of formarts and/or backends.
+
 Keep the order of configuration items
 ----------------------------------------
 

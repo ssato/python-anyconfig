@@ -272,7 +272,10 @@ def _get_update_fn(strategy):
     try:
         return _MERGE_FNS[strategy]
     except KeyError:
-        raise ValueError("Wrong merge strategy: %r" % strategy)
+        if callable(strategy):
+            return strategy
+        else:
+            raise ValueError("Wrong merge strategy: %r" % strategy)
 
 
 def merge(self, other, ac_merge=MS_DICTS, **options):

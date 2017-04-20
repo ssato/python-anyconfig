@@ -155,7 +155,7 @@ Strategies to merge data loaded from multiple config files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 On loading multiple config files, you can choose 'strategy' to merge
-configurations from the followings:
+configurations from the followings and pass it with ac_merge keyword option:
 
 * anyconfig.MS_REPLACE: Replace all configuration parameter values provided in
   former config files are simply replaced w/ the ones in later config files.
@@ -260,6 +260,30 @@ configurations from the followings:
   .. code-block:: python
 
     {'a': 1, 'b': [{'c': 0}, {'c': 2}, {'c': 3}], 'd': {'e': "bbb", 'f': 3}}
+
+Or you you can implement custom function or class or anything callables to
+merge nested dicts by yourself and utilize it with ac_merge keyword option like
+this:
+
+  .. code-block:: python
+
+    def my_merge_fn(self, other, key, val=None, **options):
+        """
+        :param self: mapping object to update with `other`
+        :param other: mapping object to update `self`
+        :param key: key of mapping object to update
+        :param val: value to update self alternatively
+
+        :return: None but `self` will be updated
+        """
+        if key not in self:
+            self[key] = other[key] if val is None else val
+
+    load(["a.yml", "b.yml"], ac_merge=my_merge_fn)
+
+Please refer to the exsiting functions in anyconfig.dicsts (_update_\*
+functions) to implement custom functions to merge nested dicts for more
+details.
 
 Common and backend specific Keyword options on load multiple config files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

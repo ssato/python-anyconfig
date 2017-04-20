@@ -191,4 +191,15 @@ class Test_40_merge(unittest.TestCase):
         TT.merge(dic, self.upd, ac_merge=TT.MS_DICTS_AND_LISTS)
         self.assertTrue(dicts_equal(dic, exp))
 
+    def test_50_update_with_custom_merge(self):
+        def set_none_merge_strat(self, other, key, *args, **kwargs):
+            for k in self:
+                self[k] = None
+
+        dic = copy.deepcopy(self.dic)
+        exp = dict(zip(dic.keys(), [None for _ in dic]))
+
+        TT.merge(dic, self.upd, ac_merge=set_none_merge_strat)
+        self.assertTrue(dicts_equal(dic, exp))
+
 # vim:sw=4:ts=4:et:

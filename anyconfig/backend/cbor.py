@@ -22,7 +22,6 @@ from __future__ import absolute_import
 import cbor
 
 import anyconfig.backend.base
-import anyconfig.compat
 
 
 class Parser(anyconfig.backend.base.StringStreamFnParser,

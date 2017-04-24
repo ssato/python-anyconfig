@@ -495,8 +495,6 @@ class ToStreamDumperMixin(DumperMixin):
     Parser classes inherit this class have to override the method
     :meth:`dump_to_stream` at least.
     """
-    to_stream = to_method(anyconfig.compat.StringIO)
-
     def dump_to_string(self, cnf, **kwargs):
         """
         Dump config `cnf` to a string.
@@ -506,7 +504,7 @@ class ToStreamDumperMixin(DumperMixin):
 
         :return: Dict-like object holding config parameters
         """
-        stream = self.to_stream()
+        stream = anyconfig.compat.StringIO()
         self.dump_to_stream(cnf, stream, **kwargs)
         return stream.getvalue()
 

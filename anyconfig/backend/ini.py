@@ -171,8 +171,9 @@ def _dumps(cnf, **kwargs):
     return os.linesep.join(l for l in _dumps_itr(cnf))
 
 
-class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.ToStringDumper):
+class Parser(anyconfig.backend.base.Parser,
+             anyconfig.backend.base.FromStreamLoaderMixin,
+             anyconfig.backend.base.ToStringDumperMixin):
     """
     Ini config files parser.
     """

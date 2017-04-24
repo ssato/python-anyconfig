@@ -102,8 +102,7 @@ def load(stream, container=dict):
     return ret
 
 
-class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.ToStreamDumper):
+class Parser(anyconfig.backend.base.StreamParser):
     """
     Parser for Shell variable definition files.
     """

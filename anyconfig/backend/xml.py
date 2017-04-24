@@ -459,7 +459,8 @@ def etree_write(tree, stream):
         tree.write(stream, encoding='UTF-8', xml_declaration=True)
 
 
-class Parser(anyconfig.backend.base.ToStreamDumper,
+class Parser(anyconfig.backend.base.Parser,
+             anyconfig.backend.base.ToStreamDumperMixin,
              anyconfig.backend.base.BinaryFilesMixin):
     """
     Parser for XML files.

@@ -187,8 +187,7 @@ def _yml_dump(cnf, stream, **options):
     return _yml_fnc("dump", cnf, stream, **options)
 
 
-class Parser(anyconfig.backend.base.FromStreamLoader,
-             anyconfig.backend.base.ToStreamDumper):
+class Parser(anyconfig.backend.base.StreamParser):
     """
     Parser for YAML files.
     """

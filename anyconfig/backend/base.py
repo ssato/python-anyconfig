@@ -596,9 +596,6 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     _dump_to_string_fn = None
     _dump_to_stream_fn = None
 
-    _load_with_fn = to_method(load_with_fn)
-    _dump_with_fn = to_method(dump_with_fn)
-
     def load_from_string(self, content, container, **options):
         """
         Load configuration data from given string `content`.
@@ -609,8 +606,8 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
         :return: container object holding the configuration data
         """
-        return self._load_with_fn(self._load_from_string_fn, content,
-                                  container, **options)
+        return load_with_fn(self._load_from_string_fn, content, container,
+                            **options)
 
     def load_from_stream(self, stream, container, **options):
         """
@@ -622,8 +619,8 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
         :return: container object holding the configuration data
         """
-        return self._load_with_fn(self._load_from_stream_fn, stream,
-                                  container, **options)
+        return load_with_fn(self._load_from_stream_fn, stream, container,
+                            **options)
 
     def dump_to_string(self, data, **options):
         """
@@ -634,8 +631,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
         :return: String represents given data
         """
-        return self._dump_with_fn(self._dump_to_string_fn, data, None,
-                                  **options)
+        return dump_with_fn(self._dump_to_string_fn, data, None, **options)
 
     def dump_to_stream(self, data, stream, **options):
         """
@@ -645,7 +641,6 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         :param stream:  File or file like object
         :param options: optional keyword parameters
         """
-        self._dump_with_fn(self._dump_to_stream_fn, data, stream,
-                           **options)
+        dump_with_fn(self._dump_to_stream_fn, data, stream, **options)
 
 # vim:sw=4:ts=4:et:

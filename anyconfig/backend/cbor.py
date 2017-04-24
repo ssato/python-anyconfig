@@ -2,6 +2,7 @@
 # Copyright (C) 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=too-many-ancestors
 r"""CBOR backend:
 
 - Format to support: CBOR, http://cbor.io, https://tools.ietf.org/html/rfc7049

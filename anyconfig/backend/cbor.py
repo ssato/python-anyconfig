@@ -21,7 +21,6 @@ Changelog:
 from __future__ import absolute_import
 
 import cbor
-
 import anyconfig.backend.base
 
 

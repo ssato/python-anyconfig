@@ -115,49 +115,25 @@ class BinaryFilesMixin(TextFilesMixin):
     _open_flags = ('rb', 'wb')
 
 
-class Parser(TextFilesMixin):
+class LoaderMixin(object):
     """
-    Abstract parser to provide basic implementation of some methods, interfaces
-    and members.
+    Mixin class to load data.
 
-    - _type: Parser type indicate which format it supports
-    - _priority: Priority to select it if there are other parsers of same type
-    - _extensions: File extensions of formats it supports
+    Inherited classes must implement the following methods.
+
+    - :meth:`load_from_string`: Load config from string
+    - :meth:`load_from_stream`: Load config from a file or file-like object
+    - :meth:`load_from_path`: Load config from file of given path
+
+    Member variables:
+
     - _load_opts: Backend specific options on load
-    - _dump_opts: Backend specific options on dump
-    - _open_flags: Opening flags to read and write files
     - _ordered: True if the parser keep the order of items by default
-    - _dict_opts:
-        Backend specific options to customize dict class to make results
+    - _dict_opts: Backend options to customize dict class to make results
     """
-    _type = None
-    _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
-    _extensions = []
     _load_opts = []
-    _dump_opts = []
     _ordered = False
     _dict_opts = []
-
-    @classmethod
-    def type(cls):
-        """
-        Parser's type
-        """
-        return cls._type
-
-    @classmethod
-    def priority(cls):
-        """
-        Parser's priority
-        """
-        return cls._priority
-
-    @classmethod
-    def extensions(cls):
-        """
-        File extensions which this parser can process
-        """
-        return cls._extensions
 
     @classmethod
     def ordered(cls):
@@ -172,18 +148,6 @@ class Parser(TextFilesMixin):
         :return: List of dict factory options
         """
         return cls._dict_opts
-
-    def _load_options(self, container, **options):
-        """
-        Select backend specific loading options.
-        """
-        # Force set dict option if available in backend. For example,
-        # options["object_hook"] will be OrderedDict if 'container' was
-        # OrderedDict in JSON backend.
-        for opt in self.dict_options():
-            options.setdefault(opt, container)
-
-        return anyconfig.utils.filter_options(self._load_opts, options)
 
     def _container_factory(self, **options):
         """
@@ -205,6 +169,18 @@ class Parser(TextFilesMixin):
             return anyconfig.compat.OrderedDict
         else:
             return dict
+
+    def _load_options(self, container, **options):
+        """
+        Select backend specific loading options.
+        """
+        # Force set dict option if available in backend. For example,
+        # options["object_hook"] will be OrderedDict if 'container' was
+        # OrderedDict in JSON backend.
+        for opt in self.dict_options():
+            options.setdefault(opt, container)
+
+        return anyconfig.utils.filter_options(self._load_opts, options)
 
     def load_from_string(self, content, container, **kwargs):
         """
@@ -293,6 +269,23 @@ class Parser(TextFilesMixin):
 
         return cnf
 
+
+class DumperMixin(object):
+    """
+    Mixin class to dump data.
+
+    Inherited classes must implement the following methods.
+
+    - :meth:`dump_to_string`: Dump config as a string
+    - :meth:`dump_to_stream`: Dump config to a file or file-like object
+    - :meth:`dump_to_path`: Dump config to a file of given path
+
+    Member variables:
+
+    - _dump_opts: Backend specific options on dump
+    """
+    _dump_opts = []
+
     def dump_to_string(self, cnf, **kwargs):
         """
         Dump config `cnf` to a string.
@@ -357,7 +350,43 @@ class Parser(TextFilesMixin):
             self.dump_to_stream(cnf, path_or_stream, **kwargs)
 
 
-class FromStringLoader(Parser):
+class Parser(TextFilesMixin, LoaderMixin, DumperMixin):
+    """
+    Abstract parser to provide basic implementation of some methods, interfaces
+    and members.
+
+    - _type: Parser type indicate which format it supports
+    - _priority: Priority to select it if there are other parsers of same type
+    - _extensions: File extensions of formats it supports
+    - _open_flags: Opening flags to read and write files
+    """
+    _type = None
+    _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
+    _extensions = []
+
+    @classmethod
+    def type(cls):
+        """
+        Parser's type
+        """
+        return cls._type
+
+    @classmethod
+    def priority(cls):
+        """
+        Parser's priority
+        """
+        return cls._priority
+
+    @classmethod
+    def extensions(cls):
+        """
+        File extensions which this parser can process
+        """
+        return cls._extensions
+
+
+class FromStringLoaderMixin(LoaderMixin):
     """
     Abstract config parser provides a method to load configuration from string
     content to help implement parser of which backend lacks of such function.
@@ -390,7 +419,7 @@ class FromStringLoader(Parser):
         return self.load_from_stream(self.ropen(filepath), container, **kwargs)
 
 
-class FromStreamLoader(Parser):
+class FromStreamLoaderMixin(LoaderMixin):
     """
     Abstract config parser provides a method to load configuration from string
     content to help implement parser of which backend lacks of such function.
@@ -424,7 +453,7 @@ class FromStreamLoader(Parser):
         return self.load_from_stream(self.ropen(filepath), container, **kwargs)
 
 
-class ToStringDumper(Parser):
+class ToStringDumperMixin(DumperMixin):
     """
     Abstract config parser provides a method to dump configuration to a file or
     file-like object (stream) and a file of given path to help implement parser
@@ -457,7 +486,7 @@ class ToStringDumper(Parser):
         stream.write(self.dump_to_string(cnf, **kwargs))
 
 
-class ToStreamDumper(Parser):
+class ToStreamDumperMixin(DumperMixin):
     """
     Abstract config parser provides methods to dump configuration to a string
     content or a file of given path to help implement parser of which backend
@@ -493,6 +522,26 @@ class ToStreamDumper(Parser):
             self.dump_to_stream(cnf, out, **kwargs)
 
 
+class StringParser(Parser, FromStringLoaderMixin, ToStringDumperMixin):
+    """
+    Abstract parser based on :meth:`load_from_string` and
+    :meth:`dump_to_string`.
+
+    Parser classes inherit this class must define these methods.
+    """
+    pass
+
+
+class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
+    """
+    Abstract parser based on :meth:`load_from_stream` and
+    :meth:`dump_to_stream`.
+
+    Parser classes inherit this class must define these methods.
+    """
+    pass
+
+
 def load_with_fn(load_fn, content_or_strm, container, **options):
     """
     Load data from given string or stream `content_or_strm`.
@@ -526,7 +575,7 @@ def dump_with_fn(dump_fn, data, stream, **options):
     dump_fn(data, stream, **options)
 
 
-class StringStreamFnParser(FromStreamLoader, ToStreamDumper):
+class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     """
     Abstract parser utilizes load and dump functions each backend module
     provides such like json.load{,s} and json.dump{,s} in JSON backend.

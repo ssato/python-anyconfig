@@ -27,6 +27,10 @@ r"""YAML backend:
 
 Changelog:
 
+.. versionchanged:: 0.9.3
+
+   - Try ruamel.yaml instead of yaml (PyYAML) if it's available.
+
 .. versionchanged:: 0.3
 
    - Changed special keyword option 'ac_safe' from 'safe' to avoid
@@ -34,11 +38,17 @@ Changelog:
 """
 from __future__ import absolute_import
 
-import yaml
 try:
-    from yaml import CSafeLoader as Loader, CDumper as Dumper
+    import warnings
+    import ruamel.yaml as yaml
+    from ruamel.yaml import Loader, Dumper
+    warnings.simplefilter('ignore', yaml.error.UnsafeLoaderWarning)
 except ImportError:
-    from yaml import SafeLoader as Loader, Dumper
+    import yaml
+    try:
+        from yaml import CSafeLoader as Loader, CDumper as Dumper
+    except ImportError:
+        from yaml import SafeLoader as Loader, Dumper
 
 import anyconfig.backend.base
 import anyconfig.compat

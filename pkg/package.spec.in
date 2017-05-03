@@ -47,6 +47,7 @@ Requires:       python-simplejson
 %if 0%{?with_extras}
 Requires:       python-jinja2
 Requires:       python-jsonschema
+Requires:       python2-ruamel-yaml
 %endif
 %if 0%{?with_optionals}
 Requires:       python-bson
@@ -73,6 +74,7 @@ Requires:       python3-setuptools
 %if 0%{?with_extras}
 Requires:       python3-jinja2
 Requires:       python3-jsonschema
+Requires:       python3-ruamel-yaml
 %endif
 %if 0%{?with_optionals}
 Requires:       python3-msgpack

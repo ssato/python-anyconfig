@@ -7,7 +7,11 @@
 r"""YAML backend:
 
 - Format to support: YAML, http://yaml.org
-- Requirements: PyYAML (yaml), http://pyyaml.org
+- Requirements:
+
+  - ruamel.yaml, https://bitbucket.org/ruamel/yaml
+  - or PyYAML (yaml), http://pyyaml.org
+
 - Development Status :: 5 - Production/Stable
 - Limitations:
 

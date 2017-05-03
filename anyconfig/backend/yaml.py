@@ -107,6 +107,7 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
     tag = "tag:yaml.org,2002:python/unicode"
 
     def construct_ustr(loader, node):
+        """Unicode string constructor"""
         return loader.construct_scalar(node)
 
     try:
@@ -129,6 +130,7 @@ def _customized_dumper(container, dumper=Dumper):
         return dumper.represent_mapping(mapping_tag, data.items())
 
     def ustr_representer(dumper, data):
+        """Unicode string representer"""
         tag = "tag:yaml.org,2002:python/unicode"
         return dumper.represent_scalar(tag, data)
 

@@ -254,7 +254,7 @@ and backends in charge are enabled and ready to use:
    :header: "Format", "Type", "Requirement"
    :widths: 15, 10, 40
 
-   YAML, yaml, ``PyYAML`` [#]_
+   YAML, yaml, ``ruamel.yaml`` [#]_ or ``PyYAML`` [#]_
    ConifgObj, configobj, ``configobj`` [#]_
    MessagePack, msgpack, ``msgpack-python`` [#]_
    TOML, toml, ``toml`` [#]_
@@ -288,6 +288,7 @@ be supported by corresponding pluggale backends like the following:
 
 .. [#] https://pypi.python.org/pypi/simplejson
 .. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
+.. [#] https://pypi.python.org/pypi/ruamel.yaml
 .. [#] https://pypi.python.org/pypi/PyYAML
 .. [#] https://pypi.python.org/pypi/configobj
 .. [#] https://pypi.python.org/pypi/msgpack-python
@@ -315,7 +316,7 @@ enable the features.
    :header: "Feature", "Requirements", "Notes"
    :widths: 20, 10, 25
 
-   YAML load/dump, PyYAML, none
+   YAML load/dump, ruamel.yaml or PyYAML, ruamel.yaml will be used instead of PyYAML if it's available to support the YAML 1.2 specification.
    ConifgObj load/dump, configobj, none
    MessagePack load/dump, msgpack-python, none
    TOML load/dump, toml, none

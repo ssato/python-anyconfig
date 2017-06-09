@@ -144,6 +144,17 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jun  9 2017 Satoru SATOH <ssato@redhat.com> - 0.9.2-1
+- enhancement: allow ac_merge to be a callable for user-defined merge
+  strategies (thanks to csboling!)
+- enhancement: [yaml] Use ruamel.yaml instead of PyYAML if it's available
+- fix: remove staff of wercker bought by oracle
+- fix: replace '\n' w/ os.linesep
+- fix: [xml] misc fixes and refactorings
+- refactor: split backend parser to some base classes to simplify and make them
+  clean as much as possible
+- doc: a lot of cleanups and enhancements
+
 * Sun Mar 12 2017 Satoru SATOH <ssato@redhat.com> - 0.9.1-1
 - fix: correct behavior around ac_dict to ignore ac_dict if backend cannot
   support to customize dict to be used in making results from loaded data.

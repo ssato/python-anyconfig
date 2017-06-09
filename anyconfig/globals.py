@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 - 2016 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2013 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """anyconfig globals.
@@ -9,7 +9,7 @@ import anyconfig.init
 
 PACKAGE = "anyconfig"
 AUTHOR = "Satoru SATOH <ssato@redhat.com>"
-VERSION = "0.9.1"
+VERSION = "0.9.2"
 
 LOGGER = anyconfig.init.getLogger(PACKAGE)
 

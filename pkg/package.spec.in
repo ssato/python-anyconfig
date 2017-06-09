@@ -144,7 +144,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Fri Jun  9 2017 Satoru SATOH <ssato@redhat.com> - 0.9.2-1
+* Sat Jun 10 2017 Satoru SATOH <ssato@redhat.com> - 0.9.2-1
 - enhancement: allow ac_merge to be a callable for user-defined merge
   strategies (thanks to csboling!)
 - enhancement: [yaml] Use ruamel.yaml instead of PyYAML if it's available

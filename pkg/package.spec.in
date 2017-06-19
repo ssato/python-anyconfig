@@ -144,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jun 19 2017 Satoru SATOH <ssato@redhat.com> - 0.9.3-1
+- Just add an workaround for travi-ci test errors in python 3.{3,4}
+
 * Sat Jun 10 2017 Satoru SATOH <ssato@redhat.com> - 0.9.2-1
 - enhancement: allow ac_merge to be a callable for user-defined merge
   strategies (thanks to csboling!)

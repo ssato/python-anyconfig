@@ -178,8 +178,8 @@ def try_render(filepath=None, content=None, **options):
     try:
         if content is None:
             return render(filepath, **options)
-        else:
-            return render_s(content, **options)
+
+        return render_s(content, **options)
     except Exception as exc:
         LOGGER.warning("Failed to compile '%s'. It may not be a template.%s"
                        "exc=%r", tmpl_s, os.linesep, exc)

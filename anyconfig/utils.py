@@ -26,8 +26,8 @@ def get_file_extension(file_path):
     _ext = os.path.splitext(file_path)[-1]
     if _ext:
         return _ext[1:] if _ext.startswith('.') else _ext
-    else:
-        return ""
+
+    return ""
 
 
 def sglob(files_pattern):

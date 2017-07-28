@@ -117,7 +117,7 @@ class Parser(anyconfig.backend.base.StringParser,
                 if options.get(key, False):
                     opts[key] = options[key]
             return bson.BSON.encode(data, *opts)
-        else:
-            return bson.BSON.encode(data)
+
+        return bson.BSON.encode(data)
 
 # vim:sw=4:ts=4:et:

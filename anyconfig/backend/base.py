@@ -167,8 +167,8 @@ class LoaderMixin(object):
             return _dicts[0]
         elif self.ordered() and options.get("ac_ordered", False):
             return anyconfig.compat.OrderedDict
-        else:
-            return dict
+
+        return dict
 
     def _load_options(self, container, **options):
         """

@@ -352,7 +352,7 @@ def convert_to(obj, ac_ordered=False, ac_dict=None, **options):
         return _make_recur(obj, convert_to, **options)
     elif anyconfig.utils.is_list_like(obj):
         return _make_iter(obj, convert_to, **options)
-    else:
-        return obj
+
+    return obj
 
 # vim:sw=4:ts=4:et:

@@ -153,7 +153,7 @@ def parse(str_, lsep=",", avsep=":", vssep=",", avssep=";"):
         return parse_attrlist(str_, avsep, vssep, avssep)
     elif lsep in str_:
         return parse_list(str_, lsep)
-    else:
-        return parse_single(str_)
+
+    return parse_single(str_)
 
 # vim:sw=4:ts=4:et:

@@ -177,8 +177,8 @@ def _parse_text(val, **options):
     """
     if val and options.get("ac_parse_value", False):
         return anyconfig.parser.parse_single(val)
-    else:
-        return val
+
+    return val
 
 
 def _process_elem_text(elem, dic, subdic, text="@text", **options):
@@ -211,8 +211,8 @@ def _parse_attrs(elem, container=dict, **options):
     if options.get("ac_parse_value", False):
         return container(dict((k, anyconfig.parser.parse_single(v))
                               for k, v in adic.items()))
-    else:
-        return container(adic)
+
+    return container(adic)
 
 
 def _process_elem_attrs(elem, dic, subdic, container=dict, attrs="@attrs",
@@ -396,9 +396,9 @@ def _get_or_update_parent(key, val, to_str, parent=None, **options):
 
     if parent is None:  # 'elem' is the top level etree.
         return elem
-    else:
-        parent.append(elem)
-        return parent
+
+    parent.append(elem)
+    return parent
 
 
 _ATC = ("attrs", "text", "children")

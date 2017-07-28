@@ -21,9 +21,8 @@ class Test_00_Functions(unittest.TestCase):
     def test_10_query(self):
         try:
             if TT.jmespath:
-                self.assertEquals(TT.query({"a": 1}, ac_query="a"), 1)
-                self.assertEquals(TT.query({"a": {"b": 2}}, ac_query="a.b"),
-                                  2)
+                self.assertEqual(TT.query({"a": 1}, ac_query="a"), 1)
+                self.assertEqual(TT.query({"a": {"b": 2}}, ac_query="a.b"), 2)
         except (NameError, AttributeError):
             pass
 

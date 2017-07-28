@@ -1,8 +1,11 @@
 #
-# Copyright (C) 2015, 2016 Satoru SATOH <ssato redhat.com>
+# Copyright (C) 2015 - 2017 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
 """anyconfig.schema module.
+
+.. versionchanged:: 0.9.4
+   Change parameter passed to :func:`validate`, s/.*safe/ac_schema_safe/g
 
 .. versionchanged:: 0.8.3
    Replace format_checker with cls option
@@ -42,7 +45,7 @@ if not anyconfig.compat.IS_PYTHON_3:
         pass
 
 
-def validate(data, schema, safe=True, **options):
+def validate(data, schema, ac_schema_safe=True, **options):
     """
     Validate target object with given schema object, loaded from JSON schema.
 
@@ -52,11 +55,10 @@ def validate(data, schema, safe=True, **options):
     :param schema: Schema object (a dict or a dict-like object)
         instantiated from schema JSON file or schema JSON string
     :param options: Other keyword options such as:
-
-        - safe: Exception (jsonschema.ValidationError or jsonschema.SchemaError
-          or others) will be thrown during validation process due to any
-          validation or related errors. However, these will be catched by
-          default, and will be re-raised if `safe` is False.
+        - ac_schema_safe: Exception (jsonschema.ValidationError or
+          jsonschema.SchemaError or others) will be thrown during validation
+          process due to any validation or related errors. However, these will
+          be catched by default, and will be re-raised if `ac_safe` is False.
 
     :return: (True if validation succeeded else False, error message)
     """
@@ -67,7 +69,7 @@ def validate(data, schema, safe=True, **options):
             return (True, '')
         except (jsonschema.ValidationError, jsonschema.SchemaError,
                 Exception) as exc:
-            if safe:
+            if ac_schema_safe:
                 return (False, str(exc))  # Validation was failed.
             else:
                 raise

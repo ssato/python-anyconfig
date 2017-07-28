@@ -2,7 +2,7 @@
 # Copyright (C) 2015 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, unused-variable
+# pylint: disable=missing-docstring, unused-variable, invalid-name
 import os.path
 import os
 import unittest

@@ -67,8 +67,8 @@ def _parse(val_s, sep=_SEP):
         return val_s[1:-1]
     elif sep in val_s:
         return [P.parse(x) for x in P.parse_list(val_s)]
-    else:
-        return P.parse(val_s)
+
+    return P.parse(val_s)
 
 
 def _to_s(val, sep=", "):
@@ -84,8 +84,8 @@ def _to_s(val, sep=", "):
     """
     if anyconfig.utils.is_iterable(val):
         return sep.join(str(x) for x in val)
-    else:
-        return str(val)
+
+    return str(val)
 
 
 def _parsed_items(items, sep=_SEP, **options):

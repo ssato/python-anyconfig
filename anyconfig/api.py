@@ -371,11 +371,11 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
         return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                           ac_template=ac_template, ac_context=ac_context,
                           **options)
-    else:
-        cnf = single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
-                          ac_template=ac_template, ac_context=ac_context,
-                          **options)
-        return anyconfig.query.query(cnf, **options)
+
+    cnf = single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
+                      ac_template=ac_template, ac_context=ac_context,
+                      **options)
+    return anyconfig.query.query(cnf, **options)
 
 
 def loads(content, ac_parser=None, ac_dict=None, ac_template=False,

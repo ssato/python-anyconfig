@@ -3,6 +3,7 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, protected-access
+# pylint: disable=bare-except
 from __future__ import absolute_import
 
 import unittest
@@ -59,6 +60,16 @@ class Test_10_Validation(Test_00_Base):
         (ret, msg) = TT.validate({'a': "aaa"}, self.schema)
         self.assertTrue(msg)
         self.assertFalse(ret)
+
+    def test_14_validate__ng_no_safe(self):
+        raised = False
+        try:
+            _rc = TT.validate({'a': "aaa"}, self.schema, ac_schema_safe=False)
+            print(_rc)  # Should not be reached here...
+        except:
+            raised = True
+
+        self.assertTrue(raised)
 
 
 class Test_20_GenSchema(Test_00_Base):

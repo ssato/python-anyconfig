@@ -105,7 +105,7 @@ def _maybe_validated(cnf, schema, **options):
     """
     valid = True
     if schema:
-        (valid, msg) = validate(cnf, schema, safe=True, **options)
+        (valid, msg) = validate(cnf, schema, **options)
         if msg:
             LOGGER.warning(msg)
 

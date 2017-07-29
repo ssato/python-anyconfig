@@ -109,7 +109,7 @@ def _tweak_ns(tag, **options):
     :param tag: XML tag element
     :param nspaces: A namespaces dict, {uri: prefix}
     :param options: Extra keyword options may contain 'nspaces' keyword option
-    provide a namespace dict, {uri: prefix}
+        provide a namespace dict, {uri: prefix}
 
     >>> _tweak_ns("a", nspaces={})
     'a'

@@ -55,6 +55,7 @@ def validate(data, schema, ac_schema_safe=True, **options):
     :param schema: Schema object (a dict or a dict-like object)
         instantiated from schema JSON file or schema JSON string
     :param options: Other keyword options such as:
+
         - ac_schema_safe: Exception (jsonschema.ValidationError or
           jsonschema.SchemaError or others) will be thrown during validation
           process due to any validation or related errors. However, these will

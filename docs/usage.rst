@@ -406,6 +406,9 @@ with using anyconfig.validate() since 0.0.10.
   schema2 = anyconfig.load("/path/to/schema.yml")
   (rc, err) = anyconfig.validate(conf2, schema2)
 
+  # Similar to the above but exception will be raised if validation fails.
+  (rc, _err) = anyconfig.validate(conf2, schema2, ac_schema_safe=False)
+
 It's also able to validate config files during load:
 
 .. code-block:: python

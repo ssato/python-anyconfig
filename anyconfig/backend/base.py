@@ -416,7 +416,8 @@ class FromStringLoaderMixin(LoaderMixin):
 
         :return: Dict-like object holding config parameters
         """
-        return self.load_from_stream(self.ropen(filepath), container, **kwargs)
+        with self.ropen(filepath) as inp:
+            return self.load_from_stream(inp, container, **kwargs)
 
 
 class FromStreamLoaderMixin(LoaderMixin):
@@ -450,7 +451,8 @@ class FromStreamLoaderMixin(LoaderMixin):
 
         :return: Dict-like object holding config parameters
         """
-        return self.load_from_stream(self.ropen(filepath), container, **kwargs)
+        with self.ropen(filepath) as inp:
+            return self.load_from_stream(inp, container, **kwargs)
 
 
 class ToStringDumperMixin(DumperMixin):

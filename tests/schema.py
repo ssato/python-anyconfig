@@ -72,6 +72,18 @@ class Test_10_Validation(Test_00_Base):
         self.assertTrue(raised)
 
 
+class Test_12_Validation_Errors(Test_00_Base):
+
+    obj = dict(a=1, b=2.0)
+    scm = {"type": "object", "properties": {"a": {"type": "integer"},
+                                            "b": {"type": "string"}}}
+
+    def test_12_validate__ng(self):
+        (ret, msg) = TT.validate(self.obj, self.scm, ac_schema_errors=True)
+        self.assertTrue(msg)  # ["'a' is not of type ...", "'b' is not ..."]
+        self.assertFalse(ret)
+
+
 class Test_20_GenSchema(Test_00_Base):
 
     def test_40_gen_schema__primitive_types(self):

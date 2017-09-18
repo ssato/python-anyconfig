@@ -30,6 +30,8 @@ import anyconfig.compat
 import anyconfig.utils
 
 
+_NA_MSG = "Validation module (jsonschema) is not available"
+
 _SIMPLETYPE_MAP = {list: "array", tuple: "array",
                    bool: "boolean",
                    int: "integer", float: "number",
@@ -45,7 +47,52 @@ if not anyconfig.compat.IS_PYTHON_3:
         pass
 
 
-def validate(data, schema, ac_schema_safe=True, **options):
+def _validate_all(data, schema):
+    """
+    See the descritpion of :func:`validate` for more details of parameters and
+    return value.
+
+    :seealso: https://python-jsonschema.readthedocs.io/en/latest/validate/,
+    a section of 'iter_errors' especially
+    """
+    try:
+        vldtr = jsonschema.Draft4Validator(schema)  # :raises: SchemaError, ...
+        errors = list(vldtr.iter_errors(data))
+
+        return (not errors, [err.message for err in errors])
+
+    except NameError:
+        return (True, _NA_MSG)
+
+    return (True, '')
+
+
+def _validate(data, schema, ac_schema_safe=True, **options):
+    """
+    See the descritpion of :func:`validate` for more details of parameters and
+    return value.
+
+    Validate target object `data` with given schema object.
+    """
+    try:
+        jsonschema.validate(data, schema, **options)
+        return (True, '')
+
+    except NameError:
+        return (True, _NA_MSG)
+
+    except (jsonschema.ValidationError, jsonschema.SchemaError,
+            Exception) as exc:
+        if ac_schema_safe:
+            return (False, str(exc))  # Validation was failed.
+        else:
+            raise
+
+    return (True, '')
+
+
+def validate(data, schema, ac_schema_safe=True, ac_schema_errors=False,
+             **options):
     """
     Validate target object with given schema object, loaded from JSON schema.
 
@@ -61,24 +108,16 @@ def validate(data, schema, ac_schema_safe=True, **options):
           process due to any validation or related errors. However, these will
           be catched by default, and will be re-raised if `ac_safe` is False.
 
-    :return: (True if validation succeeded else False, error message)
+        - ac_schema_errors: Lazily yield each of the validation errors and
+          returns all of them if validation fails.
+
+    :return: (True if validation succeeded else False, error message[s])
     """
     options = anyconfig.utils.filter_options(("cls", ), options)
-    try:
-        try:
-            jsonschema.validate(data, schema, **options)
-            return (True, '')
-        except (jsonschema.ValidationError, jsonschema.SchemaError,
-                Exception) as exc:
-            if ac_schema_safe:
-                return (False, str(exc))  # Validation was failed.
-            else:
-                raise
+    if ac_schema_errors:
+        return _validate_all(data, schema, **options)
 
-    except NameError:
-        return (True, "Validation module (jsonschema) is not available")
-
-    return (True, '')
+    return _validate(data, schema, ac_schema_safe, **options)
 
 
 def _process_options(**options):

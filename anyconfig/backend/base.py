@@ -624,25 +624,27 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         return load_with_fn(self._load_from_stream_fn, stream, container,
                             **options)
 
-    def dump_to_string(self, data, **options):
+    def dump_to_string(self, cnf, **kwargs):
         """
-        Dump `data` to a string.
+        Dump config `cnf` to a string.
 
-        :param data: Data to dump
-        :param options: optional keyword parameters
+        :param cnf: Configuration data to dump
+        :param kwargs: optional keyword parameters to be sanitized :: dict
 
-        :return: String represents given data
+        :return: string represents the configuration
         """
-        return dump_with_fn(self._dump_to_string_fn, data, None, **options)
+        return dump_with_fn(self._dump_to_string_fn, cnf, None, **kwargs)
 
-    def dump_to_stream(self, data, stream, **options):
+    def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        Dump `data` to a file or file-like object `stream`.
+        Dump config `cnf` to a file-like object `stream`.
 
-        :param data: Data to dump
-        :param stream:  File or file like object
-        :param options: optional keyword parameters
+        TODO: How to process socket objects same as file objects ?
+
+        :param cnf: Configuration data to dump
+        :param stream:  Config file or file like object
+        :param kwargs: optional keyword parameters to be sanitized :: dict
         """
-        dump_with_fn(self._dump_to_stream_fn, data, stream, **options)
+        dump_with_fn(self._dump_to_stream_fn, cnf, stream, **kwargs)
 
 # vim:sw=4:ts=4:et:

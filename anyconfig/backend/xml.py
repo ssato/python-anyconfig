@@ -1,9 +1,11 @@
 #
-# Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
 # pylint: disable=import-error, duplicate-except
+# len(elem) is necessary to check that ET.Element object has children.
+# pylint: disable=len-as-condition
 r"""XML backend:
 
 - Format to support: XML, e.g. http://www.w3.org/TR/xml11/

@@ -424,7 +424,7 @@ def container_to_etree(obj, parent=None, to_str=None, **options):
     if not anyconfig.utils.is_dict_like(obj):
         if parent is not None and obj:
             parent.text = to_str(obj)  # Parent is a leaf text node.
-        return  # All attributes and text should be set already.
+        return parent  # All attributes and text should be set already.
 
     options = _complement_tag_options(options)
     (attrs, text, children) = operator.itemgetter(*_ATC)(options)

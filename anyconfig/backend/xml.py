@@ -317,7 +317,7 @@ def _complement_tag_options(options):
     >>> sorted(opts.items())
     [('attrs', '@attrs'), ('children', '@children'), ('text', '#text')]
     """
-    if not all(nt in options for nt in _TAGS.keys()):
+    if not all(nt in options for nt in _TAGS):
         tags = options.get("tags", {})
         for ntype, tag in _TAGS.items():
             options[ntype] = tags.get(ntype, tag)

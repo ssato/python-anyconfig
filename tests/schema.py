@@ -66,7 +66,7 @@ class Test_10_Validation(Test_00_Base):
         try:
             _rc = TT.validate({'a': "aaa"}, self.schema, ac_schema_safe=False)
             print(_rc)  # Should not be reached here...
-        except:
+        except Exception:
             raised = True
 
         self.assertTrue(raised)

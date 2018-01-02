@@ -393,8 +393,8 @@ def _get_or_update_parent(key, val, to_str, parent=None, **options):
     elem = ET.Element(key)
 
     vals = val if anyconfig.utils.is_iterable(val) else [val]
-    for val in vals:
-        container_to_etree(val, parent=elem, to_str=to_str, **options)
+    for val_ in vals:
+        container_to_etree(val_, parent=elem, to_str=to_str, **options)
 
     if parent is None:  # 'elem' is the top level etree.
         return elem

@@ -572,7 +572,7 @@ def dump_with_fn(dump_fn, data, stream, **options):
     if stream is None:
         return dump_fn(data, **options)
 
-    dump_fn(data, stream, **options)
+    return dump_fn(data, stream, **options)
 
 
 class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):

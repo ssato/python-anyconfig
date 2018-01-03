@@ -37,7 +37,7 @@ import anyconfig.backend.base
 import anyconfig.parser as P
 import anyconfig.utils
 
-from anyconfig.compat import configparser, iteritems
+from anyconfig.compat import configparser, iteritems, IS_PYTHON_3
 from anyconfig.utils import filter_options
 
 
@@ -130,7 +130,10 @@ def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
     :return: Dict or dict-like object represents config values
     """
     (kwargs_1, psr) = _make_parser(**kwargs)
-    psr.readfp(stream, **kwargs_1)
+    if IS_PYTHON_3:
+        psr.read_file(stream, **kwargs_1)
+    else:
+        psr.readfp(stream, **kwargs_1)
 
     cnf = container()
     kwargs["sep"] = sep

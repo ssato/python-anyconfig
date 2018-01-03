@@ -40,10 +40,11 @@ def query(data, **options):
         pexp = jmespath.compile(expression)
         return pexp.search(data)
     except ValueError as exc:  # jmespath.exceptions.*Error inherit from it.
-        LOGGER.warn("Failed to compile or search: exp=%s, exc=%r",
-                    expression, exc)
+        LOGGER.warning("Failed to compile or search: exp=%s, exc=%r",
+                       expression, exc)
     except (NameError, AttributeError):
-        LOGGER.warn("Filter module (jmespath) is not available. Do nothing.")
+        LOGGER.warning("Filter module (jmespath) is not available. "
+                       "Do nothing.")
 
     return data
 

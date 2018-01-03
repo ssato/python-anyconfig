@@ -112,7 +112,7 @@ class Parser(anyconfig.backend.base.StringParser,
         """
         if self._dump_opts:
             container = self._container_factory(**kwargs)
-            opts = self._load_kwargs(container, **kwargs)
+            opts = self._load_options(container, **kwargs)
             for key in self._dump_opts:
                 if kwargs.get(key, False):
                     opts[key] = kwargs[key]

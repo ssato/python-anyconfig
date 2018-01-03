@@ -4,7 +4,7 @@
 #
 # pylint: disable=missing-docstring, invalid-name, protected-access
 # pylint: disable=bare-except
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import unittest
 import anyconfig.schema as TT

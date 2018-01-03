@@ -103,10 +103,10 @@ class Parser(anyconfig.backend.base.StringParser,
 
         return objs[0] if objs else None
 
-    def dump_to_string(self, data, **options):
-        """Dump BSON data `data` to a string.
+    def dump_to_string(self, cnf, **options):
+        """Dump BSON data `cnf` to a string.
 
-        :param data: BSON Data to dump
+        :param cnf: BSON Data to dump
         :param options: optional keyword parameters to be sanitized
         :return: string represents the configuration
         """
@@ -116,8 +116,8 @@ class Parser(anyconfig.backend.base.StringParser,
             for key in self._dump_opts:
                 if options.get(key, False):
                     opts[key] = options[key]
-            return bson.BSON.encode(data, *opts)
+            return bson.BSON.encode(cnf, *opts)
 
-        return bson.BSON.encode(data)
+        return bson.BSON.encode(cnf)
 
 # vim:sw=4:ts=4:et:

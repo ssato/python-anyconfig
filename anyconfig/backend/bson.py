@@ -103,19 +103,19 @@ class Parser(anyconfig.backend.base.StringParser,
 
         return objs[0] if objs else None
 
-    def dump_to_string(self, cnf, **options):
+    def dump_to_string(self, cnf, **kwargs):
         """Dump BSON data `cnf` to a string.
 
         :param cnf: BSON Data to dump
-        :param options: optional keyword parameters to be sanitized
+        :param kwargs: optional keyword parameters to be sanitized
         :return: string represents the configuration
         """
         if self._dump_opts:
-            container = self._container_factory(**options)
-            opts = self._load_options(container, **options)
+            container = self._container_factory(**kwargs)
+            opts = self._load_kwargs(container, **kwargs)
             for key in self._dump_opts:
-                if options.get(key, False):
-                    opts[key] = options[key]
+                if kwargs.get(key, False):
+                    opts[key] = kwargs[key]
             return bson.BSON.encode(cnf, *opts)
 
         return bson.BSON.encode(cnf)

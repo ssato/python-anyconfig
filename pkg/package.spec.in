@@ -23,8 +23,8 @@ BuildArch:      noarch
 %global with_optionals 0
 
 %global desc \
-Python library provides common APIs to load and dump configuration files in
-various formats such like JSON, YAML and XML with some useful features such as
+Python library provides common APIs to load and dump configuration files in\
+various formats such like JSON, YAML and XML with some useful features such as\
 contents merge, templates, query, schema validation and generation support.
 
 %description    %{desc}

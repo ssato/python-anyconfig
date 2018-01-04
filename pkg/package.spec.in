@@ -102,35 +102,18 @@ Requires:       python3-toml
 %prep
 %autosetup -n %{pkgname}-%{version}
 
-%if %{with python3}
-rm -rf %{py3dir}
-cp -a . %{py3dir}
-%endif
-
 %build
-%{__python} setup.py build
+%py2_build
+%py3_build
+
 %if %{with doc}
 make -C docs/ html
 %endif
 
-%if %{with python3}
-pushd %{py3dir}
-%{__python3} setup.py build
-popd
-%endif
-
 %install
-rm -rf $RPM_BUILD_ROOT
-
-%if %{with python3}
-pushd %{py3dir}
-%{__python3} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
-mv $RPM_BUILD_ROOT%{_bindir}/anyconfig_cli $RPM_BUILD_ROOT%{_bindir}/py3anyconfig_cli
-# TODO: It does not look working well:
-#chmod +x $RPM_BUILD_ROOT%{_bindir}/py3anyconfig_cli
-popd
-%endif
-%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
+%py3_install
+mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/py3anyconfig_cli
+%py2_install
 
 %clean
 rm -rf $RPM_BUILD_ROOT

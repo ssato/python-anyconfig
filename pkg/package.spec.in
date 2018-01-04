@@ -112,7 +112,7 @@ make -C docs/ html
 
 %install
 %py3_install
-mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/py3anyconfig_cli
+mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/anyconfig_cli-3
 %py2_install
 
 %files
@@ -133,7 +133,7 @@ mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/py3anyconfig_cli
 %doc docs/build/html
 %endif
 %{python3_sitelib}/*
-%attr(755,root,root) %{_bindir}/py3anyconfig_cli
+%attr(755,root,root) %{_bindir}/anyconfig_cli-3
 %endif
 
 %changelog

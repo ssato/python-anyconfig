@@ -129,6 +129,9 @@ mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/py3anyconfig_cli
 %files -n python3-%{pkgname}
 %defattr(644,root,root,755)
 %doc README.rst
+%if %{with doc}
+%doc docs/build/html
+%endif
 %{python3_sitelib}/*
 %attr(755,root,root) %{_bindir}/py3anyconfig_cli
 %endif

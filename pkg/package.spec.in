@@ -10,17 +10,18 @@ URL:            https://github.com/ssato/%{name}
 Source0:        %{pkgname}-%{version}.tar.gz
 BuildArch:      noarch
 
-%if 0%{?fedora}
-%global with_python3 1
-%global with_doc 1
-%global with_extras 1
-%else
-%global with_python3 0
-%global with_doc 0
-%global with_extras 0
-%endif
+%bcond_without python2
+%bcond_with options
 
-%global with_optionals 0
+%if 0%{?fedora} || 0%{?rhel} > 7
+%bcond_without python3
+%bcond_without doc
+%bcond_without extras
+%else
+%bcond_with python3
+%bcond_with doc
+%bcond_with extras
+%endif
 
 %global desc \
 Python library provides common APIs to load and dump configuration files in\
@@ -29,9 +30,12 @@ contents merge, templates, query, schema validation and generation support.
 
 %description    %{desc}
 
+%if %{with python2}
+%package -n python2-%{pkgname}
+Summary:        Library provides common APIs to access to configuration files in various formats
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
-%if 0%{?with_doc}
+%if %{with doc}
 BuildRequires:  python2-docutils
 BuildRequires:  python2-sphinx
 BuildRequires:  make
@@ -46,60 +50,70 @@ Requires:       python2-setuptools
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:       python-simplejson
 %endif
-%if 0%{?with_extras}
+%if %{with extras}
 Requires:       python2-jinja2
 Requires:       python2-jsonschema
 Requires:       python2-ruamel-yaml
 %endif
-%if 0%{?with_optionals}
+%if %{with optionals}
 Requires:       python2-bson
 Requires:       python2-configobj
 Requires:       python2-msgpack
 Requires:       python2-toml
 %endif
-%if 0%{?with_python3}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-PyYAML
+%{?python_provide:%python_provide python2-%{pkgname}}
+
+%description -n python2-%{pkgname} %{desc}
 %endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 %package -n python3-%{pkgname}
-Summary:        Generic access to configuration files in some formats
-Group:          Development/Libraries
+Summary:        Library provides common APIs to access to configuration files in various formats
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+%if %{with doc}
+BuildRequires:  python3-docutils
+BuildRequires:  python3-sphinx
+BuildRequires:  make
+BuildRequires:  python3-bson
+BuildRequires:  python3-configobj
+BuildRequires:  python3-msgpack
+BuildRequires:  python3-toml
+BuildRequires:  python3-PyYAML
+%endif
 Requires:       python3-PyYAML
 Requires:       python3-setuptools
-%if 0%{?with_extras}
+%if %{with extras}
 Requires:       python3-jinja2
 Requires:       python3-jsonschema
 Requires:       python3-ruamel-yaml
 %endif
-%if 0%{?with_optionals}
-Requires:       python3-msgpack
+%if %{with optionals}
 Requires:       python3-bson
 Requires:       python3-configobj
 Requires:       python3-msgpack
 Requires:       python3-toml
 %endif
+%{?python_provide:%python_provide python3-%{pkgname}}
 
 %description -n python3-%{pkgname} %{desc}
 %endif
 
 %prep
-%setup -q -n %{pkgname}-%{version}
+%autosetup -n %{pkgname}-%{version}
 
-%if 0%{?with_python3}
+%if %{with python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
 %endif
 
 %build
 %{__python} setup.py build
-%if 0%{?with_doc}
+%if %{with doc}
 make -C docs/ html
 %endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 pushd %{py3dir}
 %{__python3} setup.py build
 popd
@@ -108,7 +122,7 @@ popd
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%if 0%{?with_python3}
+%if %{with python3}
 pushd %{py3dir}
 %{__python3} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%{_bindir}/anyconfig_cli $RPM_BUILD_ROOT%{_bindir}/py3anyconfig_cli
@@ -124,14 +138,14 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc README.rst
-%if 0%{?with_doc}
+%if %{with doc}
 %doc docs/build/html
 %endif
 %{python_sitelib}/*
 %{_bindir}/anyconfig_cli
 %{_mandir}/*/*
 
-%if 0%{?with_python3}
+%if %{with python3}
 %files -n python3-%{pkgname}
 %defattr(644,root,root,755)
 %doc README.rst

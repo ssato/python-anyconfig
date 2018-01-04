@@ -115,9 +115,6 @@ make -C docs/ html
 mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/py3anyconfig_cli
 %py2_install
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root,root,-)
 %doc README.rst

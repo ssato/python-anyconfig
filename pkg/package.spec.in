@@ -1,5 +1,3 @@
-# disable debuginfo
-%define debug_package %{nil}
 %define pkgname anyconfig
 
 Name:           python-%{pkgname}

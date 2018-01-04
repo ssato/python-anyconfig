@@ -1,9 +1,10 @@
 %define pkgname anyconfig
+%global sum Python library to load and dump configuration files in various formats
 
 Name:           python-%{pkgname}
 Version:        @VERSION@
 Release:        1%{?dist}
-Summary:        Library provides common APIs to access to configuration files in various formats
+Summary:        %{sum}
 Group:          Development/Libraries
 License:        MIT
 URL:            https://github.com/ssato/%{name}
@@ -30,7 +31,7 @@ contents merge, templates, query, schema validation and generation support.
 %description    %{desc}
 
 %package -n python2-%{pkgname}
-Summary:        Library provides common APIs to access to configuration files in various formats
+Summary:        %{sum}
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
 %if %{with doc}
@@ -65,7 +66,7 @@ Requires:       python2-toml
 
 %if %{with python3}
 %package -n python3-%{pkgname}
-Summary:        Library provides common APIs to access to configuration files in various formats
+Summary:        %{sum}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 %if %{with doc}

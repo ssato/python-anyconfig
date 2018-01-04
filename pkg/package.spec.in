@@ -8,6 +8,7 @@ Group:          Development/Libraries
 License:        MIT
 URL:            https://github.com/ssato/%{name}
 Source0:        %{pkgname}-%{version}.tar.gz
+BuildArch:      noarch
 
 %if 0%{?fedora}
 %global with_python3 1
@@ -28,7 +29,6 @@ contents merge, templates, query, schema validation and generation support.
 
 %description    %{desc}
 
-BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
 %if 0%{?with_doc}

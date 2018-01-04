@@ -12,6 +12,7 @@ Source0:        %{pkgname}-%{version}.tar.gz
 BuildArch:      noarch
 
 %bcond_with options
+%bcond_with tests
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 %bcond_without python3
@@ -117,6 +118,11 @@ make -C docs/ html
 mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/anyconfig_cli-3
 %endif
 %py2_install
+
+%if %{with tests}
+%check
+./pkg/runtest.sh
+%endif
 
 %files
 %defattr(-,root,root,-)

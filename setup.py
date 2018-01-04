@@ -20,9 +20,9 @@ if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
 
 _LONG_DESC = """
 python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
-python library provides common APIs to access to configuration files in various
-formats with some useful features such as contents merge, templates and schema
-validation/generation support.
+python library provides common APIs to load and dump configuration files in
+various formats with some useful features such as contents merge, templates,
+query, schema validation and generation support.
 
 - Home: https://github.com/ssato/python-anyconfig
 - (Latest) Doc: http://python-anyconfig.readthedocs.org/en/latest/
@@ -101,8 +101,8 @@ _CLASSIFIERS = ["Development Status :: 4 - Beta",
 
 setup(name=PACKAGE,
       version=VERSION,
-      description=("Library provides common APIs to access to configuration "
-                   "files " "in various formats"),
+      description=("Library provides common APIs to load and dump configuration "
+                   "files in various formats"),
       long_description=_LONG_DESC,
       author="Satoru SATOH",
       author_email="ssato@redhat.com",

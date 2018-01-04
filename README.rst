@@ -47,9 +47,9 @@ Introduction
 =============
 
 python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
-python library provides common APIs to access to configuration files in various
-formats with some useful features such as contents merge, templates, query,
-schema validation and generation support.
+python library provides common APIs to load and dump configuration files in
+various formats with some useful features such as contents merge, templates,
+query, schema validation and generation support.
 
 - Home: https://github.com/ssato/python-anyconfig
 - Author: Satoru SATOH <ssato@redhat.com>

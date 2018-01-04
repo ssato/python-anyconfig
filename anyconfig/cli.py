@@ -20,7 +20,7 @@ import anyconfig.parser
 import anyconfig.utils
 
 
-_ENCODING = locale.getdefaultlocale()[1]
+_ENCODING = locale.getdefaultlocale()[1] or 'UTF-8'
 
 LOGGER = logging.getLogger("anyconfig")
 LOGGER.addHandler(logging.StreamHandler())

@@ -21,6 +21,13 @@ Source0:        %{pkgname}-%{version}.tar.gz
 
 %global with_optionals 0
 
+%global desc \
+Python library provides common APIs to load and dump configuration files in
+various formats such like JSON, YAML and XML with some useful features such as
+contents merge, templates, query, schema validation and generation support.
+
+%description    %{desc}
+
 BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
@@ -56,10 +63,6 @@ BuildRequires:  python3-setuptools
 BuildRequires:  python3-PyYAML
 %endif
 
-%description
-Python library to provide generic access to configuration files in some
-formats such like INI, JSON and YAML.
-
 %if 0%{?with_python3}
 %package -n python3-%{pkgname}
 Summary:        Generic access to configuration files in some formats
@@ -79,9 +82,7 @@ Requires:       python3-msgpack
 Requires:       python3-toml
 %endif
 
-%description -n python3-%{pkgname}
-Python library to provide generic access to configuration files in some
-formats such like INI, JSON and YAML.
+%description -n python3-%{pkgname} %{desc}
 %endif
 
 %prep

@@ -29,33 +29,33 @@ contents merge, templates, query, schema validation and generation support.
 
 %description    %{desc}
 
-BuildRequires:  python-devel
-BuildRequires:  python-setuptools
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
 %if 0%{?with_doc}
-BuildRequires:  python-docutils
-BuildRequires:  python-sphinx
+BuildRequires:  python2-docutils
+BuildRequires:  python2-sphinx
 BuildRequires:  make
-BuildRequires:  python-bson
-BuildRequires:  python-configobj
-BuildRequires:  python-msgpack
-BuildRequires:  python-toml
+BuildRequires:  python2-bson
+BuildRequires:  python2-configobj
+BuildRequires:  python2-msgpack
+BuildRequires:  python2-toml
 BuildRequires:  PyYAML
 %endif
 Requires:       PyYAML
-Requires:       python-setuptools
+Requires:       python2-setuptools
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:       python-simplejson
 %endif
 %if 0%{?with_extras}
-Requires:       python-jinja2
-Requires:       python-jsonschema
+Requires:       python2-jinja2
+Requires:       python2-jsonschema
 Requires:       python2-ruamel-yaml
 %endif
 %if 0%{?with_optionals}
-Requires:       python-bson
-Requires:       python-configobj
-Requires:       python-msgpack
-Requires:       python-toml
+Requires:       python2-bson
+Requires:       python2-configobj
+Requires:       python2-msgpack
+Requires:       python2-toml
 %endif
 %if 0%{?with_python3}
 BuildRequires:  python3-devel

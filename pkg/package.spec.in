@@ -104,15 +104,20 @@ Requires:       python3-toml
 
 %build
 %py2_build
+
+%if %{with python3}
 %py3_build
+%endif
 
 %if %{with doc}
 make -C docs/ html
 %endif
 
 %install
+%if %{with python3}
 %py3_install
 mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/anyconfig_cli-3
+%endif
 %py2_install
 
 %files

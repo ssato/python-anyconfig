@@ -128,7 +128,7 @@ mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/anyconfig_cli-3
 ./pkg/runtest.sh
 %endif
 
-%files
+%files -n python2-%{pkgname}
 %defattr(-,root,root,-)
 %doc README.rst
 %if %{with doc}

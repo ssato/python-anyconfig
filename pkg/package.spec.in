@@ -33,8 +33,13 @@ contents merge, templates, query, schema validation and generation support.
 
 %package -n python2-%{pkgname}
 Summary:        %{sum}
+%if 0%{?rhel} == 7
+BuildRequires:  python-devel
+BuildRequires:  python-setuptools
+%else
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
+%endif
 %if %{with doc}
 BuildRequires:  python2-docutils
 BuildRequires:  python2-sphinx
@@ -48,7 +53,11 @@ BuildRequires:  PyYAML
 #BuildRequires:  python2-cbor
 %endif
 Requires:       PyYAML
+%if 0%{?rhel} == 7
+Requires:       python-setuptools
+%else
 Requires:       python2-setuptools
+%endif
 %if %{?rhel}%{!?rhel:0} == 5
 Requires:       python-simplejson
 %endif

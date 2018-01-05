@@ -11,7 +11,7 @@ URL:            https://github.com/ssato/%{name}
 Source0:        %{pkgname}-%{version}.tar.gz
 BuildArch:      noarch
 
-%bcond_with options
+%bcond_with optionals
 %bcond_with tests
 
 %if 0%{?fedora} || 0%{?rhel} > 7

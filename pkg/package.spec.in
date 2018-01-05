@@ -144,7 +144,11 @@ mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/anyconfig_cli-3
 %if %{with doc}
 %doc docs/build/html
 %endif
+%if 0%{?rhel} == 7
 %{python_sitelib}/*
+%else
+%{python2_sitelib}/*
+%endif
 %{_bindir}/anyconfig_cli
 %{_mandir}/*/*
 

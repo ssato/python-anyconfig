@@ -1,5 +1,6 @@
 %global pkgname anyconfig
 %global sum Python library to load and dump configuration files in various formats
+%global debug_package %{nil}
 
 Name:           python-%{pkgname}
 Version:        @VERSION@

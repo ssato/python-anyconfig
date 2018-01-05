@@ -1,4 +1,4 @@
-%define pkgname anyconfig
+%global pkgname anyconfig
 %global sum Python library to load and dump configuration files in various formats
 
 Name:           python-%{pkgname}

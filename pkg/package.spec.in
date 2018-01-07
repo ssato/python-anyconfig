@@ -124,6 +124,7 @@ Requires:       python3-toml
 
 %if %{with doc}
 make -C docs/ html
+%{__rm} -f docs/build/html/.buildinfo
 %endif
 
 %install

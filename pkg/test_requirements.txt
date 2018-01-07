@@ -4,5 +4,5 @@ coveralls
 flake8
 mock
 nose
-pep8
+pycodestyle
 pylint

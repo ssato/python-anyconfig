@@ -214,7 +214,6 @@ and backends in charge are enabled and ready to use:
    MessagePack, msgpack, ``msgpack-python`` [#]_
    TOML, toml, ``toml`` [#]_
    BSON, bson, bson in ``pymongo`` [#]_
-   CBOR, cbor, ``cbor_py`` [#]_
 
 The supported formats of python-anyconfig on your system are able to be listed
 by 'anyconfig_cli -L' like this:
@@ -234,12 +233,15 @@ or with the API 'anyconfig.list_types()' will show them:
 
    In [9]:
 
-It utilizes plugin mechanism provided by setuptools [#]_ and other formats may
-be supported by corresponding pluggale backends like the following:
+python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may
+support other formats if corresponding pluggable backend modules like the
+followings are installed:
 
-- Java properties backend utilizes pyjavaproperties [#]_ (just an example implementation):
+.. csv-table:: Supported formats by pluggable backend modules
+   :header: "Format", "Type", "Pluggable backend"
+   :widths: 15, 10, 40
 
-  - https://github.com/ssato/python-anyconfig-pyjavaproperties-backend
+   CBOR, cbor, ``anyconfig-cbor-backend`` [#]_
 
 .. [#] https://pypi.python.org/pypi/simplejson
 .. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
@@ -249,9 +251,8 @@ be supported by corresponding pluggale backends like the following:
 .. [#] https://pypi.python.org/pypi/msgpack-python
 .. [#] https://pypi.python.org/pypi/toml
 .. [#] https://pypi.python.org/pypi/pymongo
-.. [#] https://pypi.python.org/pypi/cbor
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
-.. [#] https://pypi.python.org/pypi/pyjavaproperties
+.. [#] https://pypi.python.org/pypi/anyconfig-cbor-backend
 
 Installation
 -------------
@@ -276,7 +277,7 @@ enable the features.
    MessagePack load/dump, msgpack-python, none
    TOML load/dump, toml, none
    BSON load/dump, bson, bson from pymongo package may work and bson [#]_ does not
-   CBOR load/dump, cbor, none
+   CBOR load/dump, anyconfig-cbor-backend, none
    Template config, Jinja2 [#]_ , none
    Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
    Query with JMESPath expression, jmespath [#]_ , none

@@ -1,6 +1,5 @@
 Jinja2
 PyYAML
-cbor
 configobj
 jmespath
 jsonschema

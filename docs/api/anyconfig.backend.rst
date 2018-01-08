@@ -5,7 +5,6 @@
 
    anyconfig.backend.base
    anyconfig.backend.bson
-   anyconfig.backend.cbor
    anyconfig.backend.configobj
    anyconfig.backend.ini
    anyconfig.backend.json

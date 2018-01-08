@@ -50,8 +50,6 @@ BuildRequires:  python2-configobj
 BuildRequires:  python2-msgpack
 BuildRequires:  python2-toml
 BuildRequires:  PyYAML
-# TODO: It's not in RHEL/Fedora and needs my copr repo, ssato/python-anyconfig.
-#BuildRequires:  python2-cbor
 %endif
 Requires:       PyYAML
 %if 0%{?rhel} == 7
@@ -91,8 +89,6 @@ BuildRequires:  python3-configobj
 BuildRequires:  python3-msgpack
 BuildRequires:  python3-toml
 BuildRequires:  python3-PyYAML
-# TODO: (see the previous note in python2- section)
-#BuildRequires:  python3-cbor
 %endif
 Requires:       python3-PyYAML
 Requires:       python3-setuptools

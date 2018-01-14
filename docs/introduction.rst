@@ -215,7 +215,7 @@ and backends in charge are enabled and ready to use:
    TOML, toml, ``toml`` [#]_
    BSON, bson, bson in ``pymongo`` [#]_
 
-- Supported formats of which backends are enabled automatically if required pluggable modules are installed: python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may support other formats if corresponding pluggable backend modules:
+- Supported formats of which backends are enabled automatically if required pluggable modules are installed: python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may support other formats if corresponding pluggable backend modules are installed along with python-anyconfig:
 
 .. csv-table:: Supported formats by pluggable backend modules
    :header: "Format", "Type", "Pluggable backend"

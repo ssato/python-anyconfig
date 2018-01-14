@@ -213,15 +213,15 @@ and backends in charge are enabled and ready to use:
    ConifgObj, configobj, ``configobj`` [#]_
    MessagePack, msgpack, ``msgpack-python`` [#]_
    TOML, toml, ``toml`` [#]_
-   BSON, bson, bson in ``pymongo`` [#]_
 
 - Supported formats of which backends are enabled automatically if required pluggable modules are installed: python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may support other formats if corresponding pluggable backend modules are installed along with python-anyconfig:
 
 .. csv-table:: Supported formats by pluggable backend modules
-   :header: "Format", "Type", "Pluggable backend"
+   :header: "Format", "Type", "Required backend"
    :widths: 15, 10, 40
 
    Amazon Ion, ion, ``anyconfig-ion-backend`` [#]_
+   BSON, bson, ``anyconfig-bson-backend`` [#]_
    CBOR, cbor, ``anyconfig-cbor-backend`` [#]_ or ``anyconfig-cbor2-backend`` [#]_
 
 The supported formats of python-anyconfig on your system are able to be listed
@@ -249,9 +249,10 @@ or with the API 'anyconfig.list_types()' will show them:
 .. [#] https://pypi.python.org/pypi/configobj
 .. [#] https://pypi.python.org/pypi/msgpack-python
 .. [#] https://pypi.python.org/pypi/toml
-.. [#] https://pypi.python.org/pypi/pymongo
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
+.. [#] https://pypi.python.org/pypi/amazon.ion/
 .. [#] https://pypi.python.org/pypi/anyconfig-ion-backend
+.. [#] https://pypi.python.org/pypi/anyconfig-bson-backend
 .. [#] https://pypi.python.org/pypi/anyconfig-cbor-backend
 .. [#] https://pypi.python.org/pypi/anyconfig-cbor2-backend
 

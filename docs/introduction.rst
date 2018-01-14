@@ -192,7 +192,7 @@ and backends in charge are enabled and ready to use:
 
 - Always supported formats of which backends are enabled by default:
 
-.. csv-table::
+.. csv-table:: Always supported formats
    :header: "Format", "Type", "Requirement"
    :widths: 15, 10, 40
 
@@ -205,7 +205,7 @@ and backends in charge are enabled and ready to use:
 
 - Supported formats of which backends are enabled automatically if requirements are satisfied:
 
-.. csv-table::
+.. csv-table:: Supported formarts if requirements are satisfied
    :header: "Format", "Type", "Requirement"
    :widths: 15, 10, 40
 
@@ -214,6 +214,15 @@ and backends in charge are enabled and ready to use:
    MessagePack, msgpack, ``msgpack-python`` [#]_
    TOML, toml, ``toml`` [#]_
    BSON, bson, bson in ``pymongo`` [#]_
+
+- Supported formats of which backends are enabled automatically if required pluggable modules are installed: python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may support other formats if corresponding pluggable backend modules:
+
+.. csv-table:: Supported formats by pluggable backend modules
+   :header: "Format", "Type", "Pluggable backend"
+   :widths: 15, 10, 40
+
+   Amazon Ion, ion, ``anyconfig-ion-backend`` [#]_
+   CBOR, cbor, ``anyconfig-cbor-backend`` [#]_ or ``anyconfig-cbor2-backend`` [#]_
 
 The supported formats of python-anyconfig on your system are able to be listed
 by 'anyconfig_cli -L' like this:
@@ -233,16 +242,6 @@ or with the API 'anyconfig.list_types()' will show them:
 
    In [9]:
 
-python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may
-support other formats if corresponding pluggable backend modules like the
-followings are installed:
-
-.. csv-table:: Supported formats by pluggable backend modules
-   :header: "Format", "Type", "Pluggable backend"
-   :widths: 15, 10, 40
-
-   CBOR, cbor, ``anyconfig-cbor-backend`` [#]_
-
 .. [#] https://pypi.python.org/pypi/simplejson
 .. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
 .. [#] https://pypi.python.org/pypi/ruamel.yaml
@@ -252,7 +251,9 @@ followings are installed:
 .. [#] https://pypi.python.org/pypi/toml
 .. [#] https://pypi.python.org/pypi/pymongo
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
+.. [#] https://pypi.python.org/pypi/anyconfig-ion-backend
 .. [#] https://pypi.python.org/pypi/anyconfig-cbor-backend
+.. [#] https://pypi.python.org/pypi/anyconfig-cbor2-backend
 
 Installation
 -------------

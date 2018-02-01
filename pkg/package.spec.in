@@ -156,6 +156,7 @@ ln -s anyconfig_cli-%{python2_version}.1 anyconfig_cli.1
 %files -n python2-%{pkgname}
 %defattr(-,root,root,-)
 %doc README.rst
+%license LICENSE.MIT
 %if %{with doc}
 %doc docs/build/html
 %endif
@@ -173,6 +174,7 @@ ln -s anyconfig_cli-%{python2_version}.1 anyconfig_cli.1
 %files -n python3-%{pkgname}
 %defattr(644,root,root,755)
 %doc README.rst
+%license LICENSE.MIT
 %if %{with doc}
 %doc docs/build/html
 %endif

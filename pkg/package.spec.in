@@ -6,7 +6,6 @@ Name:           python-%{pkgname}
 Version:        @VERSION@
 Release:        1%{?dist}
 Summary:        %{sum}
-Group:          Development/Libraries
 License:        MIT
 URL:            https://github.com/ssato/%{name}
 Source0:        %{pkgname}-%{version}.tar.gz

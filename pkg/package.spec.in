@@ -126,9 +126,27 @@ make -C docs/ html
 %install
 %if %{with python3}
 %py3_install
-mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/anyconfig_cli-3
+(
+cd %{buildroot}%{_bindir}/
+mv anyconfig_cli anyconfig_cli-%{python3_version}
+ln -s anyconfig_cli-%{python3_version} anyconfig_cli-3
+
+cd %{buildroot}%{_mandir}/man1
+mv anyconfig_cli.1 anyconfig_cli-%{python3_version}.1
+ln -s anyconfig_cli-%{python3_version}.1 anyconfig_cli-3.1
+)
 %endif
 %py2_install
+(
+cd %{buildroot}%{_bindir}/
+cp anyconfig_cli anyconfig_cli-%{python2_version}
+ln -s anyconfig_cli-%{python2_version} anyconfig_cli-2
+
+cd %{buildroot}%{_mandir}/man1
+mv anyconfig_cli.1 anyconfig_cli-%{python2_version}.1
+ln -s anyconfig_cli-%{python2_version}.1 anyconfig_cli-2.1
+ln -s anyconfig_cli-%{python2_version}.1 anyconfig_cli.1
+)
 
 %if %{with tests}
 %check
@@ -147,7 +165,9 @@ mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/anyconfig_cli-3
 %{python2_sitelib}/*
 %endif
 %{_bindir}/anyconfig_cli
-%{_mandir}/*/*
+%{_bindir}/anyconfig_cli-2*
+%{_mandir}/*/anyconfig_cli.*.gz
+%{_mandir}/*/anyconfig_cli-2*.*.gz
 
 %if %{with python3}
 %files -n python3-%{pkgname}
@@ -157,7 +177,8 @@ mv %{buildroot}%{_bindir}/anyconfig_cli %{buildroot}%{_bindir}/anyconfig_cli-3
 %doc docs/build/html
 %endif
 %{python3_sitelib}/*
-%attr(755,root,root) %{_bindir}/anyconfig_cli-3
+%attr(755,root,root) %{_bindir}/anyconfig_cli-3*
+%{_mandir}/*/anyconfig_cli-3*.*.gz
 %endif
 
 %changelog

@@ -140,8 +140,9 @@ ln -s anyconfig_cli-%{python3_version}.1 anyconfig_cli-3.1
 %py2_install
 (
 cd %{buildroot}%{_bindir}/
-cp anyconfig_cli anyconfig_cli-%{python2_version}
+mv anyconfig_cli anyconfig_cli-%{python2_version}
 ln -s anyconfig_cli-%{python2_version} anyconfig_cli-2
+ln -s anyconfig_cli-%{python2_version} anyconfig_cli
 
 cd %{buildroot}%{_mandir}/man1
 mv anyconfig_cli.1 anyconfig_cli-%{python2_version}.1

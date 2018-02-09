@@ -120,8 +120,8 @@ Requires:       python3-toml
 
 %if %{with doc}
 make -C docs/ html
-%{__rm} -f docs/build/html/.buildinfo
-%{__rm} -frv docs/build/html/_sources
+rm -f docs/build/html/.buildinfo
+rm -frv docs/build/html/_sources
 %endif
 
 %install

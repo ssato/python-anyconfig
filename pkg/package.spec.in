@@ -24,8 +24,7 @@ Release:        1%{?dist}
 Summary:        Python library to load and dump configuration files in various formats
 License:        MIT
 URL:            https://github.com/ssato/python-anyconfig
-#Source0:        %{url}/archive/RELEASE_%{version}.tar.gz
-Source0:        %{pkgname}-%{version}.tar.gz
+Source0:        %{url}/archive/RELEASE_%{version}.tar.gz
 BuildArch:      noarch
 
 %if %{with doc}

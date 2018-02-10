@@ -31,9 +31,7 @@ BuildArch:      noarch
 BuildRequires:  make
 BuildRequires:  python2-docutils
 BuildRequires:  python2-sphinx
-BuildRequires:  python2-bson
 BuildRequires:  python2-configobj
-BuildRequires:  python2-msgpack
 BuildRequires:  python2-toml
 BuildRequires:  PyYAML
 %endif
@@ -65,9 +63,7 @@ Requires:       python2-jsonschema
 Requires:       python2-ruamel-yaml
 %endif
 %if %{with optionals}
-Requires:       python2-bson
 Requires:       python2-configobj
-Requires:       python2-msgpack
 Requires:       python2-toml
 %endif
 %{?python_provide:%python_provide python2-%{pkgname}}
@@ -85,9 +81,7 @@ Requires:       python3-jsonschema
 Requires:       python3-ruamel-yaml
 %endif
 %if %{with optionals}
-Requires:       python3-bson
 Requires:       python3-configobj
-Requires:       python3-msgpack
 Requires:       python3-toml
 %endif
 %{?python_provide:%python_provide python3-%{pkgname}}

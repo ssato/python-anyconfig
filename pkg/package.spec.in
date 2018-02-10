@@ -1,5 +1,10 @@
 %global pkgname anyconfig
 
+%global desc \
+Python library provides common APIs to load and dump configuration files in\
+various formats such like JSON, YAML and XML with some useful features such as\
+contents merge, templates, query, schema validation and generation support.
+
 %bcond_with optionals
 %bcond_with tests
 
@@ -13,11 +18,6 @@
 %bcond_with extras
 %endif
 
-%global desc \
-Python library provides common APIs to load and dump configuration files in\
-various formats such like JSON, YAML and XML with some useful features such as\
-contents merge, templates, query, schema validation and generation support.
-
 Name:           python-%{pkgname}
 Version:        @VERSION@
 Release:        1%{?dist}
@@ -27,6 +27,7 @@ URL:            https://github.com/ssato/python-anyconfig
 #Source0:        %{url}/archive/RELEASE_%{version}.tar.gz
 Source0:        %{pkgname}-%{version}.tar.gz
 BuildArch:      noarch
+
 %if %{with doc}
 BuildRequires:  make
 BuildRequires:  python2-docutils
@@ -97,10 +98,10 @@ Requires:       python3-toml
 
 %if %{with doc}
 %package        doc
-Summary:        Documents for %{name}
+Summary:        Documentation for %{name}
 
 %description    doc
-HTML documents for %{name}.
+HTML documentation for %{name}.
 %endif
 
 %prep

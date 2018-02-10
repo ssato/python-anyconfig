@@ -59,9 +59,6 @@ Requires:       python-setuptools
 %else
 Requires:       python2-setuptools
 %endif
-%if %{?rhel}%{!?rhel:0} == 5
-Requires:       python-simplejson
-%endif
 %if %{with extras}
 Requires:       python2-jinja2
 Requires:       python2-jsonschema

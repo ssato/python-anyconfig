@@ -3,9 +3,7 @@ PyYAML
 configobj
 jmespath
 jsonschema
-msgpack-python
 ordereddict
-pymongo
 setuptools
 simplejson
 toml

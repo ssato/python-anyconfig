@@ -3,8 +3,6 @@ PyYAML
 configobj
 jmespath
 jsonschema
-msgpack-python
-pymongo
 ruamel.yaml
 setuptools
 toml

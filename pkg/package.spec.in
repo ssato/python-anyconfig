@@ -120,30 +120,10 @@ rm -frv docs/build/html/_sources
 %endif
 
 %install
+%py2_install
 %if %{with python3}
 %py3_install
-(
-cd %{buildroot}%{_bindir}/
-mv anyconfig_cli anyconfig_cli-%{python3_version}
-ln -s anyconfig_cli-%{python3_version} anyconfig_cli-3
-
-cd %{buildroot}%{_mandir}/man1
-mv anyconfig_cli.1 anyconfig_cli-%{python3_version}.1
-ln -s anyconfig_cli-%{python3_version}.1 anyconfig_cli-3.1
-)
 %endif
-%py2_install
-(
-cd %{buildroot}%{_bindir}/
-mv anyconfig_cli anyconfig_cli-%{python2_version}
-ln -s anyconfig_cli-%{python2_version} anyconfig_cli-2
-ln -s anyconfig_cli-%{python2_version} anyconfig_cli
-
-cd %{buildroot}%{_mandir}/man1
-mv anyconfig_cli.1 anyconfig_cli-%{python2_version}.1
-ln -s anyconfig_cli-%{python2_version}.1 anyconfig_cli-2.1
-ln -s anyconfig_cli-%{python2_version}.1 anyconfig_cli.1
-)
 
 %if %{with tests}
 %check
@@ -158,19 +138,15 @@ ln -s anyconfig_cli-%{python2_version}.1 anyconfig_cli.1
 %else
 %{python2_sitelib}/*
 %endif
-%{_bindir}/anyconfig_cli
-%{_bindir}/anyconfig_cli-2*
-%{_mandir}/*/anyconfig_cli.*.gz
-%{_mandir}/*/anyconfig_cli-2*.*.gz
 
 %if %{with python3}
 %files -n python3-%{pkgname}
 %doc README.rst
 %license LICENSE.MIT
 %{python3_sitelib}/*
-%attr(755,root,root) %{_bindir}/anyconfig_cli-3*
-%{_mandir}/*/anyconfig_cli-3*.*.gz
 %endif
+%{_bindir}/anyconfig*
+%{_mandir}/*/anyconfig*.*.gz
 
 %if %{with doc}
 %files doc

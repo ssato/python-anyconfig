@@ -5,7 +5,7 @@ curdir=${0%/*}
 docdir=${curdir}/../docs
 output=${curdir}/../README.rst
 readme_files="
-${docdir}/header.rst
+${curdir}/header.rst
 ${docdir}/introduction.rst
 "
 # ${docdir}/hacking.rst

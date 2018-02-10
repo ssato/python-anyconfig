@@ -1,5 +1,4 @@
 %global pkgname anyconfig
-%global sum Python library to load and dump configuration files in various formats
 
 %bcond_with optionals
 %bcond_with tests
@@ -17,7 +16,7 @@
 Name:           python-%{pkgname}
 Version:        @VERSION@
 Release:        1%{?dist}
-Summary:        %{sum}
+Summary:        Python library to load and dump configuration files in various formats
 License:        MIT
 URL:            https://github.com/ssato/python-anyconfig
 #Source0:        %{url}/archive/RELEASE_%{version}.tar.gz
@@ -35,7 +34,7 @@ contents merge, templates, query, schema validation and generation support.
 %description    %{desc}
 
 %package -n python2-%{pkgname}
-Summary:        %{sum}
+Summary:        %{summary}
 %if 0%{?rhel} == 7
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
@@ -78,7 +77,7 @@ Requires:       python2-toml
 
 %if %{with python3}
 %package -n python3-%{pkgname}
-Summary:        %{sum}
+Summary:        %{summary}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 %if %{with doc}

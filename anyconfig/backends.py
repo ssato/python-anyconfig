@@ -47,22 +47,10 @@ except ImportError:
     LOGGER.info(_NA_MSG, "ConfigObj module", "its")
 
 try:
-    import anyconfig.backend.msgpack
-    PARSERS.append(anyconfig.backend.msgpack.Parser)
-except ImportError:
-    LOGGER.info(_NA_MSG, "msgpack module", "MessagePack")
-
-try:
     import anyconfig.backend.toml
     PARSERS.append(anyconfig.backend.toml.Parser)
 except ImportError:
     LOGGER.info(_NA_MSG, "toml module", "TOML")
-
-try:
-    import anyconfig.backend.bson
-    PARSERS.append(anyconfig.backend.bson.Parser)
-except ImportError:
-    LOGGER.info(_NA_MSG, "bson module in pymongo package", "BSON")
 
 for e in pkg_resources.iter_entry_points("anyconfig_backends"):
     try:

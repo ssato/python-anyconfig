@@ -98,6 +98,14 @@ Requires:       python3-toml
 %description -n python3-%{pkgname} %{desc}
 %endif
 
+%if %{with doc}
+%package        doc
+Summary:        Documents for %{name}
+
+%description    doc
+HTML documents for %{name}.
+%endif
+
 %prep
 %autosetup -n %{pkgname}-%{version}
 
@@ -148,9 +156,6 @@ ln -s anyconfig_cli-%{python2_version}.1 anyconfig_cli.1
 %files -n python2-%{pkgname}
 %doc README.rst
 %license LICENSE.MIT
-%if %{with doc}
-%doc docs/build/html
-%endif
 %if 0%{?rhel} == 7
 %{python_sitelib}/*
 %else
@@ -165,12 +170,15 @@ ln -s anyconfig_cli-%{python2_version}.1 anyconfig_cli.1
 %files -n python3-%{pkgname}
 %doc README.rst
 %license LICENSE.MIT
-%if %{with doc}
-%doc docs/build/html
-%endif
 %{python3_sitelib}/*
 %attr(755,root,root) %{_bindir}/anyconfig_cli-3*
 %{_mandir}/*/anyconfig_cli-3*.*.gz
+%endif
+
+%if %{with doc}
+%files doc
+%doc README.rst
+%doc docs/build/html
 %endif
 
 %changelog

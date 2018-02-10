@@ -13,6 +13,11 @@
 %bcond_with extras
 %endif
 
+%global desc \
+Python library provides common APIs to load and dump configuration files in\
+various formats such like JSON, YAML and XML with some useful features such as\
+contents merge, templates, query, schema validation and generation support.
+
 Name:           python-%{pkgname}
 Version:        @VERSION@
 Release:        1%{?dist}
@@ -43,11 +48,6 @@ BuildRequires:  python2-setuptools
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 %endif
-
-%global desc \
-Python library provides common APIs to load and dump configuration files in\
-various formats such like JSON, YAML and XML with some useful features such as\
-contents merge, templates, query, schema validation and generation support.
 
 %description    %{desc}
 

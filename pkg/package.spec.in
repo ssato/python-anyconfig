@@ -24,6 +24,24 @@ Source0:        %{pkgname}-%{version}.tar.gz
 BuildArch:      noarch
 %if %{with doc}
 BuildRequires:  make
+BuildRequires:  python2-docutils
+BuildRequires:  python2-sphinx
+BuildRequires:  python2-bson
+BuildRequires:  python2-configobj
+BuildRequires:  python2-msgpack
+BuildRequires:  python2-toml
+BuildRequires:  PyYAML
+%endif
+%if 0%{?rhel} == 7
+BuildRequires:  python-devel
+BuildRequires:  python-setuptools
+%else
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
+%endif
+%if %{with python3}
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
 %endif
 
 %global desc \
@@ -35,22 +53,6 @@ contents merge, templates, query, schema validation and generation support.
 
 %package -n python2-%{pkgname}
 Summary:        %{summary}
-%if 0%{?rhel} == 7
-BuildRequires:  python-devel
-BuildRequires:  python-setuptools
-%else
-BuildRequires:  python2-devel
-BuildRequires:  python2-setuptools
-%endif
-%if %{with doc}
-BuildRequires:  python2-docutils
-BuildRequires:  python2-sphinx
-BuildRequires:  python2-bson
-BuildRequires:  python2-configobj
-BuildRequires:  python2-msgpack
-BuildRequires:  python2-toml
-BuildRequires:  PyYAML
-%endif
 Requires:       PyYAML
 %if 0%{?rhel} == 7
 Requires:       python-setuptools
@@ -78,17 +80,6 @@ Requires:       python2-toml
 %if %{with python3}
 %package -n python3-%{pkgname}
 Summary:        %{summary}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-%if %{with doc}
-BuildRequires:  python3-docutils
-BuildRequires:  python3-sphinx
-BuildRequires:  python3-bson
-BuildRequires:  python3-configobj
-BuildRequires:  python3-msgpack
-BuildRequires:  python3-toml
-BuildRequires:  python3-PyYAML
-%endif
 Requires:       python3-PyYAML
 Requires:       python3-setuptools
 %if %{with extras}

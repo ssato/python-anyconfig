@@ -149,6 +149,16 @@ rm -frv docs/build/html/_sources
 %endif
 
 %changelog
+* Tue Feb 13 2018 Satoru SATOH <ssato@redhat.com> - 0.9.4-1
+- change: drop python 3.3 support as isort required by pylint does so
+- change: separate some backends (cbor, bson and msgpack) from this package
+- fix: [ini] configparser.ConfigParser.readfp is deprecated method
+- fix/refactor: cleanup, refactor and fix test cases
+- change: [api] change the parameter name, s/.*safe/ac_schema_safe/g
+- fix: [rpm] A lot of cleanups originally from rhbz#1538658
+- enhancement: add support to catch all errors during validation (issue#79),
+  and its test case
+
 * Mon Jun 19 2017 Satoru SATOH <ssato@redhat.com> - 0.9.3-1
 - Just add an workaround for travi-ci test errors in python 3.{3,4}
 

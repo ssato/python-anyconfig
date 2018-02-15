@@ -35,13 +35,8 @@ BuildRequires:  python2-configobj
 BuildRequires:  python2-toml
 BuildRequires:  PyYAML
 %endif
-%if 0%{?rhel} == 7
-BuildRequires:  python-devel
-BuildRequires:  python-setuptools
-%else
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
-%endif
 %if %{with python3}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
@@ -52,11 +47,7 @@ BuildRequires:  python3-setuptools
 %package -n python2-%{pkgname}
 Summary:        %{summary}
 Requires:       PyYAML
-%if 0%{?rhel} == 7
-Requires:       python-setuptools
-%else
 Requires:       python2-setuptools
-%endif
 %if %{with extras}
 Requires:       python2-jinja2
 Requires:       python2-jsonschema

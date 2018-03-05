@@ -10,7 +10,7 @@ python-anyconfig
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: [Python versions]
 
-.. .. image:: https://pypip.in/license/anyconfig/badge.png
+.. .. image:: https://img.shields.io/pypi/l/anyconfig.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: MIT License
 

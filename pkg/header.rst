@@ -10,11 +10,12 @@ python-anyconfig
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: [Python versions]
 
-.. .. image:: https://pypip.in/license/anyconfig/badge.png
+.. image:: https://img.shields.io/pypi/l/anyconfig.svg
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: MIT License
 
-.. .. image:: https://api.travis-ci.org/ssato/python-anyconfig.png?branch=master
+.. image:: https://img.shields.io/travis/ssato/python-anyconfig/master.svg
+   :alt: [Build Status]
 
 .. image:: https://img.shields.io/travis/ssato/python-anyconfig.svg
    :target: https://travis-ci.org/ssato/python-anyconfig

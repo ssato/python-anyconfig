@@ -14,9 +14,6 @@ python-anyconfig
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: MIT License
 
-.. image:: https://img.shields.io/travis/ssato/python-anyconfig/master.svg
-   :alt: [Build Status]
-
 .. image:: https://img.shields.io/travis/ssato/python-anyconfig.svg
    :target: https://travis-ci.org/ssato/python-anyconfig
    :alt: [Test status]

@@ -153,23 +153,22 @@ def _find_by_filepath(filepath, cps=_PARSERS_BY_EXT):
     """
     :param filepath: Path to the file to find out parser to process it
     :param csp: see the description of :func:`find_by_file`
-    :return:
-        Most appropriate parser class to process files of which file extension
-        is `ext_ref`.
+
+    :return: Most appropriate parser class to process given file
     """
+    if cps is None:
+        cps = _list_parsers_by_extension(PARSERS)
+
     ext_ref = anyconfig.utils.get_file_extension(filepath)
     return next((psrs[-1] for ext, psrs in cps if ext == ext_ref), None)
 
 
-def find_by_file(path_or_stream, cps=_PARSERS_BY_EXT, is_path_=False):
+def find_by_file(path_or_stream, is_path_=False):
     """
     Find config parser by the extension of file `path_or_stream`, file path or
     stream (a file or file-like objects).
 
     :param path_or_stream: Config file path or file/file-like object
-    :param cps:
-        A tuple of pairs of (type, parser_class) or None if you want to compute
-        this value dynamically.
     :param is_path_: True if given `path_or_stream` is a file path
 
     :return: Config Parser class found
@@ -184,15 +183,12 @@ def find_by_file(path_or_stream, cps=_PARSERS_BY_EXT, is_path_=False):
     >>> find_by_file("a.json", is_path_=True)
     <class 'anyconfig.backend.json.Parser'>
     """
-    if cps is None:
-        cps = _list_parsers_by_extension(PARSERS)
-
     if not is_path_ and not anyconfig.utils.is_path(path_or_stream):
         path_or_stream = anyconfig.utils.get_path_from_stream(path_or_stream)
         if path_or_stream is None:
             return None  # There is no way to detect file path.
 
-    return _find_by_filepath(path_or_stream, cps=cps)
+    return _find_by_filepath(path_or_stream)
 
 
 def find_by_type(cptype, cps=_PARSERS_BY_TYPE):

@@ -149,10 +149,12 @@ _PARSERS_BY_TYPE = tuple(_list_parsers_by_type(PARSERS))
 _PARSERS_BY_EXT = tuple(_list_parsers_by_extension(PARSERS))
 
 
-def _find_by_filepath(filepath, cps=_PARSERS_BY_EXT):
+def find_by_filepath(filepath, cps=_PARSERS_BY_EXT):
     """
     :param filepath: Path to the file to find out parser to process it
-    :param csp: see the description of :func:`find_by_file`
+    :param cps:
+        A list of pairs (type, parser_class) or None if you want to compute
+        this value dynamically.
 
     :return: Most appropriate parser class to process given file
     """
@@ -188,7 +190,7 @@ def find_by_file(path_or_stream, is_path_=False):
         if path_or_stream is None:
             return None  # There is no way to detect file path.
 
-    return _find_by_filepath(path_or_stream)
+    return find_by_filepath(path_or_stream)
 
 
 def find_by_type(cptype, cps=_PARSERS_BY_TYPE):

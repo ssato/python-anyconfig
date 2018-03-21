@@ -1,9 +1,0 @@
-#Jinja2  # Disabled until all errors during tests are resolved.
-PyYAML
-configobj
-jmespath
-jsonschema
-ordereddict
-setuptools
-simplejson
-toml

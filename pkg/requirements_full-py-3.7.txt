@@ -1,0 +1,9 @@
+Jinja2
+PyYAML
+configobj
+jmespath
+jsonschema
+# https://bitbucket.org/ruamel/yaml/issues/187/python-37-beta-incompatibility
+#ruamel.yaml
+setuptools
+toml

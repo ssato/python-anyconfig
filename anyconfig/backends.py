@@ -26,6 +26,8 @@ import anyconfig.backend.properties
 import anyconfig.backend.shellvars
 import anyconfig.backend.xml
 
+from anyconfig.globals import UnknownFileTypeError, UnknownParserTypeError
+
 LOGGER = logging.getLogger(__name__)
 PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json.Parser,
            anyconfig.backend.pickle.Parser,
@@ -57,20 +59,6 @@ for e in pkg_resources.iter_entry_points("anyconfig_backends"):
         PARSERS.append(e.load())
     except ImportError:
         continue
-
-
-class UnknownParserTypeError(RuntimeError):
-    """Raise if no parsers were found for given type."""
-    def __init__(self, forced_type):
-        msg = "No parser found for type '%s'" % forced_type
-        super(UnknownParserTypeError, self).__init__(msg)
-
-
-class UnknownFileTypeError(RuntimeError):
-    """Raise if not parsers were found for given file path."""
-    def __init__(self, path):
-        msg = "No parser found for file '%s'" % path
-        super(UnknownFileTypeError, self).__init__(msg)
 
 
 def fst(tpl):

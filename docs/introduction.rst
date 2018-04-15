@@ -249,7 +249,6 @@ or with the API 'anyconfig.list_types()' will show them:
 .. [#] https://pypi.python.org/pypi/configobj
 .. [#] https://pypi.python.org/pypi/toml
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
-.. [#] https://pypi.python.org/pypi/amazon.ion/
 .. [#] https://pypi.python.org/pypi/anyconfig-ion-backend
 .. [#] https://pypi.python.org/pypi/anyconfig-bson-backend
 .. [#] https://pypi.python.org/pypi/anyconfig-cbor-backend

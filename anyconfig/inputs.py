@@ -15,7 +15,7 @@ from anyconfig.globals import UnknownFileTypeError, UnknownParserTypeError
 
 
 Input = collections.namedtuple("Input", "src type path parser opener".split())
-ITYPES = (PATH_STR, PATH_OBJ, STREAM) = (0, 1, 2)
+ITYPES = (NONE, PATH_STR, PATH_OBJ, STREAM) = (None, 0, 1, 2)
 
 
 def guess_input_type(input_):
@@ -31,7 +31,9 @@ def guess_input_type(input_):
     ...     assert guess_input_type(pathlib.Path(apath)) == PATH_OBJ
     >>> assert guess_input_type(open(__file__)) == STREAM
     """
-    if isinstance(input_, anyconfig.compat.STR_TYPES):
+    if input_ is None:
+        return NONE
+    elif isinstance(input_, anyconfig.compat.STR_TYPES):
         return PATH_STR
     elif pathlib is not None and isinstance(input_, pathlib.Path):
         return PATH_OBJ
@@ -133,7 +135,7 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
     ...     (x.parser, x.path)
     (<class 'anyconfig.backend.json.Parser'>, '/path/to/cnf.json')
     """
-    if not input_ and forced_type is None:
+    if (input_ is None or not input_) and forced_type is None:
         raise ValueError("input_ or forced_type must be some value")
 
     itype = guess_input_type(input_)
@@ -146,6 +148,9 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
         opener = input_.open
     elif itype == STREAM:
         ipath = anyconfig.utils.get_path_from_stream(input_)
+        opener = anyconfig.utils.noop
+    elif itype == NONE:
+        ipath = None
         opener = anyconfig.utils.noop
     else:
         raise UnknownFileTypeError("%r" % input_)

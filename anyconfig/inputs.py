@@ -20,7 +20,8 @@ from anyconfig.globals import UnknownFileTypeError, UnknownParserTypeError
 
 
 Input = collections.namedtuple("Input", "src type path parser opener".split())
-ITYPES = (NONE, PATH_STR, PATH_OBJ, STREAM) = (None, 0, 1, 2)
+ITYPES = (NONE, PATH_STR, PATH_OBJ, STREAM) = (None, "path", "pathlib.Path",
+                                               "stream")
 
 
 def guess_input_type(input_):

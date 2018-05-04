@@ -60,7 +60,10 @@ from __future__ import absolute_import
 
 import os.path
 
-from anyconfig.globals import LOGGER
+# Import some global constants will be re-exported:
+from anyconfig.globals import (
+    LOGGER, UnknownParserTypeError, UnknownFileTypeError
+)
 import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
@@ -70,10 +73,6 @@ import anyconfig.dicts
 import anyconfig.template
 import anyconfig.utils
 
-# Import some global constants will be re-exported:
-from anyconfig.backends import (
-    UnknownParserTypeError, UnknownFileTypeError
-)
 from anyconfig.dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
     get, set_, merge # flake8: noqa

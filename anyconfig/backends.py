@@ -151,8 +151,8 @@ def find_parser(input_, forced_type=None, is_path_=False):
     inp = anyconfig.inputs.make(input_, _PARSERS_BY_EXT, _PARSERS_BY_TYPE,
                                 forced_type)
     psr = inp.parser
-    LOGGER.debug("Using parser: %r [%s], input :: [%s]", psr, psr.type(),
-                 inp.itype)
+    LOGGER.debug("Using parser %r [%s] for input type %s",
+                 psr, psr.type(), inp.type)
     return psr
 
 

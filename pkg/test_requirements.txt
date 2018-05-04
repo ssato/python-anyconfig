@@ -4,5 +4,7 @@ coveralls
 flake8
 mock
 nose
-pycodestyle
+# stick the version to avoild the error:
+# module 'pycodestyle' has no attribute 'break_around_binary_operator, etc.
+pycodestyle<2.4.0
 pylint

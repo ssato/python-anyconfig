@@ -25,8 +25,8 @@ import anyconfig.backend.pickle
 import anyconfig.backend.properties
 import anyconfig.backend.shellvars
 import anyconfig.backend.xml
+import anyconfig.inputs
 
-from anyconfig.globals import UnknownFileTypeError, UnknownParserTypeError
 
 LOGGER = logging.getLogger(__name__)
 PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json.Parser,
@@ -137,113 +137,23 @@ _PARSERS_BY_TYPE = tuple(_list_parsers_by_type(PARSERS))
 _PARSERS_BY_EXT = tuple(_list_parsers_by_extension(PARSERS))
 
 
-def find_by_filepath(filepath, cps=_PARSERS_BY_EXT):
+def find_parser(input_, forced_type=None, is_path_=False):
     """
-    :param filepath: Path to the file to find out parser to process it
-    :param cps:
-        A list of pairs (type, parser_class) or None if you want to compute
-        this value dynamically.
+    Find out appropriate parser object appropriate to load from a file of given
+    path or file/file-like object.
 
-    :return: Most appropriate parser class to process given file
-    """
-    if cps is None:
-        cps = _list_parsers_by_extension(PARSERS)
-
-    ext_ref = anyconfig.utils.get_file_extension(filepath)
-    return next((psrs[-1] for ext, psrs in cps if ext == ext_ref), None)
-
-
-def find_by_file(path_or_stream, is_path_=False):
-    """
-    Find config parser by the extension of file `path_or_stream`, file path or
-    stream (a file or file-like objects).
-
-    :param path_or_stream: Config file path or file/file-like object
-    :param is_path_: True if given `path_or_stream` is a file path
-
-    :return: Config Parser class found
-
-    >>> find_by_file("a.missing_cnf_ext") is None
-    True
-    >>> strm = anyconfig.compat.StringIO()
-    >>> find_by_file(strm) is None
-    True
-    >>> find_by_file("a.json")
-    <class 'anyconfig.backend.json.Parser'>
-    >>> find_by_file("a.json", is_path_=True)
-    <class 'anyconfig.backend.json.Parser'>
-    """
-    if not is_path_ and not anyconfig.utils.is_path(path_or_stream):
-        path_or_stream = anyconfig.utils.get_path_from_stream(path_or_stream)
-        if path_or_stream is None:
-            return None  # There is no way to detect file path.
-
-    return find_by_filepath(path_or_stream)
-
-
-def find_by_type(cptype, cps=_PARSERS_BY_TYPE):
-    """
-    Find config parser by file's extension.
-
-    :param cptype: Config file's type
-    :param cps:
-        A list of pairs (type, parser_class) or None if you want to compute
-        this value dynamically.
-
-    :return: Config Parser class found
-
-    >>> find_by_type("missing_type") is None
-    True
-    """
-    if cps is None:
-        cps = _list_parsers_by_type(PARSERS)
-
-    return next((psrs[-1] or None for t, psrs in cps if t == cptype), None)
-
-
-def find_parser(path_or_stream, forced_type=None, is_path_=False):
-    """
-    Find out config parser object appropriate to load from a file of given path
-    or file/file-like object.
-
-    :param path_or_stream: Configuration file path or file / file-like object
+    :param input_: File path, file / file-like object or pathlib.Path object
     :param forced_type: Forced configuration parser type
     :param is_path_: True if given `path_or_stream` is a file path
 
     :return: A tuple of (Parser class or None, "" or error message)
-
-    >>> find_parser(None)  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    ValueError: path_or_stream or forced_type must be some value
-    >>> find_parser(None, "type_not_exist"
-    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    UnknownParserTypeError: No parser found for type 'type_not_exist'
-    >>> find_parser("cnf.ext_not_found"
-    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    UnknownFileTypeError: No parser found for file 'cnf.ext_not_found'
-
-    >>> find_parser(None, "ini")
-    <class 'anyconfig.backend.ini.Parser'>
-    >>> find_parser("cnf.json")
-    <class 'anyconfig.backend.json.Parser'>
-    >>> find_parser("cnf.json", is_path_=True)
-    <class 'anyconfig.backend.json.Parser'>
     """
-    if not path_or_stream and forced_type is None:
-        raise ValueError("path_or_stream or forced_type must be some value")
-
-    if forced_type is not None:
-        parser = find_by_type(forced_type)
-        if parser is None:
-            raise UnknownParserTypeError(forced_type)
-    else:
-        parser = find_by_file(path_or_stream, is_path_=is_path_)
-        if parser is None:
-            raise UnknownFileTypeError(path_or_stream)
-
-    return parser
+    inp = anyconfig.inputs.make(input_, _PARSERS_BY_EXT, _PARSERS_BY_TYPE,
+                                forced_type)
+    psr = inp.parser
+    LOGGER.debug("Using parser: %r [%s], input :: [%s]", psr, psr.type(),
+                 inp.itype)
+    return psr
 
 
 def list_types(cps=_PARSERS_BY_TYPE):

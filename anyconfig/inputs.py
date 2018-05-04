@@ -137,7 +137,8 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
     >>> make("cnf.json", cps_by_ext, cps_by_type, forced_type="json").parser
     <class 'anyconfig.backend.json.Parser'>
     >>> if pathlib is not None:
-    ...     x = make("/path/to/cnf.json", *cpss)
+    ...     path = pathlib.Path("/path/to/cnf.json")
+    ...     x = make(path, *cpss)
     ...     (x.parser, x.path)
     (<class 'anyconfig.backend.json.Parser'>, '/path/to/cnf.json')
     """

@@ -139,8 +139,8 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
     >>> if pathlib is not None:
     ...     path = pathlib.Path("/path/to/cnf.json")
     ...     x = make(path, *cpss)
-    ...     (x.parser, x.path)
-    (<class 'anyconfig.backend.json.Parser'>, '/path/to/cnf.json')
+    ...     assert type(x.parser) == type(anyconfig.backend.json.Parser)
+    ...     assert x.path == "/path/to/cnf.json"
     """
     if (input_ is None or not input_) and forced_type is None:
         raise ValueError("input_ or forced_type must be some value")

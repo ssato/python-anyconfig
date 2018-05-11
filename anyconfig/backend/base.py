@@ -46,7 +46,7 @@ import anyconfig.utils
 
 
 LOGGER = logging.getLogger(__name__)
-
+TEXT_FILE = True
 
 def ensure_outdir_exists(filepath):
     """

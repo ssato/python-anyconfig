@@ -15,7 +15,6 @@ from __future__ import absolute_import
 import collections
 import anyconfig.utils
 
-from anyconfig.compat import pathlib
 from anyconfig.globals import UnknownFileTypeError, UnknownParserTypeError
 
 
@@ -33,15 +32,17 @@ def guess_input_type(input_):
 
     >>> apath = "/path/to/a_conf.ext"
     >>> assert guess_input_type(apath) == PATH_STR
+
+    >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
     ...     assert guess_input_type(pathlib.Path(apath)) == PATH_OBJ
     >>> assert guess_input_type(open(__file__)) == STREAM
     """
     if input_ is None:
         return NONE
-    elif isinstance(input_, anyconfig.compat.STR_TYPES):
+    elif anyconfig.utils.is_path(input_):
         return PATH_STR
-    elif pathlib is not None and isinstance(input_, pathlib.Path):
+    elif anyconfig.utils.is_path_obj(input_):
         return PATH_OBJ
 
     return STREAM
@@ -64,6 +65,7 @@ def _inspec_input(input_):
     >>> assert _inspec_input(ipath_0) == (PATH_STR, ipath_1, open)
     >>> assert _inspec_input(open(ipath_0)) == (STREAM, ipath_1,
     ...                                         anyconfig.utils.noop)
+    >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
     ...     ipo = pathlib.Path(ipath_0)
     ...     x = _inspec_input(ipo)
@@ -220,6 +222,7 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
     Traceback (most recent call last):
     ValueError: input_ or forced_type must be some value
 
+    >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
     ...     path = pathlib.Path("/path/to/cnf.json")
     ...     x = make(path, *cpss)

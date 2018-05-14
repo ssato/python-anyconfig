@@ -122,22 +122,40 @@ def is_path_obj(input_):
             isinstance(input_, anyconfig.compat.pathlib.Path))
 
 
-def is_single_path_or_path_obj(input_, marker='*'):
-    """Is given object `input` a path string or a pathlib.Path object?
+def is_file_stream(input_):
+    """Is given object `input` a file stream (file/file-like object)?
 
     :param input_: Input object may be pathlib.Path object or something
-    :return: True if `input_` is a path string or a pathlib.Path object
+    :return: True if `input_` is a file stream
 
-    >>> assert is_single_path_or_path_obj(__file__)
-    >>> assert not is_single_path_or_path_obj("/a/b/c/*.json", '*')
+    >>> assert is_file_stream(open(__file__))
+    >>> assert not is_file_stream(__file__)
+    """
+    return getattr(input_, "read", False)
+
+
+def is_path_or_path_obj_or_strm(input_, marker='*'):
+    """Is given object `input` a path string or a pathlib.Path object or a file
+    stream (file/file-like object)?
+
+    :param input_: Input object may be pathlib.Path object or something
+    :return:
+        True if `input_` is a path string or a pathlib.Path object or a file
+        (stream) object
+
+    >>> assert is_path_or_path_obj_or_strm(__file__)
+    >>> assert not is_path_or_path_obj_or_strm("/a/b/c/*.json", '*')
 
     >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
-    ...      assert is_single_path_or_path_obj(pathlib.Path("a.ini"))
-    ...      assert not is_single_path_or_path_obj(pathlib.Path("x.ini"), 'x')
+    ...      assert is_path_or_path_obj_or_strm(pathlib.Path("a.ini"))
+    ...      assert not is_path_or_path_obj_or_strm(pathlib.Path("x.ini"), 'x')
+
+    >>> assert is_path_or_path_obj_or_strm(open(__file__))
     """
     return ((is_path(input_) and marker not in input_) or
-            (is_path_obj(input_) and marker not in input_.as_posix()))
+            (is_path_obj(input_) and marker not in input_.as_posix()) or
+            is_file_stream(input_))
 
 
 def is_paths(maybe_paths, marker='*'):

@@ -150,7 +150,7 @@ def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
     :return: anyconfig.inputs.Input object :: namedtuple
     """
     return anyconfig.inputs.make(input_, _PARSERS_BY_EXT, _PARSERS_BY_TYPE,
-                                 forced_type)
+                                 forced_type=forced_type)
 
 
 def find_parser(input_, forced_type=None, is_path_=False):

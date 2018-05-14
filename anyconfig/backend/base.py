@@ -48,6 +48,7 @@ import anyconfig.utils
 LOGGER = logging.getLogger(__name__)
 TEXT_FILE = True
 
+
 def ensure_outdir_exists(filepath):
     """
     Make dir to dump `filepath` if that dir does not exist.

@@ -208,7 +208,7 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
         Namedtuple object represents a kind of input object such as a file /
         file-like object, path string or pathlib.Path object
 
-    :raises: UnknownFileTypeError, UnknownParserTypeError, UnknownFileTypeError
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
 
     >>> from anyconfig.backends import (
     ...      _PARSERS_BY_EXT as cps_by_ext,

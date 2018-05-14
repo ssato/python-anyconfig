@@ -7,6 +7,7 @@ import unittest
 
 import anyconfig.backend.ini
 import anyconfig.backend.json
+import anyconfig.compat
 import anyconfig.inputs as TT
 import anyconfig.utils
 
@@ -49,8 +50,9 @@ class Test(unittest.TestCase):
 
     def test_54_make__pathlib(self):
         ipath = ipath_0 = "/a/b/c.json"
-        if TT.pathlib is not None:
-            ipath = TT.pathlib.Path(ipath)  # Replace w/ pathlib.Path object.
+        if anyconfig.compat.pathlib is not None:
+            # Replace w/ pathlib.Path object.
+            ipath = anyconfig.compat.pathlib.Path(ipath)
             itype = TT.PATH_OBJ
             opener = ipath.open
         else:

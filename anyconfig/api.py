@@ -78,20 +78,9 @@ from anyconfig.dicts import (
     get, set_, merge # flake8: noqa
 )
 from anyconfig.schema import validate, gen_schema
-from anyconfig.utils import is_path
 
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
-
-
-def _is_paths(maybe_paths):
-    """
-    Does given object `maybe_paths` consist of path or path pattern strings?
-    """
-    if anyconfig.utils.is_iterable(maybe_paths):
-        return not getattr(maybe_paths, "read", False)
-
-    return False  # Not an iterable at least.
 
 
 def _maybe_validated(cnf, schema, **options):
@@ -121,7 +110,7 @@ def version():
     return anyconfig.globals.VERSION.split('.')
 
 
-def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
+def find_loader(path_or_stream, parser_or_type=None):
     """
     Find out parser object appropriate to load configuration from a file of
     given path or file or file-like object.
@@ -129,7 +118,6 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
     :param path_or_stream: Configuration file path or file or file-like object
     :param parser_or_type:
         Forced configuration parser type or parser object itself
-    :param is_path_: Specify True if given `path_or_stream` is a file path
 
     :return:
         An instance of a class inherits :class:`~anyconfig.backend.base.Parser`
@@ -140,8 +128,7 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
 
     try:
         return anyconfig.backends.find_parser(path_or_stream,
-                                              forced_type=parser_or_type,
-                                              is_path_=is_path_)
+                                              forced_type=parser_or_type)
     except (ValueError, UnknownParserTypeError, UnknownFileTypeError):
         raise
 
@@ -185,7 +172,7 @@ def open(path, mode=None, ac_parser=None, **options):
 
     :return: A file object or None on any errors
     """
-    psr = find_loader(path, parser_or_type=ac_parser, is_path_=True)
+    psr = find_loader(path, parser_or_type=ac_parser)
     if mode is not None and mode.startswith('w'):
         return psr.wopen(path, **options)
 
@@ -313,7 +300,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
     paths = anyconfig.utils.norm_paths(paths, marker=marker)
     if anyconfig.utils.are_same_file_types(paths):
-        ac_parser = find_loader(paths[0], ac_parser, is_path(paths[0]))
+        ac_parser = find_loader(paths[0], ac_parser)
 
     cnf = ac_context
     for path in paths:
@@ -360,15 +347,18 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
-    if is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
-        return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
+    if anyconfig.utils.is_path_or_path_obj_or_strm(path_specs, marker):
+        cnf = single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                           ac_template=ac_template, ac_context=ac_context,
                           **options)
+        return anyconfig.query.query(cnf, **options)
 
-    cnf = single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
+    if not anyconfig.utils.is_paths(path_specs, marker):
+        raise ValueError("Something goes wrong with your input %r", path_specs)
+
+    return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                       ac_template=ac_template, ac_context=ac_context,
                       **options)
-    return anyconfig.query.query(cnf, **options)
 
 
 def loads(content, ac_parser=None, ac_dict=None, ac_template=False,

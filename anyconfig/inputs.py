@@ -29,7 +29,7 @@ def guess_input_type(input_):
 
     :param input_:
         Input object may be string (path), pathlib.Path object or (file) stream
-    :return: Namedtuple object represents a kind of input such as a file object
+    :return: Input type, NONE | PATH_STR | PATH_OBJ | STREAM
 
     >>> apath = "/path/to/a_conf.ext"
     >>> assert guess_input_type(apath) == PATH_STR
@@ -45,6 +45,48 @@ def guess_input_type(input_):
         return PATH_OBJ
 
     return STREAM
+
+
+def _inspec_input(input_):
+    """
+    :param input_:
+        Input object may be string (path), pathlib.Path object or (file) stream
+
+    :return: A tuple of (input_type, input_path, input_opener)
+    :raises: UnknownFileTypeError
+
+    >>> import os.path
+
+    >>> ipath_0 = os.path.join(os.path.dirname(__file__), "..",
+    ...                        "tests/00-cnf.json")
+    >>> ipath_1 = anyconfig.utils.normpath(ipath_0)
+
+    >>> assert _inspec_input(ipath_0) == (PATH_STR, ipath_1, open)
+    >>> assert _inspec_input(open(ipath_0)) == (STREAM, ipath_1,
+    ...                                         anyconfig.utils.noop)
+    >>> if pathlib is not None:
+    ...     ipo = pathlib.Path(ipath_0)
+    ...     x = _inspec_input(ipo)
+    ...     assert x == (PATH_OBJ, ipath_1, ipo.open)
+    """
+    itype = guess_input_type(input_)
+
+    if itype == PATH_STR:
+        ipath = anyconfig.utils.normpath(input_)
+        opener = open
+    elif itype == PATH_OBJ:
+        ipath = anyconfig.utils.normpath(input_.as_posix())
+        opener = input_.open
+    elif itype == STREAM:
+        ipath = anyconfig.utils.get_path_from_stream(input_)
+        opener = anyconfig.utils.noop
+    elif itype == NONE:
+        ipath = None
+        opener = anyconfig.utils.noop
+    else:
+        raise UnknownFileTypeError("%r" % input_)
+
+    return (itype, ipath, opener)
 
 
 def find_by_fileext(fileext, cps_by_ext):
@@ -98,6 +140,61 @@ def find_by_type(cptype, cps_by_type):
                 None)
 
 
+def _parser_by_type(ipath, cps_by_ext, cps_by_type, forced_type=None):
+    """
+    :param ipath: Input file path
+    :param cps_by_ext: A list of pairs (file_extension, [parser_class])
+    :param cps_by_type: A list of pairs (parser_type, [parser_class])
+    :param forced_type: Forced configuration parser type or parser object
+
+    :return: Instance of parser class appropriate for the input `ipath`
+    :raises: UnknownParserTypeError, UnknownFileTypeError
+
+    >>> from anyconfig.backends import (
+    ...      _PARSERS_BY_EXT as cps_by_ext,
+    ...      _PARSERS_BY_TYPE as cps_by_type
+    ... )
+    >>> cpss = (cps_by_ext, cps_by_type)
+
+    >>> _parser_by_type(None, cps_by_ext, cps_by_type,
+    ...                 forced_type="type_not_exist"
+    ...                 )  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+    UnknownParserTypeError: No parser found for type 'type_not_exist'
+    >>> _parser_by_type("cnf.ext_not_found", *cpss
+    ...                 )  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+    UnknownFileTypeError: No parser found for file 'cnf.ext_not_found'
+
+    >>> isinstance(_parser_by_type(None, cps_by_ext, cps_by_type,
+    ...                            forced_type="ini"),
+    ...            anyconfig.backend.ini.Parser)
+    True
+    >>> isinstance(_parser_by_type("cnf.json", *cpss),
+    ...            anyconfig.backend.json.Parser)
+    True
+    >>> isinstance(_parser_by_type("cnf.json", cps_by_ext, cps_by_type,
+    ...                            forced_type="json"),
+    ...            anyconfig.backend.json.Parser)
+    True
+    """
+    if forced_type is None:
+        parser = find_by_filepath(ipath, cps_by_ext)
+        if parser is None:
+            raise UnknownFileTypeError(ipath)
+
+        return parser()
+
+    if isinstance(forced_type, anyconfig.backend.base.Parser):
+        return forced_type
+
+    parser = find_by_type(forced_type, cps_by_type)
+    if parser is None:
+        raise UnknownParserTypeError(forced_type)
+
+    return parser()
+
+
 def make(input_, cps_by_ext, cps_by_type, forced_type=None):
     """
     :param input_:
@@ -122,58 +219,21 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
     >>> make(None, *cpss)  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
     ValueError: input_ or forced_type must be some value
-    >>> make(None, cps_by_ext, cps_by_type,
-    ...      forced_type="type_not_exist"
-    ...      )  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    UnknownParserTypeError: No parser found for type 'type_not_exist'
-    >>> make("cnf.ext_not_found", *cpss
-    ...      )  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    UnknownFileTypeError: No parser found for file 'cnf.ext_not_found'
 
-    >>> make(None, cps_by_ext, cps_by_type, "ini").parser
-    <class 'anyconfig.backend.ini.Parser'>
-    >>> make("cnf.json", *cpss).parser
-    <class 'anyconfig.backend.json.Parser'>
-    >>> make("cnf.json", cps_by_ext, cps_by_type, forced_type="json").parser
-    <class 'anyconfig.backend.json.Parser'>
     >>> if pathlib is not None:
     ...     path = pathlib.Path("/path/to/cnf.json")
     ...     x = make(path, *cpss)
-    ...     assert type(x.parser) == type(anyconfig.backend.json.Parser)
+    ...     assert isinstance(x.parser, anyconfig.backend.json.Parser)
     ...     assert x.path == "/path/to/cnf.json"
     """
     if (input_ is None or not input_) and forced_type is None:
         raise ValueError("input_ or forced_type must be some value")
 
-    itype = guess_input_type(input_)
+    (itype, ipath, opener) = _inspec_input(input_)
 
-    if itype == PATH_STR:
-        ipath = anyconfig.utils.normpath(input_)
-        opener = open
-    elif itype == PATH_OBJ:
-        ipath = anyconfig.utils.normpath(input_.as_posix())
-        opener = input_.open
-    elif itype == STREAM:
-        ipath = anyconfig.utils.get_path_from_stream(input_)
-        opener = anyconfig.utils.noop
-    elif itype == NONE:
-        ipath = None
-        opener = anyconfig.utils.noop
-    else:
-        raise UnknownFileTypeError("%r" % input_)
+    psr = _parser_by_type(ipath, cps_by_ext, cps_by_type,
+                          forced_type=forced_type)
 
-    if forced_type is not None:
-        parser = find_by_type(forced_type, cps_by_type)
-        if parser is None:
-            raise UnknownParserTypeError(forced_type)
-    else:
-        parser = find_by_filepath(ipath, cps_by_ext)
-        if parser is None:
-            raise UnknownFileTypeError(ipath)
-
-    return Input(src=input_, type=itype, path=ipath, parser=parser,
-                 opener=opener)
+    return Input(src=input_, type=itype, path=ipath, parser=psr, opener=opener)
 
 # vim:sw=4:ts=4:et:

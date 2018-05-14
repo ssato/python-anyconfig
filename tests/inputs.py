@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
         self.assertEqual(inp.src, None)
         self.assertEqual(inp.path, None)
         self.assertEqual(inp.type, None)
-        self.assertEqual(type(inp.parser), type(anyconfig.backend.ini.Parser))
+        self.assertTrue(isinstance(inp.parser, anyconfig.backend.ini.Parser))
         self.assertEqual(inp.opener, anyconfig.utils.noop)
 
     def test_53_make__by_fileext(self):
@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
         self.assertEqual(inp.src, ipath)
         self.assertEqual(inp.path, ipath)
         self.assertEqual(inp.type, TT.PATH_STR)
-        self.assertEqual(type(inp.parser), type(anyconfig.backend.json.Parser))
+        self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
         self.assertEqual(inp.opener, open)
 
     def test_54_make__pathlib(self):
@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
         self.assertEqual(inp.src, ipath)
         self.assertEqual(inp.path, ipath_0)
         self.assertEqual(inp.type, itype)
-        self.assertEqual(type(inp.parser), type(anyconfig.backend.json.Parser))
+        self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
         self.assertEqual(inp.opener, opener)
 
 # vim:sw=4:ts=4:et:

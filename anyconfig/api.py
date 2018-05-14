@@ -139,10 +139,9 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
         return parser_or_type
 
     try:
-        psr = anyconfig.backends.find_parser(path_or_stream,
-                                             forced_type=parser_or_type,
-                                             is_path_=is_path_)
-        return psr()  # TBD: Passing initialization arguments.
+        return anyconfig.backends.find_parser(path_or_stream,
+                                              forced_type=parser_or_type,
+                                              is_path_=is_path_)
     except (ValueError, UnknownParserTypeError, UnknownFileTypeError):
         raise
 

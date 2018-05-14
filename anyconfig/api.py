@@ -238,13 +238,9 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
 
     :return: Mapping object
     """
-    is_path_ = is_path(path_or_stream)
-    if is_path_:
-        filepath = path_or_stream = anyconfig.utils.normpath(path_or_stream)
-    else:
-        filepath = anyconfig.utils.get_path_from_stream(path_or_stream)
-
-    psr = find_loader(path_or_stream, ac_parser, is_path_)
+    inp = anyconfig.backends.inspect_input(path_or_stream,
+                                           forced_type=ac_parser)
+    (psr, filepath) = (inp.parser, inp.path)
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
 
@@ -256,7 +252,7 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
             cnf = psr.loads(content, **options)
             return _maybe_validated(cnf, schema, **options)
 
-    cnf = psr.load(path_or_stream, **options)
+    cnf = psr.load(inp.src, **options)
     return _maybe_validated(cnf, schema, **options)
 
 

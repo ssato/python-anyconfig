@@ -105,6 +105,23 @@ def is_path(path_or_stream):
     return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
 
 
+def is_path_obj(input_):
+    """Is given object `input` a pathlib.Path object?
+
+    :param input_: Input object may be pathlib.Path object or something
+    :return: True if `input_` is a pathlib.Path object
+
+    >>> from anyconfig.compat import pathlib
+    >>> if pathlib is not None:
+    ...      input_ = pathlib.Path(__file__)
+    ...      assert is_path_obj(input_)
+    >>>
+    >>> assert not is_path_obj(__file__)
+    """
+    return (anyconfig.compat.pathlib is not None and
+            isinstance(input_, anyconfig.compat.pathlib.Path))
+
+
 def get_path_from_stream(maybe_stream):
     """
     Try to get file path from given stream `stream`.

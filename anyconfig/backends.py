@@ -155,8 +155,8 @@ def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
 
 def find_parser(input_, forced_type=None, is_path_=False):
     """
-    Find out appropriate parser object appropriate to load from a file of given
-    path or file/file-like object.
+    Find out appropriate parser object to load from a file of given path or
+    file/file-like object.
 
     :param input_: File path, file / file-like object or pathlib.Path object
     :param forced_type: Forced configuration parser type

@@ -153,7 +153,8 @@ def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
                                  forced_type=forced_type)
 
 
-def find_parser_by_type(forced_type, cps_by_type=_PARSERS_BY_TYPE):
+def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
+                        cps_by_type=_PARSERS_BY_TYPE):
     """
     Find out appropriate parser object to load inputs of given type.
 
@@ -163,13 +164,19 @@ def find_parser_by_type(forced_type, cps_by_type=_PARSERS_BY_TYPE):
     :return:
         An instance of :class:`~anyconfig.backend.base.Parser` or None means no
         appropriate parser was found
+    :raises: UnknownParserTypeError
 
+    >>> from anyconfig.globals import UnknownParserTypeError
     >>> isinstance(find_parser_by_type("json"), anyconfig.backend.json.Parser)
     True
-    >>> find_parser_by_type("missing_type") is None
-    True
+    >>> try:
+    ...     find_parser_by_type("missing_type")
+    ... except UnknownParserTypeError:
+    ...     pass
     """
-    return anyconfig.inputs.find_by_type(forced_type, cps_by_type)
+    return anyconfig.inputs.find_parser(None, cps_by_ext=cps_by_ext,
+                                        cps_by_type=cps_by_type,
+                                        forced_type=forced_type)
 
 
 def find_parser(input_, forced_type=None, is_path_=False):

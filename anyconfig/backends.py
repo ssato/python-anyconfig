@@ -137,7 +137,8 @@ _PARSERS_BY_TYPE = tuple(_list_parsers_by_type(PARSERS))
 _PARSERS_BY_EXT = tuple(_list_parsers_by_extension(PARSERS))
 
 
-def inspect_input(input_, cps_by_ext, cps_by_type, forced_type=None):
+def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
+                  cps_by_type=_PARSERS_BY_TYPE, forced_type=None):
     """
     Inspect given input `input_` which may be a file of given path or file /
     file-like object or pathlib.Path object, and find out appropriate parser

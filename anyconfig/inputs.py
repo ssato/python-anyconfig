@@ -140,7 +140,7 @@ def find_by_type(cptype, cps_by_type):
                 None)
 
 
-def _parser_by_type(ipath, cps_by_ext, cps_by_type, forced_type=None):
+def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
     """
     :param ipath: Input file path
     :param cps_by_ext: A list of pairs (file_extension, [parser_class])
@@ -156,25 +156,25 @@ def _parser_by_type(ipath, cps_by_ext, cps_by_type, forced_type=None):
     ... )
     >>> cpss = (cps_by_ext, cps_by_type)
 
-    >>> _parser_by_type(None, cps_by_ext, cps_by_type,
-    ...                 forced_type="type_not_exist"
-    ...                 )  # doctest: +IGNORE_EXCEPTION_DETAIL
+    >>> find_parser(None, cps_by_ext, cps_by_type,
+    ...             forced_type="type_not_exist"
+    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
     UnknownParserTypeError: No parser found for type 'type_not_exist'
-    >>> _parser_by_type("cnf.ext_not_found", *cpss
-    ...                 )  # doctest: +IGNORE_EXCEPTION_DETAIL
+    >>> find_parser("cnf.ext_not_found", *cpss
+    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
     UnknownFileTypeError: No parser found for file 'cnf.ext_not_found'
 
-    >>> isinstance(_parser_by_type(None, cps_by_ext, cps_by_type,
-    ...                            forced_type="ini"),
+    >>> isinstance(find_parser(None, cps_by_ext, cps_by_type,
+    ...                        forced_type="ini"),
     ...            anyconfig.backend.ini.Parser)
     True
-    >>> isinstance(_parser_by_type("cnf.json", *cpss),
+    >>> isinstance(find_parser("cnf.json", *cpss),
     ...            anyconfig.backend.json.Parser)
     True
-    >>> isinstance(_parser_by_type("cnf.json", cps_by_ext, cps_by_type,
-    ...                            forced_type="json"),
+    >>> isinstance(find_parser("cnf.json", cps_by_ext, cps_by_type,
+    ...                        forced_type="json"),
     ...            anyconfig.backend.json.Parser)
     True
     """
@@ -230,9 +230,7 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
         raise ValueError("input_ or forced_type must be some value")
 
     (itype, ipath, opener) = _inspec_input(input_)
-
-    psr = _parser_by_type(ipath, cps_by_ext, cps_by_type,
-                          forced_type=forced_type)
+    psr = find_parser(ipath, cps_by_ext, cps_by_type, forced_type=forced_type)
 
     return Input(src=input_, type=itype, path=ipath, parser=psr, opener=opener)
 

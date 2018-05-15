@@ -172,7 +172,10 @@ def open(path, mode=None, ac_parser=None, **options):
 
     :return: A file object or None on any errors
     """
-    psr = find_loader(path, parser_or_type=ac_parser)
+    inp = anyconfig.backends.inspect_input(path, forced_type=ac_parser)
+    # TBD: (psr, opener) = (inp.parser, inp.opener)
+    psr = inp.parser
+
     if mode is not None and mode.startswith('w'):
         return psr.wopen(path, **options)
 
@@ -300,7 +303,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
 
     paths = anyconfig.utils.norm_paths(paths, marker=marker)
     if anyconfig.utils.are_same_file_types(paths):
-        ac_parser = find_loader(paths[0], ac_parser)
+        ac_parser = anyconfig.backends.find_parser(paths[0], ac_parser)
 
     cnf = ac_context
     for path in paths:
@@ -386,7 +389,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
                        "parser to load configurations from string.")
         return None
 
-    psr = find_loader(None, ac_parser)
+    psr = anyconfig.backends.find_parser_by_type(ac_parser)
     schema = None
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
@@ -406,18 +409,6 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
     return anyconfig.query.query(cnf, **options)
 
 
-def _find_dumper(path_or_stream, ac_parser=None):
-    """
-    Find parser to dump configuration data.
-
-    :param path_or_stream: Output file path or file / file-like object
-    :param ac_parser: Forced parser type or parser object
-
-    :return: Parser object
-    """
-    return find_loader(path_or_stream, ac_parser)
-
-
 def dump(data, path_or_stream, ac_parser=None, **options):
     """
     Save `data` as `path_or_stream`.
@@ -429,10 +420,10 @@ def dump(data, path_or_stream, ac_parser=None, **options):
         Backend specific optional arguments, e.g. {"indent": 2} for JSON
         loader/dumper backend
     """
-    dumper = _find_dumper(path_or_stream, ac_parser)
-    LOGGER.info("Dumping: %s",
-                anyconfig.utils.get_path_from_stream(path_or_stream))
-    dumper.dump(data, path_or_stream, **options)
+    out = anyconfig.backends.inspect_input(path_or_stream,
+                                           forced_type=ac_parser)
+    LOGGER.info("Dumping: %s", out.path)
+    out.parser.dump(data, path_or_stream, **options)
 
 
 def dumps(data, ac_parser=None, **options):
@@ -445,7 +436,8 @@ def dumps(data, ac_parser=None, **options):
 
     :return: Backend-specific string representation for the given data
     """
-    return _find_dumper(None, ac_parser).dumps(data, **options)
+    psr = anyconfig.backends.find_parser_by_type(ac_parser)
+    return psr.dumps(data, **options)
 
 
 def query(data, expression, **options):

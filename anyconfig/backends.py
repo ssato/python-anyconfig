@@ -148,6 +148,7 @@ def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
     :param forced_type: Forced type of parser to load input
 
     :return: anyconfig.inputs.Input object :: namedtuple
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     return anyconfig.inputs.make(input_, _PARSERS_BY_EXT, _PARSERS_BY_TYPE,
                                  forced_type=forced_type)
@@ -188,6 +189,7 @@ def find_parser(input_, forced_type=None):
     :param forced_type: Forced configuration parser type
 
     :return: A tuple of (Parser class or None, "" or error message)
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     inp = inspect_input(input_, _PARSERS_BY_EXT, _PARSERS_BY_TYPE, forced_type)
     psr = inp.parser

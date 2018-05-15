@@ -179,14 +179,13 @@ def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
                                         forced_type=forced_type)
 
 
-def find_parser(input_, forced_type=None, is_path_=False):
+def find_parser(input_, forced_type=None):
     """
     Find out appropriate parser object to load from a file of given path or
     file/file-like object.
 
     :param input_: File path, file / file-like object or pathlib.Path object
     :param forced_type: Forced configuration parser type
-    :param is_path_: True if given `path_or_stream` is a file path
 
     :return: A tuple of (Parser class or None, "" or error message)
     """

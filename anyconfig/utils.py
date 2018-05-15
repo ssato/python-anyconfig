@@ -12,6 +12,7 @@ import os.path
 import types
 
 import anyconfig.compat
+from anyconfig.compat import pathlib
 
 
 def get_file_extension(file_path):
@@ -118,8 +119,7 @@ def is_path_obj(input_):
     >>>
     >>> assert not is_path_obj(__file__)
     """
-    return (anyconfig.compat.pathlib is not None and
-            isinstance(input_, anyconfig.compat.pathlib.Path))
+    return pathlib is not None and isinstance(input_, pathlib.Path)
 
 
 def is_file_stream(input_):
@@ -246,6 +246,12 @@ def _norm_paths_itr(paths, marker='*'):
                     yield ppath
             else:
                 yield path  # a simple file path
+        elif is_path_obj(path):
+            if marker in path.as_posix():
+                for ppath in sglob(path.as_posix()):
+                    yield normpath(ppath)
+            else:
+                yield normpath(path.as_posix())
         else:  # A file or file-like object
             yield path
 
@@ -253,9 +259,11 @@ def _norm_paths_itr(paths, marker='*'):
 def norm_paths(paths, marker='*'):
     """
     :param paths:
-        A glob path pattern string, or a list consists of path strings or glob
-        path pattern strings or file objects
+        A glob path pattern string or pathlib.Path object holding such path, or
+        a list consists of path strings or glob path pattern strings or
+        pathlib.Path object holding such ones, or file objects
     :param marker: Glob marker character or string, e.g. '*'
+
     :return: List of path strings
 
     >>> norm_paths([])
@@ -272,6 +280,10 @@ def norm_paths(paths, marker='*'):
     """
     if is_path(paths) and marker in paths:
         return sglob(paths)
+
+    if is_path_obj(paths) and marker in paths.as_posix():
+        # TBD: Is it better to return [p :: pathlib.Path] instead?
+        return [normpath(p) for p in sglob(paths.as_posix())]
 
     return list(_norm_paths_itr(paths, marker=marker))
 

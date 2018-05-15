@@ -3,6 +3,7 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
+import os.path
 import unittest
 
 import anyconfig.backend.ini
@@ -16,6 +17,10 @@ from anyconfig.backends import (
     _PARSERS_BY_TYPE as CPS_BY_TYPE
 )
 from anyconfig.globals import UnknownParserTypeError, UnknownFileTypeError
+
+
+IPATH_0 = os.path.join(os.path.dirname(__file__), "00-cnf.json")
+IPATH_0_FULL = anyconfig.utils.normpath(IPATH_0)
 
 
 class Test(unittest.TestCase):
@@ -66,5 +71,16 @@ class Test(unittest.TestCase):
         self.assertEqual(inp.type, itype)
         self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
         self.assertEqual(inp.opener, opener)
+
+    def test_55_make__stream(self):
+        (ipath, ipath_0) = (IPATH_0, IPATH_0_FULL)
+        ifo = open(ipath)
+        inp = TT.make(ifo, *self.cpss)
+
+        self.assertEqual(inp.src, ifo)
+        self.assertEqual(inp.path, ipath_0)
+        self.assertEqual(inp.type, TT.STREAM)
+        self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
+        self.assertEqual(inp.opener, anyconfig.utils.noop)
 
 # vim:sw=4:ts=4:et:

@@ -48,7 +48,7 @@ def guess_input_type(input_):
     return STREAM
 
 
-def _inspec_input(input_):
+def _inspect_input(input_):
     """
     :param input_:
         Input object may be string (path), pathlib.Path object or (file) stream
@@ -62,13 +62,13 @@ def _inspec_input(input_):
     ...                        "tests/00-cnf.json")
     >>> ipath_1 = anyconfig.utils.normpath(ipath_0)
 
-    >>> assert _inspec_input(ipath_0) == (PATH_STR, ipath_1, open)
-    >>> assert _inspec_input(open(ipath_0)) == (STREAM, ipath_1,
+    >>> assert _inspect_input(ipath_0) == (PATH_STR, ipath_1, open)
+    >>> assert _inspect_input(open(ipath_0)) == (STREAM, ipath_1,
     ...                                         anyconfig.utils.noop)
     >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
     ...     ipo = pathlib.Path(ipath_0)
-    ...     x = _inspec_input(ipo)
+    ...     x = _inspect_input(ipo)
     ...     assert x == (PATH_OBJ, ipath_1, ipo.open)
     """
     itype = guess_input_type(input_)
@@ -232,7 +232,7 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
     if (input_ is None or not input_) and forced_type is None:
         raise ValueError("input_ or forced_type must be some value")
 
-    (itype, ipath, opener) = _inspec_input(input_)
+    (itype, ipath, opener) = _inspect_input(input_)
     psr = find_parser(ipath, cps_by_ext, cps_by_type, forced_type=forced_type)
 
     return Input(src=input_, type=itype, path=ipath, parser=psr, opener=opener)

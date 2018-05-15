@@ -171,6 +171,7 @@ def open(path, mode=None, ac_parser=None, **options):
         builtin 'open' function.
 
     :return: A file object or None on any errors
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     inp = anyconfig.backends.inspect_input(path, forced_type=ac_parser)
     # TBD: (psr, opener) = (inp.parser, inp.opener)
@@ -227,6 +228,7 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
         - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Mapping object
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     inp = anyconfig.backends.inspect_input(path_or_stream,
                                            forced_type=ac_parser)
@@ -295,6 +297,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
         - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Mapping object or any query result might be primitive objects
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
@@ -347,6 +350,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
         :func:`single_load` and :func:`multi_load`
 
     :return: Mapping object or any query result might be primitive objects
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
@@ -383,6 +387,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
         :func:`single_load` function.
 
     :return: Mapping object or any query result might be primitive objects
+    :raises: ValueError, UnknownParserTypeError
     """
     if ac_parser is None:
         LOGGER.warning("ac_parser was not given but it's must to find correct "
@@ -419,6 +424,8 @@ def dump(data, path_or_stream, ac_parser=None, **options):
     :param options:
         Backend specific optional arguments, e.g. {"indent": 2} for JSON
         loader/dumper backend
+
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     out = anyconfig.backends.inspect_input(path_or_stream,
                                            forced_type=ac_parser)
@@ -435,6 +442,7 @@ def dumps(data, ac_parser=None, **options):
     :param options: see :func:`dump`
 
     :return: Backend-specific string representation for the given data
+    :raises: ValueError, UnknownParserTypeError
     """
     psr = anyconfig.backends.find_parser_by_type(ac_parser)
     return psr.dumps(data, **options)

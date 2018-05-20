@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2016 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Suppress:

@@ -83,6 +83,13 @@ from anyconfig.schema import validate, gen_schema
 list_types = anyconfig.backends.list_types  # flake8: noqa
 
 
+def version():
+    """
+    :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
+    """
+    return anyconfig.globals.VERSION.split('.')
+
+
 def _try_validate(cnf, schema, **options):
     """
     :param cnf: Mapping object represents configuration data
@@ -101,13 +108,6 @@ def _try_validate(cnf, schema, **options):
         return cnf
 
     return None
-
-
-def version():
-    """
-    :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
-    """
-    return anyconfig.globals.VERSION.split('.')
 
 
 def find_loader(path_or_stream, parser_or_type=None):

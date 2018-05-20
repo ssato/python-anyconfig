@@ -25,6 +25,7 @@ IPATH_0_FULL = anyconfig.utils.normpath(IPATH_0)
 
 class Test_60_make(unittest.TestCase):
     cpss = (CPS_BY_EXT, CPS_BY_TYPE)
+    (ipath, ipath_full) = (IPATH_0, IPATH_0_FULL)
 
     def test_10__ng_cases(self):
         self.assertRaises(ValueError, TT.make, None, *self.cpss)
@@ -44,17 +45,16 @@ class Test_60_make(unittest.TestCase):
         self.assertEqual(inp.opener, anyconfig.utils.noop)
 
     def test_30__by_fileext(self):
-        ipath = "/a/b/c.json"
-        inp = TT.make(ipath, *self.cpss)
+        inp = TT.make(self.ipath, *self.cpss)
 
-        self.assertEqual(inp.src, ipath)
-        self.assertEqual(inp.path, ipath)
+        self.assertEqual(inp.src, self.ipath)
+        self.assertEqual(inp.path, self.ipath_full)
         self.assertEqual(inp.type, TT.PATH_STR)
         self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
         self.assertEqual(inp.opener, open)
 
     def test_40__pathlib(self):
-        ipath = ipath_0 = "/a/b/c.json"
+        ipath = self.ipath
         if anyconfig.compat.pathlib is not None:
             # Replace w/ pathlib.Path object.
             ipath = anyconfig.compat.pathlib.Path(ipath)
@@ -67,18 +67,17 @@ class Test_60_make(unittest.TestCase):
         inp = TT.make(ipath, *self.cpss)
 
         self.assertEqual(inp.src, ipath)
-        self.assertEqual(inp.path, ipath_0)
+        self.assertEqual(inp.path, self.ipath_full)
         self.assertEqual(inp.type, itype)
         self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
         self.assertEqual(inp.opener, opener)
 
     def test_50__stream(self):
-        (ipath, ipath_0) = (IPATH_0, IPATH_0_FULL)
-        ifo = open(ipath)
+        ifo = open(self.ipath)
         inp = TT.make(ifo, *self.cpss)
 
         self.assertEqual(inp.src, ifo)
-        self.assertEqual(inp.path, ipath_0)
+        self.assertEqual(inp.path, self.ipath_full)
         self.assertEqual(inp.type, TT.STREAM)
         self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
         self.assertEqual(inp.opener, anyconfig.utils.noop)

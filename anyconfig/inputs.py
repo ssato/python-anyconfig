@@ -55,21 +55,6 @@ def inspect_input(input_):
 
     :return: A tuple of (input_type, input_path, input_opener)
     :raises: UnknownFileTypeError
-
-    >>> import os.path
-
-    >>> ipath_0 = os.path.join(os.path.dirname(__file__), "..",
-    ...                        "tests/00-cnf.json")
-    >>> ipath_1 = anyconfig.utils.normpath(ipath_0)
-
-    >>> assert inspect_input(ipath_0) == (PATH_STR, ipath_1, open)
-    >>> assert inspect_input(open(ipath_0)) == (STREAM, ipath_1,
-    ...                                         anyconfig.utils.noop)
-    >>> from anyconfig.compat import pathlib
-    >>> if pathlib is not None:
-    ...     ipo = pathlib.Path(ipath_0)
-    ...     x = inspect_input(ipo)
-    ...     assert x == (PATH_OBJ, ipath_1, ipo.open)
     """
     itype = guess_input_type(input_)
 

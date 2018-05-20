@@ -23,10 +23,10 @@ IPATH_0 = os.path.join(os.path.dirname(__file__), "00-cnf.json")
 IPATH_0_FULL = anyconfig.utils.normpath(IPATH_0)
 
 
-class Test(unittest.TestCase):
+class Test_60_make(unittest.TestCase):
     cpss = (CPS_BY_EXT, CPS_BY_TYPE)
 
-    def test_50_make__ng_cases(self):
+    def test_10__ng_cases(self):
         self.assertRaises(ValueError, TT.make, None, *self.cpss)
         self.assertRaises(UnknownParserTypeError,
                           TT.make, None, CPS_BY_EXT, CPS_BY_TYPE,
@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
         self.assertRaises(UnknownFileTypeError,
                           TT.make, "cnf.unknown_ext", *self.cpss)
 
-    def test_52_make__forced_type(self):
+    def test_20__forced_type(self):
         inp = TT.make(None, CPS_BY_EXT, CPS_BY_TYPE, forced_type="ini")
 
         self.assertEqual(inp.src, None)
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         self.assertTrue(isinstance(inp.parser, anyconfig.backend.ini.Parser))
         self.assertEqual(inp.opener, anyconfig.utils.noop)
 
-    def test_53_make__by_fileext(self):
+    def test_30__by_fileext(self):
         ipath = "/a/b/c.json"
         inp = TT.make(ipath, *self.cpss)
 
@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
         self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
         self.assertEqual(inp.opener, open)
 
-    def test_54_make__pathlib(self):
+    def test_40__pathlib(self):
         ipath = ipath_0 = "/a/b/c.json"
         if anyconfig.compat.pathlib is not None:
             # Replace w/ pathlib.Path object.
@@ -72,7 +72,7 @@ class Test(unittest.TestCase):
         self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
         self.assertEqual(inp.opener, opener)
 
-    def test_55_make__stream(self):
+    def test_50__stream(self):
         (ipath, ipath_0) = (IPATH_0, IPATH_0_FULL)
         ifo = open(ipath)
         inp = TT.make(ifo, *self.cpss)

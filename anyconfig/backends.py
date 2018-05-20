@@ -195,7 +195,7 @@ def find_parser(input_, forced_type=None):
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     if anyconfig.inputs.is_input_obj(input_):
-        return inp.parser  # It must have this.
+        return input_.parser  # It must have this.
 
     inp = inspect_input(input_, _PARSERS_BY_EXT, _PARSERS_BY_TYPE, forced_type)
     psr = inp.parser

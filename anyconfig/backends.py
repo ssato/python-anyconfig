@@ -175,6 +175,9 @@ def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
     ... except UnknownParserTypeError:
     ...     pass
     """
+    if forced_type is None or not forced_type:
+        raise ValueError("forced_type must be a some string")
+
     return anyconfig.inputs.find_parser(None, cps_by_ext=cps_by_ext,
                                         cps_by_type=cps_by_type,
                                         forced_type=forced_type)

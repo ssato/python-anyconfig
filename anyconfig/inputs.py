@@ -190,6 +190,9 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
+    if is_input_obj(input_):
+        return input_
+
     if (input_ is None or not input_) and forced_type is None:
         raise ValueError("input_ or forced_type must be some value")
 

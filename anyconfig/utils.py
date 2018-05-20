@@ -12,6 +12,8 @@ import os.path
 import types
 
 import anyconfig.compat
+import anyconfig.inputs
+
 from anyconfig.compat import pathlib
 
 
@@ -134,8 +136,9 @@ def is_file_stream(input_):
     return getattr(input_, "read", False)
 
 
-def is_path_or_path_obj_or_strm(input_, marker='*'):
-    """Is given object `input` a path string or a pathlib.Path object or a file
+def is_path_like_object(input_, marker='*'):
+    """
+    Is given object `input` a path string or a pathlib.Path object or a file
     stream (file/file-like object)?
 
     :param input_: Input object may be pathlib.Path object or something
@@ -143,19 +146,20 @@ def is_path_or_path_obj_or_strm(input_, marker='*'):
         True if `input_` is a path string or a pathlib.Path object or a file
         (stream) object
 
-    >>> assert is_path_or_path_obj_or_strm(__file__)
-    >>> assert not is_path_or_path_obj_or_strm("/a/b/c/*.json", '*')
+    >>> assert is_path_like_object(__file__)
+    >>> assert not is_path_like_object("/a/b/c/*.json", '*')
 
     >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
-    ...      assert is_path_or_path_obj_or_strm(pathlib.Path("a.ini"))
-    ...      assert not is_path_or_path_obj_or_strm(pathlib.Path("x.ini"), 'x')
+    ...      assert is_path_like_object(pathlib.Path("a.ini"))
+    ...      assert not is_path_like_object(pathlib.Path("x.ini"), 'x')
 
-    >>> assert is_path_or_path_obj_or_strm(open(__file__))
+    >>> assert is_path_like_object(open(__file__))
     """
     return ((is_path(input_) and marker not in input_) or
             (is_path_obj(input_) and marker not in input_.as_posix()) or
-            is_file_stream(input_))
+            is_file_stream(input_) or
+            anyconfig.inputs.is_input_obj(input_))
 
 
 def is_paths(maybe_paths, marker='*'):
@@ -165,7 +169,8 @@ def is_paths(maybe_paths, marker='*'):
     return ((is_path(maybe_paths) and marker in maybe_paths) or  # Path str
             (is_path_obj(maybe_paths) and marker in maybe_paths.as_posix()) or
             (is_iterable(maybe_paths) and
-             all(is_path(p) or is_path_obj(p) for p in maybe_paths)))
+             all(is_path(p) or anyconfig.inputs.is_input_obj(p) for p
+                 in maybe_paths)))
 
 
 def get_path_from_stream(maybe_stream):

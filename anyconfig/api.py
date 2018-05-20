@@ -110,12 +110,14 @@ def _try_validate(cnf, schema, **options):
     return None
 
 
-def find_loader(path_or_stream, parser_or_type=None):
+def find_loader(path, parser_or_type=None):
     """
     Find out parser object appropriate to load configuration from a file of
     given path or file or file-like object.
 
-    :param path_or_stream: Configuration file path or file or file-like object
+    :param path:
+        Configuration file path or file or file-like object or pathlib.Path
+        object if it's available
     :param parser_or_type:
         Forced configuration parser type or parser object itself
 
@@ -127,7 +129,7 @@ def find_loader(path_or_stream, parser_or_type=None):
         return parser_or_type
 
     try:
-        return anyconfig.backends.find_parser(path_or_stream,
+        return anyconfig.backends.find_parser(path,
                                               forced_type=parser_or_type)
     except (ValueError, UnknownParserTypeError, UnknownFileTypeError):
         raise
@@ -183,7 +185,7 @@ def open(path, mode=None, ac_parser=None, **options):
     return psr.ropen(path, **options)
 
 
-def single_load(path_or_stream, ac_parser=None, ac_template=False,
+def single_load(path, ac_parser=None, ac_template=False,
                 ac_context=None, **options):
     """
     Load single configuration file.
@@ -193,7 +195,9 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
        :func:`load` is a preferable alternative and this API should be used
        only if there is a need to emphasize given file path is single one.
 
-    :param path_or_stream: Configuration file path or file or file-like object
+    :param path:
+        Configuration file path or file or file-like object or pathlib.Path
+        object represents configuration file
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
         Assume configuration file may be a template file and try to compile it
@@ -223,15 +227,14 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
         - Common backend options:
 
           - ignore_missing: Ignore and just return empty result if given file
-            (``path_or_stream``) does not exist.
+            ``path`` does not exist.
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Mapping object
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    inp = anyconfig.backends.inspect_input(path_or_stream,
-                                           forced_type=ac_parser)
+    inp = anyconfig.backends.inspect_input(path, forced_type=ac_parser)
     (psr, filepath) = (inp.parser, inp.path)
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
@@ -292,7 +295,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
         - Common backend options:
 
           - ignore_missing: Ignore and just return empty result if given file
-            (``path_or_stream``) does not exist.
+            ``path`` does not exist.
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
@@ -354,7 +357,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
-    if anyconfig.utils.is_path_or_path_obj_or_strm(path_specs, marker):
+    if anyconfig.utils.is_path_like_object(path_specs, marker):
         cnf = single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                           ac_template=ac_template, ac_context=ac_context,
                           **options)
@@ -414,12 +417,13 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
     return anyconfig.query.query(cnf, **options)
 
 
-def dump(data, path_or_stream, ac_parser=None, **options):
+def dump(data, path, ac_parser=None, **options):
     """
-    Save `data` as `path_or_stream`.
+    Save `data` as `path`.
 
     :param data: A mapping object may have configurations data to dump
-    :param path_or_stream: Output file path or file / file-like object
+    :param path:
+        Output file path or file / file-like object or pathlib.Path object
     :param ac_parser: Forced parser type or parser object
     :param options:
         Backend specific optional arguments, e.g. {"indent": 2} for JSON
@@ -427,10 +431,9 @@ def dump(data, path_or_stream, ac_parser=None, **options):
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    out = anyconfig.backends.inspect_input(path_or_stream,
-                                           forced_type=ac_parser)
+    out = anyconfig.backends.inspect_input(path, forced_type=ac_parser)
     LOGGER.info("Dumping: %s", out.path)
-    out.parser.dump(data, path_or_stream, **options)
+    out.parser.dump(data, path, **options)
 
 
 def dumps(data, ac_parser=None, **options):

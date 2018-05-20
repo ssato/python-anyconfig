@@ -151,34 +151,6 @@ def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
 
     :return: Instance of parser class appropriate for the input `ipath`
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
-
-    >>> from anyconfig.backends import (
-    ...      _PARSERS_BY_EXT as cps_by_ext,
-    ...      _PARSERS_BY_TYPE as cps_by_type
-    ... )
-    >>> cpss = (cps_by_ext, cps_by_type)
-
-    >>> find_parser(None, cps_by_ext, cps_by_type,
-    ...             forced_type="type_not_exist"
-    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    UnknownParserTypeError: No parser found for type 'type_not_exist'
-    >>> find_parser("cnf.ext_not_found", *cpss
-    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    UnknownFileTypeError: No parser found for file 'cnf.ext_not_found'
-
-    >>> isinstance(find_parser(None, cps_by_ext, cps_by_type,
-    ...                        forced_type="ini"),
-    ...            anyconfig.backend.ini.Parser)
-    True
-    >>> isinstance(find_parser("cnf.json", *cpss),
-    ...            anyconfig.backend.json.Parser)
-    True
-    >>> isinstance(find_parser("cnf.json", cps_by_ext, cps_by_type,
-    ...                        forced_type="json"),
-    ...            anyconfig.backend.json.Parser)
-    True
     """
     if (ipath is None or not ipath) and forced_type is None:
         raise ValueError("ipath or forced_type must be some value")
@@ -214,23 +186,6 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
         file-like object, path string or pathlib.Path object
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
-
-    >>> from anyconfig.backends import (
-    ...      _PARSERS_BY_EXT as cps_by_ext,
-    ...      _PARSERS_BY_TYPE as cps_by_type
-    ... )
-    >>> cpss = (cps_by_ext, cps_by_type)
-
-    >>> make(None, *cpss)  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    ValueError: input_ or forced_type must be some value
-
-    >>> from anyconfig.compat import pathlib
-    >>> if pathlib is not None:
-    ...     path = pathlib.Path("/path/to/cnf.json")
-    ...     x = make(path, *cpss)
-    ...     assert isinstance(x.parser, anyconfig.backend.json.Parser)
-    ...     assert x.path == "/path/to/cnf.json"
     """
     if (input_ is None or not input_) and forced_type is None:
         raise ValueError("input_ or forced_type must be some value")

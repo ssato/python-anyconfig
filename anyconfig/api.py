@@ -83,7 +83,7 @@ from anyconfig.schema import validate, gen_schema
 list_types = anyconfig.backends.list_types  # flake8: noqa
 
 
-def _maybe_validated(cnf, schema, **options):
+def _try_validate(cnf, schema, **options):
     """
     :param cnf: Mapping object represents configuration data
     :param schema: JSON schema object
@@ -242,10 +242,10 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
                                                 ctx=ac_context)
         if content is not None:
             cnf = psr.loads(content, **options)
-            return _maybe_validated(cnf, schema, **options)
+            return _try_validate(cnf, schema, **options)
 
     cnf = psr.load(inp.src, **options)
-    return _maybe_validated(cnf, schema, **options)
+    return _try_validate(cnf, schema, **options)
 
 
 def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
@@ -322,7 +322,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     if cnf is None:
         return anyconfig.dicts.convert_to({}, **options)
 
-    cnf = _maybe_validated(cnf, schema, **options)
+    cnf = _try_validate(cnf, schema, **options)
     return anyconfig.query.query(cnf, **options)
 
 
@@ -410,7 +410,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
             content = compiled
 
     cnf = psr.loads(content, ac_dict=ac_dict, **options)
-    cnf = _maybe_validated(cnf, schema, **options)
+    cnf = _try_validate(cnf, schema, **options)
     return anyconfig.query.query(cnf, **options)
 
 

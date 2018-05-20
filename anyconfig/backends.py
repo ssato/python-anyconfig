@@ -188,7 +188,9 @@ def find_parser(input_, forced_type=None):
     Find out appropriate parser object to load from a file of given path or
     file/file-like object.
 
-    :param input_: File path, file / file-like object or pathlib.Path object
+    :param input_:
+        File path, file / file-like object or pathlib.Path object or 'Input'
+        named tuple object previously created.
     :param forced_type: Forced configuration parser type
 
     :return: A tuple of (Parser class or None, "" or error message)

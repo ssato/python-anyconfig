@@ -9,9 +9,13 @@ import os.path
 import unittest
 import anyconfig.backend.json
 import anyconfig.backends as TT
+import anyconfig.inputs
 
 from anyconfig.compat import pathlib
 from anyconfig.globals import UnknownParserTypeError, UnknownFileTypeError
+
+
+CNF_PATH = os.path.join(os.path.dirname(__file__), "00-cnf.json")
 
 
 class Test(unittest.TestCase):
@@ -52,5 +56,11 @@ class Test(unittest.TestCase):
         if pathlib is not None:
             inp = pathlib.Path("x.json")
             self.assertTrue(isinstance(TT.find_parser(inp), pcls))
+
+    def test_34_find_parser__input_object(self):
+        inp = anyconfig.inputs.make(CNF_PATH,
+                                    TT._PARSERS_BY_EXT, TT._PARSERS_BY_TYPE)
+        psr = TT.find_parser(inp)
+        self.assertTrue(isinstance(psr, anyconfig.backend.json.Parser))
 
 # vim:sw=4:ts=4:et:

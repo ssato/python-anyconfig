@@ -27,6 +27,13 @@ class Test_60_make(unittest.TestCase):
     cpss = (CPS_BY_EXT, CPS_BY_TYPE)
     (ipath, ipath_full) = (IPATH_0, IPATH_0_FULL)
 
+    def __checks_helper(self, inp, *args):
+        self.assertEqual(inp.src, args[0])
+        self.assertEqual(inp.path, args[1])
+        self.assertEqual(inp.type, args[2])
+        self.assertTrue(isinstance(inp.parser, args[3]))
+        self.assertEqual(inp.opener, args[4])
+
     def test_10__ng_cases(self):
         self.assertRaises(ValueError, TT.make, None, *self.cpss)
         self.assertRaises(UnknownParserTypeError,
@@ -37,21 +44,14 @@ class Test_60_make(unittest.TestCase):
 
     def test_20__forced_type(self):
         inp = TT.make(None, CPS_BY_EXT, CPS_BY_TYPE, forced_type="ini")
-
-        self.assertEqual(inp.src, None)
-        self.assertEqual(inp.path, None)
-        self.assertEqual(inp.type, None)
-        self.assertTrue(isinstance(inp.parser, anyconfig.backend.ini.Parser))
-        self.assertEqual(inp.opener, anyconfig.utils.noop)
+        self.__checks_helper(inp, None, None, None,
+                             anyconfig.backend.ini.Parser,
+                             anyconfig.utils.noop)
 
     def test_30__by_fileext(self):
         inp = TT.make(self.ipath, *self.cpss)
-
-        self.assertEqual(inp.src, self.ipath)
-        self.assertEqual(inp.path, self.ipath_full)
-        self.assertEqual(inp.type, TT.PATH_STR)
-        self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
-        self.assertEqual(inp.opener, open)
+        self.__checks_helper(inp, self.ipath, self.ipath_full, TT.PATH_STR,
+                             anyconfig.backend.json.Parser, open)
 
     def test_40__pathlib(self):
         ipath = self.ipath
@@ -65,21 +65,14 @@ class Test_60_make(unittest.TestCase):
             opener = open
 
         inp = TT.make(ipath, *self.cpss)
-
-        self.assertEqual(inp.src, ipath)
-        self.assertEqual(inp.path, self.ipath_full)
-        self.assertEqual(inp.type, itype)
-        self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
-        self.assertEqual(inp.opener, opener)
+        self.__checks_helper(inp, ipath, self.ipath_full, itype,
+                             anyconfig.backend.json.Parser, opener)
 
     def test_50__stream(self):
         ifo = open(self.ipath)
         inp = TT.make(ifo, *self.cpss)
-
-        self.assertEqual(inp.src, ifo)
-        self.assertEqual(inp.path, self.ipath_full)
-        self.assertEqual(inp.type, TT.STREAM)
-        self.assertTrue(isinstance(inp.parser, anyconfig.backend.json.Parser))
-        self.assertEqual(inp.opener, anyconfig.utils.noop)
+        self.__checks_helper(inp, ifo, self.ipath_full, TT.STREAM,
+                             anyconfig.backend.json.Parser,
+                             anyconfig.utils.noop)
 
 # vim:sw=4:ts=4:et:

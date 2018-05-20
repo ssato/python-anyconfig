@@ -2,7 +2,7 @@
 # Copyright (C) 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring, invalid-name
 import os.path
 import unittest
 

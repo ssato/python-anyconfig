@@ -150,7 +150,7 @@ def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
     :param forced_type: Forced configuration parser type or parser object
 
     :return: Instance of parser class appropriate for the input `ipath`
-    :raises: UnknownParserTypeError, UnknownFileTypeError
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
 
     >>> from anyconfig.backends import (
     ...      _PARSERS_BY_EXT as cps_by_ext,
@@ -180,6 +180,9 @@ def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
     ...            anyconfig.backend.json.Parser)
     True
     """
+    if (ipath is None or not ipath) and forced_type is None:
+        raise ValueError("ipath or forced_type must be some value")
+
     if forced_type is None:
         parser = find_by_filepath(ipath, cps_by_ext)
         if parser is None:

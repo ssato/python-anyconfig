@@ -28,14 +28,14 @@ def is_input_obj(obj):
     """
     :return: True if given something `obj` is a 'Input' namedtuple object.
 
-    >>> assert is_input_obj(1) == False
-    >>> assert is_input_obj("aaa") == False
-    >>> assert is_input_obj({}) == False
+    >>> assert not is_input_obj(1)
+    >>> assert not is_input_obj("aaa")
+    >>> assert not is_input_obj({})
+    >>> assert not is_input_obj(('a', 1, {}))
     >>> inp = Input("/etc/hosts", PATH_STR, "/etc/hosts", None, open)
     >>> assert is_input_obj(inp)
     """
     if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
-        # I don't think there is another way to do that.
         return all(k in obj._asdict() for k in _INPUT_KEYS)
 
     return False

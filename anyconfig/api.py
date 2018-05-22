@@ -75,7 +75,7 @@ import anyconfig.utils
 
 from anyconfig.dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    get, set_, merge # flake8: noqa
+    get, set_, merge  # flake8: noqa
 )
 from anyconfig.schema import validate, gen_schema
 

@@ -213,7 +213,7 @@ def get_path_from_stream(maybe_stream):
 
     maybe_path = getattr(maybe_stream, "name", None)
     if maybe_path is not None:
-        maybe_path = os.path.abspath(maybe_path)
+        maybe_path = normpath(maybe_path)
 
     return maybe_path
 

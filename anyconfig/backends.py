@@ -150,7 +150,7 @@ def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
     :return: anyconfig.inputs.Input object :: namedtuple
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    return anyconfig.inputs.make(input_, _PARSERS_BY_EXT, _PARSERS_BY_TYPE,
+    return anyconfig.inputs.make(input_, cps_by_ext, cps_by_type,
                                  forced_type=forced_type)
 
 

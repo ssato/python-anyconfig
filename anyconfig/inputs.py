@@ -18,27 +18,9 @@ import anyconfig.utils
 from anyconfig.globals import UnknownFileTypeError, UnknownParserTypeError
 
 
-_INPUT_KEYS = "src type path parser opener".split()
-Input = collections.namedtuple("Input", _INPUT_KEYS)
+Input = collections.namedtuple("Input", anyconfig.utils.INPUT_KEYS)
 ITYPES = (NONE, PATH_STR, PATH_OBJ, STREAM) = (None, "path", "pathlib.Path",
                                                "stream")
-
-
-def is_input_obj(obj):
-    """
-    :return: True if given something `obj` is a 'Input' namedtuple object.
-
-    >>> assert not is_input_obj(1)
-    >>> assert not is_input_obj("aaa")
-    >>> assert not is_input_obj({})
-    >>> assert not is_input_obj(('a', 1, {}))
-    >>> inp = Input("/etc/hosts", PATH_STR, "/etc/hosts", None, open)
-    >>> assert is_input_obj(inp)
-    """
-    if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
-        return all(k in obj._asdict() for k in _INPUT_KEYS)
-
-    return False
 
 
 def guess_input_type(input_):
@@ -190,7 +172,7 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    if is_input_obj(input_):
+    if anyconfig.utils.is_input_obj(input_):
         return input_
 
     if (input_ is None or not input_) and forced_type is None:

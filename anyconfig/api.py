@@ -185,7 +185,7 @@ def open(path, mode=None, ac_parser=None, **options):
     return psr.ropen(path, **options)
 
 
-def single_load(path, ac_parser=None, ac_template=False,
+def single_load(input_, ac_parser=None, ac_template=False,
                 ac_context=None, **options):
     """
     Load single configuration file.
@@ -193,11 +193,12 @@ def single_load(path, ac_parser=None, ac_template=False,
     .. note::
 
        :func:`load` is a preferable alternative and this API should be used
-       only if there is a need to emphasize given file path is single one.
+       only if there is a need to emphasize given input `input_` is single one.
 
-    :param path:
-        Configuration file path or file or file-like object or pathlib.Path
-        object represents configuration file
+    :param input_:
+        File path or file or file-like object or pathlib.Path object represents
+        the file or a namedtuple `~anyconfig.inputs.Input` object represents
+        some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
         Assume configuration file may be a template file and try to compile it
@@ -227,14 +228,14 @@ def single_load(path, ac_parser=None, ac_template=False,
         - Common backend options:
 
           - ignore_missing: Ignore and just return empty result if given file
-            ``path`` does not exist.
+            ``input_`` does not exist.
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Mapping object
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    inp = anyconfig.backends.inspect_input(path, forced_type=ac_parser)
+    inp = anyconfig.backends.inspect_input(input_, forced_type=ac_parser)
     (psr, filepath) = (inp.parser, inp.path)
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)

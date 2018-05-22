@@ -143,6 +143,8 @@ def _maybe_schema(**options):
           to compile it AAR if True
         - ac_context: Mapping object presents context to instantiate template
         - ac_schema: JSON schema file path to validate configuration files
+
+    :return: Mapping object or None means some errors
     """
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:

@@ -16,6 +16,7 @@ import operator
 import pkg_resources
 
 import anyconfig.compat
+import anyconfig.inputs
 import anyconfig.utils
 
 import anyconfig.backend.base
@@ -25,7 +26,6 @@ import anyconfig.backend.pickle
 import anyconfig.backend.properties
 import anyconfig.backend.shellvars
 import anyconfig.backend.xml
-import anyconfig.inputs
 
 
 LOGGER = logging.getLogger(__name__)

@@ -185,6 +185,38 @@ def open(path, mode=None, ac_parser=None, **options):
     return psr.ropen(path, **options)
 
 
+def _single_load(input_, ac_parser=None, ac_template=False,
+                 ac_context=None, **options):
+    """
+    :param input_:
+        File path or file or file-like object or pathlib.Path object represents
+        the file or a namedtuple `~anyconfig.inputs.Input` object represents
+        some input to load some data from
+    :param ac_parser: Forced parser type or parser object itself
+    :param ac_template:
+        Assume configuration file may be a template file and try to compile it
+        AAR if True
+    :param ac_context: A dict presents context to instantiate template
+    :param options:
+        Optional keyword arguments :func:`single_load` supports except for
+        ac_schema and ac_query
+
+    :return: Mapping object
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
+    """
+    inp = anyconfig.backends.inspect_input(input_, forced_type=ac_parser)
+    (psr, filepath) = (inp.parser, inp.path)
+
+    LOGGER.info("Loading: %s", filepath)
+    if ac_template and filepath is not None:
+        content = anyconfig.template.try_render(filepath=filepath,
+                                                ctx=ac_context)
+        if content is not None:
+            return psr.loads(content, **options)
+
+    return psr.load(inp.src, **options)
+
+
 def single_load(input_, ac_parser=None, ac_template=False,
                 ac_context=None, **options):
     """
@@ -235,21 +267,12 @@ def single_load(input_, ac_parser=None, ac_template=False,
     :return: Mapping object
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    inp = anyconfig.backends.inspect_input(input_, forced_type=ac_parser)
-    (psr, filepath) = (inp.parser, inp.path)
+    cnf = _single_load(input_, ac_parser=ac_parser, ac_template=ac_template,
+                       ac_context=ac_context, **options)
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
-
-    LOGGER.info("Loading: %s", filepath)
-    if ac_template and filepath is not None:
-        content = anyconfig.template.try_render(filepath=filepath,
-                                                ctx=ac_context)
-        if content is not None:
-            cnf = psr.loads(content, **options)
-            return _try_validate(cnf, schema, **options)
-
-    cnf = psr.load(inp.src, **options)
-    return _try_validate(cnf, schema, **options)
+    cnf = _try_validate(cnf, schema, **options)
+    return anyconfig.query.query(cnf, **options)
 
 
 def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
@@ -315,8 +338,8 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     cnf = ac_context
     for path in paths:
         opts = options.copy()
-        cups = single_load(path, ac_parser=ac_parser,
-                           ac_template=ac_template, ac_context=cnf, **opts)
+        cups = _single_load(path, ac_parser=ac_parser,
+                            ac_template=ac_template, ac_context=cnf, **opts)
         if cups:
             if cnf is None:
                 cnf = cups
@@ -359,10 +382,9 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
     if anyconfig.utils.is_path_like_object(path_specs, marker):
-        cnf = single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
+        return single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                           ac_template=ac_template, ac_context=ac_context,
                           **options)
-        return anyconfig.query.query(cnf, **options)
 
     if not anyconfig.utils.is_paths(path_specs, marker):
         raise ValueError("Something goes wrong with your input %r", path_specs)

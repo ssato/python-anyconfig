@@ -275,7 +275,7 @@ def single_load(input_, ac_parser=None, ac_template=False,
     return anyconfig.query.query(cnf, **options)
 
 
-def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
+def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
                **options):
     """
     Load multiple config files.
@@ -283,20 +283,22 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     .. note::
 
        :func:`load` is a preferable alternative and this API should be used
-       only if there is a need to emphasize given file paths are multiple ones.
+       only if there is a need to emphasize given inputs are multiple ones.
 
-    The first argument `paths` may be a list of config file paths or
-    a glob pattern specifying that. That is, if a.yml, b.yml and c.yml are in
-    the dir /etc/foo/conf.d/, the followings give same results::
+    The first argument `inputs` may be a list of file paths or a glob pattern
+    specifying that. That is, if a.yml, b.yml and c.yml are in the dir
+    /etc/foo/conf.d/, the followings give same results::
 
       multi_load(["/etc/foo/conf.d/a.yml", "/etc/foo/conf.d/b.yml",
                   "/etc/foo/conf.d/c.yml", ])
 
       multi_load("/etc/foo/conf.d/*.yml")
 
-    :param paths:
-        List of configuration file paths or a glob pattern to list of these
-        paths, or a list of file or file-like objects
+    :param inputs:
+        A list of file path or a glob pattern to list of files, file or
+        file-like object or pathlib.Path object represents the file or a
+        namedtuple `~anyconfig.inputs.Input` object represents some input to
+        load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
@@ -331,7 +333,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
                            **options)
     options["ac_schema"] = None  # Avoid to load schema more than twice.
 
-    paths = anyconfig.utils.norm_paths(paths, marker=marker)
+    paths = anyconfig.utils.norm_paths(inputs, marker=marker)
     if anyconfig.utils.are_same_file_types(paths):
         ac_parser = anyconfig.backends.find_parser(paths[0], ac_parser)
 

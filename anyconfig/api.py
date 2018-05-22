@@ -146,8 +146,8 @@ def _maybe_schema(**options):
     """
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
-        # Try to detect the appropriate as it may be different from the
-        # original config file's format, perhaps.
+        # Try to detect the appropriate parser to load the schema data as it
+        # may be different from the original config file's format, perhaps.
         options["ac_parser"] = None
         options["ac_schema"] = None  # Avoid infinite loop.
         LOGGER.info("Loading schema: %s", ac_schema)

@@ -19,7 +19,7 @@ import anyconfig.dicts
 import anyconfig.template
 import tests.common
 
-from tests.common import CNF_0, SCM_0, dicts_equal
+from tests.common import CNF_0, SCM_0, dicts_equal, selfdir
 
 
 # suppress logging messages.
@@ -168,7 +168,7 @@ class Test_20_dumps_and_loads(TestBase):
         cnf_s = TT.dumps(CNF_0, "json")
         scm_s = TT.dumps(SCM_0, "json")
         cnf_2 = TT.loads(cnf_s, ac_parser="json", ac_context={},
-                         ac_validate=scm_s)
+                         ac_schema=scm_s)
 
         self.assertEqual(cnf_2["name"], CNF_0["name"])
         self.assertEqual(cnf_2["a"], CNF_0["a"])
@@ -355,6 +355,40 @@ class Test_32_single_load(unittest.TestCase):
             self._load_and_dump_with_opened_files("a.yml")
 
 
+class Test_34_single_load(TestBaseWithIO):
+
+    def test_10_single_load_w_validation(self):
+        cnf_path = os.path.join(self.workdir, "cnf.json")
+        scm_path = os.path.join(self.workdir, "scm.json")
+        TT.dump(CNF_0, cnf_path)
+        TT.dump(SCM_0, scm_path)
+
+        cnf_2 = TT.single_load(cnf_path, ac_context={}, ac_schema=scm_path)
+
+        self.assertEqual(cnf_2["name"], CNF_0["name"])
+        self.assertEqual(cnf_2["a"], CNF_0["a"])
+        self.assertEqual(cnf_2["b"]["b"], CNF_0["b"]["b"])
+        self.assertEqual(cnf_2["b"]["c"], CNF_0["b"]["c"])
+
+    def test_20_single_load_w_query(self):
+        cpath = os.path.join(self.workdir, "cnf.json")
+        TT.dump(CNF_0, cpath)
+
+        try:
+            if TT.query.jmespath:
+                self.assertEqual(TT.single_load(cpath, ac_query="a"), 1)
+                self.assertEqual(TT.single_load(cpath, ac_query="b.b"), [1, 2])
+                self.assertEqual(TT.single_load(cpath, ac_query="b.b[1]"), 2)
+                self.assertEqual(TT.single_load(cpath, ac_query="b.b[1:]"),
+                                 [2])
+                self.assertEqual(TT.single_load(cpath, ac_query="b.b[::-1]"),
+                                 [2, 1])
+                self.assertEqual(TT.single_load(cpath, ac_query="length(b.b)"),
+                                 2)
+        except (NameError, AttributeError):
+            pass  # jmespath is not available.
+
+
 class TestBaseWithIOMultiFiles(TestBaseWithIO):
 
     def setUp(self):
@@ -489,6 +523,19 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         self.assertTrue(isinstance(res, MyODict))
 
 
+class Test_44_multi_load(TestBase):
+
+    def test_10_multi_load_w_validation_for_partial_single_config_files(self):
+        cpaths = [os.path.join(selfdir(), "00-00-cnf.json"),
+                  os.path.join(selfdir(), "00-01-cnf.json"),
+                  os.path.join(selfdir(), "00-02-cnf.json")]
+        spath = os.path.join(selfdir(), "00-scm.json")
+
+        cnf = TT.multi_load(cpaths, ac_schema=spath)
+        ref = TT.multi_load(cpaths)
+        self.assert_dicts_equal(cnf, ref, ordered=False)
+
+
 class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
 
     def test_30_dump_and_load(self):
@@ -550,7 +597,7 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
         TT.dump(CNF_0, cnf_path)
         TT.dump(SCM_0, scm_path)
 
-        cnf_2 = TT.load(cnf_path, ac_context={}, ac_validate=scm_path)
+        cnf_2 = TT.load(cnf_path, ac_context={}, ac_schema=scm_path)
 
         self.assertEqual(cnf_2["name"], CNF_0["name"])
         self.assertEqual(cnf_2["a"], CNF_0["a"])
@@ -563,7 +610,7 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
         TT.dump(CNF_0, cnf_path)
         TT.dump(SCM_0, scm_path)
 
-        cnf_2 = TT.load(cnf_path, ac_context={}, ac_validate=scm_path)
+        cnf_2 = TT.load(cnf_path, ac_context={}, ac_schema=scm_path)
 
         self.assertEqual(cnf_2["name"], CNF_0["name"])
         self.assertEqual(cnf_2["a"], CNF_0["a"])

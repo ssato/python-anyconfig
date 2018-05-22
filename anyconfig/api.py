@@ -295,10 +295,10 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
       multi_load("/etc/foo/conf.d/*.yml")
 
     :param inputs:
-        A list of file path or a glob pattern to list of files, file or
-        file-like object or pathlib.Path object represents the file or a
-        namedtuple `~anyconfig.inputs.Input` object represents some input to
-        load some data from
+        A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
+        files, file or file-like object or pathlib.Path object represents the
+        file or a namedtuple `~anyconfig.inputs.Input` object represents some
+        input to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
@@ -361,8 +361,11 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
 
-    :param path_specs: Configuration file path or paths or its pattern such as
-        r'/a/b/\*.json' or a list of files/file-like objects
+    :param path_specs:
+        A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
+        files, file or file-like object or pathlib.Path object represents the
+        file or a namedtuple `~anyconfig.inputs.Input` object represents some
+        input to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:
         callable (function or class) to make mapping object will be returned as

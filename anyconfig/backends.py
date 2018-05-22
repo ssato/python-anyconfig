@@ -166,14 +166,6 @@ def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
         An instance of :class:`~anyconfig.backend.base.Parser` or None means no
         appropriate parser was found
     :raises: UnknownParserTypeError
-
-    >>> from anyconfig.globals import UnknownParserTypeError
-    >>> isinstance(find_parser_by_type("json"), anyconfig.backend.json.Parser)
-    True
-    >>> try:
-    ...     find_parser_by_type("missing_type")
-    ... except UnknownParserTypeError:
-    ...     pass
     """
     if forced_type is None or not forced_type:
         raise ValueError("forced_type must be a some string")

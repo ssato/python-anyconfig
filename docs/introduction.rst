@@ -295,16 +295,12 @@ There is a couple of ways to install python-anyconfig:
 
 - Binary RPMs:
 
-  If you're Fedora or Red Hat Enterprise Linux user, you can install RPMs from
-  the copr repository,
-  http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/.
+  If you're running Fedora 27+ or CentOS, you can install RPMs from these
+  official yum repos. And you're running Red Hat Enterprise Linux 7 or later,
+  you can install RPMs from EPEL repos [#]_ .
 
-  If what you're running is Fedora, maybe you can enable this repo with DNF's
-  copr plugin's help [#]_ like this:
-
-  .. code-block:: console
-
-    # dnf copr enable ssato/python-anyconfig
+  Or if you want to install the latest version, optionally, you can enable my
+  copr repo, http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/ .
 
 - PyPI: You can install python-anyconfig from PyPI with using pip:
 
@@ -334,7 +330,7 @@ There is a couple of ways to install python-anyconfig:
 
 - Build from source: Of course you can build and/or install python modules in usual way such like 'python setup.py bdist'.
 
-.. [#] http://dnf-plugins-core.readthedocs.org/en/latest/copr.html
+.. [#] Thanks to Brett-san! https://src.fedoraproject.org/rpms/python-anyconfig/
 
 Help and feedbak
 -----------------

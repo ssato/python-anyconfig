@@ -175,9 +175,7 @@ def open(path, mode=None, ac_parser=None, **options):
     :return: A file object or None on any errors
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    inp = anyconfig.backends.inspect_input(path, forced_type=ac_parser)
-    # TBD: (psr, opener) = (inp.parser, inp.opener)
-    psr = inp.parser
+    psr = anyconfig.backends.find_parser(path, forced_type=ac_parser)
 
     if mode is not None and mode.startswith('w'):
         return psr.wopen(path, **options)

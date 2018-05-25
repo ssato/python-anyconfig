@@ -239,13 +239,13 @@ class LoaderMixin(object):
         options = self._load_options(container, **options)
         return self.load_from_string(content, container, **options)
 
-    def load(self, path_or_stream, ignore_missing=False, **options):
+    def load(self, path_or_stream, ac_ignore_missing=False, **options):
         """
         Load config from a file path or a file / file-like object
         `path_or_stream` after some checks.
 
         :param path_or_stream: Config file path or file{,-like} object
-        :param ignore_missing:
+        :param ac_ignore_missing:
             Ignore and just return None if given `path_or_stream` is not a file
             / file-like object (thus, it should be a file path) and does not
             exist in actual.
@@ -261,7 +261,7 @@ class LoaderMixin(object):
         options = self._load_options(container, **options)
 
         if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
-            if ignore_missing and not os.path.exists(path_or_stream):
+            if ac_ignore_missing and not os.path.exists(path_or_stream):
                 return container()
 
             cnf = self.load_from_path(path_or_stream, container, **options)

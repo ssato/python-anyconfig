@@ -29,11 +29,11 @@ class Test00(unittest.TestCase):
         self.assertEqual(cnf, MZERO)
         self.assertTrue(isinstance(cnf, type(MZERO)))
 
-    def test_30_load__ignore_missing(self):
+    def test_30_load__ac_ignore_missing(self):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        cnf = self.psr.load(cpath, ignore_missing=True)
+        cnf = self.psr.load(cpath, ac_ignore_missing=True)
         self.assertEqual(cnf, MZERO)
         self.assertTrue(isinstance(cnf, type(MZERO)))
 

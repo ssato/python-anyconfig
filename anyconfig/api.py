@@ -207,6 +207,11 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     inp = anyconfig.backends.inspect_input(input_, forced_type=ac_parser)
     (psr, filepath) = (inp.parser, inp.path)
 
+    # TODO: 'ignore_missing' option should be deprecated and removed.
+    options["ac_ignore_missing"] = options.get("ac_ignore_missing",
+                                               options.get("ignore_missing",
+                                                           False))
+
     LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:
         content = anyconfig.template.try_render(filepath=filepath,
@@ -259,8 +264,9 @@ def single_load(input_, ac_parser=None, ac_template=False,
 
         - Common backend options:
 
-          - ignore_missing: Ignore and just return empty result if given file
-            ``input_`` does not exist.
+          - ac_ignore_missing:
+            Ignore and just return empty result if given file ``input_`` does
+            not exist actually.
 
         - Backend specific options such as {"indent": 2} for JSON backend
 

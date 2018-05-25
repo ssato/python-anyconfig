@@ -487,6 +487,10 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         assert not os.path.exists(cpath)
 
         self.assertEqual(TT.multi_load([cpath], ac_parser="ini",
+                                       ac_ignore_missing=True),
+                         NULL_CNTNR)
+        # It will be remove after 'ignore_missing' was deprecated and removed.
+        self.assertEqual(TT.multi_load([cpath], ac_parser="ini",
                                        ignore_missing=True),
                          NULL_CNTNR)
 

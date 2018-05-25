@@ -207,7 +207,9 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     inp = anyconfig.backends.inspect_input(input_, forced_type=ac_parser)
     (psr, filepath) = (inp.parser, inp.path)
 
-    # TODO: 'ignore_missing' option should be deprecated and removed.
+    # .. note::
+    #    This will be kept for backward compatibility until 'ignore_missing'
+    #    option is deprecated and removed completely.
     options["ac_ignore_missing"] = options.get("ac_ignore_missing",
                                                options.get("ignore_missing",
                                                            False))

@@ -140,15 +140,15 @@ def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
     if (ipath is None or not ipath) and forced_type is None:
         raise ValueError("ipath or forced_type must be some value")
 
+    if isinstance(forced_type, anyconfig.backend.base.Parser):
+        return forced_type
+
     if forced_type is None:
         parser = find_by_filepath(ipath, cps_by_ext)
         if parser is None:
             raise UnknownFileTypeError(ipath)
 
         return parser()
-
-    if isinstance(forced_type, anyconfig.backend.base.Parser):
-        return forced_type
 
     parser = find_by_type(forced_type, cps_by_type)
     if parser is None:

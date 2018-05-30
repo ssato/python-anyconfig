@@ -21,6 +21,8 @@ SCM_0 = {"type": "object",
                    "properties": {
                        "b": {"type": "array",
                              "items": {"type": "integer"}}}}}}
+# :seealso: tests/00-cnf.json
+CNF_1 = {"a": 1, "b": {"b": [1, 2], "c": "C"}, "name": "aaa"}
 
 
 def selfdir():

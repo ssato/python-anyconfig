@@ -19,7 +19,7 @@ import anyconfig.dicts
 import anyconfig.template
 import tests.common
 
-from tests.common import CNF_0, SCM_0, dicts_equal, selfdir
+from tests.common import CNF_0, SCM_0, CNF_1, dicts_equal, selfdir
 
 
 # suppress logging messages.
@@ -180,6 +180,31 @@ class Test_20_dumps_and_loads(TestBase):
         scm_s = TT.dumps(SCM_0, "json")
         cnf_2 = TT.loads(cnf_s, ac_parser="json", ac_schema=scm_s)
         self.assertTrue(cnf_2 is None, cnf_2)
+
+
+class Test_22_single_load(TestBase):
+
+    a_path = os.path.join(selfdir(), "00-cnf.json")
+    cnf = CNF_1
+    pathlib = anyconfig.compat.pathlib
+
+    def test_10__single_load(self):
+        res = TT.single_load(self.a_path)
+        self.assert_dicts_equal(res, self.cnf)
+
+    def test_12__single_load__ac_parser(self):
+        res = TT.single_load(self.a_path, ac_parser="json")
+        self.assert_dicts_equal(res, self.cnf)
+
+    def test_20__single_load__stream(self):
+        res = TT.single_load(open(self.a_path), ac_parser="json")
+        self.assert_dicts_equal(res, self.cnf)
+
+    def test_30__single_load__pathlib(self):
+        if self.pathlib:
+            pobj = self.pathlib.Path(self.a_path)
+            res = TT.single_load(pobj)
+            self.assert_dicts_equal(res, self.cnf)
 
 
 class TestBaseWithIO(TestBase):

@@ -206,6 +206,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     """
     inp = anyconfig.backends.inspect_input(input_, forced_type=ac_parser)
     (psr, filepath) = (inp.parser, inp.path)
+    src = inp.path if inp.type == anyconfig.inputs.PATH_OBJ else inp.src
 
     # .. note::
     #    This will be kept for backward compatibility until 'ignore_missing'
@@ -221,7 +222,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
         if content is not None:
             return psr.loads(content, **options)
 
-    return psr.load(inp.src, **options)
+    return psr.load(src, **options)
 
 
 def single_load(input_, ac_parser=None, ac_template=False,

@@ -217,7 +217,7 @@ class Test_30_single_load(TestBaseWithIO):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEqual(TT.single_load(cpath, "ini", ignore_missing=True),
+        self.assertEqual(TT.single_load(cpath, "ini", ac_ignore_missing=True),
                          NULL_CNTNR)
 
     def test_15_single_load__fail_to_render_template(self):

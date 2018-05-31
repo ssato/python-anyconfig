@@ -260,7 +260,7 @@ class LoaderMixin(object):
         container = self._container_factory(**options)
         options = self._load_options(container, **options)
 
-        if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
+        if anyconfig.utils.is_path(path_or_stream):
             if ac_ignore_missing and not os.path.exists(path_or_stream):
                 return container()
 
@@ -344,7 +344,7 @@ class DumperMixin(object):
         """
         kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
 
-        if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
+        if anyconfig.utils.is_path(path_or_stream):
             ensure_outdir_exists(path_or_stream)
             self.dump_to_path(cnf, path_or_stream, **kwargs)
         else:

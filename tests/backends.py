@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring, invalid-name, protected-access
 from __future__ import absolute_import
 
 import os.path

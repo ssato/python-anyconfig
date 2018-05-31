@@ -16,7 +16,7 @@ import operator
 import pkg_resources
 
 import anyconfig.compat
-import anyconfig.inputs
+import anyconfig.ioobjects
 import anyconfig.utils
 
 import anyconfig.backend.base
@@ -147,11 +147,11 @@ def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
     :param input_: File path, file / file-like object or pathlib.Path object
     :param forced_type: Forced type of parser to load input
 
-    :return: anyconfig.inputs.Input object :: namedtuple
+    :return: anyconfig.ioobjects.Input object :: namedtuple
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    return anyconfig.inputs.make(input_, cps_by_ext, cps_by_type,
-                                 forced_type=forced_type)
+    return anyconfig.ioobjects.make(input_, cps_by_ext, cps_by_type,
+                                    forced_type=forced_type)
 
 
 def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
@@ -170,9 +170,9 @@ def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
     if forced_type is None or not forced_type:
         raise ValueError("forced_type must be a some string")
 
-    return anyconfig.inputs.find_parser(None, cps_by_ext=cps_by_ext,
-                                        cps_by_type=cps_by_type,
-                                        forced_type=forced_type)
+    return anyconfig.ioobjects.find_parser(None, cps_by_ext=cps_by_ext,
+                                           cps_by_type=cps_by_type,
+                                           forced_type=forced_type)
 
 
 def find_parser(input_, forced_type=None):

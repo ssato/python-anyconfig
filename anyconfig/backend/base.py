@@ -246,7 +246,7 @@ class LoaderMixin(object):
 
         :param input_:
             File path or file or file-like object or pathlib.Path object
-            represents the file or a namedtuple `~anyconfig.inputs.Input`
+            represents the file or a namedtuple `~anyconfig.ioobjects.Input`
             object represents some input to load some data from
 
         :param ac_ignore_missing:

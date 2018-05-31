@@ -286,7 +286,7 @@ def single_load(input_, ac_parser=None, ac_template=False,
 
 def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
                **options):
-    """
+    r"""
     Load multiple config files.
 
     .. note::

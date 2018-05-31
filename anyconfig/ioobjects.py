@@ -23,55 +23,55 @@ ITYPES = (NONE, PATH_STR, PATH_OBJ, STREAM) = (None, "path", "pathlib.Path",
                                                "stream")
 
 
-def guess_input_type(input_):
-    """Guess input type of ``input_``.
+def guess_ioobjtype(ioobj):
+    """Guess input type of ``ioobj``.
 
-    :param input_:
+    :param ioobj:
         Input object may be string (path), pathlib.Path object or (file) stream
     :return: Input type, NONE | PATH_STR | PATH_OBJ | STREAM
 
     >>> apath = "/path/to/a_conf.ext"
-    >>> assert guess_input_type(apath) == PATH_STR
+    >>> assert guess_ioobjtype(apath) == PATH_STR
 
     >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
-    ...     assert guess_input_type(pathlib.Path(apath)) == PATH_OBJ
-    >>> assert guess_input_type(open(__file__)) == STREAM
+    ...     assert guess_ioobjtype(pathlib.Path(apath)) == PATH_OBJ
+    >>> assert guess_ioobjtype(open(__file__)) == STREAM
     """
-    if input_ is None:
+    if ioobj is None:
         return NONE
-    elif anyconfig.utils.is_path(input_):
+    elif anyconfig.utils.is_path(ioobj):
         return PATH_STR
-    elif anyconfig.utils.is_path_obj(input_):
+    elif anyconfig.utils.is_path_obj(ioobj):
         return PATH_OBJ
 
     return STREAM
 
 
-def inspect_input(input_):
+def inspect_input(ioobj):
     """
-    :param input_:
+    :param ioobj:
         Input object may be string (path), pathlib.Path object or (file) stream
 
-    :return: A tuple of (input_type, input_path, input_opener)
+    :return: A tuple of (ioobjtype, ioobjpath, ioobjopener)
     :raises: UnknownFileTypeError
     """
-    itype = guess_input_type(input_)
+    itype = guess_ioobjtype(ioobj)
 
     if itype == PATH_STR:
-        ipath = anyconfig.utils.normpath(input_)
+        ipath = anyconfig.utils.normpath(ioobj)
         opener = open
     elif itype == PATH_OBJ:
-        ipath = anyconfig.utils.normpath(input_.as_posix())
-        opener = input_.open
+        ipath = anyconfig.utils.normpath(ioobj.as_posix())
+        opener = ioobj.open
     elif itype == STREAM:
-        ipath = anyconfig.utils.get_path_from_stream(input_)
+        ipath = anyconfig.utils.get_path_from_stream(ioobj)
         opener = anyconfig.utils.noop
     elif itype == NONE:
         ipath = None
         opener = anyconfig.utils.noop
     else:
-        raise UnknownFileTypeError("%r" % input_)
+        raise UnknownFileTypeError("%r" % ioobj)
 
     return (itype, ipath, opener)
 
@@ -157,9 +157,9 @@ def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
     return parser()
 
 
-def make(input_, cps_by_ext, cps_by_type, forced_type=None):
+def make(ioobj, cps_by_ext, cps_by_type, forced_type=None):
     """
-    :param input_:
+    :param ioobj:
         Input object which may be string (path), pathlib.Path object or (file)
         stream object
     :param cps_by_ext: A list of pairs (file_extension, [parser_class])
@@ -172,15 +172,15 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    if anyconfig.utils.is_input_obj(input_):
-        return input_
+    if anyconfig.utils.is_ioobj(ioobj):
+        return ioobj
 
-    if (input_ is None or not input_) and forced_type is None:
-        raise ValueError("input_ or forced_type must be some value")
+    if (ioobj is None or not ioobj) and forced_type is None:
+        raise ValueError("ioobj or forced_type must be some value")
 
-    (itype, ipath, opener) = inspect_input(input_)
+    (itype, ipath, opener) = inspect_input(ioobj)
     psr = find_parser(ipath, cps_by_ext, cps_by_type, forced_type=forced_type)
 
-    return Input(src=input_, type=itype, path=ipath, parser=psr, opener=opener)
+    return Input(src=ioobj, type=itype, path=ipath, parser=psr, opener=opener)
 
 # vim:sw=4:ts=4:et:

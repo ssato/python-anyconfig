@@ -239,15 +239,18 @@ class LoaderMixin(object):
         options = self._load_options(container, **options)
         return self.load_from_string(content, container, **options)
 
-    def load(self, path_or_stream, ac_ignore_missing=False, **options):
+    def load(self, input_, ac_ignore_missing=False, **options):
         """
         Load config from a file path or a file / file-like object
-        `path_or_stream` after some checks.
+        `input_` after some checks.
 
-        :param path_or_stream: Config file path or file{,-like} object
+        :param input_:
+            File path or file or file-like object or pathlib.Path object
+            represents the file or a namedtuple `~anyconfig.inputs.Input`
+            object represents some input to load some data from
+
         :param ac_ignore_missing:
-            Ignore and just return None if given `path_or_stream` is not a file
-            / file-like object (thus, it should be a file path) and does not
+            Ignore and just return empty result if given `input_` does not
             exist in actual.
         :param options:
             options will be passed to backend specific loading functions.
@@ -260,13 +263,13 @@ class LoaderMixin(object):
         container = self._container_factory(**options)
         options = self._load_options(container, **options)
 
-        if anyconfig.utils.is_file_stream(path_or_stream):
-            cnf = self.load_from_stream(path_or_stream, container, **options)
+        if anyconfig.utils.is_file_stream(input_):
+            cnf = self.load_from_stream(input_, container, **options)
         else:
-            if ac_ignore_missing and not os.path.exists(path_or_stream):
+            if ac_ignore_missing and not os.path.exists(input_):
                 return container()
 
-            cnf = self.load_from_path(path_or_stream, container, **options)
+            cnf = self.load_from_path(input_, container, **options)
 
         return cnf
 
@@ -332,23 +335,25 @@ class DumperMixin(object):
         kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
         return self.dump_to_string(cnf, **kwargs)
 
-    def dump(self, cnf, path_or_stream, **kwargs):
+    def dump(self, cnf, out, **kwargs):
         """
-        Dump config `cnf` to a filepath or file-like object
-        `path_or_stream`.
+        Dump config `cnf` to a filepath or file-like object `out`.
 
         :param cnf: Configuration data to dump
-        :param path_or_stream: Config file path or file{,-like} object
+        :param out:
+            File path or file or file-like object or pathlib.Path object
+            represents the file to dump the data to
+
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
         """
         kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
 
-        if anyconfig.utils.is_path(path_or_stream):
-            ensure_outdir_exists(path_or_stream)
-            self.dump_to_path(cnf, path_or_stream, **kwargs)
+        if anyconfig.utils.is_path(out):
+            ensure_outdir_exists(out)
+            self.dump_to_path(cnf, out, **kwargs)
         else:
-            self.dump_to_stream(cnf, path_or_stream, **kwargs)
+            self.dump_to_stream(cnf, out, **kwargs)
 
 
 class Parser(TextFilesMixin, LoaderMixin, DumperMixin):

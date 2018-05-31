@@ -260,13 +260,13 @@ class LoaderMixin(object):
         container = self._container_factory(**options)
         options = self._load_options(container, **options)
 
-        if anyconfig.utils.is_path(path_or_stream):
+        if anyconfig.utils.is_file_stream(path_or_stream):
+            cnf = self.load_from_stream(path_or_stream, container, **options)
+        else:
             if ac_ignore_missing and not os.path.exists(path_or_stream):
                 return container()
 
             cnf = self.load_from_path(path_or_stream, container, **options)
-        else:
-            cnf = self.load_from_stream(path_or_stream, container, **options)
 
         return cnf
 

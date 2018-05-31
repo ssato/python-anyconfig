@@ -397,8 +397,8 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
 
     if anyconfig.utils.is_path_like_object(path_specs, marker):
         return single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
-                          ac_template=ac_template, ac_context=ac_context,
-                          **options)
+                           ac_template=ac_template, ac_context=ac_context,
+                           **options)
 
     if not anyconfig.utils.is_paths(path_specs, marker):
         raise ValueError("Something goes wrong with your input %r", path_specs)

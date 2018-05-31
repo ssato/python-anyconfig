@@ -349,11 +349,11 @@ class DumperMixin(object):
         """
         kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
 
-        if anyconfig.utils.is_path(out):
+        if anyconfig.utils.is_file_stream(out):
+            self.dump_to_stream(cnf, out, **kwargs)
+        else:
             ensure_outdir_exists(out)
             self.dump_to_path(cnf, out, **kwargs)
-        else:
-            self.dump_to_stream(cnf, out, **kwargs)
 
 
 class Parser(TextFilesMixin, LoaderMixin, DumperMixin):

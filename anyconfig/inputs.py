@@ -16,7 +16,7 @@ from __future__ import absolute_import
 import anyconfig.utils
 
 from anyconfig.globals import (
-    Input, UnknownFileTypeError, UnknownParserTypeError
+    IOInfo, UnknownFileTypeError, UnknownParserTypeError
 )
 
 
@@ -27,9 +27,8 @@ ITYPES = (NONE, PATH_STR, PATH_OBJ, STREAM) = (None, "path", "pathlib.Path",
 def guess_io_type(obj):
     """Guess input or output type of ``obj``.
 
-    :param obj:
-        Input object may be string (path), pathlib.Path object or (file) stream
-    :return: Input type, NONE | PATH_STR | PATH_OBJ | STREAM
+    :param obj: a path string, a pathlib.Path or a file / file-like object
+    :return: IOInfo type, NONE | PATH_STR | PATH_OBJ | STREAM
 
     >>> apath = "/path/to/a_conf.ext"
     >>> assert guess_io_type(apath) == PATH_STR
@@ -51,8 +50,7 @@ def guess_io_type(obj):
 
 def inspect_io_obj(obj):
     """
-    :param obj:
-        Input object may be string (path), pathlib.Path object or (file) stream
+    :param obj: a path string, a pathlib.Path or a file / file-like object
 
     :return: A tuple of (objtype, objpath, objopener)
     :raises: UnknownFileTypeError
@@ -130,7 +128,7 @@ def find_by_type(cptype, cps_by_type):
 
 def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
     """
-    :param ipath: Input file path
+    :param ipath: file path
     :param cps_by_ext: A list of pairs (file_extension, [parser_class])
     :param cps_by_type: A list of pairs (parser_type, [parser_class])
     :param forced_type: Forced configuration parser type or parser object
@@ -160,9 +158,7 @@ def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
 
 def make(obj, cps_by_ext, cps_by_type, forced_type=None):
     """
-    :param obj:
-        Input object which may be string (path), pathlib.Path object or (file)
-        stream object
+    :param obj: a path string, a pathlib.Path or a file / file-like object
     :param cps_by_ext: A list of pairs (file_extension, [parser_class])
     :param cps_by_type: A list of pairs (parser_type, [parser_class])
     :param forced_type: Forced configuration parser type
@@ -173,7 +169,7 @@ def make(obj, cps_by_ext, cps_by_type, forced_type=None):
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    if anyconfig.utils.is_io_obj(obj):
+    if anyconfig.utils.is_ioinfo(obj):
         return obj
 
     if (obj is None or not obj) and forced_type is None:
@@ -182,6 +178,6 @@ def make(obj, cps_by_ext, cps_by_type, forced_type=None):
     (itype, ipath, opener) = inspect_io_obj(obj)
     psr = find_parser(ipath, cps_by_ext, cps_by_type, forced_type=forced_type)
 
-    return Input(src=obj, type=itype, path=ipath, parser=psr, opener=opener)
+    return IOInfo(src=obj, type=itype, path=ipath, parser=psr, opener=opener)
 
 # vim:sw=4:ts=4:et:

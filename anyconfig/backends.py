@@ -147,7 +147,7 @@ def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
     :param input_: File path, file / file-like object or pathlib.Path object
     :param forced_type: Forced type of parser to load input
 
-    :return: anyconfig.inputs.Input object :: namedtuple
+    :return: anyconfig.globals.IOInfo object :: namedtuple
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     return anyconfig.inputs.make(input_, cps_by_ext, cps_by_type,
@@ -181,14 +181,14 @@ def find_parser(input_, forced_type=None):
     file/file-like object.
 
     :param input_:
-        File path, file / file-like object or pathlib.Path object or 'Input'
-        named tuple object previously created.
+        a file path, a file / file-like object, a pathlib.Path object or
+        'IOInfo' namedtuple object previously created
     :param forced_type: Forced configuration parser type
 
     :return: A tuple of (Parser class or None, "" or error message)
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    if anyconfig.utils.is_input_obj(input_):
+    if anyconfig.utils.is_ioinfo(input_):
         return input_.parser  # It must have this.
 
     inp = inspect_input(input_, _PARSERS_BY_EXT, _PARSERS_BY_TYPE, forced_type)

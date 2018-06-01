@@ -111,7 +111,7 @@ def is_path(obj):
 def is_path_obj(obj):
     """Is given object `input` a pathlib.Path object?
 
-    :param obj: Input object may be pathlib.Path object or something
+    :param obj: a pathlib.Path object or something
     :return: True if `obj` is a pathlib.Path object
 
     >>> from anyconfig.compat import pathlib
@@ -127,7 +127,7 @@ def is_path_obj(obj):
 def is_file_stream(obj):
     """Is given object `input` a file stream (file/file-like object)?
 
-    :param obj: Input object may be pathlib.Path object or something
+    :param obj: a file / file-like (stream) object or something
     :return: True if `obj` is a file stream
 
     >>> assert is_file_stream(open(__file__))
@@ -136,22 +136,21 @@ def is_file_stream(obj):
     return getattr(obj, "read", False)
 
 
-def is_io_obj(obj, keys=None):
+def is_ioinfo(obj, keys=None):
     """
-    :return: True if given `obj` is a 'Input' or 'Output' namedtuple object.
+    :return: True if given `obj` is a 'IOInfo' namedtuple object.
 
-    >>> assert not is_io_obj(1)
-    >>> assert not is_io_obj("aaa")
-    >>> assert not is_io_obj({})
-    >>> assert not is_io_obj(('a', 1, {}))
+    >>> assert not is_ioinfo(1)
+    >>> assert not is_ioinfo("aaa")
+    >>> assert not is_ioinfo({})
+    >>> assert not is_ioinfo(('a', 1, {}))
 
-    >>> inp = anyconfig.globals.Input("/etc/hosts", "path", "/etc/hosts",
-    ...                               None, open)
-    >>> assert is_io_obj(inp)
+    >>> inp = anyconfig.globals.IOInfo("/etc/hosts", "path", "/etc/hosts",
+    ...                                None, open)
+    >>> assert is_ioinfo(inp)
     """
     if keys is None:
-        return is_io_obj(obj, anyconfig.globals.INPUT_KEYS) or \
-               is_io_obj(obj, anyconfig.globals.OUTPUT_KEYS)
+        keys = anyconfig.globals.IOI_KEYS
 
     if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
         return all(k in obj._asdict() for k in keys)
@@ -161,12 +160,12 @@ def is_io_obj(obj, keys=None):
 
 def is_path_like_object(obj, marker='*'):
     """
-    Is given object `obj` a path string or a pathlib.Path object or a file
-    stream (file/file-like object) or Input/Output namedtuple?
+    Is given object `obj` a path string, a pathlib.Path, a file / file-like
+    (stream) or IOInfo namedtuple object?
 
     :param obj:
-        An object may be a path string, pathlib.Path object, a file stream or
-        an Input/Output namedtuple
+        a path string, pathlib.Path object, a file / file-like or 'IOInfo'
+        object
 
     :return:
         True if `obj` is a path string or a pathlib.Path object or a file
@@ -184,7 +183,7 @@ def is_path_like_object(obj, marker='*'):
     """
     return ((is_path(obj) and marker not in obj) or
             (is_path_obj(obj) and marker not in obj.as_posix()) or
-            is_file_stream(obj) or is_io_obj(obj))
+            is_file_stream(obj) or is_ioinfo(obj))
 
 
 def is_paths(maybe_paths, marker='*'):
@@ -194,29 +193,7 @@ def is_paths(maybe_paths, marker='*'):
     return ((is_path(maybe_paths) and marker in maybe_paths) or  # Path str
             (is_path_obj(maybe_paths) and marker in maybe_paths.as_posix()) or
             (is_iterable(maybe_paths) and
-             all(is_path(p) or is_io_obj(p) for p in maybe_paths)))
-
-
-def is_input_obj(obj):
-    """
-    :return: True if given something `obj` is a 'Input' namedtuple object.
-
-    >>> obj = anyconfig.globals.Input("/etc/hosts", "path", "/etc/hosts",
-    ...                               None, open)
-    >>> assert is_input_obj(obj)
-    """
-    return is_io_obj(obj, keys=anyconfig.globals.INPUT_KEYS)
-
-
-def is_output_obj(obj):
-    """
-    :return: True if given something `obj` is a 'Output' namedtuple object.
-
-    >>> obj = anyconfig.globals.Output("/etc/hosts", "path", "/etc/hosts",
-    ...                                None, open)
-    >>> assert is_output_obj(obj)
-    """
-    return is_io_obj(obj, keys=anyconfig.globals.OUTPUT_KEYS)
+             all(is_path(p) or is_ioinfo(p) for p in maybe_paths)))
 
 
 def get_path_from_stream(strm):
@@ -267,7 +244,7 @@ def _try_to_get_extension(obj):
         except ValueError:
             return None
 
-    elif is_io_obj(obj):
+    elif is_ioinfo(obj):
         path = obj.path
 
     else:
@@ -325,7 +302,7 @@ def _norm_paths_itr(inputs, marker='*'):
                     yield normpath(ppath)
             else:
                 yield normpath(inp.as_posix())
-        elif is_io_obj(inp):
+        elif is_ioinfo(inp):
             yield inp.path
         else:  # A file or file-like object
             yield inp

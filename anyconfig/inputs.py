@@ -3,12 +3,13 @@
 # License: MIT
 #
 # pylint: disable=invalid-name
-r"""Value objects represent inputs.
+r"""Functions for value objects represent inputs and outputs.
 
 .. versionadded:: 0.9.5
 
-- Add to make input object holding some attributes like input type (path,
-  stream or pathlib.Path object), path, opener, etc.
+- Add functions to make and process input and output object holding some
+  attributes like input and output type (path, stream or pathlib.Path object),
+  path, opener, etc.
 """
 from __future__ import absolute_import
 

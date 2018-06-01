@@ -226,10 +226,8 @@ def get_path_from_stream(maybe_stream):
     :param maybe_stream: A file or file-like object
     :return: Path of given file or file-like object or None
 
-    >>> __file__ == get_path_from_stream(__file__)
-    True
-    >>> __file__ == get_path_from_stream(open(__file__, 'r'))
-    True
+    >>> assert __file__ == get_path_from_stream(__file__)
+    >>> assert __file__ == get_path_from_stream(open(__file__, 'r'))
     >>> strm = anyconfig.compat.StringIO()
     >>> get_path_from_stream(strm) is None
     True

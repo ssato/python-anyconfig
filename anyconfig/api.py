@@ -190,7 +190,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     """
     :param input_:
         File path or file or file-like object or pathlib.Path object represents
-        the file or a namedtuple `~anyconfig.ioobjects.Input` object represents
+        the file or a namedtuple `~anyconfig.inputs.Input` object represents
         some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
@@ -206,7 +206,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     """
     inp = anyconfig.backends.inspect_input(input_, forced_type=ac_parser)
     (psr, filepath) = (inp.parser, inp.path)
-    src = inp.path if inp.type == anyconfig.ioobjects.PATH_OBJ else inp.src
+    src = inp.path if inp.type == anyconfig.inputs.PATH_OBJ else inp.src
 
     # .. note::
     #    This will be kept for backward compatibility until 'ignore_missing'
@@ -237,7 +237,7 @@ def single_load(input_, ac_parser=None, ac_template=False,
 
     :param input_:
         File path or file or file-like object or pathlib.Path object represents
-        the file or a namedtuple `~anyconfig.ioobjects.Input` object represents
+        the file or a namedtuple `~anyconfig.inputs.Input` object represents
         some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
@@ -306,7 +306,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
     :param inputs:
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
-        file or a namedtuple `~anyconfig.ioobjects.Input` object represents some
+        file or a namedtuple `~anyconfig.inputs.Input` object represents some
         input to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
@@ -373,7 +373,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     :param path_specs:
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
-        file or a namedtuple `~anyconfig.ioobjects.Input` object represents some
+        file or a namedtuple `~anyconfig.inputs.Input` object represents some
         input to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:

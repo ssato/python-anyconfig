@@ -160,7 +160,7 @@ def is_path_like_object(input_, marker='*'):
     """
     return ((is_path(input_) and marker not in input_) or
             (is_path_obj(input_) and marker not in input_.as_posix()) or
-            is_file_stream(input_) or is_ioobj(input_))
+            is_file_stream(input_) or is_input_obj(input_))
 
 
 def is_paths(maybe_paths, marker='*'):
@@ -170,22 +170,22 @@ def is_paths(maybe_paths, marker='*'):
     return ((is_path(maybe_paths) and marker in maybe_paths) or  # Path str
             (is_path_obj(maybe_paths) and marker in maybe_paths.as_posix()) or
             (is_iterable(maybe_paths) and
-             all(is_path(p) or is_ioobj(p) for p in maybe_paths)))
+             all(is_path(p) or is_input_obj(p) for p in maybe_paths)))
 
 
-def is_ioobj(obj):
+def is_input_obj(obj):
     """
     :return: True if given something `obj` is a 'Input' namedtuple object.
 
-    >>> assert not is_ioobj(1)
-    >>> assert not is_ioobj("aaa")
-    >>> assert not is_ioobj({})
-    >>> assert not is_ioobj(('a', 1, {}))
+    >>> assert not is_input_obj(1)
+    >>> assert not is_input_obj("aaa")
+    >>> assert not is_input_obj({})
+    >>> assert not is_input_obj(('a', 1, {}))
 
     >>> import collections
     >>> Input = collections.namedtuple("Input", INPUT_KEYS)
     >>> inp = Input("/etc/hosts", "path", "/etc/hosts", None, open)
-    >>> assert is_ioobj(inp)
+    >>> assert is_input_obj(inp)
     """
     if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
         return all(k in obj._asdict() for k in INPUT_KEYS)
@@ -277,7 +277,7 @@ def _norm_paths_itr(inputs, marker='*'):
                     yield normpath(ppath)
             else:
                 yield normpath(inp.as_posix())
-        elif is_ioobj(inp):
+        elif is_input_obj(inp):
             yield inp.path
         else:  # A file or file-like object
             yield inp

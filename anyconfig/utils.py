@@ -276,11 +276,11 @@ def _try_to_get_extension(obj):
     return path and get_file_extension(path) or None
 
 
-def are_same_file_types(paths):
+def are_same_file_types(objs):
     """
-    Are given (maybe) file paths same type (extension) ?
+    Are given (maybe) file objs same type (extension) ?
 
-    :param paths: A list of file path or file(-like) objects
+    :param objs: A list of file path or file(-like) objects
 
     >>> are_same_file_types([])
     False
@@ -296,14 +296,14 @@ def are_same_file_types(paths):
     >>> are_same_file_types(["a.yml", "b.yml", strm])
     False
     """
-    if not paths:
+    if not objs:
         return False
 
-    ext = _try_to_get_extension(paths[0])
+    ext = _try_to_get_extension(objs[0])
     if ext is None:
         return False
 
-    return all(_try_to_get_extension(p) == ext for p in paths[1:])
+    return all(_try_to_get_extension(p) == ext for p in objs[1:])
 
 
 def _norm_paths_itr(inputs, marker='*'):

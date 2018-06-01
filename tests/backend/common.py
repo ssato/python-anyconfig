@@ -187,7 +187,7 @@ class Test_20_dump_and_load(TestBaseWithIO):
 
     def test_30_dump(self):
         if self.is_ready():
-            self.psr.dump(self.cnf, self.cnf_path)
+            self.psr.dump(self.cnf, self.ioi)
             cnf = self.psr.load(self.ioi)
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
@@ -195,7 +195,8 @@ class Test_20_dump_and_load(TestBaseWithIO):
     def test_32_dump_to_stream(self):
         if self.is_ready():
             with self.psr.wopen(self.cnf_path) as strm:
-                self.psr.dump(self.cnf, strm)
+                ioi = self._to_ioinfo(strm)
+                self.psr.dump(self.cnf, ioi)
 
             cnf = self.psr.load(self.ioi)
             self.assertTrue(cnf)

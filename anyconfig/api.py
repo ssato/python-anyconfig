@@ -467,9 +467,9 @@ def dump(data, path, ac_parser=None, **options):
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    out = anyconfig.backends.inspect_io_obj(path, forced_type=ac_parser)
-    LOGGER.info("Dumping: %s", out.path)
-    out.parser.dump(data, path, **options)
+    ioi = anyconfig.backends.inspect_io_obj(path, forced_type=ac_parser)
+    LOGGER.info("Dumping: %s", ioi.path)
+    ioi.parser.dump(data, ioi, **options)
 
 
 def dumps(data, ac_parser=None, **options):

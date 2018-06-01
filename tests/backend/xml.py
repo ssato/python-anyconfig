@@ -271,7 +271,8 @@ class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
         self._assert_dicts_equal(cnf)
 
     def test_42_dump_with_special_option(self):
-        self.psr.dump(self.cnf, self.cnf_path, ac_parse_value=False)
+        ioi = self._to_ioinfo(self.cnf_path)
+        self.psr.dump(self.cnf, ioi, ac_parse_value=False)
         cnf = self.psr.load(self.ioi)
         self._assert_dicts_equal(cnf)
 

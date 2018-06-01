@@ -337,25 +337,25 @@ class DumperMixin(object):
         kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
         return self.dump_to_string(cnf, **kwargs)
 
-    def dump(self, cnf, out, **kwargs):
+    def dump(self, cnf, ioi, **kwargs):
         """
-        Dump config `cnf` to a filepath or file-like object `out`.
+        Dump config `cnf` to output object of which `ioi` refering.
 
         :param cnf: Configuration data to dump
-        :param out:
-            File path or file or file-like object or pathlib.Path object
-            represents the file to dump the data to
+        :param ioi:
+            `~anyconfig.globals.IOInfo` namedtuple object provides various info
+            of input object to load data from
 
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
         """
         kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
 
-        if anyconfig.utils.is_file_stream(out):
-            self.dump_to_stream(cnf, out, **kwargs)
+        if anyconfig.utils.is_stream_ioinfo(ioi):
+            self.dump_to_stream(cnf, ioi.src, **kwargs)
         else:
-            ensure_outdir_exists(out)
-            self.dump_to_path(cnf, out, **kwargs)
+            ensure_outdir_exists(ioi.path)
+            self.dump_to_path(cnf, ioi.path, **kwargs)
 
 
 class Parser(TextFilesMixin, LoaderMixin, DumperMixin):

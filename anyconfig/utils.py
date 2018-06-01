@@ -98,42 +98,42 @@ def normpath(path):
     return os.path.normpath(os.path.expanduser(path) if '~' in path else path)
 
 
-def is_path(path_or_stream):
+def is_path(obj):
     """
-    Is given object `path_or_stream` a file path?
+    Is given object `obj` a file path?
 
-    :param path_or_stream: file path or stream, file/file-like object
-    :return: True if `path_or_stream` is a file path
+    :param obj: file path or something
+    :return: True if `obj` is a file path
     """
-    return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
+    return isinstance(obj, anyconfig.compat.STR_TYPES)
 
 
-def is_path_obj(input_):
+def is_path_obj(obj):
     """Is given object `input` a pathlib.Path object?
 
-    :param input_: Input object may be pathlib.Path object or something
-    :return: True if `input_` is a pathlib.Path object
+    :param obj: Input object may be pathlib.Path object or something
+    :return: True if `obj` is a pathlib.Path object
 
     >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
-    ...      input_ = pathlib.Path(__file__)
-    ...      assert is_path_obj(input_)
+    ...      obj = pathlib.Path(__file__)
+    ...      assert is_path_obj(obj)
     >>>
     >>> assert not is_path_obj(__file__)
     """
-    return pathlib is not None and isinstance(input_, pathlib.Path)
+    return pathlib is not None and isinstance(obj, pathlib.Path)
 
 
-def is_file_stream(input_):
+def is_file_stream(obj):
     """Is given object `input` a file stream (file/file-like object)?
 
-    :param input_: Input object may be pathlib.Path object or something
-    :return: True if `input_` is a file stream
+    :param obj: Input object may be pathlib.Path object or something
+    :return: True if `obj` is a file stream
 
     >>> assert is_file_stream(open(__file__))
     >>> assert not is_file_stream(__file__)
     """
-    return getattr(input_, "read", False)
+    return getattr(obj, "read", False)
 
 
 def is_io_obj(obj, keys=None):
@@ -159,14 +159,17 @@ def is_io_obj(obj, keys=None):
     return False
 
 
-def is_path_like_object(input_, marker='*'):
+def is_path_like_object(obj, marker='*'):
     """
-    Is given object `input` a path string or a pathlib.Path object or a file
-    stream (file/file-like object)?
+    Is given object `obj` a path string or a pathlib.Path object or a file
+    stream (file/file-like object) or Input/Output namedtuple?
 
-    :param input_: Input object may be pathlib.Path object or something
+    :param obj:
+        An object may be a path string, pathlib.Path object, a file stream or
+        an Input/Output namedtuple
+
     :return:
-        True if `input_` is a path string or a pathlib.Path object or a file
+        True if `obj` is a path string or a pathlib.Path object or a file
         (stream) object
 
     >>> assert is_path_like_object(__file__)
@@ -179,9 +182,9 @@ def is_path_like_object(input_, marker='*'):
 
     >>> assert is_path_like_object(open(__file__))
     """
-    return ((is_path(input_) and marker not in input_) or
-            (is_path_obj(input_) and marker not in input_.as_posix()) or
-            is_file_stream(input_) or is_io_obj(input_))
+    return ((is_path(obj) and marker not in obj) or
+            (is_path_obj(obj) and marker not in obj.as_posix()) or
+            is_file_stream(obj) or is_io_obj(obj))
 
 
 def is_paths(maybe_paths, marker='*'):

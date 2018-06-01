@@ -24,26 +24,26 @@ ITYPES = (NONE, PATH_STR, PATH_OBJ, STREAM) = (None, "path", "pathlib.Path",
                                                "stream")
 
 
-def guess_input_type(input_):
-    """Guess input type of ``input_``.
+def guess_io_type(obj):
+    """Guess input or output type of ``obj``.
 
-    :param input_:
+    :param obj:
         Input object may be string (path), pathlib.Path object or (file) stream
     :return: Input type, NONE | PATH_STR | PATH_OBJ | STREAM
 
     >>> apath = "/path/to/a_conf.ext"
-    >>> assert guess_input_type(apath) == PATH_STR
+    >>> assert guess_io_type(apath) == PATH_STR
 
     >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
-    ...     assert guess_input_type(pathlib.Path(apath)) == PATH_OBJ
-    >>> assert guess_input_type(open(__file__)) == STREAM
+    ...     assert guess_io_type(pathlib.Path(apath)) == PATH_OBJ
+    >>> assert guess_io_type(open(__file__)) == STREAM
     """
-    if input_ is None:
+    if obj is None:
         return NONE
-    elif anyconfig.utils.is_path(input_):
+    elif anyconfig.utils.is_path(obj):
         return PATH_STR
-    elif anyconfig.utils.is_path_obj(input_):
+    elif anyconfig.utils.is_path_obj(obj):
         return PATH_OBJ
 
     return STREAM
@@ -57,7 +57,7 @@ def inspect_input(input_):
     :return: A tuple of (input_type, input_path, input_opener)
     :raises: UnknownFileTypeError
     """
-    itype = guess_input_type(input_)
+    itype = guess_io_type(input_)
 
     if itype == PATH_STR:
         ipath = anyconfig.utils.normpath(input_)

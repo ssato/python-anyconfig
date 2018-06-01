@@ -204,9 +204,8 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     :return: Mapping object
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    inp = anyconfig.backends.inspect_io_obj(input_, forced_type=ac_parser)
-    (psr, filepath) = (inp.parser, inp.path)
-    src = inp.path if inp.type == IOI_PATH_OBJ else inp.src
+    ioi = anyconfig.backends.inspect_io_obj(input_, forced_type=ac_parser)
+    (psr, filepath) = (ioi.parser, ioi.path)
 
     # .. note::
     #    This will be kept for backward compatibility until 'ignore_missing'
@@ -222,7 +221,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
         if content is not None:
             return psr.loads(content, **options)
 
-    return psr.load(src, **options)
+    return psr.load(ioi, **options)
 
 
 def single_load(input_, ac_parser=None, ac_template=False,

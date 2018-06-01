@@ -267,12 +267,12 @@ class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
 
     def test_40_load_w_options(self):
-        cnf = self.psr.load(self.cnf_path, ac_parse_value=False)
+        cnf = self.psr.load(self.ioi, ac_parse_value=False)
         self._assert_dicts_equal(cnf)
 
     def test_42_dump_with_special_option(self):
         self.psr.dump(self.cnf, self.cnf_path, ac_parse_value=False)
-        cnf = self.psr.load(self.cnf_path)
+        cnf = self.psr.load(self.ioi)
         self._assert_dicts_equal(cnf)
 
 # vim:sw=4:ts=4:et:

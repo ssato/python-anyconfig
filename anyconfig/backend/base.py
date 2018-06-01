@@ -239,15 +239,14 @@ class LoaderMixin(object):
         options = self._load_options(container, **options)
         return self.load_from_string(content, container, **options)
 
-    def load(self, input_, ac_ignore_missing=False, **options):
+    def load(self, ioi, ac_ignore_missing=False, **options):
         """
-        Load config from a file path or a file / file-like object
-        `input_` after some checks.
+        Load config from a file path or a file / file-like object which `ioi`
+        refering after some checks.
 
-        :param input_:
-            File path or file or file-like object or pathlib.Path object
-            represents the file or a namedtuple `~anyconfig.globals.IOInfo`
-            object represents some input to load some data from
+        :param ioi:
+            `~anyconfig.globals.IOInfo` namedtuple object provides various info
+            of input object to load data from
 
         :param ac_ignore_missing:
             Ignore and just return empty result if given `input_` does not
@@ -263,13 +262,16 @@ class LoaderMixin(object):
         container = self._container_factory(**options)
         options = self._load_options(container, **options)
 
-        if anyconfig.utils.is_file_stream(input_):
-            cnf = self.load_from_stream(input_, container, **options)
+        if not ioi:
+            return container()
+
+        if anyconfig.utils.is_stream_ioinfo(ioi):
+            cnf = self.load_from_stream(ioi.src, container, **options)
         else:
-            if ac_ignore_missing and not os.path.exists(input_):
+            if ac_ignore_missing and not os.path.exists(ioi.path):
                 return container()
 
-            cnf = self.load_from_path(input_, container, **options)
+            cnf = self.load_from_path(ioi.path, container, **options)
 
         return cnf
 

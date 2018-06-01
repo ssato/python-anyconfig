@@ -16,7 +16,10 @@ VERSION = "0.9.4"
 LOGGER = anyconfig.init.getLogger(PACKAGE)
 
 INPUT_KEYS = "src type path parser opener".split()
+OUTPUT_KEYS = "dst type path parser opener".split()
+
 Input = collections.namedtuple("Input", INPUT_KEYS)
+Output = collections.namedtuple("Output", OUTPUT_KEYS)
 
 
 class UnknownParserTypeError(RuntimeError):

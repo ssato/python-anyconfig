@@ -12,13 +12,13 @@ r"""Value objects represent inputs.
 """
 from __future__ import absolute_import
 
-import collections
 import anyconfig.utils
 
-from anyconfig.globals import UnknownFileTypeError, UnknownParserTypeError
+from anyconfig.globals import (
+    Input, UnknownFileTypeError, UnknownParserTypeError
+)
 
 
-Input = collections.namedtuple("Input", anyconfig.utils.INPUT_KEYS)
 ITYPES = (NONE, PATH_STR, PATH_OBJ, STREAM) = (None, "path", "pathlib.Path",
                                                "stream")
 

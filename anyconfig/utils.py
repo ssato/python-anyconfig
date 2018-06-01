@@ -12,11 +12,9 @@ import os.path
 import types
 
 import anyconfig.compat
+import anyconfig.globals
 
 from anyconfig.compat import pathlib
-
-
-INPUT_KEYS = "src type path parser opener".split()
 
 
 def get_file_extension(file_path):
@@ -182,13 +180,12 @@ def is_input_obj(obj):
     >>> assert not is_input_obj({})
     >>> assert not is_input_obj(('a', 1, {}))
 
-    >>> import collections
-    >>> Input = collections.namedtuple("Input", INPUT_KEYS)
-    >>> inp = Input("/etc/hosts", "path", "/etc/hosts", None, open)
+    >>> inp = anyconfig.globals.Input("/etc/hosts", "path", "/etc/hosts",
+    ...                               None, open)
     >>> assert is_input_obj(inp)
     """
     if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
-        return all(k in obj._asdict() for k in INPUT_KEYS)
+        return all(k in obj._asdict() for k in anyconfig.globals.INPUT_KEYS)
 
     return False
 

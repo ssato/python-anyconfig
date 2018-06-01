@@ -2,8 +2,10 @@
 # Copyright (C) 2013 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=invalid-name
 """anyconfig globals.
 """
+import collections
 import anyconfig.init
 
 
@@ -12,6 +14,9 @@ AUTHOR = "Satoru SATOH <ssato@redhat.com>"
 VERSION = "0.9.4"
 
 LOGGER = anyconfig.init.getLogger(PACKAGE)
+
+INPUT_KEYS = "src type path parser opener".split()
+Input = collections.namedtuple("Input", INPUT_KEYS)
 
 
 class UnknownParserTypeError(RuntimeError):

@@ -136,6 +136,29 @@ def is_file_stream(input_):
     return getattr(input_, "read", False)
 
 
+def is_io_obj(obj, keys=None):
+    """
+    :return: True if given `obj` is a 'Input' or 'Output' namedtuple object.
+
+    >>> assert not is_io_obj(1)
+    >>> assert not is_io_obj("aaa")
+    >>> assert not is_io_obj({})
+    >>> assert not is_io_obj(('a', 1, {}))
+
+    >>> inp = anyconfig.globals.Input("/etc/hosts", "path", "/etc/hosts",
+    ...                               None, open)
+    >>> assert is_io_obj(inp)
+    """
+    if keys is None:
+        return is_io_obj(obj, anyconfig.globals.INPUT_KEYS) or \
+               is_io_obj(obj, anyconfig.globals.OUTPUT_KEYS)
+
+    if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
+        return all(k in obj._asdict() for k in keys)
+
+    return False
+
+
 def is_path_like_object(input_, marker='*'):
     """
     Is given object `input` a path string or a pathlib.Path object or a file
@@ -169,29 +192,6 @@ def is_paths(maybe_paths, marker='*'):
             (is_path_obj(maybe_paths) and marker in maybe_paths.as_posix()) or
             (is_iterable(maybe_paths) and
              all(is_path(p) or is_io_obj(p) for p in maybe_paths)))
-
-
-def is_io_obj(obj, keys=None):
-    """
-    :return: True if given `obj` is a 'Input' or 'Output' namedtuple object.
-
-    >>> assert not is_io_obj(1)
-    >>> assert not is_io_obj("aaa")
-    >>> assert not is_io_obj({})
-    >>> assert not is_io_obj(('a', 1, {}))
-
-    >>> inp = anyconfig.globals.Input("/etc/hosts", "path", "/etc/hosts",
-    ...                               None, open)
-    >>> assert is_io_obj(inp)
-    """
-    if keys is None:
-        return is_io_obj(obj, anyconfig.globals.INPUT_KEYS) or \
-               is_io_obj(obj, anyconfig.globals.OUTPUT_KEYS)
-
-    if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
-        return all(k in obj._asdict() for k in keys)
-
-    return False
 
 
 def is_input_obj(obj):

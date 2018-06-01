@@ -205,7 +205,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     :return: Mapping object
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    inp = anyconfig.backends.inspect_input(input_, forced_type=ac_parser)
+    inp = anyconfig.backends.inspect_io_obj(input_, forced_type=ac_parser)
     (psr, filepath) = (inp.parser, inp.path)
     src = inp.path if inp.type == anyconfig.ioinfo.PATH_OBJ else inp.src
 
@@ -469,7 +469,7 @@ def dump(data, path, ac_parser=None, **options):
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    out = anyconfig.backends.inspect_input(path, forced_type=ac_parser)
+    out = anyconfig.backends.inspect_io_obj(path, forced_type=ac_parser)
     LOGGER.info("Dumping: %s", out.path)
     out.parser.dump(data, path, **options)
 

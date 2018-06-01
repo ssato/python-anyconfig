@@ -137,20 +137,23 @@ _PARSERS_BY_TYPE = tuple(_list_parsers_by_type(PARSERS))
 _PARSERS_BY_EXT = tuple(_list_parsers_by_extension(PARSERS))
 
 
-def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
-                  cps_by_type=_PARSERS_BY_TYPE, forced_type=None):
+def inspect_io_obj(obj, cps_by_ext=_PARSERS_BY_EXT,
+                   cps_by_type=_PARSERS_BY_TYPE, forced_type=None):
     """
-    Inspect given input `input_` which may be a file of given path or file /
-    file-like object or pathlib.Path object, and find out appropriate parser
-    object to load it along with other input information.
+    Inspect a given object `obj` which may be a path string, file / file-like
+    object, pathlib.Path object or `~anyconfig.globals.IOInfo` namedtuple
+    object, and find out appropriate parser object to load or dump from/to it
+    along with other I/O information.
 
-    :param input_: File path, file / file-like object or pathlib.Path object
-    :param forced_type: Forced type of parser to load input
+    :param obj:
+        a file path string, file / file-like object, pathlib.Path object or
+        `~anyconfig.globals.IOInfo` object
+    :param forced_type: Forced type of parser to load or dump
 
     :return: anyconfig.globals.IOInfo object :: namedtuple
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    return anyconfig.ioinfo.make(input_, cps_by_ext, cps_by_type,
+    return anyconfig.ioinfo.make(obj, cps_by_ext, cps_by_type,
                                  forced_type=forced_type)
 
 
@@ -175,26 +178,26 @@ def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
                                         forced_type=forced_type)
 
 
-def find_parser(input_, forced_type=None):
+def find_parser(obj, forced_type=None):
     """
     Find out appropriate parser object to load from a file of given path or
     file/file-like object.
 
-    :param input_:
-        a file path, a file / file-like object, a pathlib.Path object or
-        'IOInfo' namedtuple object previously created
+    :param obj:
+        a file path string, file / file-like object, pathlib.Path object or
+        `~anyconfig.globals.IOInfo` object
     :param forced_type: Forced configuration parser type
 
     :return: A tuple of (Parser class or None, "" or error message)
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    if anyconfig.utils.is_ioinfo(input_):
-        return input_.parser  # It must have this.
+    if anyconfig.utils.is_ioinfo(obj):
+        return obj.parser  # It must have this.
 
-    inp = inspect_input(input_, _PARSERS_BY_EXT, _PARSERS_BY_TYPE, forced_type)
-    psr = inp.parser
+    ioi = inspect_io_obj(obj, _PARSERS_BY_EXT, _PARSERS_BY_TYPE, forced_type)
+    psr = ioi.parser
     LOGGER.debug("Using parser %r [%s] for input type %s",
-                 psr, psr.type(), inp.type)
+                 psr, psr.type(), ioi.type)
     return psr
 
 

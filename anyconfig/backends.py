@@ -16,7 +16,7 @@ import operator
 import pkg_resources
 
 import anyconfig.compat
-import anyconfig.inputs
+import anyconfig.ioinfo
 import anyconfig.utils
 
 import anyconfig.backend.base
@@ -150,7 +150,7 @@ def inspect_input(input_, cps_by_ext=_PARSERS_BY_EXT,
     :return: anyconfig.globals.IOInfo object :: namedtuple
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    return anyconfig.inputs.make(input_, cps_by_ext, cps_by_type,
+    return anyconfig.ioinfo.make(input_, cps_by_ext, cps_by_type,
                                  forced_type=forced_type)
 
 
@@ -170,7 +170,7 @@ def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
     if forced_type is None or not forced_type:
         raise ValueError("forced_type must be a some string")
 
-    return anyconfig.inputs.find_parser(None, cps_by_ext=cps_by_ext,
+    return anyconfig.ioinfo.find_parser(None, cps_by_ext=cps_by_ext,
                                         cps_by_type=cps_by_type,
                                         forced_type=forced_type)
 

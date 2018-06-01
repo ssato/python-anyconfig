@@ -70,6 +70,7 @@ import anyconfig.compat
 import anyconfig.query
 import anyconfig.globals
 import anyconfig.dicts
+import anyconfig.ioinfo
 import anyconfig.template
 import anyconfig.utils
 
@@ -206,7 +207,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     """
     inp = anyconfig.backends.inspect_input(input_, forced_type=ac_parser)
     (psr, filepath) = (inp.parser, inp.path)
-    src = inp.path if inp.type == anyconfig.inputs.PATH_OBJ else inp.src
+    src = inp.path if inp.type == anyconfig.ioinfo.PATH_OBJ else inp.src
 
     # .. note::
     #    This will be kept for backward compatibility until 'ignore_missing'

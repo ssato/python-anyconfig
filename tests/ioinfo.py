@@ -9,7 +9,7 @@ import unittest
 import anyconfig.backend.ini
 import anyconfig.backend.json
 import anyconfig.compat
-import anyconfig.inputs as TT
+import anyconfig.ioinfo as TT
 import anyconfig.utils
 
 from anyconfig.backends import (

@@ -9,7 +9,7 @@ import os.path
 import unittest
 import anyconfig.backend.json
 import anyconfig.backends as TT
-import anyconfig.inputs
+import anyconfig.ioinfo
 
 from anyconfig.compat import pathlib
 from anyconfig.globals import UnknownParserTypeError, UnknownFileTypeError
@@ -58,7 +58,7 @@ class Test(unittest.TestCase):
             self.assertTrue(isinstance(TT.find_parser(inp), pcls))
 
     def test_34_find_parser__input_object(self):
-        inp = anyconfig.inputs.make(CNF_PATH,
+        inp = anyconfig.ioinfo.make(CNF_PATH,
                                     TT._PARSERS_BY_EXT, TT._PARSERS_BY_TYPE)
         psr = TT.find_parser(inp)
         self.assertTrue(isinstance(psr, anyconfig.backend.json.Parser))

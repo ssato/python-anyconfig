@@ -273,7 +273,10 @@ def _try_to_get_extension(obj):
     else:
         return None
 
-    return path and get_file_extension(path) or None
+    if path:
+        return get_file_extension(path)
+
+    return None
 
 
 def are_same_file_types(objs):

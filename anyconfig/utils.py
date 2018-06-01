@@ -158,6 +158,19 @@ def is_ioinfo(obj, keys=None):
     return False
 
 
+def is_stream_ioinfo(obj):
+    """
+    :param obj: IOInfo object or something
+    :return: True if given IOInfo object `obj` is of file / file-like object
+
+    >>> ioi = anyconfig.globals.IOInfo(None, anyconfig.globals.IOI_STREAM,
+    ...                                None, None, None)
+    >>> assert is_stream_ioinfo(ioi)
+    >>> assert not is_stream_ioinfo(__file__)
+    """
+    return getattr(obj, "type", None) == anyconfig.globals.IOI_STREAM
+
+
 def is_path_like_object(obj, marker='*'):
     """
     Is given object `obj` a path string, a pathlib.Path, a file / file-like

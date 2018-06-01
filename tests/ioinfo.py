@@ -16,7 +16,10 @@ from anyconfig.backends import (
     _PARSERS_BY_EXT as CPS_BY_EXT,
     _PARSERS_BY_TYPE as CPS_BY_TYPE
 )
-from anyconfig.globals import UnknownParserTypeError, UnknownFileTypeError
+from anyconfig.globals import (
+    IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
+    UnknownParserTypeError, UnknownFileTypeError
+)
 
 
 IPATH_0 = os.path.join(os.path.dirname(__file__), "00-cnf.json")
@@ -27,11 +30,11 @@ class Test_30_inspect_io_obj(unittest.TestCase):
 
     def test_10_path_str(self):
         self.assertEqual(TT.inspect_io_obj(IPATH_0),
-                         (TT.PATH_STR, IPATH_0_FULL, open))
+                         (IOI_PATH_STR, IPATH_0_FULL, open))
 
     def test_20_stream(self):
         self.assertEqual(TT.inspect_io_obj(open(IPATH_0)),
-                         (TT.STREAM, IPATH_0_FULL,
+                         (IOI_STREAM, IPATH_0_FULL,
                           anyconfig.utils.noop))
 
     def test_30_path_obj(self):
@@ -40,7 +43,7 @@ class Test_30_inspect_io_obj(unittest.TestCase):
 
         ipo = anyconfig.compat.pathlib.Path(IPATH_0)
         self.assertEqual(TT.inspect_io_obj(ipo),
-                         (TT.PATH_OBJ, IPATH_0_FULL, ipo.open))
+                         (IOI_PATH_OBJ, IPATH_0_FULL, ipo.open))
 
 
 class Test_50_find_parser(unittest.TestCase):
@@ -94,7 +97,7 @@ class Test_60_make(Test_50_find_parser):
 
     def test_30__by_fileext(self):
         res = self.fun(self.ipath, *self.cpss)
-        self.__checks_helper(res, self.ipath, self.ipath_full, TT.PATH_STR,
+        self.__checks_helper(res, self.ipath, self.ipath_full, IOI_PATH_STR,
                              anyconfig.backend.json.Parser, open)
 
     def test_40__pathlib(self):
@@ -102,10 +105,10 @@ class Test_60_make(Test_50_find_parser):
         if anyconfig.compat.pathlib is not None:
             # Replace w/ pathlib.Path object.
             ipath = anyconfig.compat.pathlib.Path(ipath)
-            itype = TT.PATH_OBJ
+            itype = IOI_PATH_OBJ
             opener = ipath.open
         else:
-            itype = TT.PATH_STR
+            itype = IOI_PATH_STR
             opener = open
 
         res = self.fun(ipath, *self.cpss)
@@ -115,7 +118,7 @@ class Test_60_make(Test_50_find_parser):
     def test_50__stream(self):
         ifo = open(self.ipath)
         res = self.fun(ifo, *self.cpss)
-        self.__checks_helper(res, ifo, self.ipath_full, TT.STREAM,
+        self.__checks_helper(res, ifo, self.ipath_full, IOI_STREAM,
                              anyconfig.backend.json.Parser,
                              anyconfig.utils.noop)
 

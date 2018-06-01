@@ -18,6 +18,9 @@ LOGGER = anyconfig.init.getLogger(PACKAGE)
 IOI_KEYS = "src type path parser opener".split()
 IOInfo = collections.namedtuple("IOInfo", IOI_KEYS)
 
+IOI_TYPES = (IOI_NONE, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM) = \
+            (None, "path", "pathlib.Path", "stream")
+
 
 class UnknownParserTypeError(RuntimeError):
     """Raise if no parsers were found for given type."""

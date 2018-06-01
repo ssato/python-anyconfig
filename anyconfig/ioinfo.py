@@ -16,36 +16,33 @@ from __future__ import absolute_import
 import anyconfig.utils
 
 from anyconfig.globals import (
-    IOInfo, UnknownFileTypeError, UnknownParserTypeError
+    IOInfo, IOI_NONE, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
+    UnknownFileTypeError, UnknownParserTypeError
 )
-
-
-ITYPES = (NONE, PATH_STR, PATH_OBJ, STREAM) = (None, "path", "pathlib.Path",
-                                               "stream")
 
 
 def guess_io_type(obj):
     """Guess input or output type of ``obj``.
 
     :param obj: a path string, a pathlib.Path or a file / file-like object
-    :return: IOInfo type, NONE | PATH_STR | PATH_OBJ | STREAM
+    :return: IOInfo type defined in anyconfig.globals.IOI_TYPES
 
     >>> apath = "/path/to/a_conf.ext"
-    >>> assert guess_io_type(apath) == PATH_STR
+    >>> assert guess_io_type(apath) == IOI_PATH_STR
 
     >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
-    ...     assert guess_io_type(pathlib.Path(apath)) == PATH_OBJ
-    >>> assert guess_io_type(open(__file__)) == STREAM
+    ...     assert guess_io_type(pathlib.Path(apath)) == IOI_PATH_OBJ
+    >>> assert guess_io_type(open(__file__)) == IOI_STREAM
     """
     if obj is None:
-        return NONE
+        return IOI_NONE
     elif anyconfig.utils.is_path(obj):
-        return PATH_STR
+        return IOI_PATH_STR
     elif anyconfig.utils.is_path_obj(obj):
-        return PATH_OBJ
+        return IOI_PATH_OBJ
 
-    return STREAM
+    return IOI_STREAM
 
 
 def inspect_io_obj(obj):
@@ -57,16 +54,16 @@ def inspect_io_obj(obj):
     """
     itype = guess_io_type(obj)
 
-    if itype == PATH_STR:
+    if itype == IOI_PATH_STR:
         ipath = anyconfig.utils.normpath(obj)
         opener = open
-    elif itype == PATH_OBJ:
+    elif itype == IOI_PATH_OBJ:
         ipath = anyconfig.utils.normpath(obj.as_posix())
         opener = obj.open
-    elif itype == STREAM:
+    elif itype == IOI_STREAM:
         ipath = anyconfig.utils.get_path_from_stream(obj)
         opener = anyconfig.utils.noop
-    elif itype == NONE:
+    elif itype == IOI_NONE:
         ipath = None
         opener = anyconfig.utils.noop
     else:

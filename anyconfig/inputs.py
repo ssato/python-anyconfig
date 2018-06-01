@@ -49,7 +49,7 @@ def guess_io_type(obj):
     return STREAM
 
 
-def inspect_input(input_):
+def inspect_io_obj(input_):
     """
     :param input_:
         Input object may be string (path), pathlib.Path object or (file) stream
@@ -179,7 +179,7 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
     if (input_ is None or not input_) and forced_type is None:
         raise ValueError("input_ or forced_type must be some value")
 
-    (itype, ipath, opener) = inspect_input(input_)
+    (itype, ipath, opener) = inspect_io_obj(input_)
     psr = find_parser(ipath, cps_by_ext, cps_by_type, forced_type=forced_type)
 
     return Input(src=input_, type=itype, path=ipath, parser=psr, opener=opener)

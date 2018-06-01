@@ -23,14 +23,14 @@ IPATH_0 = os.path.join(os.path.dirname(__file__), "00-cnf.json")
 IPATH_0_FULL = anyconfig.utils.normpath(IPATH_0)
 
 
-class Test_30_inspect_input(unittest.TestCase):
+class Test_30_inspect_io_obj(unittest.TestCase):
 
     def test_10_path_str(self):
-        self.assertEqual(TT.inspect_input(IPATH_0),
+        self.assertEqual(TT.inspect_io_obj(IPATH_0),
                          (TT.PATH_STR, IPATH_0_FULL, open))
 
     def test_20_stream(self):
-        self.assertEqual(TT.inspect_input(open(IPATH_0)),
+        self.assertEqual(TT.inspect_io_obj(open(IPATH_0)),
                          (TT.STREAM, IPATH_0_FULL,
                           anyconfig.utils.noop))
 
@@ -39,7 +39,7 @@ class Test_30_inspect_input(unittest.TestCase):
             return
 
         ipo = anyconfig.compat.pathlib.Path(IPATH_0)
-        self.assertEqual(TT.inspect_input(ipo),
+        self.assertEqual(TT.inspect_io_obj(ipo),
                          (TT.PATH_OBJ, IPATH_0_FULL, ipo.open))
 
 

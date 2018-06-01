@@ -49,30 +49,30 @@ def guess_io_type(obj):
     return STREAM
 
 
-def inspect_io_obj(input_):
+def inspect_io_obj(obj):
     """
-    :param input_:
+    :param obj:
         Input object may be string (path), pathlib.Path object or (file) stream
 
-    :return: A tuple of (input_type, input_path, input_opener)
+    :return: A tuple of (objtype, objpath, objopener)
     :raises: UnknownFileTypeError
     """
-    itype = guess_io_type(input_)
+    itype = guess_io_type(obj)
 
     if itype == PATH_STR:
-        ipath = anyconfig.utils.normpath(input_)
+        ipath = anyconfig.utils.normpath(obj)
         opener = open
     elif itype == PATH_OBJ:
-        ipath = anyconfig.utils.normpath(input_.as_posix())
-        opener = input_.open
+        ipath = anyconfig.utils.normpath(obj.as_posix())
+        opener = obj.open
     elif itype == STREAM:
-        ipath = anyconfig.utils.get_path_from_stream(input_)
+        ipath = anyconfig.utils.get_path_from_stream(obj)
         opener = anyconfig.utils.noop
     elif itype == NONE:
         ipath = None
         opener = anyconfig.utils.noop
     else:
-        raise UnknownFileTypeError("%r" % input_)
+        raise UnknownFileTypeError("%r" % obj)
 
     return (itype, ipath, opener)
 
@@ -158,9 +158,9 @@ def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
     return parser()
 
 
-def make(input_, cps_by_ext, cps_by_type, forced_type=None):
+def make(obj, cps_by_ext, cps_by_type, forced_type=None):
     """
-    :param input_:
+    :param obj:
         Input object which may be string (path), pathlib.Path object or (file)
         stream object
     :param cps_by_ext: A list of pairs (file_extension, [parser_class])
@@ -173,15 +173,15 @@ def make(input_, cps_by_ext, cps_by_type, forced_type=None):
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    if anyconfig.utils.is_input_obj(input_):
-        return input_
+    if anyconfig.utils.is_io_obj(obj):
+        return obj
 
-    if (input_ is None or not input_) and forced_type is None:
-        raise ValueError("input_ or forced_type must be some value")
+    if (obj is None or not obj) and forced_type is None:
+        raise ValueError("obj or forced_type must be some value")
 
-    (itype, ipath, opener) = inspect_io_obj(input_)
+    (itype, ipath, opener) = inspect_io_obj(obj)
     psr = find_parser(ipath, cps_by_ext, cps_by_type, forced_type=forced_type)
 
-    return Input(src=input_, type=itype, path=ipath, parser=psr, opener=opener)
+    return Input(src=obj, type=itype, path=ipath, parser=psr, opener=opener)
 
 # vim:sw=4:ts=4:et:

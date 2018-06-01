@@ -219,40 +219,61 @@ def is_output_obj(obj):
     return is_io_obj(obj, keys=anyconfig.globals.OUTPUT_KEYS)
 
 
-def get_path_from_stream(maybe_stream):
+def get_path_from_stream(strm):
     """
-    Try to get file path from given stream `stream`.
+    Try to get file path from given file or file-like object `strm`.
 
-    :param maybe_stream: A file or file-like object
+    :param strm: A file or file-like object
     :return: Path of given file or file-like object or None
+    :raises: ValueError
 
-    >>> assert __file__ == get_path_from_stream(__file__)
     >>> assert __file__ == get_path_from_stream(open(__file__, 'r'))
-    >>> strm = anyconfig.compat.StringIO()
-    >>> get_path_from_stream(strm) is None
-    True
+    >>> assert get_path_from_stream(anyconfig.compat.StringIO()) is None
+    >>> get_path_from_stream(__file__)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    ValueError: ...
     """
-    if is_path(maybe_stream):
-        return maybe_stream  # It's path.
+    if not is_file_stream(strm):
+        raise ValueError("Given object does not look a file/file-like "
+                         "object: %r" % strm)
 
-    maybe_path = getattr(maybe_stream, "name", None)
-    if maybe_path is not None:
-        maybe_path = normpath(maybe_path)
+    path = getattr(strm, "name", None)
+    if path is not None:
+        return normpath(path)
 
-    return maybe_path
+    return None
 
 
-def _try_to_get_extension(path_or_strm):
+def _try_to_get_extension(obj):
     """
     Try to get file extension from given path or file object.
 
+    :param obj: a file, file-like object or something
     :return: File extension or None
+
+    >>> _try_to_get_extension("a.py")
+    'py'
     """
-    path = get_path_from_stream(path_or_strm)
-    if path is None:
+    if is_path(obj):
+        path = obj
+
+    elif is_path_obj(obj):
+        return obj.suffix[1:]
+
+    elif is_file_stream(obj):
+        try:
+            path = get_path_from_stream(obj)
+        except ValueError:
+            return None
+
+    elif is_io_obj(obj):
+        path = obj.path
+
+    else:
         return None
 
-    return get_file_extension(path) or None
+    return path and get_file_extension(path) or None
 
 
 def are_same_file_types(paths):

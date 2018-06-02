@@ -13,6 +13,7 @@ import unittest
 from os import linesep as lsep
 
 import tests.common
+import anyconfig.backends
 
 from anyconfig.compat import OrderedDict
 from tests.common import to_bytes as _bytes
@@ -47,6 +48,10 @@ class HasParserTrait(object):
 
 
 class TestBase(unittest.TestCase, HasParserTrait):
+
+    def _to_ioinfo(self, path):
+        ptype = self.psr.type()
+        return anyconfig.backends.inspect_io_obj(path, forced_type=ptype)
 
     def _assert_dicts_equal(self, cnf, ordered=False, cls=None, ref=None):
         if ref is None:
@@ -141,6 +146,7 @@ class TestBaseWithIO(TestBase):
             exts = self.psr.extensions()
             ext = exts[0] if exts else "conf"
             self.cnf_path = os.path.join(self.workdir, "cnf_0." + ext)
+            self.ioi = self._to_ioinfo(self.cnf_path)
 
             with self.psr.wopen(self.cnf_path) as out:
                 out.write(self.cnf_s)
@@ -154,43 +160,45 @@ class Test_20_dump_and_load(TestBaseWithIO):
 
     def test_10_load(self):
         if self.is_ready():
-            cnf = self.psr.load(self.cnf_path)
+            cnf = self.psr.load(self.ioi)
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
     def test_12_load_from_stream(self):
         if self.is_ready():
             with self.psr.ropen(self.cnf_path) as strm:
-                cnf = self.psr.load(strm)
+                ioi = self._to_ioinfo(strm)
+                cnf = self.psr.load(ioi)
 
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
     def test_14_load_with_ac_ordered_option(self):
         if self.is_ready():
-            cnf = self.psr.load(self.cnf_path, ac_ordered=True)
+            cnf = self.psr.load(self.ioi, ac_ordered=True)
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf, ordered=self.psr.ordered())
 
     def test_16_load_with_ac_dict_option(self):
         if self.is_ready():
-            cnf = self.psr.load(self.cnf_path, ac_dict=MyDict)
+            cnf = self.psr.load(self.ioi, ac_dict=MyDict)
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf, cls=MyDict)
 
     def test_30_dump(self):
         if self.is_ready():
-            self.psr.dump(self.cnf, self.cnf_path)
-            cnf = self.psr.load(self.cnf_path)
+            self.psr.dump(self.cnf, self.ioi)
+            cnf = self.psr.load(self.ioi)
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 
     def test_32_dump_to_stream(self):
         if self.is_ready():
             with self.psr.wopen(self.cnf_path) as strm:
-                self.psr.dump(self.cnf, strm)
+                ioi = self._to_ioinfo(strm)
+                self.psr.dump(self.cnf, ioi)
 
-            cnf = self.psr.load(self.cnf_path)
+            cnf = self.psr.load(self.ioi)
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
 

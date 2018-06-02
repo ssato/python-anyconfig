@@ -10,6 +10,7 @@ import os.path
 import unittest
 
 import anyconfig.backend.base as TT  # stands for test target
+import anyconfig.backends
 import tests.common
 
 
@@ -29,11 +30,12 @@ class Test00(unittest.TestCase):
         self.assertEqual(cnf, MZERO)
         self.assertTrue(isinstance(cnf, type(MZERO)))
 
-    def test_30_load__ignore_missing(self):
-        cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
+    def test_30_load__ac_ignore_missing(self):
+        cpath = os.path.join(os.curdir, "conf_file_not_exist.json")
         assert not os.path.exists(cpath)
 
-        cnf = self.psr.load(cpath, ignore_missing=True)
+        ioi = anyconfig.backends.inspect_io_obj(cpath)
+        cnf = self.psr.load(ioi, ac_ignore_missing=True)
         self.assertEqual(cnf, MZERO)
         self.assertTrue(isinstance(cnf, type(MZERO)))
 

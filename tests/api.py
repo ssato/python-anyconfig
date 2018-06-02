@@ -19,7 +19,7 @@ import anyconfig.dicts
 import anyconfig.template
 import tests.common
 
-from tests.common import CNF_0, SCM_0, dicts_equal, selfdir
+from tests.common import CNF_0, SCM_0, CNF_1, dicts_equal, selfdir
 
 
 # suppress logging messages.
@@ -182,6 +182,31 @@ class Test_20_dumps_and_loads(TestBase):
         self.assertTrue(cnf_2 is None, cnf_2)
 
 
+class Test_22_single_load(TestBase):
+
+    a_path = os.path.join(selfdir(), "00-cnf.json")
+    cnf = CNF_1
+    pathlib = anyconfig.compat.pathlib
+
+    def test_10__single_load(self):
+        res = TT.single_load(self.a_path)
+        self.assert_dicts_equal(res, self.cnf)
+
+    def test_12__single_load__ac_parser(self):
+        res = TT.single_load(self.a_path, ac_parser="json")
+        self.assert_dicts_equal(res, self.cnf)
+
+    def test_20__single_load__stream(self):
+        res = TT.single_load(open(self.a_path), ac_parser="json")
+        self.assert_dicts_equal(res, self.cnf)
+
+    def test_30__single_load__pathlib(self):
+        if self.pathlib:
+            pobj = self.pathlib.Path(self.a_path)
+            res = TT.single_load(pobj)
+            self.assert_dicts_equal(res, self.cnf)
+
+
 class TestBaseWithIO(TestBase):
 
     def setUp(self):
@@ -217,7 +242,7 @@ class Test_30_single_load(TestBaseWithIO):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
-        self.assertEqual(TT.single_load(cpath, "ini", ignore_missing=True),
+        self.assertEqual(TT.single_load(cpath, "ini", ac_ignore_missing=True),
                          NULL_CNTNR)
 
     def test_15_single_load__fail_to_render_template(self):
@@ -486,6 +511,10 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
         assert not os.path.exists(cpath)
 
+        self.assertEqual(TT.multi_load([cpath], ac_parser="ini",
+                                       ac_ignore_missing=True),
+                         NULL_CNTNR)
+        # It will be remove after 'ignore_missing' was deprecated and removed.
         self.assertEqual(TT.multi_load([cpath], ac_parser="ini",
                                        ignore_missing=True),
                          NULL_CNTNR)

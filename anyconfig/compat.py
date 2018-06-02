@@ -13,6 +13,11 @@ import itertools
 import sys
 
 try:
+    import pathlib  # flake8: noqa
+except ImportError:
+    pathlib = None
+
+try:
     from logging import NullHandler
 except ImportError:  # python < 2.7 doesn't have it.
     import logging

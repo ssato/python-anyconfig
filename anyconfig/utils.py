@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 """Misc utility routines for anyconfig module.
@@ -12,6 +12,9 @@ import os.path
 import types
 
 import anyconfig.compat
+import anyconfig.globals
+
+from anyconfig.compat import pathlib
 
 
 def get_file_extension(file_path):
@@ -95,59 +98,182 @@ def normpath(path):
     return os.path.normpath(os.path.expanduser(path) if '~' in path else path)
 
 
-def is_path(path_or_stream):
+def is_path(obj):
     """
-    Is given object `path_or_stream` a file path?
+    Is given object `obj` a file path?
 
-    :param path_or_stream: file path or stream, file/file-like object
-    :return: True if `path_or_stream` is a file path
+    :param obj: file path or something
+    :return: True if `obj` is a file path
     """
-    return isinstance(path_or_stream, anyconfig.compat.STR_TYPES)
+    return isinstance(obj, anyconfig.compat.STR_TYPES)
 
 
-def get_path_from_stream(maybe_stream):
+def is_path_obj(obj):
+    """Is given object `input` a pathlib.Path object?
+
+    :param obj: a pathlib.Path object or something
+    :return: True if `obj` is a pathlib.Path object
+
+    >>> from anyconfig.compat import pathlib
+    >>> if pathlib is not None:
+    ...      obj = pathlib.Path(__file__)
+    ...      assert is_path_obj(obj)
+    >>>
+    >>> assert not is_path_obj(__file__)
     """
-    Try to get file path from given stream `stream`.
+    return pathlib is not None and isinstance(obj, pathlib.Path)
 
-    :param maybe_stream: A file or file-like object
+
+def is_file_stream(obj):
+    """Is given object `input` a file stream (file/file-like object)?
+
+    :param obj: a file / file-like (stream) object or something
+    :return: True if `obj` is a file stream
+
+    >>> assert is_file_stream(open(__file__))
+    >>> assert not is_file_stream(__file__)
+    """
+    return getattr(obj, "read", False)
+
+
+def is_ioinfo(obj, keys=None):
+    """
+    :return: True if given `obj` is a 'IOInfo' namedtuple object.
+
+    >>> assert not is_ioinfo(1)
+    >>> assert not is_ioinfo("aaa")
+    >>> assert not is_ioinfo({})
+    >>> assert not is_ioinfo(('a', 1, {}))
+
+    >>> inp = anyconfig.globals.IOInfo("/etc/hosts", "path", "/etc/hosts",
+    ...                                None, open)
+    >>> assert is_ioinfo(inp)
+    """
+    if keys is None:
+        keys = anyconfig.globals.IOI_KEYS
+
+    if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
+        return all(k in obj._asdict() for k in keys)
+
+    return False
+
+
+def is_stream_ioinfo(obj):
+    """
+    :param obj: IOInfo object or something
+    :return: True if given IOInfo object `obj` is of file / file-like object
+
+    >>> ioi = anyconfig.globals.IOInfo(None, anyconfig.globals.IOI_STREAM,
+    ...                                None, None, None)
+    >>> assert is_stream_ioinfo(ioi)
+    >>> assert not is_stream_ioinfo(__file__)
+    """
+    return getattr(obj, "type", None) == anyconfig.globals.IOI_STREAM
+
+
+def is_path_like_object(obj, marker='*'):
+    """
+    Is given object `obj` a path string, a pathlib.Path, a file / file-like
+    (stream) or IOInfo namedtuple object?
+
+    :param obj:
+        a path string, pathlib.Path object, a file / file-like or 'IOInfo'
+        object
+
+    :return:
+        True if `obj` is a path string or a pathlib.Path object or a file
+        (stream) object
+
+    >>> assert is_path_like_object(__file__)
+    >>> assert not is_path_like_object("/a/b/c/*.json", '*')
+
+    >>> from anyconfig.compat import pathlib
+    >>> if pathlib is not None:
+    ...      assert is_path_like_object(pathlib.Path("a.ini"))
+    ...      assert not is_path_like_object(pathlib.Path("x.ini"), 'x')
+
+    >>> assert is_path_like_object(open(__file__))
+    """
+    return ((is_path(obj) and marker not in obj) or
+            (is_path_obj(obj) and marker not in obj.as_posix()) or
+            is_file_stream(obj) or is_ioinfo(obj))
+
+
+def is_paths(maybe_paths, marker='*'):
+    """
+    Does given object `maybe_paths` consist of path or path pattern strings?
+    """
+    return ((is_path(maybe_paths) and marker in maybe_paths) or  # Path str
+            (is_path_obj(maybe_paths) and marker in maybe_paths.as_posix()) or
+            (is_iterable(maybe_paths) and
+             all(is_path(p) or is_ioinfo(p) for p in maybe_paths)))
+
+
+def get_path_from_stream(strm):
+    """
+    Try to get file path from given file or file-like object `strm`.
+
+    :param strm: A file or file-like object
     :return: Path of given file or file-like object or None
+    :raises: ValueError
 
-    >>> __file__ == get_path_from_stream(__file__)
-    True
-    >>> __file__ == get_path_from_stream(open(__file__, 'r'))
-    True
-    >>> strm = anyconfig.compat.StringIO()
-    >>> get_path_from_stream(strm) is None
-    True
+    >>> assert __file__ == get_path_from_stream(open(__file__, 'r'))
+    >>> assert get_path_from_stream(anyconfig.compat.StringIO()) is None
+    >>> get_path_from_stream(__file__)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    ValueError: ...
     """
-    if is_path(maybe_stream):
-        return maybe_stream  # It's path.
+    if not is_file_stream(strm):
+        raise ValueError("Given object does not look a file/file-like "
+                         "object: %r" % strm)
 
-    maybe_path = getattr(maybe_stream, "name", None)
-    if maybe_path is not None:
-        maybe_path = os.path.abspath(maybe_path)
+    path = getattr(strm, "name", None)
+    if path is not None:
+        return normpath(path)
 
-    return maybe_path
+    return None
 
 
-def _try_to_get_extension(path_or_strm):
+def _try_to_get_extension(obj):
     """
     Try to get file extension from given path or file object.
 
+    :param obj: a file, file-like object or something
     :return: File extension or None
+
+    >>> _try_to_get_extension("a.py")
+    'py'
     """
-    path = get_path_from_stream(path_or_strm)
-    if path is None:
+    if is_path(obj):
+        path = obj
+
+    elif is_path_obj(obj):
+        return obj.suffix[1:]
+
+    elif is_file_stream(obj):
+        try:
+            path = get_path_from_stream(obj)
+        except ValueError:
+            return None
+
+    elif is_ioinfo(obj):
+        path = obj.path
+
+    else:
         return None
 
-    return get_file_extension(path) or None
+    if path:
+        return get_file_extension(path)
+
+    return None
 
 
-def are_same_file_types(paths):
+def are_same_file_types(objs):
     """
-    Are given (maybe) file paths same type (extension) ?
+    Are given (maybe) file objs same type (extension) ?
 
-    :param paths: A list of file path or file(-like) objects
+    :param objs: A list of file path or file(-like) objects
 
     >>> are_same_file_types([])
     False
@@ -163,18 +289,18 @@ def are_same_file_types(paths):
     >>> are_same_file_types(["a.yml", "b.yml", strm])
     False
     """
-    if not paths:
+    if not objs:
         return False
 
-    ext = _try_to_get_extension(paths[0])
+    ext = _try_to_get_extension(objs[0])
     if ext is None:
         return False
 
-    return all(_try_to_get_extension(p) == ext for p in paths[1:])
+    return all(_try_to_get_extension(p) == ext for p in objs[1:])
 
 
-def _norm_paths_itr(paths, marker='*'):
-    """Iterator version of :func:`norm_paths`.
+def _expand_paths_itr(paths, marker='*'):
+    """Iterator version of :func:`expand_paths`.
     """
     for path in paths:
         if is_path(path):
@@ -183,34 +309,48 @@ def _norm_paths_itr(paths, marker='*'):
                     yield ppath
             else:
                 yield path  # a simple file path
+        elif is_path_obj(path):
+            if marker in path.as_posix():
+                for ppath in sglob(path.as_posix()):
+                    yield normpath(ppath)
+            else:
+                yield normpath(path.as_posix())
+        elif is_ioinfo(path):
+            yield path.path
         else:  # A file or file-like object
             yield path
 
 
-def norm_paths(paths, marker='*'):
+def expand_paths(paths, marker='*'):
     """
     :param paths:
-        A glob path pattern string, or a list consists of path strings or glob
-        path pattern strings or file objects
+        A glob path pattern string or pathlib.Path object holding such path, or
+        a list consists of path strings or glob path pattern strings or
+        pathlib.Path object holding such ones, or file objects
     :param marker: Glob marker character or string, e.g. '*'
+
     :return: List of path strings
 
-    >>> norm_paths([])
+    >>> expand_paths([])
     []
-    >>> norm_paths("/usr/lib/a/b.conf /etc/a/b.conf /run/a/b.conf".split())
+    >>> expand_paths("/usr/lib/a/b.conf /etc/a/b.conf /run/a/b.conf".split())
     ['/usr/lib/a/b.conf', '/etc/a/b.conf', '/run/a/b.conf']
     >>> paths_s = os.path.join(os.path.dirname(__file__), "u*.py")
     >>> ref = sglob(paths_s)
-    >>> assert norm_paths(paths_s) == ref
+    >>> assert expand_paths(paths_s) == ref
     >>> ref = ["/etc/a.conf"] + ref
-    >>> assert norm_paths(["/etc/a.conf", paths_s]) == ref
+    >>> assert expand_paths(["/etc/a.conf", paths_s]) == ref
     >>> strm = anyconfig.compat.StringIO()
-    >>> assert norm_paths(["/etc/a.conf", strm]) == ["/etc/a.conf", strm]
+    >>> assert expand_paths(["/etc/a.conf", strm]) == ["/etc/a.conf", strm]
     """
     if is_path(paths) and marker in paths:
         return sglob(paths)
 
-    return list(_norm_paths_itr(paths, marker=marker))
+    if is_path_obj(paths) and marker in paths.as_posix():
+        # TBD: Is it better to return [p :: pathlib.Path] instead?
+        return [normpath(p) for p in sglob(paths.as_posix())]
+
+    return list(_expand_paths_itr(paths, marker=marker))
 
 
 # pylint: disable=unused-argument

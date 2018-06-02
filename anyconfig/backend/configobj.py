@@ -2,6 +2,7 @@
 # Copyright (C) 2013 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=deprecated-method
 r"""Configobj backend:
 
 - Format to support: configobj, http://goo.gl/JbP2Kp (readthedocs.org)

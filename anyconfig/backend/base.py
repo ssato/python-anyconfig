@@ -46,6 +46,7 @@ import anyconfig.utils
 
 
 LOGGER = logging.getLogger(__name__)
+TEXT_FILE = True
 
 
 def ensure_outdir_exists(filepath):
@@ -238,15 +239,17 @@ class LoaderMixin(object):
         options = self._load_options(container, **options)
         return self.load_from_string(content, container, **options)
 
-    def load(self, path_or_stream, ignore_missing=False, **options):
+    def load(self, ioi, ac_ignore_missing=False, **options):
         """
-        Load config from a file path or a file / file-like object
-        `path_or_stream` after some checks.
+        Load config from a file path or a file / file-like object which `ioi`
+        refering after some checks.
 
-        :param path_or_stream: Config file path or file{,-like} object
-        :param ignore_missing:
-            Ignore and just return None if given `path_or_stream` is not a file
-            / file-like object (thus, it should be a file path) and does not
+        :param ioi:
+            `~anyconfig.globals.IOInfo` namedtuple object provides various info
+            of input object to load data from
+
+        :param ac_ignore_missing:
+            Ignore and just return empty result if given `input_` does not
             exist in actual.
         :param options:
             options will be passed to backend specific loading functions.
@@ -259,13 +262,16 @@ class LoaderMixin(object):
         container = self._container_factory(**options)
         options = self._load_options(container, **options)
 
-        if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
-            if ignore_missing and not os.path.exists(path_or_stream):
+        if not ioi:
+            return container()
+
+        if anyconfig.utils.is_stream_ioinfo(ioi):
+            cnf = self.load_from_stream(ioi.src, container, **options)
+        else:
+            if ac_ignore_missing and not os.path.exists(ioi.path):
                 return container()
 
-            cnf = self.load_from_path(path_or_stream, container, **options)
-        else:
-            cnf = self.load_from_stream(path_or_stream, container, **options)
+            cnf = self.load_from_path(ioi.path, container, **options)
 
         return cnf
 
@@ -331,23 +337,25 @@ class DumperMixin(object):
         kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
         return self.dump_to_string(cnf, **kwargs)
 
-    def dump(self, cnf, path_or_stream, **kwargs):
+    def dump(self, cnf, ioi, **kwargs):
         """
-        Dump config `cnf` to a filepath or file-like object
-        `path_or_stream`.
+        Dump config `cnf` to output object of which `ioi` refering.
 
         :param cnf: Configuration data to dump
-        :param path_or_stream: Config file path or file{,-like} object
+        :param ioi:
+            `~anyconfig.globals.IOInfo` namedtuple object provides various info
+            of input object to load data from
+
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
         """
         kwargs = anyconfig.utils.filter_options(self._dump_opts, kwargs)
 
-        if isinstance(path_or_stream, anyconfig.compat.STR_TYPES):
-            ensure_outdir_exists(path_or_stream)
-            self.dump_to_path(cnf, path_or_stream, **kwargs)
+        if anyconfig.utils.is_stream_ioinfo(ioi):
+            self.dump_to_stream(cnf, ioi.src, **kwargs)
         else:
-            self.dump_to_stream(cnf, path_or_stream, **kwargs)
+            ensure_outdir_exists(ioi.path)
+            self.dump_to_path(cnf, ioi.path, **kwargs)
 
 
 class Parser(TextFilesMixin, LoaderMixin, DumperMixin):

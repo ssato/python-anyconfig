@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
@@ -59,8 +59,12 @@ r"""Public APIs of anyconfig module.
 from __future__ import absolute_import
 
 import os.path
+import warnings
 
-from anyconfig.globals import LOGGER
+# Import some global constants will be re-exported:
+from anyconfig.globals import (
+    LOGGER, IOI_PATH_OBJ, UnknownParserTypeError, UnknownFileTypeError
+)
 import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
@@ -70,32 +74,24 @@ import anyconfig.dicts
 import anyconfig.template
 import anyconfig.utils
 
-# Import some global constants will be re-exported:
-from anyconfig.backends import (
-    UnknownParserTypeError, UnknownFileTypeError
-)
 from anyconfig.dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    get, set_, merge # flake8: noqa
+    get, set_, merge  # flake8: noqa
 )
 from anyconfig.schema import validate, gen_schema
-from anyconfig.utils import is_path
 
 # Re-export and aliases:
 list_types = anyconfig.backends.list_types  # flake8: noqa
 
 
-def _is_paths(maybe_paths):
+def version():
     """
-    Does given object `maybe_paths` consist of path or path pattern strings?
+    :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
     """
-    if anyconfig.utils.is_iterable(maybe_paths):
-        return not getattr(maybe_paths, "read", False)
-
-    return False  # Not an iterable at least.
+    return anyconfig.globals.VERSION.split('.')
 
 
-def _maybe_validated(cnf, schema, **options):
+def _try_validate(cnf, schema, **options):
     """
     :param cnf: Mapping object represents configuration data
     :param schema: JSON schema object
@@ -115,22 +111,16 @@ def _maybe_validated(cnf, schema, **options):
     return None
 
 
-def version():
-    """
-    :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
-    """
-    return anyconfig.globals.VERSION.split('.')
-
-
-def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
+def find_loader(path, parser_or_type=None):
     """
     Find out parser object appropriate to load configuration from a file of
     given path or file or file-like object.
 
-    :param path_or_stream: Configuration file path or file or file-like object
+    :param path:
+        Configuration file path or file or file-like object or pathlib.Path
+        object if it's available
     :param parser_or_type:
         Forced configuration parser type or parser object itself
-    :param is_path_: Specify True if given `path_or_stream` is a file path
 
     :return:
         An instance of a class inherits :class:`~anyconfig.backend.base.Parser`
@@ -140,11 +130,8 @@ def find_loader(path_or_stream, parser_or_type=None, is_path_=False):
         return parser_or_type
 
     try:
-        psr = anyconfig.backends.find_parser(path_or_stream,
-                                             forced_type=parser_or_type,
-                                             is_path_=is_path_)
-        LOGGER.debug("Using config parser: %r [%s]", psr, psr.type())
-        return psr()  # TBD: Passing initialization arguments.
+        return anyconfig.backends.find_parser(path,
+                                              forced_type=parser_or_type)
     except (ValueError, UnknownParserTypeError, UnknownFileTypeError):
         raise
 
@@ -157,11 +144,13 @@ def _maybe_schema(**options):
           to compile it AAR if True
         - ac_context: Mapping object presents context to instantiate template
         - ac_schema: JSON schema file path to validate configuration files
+
+    :return: Mapping object or None means some errors
     """
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
-        # Try to detect the appropriate as it may be different from the
-        # original config file's format, perhaps.
+        # Try to detect the appropriate parser to load the schema data as it
+        # may be different from the original config file's format, perhaps.
         options["ac_parser"] = None
         options["ac_schema"] = None  # Avoid infinite loop.
         LOGGER.info("Loading schema: %s", ac_schema)
@@ -187,15 +176,57 @@ def open(path, mode=None, ac_parser=None, **options):
         builtin 'open' function.
 
     :return: A file object or None on any errors
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    psr = find_loader(path, parser_or_type=ac_parser, is_path_=True)
+    psr = anyconfig.backends.find_parser(path, forced_type=ac_parser)
+
     if mode is not None and mode.startswith('w'):
         return psr.wopen(path, **options)
 
     return psr.ropen(path, **options)
 
 
-def single_load(path_or_stream, ac_parser=None, ac_template=False,
+def _single_load(input_, ac_parser=None, ac_template=False,
+                 ac_context=None, **options):
+    """
+    :param input_:
+        File path or file or file-like object or pathlib.Path object represents
+        the file or a namedtuple `~anyconfig.globals.IOInfo` object represents
+        some input to load some data from
+    :param ac_parser: Forced parser type or parser object itself
+    :param ac_template:
+        Assume configuration file may be a template file and try to compile it
+        AAR if True
+    :param ac_context: A dict presents context to instantiate template
+    :param options:
+        Optional keyword arguments :func:`single_load` supports except for
+        ac_schema and ac_query
+
+    :return: Mapping object
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
+    """
+    ioi = anyconfig.backends.inspect_io_obj(input_, forced_type=ac_parser)
+    (psr, filepath) = (ioi.parser, ioi.path)
+
+    # .. note::
+    #    This will be kept for backward compatibility until 'ignore_missing'
+    #    option is deprecated and removed completely.
+    if "ignore_missing" in options:
+        warnings.warn("keyword option 'ignore_missing' is deprecated, use "
+                      "'ac_ignore_missing' isntead", DeprecationWarning)
+        options["ac_ignore_missing"] = options["ignore_missing"]
+
+    LOGGER.info("Loading: %s", filepath)
+    if ac_template and filepath is not None:
+        content = anyconfig.template.try_render(filepath=filepath,
+                                                ctx=ac_context)
+        if content is not None:
+            return psr.loads(content, **options)
+
+    return psr.load(ioi, **options)
+
+
+def single_load(input_, ac_parser=None, ac_template=False,
                 ac_context=None, **options):
     """
     Load single configuration file.
@@ -203,9 +234,12 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
     .. note::
 
        :func:`load` is a preferable alternative and this API should be used
-       only if there is a need to emphasize given file path is single one.
+       only if there is a need to emphasize given input `input_` is single one.
 
-    :param path_or_stream: Configuration file path or file or file-like object
+    :param input_:
+        File path or file or file-like object or pathlib.Path object represents
+        the file or a namedtuple `~anyconfig.globals.IOInfo` object represents
+        some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
         Assume configuration file may be a template file and try to compile it
@@ -234,57 +268,47 @@ def single_load(path_or_stream, ac_parser=None, ac_template=False,
 
         - Common backend options:
 
-          - ignore_missing: Ignore and just return empty result if given file
-            (``path_or_stream``) does not exist.
+          - ac_ignore_missing:
+            Ignore and just return empty result if given file ``input_`` does
+            not exist actually.
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Mapping object
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    is_path_ = is_path(path_or_stream)
-    if is_path_:
-        filepath = path_or_stream = anyconfig.utils.normpath(path_or_stream)
-    else:
-        filepath = anyconfig.utils.get_path_from_stream(path_or_stream)
-
-    psr = find_loader(path_or_stream, ac_parser, is_path_)
+    cnf = _single_load(input_, ac_parser=ac_parser, ac_template=ac_template,
+                       ac_context=ac_context, **options)
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
-
-    LOGGER.info("Loading: %s", filepath)
-    if ac_template and filepath is not None:
-        content = anyconfig.template.try_render(filepath=filepath,
-                                                ctx=ac_context)
-        if content is not None:
-            cnf = psr.loads(content, **options)
-            return _maybe_validated(cnf, schema, **options)
-
-    cnf = psr.load(path_or_stream, **options)
-    return _maybe_validated(cnf, schema, **options)
+    cnf = _try_validate(cnf, schema, **options)
+    return anyconfig.query.query(cnf, **options)
 
 
-def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
+def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
                **options):
-    """
+    r"""
     Load multiple config files.
 
     .. note::
 
        :func:`load` is a preferable alternative and this API should be used
-       only if there is a need to emphasize given file paths are multiple ones.
+       only if there is a need to emphasize given inputs are multiple ones.
 
-    The first argument `paths` may be a list of config file paths or
-    a glob pattern specifying that. That is, if a.yml, b.yml and c.yml are in
-    the dir /etc/foo/conf.d/, the followings give same results::
+    The first argument `inputs` may be a list of file paths or a glob pattern
+    specifying that. That is, if a.yml, b.yml and c.yml are in the dir
+    /etc/foo/conf.d/, the followings give same results::
 
       multi_load(["/etc/foo/conf.d/a.yml", "/etc/foo/conf.d/b.yml",
                   "/etc/foo/conf.d/c.yml", ])
 
       multi_load("/etc/foo/conf.d/*.yml")
 
-    :param paths:
-        List of configuration file paths or a glob pattern to list of these
-        paths, or a list of file or file-like objects
+    :param inputs:
+        A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
+        files, file or file-like object or pathlib.Path object represents the
+        file or a namedtuple `~anyconfig.globals.IOInfo` object represents some
+        input to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
@@ -307,26 +331,27 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
         - Common backend options:
 
           - ignore_missing: Ignore and just return empty result if given file
-            (``path_or_stream``) does not exist.
+            ``path`` does not exist.
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Mapping object or any query result might be primitive objects
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
     options["ac_schema"] = None  # Avoid to load schema more than twice.
 
-    paths = anyconfig.utils.norm_paths(paths, marker=marker)
+    paths = anyconfig.utils.expand_paths(inputs, marker=marker)
     if anyconfig.utils.are_same_file_types(paths):
-        ac_parser = find_loader(paths[0], ac_parser, is_path(paths[0]))
+        ac_parser = anyconfig.backends.find_parser(paths[0], ac_parser)
 
     cnf = ac_context
     for path in paths:
         opts = options.copy()
-        cups = single_load(path, ac_parser=ac_parser,
-                           ac_template=ac_template, ac_context=cnf, **opts)
+        cups = _single_load(path, ac_parser=ac_parser,
+                            ac_template=ac_template, ac_context=cnf, **opts)
         if cups:
             if cnf is None:
                 cnf = cups
@@ -336,7 +361,7 @@ def multi_load(paths, ac_parser=None, ac_template=False, ac_context=None,
     if cnf is None:
         return anyconfig.dicts.convert_to({}, **options)
 
-    cnf = _maybe_validated(cnf, schema, **options)
+    cnf = _try_validate(cnf, schema, **options)
     return anyconfig.query.query(cnf, **options)
 
 
@@ -346,8 +371,11 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     Load single or multiple config files or multiple config files specified in
     given paths pattern.
 
-    :param path_specs: Configuration file path or paths or its pattern such as
-        r'/a/b/\*.json' or a list of files/file-like objects
+    :param path_specs:
+        A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
+        files, file or file-like object or pathlib.Path object represents the
+        file or a namedtuple `~anyconfig.globals.IOInfo` object represents some
+        input to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:
         callable (function or class) to make mapping object will be returned as
@@ -364,18 +392,21 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
         :func:`single_load` and :func:`multi_load`
 
     :return: Mapping object or any query result might be primitive objects
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
-    if is_path(path_specs) and marker in path_specs or _is_paths(path_specs):
-        return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
-                          ac_template=ac_template, ac_context=ac_context,
-                          **options)
+    if anyconfig.utils.is_path_like_object(path_specs, marker):
+        return single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
+                           ac_template=ac_template, ac_context=ac_context,
+                           **options)
 
-    cnf = single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
+    if not anyconfig.utils.is_paths(path_specs, marker):
+        raise ValueError("Something goes wrong with your input %r", path_specs)
+
+    return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                       ac_template=ac_template, ac_context=ac_context,
                       **options)
-    return anyconfig.query.query(cnf, **options)
 
 
 def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
@@ -397,13 +428,14 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
         :func:`single_load` function.
 
     :return: Mapping object or any query result might be primitive objects
+    :raises: ValueError, UnknownParserTypeError
     """
     if ac_parser is None:
         LOGGER.warning("ac_parser was not given but it's must to find correct "
                        "parser to load configurations from string.")
         return None
 
-    psr = find_loader(None, ac_parser)
+    psr = anyconfig.backends.find_parser_by_type(ac_parser)
     schema = None
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
@@ -419,37 +451,27 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
             content = compiled
 
     cnf = psr.loads(content, ac_dict=ac_dict, **options)
-    cnf = _maybe_validated(cnf, schema, **options)
+    cnf = _try_validate(cnf, schema, **options)
     return anyconfig.query.query(cnf, **options)
 
 
-def _find_dumper(path_or_stream, ac_parser=None):
+def dump(data, path, ac_parser=None, **options):
     """
-    Find parser to dump configuration data.
-
-    :param path_or_stream: Output file path or file / file-like object
-    :param ac_parser: Forced parser type or parser object
-
-    :return: Parser object
-    """
-    return find_loader(path_or_stream, ac_parser)
-
-
-def dump(data, path_or_stream, ac_parser=None, **options):
-    """
-    Save `data` as `path_or_stream`.
+    Save `data` as `path`.
 
     :param data: A mapping object may have configurations data to dump
-    :param path_or_stream: Output file path or file / file-like object
+    :param path:
+        Output file path or file / file-like object or pathlib.Path object
     :param ac_parser: Forced parser type or parser object
     :param options:
         Backend specific optional arguments, e.g. {"indent": 2} for JSON
         loader/dumper backend
+
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    dumper = _find_dumper(path_or_stream, ac_parser)
-    LOGGER.info("Dumping: %s",
-                anyconfig.utils.get_path_from_stream(path_or_stream))
-    dumper.dump(data, path_or_stream, **options)
+    ioi = anyconfig.backends.inspect_io_obj(path, forced_type=ac_parser)
+    LOGGER.info("Dumping: %s", ioi.path)
+    ioi.parser.dump(data, ioi, **options)
 
 
 def dumps(data, ac_parser=None, **options):
@@ -461,8 +483,10 @@ def dumps(data, ac_parser=None, **options):
     :param options: see :func:`dump`
 
     :return: Backend-specific string representation for the given data
+    :raises: ValueError, UnknownParserTypeError
     """
-    return _find_dumper(None, ac_parser).dumps(data, **options)
+    psr = anyconfig.backends.find_parser_by_type(ac_parser)
+    return psr.dumps(data, **options)
 
 
 def query(data, expression, **options):

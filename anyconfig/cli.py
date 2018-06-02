@@ -310,7 +310,7 @@ def _load_diff(args):
     """
     try:
         diff = API.load(args.inputs, args.itype,
-                        ignore_missing=args.ignore_missing,
+                        ac_ignore_missing=args.ignore_missing,
                         ac_merge=args.merge,
                         ac_template=args.template,
                         ac_schema=args.schema)

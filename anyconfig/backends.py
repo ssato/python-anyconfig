@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2016 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Suppress:
@@ -16,6 +16,7 @@ import operator
 import pkg_resources
 
 import anyconfig.compat
+import anyconfig.ioinfo
 import anyconfig.utils
 
 import anyconfig.backend.base
@@ -25,6 +26,7 @@ import anyconfig.backend.pickle
 import anyconfig.backend.properties
 import anyconfig.backend.shellvars
 import anyconfig.backend.xml
+
 
 LOGGER = logging.getLogger(__name__)
 PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json.Parser,
@@ -57,20 +59,6 @@ for e in pkg_resources.iter_entry_points("anyconfig_backends"):
         PARSERS.append(e.load())
     except ImportError:
         continue
-
-
-class UnknownParserTypeError(RuntimeError):
-    """Raise if no parsers were found for given type."""
-    def __init__(self, forced_type):
-        msg = "No parser found for type '%s'" % forced_type
-        super(UnknownParserTypeError, self).__init__(msg)
-
-
-class UnknownFileTypeError(RuntimeError):
-    """Raise if not parsers were found for given file path."""
-    def __init__(self, path):
-        msg = "No parser found for file '%s'" % path
-        super(UnknownFileTypeError, self).__init__(msg)
 
 
 def fst(tpl):
@@ -149,104 +137,68 @@ _PARSERS_BY_TYPE = tuple(_list_parsers_by_type(PARSERS))
 _PARSERS_BY_EXT = tuple(_list_parsers_by_extension(PARSERS))
 
 
-def find_by_file(path_or_stream, cps=_PARSERS_BY_EXT, is_path_=False):
+def inspect_io_obj(obj, cps_by_ext=_PARSERS_BY_EXT,
+                   cps_by_type=_PARSERS_BY_TYPE, forced_type=None):
     """
-    Find config parser by the extension of file `path_or_stream`, file path or
-    stream (a file or file-like objects).
+    Inspect a given object `obj` which may be a path string, file / file-like
+    object, pathlib.Path object or `~anyconfig.globals.IOInfo` namedtuple
+    object, and find out appropriate parser object to load or dump from/to it
+    along with other I/O information.
 
-    :param path_or_stream: Config file path or file/file-like object
-    :param cps:
-        A tuple of pairs of (type, parser_class) or None if you want to compute
-        this value dynamically.
-    :param is_path_: True if given `path_or_stream` is a file path
+    :param obj:
+        a file path string, file / file-like object, pathlib.Path object or
+        `~anyconfig.globals.IOInfo` object
+    :param forced_type: Forced type of parser to load or dump
 
-    :return: Config Parser class found
-
-    >>> find_by_file("a.missing_cnf_ext") is None
-    True
-    >>> strm = anyconfig.compat.StringIO()
-    >>> find_by_file(strm) is None
-    True
-    >>> find_by_file("a.json")
-    <class 'anyconfig.backend.json.Parser'>
-    >>> find_by_file("a.json", is_path_=True)
-    <class 'anyconfig.backend.json.Parser'>
+    :return: anyconfig.globals.IOInfo object :: namedtuple
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    if cps is None:
-        cps = _list_parsers_by_extension(PARSERS)
-
-    if not is_path_ and not anyconfig.utils.is_path(path_or_stream):
-        path_or_stream = anyconfig.utils.get_path_from_stream(path_or_stream)
-        if path_or_stream is None:
-            return None  # There is no way to detect file path.
-
-    ext_ref = anyconfig.utils.get_file_extension(path_or_stream)
-    return next((psrs[-1] for ext, psrs in cps if ext == ext_ref), None)
+    return anyconfig.ioinfo.make(obj, cps_by_ext, cps_by_type,
+                                 forced_type=forced_type)
 
 
-def find_by_type(cptype, cps=_PARSERS_BY_TYPE):
+def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
+                        cps_by_type=_PARSERS_BY_TYPE):
     """
-    Find config parser by file's extension.
+    Find out appropriate parser object to load inputs of given type.
 
-    :param cptype: Config file's type
-    :param cps:
-        A list of pairs (type, parser_class) or None if you want to compute
-        this value dynamically.
+    :param forced_type: Forced parser type
+    :param cps_by_type: A list of pairs (parser_type, [parser_class])
 
-    :return: Config Parser class found
-
-    >>> find_by_type("missing_type") is None
-    True
+    :return:
+        An instance of :class:`~anyconfig.backend.base.Parser` or None means no
+        appropriate parser was found
+    :raises: UnknownParserTypeError
     """
-    if cps is None:
-        cps = _list_parsers_by_type(PARSERS)
+    if forced_type is None or not forced_type:
+        raise ValueError("forced_type must be a some string")
 
-    return next((psrs[-1] or None for t, psrs in cps if t == cptype), None)
+    return anyconfig.ioinfo.find_parser(None, cps_by_ext=cps_by_ext,
+                                        cps_by_type=cps_by_type,
+                                        forced_type=forced_type)
 
 
-def find_parser(path_or_stream, forced_type=None, is_path_=False):
+def find_parser(obj, forced_type=None):
     """
-    Find out config parser object appropriate to load from a file of given path
-    or file/file-like object.
+    Find out appropriate parser object to load from a file of given path or
+    file/file-like object.
 
-    :param path_or_stream: Configuration file path or file / file-like object
+    :param obj:
+        a file path string, file / file-like object, pathlib.Path object or
+        `~anyconfig.globals.IOInfo` object
     :param forced_type: Forced configuration parser type
-    :param is_path_: True if given `path_or_stream` is a file path
 
     :return: A tuple of (Parser class or None, "" or error message)
-
-    >>> find_parser(None)  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    ValueError: path_or_stream or forced_type must be some value
-    >>> find_parser(None, "type_not_exist"
-    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    UnknownParserTypeError: No parser found for type 'type_not_exist'
-    >>> find_parser("cnf.ext_not_found"
-    ...             )  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    UnknownFileTypeError: No parser found for file 'cnf.ext_not_found'
-
-    >>> find_parser(None, "ini")
-    <class 'anyconfig.backend.ini.Parser'>
-    >>> find_parser("cnf.json")
-    <class 'anyconfig.backend.json.Parser'>
-    >>> find_parser("cnf.json", is_path_=True)
-    <class 'anyconfig.backend.json.Parser'>
+    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    if not path_or_stream and forced_type is None:
-        raise ValueError("path_or_stream or forced_type must be some value")
+    if anyconfig.utils.is_ioinfo(obj):
+        return obj.parser  # It must have this.
 
-    if forced_type is not None:
-        parser = find_by_type(forced_type)
-        if parser is None:
-            raise UnknownParserTypeError(forced_type)
-    else:
-        parser = find_by_file(path_or_stream, is_path_=is_path_)
-        if parser is None:
-            raise UnknownFileTypeError(path_or_stream)
-
-    return parser
+    ioi = inspect_io_obj(obj, _PARSERS_BY_EXT, _PARSERS_BY_TYPE, forced_type)
+    psr = ioi.parser
+    LOGGER.debug("Using parser %r [%s] for input type %s",
+                 psr, psr.type(), ioi.type)
+    return psr
 
 
 def list_types(cps=_PARSERS_BY_TYPE):

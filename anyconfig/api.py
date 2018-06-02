@@ -59,6 +59,7 @@ r"""Public APIs of anyconfig module.
 from __future__ import absolute_import
 
 import os.path
+import warnings
 
 # Import some global constants will be re-exported:
 from anyconfig.globals import (
@@ -210,9 +211,11 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     # .. note::
     #    This will be kept for backward compatibility until 'ignore_missing'
     #    option is deprecated and removed completely.
-    options["ac_ignore_missing"] = options.get("ac_ignore_missing",
-                                               options.get("ignore_missing",
-                                                           False))
+    if "ignore_missing" in options:
+        warnings.warn("keyword option 'ignore_missing' is deprecated, use "
+                      "'ac_ignore_missing' isntead",
+                      warnings.DeprecationWarning)
+        options["ac_ignore_missing"] = options["ignore_missing"]
 
     LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:

@@ -341,7 +341,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
                            **options)
     options["ac_schema"] = None  # Avoid to load schema more than twice.
 
-    paths = anyconfig.utils.norm_paths(inputs, marker=marker)
+    paths = anyconfig.utils.expand_paths(inputs, marker=marker)
     if anyconfig.utils.are_same_file_types(paths):
         ac_parser = anyconfig.backends.find_parser(paths[0], ac_parser)
 

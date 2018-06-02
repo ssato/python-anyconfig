@@ -299,8 +299,8 @@ def are_same_file_types(objs):
     return all(_try_to_get_extension(p) == ext for p in objs[1:])
 
 
-def _norm_paths_itr(paths, marker='*'):
-    """Iterator version of :func:`norm_paths`.
+def _expand_paths_itr(paths, marker='*'):
+    """Iterator version of :func:`expand_paths`.
     """
     for path in paths:
         if is_path(path):
@@ -321,7 +321,7 @@ def _norm_paths_itr(paths, marker='*'):
             yield path
 
 
-def norm_paths(paths, marker='*'):
+def expand_paths(paths, marker='*'):
     """
     :param paths:
         A glob path pattern string or pathlib.Path object holding such path, or
@@ -331,17 +331,17 @@ def norm_paths(paths, marker='*'):
 
     :return: List of path strings
 
-    >>> norm_paths([])
+    >>> expand_paths([])
     []
-    >>> norm_paths("/usr/lib/a/b.conf /etc/a/b.conf /run/a/b.conf".split())
+    >>> expand_paths("/usr/lib/a/b.conf /etc/a/b.conf /run/a/b.conf".split())
     ['/usr/lib/a/b.conf', '/etc/a/b.conf', '/run/a/b.conf']
     >>> paths_s = os.path.join(os.path.dirname(__file__), "u*.py")
     >>> ref = sglob(paths_s)
-    >>> assert norm_paths(paths_s) == ref
+    >>> assert expand_paths(paths_s) == ref
     >>> ref = ["/etc/a.conf"] + ref
-    >>> assert norm_paths(["/etc/a.conf", paths_s]) == ref
+    >>> assert expand_paths(["/etc/a.conf", paths_s]) == ref
     >>> strm = anyconfig.compat.StringIO()
-    >>> assert norm_paths(["/etc/a.conf", strm]) == ["/etc/a.conf", strm]
+    >>> assert expand_paths(["/etc/a.conf", strm]) == ["/etc/a.conf", strm]
     """
     if is_path(paths) and marker in paths:
         return sglob(paths)
@@ -350,7 +350,7 @@ def norm_paths(paths, marker='*'):
         # TBD: Is it better to return [p :: pathlib.Path] instead?
         return [normpath(p) for p in sglob(paths.as_posix())]
 
-    return list(_norm_paths_itr(paths, marker=marker))
+    return list(_expand_paths_itr(paths, marker=marker))
 
 
 # pylint: disable=unused-argument

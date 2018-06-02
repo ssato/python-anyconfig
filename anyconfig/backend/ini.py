@@ -2,7 +2,7 @@
 # Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-#  pylint: disable=unused-argument
+#  pylint: disable=unused-argument, deprecated-method
 r"""INI backend:
 
 - Format to support: INI or INI like ones

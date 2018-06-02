@@ -299,26 +299,26 @@ def are_same_file_types(objs):
     return all(_try_to_get_extension(p) == ext for p in objs[1:])
 
 
-def _norm_paths_itr(inputs, marker='*'):
-    """Iterator version of :func:`norm_inputs`.
+def _norm_paths_itr(paths, marker='*'):
+    """Iterator version of :func:`norm_paths`.
     """
-    for inp in inputs:
-        if is_path(inp):
-            if marker in inp:  # glob path pattern
-                for ppath in sglob(inp):
+    for path in paths:
+        if is_path(path):
+            if marker in path:  # glob path pattern
+                for ppath in sglob(path):
                     yield ppath
             else:
-                yield inp  # a simple file path
-        elif is_path_obj(inp):
-            if marker in inp.as_posix():
-                for ppath in sglob(inp.as_posix()):
+                yield path  # a simple file path
+        elif is_path_obj(path):
+            if marker in path.as_posix():
+                for ppath in sglob(path.as_posix()):
                     yield normpath(ppath)
             else:
-                yield normpath(inp.as_posix())
-        elif is_ioinfo(inp):
-            yield inp.path
+                yield normpath(path.as_posix())
+        elif is_ioinfo(path):
+            yield path.path
         else:  # A file or file-like object
-            yield inp
+            yield path
 
 
 def norm_paths(paths, marker='*'):

@@ -5,7 +5,7 @@
 # Copyright (C) 2017, 2018 Red Hat, Inc.
 #
 # pylint: disable=missing-docstring,invalid-name,protected-access
-# pylint: ungrouped-imports
+# pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
 import copy

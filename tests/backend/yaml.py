@@ -22,12 +22,18 @@ c:
   - 2
   - 3
 
-sect0:
+sect0: &sect0
   d: ["x", "y", "z"]
+sect1:
+  <<: *sect0
+  e: true
 """
 
 CNF = OrderedDict((("a", 0), ("b", "bbb"), ("c", [1, 2, 3]),
-                   ("sect0", OrderedDict((("d", "x y z".split()), )))))
+                   ("sect0", OrderedDict((("d", "x y z".split()), ))),
+                   ("sect1", OrderedDict((("d", "x y z".split()), ("e",
+                                                                   True),)))
+                   ))
 
 
 class HasParserTrait(TBC.HasParserTrait):

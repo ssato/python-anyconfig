@@ -179,7 +179,7 @@ Also, it can process configuration files which are actually
   In [6]: anyconfig.load("/tmp/b.yml", ac_template=True, ac_context=dict(a='ccc'))
   Out[6]: {'a': 'ccc'}
 
-And python-anyconfig enables to validate configuration files in various format
+And python-anyconfig enables to validate configuration files in various formats
 with using JSON schema like the followings:
 
 .. code-block:: python

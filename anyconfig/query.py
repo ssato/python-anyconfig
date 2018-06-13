@@ -25,7 +25,7 @@ def query(data, **options):
 
     See also: https://github.com/jmespath/jmespath.py and http://jmespath.org.
 
-    :parae data: Target object (a dict or a dict-like object) to query
+    :param data: Target object (a dict or a dict-like object) to query
     :param options:
         Keyword option may include 'ac_query' which is a string represents
         JMESPath expression.

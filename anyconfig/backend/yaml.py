@@ -88,6 +88,7 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
         """Construct python object from yaml mapping node, based on
         :meth:`yaml.BaseConstructor.construct_mapping` in PyYAML (MIT).
         """
+        loader.flatten_mapping(node)
         if not isinstance(node, yaml.MappingNode):
             msg = "expected a mapping node, but found %s" % node.id
             raise yaml.constructor.ConstructorError(None, None, msg,

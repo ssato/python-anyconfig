@@ -1,3 +1,10 @@
+* Wed Jun 13 2018 Satoru SATOH <ssato@redhat.com> - 0.9.4-99
+- enhancement: allow passing pathlib.Path objects to load and dump APIs
+- refactor/fix/enhancement: introduce anyconfig.ioinfo to provide more rich
+  information about inputs and outputs internally
+- fix: [yaml] fix to handle yaml merge syntax properly from idanov
+- fix: misc doc fixes from yujunz, movermeyer and others
+
 * Tue Feb 13 2018 Satoru SATOH <ssato@redhat.com> - 0.9.4-1
 - change: drop python 3.3 support as isort required by pylint does so
 - change: separate some backends (cbor, bson and msgpack) from this package

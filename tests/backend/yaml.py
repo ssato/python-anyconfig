@@ -31,9 +31,8 @@ sect1:
 
 CNF = OrderedDict((("a", 0), ("b", "bbb"), ("c", [1, 2, 3]),
                    ("sect0", OrderedDict((("d", "x y z".split()), ))),
-                   ("sect1", OrderedDict((("d", "x y z".split()), ("e",
-                                                                   True),)))
-                   ))
+                   ("sect1", OrderedDict((("d", "x y z".split()),
+                                          ("e", True))))))
 
 
 class HasParserTrait(TBC.HasParserTrait):

@@ -5,6 +5,11 @@
 # pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs of anyconfig module.
 
+.. versionadded:: 0.9.5
+
+   - Added pathlib support. Now all of load and dump APIs can process
+     pathlib.Path object basically.
+
 .. versionadded:: 0.8.3
 
    - Added ac_dict keyword option to pass dict factory (any callable like
@@ -295,9 +300,13 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
        :func:`load` is a preferable alternative and this API should be used
        only if there is a need to emphasize given inputs are multiple ones.
 
-    The first argument `inputs` may be a list of file paths or a glob pattern
-    specifying that. That is, if a.yml, b.yml and c.yml are in the dir
-    /etc/foo/conf.d/, the followings give same results::
+    The first argument `inputs` may be a list of a file paths or a glob pattern
+    specifying them or a pathlib.Path object represents file[s] or a namedtuple
+    `~anyconfig.globals.IOInfo` object represents some inputs to load some data
+    from.
+
+    About glob patterns, for example, is, if a.yml, b.yml and c.yml are in the
+    dir /etc/foo/conf.d/, the followings give same results::
 
       multi_load(["/etc/foo/conf.d/a.yml", "/etc/foo/conf.d/b.yml",
                   "/etc/foo/conf.d/c.yml", ])
@@ -308,7 +317,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
         file or a namedtuple `~anyconfig.globals.IOInfo` object represents some
-        input to load some data from
+        inputs to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
@@ -369,13 +378,14 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
          ac_context=None, **options):
     r"""
     Load single or multiple config files or multiple config files specified in
-    given paths pattern.
+    given paths pattern or pathlib.Path object represents config files or a
+    namedtuple `~anyconfig.globals.IOInfo` object represents some inputs.
 
     :param path_specs:
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
         file or a namedtuple `~anyconfig.globals.IOInfo` object represents some
-        input to load some data from
+        inputs to load some data from.
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:
         callable (function or class) to make mapping object will be returned as
@@ -412,7 +422,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
 def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
           ac_context=None, **options):
     """
-    :param content: Configuration file's content
+    :param content: Configuration file's content (a string)
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:
         callable (function or class) to make mapping object will be returned as
@@ -455,13 +465,15 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
     return anyconfig.query.query(cnf, **options)
 
 
-def dump(data, path, ac_parser=None, **options):
+def dump(data, out, ac_parser=None, **options):
     """
-    Save `data` as `path`.
+    Save `data` to `out`.
 
     :param data: A mapping object may have configurations data to dump
-    :param path:
-        Output file path or file / file-like object or pathlib.Path object
+    :param out:
+        An output file path or a file or a file-like object or a `pathlib.Path`
+        object represents the file or a namedtuple `~anyconfig.globals.IOInfo`
+        object represents output to dump some data to.
     :param ac_parser: Forced parser type or parser object
     :param options:
         Backend specific optional arguments, e.g. {"indent": 2} for JSON
@@ -469,7 +481,7 @@ def dump(data, path, ac_parser=None, **options):
 
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
-    ioi = anyconfig.backends.inspect_io_obj(path, forced_type=ac_parser)
+    ioi = anyconfig.backends.inspect_io_obj(out, forced_type=ac_parser)
     LOGGER.info("Dumping: %s", ioi.path)
     ioi.parser.dump(data, ioi, **options)
 
@@ -494,9 +506,10 @@ def query(data, expression, **options):
     API just wraps :func:`anyconfig.query.query`.
 
     :param data: Config data object to query
+    :param expression: JMESPath expression to query data
     :param options: Ignored in current implementation
 
-    :return: Query result object may be primitive (int, str, etc.) or dict.
+    :return: Query result object may be a primitive (int, str, etc.) or dict.
     """
     return anyconfig.query.query(data, ac_query=expression)
 

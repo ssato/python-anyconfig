@@ -16,6 +16,7 @@ import operator
 
 import anyconfig.compat
 import anyconfig.ioinfo
+import anyconfig.plugins
 import anyconfig.utils
 
 import anyconfig.backend.base
@@ -53,7 +54,7 @@ try:
 except ImportError:
     LOGGER.info(_NA_MSG, "toml module", "TOML")
 
-PARSERS.extend(anyconfig.utils.load_plugins("anyconfig_backends"))
+PARSERS.extend(anyconfig.plugins.load_plugins("anyconfig_backends"))
 
 
 def fst(tpl):

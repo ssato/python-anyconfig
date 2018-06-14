@@ -2,8 +2,11 @@
 # Copyright (C) 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""
-Abstract processor module will be base for parsers (loaders and dumpers), etc.
+r"""Abstract processor module.
+
+.. versionadded:: 0.9.5
+
+   - Add to abstract processors such like Parsers (loaders and dumpers). 
 """
 from __future__ import absolute_import
 
@@ -15,7 +18,7 @@ import anyconfig.compat
 
 class Processor(object):
     """
-    Abstract processor to provide basic implementation of some methods,
+    Abstract processor class to provide basic implementation of some methods,
     interfaces and members.
 
     - _type: type indicates data types it can process

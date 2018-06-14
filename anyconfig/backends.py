@@ -185,9 +185,6 @@ def find_parser(obj, forced_type=None):
 def list_types(cps=_PARSERS_BY_TYPE):
     """List available config types.
     """
-    if cps is None:
-        cps = _list_parsers_by_type(PARSERS)
-
-    return sorted(set(next(anyconfig.compat.izip(*cps))))
+    return anyconfig.processors.list_types(cps)
 
 # vim:sw=4:ts=4:et:

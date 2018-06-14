@@ -13,7 +13,6 @@ from __future__ import absolute_import
 import itertools
 import logging
 import operator
-import pkg_resources
 
 import anyconfig.compat
 import anyconfig.ioinfo
@@ -54,11 +53,7 @@ try:
 except ImportError:
     LOGGER.info(_NA_MSG, "toml module", "TOML")
 
-for e in pkg_resources.iter_entry_points("anyconfig_backends"):
-    try:
-        PARSERS.append(e.load())
-    except ImportError:
-        continue
+PARSERS.extend(anyconfig.utils.load_plugins("anyconfig_backends"))
 
 
 def fst(tpl):

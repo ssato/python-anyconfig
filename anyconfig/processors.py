@@ -2,7 +2,8 @@
 # Copyright (C) 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-"""Misc utility routines for plugins.
+"""
+Abstract processor module will be base for parsers (loaders and dumpers), etc.
 """
 from __future__ import absolute_import
 

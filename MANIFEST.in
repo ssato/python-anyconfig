@@ -1,5 +1,6 @@
 include LICENSE.MIT
 include MANIFEST.in
+include NEWS
 include README.*
 include docs/*
 include docs/api/*.*

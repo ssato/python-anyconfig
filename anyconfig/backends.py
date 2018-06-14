@@ -114,8 +114,8 @@ def _list_parsers_by_extension(cps):
             in anyconfig.utils.groupby(cps_by_ext, fst))
 
 
-_PARSERS_BY_TYPE = tuple(_list_parsers_by_type(PARSERS))
-_PARSERS_BY_EXT = tuple(_list_parsers_by_extension(PARSERS))
+_PARSERS_BY_TYPE = tuple(anyconfig.processors.list_processors_by_type(PARSERS))
+_PARSERS_BY_EXT = tuple(anyconfig.processors.list_processors_by_ext(PARSERS))
 
 
 def inspect_io_obj(obj, cps_by_ext=_PARSERS_BY_EXT,

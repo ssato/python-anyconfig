@@ -11,7 +11,6 @@
 from __future__ import absolute_import
 
 import logging
-import operator
 
 import anyconfig.compat
 import anyconfig.ioinfo
@@ -56,22 +55,6 @@ except ImportError:
 PARSERS.extend(anyconfig.processors.load_plugins("anyconfig_backends"))
 
 
-def fst(tpl):
-    """
-    >>> fst((0, 1))
-    0
-    """
-    return tpl[0]
-
-
-def snd(tpl):
-    """
-    >>> snd((0, 1))
-    1
-    """
-    return tpl[1]
-
-
 def is_parser(obj):
     """
     :return: True if given `obj` is an instance of parser.
@@ -84,34 +67,6 @@ def is_parser(obj):
     True
     """
     return isinstance(obj, anyconfig.backend.base.Parser)
-
-
-def _list_parsers_by_type(cps):
-    """
-    :param cps: A list of parser classes
-    :return: List (generator) of (config_type, [config_parser])
-    """
-    return ((t, sorted(p, key=operator.methodcaller("priority"))) for t, p
-            in anyconfig.utils.groupby(cps, operator.methodcaller("type")))
-
-
-def _list_xppairs(xps):
-    """List config parsers by priority.
-    """
-    return sorted((snd(xp) for xp in xps),
-                  key=operator.methodcaller("priority"))
-
-
-def _list_parsers_by_extension(cps):
-    """
-    :param cps: A list of parser classes
-    :return: List (generator) of (config_ext, [config_parser])
-    """
-    cps_by_ext = anyconfig.utils.concat(([(x, p) for x in p.extensions()] for p
-                                         in cps))
-
-    return ((x, _list_xppairs(xps)) for x, xps
-            in anyconfig.utils.groupby(cps_by_ext, fst))
 
 
 _PARSERS_BY_TYPE = tuple(anyconfig.processors.list_processors_by_type(PARSERS))

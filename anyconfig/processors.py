@@ -6,7 +6,7 @@ r"""Abstract processor module.
 
 .. versionadded:: 0.9.5
 
-   - Add to abstract processors such like Parsers (loaders and dumpers). 
+   - Add to abstract processors such like Parsers (loaders and dumpers).
 """
 from __future__ import absolute_import
 

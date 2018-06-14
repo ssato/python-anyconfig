@@ -10,7 +10,6 @@
 """
 from __future__ import absolute_import
 
-import itertools
 import logging
 import operator
 
@@ -73,21 +72,6 @@ def snd(tpl):
     return tpl[1]
 
 
-def groupby_key(itr, keyfunc):
-    """
-    An wrapper function around itertools.groupby
-
-    :param itr: Iterable object, a list/tuple/genrator, etc.
-    :param keyfunc: Key function to sort `itr`.
-
-    >>> itr = [("a", 1), ("b", -1), ("c", 1)]
-    >>> res = groupby_key(itr, operator.itemgetter(1))
-    >>> [(key, tuple(grp)) for key, grp in res]
-    [(-1, (('b', -1),)), (1, (('a', 1), ('c', 1)))]
-    """
-    return itertools.groupby(sorted(itr, key=keyfunc), key=keyfunc)
-
-
 def is_parser(obj):
     """
     :return: True if given `obj` is an instance of parser.
@@ -108,7 +92,7 @@ def _list_parsers_by_type(cps):
     :return: List (generator) of (config_type, [config_parser])
     """
     return ((t, sorted(p, key=operator.methodcaller("priority"))) for t, p
-            in groupby_key(cps, operator.methodcaller("type")))
+            in anyconfig.utils.groupby(cps, operator.methodcaller("type")))
 
 
 def _list_xppairs(xps):
@@ -126,7 +110,8 @@ def _list_parsers_by_extension(cps):
     cps_by_ext = anyconfig.utils.concat(([(x, p) for x in p.extensions()] for p
                                          in cps))
 
-    return ((x, _list_xppairs(xps)) for x, xps in groupby_key(cps_by_ext, fst))
+    return ((x, _list_xppairs(xps)) for x, xps
+            in anyconfig.utils.groupby(cps_by_ext, fst))
 
 
 _PARSERS_BY_TYPE = tuple(_list_parsers_by_type(PARSERS))

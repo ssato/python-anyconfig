@@ -8,6 +8,7 @@ from __future__ import absolute_import
 
 import collections
 import glob
+import itertools
 import os.path
 import types
 
@@ -15,6 +16,22 @@ import anyconfig.compat
 import anyconfig.globals
 
 from anyconfig.compat import pathlib
+
+
+def groupby(itr, key_fn=None):
+    """
+    An wrapper function around itertools.groupby to sort each results.
+
+    :param itr: Iterable object, a list/tuple/genrator, etc.
+    :param key_fn: Key function to sort `itr`.
+
+    >>> import operator
+    >>> itr = [("a", 1), ("b", -1), ("c", 1)]
+    >>> res = groupby(itr, operator.itemgetter(1))
+    >>> [(key, tuple(grp)) for key, grp in res]
+    [(-1, (('b', -1),)), (1, (('a', 1), ('c', 1)))]
+    """
+    return itertools.groupby(sorted(itr, key=key_fn), key=key_fn)
 
 
 def get_file_extension(file_path):

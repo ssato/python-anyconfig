@@ -74,6 +74,18 @@ def list_processors_by_type(prs):
     """
     :param prs: A list of instances of :class:`Processor`
     :return: List (generator) of (processor_type, [processor_cls])
+
+    >>> class A(Processor):
+    ...    _type = "a"
+    >>> class A2(A):
+    ...    _priority = 2
+    >>> class B(Processor):
+    ...    _type = "b"
+    >>> g = list_processors_by_type([B, A2, A])
+    >>> list(g)  # doctest: +NORMALIZE_WHITESPACE
+    [('a', [<class 'anyconfig.processors.A'>,
+            <class 'anyconfig.processors.A2'>]),
+     ('b', [<class 'anyconfig.processors.B'>])]
     """
     return ((t, sorted(ps, key=operator.methodcaller("priority"))) for t, ps
             in anyconfig.utils.groupby(prs, operator.methodcaller("type")))
@@ -93,6 +105,19 @@ def list_processors_by_ext(prs):
     """
     :param prs: A list of instances of :class:`Processor`
     :return: List (generator) of (file_extension, [processor_cls])
+
+    >>> class A(Processor):
+    ...    _extensions = ['json']
+    >>> class A2(A):
+    ...    _priority = 2
+    >>> class B(Processor):
+    ...    _extensions = ['yaml', 'yml']
+    >>> g = list_processors_by_ext([B, A2, A])
+    >>> list(g)  # doctest: +NORMALIZE_WHITESPACE
+    [('json', [<class 'anyconfig.processors.A'>,
+              <class 'anyconfig.processors.A2'>]),
+     ('yaml', [<class 'anyconfig.processors.B'>]),
+     ('yml', [<class 'anyconfig.processors.B'>])]
     """
     ps_by_ext = anyconfig.utils.concat(([(x, p) for x in p.extensions()] for p
                                         in prs))  # [(ext, proc_cls)]

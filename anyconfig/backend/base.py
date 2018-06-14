@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # pylint: disable=unused-argument
@@ -17,6 +17,11 @@ needed:
   - :meth:`dump_to_path`: Dump config to a file of given path
 
 Changelog:
+
+.. versionchanged:: 0.9.5
+
+   - Make :class:`Parser` inherited from
+     :class:`~anyconfig.processors.Processor`
 
 .. versionchanged:: 0.9.1
 
@@ -42,6 +47,7 @@ import logging
 import os
 
 import anyconfig.compat
+import anyconfig.processors
 import anyconfig.utils
 
 
@@ -358,7 +364,8 @@ class DumperMixin(object):
             self.dump_to_path(cnf, ioi.path, **kwargs)
 
 
-class Parser(TextFilesMixin, LoaderMixin, DumperMixin):
+class Parser(TextFilesMixin, LoaderMixin, DumperMixin,
+             anyconfig.processors.Processor):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
     and members.
@@ -367,31 +374,10 @@ class Parser(TextFilesMixin, LoaderMixin, DumperMixin):
     - _priority: Priority to select it if there are other parsers of same type
     - _extensions: File extensions of formats it supports
     - _open_flags: Opening flags to read and write files
+
+    .. seealso:: the doc of :class:`~anyconfig.processors.Processor`
     """
-    _type = None
-    _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
-    _extensions = []
-
-    @classmethod
-    def type(cls):
-        """
-        Parser's type
-        """
-        return cls._type
-
-    @classmethod
-    def priority(cls):
-        """
-        Parser's priority
-        """
-        return cls._priority
-
-    @classmethod
-    def extensions(cls):
-        """
-        File extensions which this parser can process
-        """
-        return cls._extensions
+    pass
 
 
 class FromStringLoaderMixin(LoaderMixin):

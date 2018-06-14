@@ -11,7 +11,9 @@ API Details
     anyconfig.dicts
     anyconfig.globals
     anyconfig.init
+    anyconfig.ioinfo
     anyconfig.parser
+    anyconfig.processors
     anyconfig.query
     anyconfig.schema
     anyconfig.template

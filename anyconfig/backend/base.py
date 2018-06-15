@@ -536,6 +536,26 @@ class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     pass
 
 
+def safe_container(obj, container, **options):
+    """
+    safer version of :func:`container`
+
+    :param obj: Result object may not be a mapping object such like list
+    :param container: callble to make a container object
+    :param options: keyword options passed to `load_fn`
+
+    :return: container object holding data
+    """
+    if obj is None:
+        return container()
+
+    try:
+        return container(obj)
+    except TypeError:   # `obj` is not a mapping object (maybe a list, etc.).
+        key = options.get("ac_dict_key", "__data")
+        return container({key: obj})
+
+
 def load_with_fn(load_fn, content_or_strm, container, **options):
     """
     Load data from given string or stream `content_or_strm`.
@@ -547,8 +567,8 @@ def load_with_fn(load_fn, content_or_strm, container, **options):
 
     :return: container object holding data
     """
-    ret = load_fn(content_or_strm, **options)
-    return container() if ret is None else container(ret)
+    return safe_container(load_fn(content_or_strm, **options), container,
+                          **options)
 
 
 def dump_with_fn(dump_fn, data, stream, **options):

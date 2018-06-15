@@ -181,7 +181,7 @@ def _yml_load(stream, container, **options):
         options["Loader"] = _customized_loader(container)
 
     ret = _yml_fnc("load", stream, **_filter_from_options("ac_dict", options))
-    return container() if ret is None else container(ret)
+    return anyconfig.backend.base.safe_container(ret, container, **options)
 
 
 def _yml_dump(cnf, stream, **options):

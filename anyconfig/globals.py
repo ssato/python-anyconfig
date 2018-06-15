@@ -15,7 +15,7 @@ VERSION = "0.9.4"
 
 LOGGER = anyconfig.init.getLogger(PACKAGE)
 
-IOI_KEYS = "src type path parser opener".split()
+IOI_KEYS = "src type path processor opener".split()
 IOInfo = collections.namedtuple("IOInfo", IOI_KEYS)
 
 IOI_TYPES = (IOI_NONE, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM) = \

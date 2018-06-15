@@ -75,9 +75,9 @@ def inspect_io_obj(obj):
 def find_by_fileext(fileext, cps_by_ext):
     """
     :param fileext: File extension
-    :param cps_by_ext: A list of pairs (file_extension, [parser_class])
+    :param cps_by_ext: A list of pairs (file_extension, [processor_class])
 
-    :return: Most appropriate parser class to process given file
+    :return: Most appropriate processor class to process given file
 
     >>> from anyconfig.backends import _PARSERS_BY_EXT as cps
     >>> find_by_fileext("json", cps)
@@ -91,10 +91,10 @@ def find_by_fileext(fileext, cps_by_ext):
 
 def find_by_filepath(filepath, cps_by_ext):
     """
-    :param filepath: Path to the file to find out parser to process it
-    :param cps_by_ext: A list of pairs (file_extension, [parser_class])
+    :param filepath: Path to the file to find out processor to process it
+    :param cps_by_ext: A list of pairs (file_extension, [processor_class])
 
-    :return: Most appropriate parser class to process given file
+    :return: Most appropriate processor class to process given file
 
     >>> from anyconfig.backends import _PARSERS_BY_EXT as cps
     >>> find_by_filepath("/a/b/c/x.json", cps)
@@ -109,9 +109,9 @@ def find_by_filepath(filepath, cps_by_ext):
 def find_by_type(cptype, cps_by_type):
     """
     :param cptype: Config file's type
-    :param cps_by_type: A list of pairs (parser_type, [parser_class])
+    :param cps_by_type: A list of pairs, (processor_type, [processor_class])
 
-    :return: Most appropriate parser class to process given type or None
+    :return: Most appropriate processor class to process given type or None
 
     >>> from anyconfig.backends import _PARSERS_BY_TYPE as cps
     >>> find_by_type("json", cps)
@@ -123,14 +123,14 @@ def find_by_type(cptype, cps_by_type):
                 None)
 
 
-def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
+def find_processor(ipath, cps_by_ext, cps_by_type, forced_type=None):
     """
     :param ipath: file path
-    :param cps_by_ext: A list of pairs (file_extension, [parser_class])
-    :param cps_by_type: A list of pairs (parser_type, [parser_class])
-    :param forced_type: Forced configuration parser type or parser object
+    :param cps_by_ext: A list of pairs (file_extension, [processor_cls])
+    :param cps_by_type: A list of pairs (processor_type, [processor_cls])
+    :param forced_type: Forced processor type or processor object
 
-    :return: Instance of parser class appropriate for the input `ipath`
+    :return: Instance of processor class appropriate for the input `ipath`
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     if (ipath is None or not ipath) and forced_type is None:
@@ -140,25 +140,25 @@ def find_parser(ipath, cps_by_ext, cps_by_type, forced_type=None):
         return forced_type
 
     if forced_type is None:
-        parser = find_by_filepath(ipath, cps_by_ext)
-        if parser is None:
+        processor = find_by_filepath(ipath, cps_by_ext)
+        if processor is None:
             raise UnknownFileTypeError(ipath)
 
-        return parser()
+        return processor()
 
-    parser = find_by_type(forced_type, cps_by_type)
-    if parser is None:
+    processor = find_by_type(forced_type, cps_by_type)
+    if processor is None:
         raise UnknownParserTypeError(forced_type)
 
-    return parser()
+    return processor()
 
 
 def make(obj, cps_by_ext, cps_by_type, forced_type=None):
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
-    :param cps_by_ext: A list of pairs (file_extension, [parser_class])
-    :param cps_by_type: A list of pairs (parser_type, [parser_class])
-    :param forced_type: Forced configuration parser type
+    :param cps_by_ext: A list of pairs (file_extension, [processor_cls])
+    :param cps_by_type: A list of pairs (processor_type, [processor_cls])
+    :param forced_type: Forced configuration processor type
 
     :return:
         Namedtuple object represents a kind of input object such as a file /
@@ -173,8 +173,10 @@ def make(obj, cps_by_ext, cps_by_type, forced_type=None):
         raise ValueError("obj or forced_type must be some value")
 
     (itype, ipath, opener) = inspect_io_obj(obj)
-    psr = find_parser(ipath, cps_by_ext, cps_by_type, forced_type=forced_type)
+    psr = find_processor(ipath, cps_by_ext, cps_by_type,
+                         forced_type=forced_type)
 
-    return IOInfo(src=obj, type=itype, path=ipath, parser=psr, opener=opener)
+    return IOInfo(src=obj, type=itype, path=ipath, processor=psr,
+                  opener=opener)
 
 # vim:sw=4:ts=4:et:

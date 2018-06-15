@@ -46,13 +46,13 @@ class Test_30_inspect_io_obj(unittest.TestCase):
                          (IOI_PATH_OBJ, IPATH_0_FULL, ipo.open))
 
 
-class Test_50_find_parser(unittest.TestCase):
+class Test_50_find_processor(unittest.TestCase):
     cpss = (CPS_BY_EXT, CPS_BY_TYPE)
     (ipath, ipath_full) = (IPATH_0, IPATH_0_FULL)
 
     def __init__(self, *args, **kwargs):
-        super(Test_50_find_parser, self).__init__(*args, **kwargs)
-        self.fun = TT.find_parser
+        super(Test_50_find_processor, self).__init__(*args, **kwargs)
+        self.fun = TT.find_processor
 
     def __checks_helper(self, psr, pcls):
         self.assertTrue(isinstance(psr, pcls))
@@ -76,7 +76,7 @@ class Test_50_find_parser(unittest.TestCase):
         self.__checks_helper(res, anyconfig.backend.json.Parser)
 
 
-class Test_60_make(Test_50_find_parser):
+class Test_60_make(Test_50_find_processor):
 
     def __init__(self, *args, **kwargs):
         super(Test_60_make, self).__init__(*args, **kwargs)
@@ -86,7 +86,7 @@ class Test_60_make(Test_50_find_parser):
         self.assertEqual(inp.src, args[0])
         self.assertEqual(inp.path, args[1])
         self.assertEqual(inp.type, args[2])
-        self.assertTrue(isinstance(inp.parser, args[3]))
+        self.assertTrue(isinstance(inp.processor, args[3]))
         self.assertEqual(inp.opener, args[4])
 
     def test_20__forced_type(self):

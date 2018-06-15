@@ -108,9 +108,9 @@ def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
     if forced_type is None or not forced_type:
         raise ValueError("forced_type must be a some string")
 
-    return anyconfig.ioinfo.find_parser(None, cps_by_ext=cps_by_ext,
-                                        cps_by_type=cps_by_type,
-                                        forced_type=forced_type)
+    return anyconfig.ioinfo.find_processor(None, cps_by_ext=cps_by_ext,
+                                           cps_by_type=cps_by_type,
+                                           forced_type=forced_type)
 
 
 def find_parser(obj, forced_type=None):
@@ -127,10 +127,10 @@ def find_parser(obj, forced_type=None):
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     if anyconfig.utils.is_ioinfo(obj):
-        return obj.parser  # It must have this.
+        return obj.processor  # It must have this.
 
     ioi = inspect_io_obj(obj, _PARSERS_BY_EXT, _PARSERS_BY_TYPE, forced_type)
-    psr = ioi.parser
+    psr = ioi.processor
     LOGGER.debug("Using parser %r [%s] for input type %s",
                  psr, psr.type(), ioi.type)
     return psr

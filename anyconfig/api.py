@@ -211,7 +211,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
     ioi = anyconfig.backends.inspect_io_obj(input_, forced_type=ac_parser)
-    (psr, filepath) = (ioi.parser, ioi.path)
+    (psr, filepath) = (ioi.processor, ioi.path)
 
     # .. note::
     #    This will be kept for backward compatibility until 'ignore_missing'
@@ -483,7 +483,7 @@ def dump(data, out, ac_parser=None, **options):
     """
     ioi = anyconfig.backends.inspect_io_obj(out, forced_type=ac_parser)
     LOGGER.info("Dumping: %s", ioi.path)
-    ioi.parser.dump(data, ioi, **options)
+    ioi.processor.dump(data, ioi, **options)
 
 
 def dumps(data, ac_parser=None, **options):

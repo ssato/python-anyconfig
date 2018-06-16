@@ -47,6 +47,7 @@ import logging
 import os
 
 import anyconfig.compat
+import anyconfig.globals
 import anyconfig.processors
 import anyconfig.utils
 
@@ -552,7 +553,8 @@ def safe_container(obj, container, **options):
     try:
         return container(obj)
     except TypeError:   # `obj` is not a mapping object (maybe a list, etc.).
-        key = options.get("ac_dict_key", "__data")
+        key = options.get("ac_dict_key",
+                          anyconfig.globals.PRIMITIVES_TO_DICT_KEY)
         return container({key: obj})
 
 

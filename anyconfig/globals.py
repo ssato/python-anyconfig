@@ -15,6 +15,8 @@ VERSION = "0.9.4"
 
 LOGGER = anyconfig.init.getLogger(PACKAGE)
 
+PRIMITIVES_TO_DICT_KEY = "__data"
+
 IOI_KEYS = "src type path processor opener".split()
 IOInfo = collections.namedtuple("IOInfo", IOI_KEYS)
 

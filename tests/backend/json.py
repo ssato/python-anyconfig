@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
@@ -7,6 +7,7 @@
 from __future__ import absolute_import
 
 import anyconfig.backend.json as TT
+import anyconfig.globals
 import tests.backend.common as TBC
 
 from anyconfig.compat import OrderedDict
@@ -52,6 +53,7 @@ class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
 
             cnf = self.psr.load(ioi)
             self.assertTrue(cnf)
-            self._assert_dicts_equal(cnf, ref=OrderedDict({'__data': [1, 2]}))
+            key = anyconfig.globals.PRIMITIVES_TO_DICT_KEY
+            self._assert_dicts_equal(cnf, ref=OrderedDict({key: [1, 2]}))
 
 # vim:sw=4:ts=4:et:

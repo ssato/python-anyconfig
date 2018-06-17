@@ -61,6 +61,7 @@ class Parser(anyconfig.backend.base.StringStreamFnParser):
     _load_opts = _LOAD_OPTS
     _dump_opts = _DUMP_OPTS
     _ordered = not anyconfig.compat.IS_PYTHON_2_6
+    _allow_primitives = True
     _dict_opts = _DICT_OPTS
 
     _load_from_string_fn = anyconfig.backend.base.to_method(json.loads)

@@ -92,6 +92,27 @@ def _not_implemented(*args, **kwargs):
     raise NotImplementedError()
 
 
+def safe_container(obj, container, **options):
+    """
+    safer version of :func:`container`
+
+    :param obj: Result object may not be a mapping object such like list
+    :param container: callble to make a container object
+    :param options: keyword options passed to `load_fn`
+
+    :return: container object holding data
+    """
+    if obj is None:
+        return container()
+
+    try:
+        return container(obj)
+    except TypeError:   # `obj` is not a mapping object (maybe a list, etc.).
+        key = options.get("ac_dict_key",
+                          anyconfig.globals.PRIMITIVES_TO_DICT_KEY)
+        return container({key: obj})
+
+
 class TextFilesMixin(object):
     """Mixin class to open configuration files as a plain text.
 
@@ -535,27 +556,6 @@ class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     Parser classes inherit this class must define these methods.
     """
     pass
-
-
-def safe_container(obj, container, **options):
-    """
-    safer version of :func:`container`
-
-    :param obj: Result object may not be a mapping object such like list
-    :param container: callble to make a container object
-    :param options: keyword options passed to `load_fn`
-
-    :return: container object holding data
-    """
-    if obj is None:
-        return container()
-
-    try:
-        return container(obj)
-    except TypeError:   # `obj` is not a mapping object (maybe a list, etc.).
-        key = options.get("ac_dict_key",
-                          anyconfig.globals.PRIMITIVES_TO_DICT_KEY)
-        return container({key: obj})
 
 
 def load_with_fn(load_fn, content_or_strm, container, **options):

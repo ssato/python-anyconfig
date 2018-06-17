@@ -7,7 +7,6 @@
 from __future__ import absolute_import
 
 import anyconfig.backend.json as TT
-import anyconfig.globals
 import tests.backend.common as TBC
 
 from anyconfig.compat import OrderedDict
@@ -53,7 +52,6 @@ class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
 
             cnf = self.psr.load(ioi)
             self.assertTrue(cnf)
-            key = anyconfig.globals.PRIMITIVES_TO_DICT_KEY
-            self._assert_dicts_equal(cnf, ref=OrderedDict({key: [1, 2]}))
+            self.assertEqual(cnf, [1, 2])
 
 # vim:sw=4:ts=4:et:

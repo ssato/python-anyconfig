@@ -63,4 +63,15 @@ class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
             self.assertTrue(cnf)
             self.assertEqual(cnf, [1, 2])
 
+    def test_19_load__nested_list(self):
+        if self.is_ready():
+            with self.psr.wopen(self.cnf_path) as out:
+                out.write('[{"a": 1}, {"a": 2}]\n')
+
+            ioi = self._to_ioinfo(self.cnf_path)
+
+            cnf = self.psr.load(ioi)
+            self.assertTrue(cnf)
+            self.assertEqual(cnf, [{"a": 1}, {"a": 2}])
+
 # vim:sw=4:ts=4:et:

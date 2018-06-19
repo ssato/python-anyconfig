@@ -569,7 +569,7 @@ def load_with_fn(load_fn, content_or_strm, container, allow_primitives=False,
     ret = load_fn(content_or_strm, **options)
     try:
         return container() if ret is None else container(ret)
-    except TypeError:
+    except (TypeError, ValueError):
         if allow_primitives:
             return ret  # Just return it.
         raise  # Something goes wrong.

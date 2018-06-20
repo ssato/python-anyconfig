@@ -218,7 +218,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     #    option is deprecated and removed completely.
     if "ignore_missing" in options:
         warnings.warn("keyword option 'ignore_missing' is deprecated, use "
-                      "'ac_ignore_missing' isntead", DeprecationWarning)
+                      "'ac_ignore_missing' instead", DeprecationWarning)
         options["ac_ignore_missing"] = options["ignore_missing"]
 
     LOGGER.info("Loading: %s", filepath)

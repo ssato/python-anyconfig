@@ -224,7 +224,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:
         content = anyconfig.template.try_render(filepath=filepath,
-                                                ctx=ac_context)
+                                                ctx=ac_context, **options)
         if content is not None:
             return psr.loads(content, **options)
 

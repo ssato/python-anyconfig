@@ -96,6 +96,7 @@ def render_s(tmpl_s, ctx=None, paths=None, filters=None):
     :param tmpl_s: Template string
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
+    :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
 
     >>> render_s("aaa") == "aaa"
@@ -125,6 +126,7 @@ def render_impl(template_file, ctx=None, paths=None, filters=None):
     """
     :param template_file: Absolute or relative path to the template file
     :param ctx: Context dict needed to instantiate templates
+    :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
     """
     env = tmpl_env(make_template_paths(template_file, paths))
@@ -149,6 +151,7 @@ def render(filepath, ctx=None, paths=None, ask=False, filters=None):
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
     :param ask: Ask user for missing template location if True
+    :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
     """
     try:

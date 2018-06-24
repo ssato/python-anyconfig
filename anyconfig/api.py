@@ -460,7 +460,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
 
     if ac_template:
         compiled = anyconfig.template.try_render(content=content,
-                                                 ctx=ac_context)
+                                                 ctx=ac_context, **options)
         if compiled is not None:
             content = compiled
 

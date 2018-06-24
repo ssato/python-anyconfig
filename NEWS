@@ -1,9 +1,16 @@
-* Wed Jun 13 2018 Satoru SATOH <ssato@redhat.com> - 0.9.4-99
+* Sun Jun 24 2018 Satoru SATOH <ssato@redhat.com> - 0.9.4-99
+- fix: fixes wrong behaviors of *load APIs in some corner cases
+- fix: Fixed the badges manually to use shields.io by movermeyer, thanks!
+- fix: [yaml] fix to handle yaml merge syntax properly from idanov, thanks!
+- fix: misc doc fixes from yujunz, movermeyer and others
 - enhancement: allow passing pathlib.Path objects to load and dump APIs
+- enhancement: add support of custom jinja2 filters by yujunz, thanks!
+- enhancment: [yaml][json] allow to load data other than mapping objects
+- api: prepare to deprecate 'ignore_missing' keyword option replaced with the
+  new 'ac_ignore_missing' keyword option for load*
 - refactor/fix/enhancement: introduce anyconfig.ioinfo to provide more rich
   information about inputs and outputs internally
-- fix: [yaml] fix to handle yaml merge syntax properly from idanov
-- fix: misc doc fixes from yujunz, movermeyer and others
+- change: drop python 2.6 support entirely
 
 * Tue Feb 13 2018 Satoru SATOH <ssato@redhat.com> - 0.9.4-1
 - change: drop python 3.3 support as isort required by pylint does so

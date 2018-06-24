@@ -9,6 +9,10 @@ r"""Public APIs of anyconfig module.
 
    - Added pathlib support. Now all of load and dump APIs can process
      pathlib.Path object basically.
+   - 'ignore_missing' keyword option for load APIs are now marked as deprecated
+     and will be removed soon.
+   - Allow to load data other than mapping obects for some backends such as
+     JSON and YAML.
 
 .. versionadded:: 0.8.3
 

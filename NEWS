@@ -1,4 +1,4 @@
-* Sun Jun 24 2018 Satoru SATOH <ssato@redhat.com> - 0.9.4-99
+* Wed Jun 27 2018 Satoru SATOH <ssato@redhat.com> - 0.9.5-1
 - fix: fixes wrong behaviors of *load APIs in some corner cases
 - fix: Fixed the badges manually to use shields.io by movermeyer, thanks!
 - fix: [yaml] fix to handle yaml merge syntax properly from idanov, thanks!

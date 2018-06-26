@@ -25,22 +25,24 @@ files in various formats and related functions:
 
 - Loading configuration files:
 
-  **anyconfig.load** (path_specs, ac_parser=None, ac_template=False, ac_context=None, \*\*options)
-    loads configuration files or file/file-like objects and return a dict-like
-    object represents loaded configuration.
+  **anyconfig.load** (path_specs, ac_parser=None, ac_dict=None, ac_template=False, ac_context=None, \*\*options)
+    loads configuration data from `path_specs`. `path_specs` may be a list of
+    file paths, files or file-like objects, :class:`~pathlib.Path` object, a
+    namedtuple `~anyconfig.globals.IOInfo` objects represents some inputs to
+    load data from, and return a dict or dict like object, or a primitive
+    types' data other than dict represents loaded configuration.
 
-  **anyconfig.loads** (content, ac_parser=None, ac_template=False, ac_context=None, \*\*options)
-    loads configuration from a string just like json.loads does.
+  **anyconfig.loads** (content, ac_parser=None, ac_dict=None, ac_template=False, ac_context=None, \*\*options)
+    loads configuration data from a string just like json.loads does.
 
 - Dumping configuration files:
 
-  **anyconfig.dump** (data, path_or_stream, ac_parser=None, \*\*options)
-    dumps a configuration file from a dict or dict-like object represents
-    configuration.
+  **anyconfig.dump** (data, out, ac_parser=None, \*\*options)
+    dumps a configuration data `data` in given format to the output `out`, may
+    be a file, file like object.
 
   **anyconfig.dumps** (data, ac_parser=None, \*\*options)
-    dumps a configuration string from a dict or dict-like object represents
-    configuration.
+    dumps a configuration data loaded from a string
 
 - Open configuration files:
 

@@ -22,6 +22,9 @@ Changelog:
 
    - Make :class:`Parser` inherited from
      :class:`~anyconfig.processors.Processor`
+   - introduce the member _allow_primitives and the class method
+     allow_primitives to :class:`Parser` to allow parsers to load and return
+     data of primitive types other than mapping objects
 
 .. versionchanged:: 0.9.1
 
@@ -47,6 +50,7 @@ import logging
 import os
 
 import anyconfig.compat
+import anyconfig.globals
 import anyconfig.processors
 import anyconfig.utils
 
@@ -136,10 +140,13 @@ class LoaderMixin(object):
 
     - _load_opts: Backend specific options on load
     - _ordered: True if the parser keep the order of items by default
+    - _allow_primitives: True if the parser.load* may return objects of
+      primitive data types other than mapping types such like JSON parser
     - _dict_opts: Backend options to customize dict class to make results
     """
     _load_opts = []
     _ordered = False
+    _allow_primitives = False
     _dict_opts = []
 
     @classmethod
@@ -148,6 +155,14 @@ class LoaderMixin(object):
         :return: True if parser can keep the order of keys else False.
         """
         return cls._ordered
+
+    @classmethod
+    def allow_primitives(cls):
+        """
+        :return: True if the parser.load* may return objects of primitive data
+        types other than mapping types such like JSON parser
+        """
+        return cls._allow_primitives
 
     @classmethod
     def dict_options(cls):
@@ -536,19 +551,28 @@ class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     pass
 
 
-def load_with_fn(load_fn, content_or_strm, container, **options):
+def load_with_fn(load_fn, content_or_strm, container, allow_primitives=False,
+                 **options):
     """
     Load data from given string or stream `content_or_strm`.
 
     :param load_fn: Callable to load data
     :param content_or_strm: data content or stream provides it
     :param container: callble to make a container object
+    :param allow_primitives:
+        True if the parser.load* may return objects of primitive data types
+        other than mapping types such like JSON parser
     :param options: keyword options passed to `load_fn`
 
     :return: container object holding data
     """
     ret = load_fn(content_or_strm, **options)
-    return container() if ret is None else container(ret)
+    try:
+        return container() if ret is None else container(ret)
+    except (TypeError, ValueError):
+        if allow_primitives:
+            return ret  # Just return it.
+        raise  # Something goes wrong.
 
 
 def dump_with_fn(dump_fn, data, stream, **options):
@@ -603,7 +627,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         :return: container object holding the configuration data
         """
         return load_with_fn(self._load_from_string_fn, content, container,
-                            **options)
+                            self.allow_primitives(), **options)
 
     def load_from_stream(self, stream, container, **options):
         """
@@ -616,7 +640,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         :return: container object holding the configuration data
         """
         return load_with_fn(self._load_from_stream_fn, stream, container,
-                            **options)
+                            self.allow_primitives(), **options)
 
     def dump_to_string(self, cnf, **kwargs):
         """

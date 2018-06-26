@@ -181,7 +181,10 @@ def _yml_load(stream, container, **options):
         options["Loader"] = _customized_loader(container)
 
     ret = _yml_fnc("load", stream, **_filter_from_options("ac_dict", options))
-    return container() if ret is None else container(ret)
+    if ret is None:
+        return container()
+
+    return ret
 
 
 def _yml_dump(cnf, stream, **options):
@@ -216,6 +219,7 @@ class Parser(anyconfig.backend.base.StreamParser):
                   "allow_unicode", "line_break", "encoding", "explicit_start",
                   "explicit_end", "version", "tags"]
     _ordered = True
+    _allow_primitives = True
     _dict_opts = ["ac_dict"]
 
     load_from_stream = anyconfig.backend.base.to_method(_yml_load)

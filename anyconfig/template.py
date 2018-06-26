@@ -19,6 +19,8 @@ import os
 import anyconfig.compat
 
 LOGGER = logging.getLogger(__name__)
+RENDER_S_OPTS = ['ctx', 'paths', 'filters']
+RENDER_OPTS = RENDER_S_OPTS + ['ask']
 SUPPORTED = False
 try:
     import jinja2
@@ -87,13 +89,14 @@ def make_template_paths(template_file, paths=None):
     return [tmpldir] if paths is None else paths + [tmpldir]
 
 
-def render_s(tmpl_s, ctx=None, paths=None):
+def render_s(tmpl_s, ctx=None, paths=None, filters=None):
     """
     Compile and render given template string `tmpl_s` with context `context`.
 
     :param tmpl_s: Template string
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
+    :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
 
     >>> render_s("aaa") == "aaa"
@@ -110,16 +113,20 @@ def render_s(tmpl_s, ctx=None, paths=None):
     if env is None:
         return tmpl_s
 
+    if filters is not None:
+        env.filters.update(filters)
+
     if ctx is None:
         ctx = {}
 
     return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
 
 
-def render_impl(template_file, ctx=None, paths=None):
+def render_impl(template_file, ctx=None, paths=None, filters=None):
     """
     :param template_file: Absolute or relative path to the template file
     :param ctx: Context dict needed to instantiate templates
+    :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
     """
     env = tmpl_env(make_template_paths(template_file, paths))
@@ -127,13 +134,16 @@ def render_impl(template_file, ctx=None, paths=None):
     if env is None:
         return copen(template_file).read()
 
+    if filters is not None:
+        env.filters.update(filters)
+
     if ctx is None:
         ctx = {}
 
     return env.get_template(os.path.basename(template_file)).render(**ctx)
 
 
-def render(filepath, ctx=None, paths=None, ask=False):
+def render(filepath, ctx=None, paths=None, ask=False, filters=None):
     """
     Compile and render template and return the result as a string.
 
@@ -141,10 +151,11 @@ def render(filepath, ctx=None, paths=None, ask=False):
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
     :param ask: Ask user for missing template location if True
+    :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
     """
     try:
-        return render_impl(filepath, ctx, paths)
+        return render_impl(filepath, ctx, paths, filters)
     except TemplateNotFound as mtmpl:
         if not ask:
             raise
@@ -158,7 +169,7 @@ def render(filepath, ctx=None, paths=None, ask=False):
         usr_tmpl = os.path.normpath(usr_tmpl.strip())
         paths = make_template_paths(usr_tmpl, paths)
 
-        return render_impl(usr_tmpl, ctx, paths)
+        return render_impl(usr_tmpl, ctx, paths, filters)
 
 
 def try_render(filepath=None, content=None, **options):
@@ -177,9 +188,10 @@ def try_render(filepath=None, content=None, **options):
     LOGGER.debug("Compiling: %s", tmpl_s)
     try:
         if content is None:
-            return render(filepath, **options)
-
-        return render_s(content, **options)
+            render_opts = anyconfig.utils.filter_options(RENDER_OPTS, options)
+            return render(filepath, **render_opts)
+        render_s_opts = anyconfig.utils.filter_options(RENDER_S_OPTS, options)
+        return render_s(content, **render_s_opts)
     except Exception as exc:
         LOGGER.warning("Failed to compile '%s'. It may not be a template.%s"
                        "exc=%r", tmpl_s, os.linesep, exc)

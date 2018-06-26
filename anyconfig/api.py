@@ -9,6 +9,10 @@ r"""Public APIs of anyconfig module.
 
    - Added pathlib support. Now all of load and dump APIs can process
      pathlib.Path object basically.
+   - 'ignore_missing' keyword option for load APIs are now marked as deprecated
+     and will be removed soon.
+   - Allow to load data other than mapping obects for some backends such as
+     JSON and YAML.
 
 .. versionadded:: 0.8.3
 
@@ -224,7 +228,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:
         content = anyconfig.template.try_render(filepath=filepath,
-                                                ctx=ac_context)
+                                                ctx=ac_context, **options)
         if content is not None:
             return psr.loads(content, **options)
 
@@ -456,7 +460,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
 
     if ac_template:
         compiled = anyconfig.template.try_render(content=content,
-                                                 ctx=ac_context)
+                                                 ctx=ac_context, **options)
         if compiled is not None:
             content = compiled
 

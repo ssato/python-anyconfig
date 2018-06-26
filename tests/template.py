@@ -23,6 +23,13 @@ A char is '{{ c }}'.
 {% endfor %}
 """, C_1)]
 
+C_2 = "-1"
+TMPL_WITH_FILTER = ('11.j2', "{{ 1|negate }}", C_2)
+
+
+def negate(value):
+    return -value
+
 
 class Test(unittest.TestCase):
 
@@ -30,7 +37,7 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         self.workdir = tests.common.setup_workdir()
-        for fname, tmpl_s, _ctx in self.templates:
+        for fname, tmpl_s, _ctx in self.templates + [TMPL_WITH_FILTER]:
             fpath = os.path.join(self.workdir, fname)
             open(fpath, 'w').write(tmpl_s)
 
@@ -116,5 +123,12 @@ class Test(unittest.TestCase):
             except ValueError:
                 exc_was_raised = True
             self.assertTrue(exc_was_raised)
+
+    def test_40_render__w_filter(self):
+        if TT.SUPPORTED:
+            fname, _, ctx = TMPL_WITH_FILTER
+            fpath = os.path.join(self.workdir, fname)
+            c_r = TT.render(fpath, filters={"negate": negate})
+            self.assertEqual(c_r, ctx)
 
 # vim:sw=4:ts=4:et:

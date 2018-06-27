@@ -134,13 +134,13 @@ def array_to_schema(arr, **options):
     """
     Generate a JSON schema object with type annotation added for given object.
 
-    :param arr: Array of dict or MergeableDict objects
+    :param arr: Array of mapping objects like dicts
     :param options: Other keyword options such as:
 
         - ac_schema_strict: True if more strict (precise) schema is needed
         - ac_schema_typemap: Type to JSON schema type mappings
 
-    :return: Another MergeableDict instance represents JSON schema of items
+    :return: Another mapping objects represents JSON schema of items
     """
     (typemap, strict) = _process_options(**options)
 
@@ -160,13 +160,13 @@ def object_to_schema(obj, **options):
     Generate a node represents JSON schema object with type annotation added
     for given object node.
 
-    :param obj: Dict or MergeableDict object
+    :param obj: mapping object such like a dict
     :param options: Other keyword options such as:
 
         - ac_schema_strict: True if more strict (precise) schema is needed
         - ac_schema_typemap: Type to JSON schema type mappings
 
-    :yield: Another MergeableDict instance represents JSON schema of object
+    :yield: Another mapping objects represents JSON schema of object
     """
     (typemap, strict) = _process_options(**options)
 

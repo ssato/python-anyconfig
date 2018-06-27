@@ -200,10 +200,10 @@ def gen_schema(data, **options):
         typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
         scm = dict(type=typemap[_type])
 
-    elif isinstance(data, dict):
+    elif anyconfig.utils.is_dict_like(data):
         scm = object_to_schema(data, **options)
 
-    elif _type in (list, tuple) or hasattr(data, "__iter__"):
+    elif anyconfig.utils.is_list_like(data):
         scm = array_to_schema(data, **options)
 
     return scm

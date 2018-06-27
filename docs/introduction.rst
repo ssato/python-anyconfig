@@ -81,9 +81,14 @@ configuration file[s] like the followings:
   # extension) in some cases.
   conf1 = anyconfig.load("/path/to/foo/conf.d/a.yml")
 
-  # Similar to the above but load from file object opened:
+  # Similar to the above but the input is pathlib.Path object.
+  import pathlib
+  path_1 = pathlib.Path("/path/to/foo/conf.d/a.yml")
+  conf1_1 = anyconfig.load(path_1)
+
+  # Similar to the first one but load from file object opened:
   with anyconfig.open("/path/to/foo/conf.d/a.yml") as fileobj:
-      conf1_1 = anyconfig.load(fileobj)
+      conf1_2 = anyconfig.load(fileobj)
 
   # Loaded config data is a mapping object, for example:
   #

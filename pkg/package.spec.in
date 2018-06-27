@@ -116,7 +116,7 @@ rm -frv docs/build/html/_sources
 %endif
 
 %files -n python2-%{pkgname}
-%doc README.rst
+%doc README.rst NEWS AUTHORS.txt
 %license LICENSE.MIT
 %if 0%{?rhel} == 7
 %{python_sitelib}/*
@@ -126,7 +126,7 @@ rm -frv docs/build/html/_sources
 
 %if %{with python3}
 %files -n python3-%{pkgname}
-%doc README.rst
+%doc README.rst NEWS AUTHORS.txt
 %license LICENSE.MIT
 %{python3_sitelib}/*
 %endif
@@ -135,7 +135,7 @@ rm -frv docs/build/html/_sources
 
 %if %{with doc}
 %files doc
-%doc README.rst
+%doc README.rst NEWS AUTHORS.txt
 %doc docs/build/html
 %endif
 

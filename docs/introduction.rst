@@ -55,20 +55,19 @@ files in various formats and related functions:
   **anyconfig.merge** (self, other, ac_merge=MS_DICTS, \*\*options)
     Update (merge) a mapping object `self` with other mapping object `other` or
     an iterable `other` yields (key, value) tuples based on merge strategy
-    ac_merge.
+    `ac_merge`.
 
 - Schema validation and generation of configuration files:
 
-  **anyconfig.validate** (data, schema, \*\*options)
-    validates configuration loaded with anyconfig.load() with JSON schema [#]_
-    (object) also loaded with anyconfig.load(). anyconfig.load() may help
+  **anyconfig.validate** (data, schema, ac_schema_safe=True, ac_schema_errors=False, \*\*options)
+    validates configuration data loaded with anyconfig.load() with JSON schema
+    [#]_ object also loaded with anyconfig.load(). anyconfig.load() may help
     loading JSON schema file[s] in any formats anyconfig supports.
 
   **anyconfig.gen_schema** (data, \*\*options)
-    generates a dict or dict-like object represents a minimum JSON schema to
-    validate given configuration file[s] later. This result object can be
-    serialized to any formats including JSON with anyconfig.dump or
-    anyconfig.dumps.
+    generates a mapping object represents a minimum JSON schema to validate
+    configuration data later. This result object can be serialized to any
+    formats including JSON with anyconfig.dump or anyconfig.dumps.
 
 It enables to load configuration file[s] in various formats in the same manner,
 and in some cases, even there is no need to take care of the actual format of
@@ -86,13 +85,13 @@ configuration file[s] like the followings:
   with anyconfig.open("/path/to/foo/conf.d/a.yml") as fileobj:
       conf1_1 = anyconfig.load(fileobj)
 
-  # Loaded config data is a dict-like object, for example:
+  # Loaded config data is a mapping object, for example:
   #
   #   conf1["a"] => 1
   #   conf1["b"]["b1"] => "xyz"
   #   conf1["c"]["c1"]["c13"] => [1, 2, 3]
 
-  # Or you can specify the format (config type) explicitly if automatic
+  # Or you can specify the format (config type) explicitly if its automatic
   # detection may not work.
   conf2 = anyconfig.load("/path/to/foo/conf.d/b.conf", ac_parser="yaml")
 
@@ -101,10 +100,10 @@ configuration file[s] like the followings:
       conf2_2 = anyconfig.load(fileobj, ac_parser="yaml")
 
   # Specify multiple config files by the list of paths. Configurations of each
-  # files are merged.
+  # files will be merged.
   conf3 = anyconfig.load(["/etc/foo.d/a.json", "/etc/foo.d/b.json"])
 
-  # Similar to the above but all or one of config file[s] is/are missing:
+  # Similar to the above but all or one of config file[s] might be missing.
   conf4 = anyconfig.load(["/etc/foo.d/a.json", "/etc/foo.d/b.json"],
                          ignore_missing=True)
 
@@ -115,7 +114,7 @@ configuration file[s] like the followings:
   # overwritten by the later ones instead of merge:
   conf6 = anyconfig.load("/etc/foo.d/*.json", ac_merge=anyconfig.MS_REPLACE)
 
-Also, it can process configuration files which are actually
+Also, it can process configuration files which are
 `jinja2-based template <http://jinja.pocoo.org>`_ files:
 
 - Enables to load a substantial configuration rendered from half-baked configuration template files with given context
@@ -163,7 +162,7 @@ with using JSON schema like the followings:
   scm4 = anyconfig.gen_schema(conf4)
   scm4_s = anyconfig.dumps(scm4, "json")
 
-And you can query loaded data with JMESPath [#]_ expression:
+And you can query loaded data with JMESPath [#]_ expressions:
 
 .. code-block:: python
 
@@ -215,7 +214,7 @@ and backends in charge are enabled and ready to use:
    ConifgObj, configobj, ``configobj`` [#]_
    TOML, toml, ``toml`` [#]_
 
-- Supported formats of which backends are enabled automatically if required pluggable modules are installed: python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may support other formats if corresponding pluggable backend modules are installed along with python-anyconfig:
+- Supported formats of which backends are enabled automatically if required plugin modules are installed: python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may support other formats if corresponding plugin backend modules are installed along with python-anyconfig:
 
 .. csv-table:: Supported formats by pluggable backend modules
    :header: "Format", "Type", "Required backend"
@@ -268,7 +267,7 @@ disables specific features if required dependencies are not satisfied.
 Therefore, only python standard library is required to install and use
 python-anyconfig at minimum.
 
-The following packages need to be installed along with python-anycofig to
+The following packages need to be installed along with python-anyconfig to
 enable the features.
 
 .. csv-table::
@@ -297,9 +296,9 @@ There is a couple of ways to install python-anyconfig:
 
 - Binary RPMs:
 
-  If you're running Fedora 27+ or CentOS, you can install RPMs from these
-  official yum repos. And you're running Red Hat Enterprise Linux 7 or later,
-  you can install RPMs from EPEL repos [#]_ .
+  If you're running Fedora 27 or later, or CentOS, you can install RPMs from
+  these official yum repos. And if you're running Red Hat Enterprise Linux 7 or
+  later, you can install RPMs from EPEL repos [#]_ .
 
   Or if you want to install the latest version, optionally, you can enable my
   copr repo, http://copr.fedoraproject.org/coprs/ssato/python-anyconfig/ .
@@ -338,8 +337,8 @@ Help and feedbak
 -----------------
 
 If you have any issues / feature request / bug reports with python-anyconfig,
-please open an issue ticket on github.com
-(https://github.com/ssato/python-anyconfig/issues).
+please open issue tickets on github.com,
+https://github.com/ssato/python-anyconfig/issues.
 
 The following areas are still insufficient, I think.
 
@@ -349,7 +348,7 @@ The following areas are still insufficient, I think.
 - Documentation:
 
   - Especially API docs need more fixes and enhancements! CLI doc is non-fulfilling also.
-  - English is not my native lang and there are many wrong and hard-to-understand expressions.
+  - English is not my native lang and there may be many wrong and hard-to-understand expressions.
 
 Any feedbacks, helps, suggestions are welcome! Please open github issues for
 these kind of problems also!

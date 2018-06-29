@@ -349,7 +349,11 @@ def main(argv=None):
     args = _parse_args((argv if argv else sys.argv)[1:])
     cnf = os.environ.copy() if args.env else {}
     diff = _load_diff(args)
-    API.merge(cnf, diff)
+
+    if cnf:
+        API.merge(cnf, diff)
+    else:
+        cnf = diff
 
     if args.args:
         diff = anyconfig.parser.parse(args.args)

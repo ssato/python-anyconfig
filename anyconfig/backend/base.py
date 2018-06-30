@@ -567,12 +567,10 @@ def load_with_fn(load_fn, content_or_strm, container, allow_primitives=False,
     :return: container object holding data
     """
     ret = load_fn(content_or_strm, **options)
-    try:
-        return container() if ret is None else container(ret)
-    except (TypeError, ValueError):
-        if allow_primitives:
-            return ret  # Just return it.
-        raise  # Something goes wrong.
+    if anyconfig.utils.is_dict_like(ret):
+        return container() if (ret is None or not ret) else container(ret)
+
+    return ret if allow_primitives else container(ret)
 
 
 def dump_with_fn(dump_fn, data, stream, **options):
@@ -627,7 +625,8 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         :return: container object holding the configuration data
         """
         return load_with_fn(self._load_from_string_fn, content, container,
-                            self.allow_primitives(), **options)
+                            allow_primitives=self.allow_primitives(),
+                            **options)
 
     def load_from_stream(self, stream, container, **options):
         """
@@ -640,7 +639,8 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         :return: container object holding the configuration data
         """
         return load_with_fn(self._load_from_stream_fn, stream, container,
-                            self.allow_primitives(), **options)
+                            allow_primitives=self.allow_primitives(),
+                            **options)
 
     def dump_to_string(self, cnf, **kwargs):
         """

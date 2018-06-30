@@ -187,24 +187,27 @@ def _yml_load(stream, container, **options):
     return ret
 
 
-def _yml_dump(cnf, stream, **options):
+def _yml_dump(data, stream, **options):
     """An wrapper of yaml.safe_dump and yaml.dump.
 
-    :param cnf: Mapping object to dump
+    :param data: Some data to dump
     :param stream: a file or file-like object to dump YAML data
     """
+    _is_dict = anyconfig.utils.is_dict_like(data)
+
     if options.get("ac_safe", False):
         options = {}
-    elif not options.get("Dumper", False):
+    elif not options.get("Dumper", False) and _is_dict:
         # TODO: Any other way to get its constructor?
-        cnf_type = type(cnf)
-        maybe_container = options.get("ac_dict", cnf_type)
+        maybe_container = options.get("ac_dict", type(data))
         options["Dumper"] = _customized_dumper(maybe_container)
 
-    # Type information and the order of items are lost on dump currently.
-    cnf = anyconfig.dicts.convert_to(cnf, ac_dict=dict)
-    options = _filter_from_options("ac_dict", options)
-    return _yml_fnc("dump", cnf, stream, **options)
+    if _is_dict:
+        # Type information and the order of items are lost on dump currently.
+        data = anyconfig.dicts.convert_to(data, ac_dict=dict)
+        options = _filter_from_options("ac_dict", options)
+
+    return _yml_fnc("dump", data, stream, **options)
 
 
 class Parser(anyconfig.backend.base.StreamParser):

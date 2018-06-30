@@ -72,7 +72,7 @@ class Test_10_dumps_and_loads(TestBase):
 
     load_options = {}  # Must be set to a dict in children classes.
     dump_options = {}  # Do.
-    empty_patterns = ['']  # Do.
+    empty_patterns = [('', {})]  # Do.
 
     def test_10_loads(self):
         if self.is_ready():
@@ -118,9 +118,9 @@ class Test_10_dumps_and_loads(TestBase):
 
     def test_22_loads_empty_data(self):
         if self.is_ready():
-            for pat in self.empty_patterns:
+            for pat, exp in self.empty_patterns:
                 cnf = self.psr.loads(pat)
-                self.assertEqual(cnf, dict())
+                self.assertEqual(cnf, exp)
 
     def test_30_dumps(self):
         if self.is_ready():
@@ -157,6 +157,8 @@ class TestBaseWithIO(TestBase):
 
 
 class Test_20_dump_and_load(TestBaseWithIO):
+
+    list_data = [dict(a=1, b=2), dict(a=2, b=3)]
 
     def test_10_load(self):
         if self.is_ready():
@@ -201,5 +203,12 @@ class Test_20_dump_and_load(TestBaseWithIO):
             cnf = self.psr.load(self.ioi)
             self.assertTrue(cnf)
             self._assert_dicts_equal(cnf)
+
+    def test_34_dump_and_load__list(self):
+        if self.is_ready() and self.psr.allow_primitives():
+            self.psr.dump(self.list_data, self.ioi)
+            cnf = self.psr.load(self.ioi, ac_dict=MyDict)
+            self.assertTrue(cnf)
+            self.assertEqual(cnf, self.list_data)
 
 # vim:sw=4:ts=4:et:

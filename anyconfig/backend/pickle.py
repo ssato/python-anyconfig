@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2017, 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 r"""Pickle backend:
@@ -19,7 +19,11 @@ r"""Pickle backend:
 
 Changelog:
 
-    .. versionadded:: 0.8.3
+.. versionchanged:: 0.9.7
+
+   - Add support of loading primitives other than mapping objects.
+
+.. versionadded:: 0.8.3
 """
 from __future__ import absolute_import
 
@@ -49,6 +53,7 @@ class Parser(anyconfig.backend.base.StringStreamFnParser,
     _extensions = ["pkl", "pickle"]
     _load_opts = LOAD_OPTS
     _dump_opts = DUMP_OPTS
+    _allow_primitives = True
 
     _load_from_string_fn = anyconfig.backend.base.to_method(pickle.loads)
     _load_from_stream_fn = anyconfig.backend.base.to_method(pickle.load)

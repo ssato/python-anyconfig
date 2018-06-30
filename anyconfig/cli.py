@@ -64,7 +64,7 @@ Examples:
   %(prog)s --validate -S foo.conf.schema.yml '/etc/foo.d/*.xml'
   %(prog)s --gen-schema '/etc/foo.d/*.xml' -o foo.conf.schema.yml"""
 
-DEFAULTS = dict(loglevel=1, list=False, output=None, itype=None,
+DEFAULTS = dict(loglevel=0, list=False, output=None, itype=None,
                 otype=None, atype=None, merge=API.MS_DICTS,
                 ignore_missing=False, template=False, env=False,
                 schema=None, validate=False, gen_schema=False)
@@ -174,12 +174,8 @@ def make_parser(defaults=None):
                         help="Load configuration defaults from "
                              "environment values")
     parser.add_argument("-S", "--schema", help="Specify Schema file[s] path")
-    parser.add_argument("-s", "--silent", action="store_const",
-                        dest="loglevel", const=0, help="Silent or quiet mode")
-    parser.add_argument("-q", "--quiet", action="store_const", dest="loglevel",
-                        const=0, help="Same as --silent option")
-    parser.add_argument("-v", "--verbose", action="store_const",
-                        dest="loglevel", const=2, help="Verbose mode")
+    parser.add_argument("-v", "--verbose", action="count", dest="loglevel",
+                        help="Verbose mode; -v or -vv (more verbose)")
     return parser
 
 

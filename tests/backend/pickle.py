@@ -20,6 +20,7 @@ class HasParserTrait(TBC.HasParserTrait):
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
     load_options = dump_options = dict(protocol=TT.pickle.HIGHEST_PROTOCOL)
+    empty_patterns = [('', {})]
 
 
 class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):

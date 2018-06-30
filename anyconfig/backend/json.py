@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # Ref. python -c "import json; help(json)"
@@ -21,6 +21,10 @@ r"""JSON backend:
     to use.
 
 Changelog:
+
+    .. versionchanged:: 0.9.6
+
+       - Support loading data provides primitives other than mapping objects.
 
     .. versionadded:: 0.0.1
 """

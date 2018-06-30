@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # type() is used to exactly match check instead of isinstance here.
@@ -30,6 +30,10 @@ r"""YAML backend:
   - See also: http://pyyaml.org/wiki/PyYAMLDocumentation
 
 Changelog:
+
+.. versionchanged:: 0.9.6
+
+   - Support loading data provides primitives other than mapping objects.
 
 .. versionchanged:: 0.9.3
 

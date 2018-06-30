@@ -53,6 +53,7 @@ class RunTestBase(unittest.TestCase):
 
 
 class Test_10(RunTestBase):
+    infile = os.path.join(tests.common.selfdir(), "00-cnf.json")
 
     def test_10_show_usage(self):
         self.run_and_check_exit_code(["--help"])
@@ -65,6 +66,25 @@ class Test_10(RunTestBase):
 
     def test_40_list(self):
         self.run_and_check_exit_code(["--list"])
+
+    def test_50_unknown_input_file_type(self):
+        self.run_and_check_exit_code([__file__], _not=True)
+
+    def test_52_unknown_input_parser_type(self):
+        self.run_and_check_exit_code([__file__, "-I", "unknown_psr"],
+                                     _not=True)
+
+    def test_54_no_input_type_and_unknown_out_file_type(self):
+        self.run_and_check_exit_code([__file__, __file__ + '.un_ext'],
+                                     _not=True)
+
+    def test_60_unknown_out_file_type(self):
+        self.run_and_check_exit_code([self.infile, "-o", "t.unknown_ext"],
+                                     _not=True)
+
+    def test_62_unknown_out_parser_type(self):
+        self.run_and_check_exit_code([self.infile, "-O", "unknown_psr"],
+                                     _not=True)
 
 
 class Test_20_Base(RunTestBase):

@@ -24,7 +24,7 @@ CNF_TMPL_0 = tests.api.CNF_TMPL_1
 
 
 def _run(*args):
-    TT.main(["dummy", "--silent"] + list(args))
+    TT.main(["dummy"] + list(args))
 
 
 class Test_00(unittest.TestCase):
@@ -35,7 +35,7 @@ class Test_00(unittest.TestCase):
     >>> psr.parse_args([])  # doctest: +NORMALIZE_WHITESPACE
     Namespace(args=None, atype=None, env=False, gen_schema=False, get=None,
               ignore_missing=False, inputs=[], itype=None, list=False,
-              loglevel=1, merge='merge_dicts', otype=None, output=None,
+              loglevel=0, merge='merge_dicts', otype=None, output=None,
               query=None, schema=None, set=None, template=False,
               validate=False)
     """
@@ -46,7 +46,7 @@ class RunTestBase(unittest.TestCase):
     def run_and_check_exit_code(self, args=None, code=0, _not=False,
                                 exc_cls=SystemExit):
         try:
-            TT.main(["dummy", "--silent"] + ([] if args is None else args))
+            TT.main(["dummy"] + ([] if args is None else args))
         except exc_cls as exc:
             ecode = getattr(exc, "code", 1)
             (self.assertNotEqual if _not else self.assertEqual)(ecode, code)
@@ -98,7 +98,7 @@ class Test_30_single_input(Test_20_Base):
         anyconfig.api.dump(a, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "--silent", "-o", output, infile])
+        TT.main(["dummy", "-o", output, infile])
         self.assertTrue(os.path.exists(output))
 
     def test_20_wo_input_type(self):
@@ -113,7 +113,7 @@ class Test_30_single_input(Test_20_Base):
         anyconfig.api.dump(d, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "--silent", "-o", output, "--get", "a.b", infile])
+        TT.main(["dummy", "-o", output, "--get", "a.b", infile])
         self.assertTrue(os.path.exists(output))
 
         x = anyconfig.api.load(output)
@@ -136,7 +136,7 @@ class Test_30_single_input(Test_20_Base):
         anyconfig.api.dump(d, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "-q", "-o", output, "--set", "a.b.d=E", infile])
+        TT.main(["dummy", "-o", output, "--set", "a.b.d=E", infile])
         self.assertTrue(os.path.exists(output))
 
         ref = d.copy()
@@ -149,7 +149,7 @@ class Test_30_single_input(Test_20_Base):
         infile = os.path.join(os.curdir, "conf_file_should_not_exist.json")
         assert not os.path.exists(infile)
 
-        self.assertFalse(TT.main(["dummy", "--silent", "-O", "json",
+        self.assertFalse(TT.main(["dummy", "-O", "json",
                                   "--ignore-missing", infile]))
 
     def test_50_w_schema(self):
@@ -190,7 +190,7 @@ class Test_30_single_input(Test_20_Base):
         anyconfig.api.dump(a, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "--silent", "-o", output, "-A",
+        TT.main(["dummy", "-o", output, "-A",
                  "a:10;name:x;d:3,4", infile])
         self.assertTrue(os.path.exists(output))
 
@@ -213,7 +213,7 @@ class Test_30_single_input(Test_20_Base):
         anyconfig.api.dump(a, infile)
         self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "--silent", "-o", output, infile])
+        TT.main(["dummy", "-o", output, infile])
         self.assertTrue(os.path.exists(output))
 
 
@@ -236,7 +236,7 @@ class Test_40_multi_inputs(Test_20_Base):
             anyconfig.api.dump(xs[i], infile)
             self.assertTrue(os.path.exists(infile))
 
-        TT.main(["dummy", "--silent", "-o", output] + inputs)
+        TT.main(["dummy", "-o", output] + inputs)
         self.assertTrue(os.path.exists(output))
 
     def test_20_w_template(self):
@@ -252,7 +252,7 @@ class Test_40_multi_inputs(Test_20_Base):
         open(os.path.join(inputsdir, "a1.yml"), 'w').write(CNF_TMPL_0)
         output = os.path.join(self.workdir, "b.json")
 
-        TT.main(["dummy", "--silent", "--template", "-o", output,
+        TT.main(["dummy", "--template", "-o", output,
                  os.path.join(inputsdir, "*.yml")])
         self.assertTrue(os.path.exists(output))
 
@@ -265,7 +265,7 @@ class Test_40_multi_inputs(Test_20_Base):
         infile = os.path.join(curdir, "*template-c*.yml")
         output = os.path.join(self.workdir, "output.yml")
 
-        TT.main(["dummy", "--silent", "--template", "-o", output, infile])
+        TT.main(["dummy", "--template", "-o", output, infile])
 
 
 class Test_50_others_w_input(Test_20_Base):
@@ -303,7 +303,7 @@ class Test_50_others_wo_input(Test_20_Base):
 
     def test_40_no_inputs__w_env_option(self):
         output = os.path.join(self.workdir, "out.json")
-        self.run_and_check_exit_code(["--silent", "--env", "-o", output], 0)
+        self.run_and_check_exit_code(["--env", "-o", output], 0)
         data = anyconfig.api.load(output)
 
         for env_var, env_val in os.environ.items():

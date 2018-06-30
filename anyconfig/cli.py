@@ -22,6 +22,7 @@ import anyconfig.utils
 
 _ENCODING = locale.getdefaultlocale()[1] or 'UTF-8'
 
+logging.basicConfig(format="%(levelname)s: %(message)s")
 LOGGER = logging.getLogger("anyconfig")
 LOGGER.addHandler(logging.StreamHandler())
 LOGGER.setLevel(logging.WARN)

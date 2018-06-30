@@ -25,7 +25,6 @@ _ENCODING = locale.getdefaultlocale()[1] or 'UTF-8'
 logging.basicConfig(format="%(levelname)s: %(message)s")
 LOGGER = logging.getLogger("anyconfig")
 LOGGER.addHandler(logging.StreamHandler())
-LOGGER.setLevel(logging.WARN)
 
 if anyconfig.compat.IS_PYTHON_3:
     import io

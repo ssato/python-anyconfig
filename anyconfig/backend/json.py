@@ -24,7 +24,7 @@ Changelog:
 
     .. versionchanged:: 0.9.6
 
-       - Support loading data provides primitives other than mapping objects.
+       - Add support of loading primitives other than mapping objects.
 
     .. versionadded:: 0.0.1
 """

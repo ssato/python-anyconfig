@@ -131,8 +131,7 @@ def find_parser(obj, forced_type=None):
 
     ioi = inspect_io_obj(obj, _PARSERS_BY_EXT, _PARSERS_BY_TYPE, forced_type)
     psr = ioi.processor
-    LOGGER.debug("Using parser %r [%s] for input type %s",
-                 psr, psr.type(), ioi.type)
+    LOGGER.debug("Using parser %r [%s][I/O: %s]", psr, psr.type(), ioi.type)
     return psr
 
 

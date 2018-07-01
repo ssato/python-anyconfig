@@ -1,4 +1,4 @@
-* Sun Jul  1 2018 Satoru SATOH <ssato@redhat.com> - 0.9.7-1
+* Mon Jul  2 2018 Satoru SATOH <ssato@redhat.com> - 0.9.7-1
 - enhancement: allow pickle parser loading data of primitive data types other
   than mapping objects
 - fix: return non-dict objects loaded if the parser allows that at once instead

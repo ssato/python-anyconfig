@@ -157,13 +157,14 @@ def make_parser(defaults=None):
     gspog.add_argument("--set", help=_SET_HELP)
 
     parser.add_argument("-o", "--output", help="Output file path")
-    parser.add_argument("-I", "--itype", choices=ctypes,
+    parser.add_argument("-I", "--itype", choices=ctypes, metavar="ITYPE",
                         help=(type_help % "Input"))
-    parser.add_argument("-O", "--otype", choices=ctypes,
+    parser.add_argument("-O", "--otype", choices=ctypes, metavar="OTYPE",
                         help=(type_help % "Output"))
-    parser.add_argument("-M", "--merge", choices=mts, help=mt_help)
+    parser.add_argument("-M", "--merge", choices=mts, metavar="MERGE",
+                        help=mt_help)
     parser.add_argument("-A", "--args", help="Argument configs to override")
-    parser.add_argument("--atype", choices=ctypes,
+    parser.add_argument("--atype", choices=ctypes, metavar="ATYPE",
                         help=_ATYPE_HELP_FMT % ctypes_s)
 
     cpog = parser.add_argument_group("Common options")

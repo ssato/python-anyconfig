@@ -166,16 +166,17 @@ def make_parser(defaults=None):
     parser.add_argument("--atype", choices=ctypes,
                         help=_ATYPE_HELP_FMT % ctypes_s)
 
-    parser.add_argument("-x", "--ignore-missing", action="store_true",
-                        help="Ignore missing input files")
-    parser.add_argument("-T", "--template", action="store_true",
-                        help="Enable template config support")
-    parser.add_argument("-E", "--env", action="store_true",
-                        help="Load configuration defaults from "
-                             "environment values")
-    parser.add_argument("-S", "--schema", help="Specify Schema file[s] path")
-    parser.add_argument("-v", "--verbose", action="count", dest="loglevel",
-                        help="Verbose mode; -v or -vv (more verbose)")
+    cpog = parser.add_argument_group("Common options")
+    cpog.add_argument("-x", "--ignore-missing", action="store_true",
+                      help="Ignore missing input files")
+    cpog.add_argument("-T", "--template", action="store_true",
+                      help="Enable template config support")
+    cpog.add_argument("-E", "--env", action="store_true",
+                      help="Load configuration defaults from "
+                           "environment values")
+    cpog.add_argument("-S", "--schema", help="Specify Schema file[s] path")
+    cpog.add_argument("-v", "--verbose", action="count", dest="loglevel",
+                      help="Verbose mode; -v or -vv (more verbose)")
     return parser
 
 

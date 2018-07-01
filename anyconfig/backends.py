@@ -135,9 +135,12 @@ def find_parser(obj, forced_type=None):
     return psr
 
 
-def list_types(cps=PARSERS):
+def list_types(cps=None):
     """List available types parsers support.
     """
+    if cps is None:
+        cps = PARSERS
+
     return sorted(set(p.type() for p in cps))
 
 # vim:sw=4:ts=4:et:

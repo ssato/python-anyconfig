@@ -1,4 +1,4 @@
-* Sat Jun 30 2018 Satoru SATOH <ssato@redhat.com> - 0.9.7-1
+* Sun Jul  1 2018 Satoru SATOH <ssato@redhat.com> - 0.9.7-1
 - enhancement: allow pickle parser loading data of primitive data types other
   than mapping objects
 - fix: return non-dict objects loaded if the parser allows that at once instead
@@ -6,6 +6,7 @@
 - fix: [cli] allow to load YAML and JSON data contains data of primitive data
   types other than mapping objects such like lists
 - change: [cli] remove -s/--silent and -q/--quiet options
+- A misc other enhancements, refactorings and bug fixes
 
 * Wed Jun 27 2018 Satoru SATOH <ssato@redhat.com> - 0.9.5-1
 - fix: fixes wrong behaviors of *load APIs in some corner cases

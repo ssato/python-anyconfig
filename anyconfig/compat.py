@@ -67,7 +67,6 @@ if IS_PYTHON_3:
     from_iterable = itertools.chain.from_iterable
     raw_input = input
     STR_TYPES = (str, )
-    izip = zip
     getargspec = inspect.getfullargspec  # flake8: noqa
 else:
     import ConfigParser as configparser  # flake8: noqa
@@ -97,7 +96,6 @@ else:
     iteritems = py_iteritems
     raw_input = raw_input
     STR_TYPES = (str, unicode)
-    izip = itertools.izip
     getargspec = inspect.getargspec  # flake8: noqa
 
 try:

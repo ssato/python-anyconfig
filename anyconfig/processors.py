@@ -125,13 +125,4 @@ def list_processors_by_ext(prs):
     return ((x, _ext_proc_tpls_to_procs(xps)) for x, xps
             in anyconfig.utils.groupby(ps_by_ext, operator.itemgetter(0)))
 
-
-def list_types(tps):
-    """List types that any processors can process them are available.
-
-    :param tps: A list (generator) of (processor_type, [processor_cls])
-    :return: [processor_type]
-    """
-    return sorted(set(next(anyconfig.compat.izip(*tps))))
-
 # vim:sw=4:ts=4:et:

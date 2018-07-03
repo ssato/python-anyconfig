@@ -54,8 +54,8 @@ except ImportError:
 
 PARSERS.extend(anyconfig.processors.load_plugins("anyconfig_backends"))
 
-PARSERS_BY_TYPE = tuple(anyconfig.processors.list_processors_by_type(PARSERS))
-PARSERS_BY_EXT = tuple(anyconfig.processors.list_processors_by_ext(PARSERS))
+PARSERS_BY_TYPE = anyconfig.processors.list_processors_by_type(PARSERS)
+PARSERS_BY_EXT = anyconfig.processors.list_processors_by_ext(PARSERS)
 
 
 def is_parser(obj):
@@ -72,8 +72,7 @@ def is_parser(obj):
     return isinstance(obj, anyconfig.backend.base.Parser)
 
 
-def inspect_io_obj(obj, cps_by_ext=PARSERS_BY_EXT,
-                   cps_by_type=PARSERS_BY_TYPE, forced_type=None):
+def inspect_io_obj(obj, cps_by_ext=None, cps_by_type=None, forced_type=None):
     """
     Inspect a given object `obj` which may be a path string, file / file-like
     object, pathlib.Path object or `~anyconfig.globals.IOInfo` namedtuple
@@ -88,12 +87,17 @@ def inspect_io_obj(obj, cps_by_ext=PARSERS_BY_EXT,
     :return: anyconfig.globals.IOInfo object :: namedtuple
     :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
     """
+    if cps_by_ext is None:
+        cps_by_ext = PARSERS_BY_EXT
+
+    if cps_by_type is None:
+        cps_by_type = PARSERS_BY_TYPE
+
     return anyconfig.ioinfo.make(obj, cps_by_ext, cps_by_type,
                                  forced_type=forced_type)
 
 
-def find_parser_by_type(forced_type, cps_by_ext=PARSERS_BY_EXT,
-                        cps_by_type=PARSERS_BY_TYPE):
+def find_parser_by_type(forced_type, cps_by_ext=None, cps_by_type=None):
     """
     Find out appropriate parser object to load inputs of given type.
 
@@ -105,6 +109,12 @@ def find_parser_by_type(forced_type, cps_by_ext=PARSERS_BY_EXT,
         appropriate parser was found
     :raises: UnknownParserTypeError
     """
+    if cps_by_ext is None:
+        cps_by_ext = PARSERS_BY_EXT
+
+    if cps_by_type is None:
+        cps_by_type = PARSERS_BY_TYPE
+
     if forced_type is None or not forced_type:
         raise ValueError("forced_type must be a some string")
 

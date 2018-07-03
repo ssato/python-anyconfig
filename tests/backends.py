@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, invalid-name, protected-access
+# pylint: disable=missing-docstring, invalid-name
 from __future__ import absolute_import
 
 import os.path
@@ -59,7 +59,7 @@ class Test(unittest.TestCase):
 
     def test_34_find_parser__input_object(self):
         inp = anyconfig.ioinfo.make(CNF_PATH,
-                                    TT._PARSERS_BY_EXT, TT._PARSERS_BY_TYPE)
+                                    TT.PARSERS_BY_EXT, TT.PARSERS_BY_TYPE)
         psr = TT.find_parser(inp)
         self.assertTrue(isinstance(psr, anyconfig.backend.json.Parser))
 

@@ -54,8 +54,8 @@ except ImportError:
 
 PARSERS.extend(anyconfig.processors.load_plugins("anyconfig_backends"))
 
-_PARSERS_BY_TYPE = tuple(anyconfig.processors.list_processors_by_type(PARSERS))
-_PARSERS_BY_EXT = tuple(anyconfig.processors.list_processors_by_ext(PARSERS))
+PARSERS_BY_TYPE = tuple(anyconfig.processors.list_processors_by_type(PARSERS))
+PARSERS_BY_EXT = tuple(anyconfig.processors.list_processors_by_ext(PARSERS))
 
 
 def is_parser(obj):
@@ -72,8 +72,8 @@ def is_parser(obj):
     return isinstance(obj, anyconfig.backend.base.Parser)
 
 
-def inspect_io_obj(obj, cps_by_ext=_PARSERS_BY_EXT,
-                   cps_by_type=_PARSERS_BY_TYPE, forced_type=None):
+def inspect_io_obj(obj, cps_by_ext=PARSERS_BY_EXT,
+                   cps_by_type=PARSERS_BY_TYPE, forced_type=None):
     """
     Inspect a given object `obj` which may be a path string, file / file-like
     object, pathlib.Path object or `~anyconfig.globals.IOInfo` namedtuple
@@ -92,8 +92,8 @@ def inspect_io_obj(obj, cps_by_ext=_PARSERS_BY_EXT,
                                  forced_type=forced_type)
 
 
-def find_parser_by_type(forced_type, cps_by_ext=_PARSERS_BY_EXT,
-                        cps_by_type=_PARSERS_BY_TYPE):
+def find_parser_by_type(forced_type, cps_by_ext=PARSERS_BY_EXT,
+                        cps_by_type=PARSERS_BY_TYPE):
     """
     Find out appropriate parser object to load inputs of given type.
 
@@ -129,7 +129,7 @@ def find_parser(obj, forced_type=None):
     if anyconfig.utils.is_ioinfo(obj):
         return obj.processor  # It must have this.
 
-    ioi = inspect_io_obj(obj, _PARSERS_BY_EXT, _PARSERS_BY_TYPE, forced_type)
+    ioi = inspect_io_obj(obj, PARSERS_BY_EXT, PARSERS_BY_TYPE, forced_type)
     psr = ioi.processor
     LOGGER.debug("Using parser %r [%s][I/O: %s]", psr, psr.type(), ioi.type)
     return psr

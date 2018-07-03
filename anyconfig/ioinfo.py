@@ -79,7 +79,7 @@ def find_by_fileext(fileext, cps_by_ext):
 
     :return: Most appropriate processor class to process given file
 
-    >>> from anyconfig.backends import _PARSERS_BY_EXT as cps
+    >>> from anyconfig.backends import PARSERS_BY_EXT as cps
     >>> find_by_fileext("json", cps)
     <class 'anyconfig.backend.json.Parser'>
     >>> find_by_fileext("ext_should_not_be_found", cps) is None
@@ -96,7 +96,7 @@ def find_by_filepath(filepath, cps_by_ext):
 
     :return: Most appropriate processor class to process given file
 
-    >>> from anyconfig.backends import _PARSERS_BY_EXT as cps
+    >>> from anyconfig.backends import PARSERS_BY_EXT as cps
     >>> find_by_filepath("/a/b/c/x.json", cps)
     <class 'anyconfig.backend.json.Parser'>
     >>> find_by_filepath("/path/to/a.ext_should_not_be_found", cps) is None
@@ -113,7 +113,7 @@ def find_by_type(cptype, cps_by_type):
 
     :return: Most appropriate processor class to process given type or None
 
-    >>> from anyconfig.backends import _PARSERS_BY_TYPE as cps
+    >>> from anyconfig.backends import PARSERS_BY_TYPE as cps
     >>> find_by_type("json", cps)
     <class 'anyconfig.backend.json.Parser'>
     >>> find_by_type("missing_type", cps) is None

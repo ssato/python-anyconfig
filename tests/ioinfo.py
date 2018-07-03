@@ -13,8 +13,8 @@ import anyconfig.ioinfo as TT
 import anyconfig.utils
 
 from anyconfig.backends import (
-    _PARSERS_BY_EXT as CPS_BY_EXT,
-    _PARSERS_BY_TYPE as CPS_BY_TYPE
+    PARSERS_BY_EXT as CPS_BY_EXT,
+    PARSERS_BY_TYPE as CPS_BY_TYPE
 )
 from anyconfig.globals import (
     IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,

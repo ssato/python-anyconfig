@@ -14,6 +14,11 @@ import operator
 import pkg_resources
 
 import anyconfig.compat
+import anyconfig.utils
+
+from anyconfig.globals import (
+    UnknownProcessorTypeError, UnknownFileTypeError
+)
 
 
 class Processor(object):
@@ -70,59 +75,125 @@ def load_plugins(pgroup, safe=True):
     return list(_load_plugins_itr(pgroup, safe=safe))
 
 
-def list_processors_by_type(prs):
+def find_with_pred(predicate, prs):
     """
-    :param prs: A list of instances of :class:`Processor`
-    :return: List (generator) of (processor_type, [processor_cls])
+    :param predicate: any callable to filter results
+    :param prs: A list of :class:`Processor` classes
+    :return: Most appropriate processor class or None
 
     >>> class A(Processor):
-    ...    _type = "a"
+    ...    _type = "json"
+    ...    _extensions = ['json', 'js']
     >>> class A2(A):
-    ...    _priority = 2
+    ...    _priority = 99  # Higher priority than A.
     >>> class B(Processor):
-    ...    _type = "b"
-    >>> g = list_processors_by_type([B, A2, A])
-    >>> list(g)  # doctest: +NORMALIZE_WHITESPACE
-    [('a', [<class 'anyconfig.processors.A'>,
-            <class 'anyconfig.processors.A2'>]),
-     ('b', [<class 'anyconfig.processors.B'>])]
-    """
-    return ((t, sorted(ps, key=operator.methodcaller("priority"))) for t, ps
-            in anyconfig.utils.groupby(prs, operator.methodcaller("type")))
-
-
-def _ext_proc_tpls_to_procs(xps):
-    """List processors by each priority.
-
-    :param xps: A list of (file_extension, processor_cls)
-    :return: List of [processor_cls]
-    """
-    return sorted((operator.itemgetter(1)(xp) for xp in xps),
-                  key=operator.methodcaller("priority"))
-
-
-def list_processors_by_ext(prs):
-    """
-    :param prs: A list of instances of :class:`Processor`
-    :return: List (generator) of (file_extension, [processor_cls])
-
-    >>> class A(Processor):
-    ...    _extensions = ['json']
-    >>> class A2(A):
-    ...    _priority = 2
-    >>> class B(Processor):
+    ...    _type = "yaml"
     ...    _extensions = ['yaml', 'yml']
-    >>> g = list_processors_by_ext([B, A2, A])
-    >>> list(g)  # doctest: +NORMALIZE_WHITESPACE
-    [('json', [<class 'anyconfig.processors.A'>,
-              <class 'anyconfig.processors.A2'>]),
-     ('yaml', [<class 'anyconfig.processors.B'>]),
-     ('yml', [<class 'anyconfig.processors.B'>])]
-    """
-    ps_by_ext = anyconfig.utils.concat(([(x, p) for x in p.extensions()] for p
-                                        in prs))  # [(ext, proc_cls)]
+    >>> prs = [A, A2, B]
 
-    return ((x, _ext_proc_tpls_to_procs(xps)) for x, xps
-            in anyconfig.utils.groupby(ps_by_ext, operator.itemgetter(0)))
+    >>> find_with_pred(lambda p: 'js' in p.extensions(), prs)
+    <class 'anyconfig.processors.A2'>
+    >>> find_with_pred(lambda p: 'yml' in p.extensions(), prs)
+    <class 'anyconfig.processors.B'>
+    >>> x = find_with_pred(lambda p: 'xyz' in p.extensions(), prs)
+    >>> assert x is None
+
+    >>> find_with_pred(lambda p: p.type() == "json", prs)
+    <class 'anyconfig.processors.A2'>
+    >>> find_with_pred(lambda p: p.type() == "yaml", prs)
+    <class 'anyconfig.processors.B'>
+    >>> x = find_with_pred(lambda p: p.type() == "x", prs)
+    >>> assert x is None
+    """
+    _prs = sorted((p for p in prs if predicate(p)),
+                  key=operator.methodcaller("priority"), reverse=True)
+    if _prs:
+        return _prs[0]  # Found.
+
+    return None
+
+
+def find_by_type(ptype, prs):
+    """
+    :param ptype: Type of the data to process
+    :param prs: A list of :class:`Processor` classes
+    :return:
+        Most appropriate processor class to process files of given data type
+        `ptype` or None
+    :raises: UnknownProcessorTypeError
+    """
+    def pred(pcls):
+        """Predicate"""
+        return pcls.type() == ptype
+
+    processor = find_with_pred(pred, prs)
+    if processor is None:
+        raise UnknownProcessorTypeError(ptype)
+
+    return processor
+
+
+def find_by_fileext(fileext, prs):
+    """
+    :param fileext: File extension
+    :param prs: A list of :class:`Processor` classes
+    :return:
+        Most appropriate processor class to process files with given
+        extentsions or None
+    :raises: UnknownFileTypeError
+    """
+    def pred(pcls):
+        """Predicate"""
+        return fileext in pcls.extensions()
+
+    return find_with_pred(pred, prs)
+
+
+def find_by_filepath(filepath, prs):
+    """
+    :param filepath: Path to the file to find out processor to process it
+    :param cps_by_ext: A list of processor classes
+
+    :return: Most appropriate processor class to process given file
+    :raises: UnknownFileTypeError
+    """
+    fileext = anyconfig.utils.get_file_extension(filepath)
+    processor = find_by_fileext(fileext, prs)
+    if processor is None:
+        raise UnknownFileTypeError(fileext)
+
+    return processor
+
+
+def find(ipath, prs, forced_type=None):
+    """
+    :param ipath: file path
+    :param prs: A list of processor classes
+    :param forced_type: Forced processor type or processor object itself
+
+    :return: an instance of processor class appropriate to process `ipath` data
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
+    """
+    if (ipath is None or not ipath) and forced_type is None:
+        raise ValueError("file path or file type must be given")
+
+    if forced_type is None:
+        processor = find_by_filepath(ipath, prs)
+        if processor is None:
+            raise UnknownFileTypeError(ipath)
+
+        return processor()
+
+    elif isinstance(forced_type, Processor):
+        return forced_type
+
+    elif type(forced_type) == type(Processor):
+        return forced_type()
+
+    processor = find_by_type(forced_type, prs)
+    if processor is None:
+        raise UnknownProcessorTypeError(forced_type)
+
+    return processor()
 
 # vim:sw=4:ts=4:et:

@@ -13,11 +13,12 @@ r"""Functions for value objects represent inputs and outputs.
 """
 from __future__ import absolute_import
 
+import anyconfig.processors
 import anyconfig.utils
 
 from anyconfig.globals import (
     IOInfo, IOI_NONE, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
-    UnknownFileTypeError, UnknownParserTypeError
+    UnknownFileTypeError
 )
 
 
@@ -72,99 +73,17 @@ def inspect_io_obj(obj):
     return (itype, ipath, opener)
 
 
-def find_by_fileext(fileext, cps_by_ext):
-    """
-    :param fileext: File extension
-    :param cps_by_ext: A list of pairs (file_extension, [processor_class])
-
-    :return: Most appropriate processor class to process given file
-
-    >>> from anyconfig.backends import PARSERS_BY_EXT as cps
-    >>> find_by_fileext("json", cps)
-    <class 'anyconfig.backend.json.Parser'>
-    >>> find_by_fileext("ext_should_not_be_found", cps) is None
-    True
-    """
-    return next((psrs[-1] for ext, psrs in cps_by_ext if ext == fileext),
-                None)
-
-
-def find_by_filepath(filepath, cps_by_ext):
-    """
-    :param filepath: Path to the file to find out processor to process it
-    :param cps_by_ext: A list of pairs (file_extension, [processor_class])
-
-    :return: Most appropriate processor class to process given file
-
-    >>> from anyconfig.backends import PARSERS_BY_EXT as cps
-    >>> find_by_filepath("/a/b/c/x.json", cps)
-    <class 'anyconfig.backend.json.Parser'>
-    >>> find_by_filepath("/path/to/a.ext_should_not_be_found", cps) is None
-    True
-    """
-    fileext = anyconfig.utils.get_file_extension(filepath)
-    return find_by_fileext(fileext, cps_by_ext)
-
-
-def find_by_type(cptype, cps_by_type):
-    """
-    :param cptype: Config file's type
-    :param cps_by_type: A list of pairs, (processor_type, [processor_class])
-
-    :return: Most appropriate processor class to process given type or None
-
-    >>> from anyconfig.backends import PARSERS_BY_TYPE as cps
-    >>> find_by_type("json", cps)
-    <class 'anyconfig.backend.json.Parser'>
-    >>> find_by_type("missing_type", cps) is None
-    True
-    """
-    return next((psrs[-1] or None for t, psrs in cps_by_type if t == cptype),
-                None)
-
-
-def find_processor(ipath, cps_by_ext, cps_by_type, forced_type=None):
-    """
-    :param ipath: file path
-    :param cps_by_ext: A list of pairs (file_extension, [processor_cls])
-    :param cps_by_type: A list of pairs (processor_type, [processor_cls])
-    :param forced_type: Forced processor type or processor object
-
-    :return: Instance of processor class appropriate for the input `ipath`
-    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
-    """
-    if (ipath is None or not ipath) and forced_type is None:
-        raise ValueError("ipath or forced_type must be some value")
-
-    if isinstance(forced_type, anyconfig.backend.base.Parser):
-        return forced_type
-
-    if forced_type is None:
-        processor = find_by_filepath(ipath, cps_by_ext)
-        if processor is None:
-            raise UnknownFileTypeError(ipath)
-
-        return processor()
-
-    processor = find_by_type(forced_type, cps_by_type)
-    if processor is None:
-        raise UnknownParserTypeError(forced_type)
-
-    return processor()
-
-
-def make(obj, cps_by_ext, cps_by_type, forced_type=None):
+def make(obj, prs, forced_type=None):
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
-    :param cps_by_ext: A list of pairs (file_extension, [processor_cls])
-    :param cps_by_type: A list of pairs (processor_type, [processor_cls])
-    :param forced_type: Forced configuration processor type
+    :param prs: A list of processor classes
+    :param forced_type: Forced processor type or processor object
 
     :return:
         Namedtuple object represents a kind of input object such as a file /
         file-like object, path string or pathlib.Path object
 
-    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     if anyconfig.utils.is_ioinfo(obj):
         return obj
@@ -173,8 +92,12 @@ def make(obj, cps_by_ext, cps_by_type, forced_type=None):
         raise ValueError("obj or forced_type must be some value")
 
     (itype, ipath, opener) = inspect_io_obj(obj)
-    psr = find_processor(ipath, cps_by_ext, cps_by_type,
-                         forced_type=forced_type)
+    try:
+        psr = anyconfig.processors.find(ipath, prs, forced_type)
+    except AttributeError as exc:
+        print("*** ipath=%s, prs=%r, forced_type=%s" % (ipath, prs,
+                                                        forced_type))
+        raise
 
     return IOInfo(src=obj, type=itype, path=ipath, processor=psr,
                   opener=opener)

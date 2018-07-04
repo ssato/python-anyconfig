@@ -29,6 +29,13 @@ class UnknownParserTypeError(RuntimeError):
         super(UnknownParserTypeError, self).__init__(msg)
 
 
+class UnknownProcessorTypeError(RuntimeError):
+    """Raise if no processors were found for given type."""
+    def __init__(self, forced_type):
+        msg = "No parser found for type '%s'" % forced_type
+        super(UnknownProcessorTypeError, self).__init__(msg)
+
+
 class UnknownFileTypeError(RuntimeError):
     """Raise if not parsers were found for given file path."""
     def __init__(self, path):

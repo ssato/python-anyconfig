@@ -276,7 +276,7 @@ def _try_dump(cnf, outpath, otype, fmsg):
         API.dump(cnf, outpath, otype)
     except API.UnknownFileTypeError:
         _exit_with_output(fmsg % outpath, 1)
-    except API.UnknownParserTypeError:
+    except API.UnknownProcessorTypeError:
         _exit_with_output("Invalid output type '%s'" % otype, 1)
 
 
@@ -312,7 +312,7 @@ def _load_diff(args):
                         ac_merge=args.merge,
                         ac_template=args.template,
                         ac_schema=args.schema)
-    except API.UnknownParserTypeError:
+    except API.UnknownProcessorTypeError:
         _exit_with_output("Wrong input type '%s'" % args.itype, 1)
     except API.UnknownFileTypeError:
         _exit_with_output("No appropriate backend was found for given file "

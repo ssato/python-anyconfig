@@ -96,7 +96,7 @@ class Test_10_find_loader(unittest.TestCase):
                                         "ext=%s, psr=%r" % (ext, psr))
 
     def test_30_find_loader__unknown_parser_type(self):
-        self.assertRaises(TT.UnknownParserTypeError,
+        self.assertRaises(TT.UnknownProcessorTypeError,
                           TT.find_loader, "a.cnf", "type_not_exist")
 
     def test_40_find_loader__unknown_file_type(self):
@@ -131,7 +131,7 @@ class Test_20_dumps_and_loads(TestBase):
 
     def test_42_loads_w_type_not_exist(self):
         a_s = "requires:bash,zsh"
-        self.assertRaises(TT.UnknownParserTypeError,
+        self.assertRaises(TT.UnknownProcessorTypeError,
                           TT.loads, a_s, "type_not_exist")
 
     def test_44_loads_w_type__template(self):
@@ -484,7 +484,7 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         TT.dump(self.dic, self.a_path)  # JSON
         try:
             TT.dump(self.upd, c_path)  # YAML
-        except (TT.UnknownParserTypeError, TT.UnknownFileTypeError):
+        except (TT.UnknownProcessorTypeError, TT.UnknownFileTypeError):
             return  # YAML backend is not available in this env.
 
         self.assertTrue(os.path.exists(self.a_path))
@@ -530,7 +530,7 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         try:
             res0 = TT.multi_load(g_path, **opts)
             res1 = TT.multi_load([g_path, b_path], **opts)
-        except (TT.UnknownParserTypeError, TT.UnknownFileTypeError):
+        except (TT.UnknownProcessorTypeError, TT.UnknownFileTypeError):
             return
 
         self.assert_dicts_equal(res0, self.exp)

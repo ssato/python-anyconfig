@@ -6,19 +6,15 @@
 import os.path
 import unittest
 
+import anyconfig.backends
 import anyconfig.backend.ini
 import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.ioinfo as TT
 import anyconfig.utils
 
-from anyconfig.backends import (
-    PARSERS_BY_EXT as CPS_BY_EXT,
-    PARSERS_BY_TYPE as CPS_BY_TYPE
-)
 from anyconfig.globals import (
     IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
-    UnknownParserTypeError, UnknownFileTypeError
 )
 
 
@@ -26,7 +22,7 @@ IPATH_0 = os.path.join(os.path.dirname(__file__), "00-cnf.json")
 IPATH_0_FULL = anyconfig.utils.normpath(IPATH_0)
 
 
-class Test_30_inspect_io_obj(unittest.TestCase):
+class Test_10_inspect_io_obj(unittest.TestCase):
 
     def test_10_path_str(self):
         self.assertEqual(TT.inspect_io_obj(IPATH_0),
@@ -46,40 +42,12 @@ class Test_30_inspect_io_obj(unittest.TestCase):
                          (IOI_PATH_OBJ, IPATH_0_FULL, ipo.open))
 
 
-class Test_50_find_processor(unittest.TestCase):
-    cpss = (CPS_BY_EXT, CPS_BY_TYPE)
+class Test_30_make(unittest.TestCase):
     (ipath, ipath_full) = (IPATH_0, IPATH_0_FULL)
+    prs = anyconfig.backends.PARSERS
 
     def __init__(self, *args, **kwargs):
-        super(Test_50_find_processor, self).__init__(*args, **kwargs)
-        self.fun = TT.find_processor
-
-    def __checks_helper(self, psr, pcls):
-        self.assertTrue(isinstance(psr, pcls))
-
-    def test_10__ng_cases(self):
-        with self.assertRaises(ValueError):
-            self.fun(None, CPS_BY_EXT, CPS_BY_TYPE)
-
-        with self.assertRaises(UnknownParserTypeError):
-            self.fun(None, CPS_BY_EXT, CPS_BY_TYPE,
-                     forced_type="type_not_exist")
-        with self.assertRaises(UnknownFileTypeError):
-            self.fun("cnf.unknown_ext", *self.cpss)
-
-    def test_20__forced_type(self):
-        res = self.fun(None, CPS_BY_EXT, CPS_BY_TYPE, forced_type="ini")
-        self.__checks_helper(res, anyconfig.backend.ini.Parser)
-
-    def test_30__by_fileext(self):
-        res = self.fun(self.ipath, *self.cpss)
-        self.__checks_helper(res, anyconfig.backend.json.Parser)
-
-
-class Test_60_make(Test_50_find_processor):
-
-    def __init__(self, *args, **kwargs):
-        super(Test_60_make, self).__init__(*args, **kwargs)
+        super(Test_30_make, self).__init__(*args, **kwargs)
         self.fun = TT.make
 
     def __checks_helper(self, inp, *args):
@@ -90,13 +58,13 @@ class Test_60_make(Test_50_find_processor):
         self.assertEqual(inp.opener, args[4])
 
     def test_20__forced_type(self):
-        res = self.fun(None, CPS_BY_EXT, CPS_BY_TYPE, forced_type="ini")
+        res = self.fun(None, anyconfig.backends.PARSERS, forced_type="ini")
         self.__checks_helper(res, None, None, None,
                              anyconfig.backend.ini.Parser,
                              anyconfig.utils.noop)
 
     def test_30__by_fileext(self):
-        res = self.fun(self.ipath, *self.cpss)
+        res = self.fun(self.ipath, self.prs)
         self.__checks_helper(res, self.ipath, self.ipath_full, IOI_PATH_STR,
                              anyconfig.backend.json.Parser, open)
 
@@ -111,13 +79,13 @@ class Test_60_make(Test_50_find_processor):
             itype = IOI_PATH_STR
             opener = open
 
-        res = self.fun(ipath, *self.cpss)
+        res = self.fun(ipath, self.prs)
         self.__checks_helper(res, ipath, self.ipath_full, itype,
                              anyconfig.backend.json.Parser, opener)
 
     def test_50__stream(self):
         ifo = open(self.ipath)
-        res = self.fun(ifo, *self.cpss)
+        res = self.fun(ifo, self.prs)
         self.__checks_helper(res, ifo, self.ipath_full, IOI_STREAM,
                              anyconfig.backend.json.Parser,
                              anyconfig.utils.noop)

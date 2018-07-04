@@ -32,10 +32,10 @@ r"""Public APIs of anyconfig module.
 
    - Removed set_loglevel API as it does not help much.
    - Added :func:`open` API to open files with appropriate open mode.
-   - Added custom exception classes, :class:`UnknownParserTypeError` and
+   - Added custom exception classes, :class:`UnknownProcessorTypeError` and
      :class:`UnknownFileTypeError` to express specific errors.
    - Change behavior of the API :func:`find_loader` and others to make them
-     fail firt and raise exceptions (ValueError, UnknownParserTypeError or
+     fail firt and raise exceptions (ValueError, UnknownProcessorTypeError or
      UnknownFileTypeError) as much as possible if wrong parser type for uknown
      file type was given.
 
@@ -72,7 +72,7 @@ import warnings
 
 # Import some global constants will be re-exported:
 from anyconfig.globals import (
-    LOGGER, IOI_PATH_OBJ, UnknownParserTypeError, UnknownFileTypeError
+    LOGGER, IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
 )
 import anyconfig.backends
 import anyconfig.backend.json
@@ -141,7 +141,7 @@ def find_loader(path, parser_or_type=None):
     try:
         return anyconfig.backends.find_parser(path,
                                               forced_type=parser_or_type)
-    except (ValueError, UnknownParserTypeError, UnknownFileTypeError):
+    except (ValueError, UnknownProcessorTypeError, UnknownFileTypeError):
         raise
 
 
@@ -185,7 +185,7 @@ def open(path, mode=None, ac_parser=None, **options):
         builtin 'open' function.
 
     :return: A file object or None on any errors
-    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     psr = anyconfig.backends.find_parser(path, forced_type=ac_parser)
 
@@ -212,7 +212,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
         ac_schema and ac_query
 
     :return: Mapping object
-    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     ioi = anyconfig.backends.inspect_io_obj(input_, forced_type=ac_parser)
     (psr, filepath) = (ioi.processor, ioi.path)
@@ -284,7 +284,7 @@ def single_load(input_, ac_parser=None, ac_template=False,
         - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Mapping object
-    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     cnf = _single_load(input_, ac_parser=ac_parser, ac_template=ac_template,
                        ac_context=ac_context, **options)
@@ -349,7 +349,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
         - Backend specific options such as {"indent": 2} for JSON backend
 
     :return: Mapping object or any query result might be primitive objects
-    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
@@ -358,7 +358,8 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
 
     paths = anyconfig.utils.expand_paths(inputs, marker=marker)
     if anyconfig.utils.are_same_file_types(paths):
-        ac_parser = anyconfig.backends.find_parser(paths[0], ac_parser)
+        ac_parser = anyconfig.backends.find_parser(paths[0],
+                                                   forced_type=ac_parser)
 
     cnf = ac_context
     for path in paths:
@@ -406,7 +407,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
         :func:`single_load` and :func:`multi_load`
 
     :return: Mapping object or any query result might be primitive objects
-    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
@@ -442,7 +443,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
         :func:`single_load` function.
 
     :return: Mapping object or any query result might be primitive objects
-    :raises: ValueError, UnknownParserTypeError
+    :raises: ValueError, UnknownProcessorTypeError
     """
     if ac_parser is None:
         LOGGER.warning("ac_parser was not given but it's must to find correct "
@@ -483,7 +484,7 @@ def dump(data, out, ac_parser=None, **options):
         Backend specific optional arguments, e.g. {"indent": 2} for JSON
         loader/dumper backend
 
-    :raises: ValueError, UnknownParserTypeError, UnknownFileTypeError
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     ioi = anyconfig.backends.inspect_io_obj(out, forced_type=ac_parser)
     LOGGER.info("Dumping: %s", ioi.path)
@@ -499,7 +500,7 @@ def dumps(data, ac_parser=None, **options):
     :param options: see :func:`dump`
 
     :return: Backend-specific string representation for the given data
-    :raises: ValueError, UnknownParserTypeError
+    :raises: ValueError, UnknownProcessorTypeError
     """
     psr = anyconfig.backends.find_parser_by_type(ac_parser)
     return psr.dumps(data, **options)

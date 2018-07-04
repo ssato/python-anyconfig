@@ -92,12 +92,7 @@ def make(obj, prs, forced_type=None):
         raise ValueError("obj or forced_type must be some value")
 
     (itype, ipath, opener) = inspect_io_obj(obj)
-    try:
-        psr = anyconfig.processors.find(ipath, prs, forced_type)
-    except AttributeError as exc:
-        print("*** ipath=%s, prs=%r, forced_type=%s" % (ipath, prs,
-                                                        forced_type))
-        raise
+    psr = anyconfig.processors.find(ipath, prs, forced_type)
 
     return IOInfo(src=obj, type=itype, path=ipath, processor=psr,
                   opener=opener)

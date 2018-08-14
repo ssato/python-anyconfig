@@ -83,34 +83,9 @@ class RpmCommand(SrpmCommand):
     build_stage = "b"
 
 
-_CLASSIFIERS = ["Development Status :: 4 - Beta",
-                "Intended Audience :: Developers",
-                "Programming Language :: Python",
-                "Programming Language :: Python :: 2",
-                "Programming Language :: Python :: 3",
-                "Programming Language :: Python :: 2.7",
-                "Programming Language :: Python :: 3.4",
-                "Programming Language :: Python :: 3.5",
-                "Programming Language :: Python :: 3.6",
-                "Programming Language :: Python :: 3.7",
-                "Environment :: Console",
-                "Operating System :: OS Independent",
-                "Topic :: Software Development :: Libraries :: Python Modules",
-                "Topic :: Text Processing :: Markup",
-                "Topic :: Utilities",
-                "License :: OSI Approved :: MIT License"]
-
-
 setup(name=PACKAGE,
       version=VERSION,
-      description=("Library provides common APIs to load and dump configuration "
-                   "files in various formats"),
       long_description=_LONG_DESC,
-      author="Satoru SATOH",
-      author_email="ssato@redhat.com",
-      license="MIT",
-      url="https://github.com/ssato/python-anyconfig",
-      classifiers=_CLASSIFIERS,
       packages=["anyconfig"],
       include_package_data=True,
       cmdclass={

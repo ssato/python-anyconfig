@@ -1,3 +1,0 @@
-# TODO: How to process cases of multi-versions-python env.
-[console_scripts]
-anyconfig_cli = anyconfig.cli:main

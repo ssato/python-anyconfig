@@ -76,8 +76,6 @@ setup(name=PACKAGE,
           "srpm": SrpmCommand,
           "rpm":  RpmCommand,
       },
-      entry_points=open(os.path.join(os.curdir,
-                                     "pkg/entry_points.txt")).read(),
       data_files=data_files)
 
 # vim:sw=4:ts=4:et:

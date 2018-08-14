@@ -1,7 +1,7 @@
 -r requirements_full.txt
 coveralls
 # disable this if 'pkg_resources.VersionConflict' error happens:
-flake8
+flake8 < 3.5.0
 mock
 nose
 # stick the version to avoild the error:

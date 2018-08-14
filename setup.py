@@ -18,20 +18,6 @@ if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
     VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
 
-_LONG_DESC = """
-python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
-python library provides common APIs to load and dump configuration files in
-various formats with some useful features such as contents merge, templates,
-query, schema validation and generation support.
-
-- Home: https://github.com/ssato/python-anyconfig
-- (Latest) Doc: http://python-anyconfig.readthedocs.org/en/latest/
-- PyPI: https://pypi.python.org/pypi/anyconfig
-- Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
-
-.. [#] This name took an example from the 'anydbm' python standard library.
-"""
-
 def list_filepaths(tdir):
     return [f for f in glob.glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
 
@@ -85,7 +71,6 @@ class RpmCommand(SrpmCommand):
 
 setup(name=PACKAGE,
       version=VERSION,
-      long_description=_LONG_DESC,
       include_package_data=True,
       cmdclass={
           "srpm": SrpmCommand,

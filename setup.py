@@ -86,7 +86,6 @@ class RpmCommand(SrpmCommand):
 setup(name=PACKAGE,
       version=VERSION,
       long_description=_LONG_DESC,
-      packages=["anyconfig"],
       include_package_data=True,
       cmdclass={
           "srpm": SrpmCommand,

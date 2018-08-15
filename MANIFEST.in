@@ -8,4 +8,4 @@ include docs/api/*.*
 include pkg/*
 include setup.py
 recursive-include anyconfig *.py
-recursive-include tests *.py *.yml *.txt
+recursive-include tests *.py *.yml *.txt *.json *.yml

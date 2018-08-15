@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name
@@ -10,12 +10,13 @@ import unittest
 import anyconfig.backend.json
 import anyconfig.backends as TT
 import anyconfig.ioinfo
+import tests.common as TC
 
 from anyconfig.compat import pathlib
 from anyconfig.globals import UnknownProcessorTypeError, UnknownFileTypeError
 
 
-CNF_PATH = os.path.join(os.path.dirname(__file__), "00-cnf.json")
+CNF_PATH = os.path.join(TC.resdir(), "00-cnf.json")
 
 
 class Test(unittest.TestCase):
@@ -49,8 +50,7 @@ class Test(unittest.TestCase):
                                    pcls))
         self.assertTrue(isinstance(TT.find_parser("x.json"), pcls))
 
-        cnf = os.path.join(os.path.dirname(__file__), "00-cnf.json")
-        with open(cnf) as inp:
+        with open(CNF_PATH) as inp:
             self.assertTrue(isinstance(TT.find_parser(inp), pcls))
 
         if pathlib is not None:

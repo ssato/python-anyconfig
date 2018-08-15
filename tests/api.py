@@ -19,7 +19,7 @@ import anyconfig.dicts
 import anyconfig.template
 import tests.common
 
-from tests.common import CNF_0, SCM_0, CNF_1, dicts_equal, selfdir
+from tests.common import CNF_0, SCM_0, CNF_1, dicts_equal, resdir
 
 
 # suppress logging messages.
@@ -177,7 +177,7 @@ class Test_20_dumps_and_loads(TestBase):
 
 class Test_22_single_load(TestBase):
 
-    a_path = os.path.join(selfdir(), "00-cnf.json")
+    a_path = os.path.join(resdir(), "00-cnf.json")
     cnf = CNF_1
     pathlib = anyconfig.compat.pathlib
 
@@ -548,10 +548,10 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
 class Test_44_multi_load(TestBase):
 
     def test_10_multi_load_w_validation_for_partial_single_config_files(self):
-        cpaths = [os.path.join(selfdir(), "00-00-cnf.json"),
-                  os.path.join(selfdir(), "00-01-cnf.json"),
-                  os.path.join(selfdir(), "00-02-cnf.json")]
-        spath = os.path.join(selfdir(), "00-scm.json")
+        cpaths = [os.path.join(resdir(), "00-00-cnf.json"),
+                  os.path.join(resdir(), "00-01-cnf.json"),
+                  os.path.join(resdir(), "00-02-cnf.json")]
+        spath = os.path.join(resdir(), "00-scm.json")
 
         cnf = TT.multi_load(cpaths, ac_schema=spath)
         ref = TT.multi_load(cpaths)

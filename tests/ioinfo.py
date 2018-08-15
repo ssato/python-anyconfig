@@ -17,8 +17,10 @@ from anyconfig.globals import (
     IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
 )
 
+import tests.common as TC
 
-IPATH_0 = os.path.join(os.path.dirname(__file__), "00-cnf.json")
+
+IPATH_0 = os.path.join(TC.resdir(), "00-cnf.json")
 IPATH_0_FULL = anyconfig.utils.normpath(IPATH_0)
 
 

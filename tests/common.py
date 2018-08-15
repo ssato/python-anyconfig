@@ -21,7 +21,7 @@ SCM_0 = {"type": "object",
                    "properties": {
                        "b": {"type": "array",
                              "items": {"type": "integer"}}}}}}
-# :seealso: tests/00-cnf.json
+# :seealso: tests/res/00-cnf.json
 CNF_1 = {"a": 1, "b": {"b": [1, 2], "c": "C"}, "name": "aaa"}
 
 
@@ -31,6 +31,13 @@ def selfdir():
     True
     """
     return os.path.dirname(__file__)
+
+
+def resdir():
+    """
+    >>> assert os.path.exists(resdir())
+    """
+    return os.path.join(selfdir(), "res")
 
 
 def setup_workdir():

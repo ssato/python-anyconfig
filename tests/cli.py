@@ -18,8 +18,8 @@ import tests.api
 from tests.common import CNF_0
 
 
-CNF_0_PATH = os.path.join(tests.common.selfdir(), "00-cnf.yml")
-SCM_0_PATH = os.path.join(tests.common.selfdir(), "00-scm.yml")
+CNF_0_PATH = os.path.join(tests.common.resdir(), "00-cnf.yml")
+SCM_0_PATH = os.path.join(tests.common.resdir(), "00-scm.yml")
 CNF_TMPL_0 = tests.api.CNF_TMPL_1
 
 
@@ -53,7 +53,7 @@ class RunTestBase(unittest.TestCase):
 
 
 class Test_10(RunTestBase):
-    infile = os.path.join(tests.common.selfdir(), "00-cnf.json")
+    infile = os.path.join(tests.common.resdir(), "00-cnf.json")
 
     def test_10_show_usage(self):
         self.run_and_check_exit_code(["--help"])

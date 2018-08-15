@@ -6,8 +6,13 @@ python:
     - 3.4
     - 3.5
     - 3.6
-# It looks failed in Travis-CI environment.
-#    - 3.7
+    - 3.7
+# .. seealso:: https://github.com/travis-ci/travis-ci/issues/9815
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
 # see: http://docs.travis-ci.com/user/caching/#pip-cache
 cache: pip
 #matrix:

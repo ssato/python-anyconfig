@@ -48,7 +48,7 @@ class Processor(object):
 
     @classmethod
     def extensions(cls):
-        """File extensions which this process can process
+        """A list of extensions of files which this process can process.
         """
         return cls._extensions
 

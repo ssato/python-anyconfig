@@ -63,7 +63,7 @@ class Processor(object):
     def id(cls):
         """Processors' ID
         """
-        return cls.__name__ if cls._id is None else cls._id
+        return repr(cls) if cls._id is None else cls._id
 
     @classmethod
     def type(cls):

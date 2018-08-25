@@ -54,16 +54,16 @@ class Processor(object):
 
     .. note:: This class is not a singleton but its children may be so.
     """
-    _id = None
+    _cid = None
     _type = None
     _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
     _extensions = []
 
     @classmethod
-    def id(cls):
+    def cid(cls):
         """Processors' ID
         """
-        return repr(cls) if cls._id is None else cls._id
+        return repr(cls) if cls._cid is None else cls._cid
 
     @classmethod
     def type(cls):
@@ -84,7 +84,7 @@ class Processor(object):
         return cls._extensions
 
     def __eq__(self, other):
-        return isinstance(other, Processor) and self.id() == other.id()
+        return self.cid() == other.cid()
 
 
 def find_with_pred(predicate, prs):

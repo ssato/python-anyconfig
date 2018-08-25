@@ -15,13 +15,7 @@ import threading
 class Singleton(object):
     """Singleton utilizes __new__ special method.
 
-    >>> class A(Singleton):
-    ...     pass
-    >>> class B(Singleton):
-    ...     pass
-    >>> (a1, a2, b1, b2) = (A(), A(), B(), B())
-    >>> assert a1 is a2 and b1 is b2
-    >>> assert a1 is not b1
+    .. note:: Inherited classes are equated with base class inherit this.
     """
     __instance = None
     __lock = threading.RLock()

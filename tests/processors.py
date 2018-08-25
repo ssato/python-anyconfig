@@ -32,7 +32,16 @@ class B(TT.Processor):
 PRS = [A, A2, A3, B]
 
 
-class Test_10_find_functions(unittest.TestCase):
+class Test_10_Processor(unittest.TestCase):
+
+    def test_10_eq(self):
+        (a1, a2, a22, b) = (A(), A(), A2(), B())
+        self.assertEqual(a1, a2)
+        self.assertNotEqual(a1, b)
+        self.assertNotEqual(a1, a22)
+
+
+class Test_30_find_functions(unittest.TestCase):
 
     def test_10_find_with_pred__type(self):
         self.assertEqual(TT.find_with_pred(lambda p: p.type() == "json", PRS),

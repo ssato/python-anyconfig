@@ -51,10 +51,19 @@ class Processor(object):
     - _type: type indicates data types it can process
     - _priority: Priority to select it if there are others of same type
     - _extensions: File extensions of data type it can process
+
+    .. note:: This class is not a singleton but its children may be so.
     """
+    _id = None
     _type = None
     _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
     _extensions = []
+
+    @classmethod
+    def id(cls):
+        """Processors' ID
+        """
+        return cls.__name__ if cls._id is None else cls._id
 
     @classmethod
     def type(cls):
@@ -73,6 +82,9 @@ class Processor(object):
         """A list of extensions of files which this process can process.
         """
         return cls._extensions
+
+    def __eq__(self, other):
+        return isinstance(other, Processor) and self.id() == other.id()
 
 
 def find_with_pred(predicate, prs):

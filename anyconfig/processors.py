@@ -208,4 +208,57 @@ def find(ipath, prs, forced_type=None):
 
     return processor()
 
+
+class Processors(object):
+    """An abstract class of which instance holding processors.
+    """
+    _processors = dict()  # {<processor_class_id>: <processor_class>}
+    _pgroup = None  # processor group name to load plugins
+
+    def __init__(self, processors=None):
+        """
+        :param processors:
+            A list of :class:`Processor` or its children class objects or None
+        """
+        if processors is not None:
+            self.register(*processors)
+
+        self.load_plugins()
+
+    def register(self, *pclss):
+        """
+        :param pclss: A list of :class:`Processor` or its children classes
+        """
+        for pcls in pclss:
+            if pcls.cid() not in self._processors:
+                self._processors[pcls.cid()] = pcls
+
+    def load_plugins(self):
+        """Load and register pluggable processor classes internally.
+        """
+        if self._pgroup:
+            self.register(*load_plugins(self._pgroup))
+
+    def list(self):
+        """
+        :return: A list of :class:`Processor` or its children classes
+        """
+        return sorted(self._processors.values())
+
+    def find_by_type(self, ptype):
+        """
+        :param ptype: Processor's type to find
+        """
+        return find_by_type(ptype, self._processors.values())
+
+    def find(self, ipath, ptype=None):
+        """
+        :param ipath: file path
+        :param ptype: Processor's type or None
+
+        :return: an instance of processor class to process `ipath` data later
+        :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
+        """
+        return find(ipath, ptype, self._processors.values())
+
 # vim:sw=4:ts=4:et:

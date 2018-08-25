@@ -96,4 +96,15 @@ class Test_30_find_functions(unittest.TestCase):
     def test_56_find__uknown_type(self):
         self.assertRaises(UnknownProcessorTypeError, TT.find, None, PRS, "xyz")
 
+
+class Test_40_Processors(unittest.TestCase):
+
+    def test_10_init(self):
+        prcs = TT.Processors()
+        self.assertFalse(prcs.list())
+
+    def test_12_init_with_processors(self):
+        prcs = TT.Processors(PRS)
+        self.assertEqual(prcs.list(), sorted(PRS))
+
 # vim:sw=4:ts=4:et:

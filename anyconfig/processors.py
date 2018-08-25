@@ -243,7 +243,8 @@ class Processors(object):
         """
         :return: A list of :class:`Processor` or its children classes
         """
-        return sorted(self._processors.values())
+        return sorted(self._processors.values(),
+                      key=operator.methodcaller("cid"))
 
     def find_by_type(self, ptype):
         """

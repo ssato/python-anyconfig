@@ -3,6 +3,7 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name
+import operator
 import unittest
 import anyconfig.processors as TT
 
@@ -105,6 +106,7 @@ class Test_40_Processors(unittest.TestCase):
 
     def test_12_init_with_processors(self):
         prcs = TT.Processors(PRS)
-        self.assertEqual(prcs.list(), sorted(PRS))
+        self.assertEqual(prcs.list(), sorted(PRS,
+                                             key=operator.methodcaller("cid")))
 
 # vim:sw=4:ts=4:et:

@@ -7,6 +7,7 @@
 from __future__ import absolute_import
 
 import collections
+import functools
 import glob
 import itertools
 import os.path
@@ -447,5 +448,31 @@ def filter_options(keys, options):
     {}
     """
     return dict((k, options[k]) for k in keys if k in options)
+
+
+def memoize(fnc):
+    """memoization function.
+
+    >>> import random
+    >>> imax = 100
+    >>> def fnc1(arg=True):
+    ...     return arg and random.choice((True, False))
+    >>> fnc2 = memoize(fnc1)
+    >>> (ret1, ret2) = (fnc1(), fnc2())
+    >>> assert any(fnc1() != ret1 for i in range(imax))
+    >>> assert all(fnc2() == ret2 for i in range(imax))
+    """
+    cache = dict()
+
+    @functools.wraps(fnc)
+    def wrapped(*args, **kwargs):
+        """Decorated one"""
+        key = repr(args) + repr(kwargs)
+        if key not in cache:
+            cache[key] = fnc(*args, **kwargs)
+
+        return cache[key]
+
+    return wrapped
 
 # vim:sw=4:ts=4:et:

@@ -21,6 +21,28 @@ from anyconfig.globals import (
 )
 
 
+def _load_plugins_itr(pgroup, safe=True):
+    """
+    .. seealso:: the doc of :func:`load_plugins`
+    """
+    for res in pkg_resources.iter_entry_points(pgroup):
+        try:
+            yield res.load()
+        except ImportError:
+            if safe:
+                continue
+            raise
+
+
+def load_plugins(pgroup, safe=True):
+    """
+    :param pgroup: A string represents plugin type, e.g. anyconfig_backends
+    :param safe: Do not raise ImportError during load if True
+    :raises: ImportError
+    """
+    return list(_load_plugins_itr(pgroup, safe=safe))
+
+
 class Processor(object):
     """
     Abstract processor class to provide basic implementation of some methods,
@@ -51,28 +73,6 @@ class Processor(object):
         """A list of extensions of files which this process can process.
         """
         return cls._extensions
-
-
-def _load_plugins_itr(pgroup, safe=True):
-    """
-    .. seealso:: the doc of :func:`load_plugins`
-    """
-    for res in pkg_resources.iter_entry_points(pgroup):
-        try:
-            yield res.load()
-        except ImportError:
-            if safe:
-                continue
-            raise
-
-
-def load_plugins(pgroup, safe=True):
-    """
-    :param pgroup: A string represents plugin type, e.g. anyconfig_backends
-    :param safe: Do not raise ImportError during load if True
-    :raises: ImportError
-    """
-    return list(_load_plugins_itr(pgroup, safe=safe))
 
 
 def find_with_pred(predicate, prs):

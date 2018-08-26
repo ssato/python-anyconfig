@@ -12,8 +12,6 @@ r"""Functions for value objects represent inputs and outputs.
   path, opener, etc.
 """
 from __future__ import absolute_import
-
-import anyconfig.processors
 import anyconfig.utils
 
 from anyconfig.globals import (
@@ -73,7 +71,7 @@ def inspect_io_obj(obj):
     return (itype, ipath, opener)
 
 
-def make(obj, prs, forced_type=None):
+def make(obj, forced_type=None):
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
     :param prs: A list of processor classes
@@ -92,9 +90,6 @@ def make(obj, prs, forced_type=None):
         raise ValueError("obj or forced_type must be some value")
 
     (itype, ipath, opener) = inspect_io_obj(obj)
-    psr = anyconfig.processors.find(ipath, prs, forced_type)
-
-    return IOInfo(src=obj, type=itype, path=ipath, processor=psr,
-                  opener=opener)
+    return IOInfo(src=obj, type=itype, path=ipath, opener=opener)
 
 # vim:sw=4:ts=4:et:

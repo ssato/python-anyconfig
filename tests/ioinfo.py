@@ -6,9 +6,6 @@
 import os.path
 import unittest
 
-import anyconfig.backends
-import anyconfig.backend.ini
-import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.ioinfo as TT
 import anyconfig.utils
@@ -46,7 +43,6 @@ class Test_10_inspect_io_obj(unittest.TestCase):
 
 class Test_30_make(unittest.TestCase):
     (ipath, ipath_full) = (IPATH_0, IPATH_0_FULL)
-    prs = anyconfig.backends.PARSERS
 
     def __init__(self, *args, **kwargs):
         super(Test_30_make, self).__init__(*args, **kwargs)
@@ -56,19 +52,16 @@ class Test_30_make(unittest.TestCase):
         self.assertEqual(inp.src, args[0])
         self.assertEqual(inp.path, args[1])
         self.assertEqual(inp.type, args[2])
-        self.assertTrue(isinstance(inp.processor, args[3]))
-        self.assertEqual(inp.opener, args[4])
+        self.assertEqual(inp.opener, args[3])
 
     def test_20__forced_type(self):
-        res = self.fun(None, anyconfig.backends.PARSERS, forced_type="ini")
-        self.__checks_helper(res, None, None, None,
-                             anyconfig.backend.ini.Parser,
-                             anyconfig.utils.noop)
+        res = self.fun(None, forced_type="ini")
+        self.__checks_helper(res, None, None, None, anyconfig.utils.noop)
 
     def test_30__by_fileext(self):
-        res = self.fun(self.ipath, self.prs)
+        res = self.fun(self.ipath)
         self.__checks_helper(res, self.ipath, self.ipath_full, IOI_PATH_STR,
-                             anyconfig.backend.json.Parser, open)
+                             open)
 
     def test_40__pathlib(self):
         ipath = self.ipath
@@ -81,15 +74,13 @@ class Test_30_make(unittest.TestCase):
             itype = IOI_PATH_STR
             opener = open
 
-        res = self.fun(ipath, self.prs)
-        self.__checks_helper(res, ipath, self.ipath_full, itype,
-                             anyconfig.backend.json.Parser, opener)
+        res = self.fun(ipath)
+        self.__checks_helper(res, ipath, self.ipath_full, itype, opener)
 
     def test_50__stream(self):
         ifo = open(self.ipath)
-        res = self.fun(ifo, self.prs)
+        res = self.fun(ifo)
         self.__checks_helper(res, ifo, self.ipath_full, IOI_STREAM,
-                             anyconfig.backend.json.Parser,
                              anyconfig.utils.noop)
 
 # vim:sw=4:ts=4:et:

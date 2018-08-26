@@ -135,9 +135,6 @@ def find_loader(path, parser_or_type=None):
         An instance of a class inherits :class:`~anyconfig.backend.base.Parser`
         or None
     """
-    if anyconfig.backends.is_parser(parser_or_type):
-        return parser_or_type
-
     try:
         return anyconfig.backends.find_parser(path,
                                               forced_type=parser_or_type)

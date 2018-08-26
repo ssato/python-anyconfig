@@ -55,20 +55,6 @@ except ImportError:
 PARSERS.extend(anyconfig.processors.load_plugins("anyconfig_backends"))
 
 
-def is_parser(obj):
-    """
-    :return: True if given `obj` is an instance of parser.
-
-    >>> is_parser("ini")
-    False
-    >>> is_parser(anyconfig.backend.base.Parser)
-    False
-    >>> is_parser(anyconfig.backend.base.Parser())
-    True
-    """
-    return isinstance(obj, anyconfig.backend.base.Parser)
-
-
 def inspect_io_obj(obj, prs=None, forced_type=None):
     """
     Inspect a given object `obj` which may be a path string, file / file-like
@@ -128,6 +114,9 @@ def find_parser(obj, prs=None, forced_type=None):
     :return: A tuple of (Parser class or None, "" or error message)
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
+    if isinstance(forced_type, anyconfig.backend.base.Parser):
+        return forced_type
+
     if anyconfig.utils.is_ioinfo(obj):
         return obj.processor  # It must have this.
 

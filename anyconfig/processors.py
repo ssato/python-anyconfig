@@ -14,6 +14,7 @@ import operator
 import pkg_resources
 
 import anyconfig.compat
+import anyconfig.ioinfo
 import anyconfig.utils
 
 from anyconfig.globals import (
@@ -239,18 +240,21 @@ class Processors(object):
         if self._pgroup:
             self.register(*load_plugins(self._pgroup))
 
-    def list(self):
+    def list(self, sort=True):
         """
         :return: A list of :class:`Processor` or its children classes
         """
-        return sorted(self._processors.values(),
-                      key=operator.methodcaller("cid"))
+        if sort:
+            return sorted(self._processors.values(),
+                          key=operator.methodcaller("cid"))
+
+        return self._processors.values()
 
     def find_by_type(self, ptype):
         """
         :param ptype: Processor's type to find
         """
-        return find_by_type(ptype, self._processors.values())
+        return find_by_type(ptype, self.list(sort=False))
 
     def find(self, ipath, ptype=None):
         """
@@ -260,6 +264,6 @@ class Processors(object):
         :return: an instance of processor class to process `ipath` data later
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
-        return find(ipath, ptype, self._processors.values())
+        return find(ipath, ptype, self.list(sort=False))
 
 # vim:sw=4:ts=4:et:

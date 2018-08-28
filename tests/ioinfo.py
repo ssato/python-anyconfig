@@ -19,18 +19,19 @@ import tests.common as TC
 
 IPATH_0 = os.path.join(TC.resdir(), "00-cnf.json")
 IPATH_0_FULL = anyconfig.utils.normpath(IPATH_0)
+IPATH_0_EXT = anyconfig.utils.get_file_extension(IPATH_0)
 
 
 class Test_10_inspect_io_obj(unittest.TestCase):
 
     def test_10_path_str(self):
         self.assertEqual(TT.inspect_io_obj(IPATH_0),
-                         (IOI_PATH_STR, IPATH_0_FULL, open))
+                         (IOI_PATH_STR, IPATH_0_FULL, open, IPATH_0_EXT))
 
     def test_20_stream(self):
         self.assertEqual(TT.inspect_io_obj(open(IPATH_0)),
                          (IOI_STREAM, IPATH_0_FULL,
-                          anyconfig.utils.noop))
+                          anyconfig.utils.noop, IPATH_0_EXT))
 
     def test_30_path_obj(self):
         if anyconfig.compat.pathlib is None:
@@ -38,7 +39,7 @@ class Test_10_inspect_io_obj(unittest.TestCase):
 
         ipo = anyconfig.compat.pathlib.Path(IPATH_0)
         self.assertEqual(TT.inspect_io_obj(ipo),
-                         (IOI_PATH_OBJ, IPATH_0_FULL, ipo.open))
+                         (IOI_PATH_OBJ, IPATH_0_FULL, ipo.open, IPATH_0_EXT))
 
 
 class Test_30_make(unittest.TestCase):
@@ -53,15 +54,16 @@ class Test_30_make(unittest.TestCase):
         self.assertEqual(inp.path, args[1])
         self.assertEqual(inp.type, args[2])
         self.assertEqual(inp.opener, args[3])
+        self.assertEqual(inp.extension, args[4])
 
     def test_20__forced_type(self):
         res = self.fun(None, forced_type="ini")
-        self.__checks_helper(res, None, None, None, anyconfig.utils.noop)
+        self.__checks_helper(res, None, None, None, anyconfig.utils.noop, None)
 
     def test_30__by_fileext(self):
         res = self.fun(self.ipath)
         self.__checks_helper(res, self.ipath, self.ipath_full, IOI_PATH_STR,
-                             open)
+                             open, IPATH_0_EXT)
 
     def test_40__pathlib(self):
         ipath = self.ipath
@@ -75,12 +77,13 @@ class Test_30_make(unittest.TestCase):
             opener = open
 
         res = self.fun(ipath)
-        self.__checks_helper(res, ipath, self.ipath_full, itype, opener)
+        self.__checks_helper(res, ipath, self.ipath_full, itype, opener,
+                             IPATH_0_EXT)
 
     def test_50__stream(self):
         ifo = open(self.ipath)
         res = self.fun(ifo)
         self.__checks_helper(res, ifo, self.ipath_full, IOI_STREAM,
-                             anyconfig.utils.noop)
+                             anyconfig.utils.noop, IPATH_0_EXT)
 
 # vim:sw=4:ts=4:et:

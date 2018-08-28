@@ -55,20 +55,23 @@ def inspect_io_obj(obj):
 
     if itype == IOI_PATH_STR:
         ipath = anyconfig.utils.normpath(obj)
+        ext = anyconfig.utils.get_file_extension(ipath)
         opener = open
     elif itype == IOI_PATH_OBJ:
         ipath = anyconfig.utils.normpath(obj.as_posix())
+        ext = anyconfig.utils.get_file_extension(ipath)
         opener = obj.open
     elif itype == IOI_STREAM:
         ipath = anyconfig.utils.get_path_from_stream(obj)
+        ext = anyconfig.utils.get_file_extension(ipath)
         opener = anyconfig.utils.noop
     elif itype == IOI_NONE:
-        ipath = None
+        ipath = ext = None
         opener = anyconfig.utils.noop
     else:
         raise UnknownFileTypeError("%r" % obj)
 
-    return (itype, ipath, opener)
+    return (itype, ipath, opener, ext)
 
 
 def make(obj, forced_type=None):
@@ -89,7 +92,8 @@ def make(obj, forced_type=None):
     if (obj is None or not obj) and forced_type is None:
         raise ValueError("obj or forced_type must be some value")
 
-    (itype, ipath, opener) = inspect_io_obj(obj)
-    return IOInfo(src=obj, type=itype, path=ipath, opener=opener)
+    (itype, ipath, opener, ext) = inspect_io_obj(obj)
+    return IOInfo(src=obj, type=itype, path=ipath, opener=opener,
+                  extension=ext)
 
 # vim:sw=4:ts=4:et:

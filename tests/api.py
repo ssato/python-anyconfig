@@ -88,7 +88,7 @@ class Test_10_find_loader(unittest.TestCase):
 
     def test_10_find_loader__w_parser_type_or_instance_or_by_file(self):
         cpath = "dummy.conf"
-        for psr in anyconfig.backends.PARSERS:
+        for psr in anyconfig.backends.Parsers().list():
             self._assert_isinstance(TT.find_loader(cpath, psr.type()), psr)
             self._assert_isinstance(TT.find_loader(cpath, psr()), psr)
             for ext in psr.extensions():
@@ -360,15 +360,15 @@ class Test_32_single_load(unittest.TestCase):
         self._load_and_dump_with_opened_files("a.json")
 
     def test_20_open_xml_file(self):
-        if "xml" in anyconfig.backends.list_types():
+        if "xml" in TT.list_types():
             self._load_and_dump_with_opened_files("a.xml", 'rb', 'wb')
 
     def test_30_open_bson_file(self):
-        if "bson" in anyconfig.backends.list_types():
+        if "bson" in TT.list_types():
             self._load_and_dump_with_opened_files("a.bson", 'rb', 'wb')
 
     def test_40_open_yaml_file(self):
-        if "yaml" in anyconfig.backends.list_types():
+        if "yaml" in TT.list_types():
             self._load_and_dump_with_opened_files("a.yaml")
             self._load_and_dump_with_opened_files("a.yml")
 

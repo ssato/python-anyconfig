@@ -63,7 +63,7 @@ def inspect_io_obj(obj):
         opener = obj.open
     elif itype == IOI_STREAM:
         ipath = anyconfig.utils.get_path_from_stream(obj)
-        ext = anyconfig.utils.get_file_extension(ipath)
+        ext = anyconfig.utils.get_file_extension(ipath) if ipath else None
         opener = anyconfig.utils.noop
     elif itype == IOI_NONE:
         ipath = ext = None

@@ -85,8 +85,7 @@ def _validate(data, schema, ac_schema_safe=True, **options):
             Exception) as exc:
         if ac_schema_safe:
             return (False, str(exc))  # Validation was failed.
-        else:
-            raise
+        raise
 
     return (True, '')
 

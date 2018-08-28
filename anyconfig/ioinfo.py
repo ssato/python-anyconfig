@@ -36,9 +36,9 @@ def guess_io_type(obj):
     """
     if obj is None:
         return IOI_NONE
-    elif anyconfig.utils.is_path(obj):
+    if anyconfig.utils.is_path(obj):
         return IOI_PATH_STR
-    elif anyconfig.utils.is_path_obj(obj):
+    if anyconfig.utils.is_path_obj(obj):
         return IOI_PATH_OBJ
 
     return IOI_STREAM

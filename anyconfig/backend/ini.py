@@ -65,7 +65,7 @@ def _parse(val_s, sep=_SEP):
     if (val_s.startswith('"') and val_s.endswith('"')) or \
             (val_s.startswith("'") and val_s.endswith("'")):
         return val_s[1:-1]
-    elif sep in val_s:
+    if sep in val_s:
         return [P.parse(x) for x in P.parse_list(val_s)]
 
     return P.parse(val_s)

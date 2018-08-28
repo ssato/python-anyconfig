@@ -185,9 +185,9 @@ class LoaderMixin(object):
 
         if self.dict_options() and ac_dict and callable(ac_dict):
             return ac_dict  # Higher priority than ac_ordered.
-        elif _dicts and callable(_dicts[0]):
+        if _dicts and callable(_dicts[0]):
             return _dicts[0]
-        elif self.ordered() and options.get("ac_ordered", False):
+        if self.ordered() and options.get("ac_ordered", False):
             return anyconfig.compat.OrderedDict
 
         return dict

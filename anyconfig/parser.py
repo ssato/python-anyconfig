@@ -151,7 +151,7 @@ def parse(str_, lsep=",", avsep=":", vssep=",", avssep=";"):
     """Generic parser"""
     if avsep in str_:
         return parse_attrlist(str_, avsep, vssep, avssep)
-    elif lsep in str_:
+    if lsep in str_:
         return parse_list(str_, lsep)
 
     return parse_single(str_)

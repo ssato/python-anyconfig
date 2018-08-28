@@ -99,7 +99,7 @@ def find_by_type(ptype, prs, cls=anyconfig.models.processor.Processor):
     if isinstance(ptype, cls):
         return ptype
 
-    elif type(ptype) == type(cls) and issubclass(ptype, cls):
+    if type(ptype) == type(cls) and issubclass(ptype, cls):
         return ptype()
 
     def pred(pcls):

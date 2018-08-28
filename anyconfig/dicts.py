@@ -274,8 +274,8 @@ def _get_update_fn(strategy):
     except KeyError:
         if callable(strategy):
             return strategy
-        else:
-            raise ValueError("Wrong merge strategy: %r" % strategy)
+
+        raise ValueError("Wrong merge strategy: %r" % strategy)
 
 
 def merge(self, other, ac_merge=MS_DICTS, **options):
@@ -350,7 +350,7 @@ def convert_to(obj, ac_ordered=False, ac_dict=None, **options):
     options.update(ac_ordered=ac_ordered, ac_dict=ac_dict)
     if anyconfig.utils.is_dict_like(obj):
         return _make_recur(obj, convert_to, **options)
-    elif anyconfig.utils.is_list_like(obj):
+    if anyconfig.utils.is_list_like(obj):
         return _make_iter(obj, convert_to, **options)
 
     return obj

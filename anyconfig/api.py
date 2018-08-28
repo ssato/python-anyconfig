@@ -74,12 +74,11 @@ import warnings
 from anyconfig.globals import (
     LOGGER, IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
 )
-import anyconfig.backends
-import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.query
 import anyconfig.globals
 import anyconfig.dicts
+import anyconfig.ioinfo
 import anyconfig.template
 import anyconfig.utils
 
@@ -87,10 +86,8 @@ from anyconfig.dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
     get, set_, merge  # flake8: noqa
 )
+from anyconfig.backends import Parsers
 from anyconfig.schema import validate, gen_schema
-
-# Re-export and aliases:
-list_types = anyconfig.backends.list_types  # flake8: noqa
 
 
 def version():
@@ -98,6 +95,10 @@ def version():
     :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
     """
     return anyconfig.globals.VERSION.split('.')
+
+
+def list_types():
+    return Parsers().list_types()
 
 
 def _try_validate(cnf, schema, **options):
@@ -136,8 +137,7 @@ def find_loader(path, parser_or_type=None):
         or None
     """
     try:
-        return anyconfig.backends.find_parser(path,
-                                              forced_type=parser_or_type)
+        return Parsers().find(path, forced_type=parser_or_type)
     except (ValueError, UnknownProcessorTypeError, UnknownFileTypeError):
         raise
 
@@ -184,7 +184,7 @@ def open(path, mode=None, ac_parser=None, **options):
     :return: A file object or None on any errors
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    psr = anyconfig.backends.find_parser(path, forced_type=ac_parser)
+    psr = Parsers().find(path, forced_type=ac_parser)
 
     if mode is not None and mode.startswith('w'):
         return psr.wopen(path, **options)
@@ -211,8 +211,9 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     :return: Mapping object
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = anyconfig.backends.inspect_io_obj(input_, forced_type=ac_parser)
-    (psr, filepath) = (ioi.processor, ioi.path)
+    ioi = anyconfig.ioinfo.make(input_, forced_type=ac_parser)
+    psr = Parsers().find(ioi, forced_type=ac_parser)
+    filepath = ioi.path
 
     # .. note::
     #    This will be kept for backward compatibility until 'ignore_missing'
@@ -355,8 +356,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
 
     paths = anyconfig.utils.expand_paths(inputs, marker=marker)
     if anyconfig.utils.are_same_file_types(paths):
-        ac_parser = anyconfig.backends.find_parser(paths[0],
-                                                   forced_type=ac_parser)
+        ac_parser = Parsers().find(paths[0], forced_type=ac_parser)
 
     cnf = ac_context
     for path in paths:
@@ -447,7 +447,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
                        "parser to load configurations from string.")
         return None
 
-    psr = anyconfig.backends.find_parser_by_type(ac_parser)
+    psr = Parsers().find_by_type(ac_parser)
     schema = None
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
@@ -483,9 +483,10 @@ def dump(data, out, ac_parser=None, **options):
 
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = anyconfig.backends.inspect_io_obj(out, forced_type=ac_parser)
+    ioi = anyconfig.ioinfo.make(out, forced_type=ac_parser)
+    psr = Parsers().find(ioi, forced_type=ac_parser)
     LOGGER.info("Dumping: %s", ioi.path)
-    ioi.processor.dump(data, ioi, **options)
+    psr.dump(data, ioi, **options)
 
 
 def dumps(data, ac_parser=None, **options):
@@ -499,7 +500,7 @@ def dumps(data, ac_parser=None, **options):
     :return: Backend-specific string representation for the given data
     :raises: ValueError, UnknownProcessorTypeError
     """
-    psr = anyconfig.backends.find_parser_by_type(ac_parser)
+    psr = Parsers().find_by_type(ac_parser)
     return psr.dumps(data, **options)
 
 

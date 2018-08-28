@@ -15,6 +15,7 @@ import logging
 import anyconfig.compat
 import anyconfig.ioinfo
 import anyconfig.processors
+import anyconfig.singleton
 import anyconfig.utils
 
 import anyconfig.backend.base
@@ -52,86 +53,58 @@ try:
 except ImportError:
     LOGGER.info(_NA_MSG, "toml module", "TOML")
 
-PARSERS.extend(anyconfig.processors.load_plugins("anyconfig_backends"))
 
-
-def inspect_io_obj(obj, prs=None, forced_type=None):
+class Parsers(anyconfig.processors.Processors,
+              anyconfig.singleton.Singleton):
     """
-    Inspect a given object `obj` which may be a path string, file / file-like
-    object, pathlib.Path object or `~anyconfig.globals.IOInfo` namedtuple
-    object, and find out appropriate parser object to load or dump from/to it
-    along with other I/O information.
-
-    :param obj:
-        a file path string, file / file-like object, pathlib.Path object or
-        `~anyconfig.globals.IOInfo` object
-    :param prs: A list of parser classes
-    :param forced_type: Forced type of parser to load or dump
-
-    :return: anyconfig.globals.IOInfo object :: namedtuple
-    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
+    Manager class for parsers.
     """
-    if prs is None:
-        prs = PARSERS
+    _pgroup = "anyconfig_backends"
 
-    return anyconfig.ioinfo.make(obj, prs, forced_type=forced_type)
+    def __init__(self, processors=None):
+        """Initialize with PARSERS.
+        """
+        if processors is None:
+            processors = PARSERS
 
+        super(Parsers, self).__init__(processors)
 
-def find_parser_by_type(forced_type, prs=None):
-    """
-    Find out appropriate parser object to load inputs of given type.
+    def find_by_type(self, forced_type):
+        """Find appropriate parser object to process data of given type.
 
-    :param forced_type: Forced parser type
-    :param prs: A list of parser classes
+        :param forced_type: Forced parser type
 
-    :return:
-        An instance of :class:`~anyconfig.backend.base.Parser` or None means no
-        appropriate parser was found
-    :raises: UnknownProcessorTypeError
-    """
-    if forced_type is None or not forced_type:
-        raise ValueError("forced_type must be a some string")
+        :return: An instance of :class:`~anyconfig.backend.base.Parser`
+        :raises: UnknownProcessorTypeError
+        """
+        if forced_type is None or not forced_type:
+            raise ValueError("forced_type must be a some string")
 
-    if isinstance(forced_type, anyconfig.backend.base.Parser):
-        return forced_type
+        return super(Parsers, self).find_by_type(forced_type)
 
-    if prs is None:
-        prs = PARSERS
+    def find(self, obj, forced_type=None):
+        """Find appropriate parser object to process given `obj`.
 
-    return anyconfig.processors.find_by_type(forced_type, prs)()
+        :param obj:
+            a file path, file or file-like object, pathlib.Path object or
+            `~anyconfig.globals.IOInfo` (namedtuple) object
+        :param forced_type: Forced parser type
 
+        :return: Parser object
+        :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
+        """
+        if obj and not isinstance(obj, anyconfig.globals.IOInfo):
+            obj = anyconfig.ioinfo.make(obj)
 
-def find_parser(obj, prs=None, forced_type=None):
-    """
-    Find out appropriate parser object to load from a file of given path or
-    file/file-like object.
+        psr = super(Parsers, self).find(obj, ptype=forced_type,
+                                        cls=anyconfig.backend.base.Parser)
 
-    :param obj:
-        a file path string, file / file-like object, pathlib.Path object or
-        `~anyconfig.globals.IOInfo` object
-    :param forced_type: Forced configuration parser type
+        LOGGER.debug("Using parser %r [%s]", psr, psr.type())
+        return psr
 
-    :return: A tuple of (Parser class or None, "" or error message)
-    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
-    """
-    if isinstance(forced_type, anyconfig.backend.base.Parser):
-        return forced_type
-
-    if anyconfig.utils.is_ioinfo(obj):
-        return obj.processor  # It must have this.
-
-    ioi = inspect_io_obj(obj, prs, forced_type)
-    psr = ioi.processor
-    LOGGER.debug("Using parser %r [%s][I/O: %s]", psr, psr.type(), ioi.type)
-    return psr
-
-
-def list_types(cps=None):
-    """List available types parsers support.
-    """
-    if cps is None:
-        cps = PARSERS
-
-    return sorted(set(p.type() for p in cps))
+    def list_types(self):
+        """List available types parsers support.
+        """
+        return sorted(set(psr.type() for psr in self.list()))
 
 # vim:sw=4:ts=4:et:

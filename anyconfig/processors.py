@@ -15,11 +15,10 @@ import pkg_resources
 
 import anyconfig.compat
 import anyconfig.ioinfo
-import anyconfig.utils
 import anyconfig.models.processor
 
 from anyconfig.globals import (
-    UnknownProcessorTypeError, UnknownFileTypeError
+    UnknownProcessorTypeError, UnknownFileTypeError, IOInfo
 )
 
 
@@ -119,18 +118,22 @@ def find_by_fileext(fileext, prs):
     return find_with_pred(pred, prs)
 
 
-def find_by_filepath(filepath, prs):
+def find_by_maybe_file(obj, prs):
     """
-    :param filepath: Path to the file to find out processor to process it
+    :param obj:
+        a file path, file or file-like object, pathlib.Path object or
+        `~anyconfig.globals.IOInfo` (namedtuple) object
     :param cps_by_ext: A list of processor classes
 
     :return: Most appropriate processor class to process given file
     :raises: UnknownFileTypeError
     """
-    fileext = anyconfig.utils.get_file_extension(filepath)
-    processor = find_by_fileext(fileext, prs)
+    if not isinstance(obj, IOInfo):
+        obj = anyconfig.ioinfo.make(obj)
+
+    processor = find_by_fileext(obj.extension, prs)
     if processor is None:
-        raise UnknownFileTypeError(fileext)
+        raise UnknownFileTypeError("file extension={}".format(obj.extension))
 
     return processor
 
@@ -152,7 +155,7 @@ def find(obj, prs, forced_type=None):
                          "None or False.")
 
     if forced_type is None:
-        processor = find_by_filepath(obj, prs)
+        processor = find_by_maybe_file(obj, prs)
         if processor is None:
             raise UnknownFileTypeError(obj)
 

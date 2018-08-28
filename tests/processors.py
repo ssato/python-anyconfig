@@ -5,8 +5,9 @@
 # pylint: disable=missing-docstring, invalid-name
 import operator
 import unittest
-import anyconfig.processors as TT
+import anyconfig.ioinfo
 import anyconfig.models.processor
+import anyconfig.processors as TT
 
 from anyconfig.globals import (
     UnknownProcessorTypeError, UnknownFileTypeError
@@ -76,12 +77,17 @@ class Test_30_find_functions(unittest.TestCase):
         self.assertEqual(TT.find_by_fileext("yml", PRS), B)
         self.assertTrue(TT.find_by_fileext("xyz", PRS) is None)
 
-    def test_40_find_by_filepath(self):
-        self.assertEqual(TT.find_by_filepath("/path/to/a.jsn", PRS), A3)
-        self.assertEqual(TT.find_by_filepath("../../path/to/b.yml", PRS), B)
-        self.assertRaises(UnknownFileTypeError, TT.find_by_filepath,
+    def test_40_find_by_maybe_file(self):
+        self.assertEqual(TT.find_by_maybe_file("/path/to/a.jsn", PRS), A3)
+        self.assertEqual(TT.find_by_maybe_file("../../path/to/b.yml", PRS), B)
+
+        obj = anyconfig.ioinfo.make("/path/to/a.json")
+        self.assertEqual(TT.find_by_maybe_file(obj, PRS), A3)
+
+    def test_42_find_by_maybe_file__ng_cases(self):
+        self.assertRaises(UnknownFileTypeError, TT.find_by_maybe_file,
                           "/tmp/x.xyz", PRS)
-        self.assertRaises(UnknownFileTypeError, TT.find_by_filepath,
+        self.assertRaises(UnknownFileTypeError, TT.find_by_maybe_file,
                           "/dev/null", PRS)
 
     def test_50_find__wo_path_and_type(self):

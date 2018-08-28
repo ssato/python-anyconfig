@@ -226,7 +226,8 @@ class Processors(object):
         """
         return find_by_type(ptype, self.list(sort=False))
 
-    def find(self, ipath, ptype=None, cls=anyconfig.models.processor.Processor):
+    def find(self, ipath, ptype=None,
+             cls=anyconfig.models.processor.Processor):
         """
         :param ipath: file path
         :param ptype: Processor's type or None

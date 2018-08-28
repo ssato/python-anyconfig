@@ -67,8 +67,8 @@ class Test_30_find_functions(unittest.TestCase):
         self.assertTrue(p is None)
 
     def test_20_find_by_type(self):
-        self.assertEqual(TT.find_by_type("json", PRS), A3)
-        self.assertEqual(TT.find_by_type("yaml", PRS), B)
+        self.assertTrue(isinstance(TT.find_by_type("json", PRS), A3))
+        self.assertTrue(isinstance(TT.find_by_type("yaml", PRS), B))
         self.assertRaises(UnknownProcessorTypeError, TT.find_by_type,
                           "X", PRS)
 

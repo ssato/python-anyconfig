@@ -84,13 +84,23 @@ def find_with_pred(predicate, prs):
 
 def find_by_type(ptype, prs):
     """
-    :param ptype: Type of the data to process
+    :param ptype:
+        Type of the data to process or
+        :class:`anyconfig.models.processor.Processor` class object or its
+        instance
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return:
-        Most appropriate processor class to process files of given data type
+        Most appropriate processor instance to process files of given data type
         `ptype` or None
     :raises: UnknownProcessorTypeError
     """
+    if isinstance(ptype, anyconfig.models.processor.Processor):
+        return ptype
+
+    elif (type(ptype) == type(anyconfig.models.processor.Processor) and
+          issubclass(ptype, anyconfig.models.processor.Processor)):
+        return ptype()
+
     def pred(pcls):
         """Predicate"""
         return pcls.type() == ptype
@@ -99,7 +109,7 @@ def find_by_type(ptype, prs):
     if processor is None:
         raise UnknownProcessorTypeError(ptype)
 
-    return processor
+    return processor()
 
 
 def find_by_fileext(fileext, prs):
@@ -161,18 +171,11 @@ def find(obj, prs, forced_type=None):
 
         return processor()
 
-    elif isinstance(forced_type, anyconfig.models.processor.Processor):
-        return forced_type
-
-    elif (type(forced_type) == type(anyconfig.models.processor.Processor) and
-          issubclass(forced_type, anyconfig.models.processor.Processor)):
-        return forced_type()
-
     processor = find_by_type(forced_type, prs)
     if processor is None:
         raise UnknownProcessorTypeError(forced_type)
 
-    return processor()
+    return processor
 
 
 class Processors(object):

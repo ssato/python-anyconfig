@@ -74,7 +74,6 @@ import warnings
 from anyconfig.globals import (
     LOGGER, IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
 )
-import anyconfig.compat
 import anyconfig.query
 import anyconfig.globals
 import anyconfig.dicts

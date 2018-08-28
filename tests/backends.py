@@ -63,7 +63,7 @@ class Test(unittest.TestCase):
             self.assertTrue(isinstance(self.psrs.find(inp), pcls))
 
     def test_34_find__input_object(self):
-        inp = anyconfig.ioinfo.make(CNF_PATH, TT.PARSERS)
+        inp = anyconfig.ioinfo.make(CNF_PATH, TT.Parsers().list())
         psr = self.psrs.find(inp)
         self.assertTrue(isinstance(psr, anyconfig.backend.json.Parser))
 

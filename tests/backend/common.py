@@ -13,7 +13,7 @@ import unittest
 from os import linesep as lsep
 
 import tests.common
-import anyconfig.backends
+import anyconfig.ioinfo
 
 from anyconfig.compat import OrderedDict
 from tests.common import to_bytes as _bytes
@@ -51,7 +51,7 @@ class TestBase(unittest.TestCase, HasParserTrait):
 
     def _to_ioinfo(self, path):
         ptype = self.psr.type()
-        return anyconfig.backends.inspect_io_obj(path, forced_type=ptype)
+        return anyconfig.ioinfo.make(path, forced_type=ptype)
 
     def _assert_dicts_equal(self, cnf, ordered=False, cls=None, ref=None):
         if ref is None:

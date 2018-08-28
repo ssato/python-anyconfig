@@ -10,7 +10,7 @@ import os.path
 import unittest
 
 import anyconfig.backend.base as TT  # stands for test target
-import anyconfig.backends
+import anyconfig.ioinfo
 import tests.common
 
 
@@ -34,7 +34,7 @@ class Test00(unittest.TestCase):
         cpath = os.path.join(os.curdir, "conf_file_not_exist.json")
         assert not os.path.exists(cpath)
 
-        ioi = anyconfig.backends.inspect_io_obj(cpath)
+        ioi = anyconfig.ioinfo.make(cpath)
         cnf = self.psr.load(ioi, ac_ignore_missing=True)
         self.assertEqual(cnf, MZERO)
         self.assertTrue(isinstance(cnf, type(MZERO)))

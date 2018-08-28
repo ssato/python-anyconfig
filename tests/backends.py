@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
     def test_20_find_by_type__ng_cases(self):
         self.assertRaises(ValueError, self.psrs.find_by_type, None)
         self.assertRaises(UnknownProcessorTypeError, self.psrs.find_by_type,
-                          forced_type="_unkonw_type_")
+                          "_unkonw_type_")
 
     def test_22_find_by_type(self):
         self.assertTrue(isinstance(self.psrs.find_by_type("json"),

@@ -149,13 +149,14 @@ def find_by_maybe_file(obj, prs):
     return processor()
 
 
-def find(obj, prs, forced_type=None):
+def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
     """
     :param obj:
         a file path, file or file-like object, pathlib.Path object or
         `~anyconfig.globals.IOInfo` (namedtuple) object
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param forced_type: Forced processor type or processor object itself
+    :param cls: A class object to compare with `forced_type` later
 
     :return: an instance of processor class to process `obj` data
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
@@ -172,7 +173,7 @@ def find(obj, prs, forced_type=None):
 
         return processor
 
-    processor = find_by_type(forced_type, prs)
+    processor = find_by_type(forced_type, prs, cls=cls)
     if processor is None:
         raise UnknownProcessorTypeError(forced_type)
 

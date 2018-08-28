@@ -135,7 +135,8 @@ def find_by_maybe_file(obj, prs):
         `~anyconfig.globals.IOInfo` (namedtuple) object
     :param cps_by_ext: A list of processor classes
 
-    :return: Most appropriate processor class to process given file
+    :return:
+        An instance of most appropriate processor class to process given data
     :raises: UnknownFileTypeError
     """
     if not isinstance(obj, IOInfo):
@@ -145,7 +146,7 @@ def find_by_maybe_file(obj, prs):
     if processor is None:
         raise UnknownFileTypeError("file extension={}".format(obj.extension))
 
-    return processor
+    return processor()
 
 
 def find(obj, prs, forced_type=None):
@@ -169,7 +170,7 @@ def find(obj, prs, forced_type=None):
         if processor is None:
             raise UnknownFileTypeError(obj)
 
-        return processor()
+        return processor
 
     processor = find_by_type(forced_type, prs)
     if processor is None:

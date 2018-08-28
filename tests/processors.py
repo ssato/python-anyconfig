@@ -46,6 +46,9 @@ class Test_10_Processor(unittest.TestCase):
 
 class Test_30_find_functions(unittest.TestCase):
 
+    def assertInstance(self, obj, cls):
+        self.assertTrue(isinstance(obj, cls))
+
     def test_10_find_with_pred__type(self):
         self.assertEqual(TT.find_with_pred(lambda p: p.type() == "json", PRS),
                          A3)
@@ -78,11 +81,12 @@ class Test_30_find_functions(unittest.TestCase):
         self.assertTrue(TT.find_by_fileext("xyz", PRS) is None)
 
     def test_40_find_by_maybe_file(self):
-        self.assertEqual(TT.find_by_maybe_file("/path/to/a.jsn", PRS), A3)
-        self.assertEqual(TT.find_by_maybe_file("../../path/to/b.yml", PRS), B)
+        self.assertInstance(TT.find_by_maybe_file("/path/to/a.jsn", PRS), A3)
+        self.assertInstance(TT.find_by_maybe_file("../../path/to/b.yml", PRS),
+                            B)
 
         obj = anyconfig.ioinfo.make("/path/to/a.json")
-        self.assertEqual(TT.find_by_maybe_file(obj, PRS), A3)
+        self.assertInstance(TT.find_by_maybe_file(obj, PRS), A3)
 
     def test_42_find_by_maybe_file__ng_cases(self):
         self.assertRaises(UnknownFileTypeError, TT.find_by_maybe_file,

@@ -2,6 +2,7 @@
 # Copyright (C) 2018 Satoru SATOH <ssato @ redhat.com>
 # License: MIT
 #
+# pylint: disable=unidiomatic-typecheck
 r"""Abstract processor module.
 
 .. versionadded:: 0.9.5

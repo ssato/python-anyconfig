@@ -21,7 +21,7 @@ Changelog:
 .. versionchanged:: 0.9.5
 
    - Make :class:`Parser` inherited from
-     :class:`~anyconfig.processors.Processor`
+     :class:`~anyconfig.models.processor.Processor`
    - introduce the member _allow_primitives and the class method
      allow_primitives to :class:`Parser` to allow parsers to load and return
      data of primitive types other than mapping objects
@@ -380,7 +380,7 @@ class DumperMixin(object):
 
 
 class Parser(TextFilesMixin, LoaderMixin, DumperMixin,
-             anyconfig.processors.Processor):
+             anyconfig.models.processor.Processor):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
     and members.
@@ -390,7 +390,7 @@ class Parser(TextFilesMixin, LoaderMixin, DumperMixin,
     - _extensions: File extensions of formats it supports
     - _open_flags: Opening flags to read and write files
 
-    .. seealso:: the doc of :class:`~anyconfig.processors.Processor`
+    .. seealso:: the doc of :class:`~anyconfig.models.processor.Processor`
     """
     pass
 

@@ -6,13 +6,14 @@
 import operator
 import unittest
 import anyconfig.processors as TT
+import anyconfig.models.processor
 
 from anyconfig.globals import (
     UnknownProcessorTypeError, UnknownFileTypeError
 )
 
 
-class A(TT.Processor):
+class A(anyconfig.models.processor.Processor):
     _type = "json"
     _extensions = ['json', 'jsn', 'js']
 
@@ -25,7 +26,7 @@ class A3(A):
     _priority = 99  # Higher priority than A.
 
 
-class B(TT.Processor):
+class B(anyconfig.models.processor.Processor):
     _type = "yaml"
     _extensions = ['yaml', 'yml']
 

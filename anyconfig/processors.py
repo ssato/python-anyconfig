@@ -16,6 +16,7 @@ import pkg_resources
 import anyconfig.compat
 import anyconfig.ioinfo
 import anyconfig.utils
+import anyconfig.models.processor
 
 from anyconfig.globals import (
     UnknownProcessorTypeError, UnknownFileTypeError
@@ -44,62 +45,18 @@ def load_plugins(pgroup, safe=True):
     return list(_load_plugins_itr(pgroup, safe=safe))
 
 
-class Processor(object):
-    """
-    Abstract processor class to provide basic implementation of some methods,
-    interfaces and members.
-
-    - _type: type indicates data types it can process
-    - _priority: Priority to select it if there are others of same type
-    - _extensions: File extensions of data type it can process
-
-    .. note:: This class is not a singleton but its children may be so.
-    """
-    _cid = None
-    _type = None
-    _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
-    _extensions = []
-
-    @classmethod
-    def cid(cls):
-        """Processors' ID
-        """
-        return repr(cls) if cls._cid is None else cls._cid
-
-    @classmethod
-    def type(cls):
-        """Processors' type
-        """
-        return cls._type
-
-    @classmethod
-    def priority(cls):
-        """Processors's priority
-        """
-        return cls._priority
-
-    @classmethod
-    def extensions(cls):
-        """A list of extensions of files which this process can process.
-        """
-        return cls._extensions
-
-    def __eq__(self, other):
-        return self.cid() == other.cid()
-
-
 def find_with_pred(predicate, prs):
     """
     :param predicate: any callable to filter results
-    :param prs: A list of :class:`Processor` classes
+    :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: Most appropriate processor class or None
 
-    >>> class A(Processor):
+    >>> class A(anyconfig.models.processor.Processor):
     ...    _type = "json"
     ...    _extensions = ['json', 'js']
     >>> class A2(A):
     ...    _priority = 99  # Higher priority than A.
-    >>> class B(Processor):
+    >>> class B(anyconfig.models.processor.Processor):
     ...    _type = "yaml"
     ...    _extensions = ['yaml', 'yml']
     >>> prs = [A, A2, B]
@@ -129,7 +86,7 @@ def find_with_pred(predicate, prs):
 def find_by_type(ptype, prs):
     """
     :param ptype: Type of the data to process
-    :param prs: A list of :class:`Processor` classes
+    :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return:
         Most appropriate processor class to process files of given data type
         `ptype` or None
@@ -149,7 +106,7 @@ def find_by_type(ptype, prs):
 def find_by_fileext(fileext, prs):
     """
     :param fileext: File extension
-    :param prs: A list of :class:`Processor` classes
+    :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return:
         Most appropriate processor class to process files with given
         extentsions or None
@@ -178,29 +135,34 @@ def find_by_filepath(filepath, prs):
     return processor
 
 
-def find(ipath, prs, forced_type=None):
+def find(obj, prs, forced_type=None):
     """
-    :param ipath: file path
-    :param prs: A list of processor classes
+    :param obj:
+        a file path, file or file-like object, pathlib.Path object or
+        `~anyconfig.globals.IOInfo` (namedtuple) object
+    :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param forced_type: Forced processor type or processor object itself
 
-    :return: an instance of processor class appropriate to process `ipath` data
+    :return: an instance of processor class to process `obj` data
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    if (ipath is None or not ipath) and forced_type is None:
-        raise ValueError("file path or file type must be given")
+    if (obj is None or not obj) and forced_type is None:
+        raise ValueError("The first argument 'obj' or the second argument "
+                         "'forced_type' must be something other than "
+                         "None or False.")
 
     if forced_type is None:
-        processor = find_by_filepath(ipath, prs)
+        processor = find_by_filepath(obj, prs)
         if processor is None:
-            raise UnknownFileTypeError(ipath)
+            raise UnknownFileTypeError(obj)
 
         return processor()
 
-    elif isinstance(forced_type, Processor):
+    elif isinstance(forced_type, anyconfig.models.processor.Processor):
         return forced_type
 
-    elif type(forced_type) == type(Processor):
+    elif (type(forced_type) == type(anyconfig.models.processor.Processor) and
+          issubclass(forced_type, anyconfig.models.processor.Processor)):
         return forced_type()
 
     processor = find_by_type(forced_type, prs)

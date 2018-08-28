@@ -184,7 +184,6 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
 class Processors(object):
     """An abstract class of which instance holding processors.
     """
-    _processors = dict()  # {<processor_class_id>: <processor_class>}
     _pgroup = None  # processor group name to load plugins
 
     def __init__(self, processors=None):
@@ -192,6 +191,7 @@ class Processors(object):
         :param processors:
             A list of :class:`Processor` or its children class objects or None
         """
+        self._processors = dict()  # {<processor_class_id>: <processor_class>}
         if processors is not None:
             self.register(*processors)
 

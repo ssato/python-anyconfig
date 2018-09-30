@@ -18,9 +18,6 @@ if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
     VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
 
-data_files = [("share/man/man1", ["docs/anyconfig_cli.1"])]
-
-
 class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
     """Override the default content of the RPM SPEC.
     """
@@ -46,6 +43,6 @@ setup(name=PACKAGE,
       version=VERSION,
       include_package_data=True,
       cmdclass=dict(bdist_rpm=bdist_rpm),
-      data_files=data_files)
+      data_files=[("share/man/man1", ["docs/anyconfig_cli.1"])])
 
 # vim:sw=4:ts=4:et:

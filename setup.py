@@ -40,7 +40,6 @@ class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
 
 setuptools.setup(name=PACKAGE,
                  version=VERSION,
-                 include_package_data=True,
                  cmdclass=dict(bdist_rpm=bdist_rpm),
                  data_files=[("share/man/man1", ["docs/anyconfig_cli.1"])])
 

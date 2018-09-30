@@ -27,7 +27,7 @@ files in various formats and related functions:
 
   **anyconfig.load** (path_specs, ac_parser=None, ac_dict=None, ac_template=False, ac_context=None, \*\*options)
     loads configuration data from `path_specs`. `path_specs` may be a list of
-    file paths, files or file-like objects, :class:`~pathlib.Path` object, a
+    file paths, files or file-like objects, `~pathlib.Path` class object, a
     namedtuple `~anyconfig.globals.IOInfo` objects represents some inputs to
     load data from, and return a dict or dict like object, or a primitive
     types' data other than dict represents loaded configuration.
@@ -324,15 +324,17 @@ There is a couple of ways to install python-anyconfig:
 
   .. code-block:: console
 
-    $ python setup.py srpm && mock dist/python-anyconfig-<ver_dist>.src.rpm
+    # Build Source RPM first and then build it with using mock (better way)
+    $ python setup.py bdist_rpm --source-only && mock dist/python-anyconfig-<ver_dist>.src.rpm
 
-  or:
+  or
 
   .. code-block:: console
 
-    $ python setup.py rpm
+    # Build Binary RPM to install
+    $ python setup.py bdist_rpm
 
-  and install built RPMs.
+  and install RPMs built.
 
 - Build from source: Of course you can build and/or install python modules in usual way such like 'python setup.py bdist'.
 

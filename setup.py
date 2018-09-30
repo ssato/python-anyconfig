@@ -1,7 +1,6 @@
 from __future__ import absolute_import
-from setuptools import setup, Command
+from setuptools import setup
 
-import glob
 import os.path
 import os
 import sys
@@ -19,12 +18,6 @@ if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
     VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
 
-def list_filepaths(tdir):
-    return [f for f in glob.glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
-
-
-# TBD:
-# data_files = [("share/man/man1", list_filepaths("docs/"))]
 data_files = [("share/man/man1", ["docs/anyconfig_cli.1"])]
 
 

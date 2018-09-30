@@ -153,7 +153,7 @@ configuration file[s] like the followings:
 
   # Similar to the above but all or one of config file[s] might be missing.
   conf4 = anyconfig.load(["/etc/foo.d/a.json", "/etc/foo.d/b.json"],
-                         ignore_missing=True)
+                         ac_ignore_missing=True)
 
   # Specify config files by glob path pattern:
   conf5 = anyconfig.load("/etc/foo.d/*.json")

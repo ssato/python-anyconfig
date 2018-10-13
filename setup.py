@@ -8,7 +8,7 @@ import setuptools.command.bdist_rpm
 
 sys.path.insert(0, os.path.dirname(__file__))  # load anyconfig from this dir.
 
-from anyconfig.globals import PACKAGE, VERSION
+from anyconfig.globals import VERSION
 
 
 # For daily snapshot versioning mode:
@@ -38,8 +38,7 @@ class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
                 in open(self.spec_tmpl).readlines()]
 
 
-setuptools.setup(name=PACKAGE,
-                 version=VERSION,
+setuptools.setup(version=VERSION,
                  cmdclass=dict(bdist_rpm=bdist_rpm),
                  data_files=[("share/man/man1", ["docs/anyconfig_cli.1"])])
 

@@ -239,6 +239,7 @@ class Processors(object):
         :return: an instance of processor class to process `ipath` data later
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
-        return find(obj, self.list(sort=False), forced_type=ptype, cls=cls)
+        return find(obj, self.list(sort=False), forced_type=forced_type,
+                    cls=cls)
 
 # vim:sw=4:ts=4:et:

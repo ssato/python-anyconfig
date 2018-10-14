@@ -81,7 +81,8 @@ class Parsers(anyconfig.processors.Processors,
 
         return super(Parsers, self).find_by_type(ptype)
 
-    def find(self, obj, forced_type=None):
+    def find(self, obj, forced_type=None,
+             cls=anyconfig.models.processor.Processor):
         """Find appropriate parser object to process given `obj`.
 
         :param obj:
@@ -95,7 +96,7 @@ class Parsers(anyconfig.processors.Processors,
         if obj and not isinstance(obj, anyconfig.globals.IOInfo):
             obj = anyconfig.ioinfo.make(obj)
 
-        psr = super(Parsers, self).find(obj, ptype=forced_type,
+        psr = super(Parsers, self).find(obj, forced_type=forced_type,
                                         cls=anyconfig.backend.base.Parser)
 
         LOGGER.debug("Using parser %r [%s]", psr, psr.type())

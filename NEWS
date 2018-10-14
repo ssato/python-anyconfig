@@ -1,3 +1,11 @@
+* Mon Oct 15 2018 Satoru SATOH <ssato@redhat.com> - 0.9.7-99
+- fix: specify minimum dependencies to install anyconfig in setup.cfg
+- enhancement/refactor: add a class .processors.Processors to manage processors
+  including each backend parsers to make them robust for further enhancements
+- refactor/change: re-organize and cleanup setup.{py,cfg}
+- change: simplify the code to build [S]RPMs
+- A misc other enhancements, refactorings and bug fixes
+
 * Mon Jul  2 2018 Satoru SATOH <ssato@redhat.com> - 0.9.7-1
 - enhancement: allow pickle parser loading data of primitive data types other
   than mapping objects

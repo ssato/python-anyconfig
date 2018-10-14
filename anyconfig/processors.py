@@ -227,16 +227,18 @@ class Processors(object):
         """
         return find_by_type(ptype, self.list(sort=False))
 
-    def find(self, ipath, ptype=None,
+    def find(self, obj, forced_type=None,
              cls=anyconfig.models.processor.Processor):
         """
-        :param ipath: file path
-        :param ptype: Processor's type or None
+        :param obj:
+            a file path, file or file-like object, pathlib.Path object or
+            `~anyconfig.globals.IOInfo` (namedtuple) object
+        :param forced_type: Forced processor type to find
         :param cls: A class object to compare with `ptype`
 
         :return: an instance of processor class to process `ipath` data later
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
-        return find(ipath, self.list(sort=False), forced_type=ptype, cls=cls)
+        return find(obj, self.list(sort=False), forced_type=ptype, cls=cls)
 
 # vim:sw=4:ts=4:et:

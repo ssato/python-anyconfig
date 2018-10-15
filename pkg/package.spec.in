@@ -106,6 +106,20 @@ rm -frv docs/build/html/_sources
 
 %install
 %py2_install
+test -d %{buildroot}/usr/bin || {
+install -d %{buildroot}/usr/bin
+cat << EOF > %{buildroot}/usr/bin/anyconfig_cli
+#! /usr/bin/python
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('anyconfig', 'console_scripts', 'anyconfig_cli')()
+    )
+EOF
+}
+chmod +x %{buildroot}/usr/bin/anyconfig_cli
 %if %{with python3}
 %py3_install
 %endif

@@ -8,7 +8,7 @@ contents merge, templates, query, schema validation and generation support.
 %bcond_with optionals
 %bcond_with tests
 
-%if 0%{?fedora} || 0%{?rhel} > 7
+%if 0%{?fedora} || 0%{?rhel} > 7 || 0%{?epel} > 7
 %bcond_without python3
 %bcond_without doc
 %bcond_without extras

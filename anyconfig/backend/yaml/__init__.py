@@ -36,6 +36,7 @@ Changelog:
 
 .. versionchanged:: 0.9.8
 
+   - Split PyYaml-based and ruamel.yaml based backend modules
    - Add support of some of ruamel.yaml specific features.
 
 .. versionchanged:: 0.9.3
@@ -48,12 +49,9 @@ Changelog:
      possibility of option conflicts in the future.
 """
 from __future__ import absolute_import
+from . import pyyaml
 
-try:
-    from .ruamel_yaml import Parser as RuamelYamlParser
-except ImportError
-    pass
 
-from .pyyaml import Parser as PyYAMLParser
+PARSERS = [pyyaml.Parser]
 
 # vim:sw=4:ts=4:et:

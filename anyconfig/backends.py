@@ -22,6 +22,7 @@ import anyconfig.backend.json
 import anyconfig.backend.pickle
 import anyconfig.backend.properties
 import anyconfig.backend.shellvars
+import anyconfig.backend.yaml
 import anyconfig.backend.xml
 
 
@@ -33,10 +34,9 @@ PARSERS = [anyconfig.backend.ini.Parser, anyconfig.backend.json.Parser,
 
 _NA_MSG = "%s is not available. Disabled %s support."
 
-try:
-    import anyconfig.backend.yaml
-    PARSERS.append(anyconfig.backend.yaml.Parser)
-except ImportError:
+if anyconfig.backend.yaml.PARSERS:
+    PARSERS.extend(anyconfig.backend.yaml.PARSERS)
+else:
     LOGGER.info(_NA_MSG, "yaml module", "YAML")
 
 try:

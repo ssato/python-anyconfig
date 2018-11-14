@@ -8,7 +8,7 @@
 from __future__ import absolute_import
 
 import os
-import anyconfig.backend.yaml as TT
+import anyconfig.backend.yaml.pyyaml as TT
 import tests.backend.common as TBC
 
 from anyconfig.compat import OrderedDict

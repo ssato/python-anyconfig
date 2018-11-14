@@ -46,17 +46,11 @@ Changelog:
 """
 from __future__ import absolute_import
 
+import yaml
 try:
-    import warnings
-    import ruamel.yaml as yaml
-    from ruamel.yaml import Loader, Dumper
-    warnings.simplefilter('ignore', yaml.error.UnsafeLoaderWarning)
+    from yaml import CSafeLoader as Loader, CDumper as Dumper
 except ImportError:
-    import yaml
-    try:
-        from yaml import CSafeLoader as Loader, CDumper as Dumper
-    except ImportError:
-        from yaml import SafeLoader as Loader, Dumper
+    from yaml import SafeLoader as Loader, Dumper
 
 import anyconfig.backend.base
 import anyconfig.compat
@@ -153,12 +147,12 @@ def _customized_dumper(container, dumper=Dumper):
     return dumper
 
 
-def _yml_fnc(fname, *args, **options):
+def yml_fnc(fname, *args, **options):
     """An wrapper of yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
 
     :param fname:
         "load" or "dump", not checked but it should be OK.
-        see also :func:`_yml_load` and :func:`_yml_dump`
+        see also :func:`yml_load` and :func:`yml_dump`
     :param args: [stream] for load or [cnf, stream] for dump
     :param options: keyword args may contain "ac_safe" to load/dump safely
     """
@@ -167,7 +161,7 @@ def _yml_fnc(fname, *args, **options):
     return fnc(*args, **_filter_from_options(key, options))
 
 
-def _yml_load(stream, container, **options):
+def yml_load(stream, container, **options):
     """An wrapper of yaml.safe_load and yaml.load.
 
     :param stream: a file or file-like object to load YAML content
@@ -184,14 +178,14 @@ def _yml_load(stream, container, **options):
 
         options["Loader"] = _customized_loader(container)
 
-    ret = _yml_fnc("load", stream, **_filter_from_options("ac_dict", options))
+    ret = yml_fnc("load", stream, **_filter_from_options("ac_dict", options))
     if ret is None:
         return container()
 
     return ret
 
 
-def _yml_dump(data, stream, **options):
+def yml_dump(data, stream, **options):
     """An wrapper of yaml.safe_dump and yaml.dump.
 
     :param data: Some data to dump
@@ -211,7 +205,7 @@ def _yml_dump(data, stream, **options):
         data = anyconfig.dicts.convert_to(data, ac_dict=dict)
         options = _filter_from_options("ac_dict", options)
 
-    return _yml_fnc("dump", data, stream, **options)
+    return yml_fnc("dump", data, stream, **options)
 
 
 class Parser(anyconfig.backend.base.StreamParser):
@@ -229,7 +223,7 @@ class Parser(anyconfig.backend.base.StreamParser):
     _allow_primitives = True
     _dict_opts = ["ac_dict"]
 
-    load_from_stream = anyconfig.backend.base.to_method(_yml_load)
-    dump_to_stream = anyconfig.backend.base.to_method(_yml_dump)
+    load_from_stream = anyconfig.backend.base.to_method(yml_load)
+    dump_to_stream = anyconfig.backend.base.to_method(yml_dump)
 
 # vim:sw=4:ts=4:et:

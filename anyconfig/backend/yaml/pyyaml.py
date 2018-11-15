@@ -60,14 +60,14 @@ import anyconfig.utils
 _MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
 
-def _filter_from_options(key, options):
+def filter_from_options(key, options):
     """
     :param key: Key str in options
     :param options: Mapping object
     :return:
         New mapping object from `options` in which the item with `key` filtered
 
-    >>> _filter_from_options('a', dict(a=1, b=2))
+    >>> filter_from_options('a', dict(a=1, b=2))
     {'b': 2}
     """
     return anyconfig.utils.filter_options([k for k in options.keys()
@@ -158,10 +158,10 @@ def yml_fnc(fname, *args, **options):
     """
     key = "ac_safe"
     fnc = getattr(yaml, r"safe_" + fname if options.get(key) else fname)
-    return fnc(*args, **_filter_from_options(key, options))
+    return fnc(*args, **filter_from_options(key, options))
 
 
-def yml_load(stream, container, **options):
+def yml_load(stream, container, yml_fnc=yml_fnc, **options):
     """An wrapper of yaml.safe_load and yaml.load.
 
     :param stream: a file or file-like object to load YAML content
@@ -178,14 +178,14 @@ def yml_load(stream, container, **options):
 
         options["Loader"] = _customized_loader(container)
 
-    ret = yml_fnc("load", stream, **_filter_from_options("ac_dict", options))
+    ret = yml_fnc("load", stream, **filter_from_options("ac_dict", options))
     if ret is None:
         return container()
 
     return ret
 
 
-def yml_dump(data, stream, **options):
+def yml_dump(data, stream, yml_fnc=yml_fnc, **options):
     """An wrapper of yaml.safe_dump and yaml.dump.
 
     :param data: Some data to dump
@@ -203,7 +203,7 @@ def yml_dump(data, stream, **options):
     if _is_dict:
         # Type information and the order of items are lost on dump currently.
         data = anyconfig.dicts.convert_to(data, ac_dict=dict)
-        options = _filter_from_options("ac_dict", options)
+        options = filter_from_options("ac_dict", options)
 
     return yml_fnc("dump", data, stream, **options)
 

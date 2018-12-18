@@ -109,6 +109,7 @@ def yml_dump(data, stream, **options):
 class Parser(pyyaml.Parser):
     """Parser for YAML files.
     """
+    _priority = 30  # Higher priority than PyYAML.
     _load_opts = _YAML_OPTS
     _dump_opts = _YAML_OPTS
 

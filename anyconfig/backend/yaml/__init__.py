@@ -50,8 +50,14 @@ Changelog:
 """
 from __future__ import absolute_import
 from . import pyyaml
+try:
+    from . import ruamel_yaml as ryaml
+except ImportError:
+    ryaml = False
 
 
 PARSERS = [pyyaml.Parser]
+if ryaml:
+    PARSERS.append(ryaml.Parser)
 
 # vim:sw=4:ts=4:et:

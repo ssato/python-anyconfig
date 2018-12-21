@@ -1,4 +1,6 @@
-* Mon Oct 15 2018 Satoru SATOH <ssato@redhat.com> - 0.9.7-99
+* Fri Dec 21 2018 Satoru SATOH <ssato@redhat.com> - 0.9.7-99
+- enhancement: add basic support of ruamel.yaml specific features and gives it
+  higher priority than PyYAML
 - fix: specify minimum dependencies to install anyconfig in setup.cfg
 - enhancement/refactor: add a class .processors.Processors to manage processors
   including each backend parsers to make them robust for further enhancements

@@ -1,6 +1,9 @@
+# comment-0
 type: object
 properties:
+  # comment-1
   name:
+    # comment-2
     type: string
   a:
     type: integer

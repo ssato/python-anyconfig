@@ -6,7 +6,7 @@
 # pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
-import anyconfig.backend.json as TT
+import anyconfig.backend.json.default as TT
 import tests.backend.common as TBC
 
 from anyconfig.compat import OrderedDict

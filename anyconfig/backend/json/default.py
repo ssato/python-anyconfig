@@ -8,7 +8,7 @@
 r"""JSON backend:
 
 - Format to support: JSON, http://www.json.org
-- Requirements: json in python standard library (>= python 2.6) or simplejson
+- Requirements: json in python standard library
 - Development Status :: 5 - Production/Stable
 - Limitations: None obvious
 - Special options:
@@ -22,20 +22,20 @@ r"""JSON backend:
 
 Changelog:
 
-    .. versionchanged:: 0.9.6
+.. versionchanged:: 0.9.8
 
-       - Add support of loading primitives other than mapping objects.
+   - Moved from ..json.py
+   - Drop simplejson support from this module
 
-    .. versionadded:: 0.0.1
+.. versionchanged:: 0.9.6
+
+   - Add support of loading primitives other than mapping objects.
+
+.. versionadded:: 0.0.1
 """
 from __future__ import absolute_import
 
-try:
-    import json
-    _CID = "std"
-except ImportError:
-    import simplejson as json
-    _CID = "simplejson"
+import json
 
 import anyconfig.backend.base
 import anyconfig.compat
@@ -62,7 +62,7 @@ class Parser(anyconfig.backend.base.StringStreamFnParser):
     """
     Parser for JSON files.
     """
-    _cid = _CID
+    _cid = "default"
     _type = "json"
     _extensions = ["json", "jsn", "js"]
     _load_opts = _LOAD_OPTS

@@ -32,8 +32,10 @@ from __future__ import absolute_import
 
 try:
     import json
+    _CID = "std"
 except ImportError:
     import simplejson as json
+    _CID = "simplejson"
 
 import anyconfig.backend.base
 import anyconfig.compat
@@ -60,7 +62,7 @@ class Parser(anyconfig.backend.base.StringStreamFnParser):
     """
     Parser for JSON files.
     """
-    _cid = "json"
+    _cid = _CID
     _type = "json"
     _extensions = ["json", "jsn", "js"]
     _load_opts = _LOAD_OPTS

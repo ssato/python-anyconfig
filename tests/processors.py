@@ -32,7 +32,13 @@ class B(anyconfig.models.processor.Processor):
     _extensions = ['yaml', 'yml']
 
 
-PRS = [A, A2, A3, B]
+class C(anyconfig.models.processor.Processor):
+    _cid = "dummy"
+    _type = "yaml"
+    _extensions = ['yaml', 'yml']
+
+
+PRS = [A, A2, A3, B, C]
 
 
 class Test_10_Processor(unittest.TestCase):
@@ -74,6 +80,11 @@ class Test_30_find_functions(unittest.TestCase):
         self.assertTrue(isinstance(TT.find_by_type("yaml", PRS), B))
         self.assertRaises(UnknownProcessorTypeError, TT.find_by_type,
                           "X", PRS)
+
+    def test_24_find_by_type_or_id(self):
+        self.assertTrue(isinstance(TT.find_by_type_or_id("json", PRS), A3))
+        self.assertTrue(isinstance(TT.find_by_type_or_id("yaml", PRS), B))
+        self.assertTrue(isinstance(TT.find_by_type_or_id("dummy", PRS), C))
 
     def test_30_find_by_fileext(self):
         self.assertEqual(TT.find_by_fileext("jsn", PRS), A3)

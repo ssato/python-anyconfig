@@ -113,6 +113,37 @@ def find_by_type(ptype, prs, cls=anyconfig.models.processor.Processor):
     return processor()
 
 
+def find_by_type_or_id(type_or_id, prs,
+                       cls=anyconfig.models.processor.Processor):
+    """
+    :param type_or_id:
+        Type of the data to process or ID of the processor class or
+        :class:`anyconfig.models.processor.Processor` class object or its
+        instance
+    :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
+    :param cls: A class object to compare with `type_or_id`
+    :return:
+        Most appropriate processor instance to process files of given data type
+        or processor `type_or_id` found by its ID or None
+    :raises: UnknownProcessorTypeError
+    """
+    if isinstance(type_or_id, cls):
+        return type_or_id
+
+    if type(type_or_id) == type(cls) and issubclass(type_or_id, cls):
+        return type_or_id()
+
+    def pred(pcls):
+        """Predicate"""
+        return pcls.cid() == type_or_id or pcls.type() == type_or_id
+
+    processor = find_with_pred(pred, prs)
+    if processor is None:
+        raise UnknownProcessorTypeError(type_or_id)
+
+    return processor()
+
+
 def find_by_fileext(fileext, prs):
     """
     :param fileext: File extension

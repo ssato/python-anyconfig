@@ -476,7 +476,7 @@ class Test_40_multi_load_with_strategies(TestBaseWithIOMultiFiles):
             TT.multi_load([cpath, cpath], ac_merge="merge_st_not_exist")
             raise RuntimeError("Wrong merge strategy was not handled!")
         except ValueError:
-            self.assertTrue(1 == 1)  # To suppress warn of pylint.
+            self.assertTrue(bool(1))  # To suppress warn of pylint.
 
 
 class Test_42_multi_load(TestBaseWithIOMultiFiles):

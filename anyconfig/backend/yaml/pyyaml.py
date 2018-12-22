@@ -213,6 +213,7 @@ class Parser(anyconfig.backend.base.StreamParser):
     Parser for YAML files.
     """
     _type = "yaml"
+    _cid = "pyyaml"
     _extensions = ["yaml", "yml"]
     _load_opts = ["Loader", "ac_safe", "ac_dict"]
     _dump_opts = ["stream", "ac_safe", "Dumper", "default_style",

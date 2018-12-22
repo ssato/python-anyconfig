@@ -21,8 +21,8 @@ class Processor(object):
     - _extensions: File extensions of data type it can process
 
     .. note::
-       This class is not a singleton but its children classes should so in most
-       cases, I think.
+       This class ifself is not a singleton but its children classes should so
+       in most cases, I think.
     """
     _cid = None
     _type = None
@@ -31,7 +31,7 @@ class Processor(object):
 
     @classmethod
     def cid(cls):
-        """Processors' ID
+        """Processor class ID
         """
         return repr(cls) if cls._cid is None else cls._cid
 
@@ -49,7 +49,7 @@ class Processor(object):
 
     @classmethod
     def extensions(cls):
-        """A list of extensions of files which this process can process.
+        """A list of file extensions of files which this process can process.
         """
         return cls._extensions
 

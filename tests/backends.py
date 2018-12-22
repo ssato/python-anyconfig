@@ -32,13 +32,13 @@ class Test(unittest.TestCase):
         self.assertTrue(isinstance(types, list))
         self.assertTrue(bool(list))  # check it's not empty.
 
-    def test_20_find_by_type__ng_cases(self):
-        self.assertRaises(ValueError, self.psrs.find_by_type, None)
-        self.assertRaises(UnknownProcessorTypeError, self.psrs.find_by_type,
-                          "_unkonw_type_")
+    def test_20_find_by_type_or_id__ng_cases(self):
+        self.assertRaises(ValueError, self.psrs.find_by_type_or_id, None)
+        self.assertRaises(UnknownProcessorTypeError,
+                          self.psrs.find_by_type_or_id, "_unkonw_type_")
 
-    def test_22_find_by_type(self):
-        self.assertTrue(isinstance(self.psrs.find_by_type("json"),
+    def test_22_find_by_type_or_id(self):
+        self.assertTrue(isinstance(self.psrs.find_by_type_or_id("json"),
                                    anyconfig.backend.json.Parser))
 
     def test_30_find__ng_cases(self):

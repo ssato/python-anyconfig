@@ -424,7 +424,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
           ac_context=None, **options):
     """
     :param content: Configuration file's content (a string)
-    :param ac_parser: Forced parser type or parser object
+    :param ac_parser: Forced parser type or ID or parser object
     :param ac_dict:
         callable (function or class) to make mapping object will be returned as
         a result or None. If not given or ac_dict is None, default mapping
@@ -446,7 +446,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
                        "parser to load configurations from string.")
         return None
 
-    psr = Parsers().find_by_type(ac_parser)
+    psr = Parsers().find_by_type_or_id(ac_parser)
     schema = None
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
@@ -493,13 +493,13 @@ def dumps(data, ac_parser=None, **options):
     Return string representation of `data` in forced type format.
 
     :param data: Config data object to dump
-    :param ac_parser: Forced parser type or parser object
+    :param ac_parser: Forced parser type or ID or parser object
     :param options: see :func:`dump`
 
     :return: Backend-specific string representation for the given data
     :raises: ValueError, UnknownProcessorTypeError
     """
-    psr = Parsers().find_by_type(ac_parser)
+    psr = Parsers().find_by_type_or_id(ac_parser)
     return psr.dumps(data, **options)
 
 

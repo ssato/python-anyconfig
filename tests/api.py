@@ -14,6 +14,7 @@ import unittest
 
 import anyconfig.api as TT
 import anyconfig.backends
+import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.dicts
 import anyconfig.template
@@ -187,6 +188,11 @@ class Test_22_single_load(TestBase):
 
     def test_12__single_load__ac_parser(self):
         res = TT.single_load(self.a_path, ac_parser="json")
+        self.assert_dicts_equal(res, self.cnf)
+
+    def test_14__single_load__ac_parser_by_id(self):
+        cid = anyconfig.backend.json.Parser.cid()
+        res = TT.single_load(self.a_path, ac_parser=cid)
         self.assert_dicts_equal(res, self.cnf)
 
     def test_20__single_load__stream(self):

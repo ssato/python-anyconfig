@@ -36,40 +36,16 @@ Changelog:
 from __future__ import absolute_import
 
 import json
-
 import anyconfig.backend.base
-import anyconfig.compat
+
+from .common import Parser as BaseParser
 
 
-_LOAD_OPTS = ["cls", "object_hook", "parse_float", "parse_int",
-              "parse_constant"]
-_DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
-              "cls", "indent", "separators", "default", "sort_keys"]
-_DICT_OPTS = ["object_hook"]
-
-# It seems that 'encoding' argument is not allowed in json.load[s] and
-# json.dump[s] in JSON module in python 3.x.
-if not anyconfig.compat.IS_PYTHON_3:
-    _LOAD_OPTS.append("encoding")
-    _DUMP_OPTS.append("encoding")
-
-if not anyconfig.compat.IS_PYTHON_2_6:
-    _LOAD_OPTS.append("object_pairs_hook")
-    _DICT_OPTS.insert(0, "object_pairs_hook")  # Higher prio. than object_hook
-
-
-class Parser(anyconfig.backend.base.StringStreamFnParser):
+class Parser(BaseParser):
     """
     Parser for JSON files.
     """
     _cid = "std.json"
-    _type = "json"
-    _extensions = ["json", "jsn", "js"]
-    _load_opts = _LOAD_OPTS
-    _dump_opts = _DUMP_OPTS
-    _ordered = not anyconfig.compat.IS_PYTHON_2_6
-    _allow_primitives = True
-    _dict_opts = _DICT_OPTS
 
     _load_from_string_fn = anyconfig.backend.base.to_method(json.loads)
     _load_from_stream_fn = anyconfig.backend.base.to_method(json.load)

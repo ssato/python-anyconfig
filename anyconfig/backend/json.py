@@ -60,6 +60,7 @@ class Parser(anyconfig.backend.base.StringStreamFnParser):
     """
     Parser for JSON files.
     """
+    _cid = "json"
     _type = "json"
     _extensions = ["json", "jsn", "js"]
     _load_opts = _LOAD_OPTS

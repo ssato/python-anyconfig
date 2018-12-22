@@ -187,7 +187,10 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
         a file path, file or file-like object, pathlib.Path object or
         `~anyconfig.globals.IOInfo` (namedtuple) object
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
-    :param forced_type: Forced processor type or processor object itself
+    :param forced_type:
+        Forced processor type of the data to process or ID of the processor
+        class or :class:`anyconfig.models.processor.Processor` class object or
+        its instance itself
     :param cls: A class object to compare with `forced_type` later
 
     :return: an instance of processor class to process `obj` data
@@ -205,7 +208,7 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
 
         return processor
 
-    processor = find_by_type(forced_type, prs, cls=cls)
+    processor = find_by_type_or_id(forced_type, prs, cls=cls)
     if processor is None:
         raise UnknownProcessorTypeError(forced_type)
 
@@ -257,6 +260,12 @@ class Processors(object):
         :param ptype: Processor's type to find
         """
         return find_by_type(ptype, self.list(sort=False))
+
+    def find_by_type_or_id(self, type_or_id):
+        """
+        :param type_or_id: Processor's type or ID to find
+        """
+        return find_by_type_or_id(type_or_id, self.list(sort=False))
 
     def find(self, obj, forced_type=None,
              cls=anyconfig.models.processor.Processor):

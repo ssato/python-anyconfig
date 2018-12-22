@@ -111,6 +111,7 @@ class Test_30_find_functions(unittest.TestCase):
     def test_52_find__with_forced_type(self):
         self.assertTrue(isinstance(TT.find(None, PRS, forced_type=A2), A2))
         self.assertTrue(isinstance(TT.find(None, PRS, forced_type=A2()), A2))
+        self.assertTrue(isinstance(TT.find(None, PRS, forced_type=C.cid()), C))
 
     def test_54_find__uknown_file_type(self):
         self.assertRaises(UnknownFileTypeError, TT.find, "/tmp/x.xyz", PRS)

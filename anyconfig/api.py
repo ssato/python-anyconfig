@@ -96,6 +96,12 @@ def version():
     return anyconfig.globals.VERSION.split('.')
 
 
+def load_plugins():
+    """[Re-]Load pluggable parsers.
+    """
+    Parsers().load_plugins()
+
+
 def list_types():
     return Parsers().list_types()
 

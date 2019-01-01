@@ -5,6 +5,10 @@
 # pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs of anyconfig module.
 
+.. versionadded:: 0.9.8
+
+   - Added new API load_plugins to [re-]load plugins
+
 .. versionadded:: 0.9.5
 
    - Added pathlib support. Now all of load and dump APIs can process

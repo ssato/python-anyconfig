@@ -49,15 +49,17 @@ Changelog:
      possibility of option conflicts in the future.
 """
 from __future__ import absolute_import
-from . import pyyaml
+
+try:
+    from . import pyyaml
+    PARSERS = [pyyaml.Parser]
+except ImportError:
+    PARSERS = []
+
 try:
     from . import ruamel_yaml as ryaml
+    PARSERS.append(ryaml.Parser)
 except ImportError:
     ryaml = False
-
-
-PARSERS = [pyyaml.Parser]
-if ryaml:
-    PARSERS.append(ryaml.Parser)
 
 # vim:sw=4:ts=4:et:

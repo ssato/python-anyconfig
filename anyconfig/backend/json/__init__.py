@@ -6,7 +6,7 @@
 # pylint: disable=unidiomatic-typecheck
 r"""JSON backends:
 
-- std.json: python standard JSON support library
+- std.json: python standard JSON support library [default]
 - simplejson: https://github.com/simplejson/simplejson
 
 Changelog:

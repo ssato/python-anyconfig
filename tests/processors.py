@@ -20,16 +20,17 @@ class A(anyconfig.models.processor.Processor):
 
 
 class A2(A):
-    pass
+    _priority = 20  # Higher priority than A.
 
 
 class A3(A):
-    _priority = 99  # Higher priority than A.
+    _priority = 99  # Higher priority than A and A2.
 
 
 class B(anyconfig.models.processor.Processor):
     _type = "yaml"
     _extensions = ['yaml', 'yml']
+    _priority = 99  # Higher priority than C.
 
 
 class C(anyconfig.models.processor.Processor):
@@ -48,6 +49,25 @@ class Test_10_Processor(unittest.TestCase):
         self.assertEqual(a1, a2)
         self.assertNotEqual(a1, b)
         self.assertNotEqual(a1, a22)
+
+
+class Test_20_finds_functions(unittest.TestCase):
+
+    def test_10_finds_with_pred__type(self):
+        def _finds_by_type(typ):
+            return TT.finds_with_pred(lambda p: p.type() == typ, PRS)
+
+        self.assertEqual(_finds_by_type("json"), [A3, A2, A])
+        self.assertEqual(_finds_by_type("yaml"), [B, C])
+        self.assertEqual(_finds_by_type("undefined"), [])
+
+    def test_20_finds_with_pred__ext(self):
+        def _finds_with_pred__ext(ext):
+            return TT.finds_with_pred(lambda p: ext in p.extensions(), PRS)
+
+        self.assertEqual(_finds_with_pred__ext("js"), [A3, A2, A])
+        self.assertEqual(_finds_with_pred__ext("yml"), [B, C])
+        self.assertEqual(_finds_with_pred__ext("xyz"), [])
 
 
 class Test_30_find_functions(unittest.TestCase):

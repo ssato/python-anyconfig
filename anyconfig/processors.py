@@ -45,6 +45,16 @@ def load_plugins(pgroup, safe=True):
     return list(_load_plugins_itr(pgroup, safe=safe))
 
 
+def finds_with_pred(predicate, prs):
+    """
+    :param predicate: any callable to filter results
+    :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
+    :return: A list of appropriate processor classes or []
+    """
+    return sorted((p for p in prs if predicate(p)),
+                  key=operator.methodcaller("priority"), reverse=True)
+
+
 def find_with_pred(predicate, prs):
     """
     :param predicate: any callable to filter results
@@ -75,8 +85,7 @@ def find_with_pred(predicate, prs):
     >>> x = find_with_pred(lambda p: p.type() == "x", prs)
     >>> assert x is None
     """
-    _prs = sorted((p for p in prs if predicate(p)),
-                  key=operator.methodcaller("priority"), reverse=True)
+    _prs = finds_with_pred(predicate, prs)
     if _prs:
         return _prs[0]  # Found.
 

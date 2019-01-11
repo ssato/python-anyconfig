@@ -17,6 +17,7 @@ import anyconfig.backends
 import anyconfig.backend.json
 import anyconfig.compat
 import anyconfig.dicts
+import anyconfig.processors
 import anyconfig.template
 import tests.common
 
@@ -84,17 +85,32 @@ def _is_file_object(obj):
 
 class Test_10_find_loader(unittest.TestCase):
 
-    def _assert_isinstance(self, obj, cls, msg=False):
-        self.assertTrue(isinstance(obj, cls), msg or repr(obj))
+    psrs = anyconfig.backends.Parsers().list()
 
-    def test_10_find_loader__w_parser_type_or_instance_or_by_file(self):
+    def _assert_isinstances(self, obj, clss, msg=False):
+        self.assertTrue(any(isinstance(obj, cls) for cls in clss),
+                        msg or "%r vs %r" % (obj, clss))
+
+    def test_10_find_loader__w_parser_type_or_instance(self):
+        def _finds_by_type(typ):
+            fnc = anyconfig.processors.finds_with_pred
+            return fnc(lambda p: typ == p.type(), self.psrs)
+
         cpath = "dummy.conf"
-        for psr in anyconfig.backends.Parsers().list():
-            self._assert_isinstance(TT.find_loader(cpath, psr.type()), psr)
-            self._assert_isinstance(TT.find_loader(cpath, psr()), psr)
+        for psr in self.psrs:
+            ldrs = _finds_by_type(psr.type())
+            self._assert_isinstances(TT.find_loader(cpath, psr.type()), ldrs)
+            self._assert_isinstances(TT.find_loader(cpath, psr()), ldrs)
+
+    def test_20_find_loader__w_parser_by_file(self):
+        def _find_ldrs_by_ext(ext):
+            fnc = anyconfig.processors.finds_with_pred
+            return fnc(lambda p: ext in p.extensions(), self.psrs)
+
+        for psr in self.psrs:
             for ext in psr.extensions():
-                self._assert_isinstance(TT.find_loader("dummy." + ext), psr,
-                                        "ext=%s, psr=%r" % (ext, psr))
+                ldrs = _find_ldrs_by_ext(ext)
+                self._assert_isinstances(TT.find_loader("dummy." + ext), ldrs)
 
     def test_30_find_loader__unknown_parser_type(self):
         self.assertRaises(TT.UnknownProcessorTypeError,

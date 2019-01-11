@@ -21,4 +21,10 @@ from . import default
 Parser = default.Parser  # To keep backward compatibility.
 PARSERS = [Parser]
 
+try:
+    from .simplejson import Parser as SimpleJsonParser
+    PARSERS.append(SimpleJsonParser)
+except ImportError:
+    pass
+
 # vim:sw=4:ts=4:et:

@@ -3,8 +3,6 @@
 # Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
-# type() is used to exactly match check instead of isinstance here.
-# pylint: disable=unidiomatic-typecheck
 r"""YAML backend:
 
 - Format to support: YAML, http://yaml.org

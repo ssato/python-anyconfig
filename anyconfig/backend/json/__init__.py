@@ -3,8 +3,6 @@
 # Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
-# type() is used to exactly match check instead of isinstance here.
-# pylint: disable=unidiomatic-typecheck
 r"""JSON backends:
 
 - std.json: python standard JSON support library [default]

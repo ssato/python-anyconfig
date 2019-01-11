@@ -46,6 +46,7 @@ class Parser(BaseParser):
     Parser for JSON files.
     """
     _cid = "std.json"
+    _priority = 30  # Higher priority than others.
 
     _load_from_string_fn = anyconfig.backend.base.to_method(json.loads)
     _load_from_stream_fn = anyconfig.backend.base.to_method(json.load)

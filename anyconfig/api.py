@@ -107,6 +107,8 @@ def load_plugins():
 
 
 def list_types():
+    """List supported parser types.
+    """
     return Parsers().list_types()
 
 

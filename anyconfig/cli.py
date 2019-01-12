@@ -82,7 +82,7 @@ def to_log_level(level):
     ValueError: wrong log level passed: 5
     >>>
     """
-    if not (level >= 0 and level < 3):
+    if level < 0 or level >= 3:
         raise ValueError("wrong log level passed: " + str(level))
 
     return [logging.WARN, logging.INFO, logging.DEBUG][level]

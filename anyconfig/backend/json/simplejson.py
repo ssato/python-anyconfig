@@ -1,8 +1,7 @@
 #
 # Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
-#
-# Ref. python -c "import json; help(json)"
 #
 # pylint: disable=import-error
 r"""JSON backend by simplejson:
@@ -23,12 +22,6 @@ Changelog:
 .. versionchanged:: 0.9.8
 
    - Exported from ..json.py
-
-.. versionchanged:: 0.9.6
-
-   - Add support of loading primitives other than mapping objects.
-
-.. versionadded:: 0.0.1
 """
 from __future__ import absolute_import
 

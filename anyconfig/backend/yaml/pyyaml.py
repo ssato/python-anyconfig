@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # type() is used to exactly match check instead of isinstance here.
@@ -34,10 +35,6 @@ Changelog:
 .. versionchanged:: 0.9.6
 
    - Add support of loading primitives other than mapping objects.
-
-.. versionchanged:: 0.9.3
-
-   - Try ruamel.yaml instead of yaml (PyYAML) if it's available.
 
 .. versionchanged:: 0.3
 

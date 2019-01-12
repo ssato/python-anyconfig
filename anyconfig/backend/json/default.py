@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # Ref. python -c "import json; help(json)"
@@ -17,8 +18,7 @@ r"""JSON backend:
     should work.
 
   - See also: https://docs.python.org/3/library/json.html or
-    https://docs.python.org/2/library/json.html dependent on the python version
-    to use.
+    https://docs.python.org/2/library/json.html
 
 Changelog:
 

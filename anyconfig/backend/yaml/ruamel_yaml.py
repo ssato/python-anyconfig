@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # type() is used to exactly match check instead of isinstance here.
@@ -31,11 +32,6 @@ Changelog:
 
    - Split from the common yaml backend and start to support ruamel.yaml
      specific features.
-
-.. versionchanged:: 0.9.7
-
-   - Add support of loading primitives other than mapping objects.
-
 """
 from __future__ import absolute_import
 

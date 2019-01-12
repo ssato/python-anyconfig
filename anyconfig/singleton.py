@@ -1,7 +1,8 @@
 #
-# Copyright (C) 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2018, 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
+# pylint: disable=too-few-public-methods
 r"""Singleton class
 
 .. versionadded:: 0.9.8

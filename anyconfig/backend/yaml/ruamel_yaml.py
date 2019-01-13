@@ -22,7 +22,13 @@ r"""YAML backend by ruamel.yaml:
     this option conflicts with 'ac_dict' option and these options cannot be
     used at the same time.
 
-  - See also: http://pyyaml.org/wiki/PyYAMLDocumentation
+  - All keyword options for ruamel.yaml.YAML.__init__ such like typ and pure
+    should also work.
+
+  - Some members of ruamel.yaml.YAML instance to control the behaviors such
+    like default_flow_style and allow_duplicate_keys should work, too.
+
+  - See also: https://yaml.readthedocs.io
 
 Changelog:
 

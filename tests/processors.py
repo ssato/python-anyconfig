@@ -95,13 +95,7 @@ class Test_30_find_functions(unittest.TestCase):
         p = TT.find_with_pred(lambda p: 'xyz' in p.extensions(), PRS)
         self.assertTrue(p is None)
 
-    def test_20_find_by_type(self):
-        self.assertTrue(isinstance(TT.find_by_type("json", PRS), A3))
-        self.assertTrue(isinstance(TT.find_by_type("yaml", PRS), B))
-        self.assertRaises(UnknownProcessorTypeError, TT.find_by_type,
-                          "X", PRS)
-
-    def test_24_find_by_type_or_id(self):
+    def test_20_find_by_type_or_id(self):
         self.assertTrue(isinstance(TT.find_by_type_or_id("json", PRS), A3))
         self.assertTrue(isinstance(TT.find_by_type_or_id("yaml", PRS), B))
         self.assertTrue(isinstance(TT.find_by_type_or_id("dummy", PRS), C))

@@ -68,36 +68,6 @@ def find_with_pred(predicate, prs):
     return None
 
 
-def find_by_type(ptype, prs, cls=anyconfig.models.processor.Processor):
-    """
-    :param ptype:
-        Type of the data to process or
-        :class:`anyconfig.models.processor.Processor` class object or its
-        instance
-    :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
-    :param cls: A class object to compare with `ptype`
-    :return:
-        Most appropriate processor instance to process files of given data type
-        `ptype` or None
-    :raises: UnknownProcessorTypeError
-    """
-    if isinstance(ptype, cls):
-        return ptype
-
-    if type(ptype) == type(cls) and issubclass(ptype, cls):
-        return ptype()
-
-    def pred(pcls):
-        """Predicate"""
-        return pcls.type() == ptype
-
-    processor = find_with_pred(pred, prs)
-    if processor is None:
-        raise UnknownProcessorTypeError(ptype)
-
-    return processor()
-
-
 def find_by_type_or_id(type_or_id, prs,
                        cls=anyconfig.models.processor.Processor):
     """
@@ -239,12 +209,6 @@ class Processors(object):
                           key=operator.methodcaller("cid"))
 
         return self._processors.values()
-
-    def find_by_type(self, ptype):
-        """
-        :param ptype: Processor's type to find
-        """
-        return find_by_type(ptype, self.list(sort=False))
 
     def find_by_type_or_id(self, type_or_id):
         """

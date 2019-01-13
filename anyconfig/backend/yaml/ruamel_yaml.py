@@ -46,8 +46,8 @@ import anyconfig.utils
 from . import pyyaml
 
 
-_ALPHA_RE = re.compile(r'[a-z]+[a-z_]+')
 _YAML_INIT_KWARGS = ["typ", "pure", "plug_ins"]  # kwargs for ruamel.yaml.YAML
+# _ALPHA_RE = re.compile(r'[a-z]+[a-z_]+')
 # .. todo:: Find out other better and reliable way to list options.
 # _YAML = ryaml.YAML()
 # _YAML_INSTANCE_MEMBERS = [

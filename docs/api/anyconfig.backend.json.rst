@@ -7,3 +7,9 @@
     :private-members:
     :undoc-members:
     :show-inheritance:
+
+.. toctree::
+
+   anyconfig.backend.json.default
+   anyconfig.backend.json.simplejson
+

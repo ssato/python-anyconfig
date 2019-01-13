@@ -38,7 +38,6 @@ Changelog:
 """
 from __future__ import absolute_import
 
-import re
 import ruamel.yaml as ryaml
 import anyconfig.utils
 
@@ -46,13 +45,6 @@ from . import pyyaml
 
 
 _YAML_INIT_KWARGS = ["typ", "pure", "plug_ins"]  # kwargs for ruamel.yaml.YAML
-# _ALPHA_RE = re.compile(r'[a-z]+[a-z_]+')
-# .. todo:: Find out other better and reliable way to list options.
-# _YAML = ryaml.YAML()
-# _YAML_INSTANCE_MEMBERS = [
-#     x for x in dir(_YAML)
-#    if _ALPHA_RE.match(x) and not callable(getattr(_YAML, x))
-# ]
 _YAML_INSTANCE_MEMBERS = ['allow_duplicate_keys', 'allow_unicode',
                           'block_seq_indent', 'canonical', 'composer',
                           'constructor', 'default_flow_style', 'default_style',

@@ -60,30 +60,6 @@ def find_with_pred(predicate, prs):
     :param predicate: any callable to filter results
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: Most appropriate processor class or None
-
-    >>> class A(anyconfig.models.processor.Processor):
-    ...    _type = "json"
-    ...    _extensions = ['json', 'js']
-    >>> class A2(A):
-    ...    _priority = 99  # Higher priority than A.
-    >>> class B(anyconfig.models.processor.Processor):
-    ...    _type = "yaml"
-    ...    _extensions = ['yaml', 'yml']
-    >>> prs = [A, A2, B]
-
-    >>> find_with_pred(lambda p: 'js' in p.extensions(), prs)
-    <class 'anyconfig.processors.A2'>
-    >>> find_with_pred(lambda p: 'yml' in p.extensions(), prs)
-    <class 'anyconfig.processors.B'>
-    >>> x = find_with_pred(lambda p: 'xyz' in p.extensions(), prs)
-    >>> assert x is None
-
-    >>> find_with_pred(lambda p: p.type() == "json", prs)
-    <class 'anyconfig.processors.A2'>
-    >>> find_with_pred(lambda p: p.type() == "yaml", prs)
-    <class 'anyconfig.processors.B'>
-    >>> x = find_with_pred(lambda p: p.type() == "x", prs)
-    >>> assert x is None
     """
     _prs = finds_with_pred(predicate, prs)
     if _prs:

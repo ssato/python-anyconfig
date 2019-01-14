@@ -1,9 +1,16 @@
 #
 # Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs of anyconfig module.
+
+.. versionchanged:: 0.9.9
+
+   - Removed the API `find_loader`
+   - Added new APIs `find` and `finds` to find parsers (loaders and dumpers) to
+     suppport to find multiple parsers, and replace the API `find_loader`
 
 .. versionadded:: 0.9.8
 
@@ -132,25 +139,38 @@ def _try_validate(cnf, schema, **options):
     return None
 
 
-def find_loader(path, parser_or_type=None):
+def finds(obj=None, forced_type=None):
     """
-    Find out parser object appropriate to load configuration from a file of
-    given path or file or file-like object.
+    Find out parser objects can load and/or dump data from given `obj` which
+    may be a file path, file or file-like object, pathlib.Path object or
+    `~anyconfig.globals.IOInfo` (namedtuple) object.
 
-    :param path:
-        Configuration file path or file or file-like object or pathlib.Path
-        object if it's available
-    :param parser_or_type:
+    :param obj:
+        a file path, file or file-like object, pathlib.Path object or
+        `~anyconfig.globals.IOInfo` (namedtuple) object, or None
+    :param forced_type:
         Forced configuration parser type or parser object itself
-
-    :return:
-        An instance of a class inherits :class:`~anyconfig.backend.base.Parser`
-        or None
+    :return: A list of instances of processor classes to process `obj`
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    try:
-        return Parsers().find(path, forced_type=parser_or_type)
-    except (ValueError, UnknownProcessorTypeError, UnknownFileTypeError):
-        raise
+    return Parsers().finds(obj, forced_type=forced_type)
+
+
+def find(obj=None, forced_type=None):
+    """
+    This function is very similar to the above :func:`find` but returns a
+    parser objects instead of a list of parser objects.
+
+    :param obj:
+        a file path, file or file-like object, pathlib.Path object or
+        `~anyconfig.globals.IOInfo` (namedtuple) object, or None
+    :param forced_type:
+        Forced configuration parser type or parser object itself
+    :return:
+        An instance of processor class of highest priority to process `obj`
+    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
+    """
+    return Parsers().find(obj, forced_type=forced_type)
 
 
 def _maybe_schema(**options):
@@ -195,7 +215,7 @@ def open(path, mode=None, ac_parser=None, **options):
     :return: A file object or None on any errors
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    psr = Parsers().find(path, forced_type=ac_parser)
+    psr = find(path, forced_type=ac_parser)
 
     if mode is not None and mode.startswith('w'):
         return psr.wopen(path, **options)
@@ -223,7 +243,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     ioi = anyconfig.ioinfo.make(input_, forced_type=ac_parser)
-    psr = Parsers().find(ioi, forced_type=ac_parser)
+    psr = find(ioi, forced_type=ac_parser)
     filepath = ioi.path
 
     # .. note::
@@ -367,7 +387,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
 
     paths = anyconfig.utils.expand_paths(inputs, marker=marker)
     if anyconfig.utils.are_same_file_types(paths):
-        ac_parser = Parsers().find(paths[0], forced_type=ac_parser)
+        ac_parser = find(paths[0], forced_type=ac_parser)
 
     cnf = ac_context
     for path in paths:
@@ -458,7 +478,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
                        "parser to load configurations from string.")
         return None
 
-    psr = Parsers().find_by_type_or_id(ac_parser)
+    psr = find(None, forced_type=ac_parser)
     schema = None
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
@@ -495,7 +515,7 @@ def dump(data, out, ac_parser=None, **options):
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     ioi = anyconfig.ioinfo.make(out, forced_type=ac_parser)
-    psr = Parsers().find(ioi, forced_type=ac_parser)
+    psr = find(ioi, forced_type=ac_parser)
     LOGGER.info("Dumping: %s", ioi.path)
     psr.dump(data, ioi, **options)
 
@@ -511,7 +531,7 @@ def dumps(data, ac_parser=None, **options):
     :return: Backend-specific string representation for the given data
     :raises: ValueError, UnknownProcessorTypeError
     """
-    psr = Parsers().find_by_type_or_id(ac_parser)
+    psr = find(None, forced_type=ac_parser)
     return psr.dumps(data, **options)
 
 

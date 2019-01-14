@@ -19,7 +19,7 @@ validation/generation support.
 from .globals import AUTHOR, VERSION
 from .api import (
     single_load, multi_load, load, loads, dump, dumps, validate, gen_schema,
-    list_types, find_loader, merge, get, set_, open,
+    list_types, find, finds, merge, get, set_, open,
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS,
     UnknownProcessorTypeError, UnknownFileTypeError
 )
@@ -29,7 +29,7 @@ __version__ = VERSION
 
 __all__ = [
     "single_load", "multi_load", "load", "loads", "dump", "dumps", "validate",
-    "gen_schema", "list_types", "find_loader", "merge",
+    "gen_schema", "list_types", "find", "finds", "merge",
     "get", "set_", "open",
     "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
     "UnknownProcessorTypeError", "UnknownFileTypeError"

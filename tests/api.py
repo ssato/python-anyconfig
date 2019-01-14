@@ -83,7 +83,7 @@ def _is_file_object(obj):
         return isinstance(obj, io.IOBase)
 
 
-class Test_10_find_loader(unittest.TestCase):
+class Test_10_find(unittest.TestCase):
 
     psrs = anyconfig.backends.Parsers().list()
 
@@ -91,7 +91,7 @@ class Test_10_find_loader(unittest.TestCase):
         self.assertTrue(any(isinstance(obj, cls) for cls in clss),
                         msg or "%r vs %r" % (obj, clss))
 
-    def test_10_find_loader__w_parser_type_or_instance(self):
+    def test_10_find__w_parser_type_or_instance(self):
         def _finds_by_type(typ):
             fnc = anyconfig.processors.finds_with_pred
             return fnc(lambda p: typ == p.type(), self.psrs)
@@ -99,10 +99,10 @@ class Test_10_find_loader(unittest.TestCase):
         cpath = "dummy.conf"
         for psr in self.psrs:
             ldrs = _finds_by_type(psr.type())
-            self._assert_isinstances(TT.find_loader(cpath, psr.type()), ldrs)
-            self._assert_isinstances(TT.find_loader(cpath, psr()), ldrs)
+            self._assert_isinstances(TT.find(cpath, psr.type()), ldrs)
+            self._assert_isinstances(TT.find(cpath, psr()), ldrs)
 
-    def test_20_find_loader__w_parser_by_file(self):
+    def test_20_find__w_parser_by_file(self):
         def _find_ldrs_by_ext(ext):
             fnc = anyconfig.processors.finds_with_pred
             return fnc(lambda p: ext in p.extensions(), self.psrs)
@@ -110,15 +110,15 @@ class Test_10_find_loader(unittest.TestCase):
         for psr in self.psrs:
             for ext in psr.extensions():
                 ldrs = _find_ldrs_by_ext(ext)
-                self._assert_isinstances(TT.find_loader("dummy." + ext), ldrs)
+                self._assert_isinstances(TT.find("dummy." + ext), ldrs)
 
-    def test_30_find_loader__unknown_parser_type(self):
+    def test_30_find__unknown_parser_type(self):
         self.assertRaises(TT.UnknownProcessorTypeError,
-                          TT.find_loader, "a.cnf", "type_not_exist")
+                          TT.find, "a.cnf", "type_not_exist")
 
-    def test_40_find_loader__unknown_file_type(self):
+    def test_40_find__unknown_file_type(self):
         self.assertRaises(TT.UnknownFileTypeError,
-                          TT.find_loader, "dummy.ext_not_found")
+                          TT.find, "dummy.ext_not_found")
 
 
 class TestBase(unittest.TestCase):

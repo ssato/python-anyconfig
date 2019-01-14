@@ -1,5 +1,5 @@
-API Usage
-==========
+Usage
+========
 
 Here are some code examples of API usage.
 
@@ -36,13 +36,23 @@ Here are some example code to load single config file:
   yml_psr = anyconfig.find_loader(None, ac_parser="yaml")
   data5 = anyconfig.single_load(cnf_path, yml_psr)  # Or: anyconfig.load(...)
 
+  # Same as above as a result but make parser instance and pass it explicitly.
+  yml_psr = anyconfig.find_loader(None, ac_parser="yaml")
+  data6 = anyconfig.single_load(cnf_path, yml_psr)  # Or: anyconfig.load(...)
+
+  # Similar to the previous examples but parser is specified explicitely to use
+  # ruamel.yaml based YAML parser instead of PyYAML based one, and give
+  # ruamel.yaml specific option.
+  data7 = anyconfig.load(cnf_path, ac_parser="ruamel.yaml",
+                         allow_duplicate_keys=True)
+
   # Same as above but open the config file explicitly before load.
   with anyconfig.open("/path/to/foo/conf.d/a.yml") as istrm:
-      data6 = anyconfig.load(istrm)
+      data10 = anyconfig.load(istrm)
 
   # Same as above but with specifying config type explicitly.
   with anyconfig.open("/path/to/foo/conf.d/a.yml", ac_parser="yaml") as istrm:
-      data7 = anyconfig.load(istrm)
+      data11 = anyconfig.load(istrm)
 
 Exceptions raised on load
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

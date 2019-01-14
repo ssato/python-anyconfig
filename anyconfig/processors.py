@@ -68,6 +68,24 @@ def find_with_pred(predicate, prs):
     return None
 
 
+def maybe_processor(type_or_id, cls=anyconfig.models.processor.Processor):
+    """
+    :param type_or_id:
+        Type of the data to process or ID of the processor class or
+        :class:`anyconfig.models.processor.Processor` class object or its
+        instance
+    :param cls: A class object to compare with `type_or_id`
+    :return: Processor instance or None
+    """
+    if isinstance(type_or_id, cls):
+        return type_or_id
+
+    if type(type_or_id) == type(cls) and issubclass(type_or_id, cls):
+        return type_or_id()
+
+    return None
+
+
 def find_by_type_or_id(type_or_id, prs,
                        cls=anyconfig.models.processor.Processor):
     """
@@ -82,11 +100,9 @@ def find_by_type_or_id(type_or_id, prs,
         or processor `type_or_id` found by its ID or None
     :raises: UnknownProcessorTypeError
     """
-    if isinstance(type_or_id, cls):
-        return type_or_id
-
-    if type(type_or_id) == type(cls) and issubclass(type_or_id, cls):
-        return type_or_id()
+    processor = maybe_processor(type_or_id, cls=cls)
+    if processor is not None:
+        return processor
 
     def pred(pcls):
         """Predicate"""

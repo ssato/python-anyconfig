@@ -208,12 +208,6 @@ class Processors(object):
 
         return self._processors.values()
 
-    def find_by_type_or_id(self, type_or_id):
-        """
-        :param type_or_id: Processor's type or ID to find
-        """
-        return self.find(None, forced_type=type_or_id)
-
     def find(self, obj, forced_type=None,
              cls=anyconfig.models.processor.Processor):
         """
@@ -228,5 +222,11 @@ class Processors(object):
         """
         return find(obj, self.list(sort=False), forced_type=forced_type,
                     cls=cls)
+
+    def find_by_type_or_id(self, type_or_id):
+        """
+        :param type_or_id: Processor's type or ID to find
+        """
+        return self.find(None, forced_type=type_or_id)
 
 # vim:sw=4:ts=4:et:

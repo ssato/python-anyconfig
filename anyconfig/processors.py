@@ -95,7 +95,7 @@ def find_by_type_or_id(type_or_id, prs,
     :param cls: A class object to compare with `type_or_id`
     :return:
         Most appropriate processor instance to process files of given data type
-        or processor `type_or_id` found by its ID or None
+        or processor `type_or_id` found by its ID
     :raises: UnknownProcessorTypeError
     """
     def pred(pcls):

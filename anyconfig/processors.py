@@ -234,7 +234,7 @@ class Processors(object):
         return self._processors.values()
 
     def finds(self, obj, forced_type=None,
-             cls=anyconfig.models.processor.Processor):
+              cls=anyconfig.models.processor.Processor):
         """
         :param obj:
             a file path, file or file-like object, pathlib.Path object or

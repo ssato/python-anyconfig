@@ -133,44 +133,45 @@ class Test_30_find_functions(unittest.TestCase):
 
 class Test_32_find_functions(unittest.TestCase):
 
-    def test_10_find__wo_path_nor_type(self):
-        self.assertRaises(ValueError, TT.find, None, PRS, None)
+    def test_10_finds__wo_path_nor_type(self):
+        self.assertRaises(ValueError, TT.finds, None, PRS, None)
 
-    def test_12_find__uknown_file_type(self):
-        self.assertRaises(UnknownFileTypeError, TT.find, "/tmp/x.xyz", PRS)
-        self.assertRaises(UnknownFileTypeError, TT.find, "/dev/null", PRS)
+    def test_12_finds__uknown_file_type(self):
+        self.assertRaises(UnknownFileTypeError, TT.finds, "/tmp/x.xyz", PRS)
+        self.assertRaises(UnknownFileTypeError, TT.finds, "/dev/null", PRS)
 
-    def test_14_find__uknown_type(self):
-        self.assertRaises(UnknownProcessorTypeError, TT.find, None, PRS, "xyz")
+    def test_14_finds__uknown_type(self):
+        self.assertRaises(UnknownProcessorTypeError,
+                          TT.finds, None, PRS, "xyz")
 
     def test_20_find__maybe_file(self):
-        self.assertEqual(TT.find("/path/to/a.jsn", PRS), [A3, A2, A])
-        self.assertEqual(TT.find("../../path/to/b.yml", PRS), [B, C])
+        self.assertEqual(TT.finds("/path/to/a.jsn", PRS), [A3, A2, A])
+        self.assertEqual(TT.finds("../../path/to/b.yml", PRS), [B, C])
 
         obj = anyconfig.ioinfo.make("/path/to/a.json")
-        self.assertEqual(TT.find(obj, PRS), [A3, A2, A])
+        self.assertEqual(TT.finds(obj, PRS), [A3, A2, A])
 
-    def test_22_find__type_or_id(self):
-        self.assertEqual(TT.find(None, PRS, forced_type="json"), [A3, A2, A])
-        self.assertEqual(TT.find(None, PRS, forced_type="yaml"), [B, C])
-        self.assertEqual(TT.find(None, PRS, "dummy"), [C])
+    def test_22_finds__type_or_id(self):
+        self.assertEqual(TT.finds(None, PRS, forced_type="json"), [A3, A2, A])
+        self.assertEqual(TT.finds(None, PRS, forced_type="yaml"), [B, C])
+        self.assertEqual(TT.finds(None, PRS, "dummy"), [C])
 
-    def test_30_find_1__forced_type(self):
-        self.assertEqual(TT.find_1(None, PRS, forced_type=A2), A2)
-        self.assertEqual(TT.find_1(None, PRS, forced_type=A2()), A2)
-        self.assertEqual(TT.find_1(None, PRS, forced_type=C.cid()), C)
+    def test_30_find__forced_type(self):
+        self.assertEqual(TT.find(None, PRS, forced_type=A2), A2)
+        self.assertEqual(TT.find(None, PRS, forced_type=A2()), A2)
+        self.assertEqual(TT.find(None, PRS, forced_type=C.cid()), C)
 
-    def test_32_find_1__maybe_file(self):
-        self.assertEqual(TT.find_1("/path/to/a.jsn", PRS), A3)
-        self.assertEqual(TT.find_1("../../path/to/b.yml", PRS), B)
+    def test_32_find__maybe_file(self):
+        self.assertEqual(TT.find("/path/to/a.jsn", PRS), A3)
+        self.assertEqual(TT.find("../../path/to/b.yml", PRS), B)
 
         obj = anyconfig.ioinfo.make("/path/to/a.json")
-        self.assertEqual(TT.find_1(obj, PRS), A3)
+        self.assertEqual(TT.find(obj, PRS), A3)
 
-    def test_34_find_1__type_or_id(self):
-        self.assertEqual(TT.find_1(None, PRS, forced_type="json"), A3)
-        self.assertEqual(TT.find_1(None, PRS, forced_type="yaml"), B)
-        self.assertEqual(TT.find_1(None, PRS, forced_type="dummy"), C)
+    def test_34_find__type_or_id(self):
+        self.assertEqual(TT.find(None, PRS, forced_type="json"), A3)
+        self.assertEqual(TT.find(None, PRS, forced_type="yaml"), B)
+        self.assertEqual(TT.find(None, PRS, forced_type="dummy"), C)
 
 
 class Test_40_Processors(unittest.TestCase):

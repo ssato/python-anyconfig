@@ -141,7 +141,8 @@ def find_by_maybe_file(obj, prs):
     return find_by_fileext(obj.extension, prs)  # :: [Processor], never []
 
 
-def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
+def finds(obj, prs, forced_type=None,
+          cls=anyconfig.models.processor.Processor):
     """
     :param obj:
         a file path, file or file-like object, pathlib.Path object or
@@ -168,8 +169,7 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
     return pclss
 
 
-def find_1(obj, prs, forced_type=None,
-           cls=anyconfig.models.processor.Processor):
+def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
     """
     :param obj:
         a file path, file or file-like object, pathlib.Path object or
@@ -189,7 +189,7 @@ def find_1(obj, prs, forced_type=None,
         if processor is not None:
             return processor
 
-    pclss = find(obj, prs, forced_type=forced_type, cls=cls)
+    pclss = finds(obj, prs, forced_type=forced_type, cls=cls)
     return pclss[0]()
 
 
@@ -233,6 +233,21 @@ class Processors(object):
 
         return self._processors.values()
 
+    def finds(self, obj, forced_type=None,
+             cls=anyconfig.models.processor.Processor):
+        """
+        :param obj:
+            a file path, file or file-like object, pathlib.Path object or
+            `~anyconfig.globals.IOInfo` (namedtuple) object
+        :param forced_type: Forced processor type to find
+        :param cls: A class object to compare with `ptype`
+
+        :return: A list of instances of processor classes to process `obj`
+        :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
+        """
+        return [p() for p in finds(obj, self.list(sort=False),
+                                   forced_type=forced_type, cls=cls)]
+
     def find(self, obj, forced_type=None,
              cls=anyconfig.models.processor.Processor):
         """
@@ -245,8 +260,8 @@ class Processors(object):
         :return: an instance of processor class to process `obj`
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
-        return find_1(obj, self.list(sort=False), forced_type=forced_type,
-                      cls=cls)
+        return find(obj, self.list(sort=False), forced_type=forced_type,
+                    cls=cls)
 
     def find_by_type_or_id(self, type_or_id):
         """

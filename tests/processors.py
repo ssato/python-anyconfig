@@ -101,9 +101,13 @@ class Test_30_find_functions(unittest.TestCase):
         self.assertTrue(TT.maybe_processor("undef", A3) is None)
 
     def test_20_find_by_type_or_id(self):
-        self.assertTrue(isinstance(TT.find_by_type_or_id("json", PRS), A3))
-        self.assertTrue(isinstance(TT.find_by_type_or_id("yaml", PRS), B))
-        self.assertTrue(isinstance(TT.find_by_type_or_id("dummy", PRS), C))
+        self.assertEqual(TT.find_by_type_or_id("json", PRS), [A3, A2, A])
+        self.assertEqual(TT.find_by_type_or_id("yaml", PRS), [B, C])
+        self.assertEqual(TT.find_by_type_or_id("dummy", PRS), [C])
+
+    def test_22_find_by_type_or_id__ng_cases(self):
+        self.assertRaises(UnknownProcessorTypeError,
+                          TT.find_by_type_or_id, "xyz", PRS)
 
     def test_30_find_by_fileext(self):
         self.assertEqual(TT.find_by_fileext("jsn", PRS), [A3, A2, A])

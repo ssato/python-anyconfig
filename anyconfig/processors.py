@@ -89,24 +89,23 @@ def maybe_processor(type_or_id, cls=anyconfig.models.processor.Processor):
 def find_by_type_or_id(type_or_id, prs,
                        cls=anyconfig.models.processor.Processor):
     """
-    :param type_or_id:
-        Type of the data to process or ID of the processor class
+    :param type_or_id: Type of the data to process or ID of the processor class
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param cls: A class object to compare with `type_or_id`
     :return:
-        Most appropriate processor instance to process files of given data type
-        or processor `type_or_id` found by its ID
+        A list of processor classes to process files of given data type or
+        processor `type_or_id` found by its ID
     :raises: UnknownProcessorTypeError
     """
     def pred(pcls):
         """Predicate"""
         return pcls.cid() == type_or_id or pcls.type() == type_or_id
 
-    processor = find_with_pred(pred, prs)
-    if processor is None:
+    pclss = finds_with_pred(pred, prs)
+    if not pclss:
         raise UnknownProcessorTypeError(type_or_id)
 
-    return processor()
+    return pclss
 
 
 def find_by_fileext(fileext, prs):
@@ -164,14 +163,14 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
 
     if forced_type is None:
         pclss = find_by_maybe_file(obj, prs)  # :: [Processor], never []
-        processor = pclss[0]()
     else:
         processor = maybe_processor(forced_type, cls=cls)
         if processor is not None:
             return processor
 
-        processor = find_by_type_or_id(forced_type, prs, cls=cls)
+        pclss = find_by_type_or_id(forced_type, prs, cls=cls)  # Do.
 
+    processor = pclss[0]()
     return processor
 
 

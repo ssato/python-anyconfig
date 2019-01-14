@@ -90,9 +90,7 @@ def find_by_type_or_id(type_or_id, prs,
                        cls=anyconfig.models.processor.Processor):
     """
     :param type_or_id:
-        Type of the data to process or ID of the processor class or
-        :class:`anyconfig.models.processor.Processor` class object or its
-        instance
+        Type of the data to process or ID of the processor class
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param cls: A class object to compare with `type_or_id`
     :return:
@@ -100,10 +98,6 @@ def find_by_type_or_id(type_or_id, prs,
         or processor `type_or_id` found by its ID or None
     :raises: UnknownProcessorTypeError
     """
-    processor = maybe_processor(type_or_id, cls=cls)
-    if processor is not None:
-        return processor
-
     def pred(pcls):
         """Predicate"""
         return pcls.cid() == type_or_id or pcls.type() == type_or_id
@@ -175,6 +169,10 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
     if forced_type is None:
         processor = find_by_maybe_file(obj, prs)
     else:
+        processor = maybe_processor(forced_type, cls=cls)
+        if processor is not None:
+            return processor
+
         processor = find_by_type_or_id(forced_type, prs, cls=cls)
 
     return processor

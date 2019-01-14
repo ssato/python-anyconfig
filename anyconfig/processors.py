@@ -156,16 +156,15 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
                          "'forced_type' must be something other than "
                          "None or False.")
 
-    if forced_type is None:
-        processor = find_by_maybe_file(obj, prs)
+    if forced_type is not None:
+        processor = find_by_type_or_id(forced_type, prs, cls=cls)
         if processor is None:
-            raise UnknownFileTypeError(obj)
-
+            raise UnknownProcessorTypeError(forced_type)
         return processor
 
-    processor = find_by_type_or_id(forced_type, prs, cls=cls)
+    processor = find_by_maybe_file(obj, prs)
     if processor is None:
-        raise UnknownProcessorTypeError(forced_type)
+        raise UnknownFileTypeError(obj)
 
     return processor
 

@@ -69,41 +69,6 @@ class Parsers(anyconfig.processors.Processors,
 
         super(Parsers, self).__init__(processors)
 
-    def find_by_type_or_id(self, ptype):
-        """Find parser object to process data of given type or by its ID.
-
-        :param ptype: Forced parser type or ID or parser class or its instance
-
-        :return: An instance of :class:`~anyconfig.backend.base.Parser`
-        :raises: UnknownProcessorTypeError
-        """
-        if ptype is None or not ptype:
-            raise ValueError("The first arguemnt 'ptype' must be a string "
-                             "or Parser class or Parser instance")
-
-        return super(Parsers, self).find_by_type_or_id(ptype)
-
-    def find(self, obj, forced_type=None,
-             cls=anyconfig.models.processor.Processor):
-        """Find appropriate parser object to process given `obj`.
-
-        :param obj:
-            a file path, file or file-like object, pathlib.Path object or
-            `~anyconfig.globals.IOInfo` (namedtuple) object
-        :param forced_type: Forced parser type or ID
-
-        :return: Parser object
-        :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
-        """
-        if obj and not isinstance(obj, anyconfig.globals.IOInfo):
-            obj = anyconfig.ioinfo.make(obj)
-
-        psr = super(Parsers, self).find(obj, forced_type=forced_type,
-                                        cls=anyconfig.backend.base.Parser)
-
-        LOGGER.debug("Using parser %r [%s]", psr, psr.type())
-        return psr
-
     def list_types(self):
         """List available types parsers support.
         """

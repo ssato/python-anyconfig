@@ -113,16 +113,18 @@ def find_by_fileext(fileext, prs):
     """
     :param fileext: File extension
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
-    :return:
-        Most appropriate processor class to process files with given
-        extentsions or None
+    :return: A list of processor class to processor files with given extension
     :raises: UnknownFileTypeError
     """
     def pred(pcls):
         """Predicate"""
         return fileext in pcls.extensions()
 
-    return find_with_pred(pred, prs)
+    pclss = finds_with_pred(pred, prs)
+    if not pclss:
+        raise UnknownFileTypeError("file extension={}".format(fileext))
+
+    return pclss  # :: [Processor], never []
 
 
 def find_by_maybe_file(obj, prs):
@@ -131,19 +133,13 @@ def find_by_maybe_file(obj, prs):
         a file path, file or file-like object, pathlib.Path object or
         `~anyconfig.globals.IOInfo` (namedtuple) object
     :param cps_by_ext: A list of processor classes
-
-    :return:
-        An instance of most appropriate processor class to process given data
+    :return: A list of processor classes to process given (maybe) file
     :raises: UnknownFileTypeError
     """
     if not isinstance(obj, IOInfo):
         obj = anyconfig.ioinfo.make(obj)
 
-    processor = find_by_fileext(obj.extension, prs)
-    if processor is None:
-        raise UnknownFileTypeError("file extension={}".format(obj.extension))
-
-    return processor()
+    return find_by_fileext(obj.extension, prs)  # :: [Processor], never []
 
 
 def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
@@ -167,7 +163,8 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
                          "None or False.")
 
     if forced_type is None:
-        processor = find_by_maybe_file(obj, prs)
+        pclss = find_by_maybe_file(obj, prs)  # :: [Processor], never []
+        processor = pclss[0]()
     else:
         processor = maybe_processor(forced_type, cls=cls)
         if processor is not None:

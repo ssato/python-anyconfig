@@ -106,17 +106,19 @@ class Test_30_find_functions(unittest.TestCase):
         self.assertTrue(isinstance(TT.find_by_type_or_id("dummy", PRS), C))
 
     def test_30_find_by_fileext(self):
-        self.assertEqual(TT.find_by_fileext("jsn", PRS), A3)
-        self.assertEqual(TT.find_by_fileext("yml", PRS), B)
-        self.assertTrue(TT.find_by_fileext("xyz", PRS) is None)
+        self.assertEqual(TT.find_by_fileext("jsn", PRS), [A3, A2, A])
+        self.assertEqual(TT.find_by_fileext("yml", PRS), [B, C])
+
+    def test_32_find_by_fileext__ng_cases(self):
+        self.assertRaises(UnknownFileTypeError, TT.find_by_fileext, "xyz", PRS)
 
     def test_40_find_by_maybe_file(self):
-        self.assertInstance(TT.find_by_maybe_file("/path/to/a.jsn", PRS), A3)
-        self.assertInstance(TT.find_by_maybe_file("../../path/to/b.yml", PRS),
-                            B)
-
+        self.assertEqual(TT.find_by_maybe_file("/path/to/a.jsn", PRS),
+                         [A3, A2, A])
+        self.assertEqual(TT.find_by_maybe_file("../../path/to/b.yml", PRS),
+                         [B, C])
         obj = anyconfig.ioinfo.make("/path/to/a.json")
-        self.assertInstance(TT.find_by_maybe_file(obj, PRS), A3)
+        self.assertEqual(TT.find_by_maybe_file(obj, PRS), [A3, A2, A])
 
     def test_42_find_by_maybe_file__ng_cases(self):
         self.assertRaises(UnknownFileTypeError, TT.find_by_maybe_file,

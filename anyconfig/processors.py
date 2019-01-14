@@ -212,7 +212,7 @@ class Processors(object):
         """
         :param type_or_id: Processor's type or ID to find
         """
-        return find_by_type_or_id(type_or_id, self.list(sort=False))
+        return self.find(None, forced_type=type_or_id)
 
     def find(self, obj, forced_type=None,
              cls=anyconfig.models.processor.Processor):

@@ -254,7 +254,7 @@ def _output_type_by_input_path(inpaths, itype, fmsg):
            "or -O/--otype option explicitly")
     if itype is None:
         try:
-            otype = API.find_loader(inpaths[0]).type()
+            otype = API.find(inpaths[0]).type()
         except API.UnknownFileTypeError:
             _exit_with_output((fmsg % inpaths[0]) + msg, 1)
         except (ValueError, IndexError):

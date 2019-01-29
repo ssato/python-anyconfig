@@ -41,6 +41,8 @@ from __future__ import absolute_import
 
 import re
 import ruamel.yaml as ryaml
+if not getattr(ryaml, 'YAML', None):
+    raise ImportError('ruamel.yaml may be too old; no YAML class is defined')
 import anyconfig.utils
 
 from . import pyyaml

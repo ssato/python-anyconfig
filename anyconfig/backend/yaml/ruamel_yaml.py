@@ -44,6 +44,11 @@ import anyconfig.utils
 from . import pyyaml
 
 
+try:
+    ryaml.YAML  # flake8: noqa
+except AttributeError:
+    ImportError("ruamel.yaml may be too old to use!")
+
 _YAML_INIT_KWARGS = ["typ", "pure", "plug_ins"]  # kwargs for ruamel.yaml.YAML
 _YAML_INSTANCE_MEMBERS = ['allow_duplicate_keys', 'allow_unicode',
                           'block_seq_indent', 'canonical', 'composer',

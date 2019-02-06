@@ -53,7 +53,8 @@ class Processor(object):
         """
         return cls._extensions
 
-    def __eq__(self, other):
-        return self.cid() == other.cid()
+    @classmethod
+    def __eq__(cls, other):
+        return cls.cid() == other.cid()
 
 # vim:sw=4:ts=4:et:

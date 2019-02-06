@@ -192,6 +192,21 @@ def _exit_with_output(content, exit_code=0):
     sys.exit(exit_code)
 
 
+def _show_psrs():
+    """Show list of info of parsers available
+    """
+    sep = os.linesep
+
+    types = "Supported types: " + ", ".join(API.list_types())
+    cids = "IDs: " + ", ".join(c for c, _ps in API.list_by_cid())
+
+    x_vs_ps = ["  %s: %s" % (x, ", ".join(p.cid() for p in ps))
+               for x, ps in API.list_by_extension()]
+    exts = "File extensions:" + sep + sep.join(x_vs_ps)
+
+    _exit_with_output(sep.join([types, exts, cids]))
+
+
 def _parse_args(argv):
     """
     Show supported config format types or usage.
@@ -205,8 +220,7 @@ def _parse_args(argv):
 
     if not args.inputs:
         if args.list:
-            tlist = ", ".join(API.list_types())
-            _exit_with_output("Supported config types: " + tlist)
+            _show_psrs()
         elif args.env:
             cnf = os.environ.copy()
             _output_result(cnf, args.output, args.otype or "json", None, None)

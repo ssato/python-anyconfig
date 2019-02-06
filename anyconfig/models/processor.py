@@ -57,4 +57,9 @@ class Processor(object):
     def __eq__(cls, other):
         return cls.cid() == other.cid()
 
+    def __str__(self):
+        return ("<Processor cid=%s, type=%s, prio=%d, "
+                "extensions=%r" % (self.cid(), self.type(), self.priority(),
+                                   self.extensions()))
+
 # vim:sw=4:ts=4:et:

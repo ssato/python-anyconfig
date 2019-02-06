@@ -11,6 +11,7 @@ r"""Public APIs of anyconfig module.
    - Removed the API `find_loader`
    - Added new APIs `find` and `findall` to find parsers (loaders and dumpers)
      to suppport to find multiple parsers, and replace the API `find_loader`
+   - Added new APIs `list_by_type` and `list_by_extension` to list parsers
 
 .. versionadded:: 0.9.8
 
@@ -116,7 +117,19 @@ def load_plugins():
 def list_types():
     """List supported parser types.
     """
-    return Parsers().list_types()
+    return sorted(Parsers().list_x("type"))
+
+
+def list_by_type():
+    """List supported parser by types.
+    """
+    return Parsers().list_by_x("type")
+
+
+def list_by_extension():
+    """List supported parser by file extension supported.
+    """
+    return Parsers().list_by_x("extensions")
 
 
 def _try_validate(cnf, schema, **options):

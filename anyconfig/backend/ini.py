@@ -180,6 +180,7 @@ class Parser(anyconfig.backend.base.Parser,
     """
     Ini config files parser.
     """
+    _cid = "ini"
     _type = "ini"
     _extensions = ["ini"]
     _load_opts = ["defaults", "dict_type", "allow_no_value", "filename",

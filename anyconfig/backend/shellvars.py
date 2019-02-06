@@ -106,6 +106,7 @@ class Parser(anyconfig.backend.base.StreamParser):
     """
     Parser for Shell variable definition files.
     """
+    _cid = "shellvars"
     _type = "shellvars"
     _ordered = True
     _dict_opts = ["ac_dict"]

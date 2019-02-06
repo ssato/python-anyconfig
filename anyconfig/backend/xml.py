@@ -467,6 +467,7 @@ class Parser(anyconfig.backend.base.Parser,
     """
     Parser for XML files.
     """
+    _cid = "xml"
     _type = "xml"
     _extensions = ["xml"]
     _load_opts = _dump_opts = ["tags", "merge_attrs", "ac_parse_value"]

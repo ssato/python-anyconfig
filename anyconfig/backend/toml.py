@@ -31,6 +31,7 @@ class Parser(anyconfig.backend.base.StringStreamFnParser):
     """
     TOML parser.
     """
+    _cid = "toml"
     _type = "toml"
     _extensions = ["toml"]
     _ordered = True

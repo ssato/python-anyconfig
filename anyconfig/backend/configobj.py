@@ -78,6 +78,7 @@ class Parser(anyconfig.backend.base.StreamParser,
     """
     Parser for Ini-like config files which configobj supports.
     """
+    _cid = "configobj"
     _type = "configobj"
     _priority = 10
     _load_opts = _LOAD_OPTS  # options on dump will be just ignored.

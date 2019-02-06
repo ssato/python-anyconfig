@@ -196,6 +196,7 @@ class Parser(anyconfig.backend.base.StreamParser):
     """
     Parser for Java properties files.
     """
+    _cid = "properties"
     _type = "properties"
     _extensions = ["properties"]
     _ordered = True

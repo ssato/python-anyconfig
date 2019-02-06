@@ -15,19 +15,23 @@ from anyconfig.globals import (
 
 
 class A(anyconfig.models.processor.Processor):
+    _cid = "A"
     _type = "json"
     _extensions = ['json', 'jsn', 'js']
 
 
 class A2(A):
+    _cid = "A2"
     _priority = 20  # Higher priority than A.
 
 
 class A3(A):
+    _cid = "A3"
     _priority = 99  # Higher priority than A and A2.
 
 
 class B(anyconfig.models.processor.Processor):
+    _cid = "B"
     _type = "yaml"
     _extensions = ['yaml', 'yml']
     _priority = 99  # Higher priority than C.
@@ -49,6 +53,27 @@ class Test_10_Processor(unittest.TestCase):
         self.assertEqual(a1, a2)
         self.assertNotEqual(a1, b)
         self.assertNotEqual(a1, a22)
+
+
+class Test_12_list_functions(unittest.TestCase):
+
+    def test_10_list_by_x(self):
+        self.assertRaises(ValueError, TT.list_by_x, PRS, "undef")
+        self.assertEqual(TT.list_by_x([], "type"), [])
+
+    def test_20_list_by_type(self):
+        exp = sorted([(A.type(), [A3, A2, A]), (B.type(), [B, C])],
+                     key=TT.operator.itemgetter(0))
+        self.assertEqual(TT.list_by_x(PRS, "type"), exp)
+
+    def test_30_list_by_extensions(self):
+        exp = sorted([("js", [A3, A2, A]),
+                      ("json", [A3, A2, A]),
+                      ("jsn", [A3, A2, A]),
+                      ("yaml", [B, C]),
+                      ("yml", [B, C])],
+                     key=TT.operator.itemgetter(0))
+        self.assertEqual(TT.list_by_x(PRS, "extensions"), exp)
 
 
 class Test_20_findall_functions(unittest.TestCase):
@@ -165,5 +190,11 @@ class Test_40_Processors(unittest.TestCase):
         prcs = TT.Processors(PRS)
         self.assertEqual(prcs.list(sort=True),
                          sorted(PRS, key=operator.methodcaller("cid")))
+
+    def test_20_list_by_cid(self):
+        prcs = TT.Processors(PRS)
+        exp = sorted(((p.cid(), [p]) for p in PRS),
+                     key=TT.operator.itemgetter(0))
+        self.assertEqual(prcs.list_by_cid(), exp)
 
 # vim:sw=4:ts=4:et:

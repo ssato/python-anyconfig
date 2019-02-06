@@ -17,6 +17,7 @@ import pkg_resources
 import anyconfig.compat
 import anyconfig.ioinfo
 import anyconfig.models.processor
+import anyconfig.utils
 
 from anyconfig.globals import (
     UnknownProcessorTypeError, UnknownFileTypeError, IOInfo
@@ -43,6 +44,51 @@ def load_plugins(pgroup, safe=True):
     :raises: ImportError
     """
     return list(_load_plugins_itr(pgroup, safe=safe))
+
+
+def sort_by_prio(prs):
+    """
+    :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
+    :return: Sambe as above but sorted by priority
+    """
+    return sorted(prs, key=operator.methodcaller("priority"), reverse=True)
+
+
+def select_by_key(items, sort_fn=sorted):
+    """
+    :param items: A list of tuples of keys and values, [([key], val)]
+    :return: A list of tuples of key and values, [(key, [val])]
+
+    >>> select_by_key([(["a", "aaa"], 1), (["b", "bb"], 2), (["a"], 3)])
+    [('a', [1, 3]), ('aaa', [1]), ('b', [2]), ('bb', [2])]
+    """
+    itr = anyconfig.utils.concat(((k, v) for k in ks) for ks, v in items)
+    return list((k, sort_fn(t[1] for t in g))
+                for k, g
+                in anyconfig.utils.groupby(itr, operator.itemgetter(0)))
+
+
+def list_by_x(prs, key):
+    """
+    :param key: Grouping key, "type" or "extensions"
+    :return:
+        A list of :class:`Processor` or its children classes grouped by
+        given `item`, [(cid, [:class:`Processor`)]] by default
+    """
+    if key == "type":
+        kfn = operator.methodcaller(key)
+        res = sorted(((k, sort_by_prio(g)) for k, g
+                      in anyconfig.utils.groupby(prs, kfn)),
+                     key=operator.itemgetter(0))
+
+    elif key == "extensions":
+        res = select_by_key(((p.extensions(), p) for p in prs),
+                            sort_fn=sort_by_prio)
+    else:
+        raise ValueError("Argument 'key' must be 'type' or "
+                         "'extensions' but it was '%s'" % key)
+
+    return res
 
 
 def findall_with_pred(predicate, prs):
@@ -220,6 +266,44 @@ class Processors(object):
             return sorted(prs, key=operator.methodcaller("cid"))
 
         return prs
+
+    def list_by_cid(self):
+        """
+        :return:
+            A list of :class:`Processor` or its children classes grouped by
+            each cid, [(cid, [:class:`Processor`)]]
+        """
+        prs = self._processors
+        return sorted(((cid, [prs[cid]]) for cid in sorted(prs.keys())),
+                      key=operator.itemgetter(0))
+
+    def list_by_type(self):
+        """
+        :return:
+            A list of :class:`Processor` or its children classes grouped by
+            each type, [(type, [:class:`Processor`)]]
+        """
+        return list_by_x(self.list(), "type")
+
+    def list_by_x(self, item=None):
+        """
+        :param item: Grouping key, one of "cid", "type" and "extensions"
+        :return:
+            A list of :class:`Processor` or its children classes grouped by
+            given `item`, [(cid, [:class:`Processor`)]] by default
+        """
+        prs = self._processors
+
+        if item is None or item == "cid":  # Default.
+            res = [(cid, [prs[cid]]) for cid in sorted(prs.keys())]
+
+        elif item in ("type", "extensions"):
+            res = list_by_x(prs.values(), item)
+        else:
+            raise ValueError("keyword argument 'item' must be one of "
+                             "None, 'cid', 'type' and 'extensions' "
+                             "but it was '%s'" % item)
+        return res
 
     def findall(self, obj, forced_type=None,
                 cls=anyconfig.models.processor.Processor):

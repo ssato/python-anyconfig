@@ -215,11 +215,11 @@ class Processors(object):
         :param sort: Result will be sorted if it's True
         :return: A list of :class:`Processor` or its children classes
         """
+        prs = self._processors.values()
         if sort:
-            return sorted(self._processors.values(),
-                          key=operator.methodcaller("cid"))
+            return sorted(prs, key=operator.methodcaller("cid"))
 
-        return self._processors.values()
+        return prs
 
     def findall(self, obj, forced_type=None,
                 cls=anyconfig.models.processor.Processor):

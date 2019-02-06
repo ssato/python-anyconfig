@@ -69,9 +69,4 @@ class Parsers(anyconfig.processors.Processors,
 
         super(Parsers, self).__init__(processors)
 
-    def list_types(self):
-        """List available types parsers support.
-        """
-        return sorted(set(psr.type() for psr in self.list()))
-
 # vim:sw=4:ts=4:et:

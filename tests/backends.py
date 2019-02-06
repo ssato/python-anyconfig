@@ -26,12 +26,6 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.psrs = TT.Parsers()
 
-    def test_10_list_types(self):
-        types = self.psrs.list_types()
-
-        self.assertTrue(isinstance(types, list))
-        self.assertTrue(bool(list))  # check it's not empty.
-
     def test_30_find__ng_cases(self):
         self.assertRaises(ValueError, self.psrs.find, None)
         self.assertRaises(UnknownProcessorTypeError, self.psrs.find, None,

@@ -210,7 +210,7 @@ class Processors(object):
         if self._pgroup:
             self.register(*load_plugins(self._pgroup))
 
-    def list(self, sort=True):
+    def list(self, sort=False):
         """
         :param sort: Result will be sorted if it's True
         :return: A list of :class:`Processor` or its children classes
@@ -233,7 +233,7 @@ class Processors(object):
         :return: A list of instances of processor classes to process `obj`
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
-        return [p() for p in findall(obj, self.list(sort=False),
+        return [p() for p in findall(obj, self.list(),
                                      forced_type=forced_type, cls=cls)]
 
     def find(self, obj, forced_type=None,
@@ -248,7 +248,6 @@ class Processors(object):
         :return: an instance of processor class to process `obj`
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
-        return find(obj, self.list(sort=False), forced_type=forced_type,
-                    cls=cls)
+        return find(obj, self.list(), forced_type=forced_type, cls=cls)
 
 # vim:sw=4:ts=4:et:

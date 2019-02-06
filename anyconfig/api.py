@@ -122,9 +122,9 @@ def list_types():
 
 
 def list_by_cid():
-    """List supported parsers, [(cid, Parser_class)].
+    """List supported parsers, [(cid, [Parser_class])].
     """
-    return Parsers().list(sort=True)
+    return Parsers().list_by_x("cid")
 
 
 def list_by_type():

@@ -197,4 +197,15 @@ class Test_40_Processors(unittest.TestCase):
                      key=TT.operator.itemgetter(0))
         self.assertEqual(prcs.list_by_cid(), exp)
 
+    def test_20_list_x(self):
+        prcs = TT.Processors(PRS)
+        self.assertRaises(ValueError, prcs.list_x)
+        self.assertEqual(prcs.list_x("cid"),
+                         sorted(set(p.cid() for p in PRS)))
+        self.assertEqual(prcs.list_x("type"),
+                         sorted(set(p.type() for p in PRS)))
+
+        res = sorted(set(A.extensions() + B.extensions() + C.extensions()))
+        self.assertEqual(prcs.list_x("extension"), res)
+
 # vim:sw=4:ts=4:et:

@@ -305,6 +305,21 @@ class Processors(object):
                              "but it was '%s'" % item)
         return res
 
+    def list_x(self, key=None):
+        """
+        :param key: Which of key to return from "cid", "type", and "extention"
+        :return: A list of x `key`
+        """
+        if key in ("cid", "type"):
+            return sorted(set(operator.methodcaller(key)(p)
+                              for p in self._processors.values()))
+        if key == "extension":
+            return sorted(k for k, _v in self.list_by_x("extensions"))
+
+        raise ValueError("keyword argument 'key' must be one of "
+                         "None, 'cid', 'type' and 'extension' "
+                         "but it was '%s'" % key)
+
     def findall(self, obj, forced_type=None,
                 cls=anyconfig.models.processor.Processor):
         """

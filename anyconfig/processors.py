@@ -55,19 +55,6 @@ def finds_with_pred(predicate, prs):
                   key=operator.methodcaller("priority"), reverse=True)
 
 
-def find_with_pred(predicate, prs):
-    """
-    :param predicate: any callable to filter results
-    :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
-    :return: Most appropriate processor class or None
-    """
-    _prs = finds_with_pred(predicate, prs)
-    if _prs:
-        return _prs[0]  # Found.
-
-    return None
-
-
 def maybe_processor(type_or_id, cls=anyconfig.models.processor.Processor):
     """
     :param type_or_id:

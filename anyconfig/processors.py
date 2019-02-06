@@ -212,6 +212,7 @@ class Processors(object):
 
     def list(self, sort=True):
         """
+        :param sort: Result will be sorted if it's True
         :return: A list of :class:`Processor` or its children classes
         """
         if sort:

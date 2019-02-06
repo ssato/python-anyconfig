@@ -45,7 +45,7 @@ def load_plugins(pgroup, safe=True):
     return list(_load_plugins_itr(pgroup, safe=safe))
 
 
-def finds_with_pred(predicate, prs):
+def findall_with_pred(predicate, prs):
     """
     :param predicate: any callable to filter results
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
@@ -88,7 +88,7 @@ def find_by_type_or_id(type_or_id, prs,
         """Predicate"""
         return pcls.cid() == type_or_id or pcls.type() == type_or_id
 
-    pclss = finds_with_pred(pred, prs)
+    pclss = findall_with_pred(pred, prs)
     if not pclss:
         raise UnknownProcessorTypeError(type_or_id)
 
@@ -106,7 +106,7 @@ def find_by_fileext(fileext, prs):
         """Predicate"""
         return fileext in pcls.extensions()
 
-    pclss = finds_with_pred(pred, prs)
+    pclss = findall_with_pred(pred, prs)
     if not pclss:
         raise UnknownFileTypeError("file extension={}".format(fileext))
 
@@ -128,8 +128,8 @@ def find_by_maybe_file(obj, prs):
     return find_by_fileext(obj.extension, prs)  # :: [Processor], never []
 
 
-def finds(obj, prs, forced_type=None,
-          cls=anyconfig.models.processor.Processor):
+def findall(obj, prs, forced_type=None,
+            cls=anyconfig.models.processor.Processor):
     """
     :param obj:
         a file path, file or file-like object, pathlib.Path object or
@@ -176,7 +176,7 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
         if processor is not None:
             return processor
 
-    pclss = finds(obj, prs, forced_type=forced_type, cls=cls)
+    pclss = findall(obj, prs, forced_type=forced_type, cls=cls)
     return pclss[0]()
 
 
@@ -220,8 +220,8 @@ class Processors(object):
 
         return self._processors.values()
 
-    def finds(self, obj, forced_type=None,
-              cls=anyconfig.models.processor.Processor):
+    def findall(self, obj, forced_type=None,
+                cls=anyconfig.models.processor.Processor):
         """
         :param obj:
             a file path, file or file-like object, pathlib.Path object or
@@ -232,8 +232,8 @@ class Processors(object):
         :return: A list of instances of processor classes to process `obj`
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
-        return [p() for p in finds(obj, self.list(sort=False),
-                                   forced_type=forced_type, cls=cls)]
+        return [p() for p in findall(obj, self.list(sort=False),
+                                     forced_type=forced_type, cls=cls)]
 
     def find(self, obj, forced_type=None,
              cls=anyconfig.models.processor.Processor):

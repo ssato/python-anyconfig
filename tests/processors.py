@@ -51,23 +51,23 @@ class Test_10_Processor(unittest.TestCase):
         self.assertNotEqual(a1, a22)
 
 
-class Test_20_finds_functions(unittest.TestCase):
+class Test_20_findall_functions(unittest.TestCase):
 
-    def test_10_finds_with_pred__type(self):
-        def _finds_by_type(typ):
-            return TT.finds_with_pred(lambda p: p.type() == typ, PRS)
+    def test_10_findall_with_pred__type(self):
+        def _findall_by_type(typ):
+            return TT.findall_with_pred(lambda p: p.type() == typ, PRS)
 
-        self.assertEqual(_finds_by_type("json"), [A3, A2, A])
-        self.assertEqual(_finds_by_type("yaml"), [B, C])
-        self.assertEqual(_finds_by_type("undefined"), [])
+        self.assertEqual(_findall_by_type("json"), [A3, A2, A])
+        self.assertEqual(_findall_by_type("yaml"), [B, C])
+        self.assertEqual(_findall_by_type("undefined"), [])
 
-    def test_20_finds_with_pred__ext(self):
-        def _finds_with_pred__ext(ext):
-            return TT.finds_with_pred(lambda p: ext in p.extensions(), PRS)
+    def test_20_findall_with_pred__ext(self):
+        def _findall_with_pred__ext(ext):
+            return TT.findall_with_pred(lambda p: ext in p.extensions(), PRS)
 
-        self.assertEqual(_finds_with_pred__ext("js"), [A3, A2, A])
-        self.assertEqual(_finds_with_pred__ext("yml"), [B, C])
-        self.assertEqual(_finds_with_pred__ext("xyz"), [])
+        self.assertEqual(_findall_with_pred__ext("js"), [A3, A2, A])
+        self.assertEqual(_findall_with_pred__ext("yml"), [B, C])
+        self.assertEqual(_findall_with_pred__ext("xyz"), [])
 
 
 class Test_30_find_functions(unittest.TestCase):
@@ -133,28 +133,29 @@ class Test_30_find_functions(unittest.TestCase):
 
 class Test_32_find_functions(unittest.TestCase):
 
-    def test_10_finds__wo_path_nor_type(self):
-        self.assertRaises(ValueError, TT.finds, None, PRS, None)
+    def test_10_findall__wo_path_nor_type(self):
+        self.assertRaises(ValueError, TT.findall, None, PRS, None)
 
-    def test_12_finds__uknown_file_type(self):
-        self.assertRaises(UnknownFileTypeError, TT.finds, "/tmp/x.xyz", PRS)
-        self.assertRaises(UnknownFileTypeError, TT.finds, "/dev/null", PRS)
+    def test_12_findall__uknown_file_type(self):
+        self.assertRaises(UnknownFileTypeError, TT.findall, "/tmp/x.xyz", PRS)
+        self.assertRaises(UnknownFileTypeError, TT.findall, "/dev/null", PRS)
 
-    def test_14_finds__uknown_type(self):
+    def test_14_findall__uknown_type(self):
         self.assertRaises(UnknownProcessorTypeError,
-                          TT.finds, None, PRS, "xyz")
+                          TT.findall, None, PRS, "xyz")
 
     def test_20_find__maybe_file(self):
-        self.assertEqual(TT.finds("/path/to/a.jsn", PRS), [A3, A2, A])
-        self.assertEqual(TT.finds("../../path/to/b.yml", PRS), [B, C])
+        self.assertEqual(TT.findall("/path/to/a.jsn", PRS), [A3, A2, A])
+        self.assertEqual(TT.findall("../../path/to/b.yml", PRS), [B, C])
 
         obj = anyconfig.ioinfo.make("/path/to/a.json")
-        self.assertEqual(TT.finds(obj, PRS), [A3, A2, A])
+        self.assertEqual(TT.findall(obj, PRS), [A3, A2, A])
 
-    def test_22_finds__type_or_id(self):
-        self.assertEqual(TT.finds(None, PRS, forced_type="json"), [A3, A2, A])
-        self.assertEqual(TT.finds(None, PRS, forced_type="yaml"), [B, C])
-        self.assertEqual(TT.finds(None, PRS, "dummy"), [C])
+    def test_22_findall__type_or_id(self):
+        self.assertEqual(TT.findall(None, PRS, forced_type="json"),
+                         [A3, A2, A])
+        self.assertEqual(TT.findall(None, PRS, forced_type="yaml"), [B, C])
+        self.assertEqual(TT.findall(None, PRS, "dummy"), [C])
 
     def test_30_find__forced_type(self):
         self.assertEqual(TT.find(None, PRS, forced_type=A2), A2)

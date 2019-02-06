@@ -9,8 +9,8 @@ r"""Public APIs of anyconfig module.
 .. versionchanged:: 0.9.9
 
    - Removed the API `find_loader`
-   - Added new APIs `find` and `finds` to find parsers (loaders and dumpers) to
-     suppport to find multiple parsers, and replace the API `find_loader`
+   - Added new APIs `find` and `findall` to find parsers (loaders and dumpers)
+     to suppport to find multiple parsers, and replace the API `find_loader`
 
 .. versionadded:: 0.9.8
 
@@ -139,7 +139,7 @@ def _try_validate(cnf, schema, **options):
     return None
 
 
-def finds(obj=None, forced_type=None):
+def findall(obj=None, forced_type=None):
     """
     Find out parser objects can load and/or dump data from given `obj` which
     may be a file path, file or file-like object, pathlib.Path object or
@@ -153,7 +153,7 @@ def finds(obj=None, forced_type=None):
     :return: A list of instances of processor classes to process `obj`
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    return Parsers().finds(obj, forced_type=forced_type)
+    return Parsers().findall(obj, forced_type=forced_type)
 
 
 def find(obj=None, forced_type=None):

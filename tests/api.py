@@ -92,19 +92,19 @@ class Test_10_find(unittest.TestCase):
                         msg or "%r vs %r" % (obj, clss))
 
     def test_10_find__w_parser_type_or_instance(self):
-        def _finds_by_type(typ):
-            fnc = anyconfig.processors.finds_with_pred
+        def _findall_by_type(typ):
+            fnc = anyconfig.processors.findall_with_pred
             return fnc(lambda p: typ == p.type(), self.psrs)
 
         cpath = "dummy.conf"
         for psr in self.psrs:
-            ldrs = _finds_by_type(psr.type())
+            ldrs = _findall_by_type(psr.type())
             self._assert_isinstances(TT.find(cpath, psr.type()), ldrs)
             self._assert_isinstances(TT.find(cpath, psr()), ldrs)
 
     def test_20_find__w_parser_by_file(self):
         def _find_ldrs_by_ext(ext):
-            fnc = anyconfig.processors.finds_with_pred
+            fnc = anyconfig.processors.findall_with_pred
             return fnc(lambda p: ext in p.extensions(), self.psrs)
 
         for psr in self.psrs:

@@ -75,26 +75,6 @@ class Test_30_find_functions(unittest.TestCase):
     def assertInstance(self, obj, cls):
         self.assertTrue(isinstance(obj, cls))
 
-    def test_10_find_with_pred__type(self):
-        self.assertEqual(TT.find_with_pred(lambda p: p.type() == "json", PRS),
-                         A3)
-
-        self.assertEqual(TT.find_with_pred(lambda p: p.type() == "yaml", PRS),
-                         B)
-
-        self.assertTrue(TT.find_with_pred(lambda p: p.type() == "X",
-                                          PRS) is None)
-
-    def test_12_find_with_pred__ext(self):
-        p = TT.find_with_pred(lambda p: 'js' in p.extensions(), PRS)
-        self.assertEqual(p, A3)
-
-        p = TT.find_with_pred(lambda p: 'yml' in p.extensions(), PRS)
-        self.assertEqual(p, B)
-
-        p = TT.find_with_pred(lambda p: 'xyz' in p.extensions(), PRS)
-        self.assertTrue(p is None)
-
     def test_16_maybe_processor(self):
         self.assertTrue(isinstance(TT.maybe_processor(A3, A3), A3))
         self.assertTrue(isinstance(TT.maybe_processor(A3(), A3), A3))

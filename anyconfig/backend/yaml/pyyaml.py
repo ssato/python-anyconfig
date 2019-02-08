@@ -49,22 +49,10 @@ import anyconfig.backend.base
 import anyconfig.compat
 import anyconfig.utils
 
+from . import common
+
 
 _MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
-
-
-def filter_from_options(key, options):
-    """
-    :param key: Key str in options
-    :param options: Mapping object
-    :return:
-        New mapping object from `options` in which the item with `key` filtered
-
-    >>> filter_from_options('a', dict(a=1, b=2))
-    {'b': 2}
-    """
-    return anyconfig.utils.filter_options([k for k in options.keys()
-                                           if k != key], options)
 
 
 def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
@@ -151,7 +139,7 @@ def yml_fnc(fname, *args, **options):
     """
     key = "ac_safe"
     fnc = getattr(yaml, r"safe_" + fname if options.get(key) else fname)
-    return fnc(*args, **filter_from_options(key, options))
+    return fnc(*args, **common.filter_from_options(key, options))
 
 
 def yml_load(stream, container, yml_fnc=yml_fnc, **options):
@@ -171,7 +159,8 @@ def yml_load(stream, container, yml_fnc=yml_fnc, **options):
 
         options["Loader"] = _customized_loader(container)
 
-    ret = yml_fnc("load", stream, **filter_from_options("ac_dict", options))
+    ret = yml_fnc("load", stream,
+                  **common.filter_from_options("ac_dict", options))
     if ret is None:
         return container()
 
@@ -196,26 +185,21 @@ def yml_dump(data, stream, yml_fnc=yml_fnc, **options):
     if _is_dict:
         # Type information and the order of items are lost on dump currently.
         data = anyconfig.dicts.convert_to(data, ac_dict=dict)
-        options = filter_from_options("ac_dict", options)
+        options = common.filter_from_options("ac_dict", options)
 
     return yml_fnc("dump", data, stream, **options)
 
 
-class Parser(anyconfig.backend.base.StreamParser):
+class Parser(common.Parser):
     """
     Parser for YAML files.
     """
-    _type = "yaml"
     _cid = "pyyaml"
-    _extensions = ["yaml", "yml"]
     _load_opts = ["Loader", "ac_safe", "ac_dict"]
     _dump_opts = ["stream", "ac_safe", "Dumper", "default_style",
                   "default_flow_style", "canonical", "indent", "width",
                   "allow_unicode", "line_break", "encoding", "explicit_start",
                   "explicit_end", "version", "tags"]
-    _ordered = True
-    _allow_primitives = True
-    _dict_opts = ["ac_dict"]
 
     load_from_stream = anyconfig.backend.base.to_method(yml_load)
     dump_to_stream = anyconfig.backend.base.to_method(yml_dump)

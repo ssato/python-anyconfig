@@ -39,9 +39,10 @@ Changelog:
 from __future__ import absolute_import
 
 import ruamel.yaml as ryaml
+import anyconfig.backend.base
 import anyconfig.utils
 
-from . import pyyaml
+from . import common
 
 
 try:
@@ -77,6 +78,8 @@ def yml_fnc(fname, *args, **options):
     :param args: [stream] for load or [cnf, stream] for dump
     :param options: keyword args may contain "ac_safe" to load/dump safely
     """
+    options = common.filter_from_options("ac_dict", options)
+
     if "ac_safe" in options:
         options["typ"] = "safe"  # Override it.
 
@@ -93,16 +96,27 @@ def yml_fnc(fname, *args, **options):
 def yml_load(stream, container, **options):
     """.. seealso:: :func:`anyconfig.backend.yaml.pyyaml.yml_load`
     """
-    return pyyaml.yml_load(stream, container, yml_fnc=yml_fnc, **options)
+    ret = yml_fnc("load", stream, **options)
+    if ret is None:
+        return container()
+
+    return ret
 
 
 def yml_dump(data, stream, **options):
     """.. seealso:: :func:`anyconfig.backend.yaml.pyyaml.yml_dump`
     """
-    return pyyaml.yml_dump(data, stream, yml_fnc=yml_fnc, **options)
+    # .. todo:: Needed?
+    # if anyconfig.utils.is_dict_like(data):
+    #     if options.get("ac_ordered"):
+    #         factory = collections.OrderedDict
+    #     else:
+    #         factory = dict
+    #     data = anyconfig.dicts.convert_to(data, ac_dict=factory)
+    return yml_fnc("dump", data, stream, **options)
 
 
-class Parser(pyyaml.Parser):
+class Parser(common.Parser):
     """Parser for YAML files.
     """
     _cid = "ruamel.yaml"

@@ -3,7 +3,7 @@
 # Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
-# For `anyconfig.open`:
+# For 'anyconfig.open':
 # pylint: disable=redefined-builtin
 r"""
 .. module:: anyconfig

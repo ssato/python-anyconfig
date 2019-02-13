@@ -14,7 +14,7 @@ def filter_from_options(key, options):
     :param key: Key str in options
     :param options: Mapping object
     :return:
-        New mapping object from `options` in which the item with `key` filtered
+        New mapping object from 'options' in which the item with 'key' filtered
 
     >>> filter_from_options('a', dict(a=1, b=2))
     {'b': 2}

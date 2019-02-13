@@ -261,7 +261,7 @@ def _output_type_by_input_path(inpaths, itype, fmsg):
     """
     :param inpaths: List of input file paths
     :param itype: Input type or None
-    :param fmsg: message if it cannot detect otype by `inpath`
+    :param fmsg: message if it cannot detect otype by 'inpath'
     :return: Output type :: str
     """
     msg = ("Specify inpath and/or outpath type[s] with -I/--itype "
@@ -284,7 +284,7 @@ def _try_dump(cnf, outpath, otype, fmsg):
     :param cnf: Configuration object to print out
     :param outpath: Output file path or None
     :param otype: Output type or None
-    :param fmsg: message if it cannot detect otype by `inpath`
+    :param fmsg: message if it cannot detect otype by 'inpath'
     """
     try:
         API.dump(cnf, outpath, otype)
@@ -318,7 +318,7 @@ def _output_result(cnf, outpath, otype, inpaths, itype):
 
 def _load_diff(args):
     """
-    :param args: :class:`~argparse.Namespace` object
+    :param args: :class:`argparse.Namespace` object
     """
     try:
         diff = API.load(args.inputs, args.itype,
@@ -340,8 +340,8 @@ def _load_diff(args):
 def _do_filter(cnf, args):
     """
     :param cnf: Mapping object represents configuration data
-    :param args: :class:`~argparse.Namespace` object
-    :return: `cnf` may be updated
+    :param args: :class:`argparse.Namespace` object
+    :return: 'cnf' may be updated
     """
     if args.query:
         cnf = API.query(cnf, args.query)

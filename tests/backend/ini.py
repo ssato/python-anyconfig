@@ -9,7 +9,7 @@ import anyconfig.backend.ini as TT
 import tests.backend.common as TBC
 
 
-# :seealso: `tests.backend.common.CNF_0`
+# :seealso: :class:`tests.backend.common.CNF_0`
 CNF_0_S = """\
 [DEFAULT]
 a: 0

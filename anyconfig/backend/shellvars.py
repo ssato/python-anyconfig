@@ -66,7 +66,7 @@ def _parseline(line):
 
 def load(stream, container=dict):
     """
-    Load and parse a file or file-like object `stream` provides simple shell
+    Load and parse a file or file-like object 'stream' provides simple shell
     variables' definitions.
 
     :param stream: A file or file like object
@@ -114,7 +114,7 @@ class Parser(anyconfig.backend.base.StreamParser):
 
     def load_from_stream(self, stream, container, **kwargs):
         """
-        Load config from given file like object `stream`.
+        Load config from given file like object 'stream'.
 
         :param stream:
             A file or file like object of shell scripts define shell variables
@@ -127,7 +127,7 @@ class Parser(anyconfig.backend.base.StreamParser):
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        Dump config `cnf` to a file or file-like object `stream`.
+        Dump config 'cnf' to a file or file-like object 'stream'.
 
         :param cnf: Shell variables data to dump
         :param stream: Shell script file or file like object

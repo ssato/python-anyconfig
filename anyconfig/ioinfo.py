@@ -21,7 +21,7 @@ from anyconfig.globals import (
 
 
 def guess_io_type(obj):
-    """Guess input or output type of ``obj``.
+    """Guess input or output type of 'obj'.
 
     :param obj: a path string, a pathlib.Path or a file / file-like object
     :return: IOInfo type defined in anyconfig.globals.IOI_TYPES

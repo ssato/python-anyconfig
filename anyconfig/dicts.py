@@ -160,30 +160,30 @@ def _are_list_like(*objs):
 
 def _update_with_replace(self, other, key, val=None, **options):
     """
-    Replace value of a mapping object `self` with `other` has if both have same
-    keys on update. Otherwise, just keep the value of `self`.
+    Replace value of a mapping object 'self' with 'other' has if both have same
+    keys on update. Otherwise, just keep the value of 'self'.
 
-    :param self: mapping object to update with `other`
-    :param other: mapping object to update `self`
+    :param self: mapping object to update with 'other'
+    :param other: mapping object to update 'self'
     :param key: key of mapping object to update
     :param val: value to update self alternatively
 
-    :return: None but `self` will be updated
+    :return: None but 'self' will be updated
     """
     self[key] = other[key] if val is None else val
 
 
 def _update_wo_replace(self, other, key, val=None, **options):
     """
-    Never update (replace) the value of `self` with `other`'s, that is, only
-    the values `self` does not have its key will be added on update.
+    Never update (replace) the value of 'self' with 'other''s, that is, only
+    the values 'self' does not have its key will be added on update.
 
-    :param self: mapping object to update with `other`
-    :param other: mapping object to update `self`
+    :param self: mapping object to update with 'other'
+    :param other: mapping object to update 'self'
     :param key: key of mapping object to update
     :param val: value to update self alternatively
 
-    :return: None but `self` will be updated
+    :return: None but 'self' will be updated
     """
     if key not in self:
         _update_with_replace(self, other, key, val=val)
@@ -212,7 +212,7 @@ def _update_with_merge(self, other, key, val=None, merge_lists=False,
     vary depends on types of original and new values.
 
     - mapping vs. mapping -> merge recursively
-    - list vs. list -> vary depends on `merge_lists`. see its description.
+    - list vs. list -> vary depends on 'merge_lists'. see its description.
 
     :param other: a dict[-like] object or a list of (key, value) tuples
     :param key: key of mapping object to update
@@ -223,7 +223,7 @@ def _update_with_merge(self, other, key, val=None, merge_lists=False,
         [1, 2, 3], [3, 4] ==> [1, 2, 3, 4]
         [1, 2, 2], [2, 4] ==> [1, 2, 2, 4]
 
-    :return: None but `self` will be updated
+    :return: None but 'self' will be updated
     """
     if val is None:
         val = other[key]
@@ -244,12 +244,12 @@ def _update_with_merge_lists(self, other, key, val=None, **options):
     """
     Similar to _update_with_merge but merge lists always.
 
-    :param self: mapping object to update with `other`
-    :param other: mapping object to update `self`
+    :param self: mapping object to update with 'other'
+    :param other: mapping object to update 'self'
     :param key: key of mapping object to update
     :param val: value to update self alternatively
 
-    :return: None but `self` will be updated
+    :return: None but 'self' will be updated
     """
     _update_with_merge(self, other, key, val=val, merge_lists=True, **options)
 
@@ -280,8 +280,8 @@ def _get_update_fn(strategy):
 
 def merge(self, other, ac_merge=MS_DICTS, **options):
     """
-    Update (merge) a mapping object `self` with other mapping object or an
-    iterable yields (key, value) tuples based on merge strategy `ac_merge`.
+    Update (merge) a mapping object 'self' with other mapping object or an
+    iterable yields (key, value) tuples based on merge strategy 'ac_merge'.
 
     :param others: a list of dict[-like] objects or (key, value) tuples
     :param another: optional keyword arguments to update self more
@@ -305,7 +305,7 @@ def _make_recur(obj, make_fn, ac_ordered=False, ac_dict=None, **options):
     :param obj: A mapping objects or other primitive object
     :param make_fn: Function to make/convert to
     :param ac_ordered: Use OrderedDict instead of dict to keep order of items
-    :param ac_dict: Callable to convert `obj` to mapping object
+    :param ac_dict: Callable to convert 'obj' to mapping object
     :param options: Optional keyword arguments.
 
     :return: Mapping object
@@ -330,16 +330,16 @@ def _make_iter(obj, make_fn, **options):
 
 def convert_to(obj, ac_ordered=False, ac_dict=None, **options):
     """
-    Convert a mapping objects to a dict or object of `to_type` recursively.
+    Convert a mapping objects to a dict or object of 'to_type' recursively.
     Borrowed basic idea and implementation from bunch.unbunchify. (bunch is
     distributed under MIT license same as this.)
 
     :param obj: A mapping objects or other primitive object
     :param ac_ordered: Use OrderedDict instead of dict to keep order of items
-    :param ac_dict: Callable to convert `obj` to mapping object
+    :param ac_dict: Callable to convert 'obj' to mapping object
     :param options: Optional keyword arguments.
 
-    :return: A dict or OrderedDict or object of `cls`
+    :return: A dict or OrderedDict or object of 'cls'
 
     >>> OD = anyconfig.compat.OrderedDict
     >>> convert_to(OD((('a', 1) ,)), cls=dict)

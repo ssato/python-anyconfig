@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2019 Satoru SATOH <satoru..satoh @ gmail.com>
 # License: MIT
 #
 # pylint: disable=unused-argument
@@ -21,21 +22,21 @@ Changelog:
 .. versionchanged:: 0.9.5
 
    - Make :class:`Parser` inherited from
-     :class:`~anyconfig.models.processor.Processor`
+     :class:`anyconfig.models.processor.Processor`
    - introduce the member _allow_primitives and the class method
      allow_primitives to :class:`Parser` to allow parsers to load and return
      data of primitive types other than mapping objects
 
 .. versionchanged:: 0.9.1
 
-   - Rename the member _dict_options to `_dict_opts` to make consistent w/
+   - Rename the member _dict_options to '_dict_opts' to make consistent w/
      other members such as _load_opts.
 
 .. versionchanged:: 0.8.3
 
-   - Add `_ordered` membmer and a class method :meth:` ordered to
-     :class:`Parser`.
-   - Add `_dict_options` member to the class :class:`Parser`.
+   - Add '_ordered' membmer and a class method :meth:` ordered to
+     :class:`Parser'.
+   - Add '_dict_options` member to the class :class:`Parser`.
 
 .. versionchanged:: 0.2
 
@@ -61,7 +62,7 @@ TEXT_FILE = True
 
 def ensure_outdir_exists(filepath):
     """
-    Make dir to dump `filepath` if that dir does not exist.
+    Make dir to dump 'filepath' if that dir does not exist.
 
     :param filepath: path of file to dump
     """
@@ -75,7 +76,7 @@ def ensure_outdir_exists(filepath):
 def to_method(func):
     """
     Lift :func:`func` to a method; it will be called with the first argument
-    `self` ignored.
+    'self' ignored.
 
     :param func: Any callable object
     """
@@ -206,7 +207,7 @@ class LoaderMixin(object):
 
     def load_from_string(self, content, container, **kwargs):
         """
-        Load config from given string `content`.
+        Load config from given string 'content'.
 
         :param content: Config content string
         :param container: callble to make a container object later
@@ -218,7 +219,7 @@ class LoaderMixin(object):
 
     def load_from_path(self, filepath, container, **kwargs):
         """
-        Load config from given file path `filepath`.
+        Load config from given file path 'filepath`.
 
         :param filepath: Config file path
         :param container: callble to make a container object later
@@ -230,7 +231,7 @@ class LoaderMixin(object):
 
     def load_from_stream(self, stream, container, **kwargs):
         """
-        Load config from given file like object `stream`.
+        Load config from given file like object 'stream`.
 
         :param stream:  Config file or file like object
         :param container: callble to make a container object later
@@ -242,13 +243,13 @@ class LoaderMixin(object):
 
     def loads(self, content, **options):
         """
-        Load config from given string `content` after some checks.
+        Load config from given string 'content' after some checks.
 
         :param content:  Config file content
         :param options:
             options will be passed to backend specific loading functions.
             please note that options have to be sanitized w/
-            :func:`~anyconfig.utils.filter_options` later to filter out options
+            :func:`anyconfig.utils.filter_options` later to filter out options
             not in _load_opts.
 
         :return: dict or dict-like object holding configurations
@@ -262,20 +263,20 @@ class LoaderMixin(object):
 
     def load(self, ioi, ac_ignore_missing=False, **options):
         """
-        Load config from a file path or a file / file-like object which `ioi`
+        Load config from a file path or a file / file-like object which 'ioi'
         refering after some checks.
 
         :param ioi:
-            `~anyconfig.globals.IOInfo` namedtuple object provides various info
+            'anyconfig.globals.IOInfo' namedtuple object provides various info
             of input object to load data from
 
         :param ac_ignore_missing:
-            Ignore and just return empty result if given `input_` does not
+            Ignore and just return empty result if given 'input_' does not
             exist in actual.
         :param options:
             options will be passed to backend specific loading functions.
             please note that options have to be sanitized w/
-            :func:`~anyconfig.utils.filter_options` later to filter out options
+            :func:`anyconfig.utils.filter_options` later to filter out options
             not in _load_opts.
 
         :return: dict or dict-like object holding configurations
@@ -315,7 +316,7 @@ class DumperMixin(object):
 
     def dump_to_string(self, cnf, **kwargs):
         """
-        Dump config `cnf` to a string.
+        Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
@@ -326,7 +327,7 @@ class DumperMixin(object):
 
     def dump_to_path(self, cnf, filepath, **kwargs):
         """
-        Dump config `cnf` to a file `filepath`.
+        Dump config 'cnf' to a file 'filepath'.
 
         :param cnf: Configuration data to dump
         :param filepath: Config file path
@@ -336,7 +337,7 @@ class DumperMixin(object):
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        Dump config `cnf` to a file-like object `stream`.
+        Dump config 'cnf' to a file-like object 'stream'.
 
         TODO: How to process socket objects same as file objects ?
 
@@ -348,7 +349,7 @@ class DumperMixin(object):
 
     def dumps(self, cnf, **kwargs):
         """
-        Dump config `cnf` to a string.
+        Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
@@ -360,12 +361,12 @@ class DumperMixin(object):
 
     def dump(self, cnf, ioi, **kwargs):
         """
-        Dump config `cnf` to output object of which `ioi` refering.
+        Dump config 'cnf' to output object of which 'ioi' refering.
 
         :param cnf: Configuration data to dump
         :param ioi:
-            `~anyconfig.globals.IOInfo` namedtuple object provides various info
-            of input object to load data from
+            an 'anyconfig.globals.IOInfo' namedtuple object provides various
+            info of input object to load data from
 
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
@@ -390,7 +391,7 @@ class Parser(TextFilesMixin, LoaderMixin, DumperMixin,
     - _extensions: File extensions of formats it supports
     - _open_flags: Opening flags to read and write files
 
-    .. seealso:: the doc of :class:`~anyconfig.models.processor.Processor`
+    .. seealso:: the doc of :class:`anyconfig.models.processor.Processor`
     """
     pass
 
@@ -405,7 +406,7 @@ class FromStringLoaderMixin(LoaderMixin):
     """
     def load_from_stream(self, stream, container, **kwargs):
         """
-        Load config from given stream `stream`.
+        Load config from given stream 'stream'.
 
         :param stream: Config file or file-like object
         :param container: callble to make a container object later
@@ -417,7 +418,7 @@ class FromStringLoaderMixin(LoaderMixin):
 
     def load_from_path(self, filepath, container, **kwargs):
         """
-        Load config from given file path `filepath`.
+        Load config from given file path 'filepath'.
 
         :param filepath: Config file path
         :param container: callble to make a container object later
@@ -439,7 +440,7 @@ class FromStreamLoaderMixin(LoaderMixin):
     """
     def load_from_string(self, content, container, **kwargs):
         """
-        Load config from given string `cnf_content`.
+        Load config from given string 'cnf_content'.
 
         :param content: Config content string
         :param container: callble to make a container object later
@@ -452,7 +453,7 @@ class FromStreamLoaderMixin(LoaderMixin):
 
     def load_from_path(self, filepath, container, **kwargs):
         """
-        Load config from given file path `filepath`.
+        Load config from given file path 'filepath'.
 
         :param filepath: Config file path
         :param container: callble to make a container object later
@@ -475,7 +476,7 @@ class ToStringDumperMixin(DumperMixin):
     """
     def dump_to_path(self, cnf, filepath, **kwargs):
         """
-        Dump config `cnf` to a file `filepath`.
+        Dump config 'cnf' to a file 'filepath'.
 
         :param cnf: Configuration data to dump
         :param filepath: Config file path
@@ -486,7 +487,7 @@ class ToStringDumperMixin(DumperMixin):
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        Dump config `cnf` to a file-like object `stream`.
+        Dump config 'cnf' to a file-like object 'stream'.
 
         TODO: How to process socket objects same as file objects ?
 
@@ -508,7 +509,7 @@ class ToStreamDumperMixin(DumperMixin):
     """
     def dump_to_string(self, cnf, **kwargs):
         """
-        Dump config `cnf` to a string.
+        Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
@@ -521,7 +522,7 @@ class ToStreamDumperMixin(DumperMixin):
 
     def dump_to_path(self, cnf, filepath, **kwargs):
         """
-        Dump config `cnf` to a file `filepath`.
+        Dump config 'cnf' to a file 'filepath`.
 
         :param cnf: Configuration data to dump
         :param filepath: Config file path
@@ -554,7 +555,7 @@ class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 def load_with_fn(load_fn, content_or_strm, container, allow_primitives=False,
                  **options):
     """
-    Load data from given string or stream `content_or_strm`.
+    Load data from given string or stream 'content_or_strm'.
 
     :param load_fn: Callable to load data
     :param content_or_strm: data content or stream provides it
@@ -562,7 +563,7 @@ def load_with_fn(load_fn, content_or_strm, container, allow_primitives=False,
     :param allow_primitives:
         True if the parser.load* may return objects of primitive data types
         other than mapping types such like JSON parser
-    :param options: keyword options passed to `load_fn`
+    :param options: keyword options passed to 'load_fn'
 
     :return: container object holding data
     """
@@ -575,8 +576,8 @@ def load_with_fn(load_fn, content_or_strm, container, allow_primitives=False,
 
 def dump_with_fn(dump_fn, data, stream, **options):
     """
-    Dump `data` to a string if `stream` is None, or dump `data` to a file or
-    file-like object `stream`.
+    Dump 'data' to a string if 'stream' is None, or dump 'data' to a file or
+    file-like object 'stream'.
 
     :param dump_fn: Callable to dump data
     :param data: Data to dump
@@ -604,7 +605,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     - _dump_to_stream_fn: Callable to dump data to stream (file object)
 
     .. note::
-       Callables have to be wrapped with :func:`to_method` to make `self`
+       Callables have to be wrapped with :func:`to_method` to make 'self'
        passed to the methods created from them ignoring it.
 
     :seealso: :class:`anyconfig.backend.json.Parser`
@@ -616,11 +617,11 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
     def load_from_string(self, content, container, **options):
         """
-        Load configuration data from given string `content`.
+        Load configuration data from given string 'content'.
 
         :param content: Configuration string
         :param container: callble to make a container object
-        :param options: keyword options passed to `_load_from_string_fn`
+        :param options: keyword options passed to '_load_from_string_fn'
 
         :return: container object holding the configuration data
         """
@@ -630,11 +631,11 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
     def load_from_stream(self, stream, container, **options):
         """
-        Load data from given stream `stream`.
+        Load data from given stream 'stream'.
 
         :param stream: Stream provides configuration data
         :param container: callble to make a container object
-        :param options: keyword options passed to `_load_from_stream_fn`
+        :param options: keyword options passed to '_load_from_stream_fn'
 
         :return: container object holding the configuration data
         """
@@ -644,7 +645,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
     def dump_to_string(self, cnf, **kwargs):
         """
-        Dump config `cnf` to a string.
+        Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
@@ -655,7 +656,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        Dump config `cnf` to a file-like object `stream`.
+        Dump config 'cnf' to a file-like object 'stream'.
 
         TODO: How to process socket objects same as file objects ?
 

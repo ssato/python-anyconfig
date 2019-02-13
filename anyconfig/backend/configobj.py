@@ -50,7 +50,7 @@ except (TypeError, AttributeError):
 
 def make_configobj(cnf, **kwargs):
     """
-    Make a configobj.ConfigObj initalized with given config `cnf`.
+    Make a configobj.ConfigObj initalized with given config 'cnf'.
 
     :param cnf: Configuration data
     :param kwargs: optional keyword parameters passed to ConfigObj.__init__
@@ -90,7 +90,7 @@ class Parser(anyconfig.backend.base.StreamParser,
 
     def dump_to_string(self, cnf, **kwargs):
         """
-        Dump config `cnf` to a string.
+        Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
         :param kwargs: backend-specific optional keyword parameters :: dict

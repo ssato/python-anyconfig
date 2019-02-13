@@ -137,7 +137,7 @@ def _tweak_ns(tag, **options):
 def _dicts_have_unique_keys(dics):
     """
     :param dics: [<dict or dict-like object>], must not be [] or [{...}]
-    :return: True if all keys of each dict of `dics` are unique
+    :return: True if all keys of each dict of 'dics' are unique
 
     # Enable the followings if to allow dics is [], [{...}]:
     # >>> all(_dicts_have_unique_keys([d]) for [d]
@@ -176,7 +176,7 @@ def _merge_dicts(dics, container=dict):
 
 def _parse_text(val, **options):
     """
-    :return: Parsed value or value itself depends on `ac_parse_value`
+    :return: Parsed value or value itself depends on 'ac_parse_value'
     """
     if val and options.get("ac_parse_value", False):
         return anyconfig.parser.parse_single(val)
@@ -208,7 +208,7 @@ def _parse_attrs(elem, container=dict, **options):
     """
     :param elem: ET Element object has attributes (elem.attrib)
     :param container: callble to make a container object
-    :return: Parsed value or value itself depends on `ac_parse_value`
+    :return: Parsed value or value itself depends on 'ac_parse_value'
     """
     adic = dict((_tweak_ns(a, **options), v) for a, v in elem.attrib.items())
     if options.get("ac_parse_value", False):
@@ -447,7 +447,7 @@ def container_to_etree(obj, parent=None, to_str=None, **options):
 
 def etree_write(tree, stream):
     """
-    Write XML ElementTree `root` content into `stream`.
+    Write XML ElementTree 'root' content into 'stream'.
 
     .. note:
        It seems that ET.ElementTree.write() cannot process a parameter
@@ -477,7 +477,7 @@ class Parser(anyconfig.backend.base.Parser,
 
     def load_from_string(self, content, container, **opts):
         """
-        Load config from XML snippet (a string `content`).
+        Load config from XML snippet (a string 'content').
 
         :param content:
             XML snippet string of str (python 2) or bytes (python 3) type

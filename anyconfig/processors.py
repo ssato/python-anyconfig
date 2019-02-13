@@ -73,7 +73,7 @@ def list_by_x(prs, key):
     :param key: Grouping key, "type" or "extensions"
     :return:
         A list of :class:`Processor` or its children classes grouped by
-        given `item`, [(cid, [:class:`Processor`)]] by default
+        given 'item', [(cid, [:class:`Processor`)]] by default
     """
     if key == "type":
         kfn = operator.methodcaller(key)
@@ -107,7 +107,7 @@ def maybe_processor(type_or_id, cls=anyconfig.models.processor.Processor):
         Type of the data to process or ID of the processor class or
         :class:`anyconfig.models.processor.Processor` class object or its
         instance
-    :param cls: A class object to compare with `type_or_id`
+    :param cls: A class object to compare with 'type_or_id'
     :return: Processor instance or None
     """
     if isinstance(type_or_id, cls):
@@ -124,10 +124,10 @@ def find_by_type_or_id(type_or_id, prs,
     """
     :param type_or_id: Type of the data to process or ID of the processor class
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
-    :param cls: A class object to compare with `type_or_id`
+    :param cls: A class object to compare with 'type_or_id'
     :return:
         A list of processor classes to process files of given data type or
-        processor `type_or_id` found by its ID
+        processor 'type_or_id' found by its ID
     :raises: UnknownProcessorTypeError
     """
     def pred(pcls):
@@ -162,8 +162,8 @@ def find_by_fileext(fileext, prs):
 def find_by_maybe_file(obj, prs):
     """
     :param obj:
-        a file path, file or file-like object, pathlib.Path object or
-        `~anyconfig.globals.IOInfo` (namedtuple) object
+        a file path, file or file-like object, pathlib.Path object or an
+        'anyconfig.globals.IOInfo' (namedtuple) object
     :param cps_by_ext: A list of processor classes
     :return: A list of processor classes to process given (maybe) file
     :raises: UnknownFileTypeError
@@ -178,15 +178,15 @@ def findall(obj, prs, forced_type=None,
             cls=anyconfig.models.processor.Processor):
     """
     :param obj:
-        a file path, file or file-like object, pathlib.Path object or
-        `~anyconfig.globals.IOInfo` (namedtuple) object
+        a file path, file, file-like object, pathlib.Path object or an
+        'anyconfig.globals.IOInfo` (namedtuple) object
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param forced_type:
         Forced processor type of the data to process or ID of the processor
         class or None
-    :param cls: A class object to compare with `forced_type` later
+    :param cls: A class object to compare with 'forced_type' later
 
-    :return: A list of instances of processor classes to process `obj` data
+    :return: A list of instances of processor classes to process 'obj' data
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     if (obj is None or not obj) and forced_type is None:
@@ -205,16 +205,16 @@ def findall(obj, prs, forced_type=None,
 def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
     """
     :param obj:
-        a file path, file or file-like object, pathlib.Path object or
-        `~anyconfig.globals.IOInfo` (namedtuple) object
+        a file path, file, file-like object, pathlib.Path object or an
+        'anyconfig.globals.IOInfo' (namedtuple) object
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param forced_type:
         Forced processor type of the data to process or ID of the processor
         class or :class:`anyconfig.models.processor.Processor` class object or
         its instance itself
-    :param cls: A class object to compare with `forced_type` later
+    :param cls: A class object to compare with 'forced_type' later
 
-    :return: an instance of processor class to process `obj` data
+    :return: an instance of processor class to process 'obj' data
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     if forced_type is not None:
@@ -290,7 +290,7 @@ class Processors(object):
         :param item: Grouping key, one of "cid", "type" and "extensions"
         :return:
             A list of :class:`Processor` or its children classes grouped by
-            given `item`, [(cid, [:class:`Processor`)]] by default
+            given 'item', [(cid, [:class:`Processor`)]] by default
         """
         prs = self._processors
 
@@ -308,7 +308,7 @@ class Processors(object):
     def list_x(self, key=None):
         """
         :param key: Which of key to return from "cid", "type", and "extention"
-        :return: A list of x `key`
+        :return: A list of x 'key'
         """
         if key in ("cid", "type"):
             return sorted(set(operator.methodcaller(key)(p)
@@ -324,12 +324,12 @@ class Processors(object):
                 cls=anyconfig.models.processor.Processor):
         """
         :param obj:
-            a file path, file or file-like object, pathlib.Path object or
-            `~anyconfig.globals.IOInfo` (namedtuple) object
+            a file path, file, file-like object, pathlib.Path object or an
+            'anyconfig.globals.IOInfo' (namedtuple) object
         :param forced_type: Forced processor type to find
-        :param cls: A class object to compare with `ptype`
+        :param cls: A class object to compare with 'ptype'
 
-        :return: A list of instances of processor classes to process `obj`
+        :return: A list of instances of processor classes to process 'obj'
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
         return [p() for p in findall(obj, self.list(),
@@ -339,12 +339,12 @@ class Processors(object):
              cls=anyconfig.models.processor.Processor):
         """
         :param obj:
-            a file path, file or file-like object, pathlib.Path object or
-            `~anyconfig.globals.IOInfo` (namedtuple) object
+            a file path, file, file-like object, pathlib.Path object or an
+            'anyconfig.globals.IOInfo' (namedtuple) object
         :param forced_type: Forced processor type to find
-        :param cls: A class object to compare with `ptype`
+        :param cls: A class object to compare with 'ptype'
 
-        :return: an instance of processor class to process `obj`
+        :return: an instance of processor class to process 'obj'
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
         return find(obj, self.list(), forced_type=forced_type, cls=cls)

@@ -64,11 +64,11 @@ def copen(filepath, flag='r', encoding=None):
 
 def make_template_paths(template_file, paths=None):
     """
-    Make up a list of template search paths from given `template_file`
-    (absolute or relative path to the template file) and/or `paths` (a list of
+    Make up a list of template search paths from given 'template_file'
+    (absolute or relative path to the template file) and/or 'paths' (a list of
     template search paths given by user).
 
-    NOTE: User-given `paths` will take higher priority over a dir of
+    NOTE: User-given 'paths' will take higher priority over a dir of
     template_file.
 
     :param template_file: Absolute or relative path to the template file
@@ -91,7 +91,7 @@ def make_template_paths(template_file, paths=None):
 
 def render_s(tmpl_s, ctx=None, paths=None, filters=None):
     """
-    Compile and render given template string `tmpl_s` with context `context`.
+    Compile and render given template string 'tmpl_s' with context 'context'.
 
     :param tmpl_s: Template string
     :param ctx: Context dict needed to instantiate templates

@@ -16,7 +16,7 @@ r"""Pickle backend:
 - Development Status :: 4 - Beta
 - Limitations: The parser cannot load some primitive data such like '' (empty
   string), ' ' (white space) and [] (empty list) as these are because of the
-  implementation of :func:`~anyconfig.backend.base.load_with_fn`.
+  implementation of :func:`anyconfig.backend.base.load_with_fn`.
 - Special options: All options of pickle.{load{s,},dump{s,}} should work.
 
 Changelog:

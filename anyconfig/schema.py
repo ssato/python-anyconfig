@@ -11,7 +11,7 @@
    Replace format_checker with cls option
 
 .. versionchanged:: 0.7.0
-   allow passing `ac_schema_strict` to API :func:`gen_schema` to generate more
+   allow passing 'ac_schema_strict' to API :func:`gen_schema` to generate more
    strict and precise JSON schema object
 
 .. versionadded:: 0.0.11
@@ -72,7 +72,7 @@ def _validate(data, schema, ac_schema_safe=True, **options):
     See the descritpion of :func:`validate` for more details of parameters and
     return value.
 
-    Validate target object `data` with given schema object.
+    Validate target object 'data' with given schema object.
     """
     try:
         jsonschema.validate(data, schema, **options)
@@ -105,7 +105,7 @@ def validate(data, schema, ac_schema_safe=True, ac_schema_errors=False,
         - ac_schema_safe: Exception (jsonschema.ValidationError or
           jsonschema.SchemaError or others) will be thrown during validation
           process due to any validation or related errors. However, these will
-          be catched by default, and will be re-raised if `ac_safe` is False.
+          be catched by default, and will be re-raised if 'ac_safe' is False.
 
         - ac_schema_errors: Lazily yield each of the validation errors and
           returns all of them if validation fails.

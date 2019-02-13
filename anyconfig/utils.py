@@ -24,7 +24,7 @@ def groupby(itr, key_fn=None):
     An wrapper function around itertools.groupby to sort each results.
 
     :param itr: Iterable object, a list/tuple/genrator, etc.
-    :param key_fn: Key function to sort `itr`.
+    :param key_fn: Key function to sort 'itr'.
 
     >>> import operator
     >>> itr = [("a", 1), ("b", -1), ("c", 1)]
@@ -118,19 +118,19 @@ def normpath(path):
 
 def is_path(obj):
     """
-    Is given object `obj` a file path?
+    Is given object 'obj' a file path?
 
     :param obj: file path or something
-    :return: True if `obj` is a file path
+    :return: True if 'obj' is a file path
     """
     return isinstance(obj, anyconfig.compat.STR_TYPES)
 
 
 def is_path_obj(obj):
-    """Is given object `input` a pathlib.Path object?
+    """Is given object 'input' a pathlib.Path object?
 
     :param obj: a pathlib.Path object or something
-    :return: True if `obj` is a pathlib.Path object
+    :return: True if 'obj' is a pathlib.Path object
 
     >>> from anyconfig.compat import pathlib
     >>> if pathlib is not None:
@@ -143,10 +143,10 @@ def is_path_obj(obj):
 
 
 def is_file_stream(obj):
-    """Is given object `input` a file stream (file/file-like object)?
+    """Is given object 'input' a file stream (file/file-like object)?
 
     :param obj: a file / file-like (stream) object or something
-    :return: True if `obj` is a file stream
+    :return: True if 'obj' is a file stream
 
     >>> assert is_file_stream(open(__file__))
     >>> assert not is_file_stream(__file__)
@@ -156,7 +156,7 @@ def is_file_stream(obj):
 
 def is_ioinfo(obj, keys=None):
     """
-    :return: True if given `obj` is a 'IOInfo' namedtuple object.
+    :return: True if given 'obj' is a 'IOInfo' namedtuple object.
 
     >>> assert not is_ioinfo(1)
     >>> assert not is_ioinfo("aaa")
@@ -179,7 +179,7 @@ def is_ioinfo(obj, keys=None):
 def is_stream_ioinfo(obj):
     """
     :param obj: IOInfo object or something
-    :return: True if given IOInfo object `obj` is of file / file-like object
+    :return: True if given IOInfo object 'obj' is of file / file-like object
 
     >>> ioi = anyconfig.globals.IOInfo(None, anyconfig.globals.IOI_STREAM,
     ...                                None, None, None)
@@ -191,7 +191,7 @@ def is_stream_ioinfo(obj):
 
 def is_path_like_object(obj, marker='*'):
     """
-    Is given object `obj` a path string, a pathlib.Path, a file / file-like
+    Is given object 'obj' a path string, a pathlib.Path, a file / file-like
     (stream) or IOInfo namedtuple object?
 
     :param obj:
@@ -199,7 +199,7 @@ def is_path_like_object(obj, marker='*'):
         object
 
     :return:
-        True if `obj` is a path string or a pathlib.Path object or a file
+        True if 'obj' is a path string or a pathlib.Path object or a file
         (stream) object
 
     >>> assert is_path_like_object(__file__)
@@ -219,7 +219,7 @@ def is_path_like_object(obj, marker='*'):
 
 def is_paths(maybe_paths, marker='*'):
     """
-    Does given object `maybe_paths` consist of path or path pattern strings?
+    Does given object 'maybe_paths' consist of path or path pattern strings?
     """
     return ((is_path(maybe_paths) and marker in maybe_paths) or  # Path str
             (is_path_obj(maybe_paths) and marker in maybe_paths.as_posix()) or
@@ -229,7 +229,7 @@ def is_paths(maybe_paths, marker='*'):
 
 def get_path_from_stream(strm):
     """
-    Try to get file path from given file or file-like object `strm`.
+    Try to get file path from given file or file-like object 'strm'.
 
     :param strm: A file or file-like object
     :return: Path of given file or file-like object or None
@@ -437,10 +437,10 @@ def is_list_like(obj):
 
 def filter_options(keys, options):
     """
-    Filter `options` with given `keys`.
+    Filter 'options' with given 'keys'.
 
     :param keys: key names of optional keyword arguments
-    :param options: optional keyword arguments to filter with `keys`
+    :param options: optional keyword arguments to filter with 'keys'
 
     >>> filter_options(("aaa", ), dict(aaa=1, bbb=2))
     {'aaa': 1}

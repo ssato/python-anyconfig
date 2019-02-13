@@ -57,7 +57,7 @@ _MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
 def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
     """
-    Create or update loader with making given callble `container` to make
+    Create or update loader with making given callble 'container' to make
     mapping objects such as dict and OrderedDict, used to construct python
     object from yaml mapping node internally.
 

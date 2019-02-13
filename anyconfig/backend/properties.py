@@ -136,7 +136,7 @@ def escape(in_s):
 def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     """
     Load and parse Java properties file given as a fiel or file-like object
-    `stream`.
+    'stream'.
 
     :param stream: A file or file like object of Java properties files
     :param container:
@@ -205,7 +205,7 @@ class Parser(anyconfig.backend.base.StreamParser):
 
     def load_from_stream(self, stream, container, **kwargs):
         """
-        Load config from given file like object `stream`.
+        Load config from given file like object 'stream'.
 
         :param stream: A file or file like object of Java properties files
         :param container: callble to make a container object
@@ -217,7 +217,7 @@ class Parser(anyconfig.backend.base.StreamParser):
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """
-        Dump config `cnf` to a file or file-like object `stream`.
+        Dump config 'cnf' to a file or file-like object 'stream'.
 
         :param cnf: Java properties config data to dump
         :param stream: Java properties file or file like object

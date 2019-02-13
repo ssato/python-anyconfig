@@ -93,7 +93,7 @@ def _parsed_items(items, sep=_SEP, **options):
     """
     :param items: List of pairs, [(key, value)], or generator yields pairs
     :param sep: Seprator string
-    :return: Generator to yield (key, value) pair of `dic`
+    :return: Generator to yield (key, value) pair of 'dic'
     """
     parse = _parse if options.get("ac_parse_value") else anyconfig.utils.noop
     for key, val in items:
@@ -170,7 +170,7 @@ def _dumps(cnf, **kwargs):
     :param cnf: Configuration data to dump
     :param kwargs: optional keyword parameters to be sanitized :: dict
 
-    :return: String representation of `cnf` object in INI format
+    :return: String representation of 'cnf' object in INI format
     """
     return os.linesep.join(l for l in _dumps_itr(cnf))
 

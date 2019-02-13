@@ -59,7 +59,7 @@ class TestBase(unittest.TestCase, HasParserTrait):
         self.assertTrue(tests.common.dicts_equal(cnf, ref, ordered=ordered),
                         "%s %r%svs.%s %r" % (lsep, cnf, lsep, lsep, ref))
         # .. note::
-        #    `cnf` may not be an instance of `cls` even if ac_dict option was
+        #    'cnf' may not be an instance of 'cls' even if ac_dict option was
         #    given because parsers may not allow customize dict class to used
         #    for making results.
         if cls is None or not self.psr.dict_options():

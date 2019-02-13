@@ -8,11 +8,12 @@ r"""Public APIs of anyconfig module.
 
 .. versionchanged:: 0.9.9
 
-   - Removed the API `find_loader`
-   - Added new APIs `find` and `findall` to find parsers (loaders and dumpers)
-     to suppport to find multiple parsers, and replace the API `find_loader`
-   - Added new APIs `list_by_cid`, `list_by_type` and `list_by_extension` to
-     list parsers by various viewpoints.
+   - Removed the API 'find_loader'
+   - Added new APIs :func:`find` and :func:`findall` to :func:`find parsers`
+     (loaders and dumpers) to suppport to find multiple parsers, and replace
+     the API 'find_loader'
+   - Added new APIs :func:`list_by_cid`, :func:`list_by_type` and
+     :func:`list_by_extension` to list parsers by various viewpoints.
 
 .. versionadded:: 0.9.8
 
@@ -59,12 +60,12 @@ r"""Public APIs of anyconfig module.
 
 .. versionchanged:: 0.3
 
-   - Replaced `forced_type` optional argument of some public APIs with
-     `ac_parser` to allow skip of config parser search by passing parser object
+   - Replaced 'forced_type' optional argument of some public APIs with
+     'ac_parser' to allow skip of config parser search by passing parser object
      previously found and instantiated.
 
-     Also removed some optional arguments, `ignore_missing`, `merge` and
-     `marker`, from definitions of some public APIs as these may not be changed
+     Also removed some optional arguments, 'ignore_missing', 'merge' and
+     'marker', from definitions of some public APIs as these may not be changed
      from default in common use cases.
 
 .. versionchanged:: 0.2
@@ -145,9 +146,9 @@ def _try_validate(cnf, schema, **options):
     """
     :param cnf: Mapping object represents configuration data
     :param schema: JSON schema object
-    :param options: Keyword options passed to :func:`~jsonschema.validate`
+    :param options: Keyword options passed to :func:`jsonschema.validate`
 
-    :return: Given `cnf` as it is if validation succeeds else None
+    :return: Given 'cnf' as it is if validation succeeds else None
     """
     valid = True
     if schema:
@@ -163,16 +164,16 @@ def _try_validate(cnf, schema, **options):
 
 def findall(obj=None, forced_type=None):
     """
-    Find out parser objects can load and/or dump data from given `obj` which
-    may be a file path, file or file-like object, pathlib.Path object or
-    `~anyconfig.globals.IOInfo` (namedtuple) object.
+    Find out parser objects can load and/or dump data from given 'obj' which
+    may be a file path, file or file-like object, pathlib.Path object or an
+    'anyconfig.globals.IOInfo' (namedtuple) object.
 
     :param obj:
-        a file path, file or file-like object, pathlib.Path object or
-        `~anyconfig.globals.IOInfo` (namedtuple) object, or None
+        a file path, file or file-like object, pathlib.Path object, an
+        'anyconfig.globals.IOInfo' (namedtuple) object, or None
     :param forced_type:
         Forced configuration parser type or parser object itself
-    :return: A list of instances of processor classes to process `obj`
+    :return: A list of instances of processor classes to process 'obj'
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     return Parsers().findall(obj, forced_type=forced_type)
@@ -184,12 +185,12 @@ def find(obj=None, forced_type=None):
     parser objects instead of a list of parser objects.
 
     :param obj:
-        a file path, file or file-like object, pathlib.Path object or
-        `~anyconfig.globals.IOInfo` (namedtuple) object, or None
+        a file path, file or file-like object, pathlib.Path object, an
+        'anyconfig.globals.IOInfo' (namedtuple) object, or None
     :param forced_type:
         Forced configuration parser type or parser object itself
     :return:
-        An instance of processor class of highest priority to process `obj`
+        An instance of processor class of highest priority to process 'obj'
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     return Parsers().find(obj, forced_type=forced_type)
@@ -250,7 +251,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     """
     :param input_:
         File path or file or file-like object or pathlib.Path object represents
-        the file or a namedtuple `~anyconfig.globals.IOInfo` object represents
+        the file or a namedtuple 'anyconfig.globals.IOInfo' object represents
         some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
@@ -294,11 +295,12 @@ def single_load(input_, ac_parser=None, ac_template=False,
     .. note::
 
        :func:`load` is a preferable alternative and this API should be used
-       only if there is a need to emphasize given input `input_` is single one.
+       only if there is a need to emphasize given input 'input\_' is single
+       one.
 
-    :param input_:
+    :param input\_:
         File path or file or file-like object or pathlib.Path object represents
-        the file or a namedtuple `~anyconfig.globals.IOInfo` object represents
+        the file or a namedtuple 'anyconfig.globals.IOInfo' object represents
         some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
@@ -313,11 +315,12 @@ def single_load(input_, ac_parser=None, ac_template=False,
           - ac_dict: callable (function or class) to make mapping objects from
             loaded data if the selected backend can customize that such as JSON
             which supports that with 'object_pairs_hook' option, or None. If
-            this option was not given or None, dict or :class:`OrderedDict`
-            will be used to make result as mapping object depends on if
-            ac_ordered (see below) is True and selected backend can keep the
-            order of items loaded. See also :meth:`_container_factory` of
-            :class:`~anyconfig.backend.base.Parser` for more implementation
+            this option was not given or None, dict or
+            :class:`collections.OrderedDict` will be used to make result as
+            mapping object depends on if ac_ordered (see below) is True and
+            selected backend can keep the order of items loaded. See also
+            :meth:`_container_factory` of
+            :class:`anyconfig.backend.base.Parser` for more implementation
             details.
 
           - ac_ordered: True if you want to keep resuls ordered. Please note
@@ -329,7 +332,7 @@ def single_load(input_, ac_parser=None, ac_template=False,
         - Common backend options:
 
           - ac_ignore_missing:
-            Ignore and just return empty result if given file ``input_`` does
+            Ignore and just return empty result if given file 'input\_' does
             not exist actually.
 
         - Backend specific options such as {"indent": 2} for JSON backend
@@ -355,9 +358,9 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
        :func:`load` is a preferable alternative and this API should be used
        only if there is a need to emphasize given inputs are multiple ones.
 
-    The first argument `inputs` may be a list of a file paths or a glob pattern
+    The first argument 'inputs' may be a list of a file paths or a glob pattern
     specifying them or a pathlib.Path object represents file[s] or a namedtuple
-    `~anyconfig.globals.IOInfo` object represents some inputs to load some data
+    'anyconfig.globals.IOInfo' object represents some inputs to load some data
     from.
 
     About glob patterns, for example, is, if a.yml, b.yml and c.yml are in the
@@ -371,7 +374,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
     :param inputs:
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
-        file or a namedtuple `~anyconfig.globals.IOInfo` object represents some
+        file or a namedtuple 'anyconfig.globals.IOInfo' object represents some
         inputs to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
@@ -395,7 +398,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
         - Common backend options:
 
           - ignore_missing: Ignore and just return empty result if given file
-            ``path`` does not exist.
+            'path' does not exist.
 
         - Backend specific options such as {"indent": 2} for JSON backend
 
@@ -434,26 +437,26 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     r"""
     Load single or multiple config files or multiple config files specified in
     given paths pattern or pathlib.Path object represents config files or a
-    namedtuple `~anyconfig.globals.IOInfo` object represents some inputs.
+    namedtuple 'anyconfig.globals.IOInfo' object represents some inputs.
 
     :param path_specs:
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
-        file or a namedtuple `~anyconfig.globals.IOInfo` object represents some
+        file or a namedtuple 'anyconfig.globals.IOInfo' object represents some
         inputs to load some data from.
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:
         callable (function or class) to make mapping object will be returned as
         a result or None. If not given or ac_dict is None, default mapping
         object used to store resutls is dict or
-        :class:`~collections.OrderedDict` if ac_ordered is True and selected
+        :class:`collections.OrderedDict` if ac_ordered is True and selected
         backend can keep the order of items in mapping objects.
 
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: A dict presents context to instantiate template
     :param options:
-        Optional keyword arguments. See also the description of `options` in
+        Optional keyword arguments. See also the description of 'options' in
         :func:`single_load` and :func:`multi_load`
 
     :return: Mapping object or any query result might be primitive objects
@@ -483,13 +486,13 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
         callable (function or class) to make mapping object will be returned as
         a result or None. If not given or ac_dict is None, default mapping
         object used to store resutls is dict or
-        :class:`~collections.OrderedDict` if ac_ordered is True and selected
+        :class:`collections.OrderedDict` if ac_ordered is True and selected
         backend can keep the order of items in mapping objects.
     :param ac_template: Assume configuration file may be a template file and
         try to compile it AAR if True
     :param ac_context: Context dict to instantiate template
     :param options:
-        Optional keyword arguments. See also the description of `options` in
+        Optional keyword arguments. See also the description of 'options' in
         :func:`single_load` function.
 
     :return: Mapping object or any query result might be primitive objects
@@ -522,12 +525,12 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
 
 def dump(data, out, ac_parser=None, **options):
     """
-    Save `data` to `out`.
+    Save 'data' to 'out'.
 
     :param data: A mapping object may have configurations data to dump
     :param out:
-        An output file path or a file or a file-like object or a `pathlib.Path`
-        object represents the file or a namedtuple `~anyconfig.globals.IOInfo`
+        An output file path, a file, a file-like object, :class:`pathlib.Path`
+        object represents the file or a namedtuple 'anyconfig.globals.IOInfo'
         object represents output to dump some data to.
     :param ac_parser: Forced parser type or parser object
     :param options:
@@ -544,7 +547,7 @@ def dump(data, out, ac_parser=None, **options):
 
 def dumps(data, ac_parser=None, **options):
     """
-    Return string representation of `data` in forced type format.
+    Return string representation of 'data' in forced type format.
 
     :param data: Config data object to dump
     :param ac_parser: Forced parser type or ID or parser object

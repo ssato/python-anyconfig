@@ -33,6 +33,10 @@ def guess_io_type(obj):
     >>> if pathlib is not None:
     ...     assert guess_io_type(pathlib.Path(apath)) == IOI_PATH_OBJ
     >>> assert guess_io_type(open(__file__)) == IOI_STREAM
+    >>> guess_io_type(1)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    ValueError: ...
     """
     if obj is None:
         return IOI_NONE
@@ -40,8 +44,10 @@ def guess_io_type(obj):
         return IOI_PATH_STR
     if anyconfig.utils.is_path_obj(obj):
         return IOI_PATH_OBJ
+    if anyconfig.utils.is_file_stream(obj):
+        return IOI_STREAM
 
-    return IOI_STREAM
+    raise ValueError("Unknown I/O type object: %r" % obj)
 
 
 def inspect_io_obj(obj):
@@ -74,12 +80,9 @@ def inspect_io_obj(obj):
     return (itype, ipath, opener, ext)
 
 
-def make(obj, forced_type=None):
+def make(obj):
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
-    :param prs: A list of processor classes
-    :param forced_type: Forced processor type or processor object
-
     :return:
         Namedtuple object represents a kind of input object such as a file /
         file-like object, path string or pathlib.Path object
@@ -88,9 +91,6 @@ def make(obj, forced_type=None):
     """
     if anyconfig.utils.is_ioinfo(obj):
         return obj
-
-    if (obj is None or not obj) and forced_type is None:
-        raise ValueError("obj or forced_type must be some value")
 
     (itype, ipath, opener, ext) = inspect_io_obj(obj)
     return IOInfo(src=obj, type=itype, path=ipath, opener=opener,

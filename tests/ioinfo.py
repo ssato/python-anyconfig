@@ -4,6 +4,7 @@
 #
 # pylint: disable=missing-docstring, invalid-name
 import os.path
+import os
 import unittest
 
 import anyconfig.compat
@@ -33,6 +34,12 @@ class Test_10_inspect_io_obj(unittest.TestCase):
                          (IOI_STREAM, IPATH_0_FULL,
                           anyconfig.utils.noop, IPATH_0_EXT))
 
+    def test_22_stream(self):
+        stdin = os.fdopen(0)
+        res = TT.inspect_io_obj(stdin)
+        self.assertEqual(res[0], IOI_STREAM)
+        self.assertEqual(res[2], anyconfig.utils.noop)
+
     def test_30_path_obj(self):
         if anyconfig.compat.pathlib is None:
             return
@@ -55,10 +62,6 @@ class Test_30_make(unittest.TestCase):
         self.assertEqual(inp.type, args[2])
         self.assertEqual(inp.opener, args[3])
         self.assertEqual(inp.extension, args[4])
-
-    def test_20__forced_type(self):
-        res = self.fun(None, forced_type="ini")
-        self.__checks_helper(res, None, None, None, anyconfig.utils.noop, None)
 
     def test_30__by_fileext(self):
         res = self.fun(self.ipath)

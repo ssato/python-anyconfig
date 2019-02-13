@@ -248,7 +248,10 @@ def get_path_from_stream(strm):
 
     path = getattr(strm, "name", None)
     if path is not None:
-        return normpath(path)
+        try:
+            return normpath(path)
+        except (TypeError, ValueError):
+            pass
 
     return None
 

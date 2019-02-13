@@ -265,7 +265,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     :return: Mapping object
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = anyconfig.ioinfo.make(input_, forced_type=ac_parser)
+    ioi = anyconfig.ioinfo.make(input_)
     psr = find(ioi, forced_type=ac_parser)
     filepath = ioi.path
 
@@ -539,7 +539,7 @@ def dump(data, out, ac_parser=None, **options):
 
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = anyconfig.ioinfo.make(out, forced_type=ac_parser)
+    ioi = anyconfig.ioinfo.make(out)
     psr = find(ioi, forced_type=ac_parser)
     LOGGER.info("Dumping: %s", ioi.path)
     psr.dump(data, ioi, **options)

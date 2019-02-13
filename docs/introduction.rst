@@ -1,14 +1,13 @@
 Introduction
 =============
 
-python-anyconfig [#]_ is a `MIT licensed <http://opensource.org/licenses/MIT>`_
-python library provides common APIs to load and dump configuration files in
-various formats with some useful features such as contents merge, templates,
-query, schema validation and generation support.
+python-anyconfig [#]_ is a python library provides common APIs to load and dump
+configuration files in various formats with some useful features such as
+contents merge, templates, query, schema validation and generation support.
 
 - Home: https://github.com/ssato/python-anyconfig
 - Author: Satoru SATOH <ssato@redhat.com>
-- License: MIT
+- License: `MIT licensed <http://opensource.org/licenses/MIT>`_
 - Document: http://python-anyconfig.readthedocs.org/en/latest/
 - Download:
 
@@ -53,9 +52,9 @@ files in various formats and related functions:
 - Merge dicts:
 
   **anyconfig.merge** (self, other, ac_merge=MS_DICTS, \*\*options)
-    Update (merge) a mapping object `self` with other mapping object `other` or
-    an iterable `other` yields (key, value) tuples based on merge strategy
-    `ac_merge`.
+    Update (merge) a mapping object 'self' with other mapping object 'other' or
+    an iterable 'other' yields (key, value) tuples according to merge strategy
+    'ac_merge'.
 
 - Schema validation and generation of configuration files:
 

@@ -1,5 +1,11 @@
-* Fri Jan 11 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.8-99
-- enhancement: add basic support of simplejson
+* Thu Feb 14 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.8-99
+- api: replace the API 'find_loader' with new APIs 'find' and 'findall'
+- api: add new APIs 'list_by_{cid,type,extension}'
+- cli: make CLI shows more detailed list of parsers
+- cli: add support to load data from stdin
+- enhancement: support multiple backends of YAML and JSON formats
+- enhancement: make ruamel.yaml based backend works w/o PyYAML
+- Misc other enhancements, refactorings and bug fixes as always
 
 * Fri Dec 21 2018 Satoru SATOH <ssato@redhat.com> - 0.9.8-1
 - enhancement: add basic support of ruamel.yaml specific features and gives it

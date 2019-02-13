@@ -6,7 +6,7 @@ configuration files in various formats with some useful features such as
 contents merge, templates, query, schema validation and generation support.
 
 - Home: https://github.com/ssato/python-anyconfig
-- Author: Satoru SATOH <ssato@redhat.com>
+- Author: Satoru SATOH <satoru.satoh@gmail.com>
 - License: `MIT licensed <http://opensource.org/licenses/MIT>`_
 - Document: http://python-anyconfig.readthedocs.org/en/latest/
 - Download:

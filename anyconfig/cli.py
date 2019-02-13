@@ -218,7 +218,10 @@ def _parse_args(argv):
     args = parser.parse_args(argv)
     LOGGER.setLevel(to_log_level(args.loglevel))
 
-    if not args.inputs:
+    if args.inputs:
+        if '-' in args.inputs:
+            args.inputs = sys.stdin
+    else:
         if args.list:
             _show_psrs()
         elif args.env:

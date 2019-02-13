@@ -1,5 +1,6 @@
 #
-# Copyright (C) 2016 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2016 - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 r"""Simple Shell vars' definitions backend:

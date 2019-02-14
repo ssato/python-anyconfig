@@ -1,8 +1,0 @@
--r requirements_full-py-3.7.txt
-coveralls
-# disable this if 'pkg_resources.VersionConflict' error happens:
-flake8
-mock
-nose
-pycodestyle < 2.4.0
-pylint

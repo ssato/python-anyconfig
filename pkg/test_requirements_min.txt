@@ -1,0 +1,10 @@
+-r requirements_min.txt
+coveralls
+# disable this if 'pkg_resources.VersionConflict' error happens:
+flake8 < 3.5.0
+mock
+nose
+# stick the version to avoild the error:
+# module 'pycodestyle' has no attribute 'break_around_binary_operator, etc.
+pycodestyle<2.4.0
+pylint

@@ -1,9 +1,9 @@
+-r requirements_min.txt
 Jinja2
 PyYAML
 configobj
 jmespath
 jsonschema
 ruamel.yaml
-setuptools
 simplejson
 toml

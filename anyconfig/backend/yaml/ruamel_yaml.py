@@ -120,7 +120,6 @@ class Parser(common.Parser):
     """Parser for YAML files.
     """
     _cid = "ruamel.yaml"
-    _priority = 30  # Higher priority than PyYAML.
     _load_opts = _YAML_OPTS
     _dump_opts = _YAML_OPTS
 

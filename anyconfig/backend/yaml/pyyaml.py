@@ -195,6 +195,7 @@ class Parser(common.Parser):
     Parser for YAML files.
     """
     _cid = "pyyaml"
+    _priority = 30  # Higher priority than ruamel.yaml.
     _load_opts = ["Loader", "ac_safe", "ac_dict"]
     _dump_opts = ["stream", "ac_safe", "Dumper", "default_style",
                   "default_flow_style", "canonical", "indent", "width",

@@ -8,6 +8,12 @@ from __future__ import absolute_import
 import os.path
 import unittest
 import anyconfig.backend.json
+import anyconfig.backend.json.default as JSON
+try:
+    import anyconfig.backend.yaml.pyyaml as PYYAML
+except ImportError:
+    PYYAML = None
+
 import anyconfig.backends as TT
 import anyconfig.ioinfo
 import tests.common as TC
@@ -25,6 +31,15 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         self.psrs = TT.Parsers()
+
+    def test_10_json_parsers(self):
+        jpsrs = self.psrs.findall(None, forced_type="json")
+        self.assertTrue(isinstance(jpsrs[0], JSON.Parser))
+
+    def test_12_yaml_parsers(self):
+        if PYYAML:
+            ypsrs = self.psrs.findall(None, forced_type="yaml")
+            self.assertTrue(isinstance(ypsrs[0], PYYAML.Parser))
 
     def test_30_find__ng_cases(self):
         self.assertRaises(ValueError, self.psrs.find, None)

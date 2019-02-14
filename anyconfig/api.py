@@ -289,7 +289,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
 
 def single_load(input_, ac_parser=None, ac_template=False,
                 ac_context=None, **options):
-    """
+    r"""
     Load single configuration file.
 
     .. note::

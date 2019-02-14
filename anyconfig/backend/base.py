@@ -52,7 +52,7 @@ import os
 
 import anyconfig.compat
 import anyconfig.globals
-import anyconfig.processors
+import anyconfig.models.processor
 import anyconfig.utils
 
 

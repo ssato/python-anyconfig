@@ -29,18 +29,9 @@ cache: pip
 # see: http://docs.travis-ci.com/user/migrating-from-legacy/
 sudo: false
 install:
-    - if [[ $TRAVIS_PYTHON_VERSION = '3.4' ]]; then pip install --upgrade pip; fi
-    - pip install -r pkg/test_requirements.txt
-env:
-  global:
-    - WITH_COVERAGE=1
-    - WITH_DEPS=true
-  # TODO: It's needed to process ImportError with anyconfig.backend.*, etc.
-  #matrix:
-  #  - WITH_DEPS=true
-  #  - WITH_DEPS=false
+    - pip instlal tox-travis
 script:
-    - "./pkg/runtest.sh"
+    - tox
 after_success:
   - coveralls
 notifications:

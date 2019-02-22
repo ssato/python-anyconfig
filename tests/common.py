@@ -1,10 +1,16 @@
 #
 # Copyright (C) 2011 - 2016 Satoru SATOH <ssato at redhat.com>
+# Copyright (C) 2017 - 2018 Satoru SATOH <satoru.satoh at gmail.com>
 #
 # pylint: disable=missing-docstring
 import os.path
 import tempfile
 import unittest
+
+try:
+    from unittest import SkipTest
+except ImportError:
+    from nose.plugins.skip import SkipTest
 
 import anyconfig.compat
 
@@ -93,6 +99,10 @@ def to_bytes(astr):
     Convert a string to bytes. Do nothing in python 2.6.
     """
     return bytes(astr, 'utf-8') if anyconfig.compat.IS_PYTHON_3 else astr
+
+
+def skip_test():
+    raise SkipTest
 
 
 class Test(unittest.TestCase):

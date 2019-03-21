@@ -12,6 +12,7 @@ Code Reference
     anyconfig.globals
     anyconfig.init
     anyconfig.ioinfo
+    anyconfig.models
     anyconfig.parser
     anyconfig.processors
     anyconfig.query

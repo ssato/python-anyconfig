@@ -271,7 +271,7 @@ class LoaderMixin(object):
             of input object to load data from
 
         :param ac_ignore_missing:
-            Ignore and just return empty result if given 'input_' does not
+            Ignore and just return empty result if given `ioi` object does not
             exist in actual.
         :param options:
             options will be passed to backend specific loading functions.

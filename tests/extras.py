@@ -20,7 +20,7 @@ class TestImportErrors(unittest.TestCase):
         self.assertFalse(getattr(anyconfig.compat, fun) is None)
 
     def test_20_ac_backends(self):
-        for mod in ("yaml", "configobj", "msgpack", "toml", "bson"):
+        for mod in ("yaml", "msgpack", "toml", "bson"):
             sys.modules[mod] = None
             import anyconfig.backends
 

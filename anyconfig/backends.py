@@ -42,12 +42,6 @@ else:
     LOGGER.info(_NA_MSG, "yaml module", "YAML")
 
 try:
-    import anyconfig.backend.configobj
-    PARSERS.append(anyconfig.backend.configobj.Parser)
-except ImportError:
-    LOGGER.info(_NA_MSG, "ConfigObj module", "its")
-
-try:
     import anyconfig.backend.toml
     PARSERS.append(anyconfig.backend.toml.Parser)
 except ImportError:

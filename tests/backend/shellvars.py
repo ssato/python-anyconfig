@@ -13,13 +13,6 @@ import tests.backend.common as TBC
 from anyconfig.compat import OrderedDict
 
 
-CNF_S = """\
-a=0
-b='bbb'   # a comment
-c="ccc"   # an another comment
-export d='ddd'  ## double comment
- export e="eee" ### tripple comment
-"""
 CNF = OrderedDict((("a", "0"), ("b", "bbb"), ("c", "ccc"), ("d", "ddd"),
                    ("e", "eee")))
 
@@ -28,7 +21,7 @@ class HasParserTrait(TBC.HasParserTrait):
 
     psr = TT.Parser()
     cnf = CNF
-    cnf_s = CNF_S
+    cnf_s = TBC.read_from_res("20-00-cnf.sh")
 
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):

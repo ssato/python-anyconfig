@@ -14,20 +14,6 @@ import tests.backend.common as TBC
 from anyconfig.compat import OrderedDict
 
 
-CNF_S = """
-a = 0
-  b = bbb
-c:
-
-sect0.c = x;y;z
-sect1.d = \\
-    1,2,3
-
-d=\\
-val1,\\
-val2,\\
-val3
-"""
 CNF = OrderedDict((("a", "0"), ("b", "bbb"), ("c", ""),
                    ("sect0.c", "x;y;z"), ("sect1.d", "1,2,3"),
                    ("d", "val1,val2,val3")))
@@ -37,7 +23,7 @@ class HasParserTrait(TBC.HasParserTrait):
 
     psr = TT.Parser()
     cnf = CNF
-    cnf_s = CNF_S
+    cnf_s = TBC.read_from_res("20-00-cnf.properties")
 
 
 class Test_00(unittest.TestCase):

@@ -32,6 +32,10 @@ CNF_2 = OrderedDict((("a", 0.1), ("b", _bytes("bbb")),
                                                    _bytes("z")]), )))))
 
 
+def read_from_res(filename):
+    return open(os.path.join(tests.common.resdir(), filename)).read()
+
+
 class MyDict(dict):
     pass
 

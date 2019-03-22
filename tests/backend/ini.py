@@ -9,22 +9,10 @@ import anyconfig.backend.ini as TT
 import tests.backend.common as TBC
 
 
-# :seealso: :class:`tests.backend.common.CNF_0`
-CNF_0_S = """\
-[DEFAULT]
-a: 0
-b: bbb
-c: 5
-
-[sect0]
-d: x,y,z
-"""
-
-
 class HasParserTrait(TBC.HasParserTrait):
 
     psr = TT.Parser()
-    cnf_s = CNF_0_S
+    cnf_s = TBC.read_from_res("20-00-cnf.ini")
 
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):

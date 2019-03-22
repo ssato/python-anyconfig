@@ -119,12 +119,10 @@ def maybe_processor(type_or_id, cls=anyconfig.models.processor.Processor):
     return None
 
 
-def find_by_type_or_id(type_or_id, prs,
-                       cls=anyconfig.models.processor.Processor):
+def find_by_type_or_id(type_or_id, prs):
     """
     :param type_or_id: Type of the data to process or ID of the processor class
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
-    :param cls: A class object to compare with 'type_or_id'
     :return:
         A list of processor classes to process files of given data type or
         processor 'type_or_id' found by its ID
@@ -197,7 +195,7 @@ def findall(obj, prs, forced_type=None,
     if forced_type is None:
         pclss = find_by_maybe_file(obj, prs)  # :: [Processor], never []
     else:
-        pclss = find_by_type_or_id(forced_type, prs, cls=cls)  # Do.
+        pclss = find_by_type_or_id(forced_type, prs)  # Do.
 
     return pclss
 

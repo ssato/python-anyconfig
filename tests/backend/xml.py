@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2019 Satoru SATOH <satoru.satoh @ gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
@@ -14,14 +15,6 @@ import tests.backend.common as TBC
 from tests.common import dicts_equal, to_bytes
 
 
-XML_W_NS_S = """
-<a xmlns="http://example.com/ns/config"
-   xmlns:val="http://example.com/ns/config/val">
-   <b>1</b>
-   <val:c>C</val:c>
-</a>
-"""
-
 CNF_0 = {'config': {'@attrs': {'val:name': 'foo',
                                'xmlns': 'http://example.com/ns/cnf',
                                'xmlns:val': 'http://example.com/ns/cnf/val'},
@@ -33,28 +26,6 @@ CNF_0 = {'config': {'@attrs': {'val:name': 'foo',
                     'list2': {'@attrs': {'id': 'list2'},
                               '@children': [{'item': 'i'},
                                             {'item': 'j'}]}}}
-CNF_0_S = to_bytes("""\
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://example.com/ns/cnf"
-        xmlns:val="http://example.com/ns/cnf/val"
-        val:name='foo'>
-  <val:a>0</val:a>
-  <val:b id="b0">bbb</val:b>
-  <val:c/>
-  <sect0>
-    <val:d>x, y, z</val:d>
-  </sect0>
-  <list1>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </list1>
-  <list2 id="list2">
-    <item>i</item>
-    <item>j</item>
-  </list2>
-</config>
-""")
 
 
 class Test_00(unittest.TestCase):
@@ -62,7 +33,7 @@ class Test_00(unittest.TestCase):
     def test_10__namespaces_from_file(self):
         ref = {"http://example.com/ns/config": '',
                "http://example.com/ns/config/val": "val"}
-        xmlfile = anyconfig.compat.StringIO(XML_W_NS_S)
+        xmlfile = anyconfig.compat.StringIO(TBC.read_from_res("20-00-cnf.xml"))
         self.assertTrue(dicts_equal(TT._namespaces_from_file(xmlfile), ref))
 
     def test_20__process_elem_text__whitespaces(self):
@@ -256,7 +227,7 @@ class HasParserTrait(TBC.HasParserTrait):
 
     psr = TT.Parser()
     cnf = CNF_0
-    cnf_s = CNF_0_S
+    cnf_s = to_bytes(TBC.read_from_res("20-10-cnf.xml"))
 
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):

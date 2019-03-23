@@ -20,7 +20,6 @@ from tests.common import CNF_0
 
 CNF_0_PATH = os.path.join(tests.common.resdir(), "00-cnf.yml")
 SCM_0_PATH = os.path.join(tests.common.resdir(), "00-scm.yml")
-CNF_TMPL_0 = tests.api.CNF_TMPL_1
 
 
 def _run(*args):
@@ -263,29 +262,21 @@ class Test_40_multi_inputs(Test_20_Base):
         if not anyconfig.template.SUPPORTED:
             return
 
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+        infile = os.path.join(tests.common.resdir(), "30-00-template-cnf.json")
+        output = os.path.join(self.workdir, "output.json")
 
-        inputsdir = os.path.join(self.workdir, "in")
-        os.makedirs(inputsdir)
-
-        anyconfig.api.dump(a, os.path.join(inputsdir, "a0.yml"))
-        open(os.path.join(inputsdir, "a1.yml"), 'w').write(CNF_TMPL_0)
-        output = os.path.join(self.workdir, "b.json")
-
-        TT.main(["dummy", "--template", "-o", output,
-                 os.path.join(inputsdir, "*.yml")])
+        TT.main(["dummy", "--template", "-o", output, infile])
         self.assertTrue(os.path.exists(output))
 
     def test_30_w_template(self):
         if not anyconfig.template.SUPPORTED:
             return
 
-        curdir = tests.common.selfdir()
-
-        infile = os.path.join(curdir, "*template-c*.yml")
-        output = os.path.join(self.workdir, "output.yml")
+        infile = os.path.join(tests.common.resdir(), "30-*-template-cnf.json")
+        output = os.path.join(self.workdir, "output.json")
 
         TT.main(["dummy", "--template", "-o", output, infile])
+        self.assertTrue(os.path.exists(output))
 
 
 class Test_50_others_w_input(Test_20_Base):

@@ -290,20 +290,14 @@ class Test_30_single_load(TestBaseWithIO):
         if not anyconfig.template.SUPPORTED:
             return
 
-        a_path = os.path.join(self.workdir, "a.yml")
-        b_path = os.path.join(self.workdir, "b.yml")
-        a2_path = os.path.join(self.workdir, "x/y/z", "a.yml")
-
-        open(a_path, 'w').write("{% include 'b.yml' %}")
-        open(b_path, 'w').write(CNF_TMPL_0)
-        os.makedirs(os.path.dirname(a2_path))
-        open(a2_path, 'w').write("a: 'xyz'")
+        a_path = os.path.join(resdir(), "30-00-cnf.json")
+        a2_path = os.path.join(resdir(), "00-00-cnf.json")  # Not a template
 
         cnf1 = TT.single_load(a_path, ac_template=True, ac_context=self.cnf)
         self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
 
         cnf2 = TT.single_load(a2_path, ac_template=True)
-        self.assertEqual(cnf2["a"], "xyz")
+        self.assertEqual(cnf2["a"], 1)
 
     def test_19_dump_and_single_load_with_validation(self):
         cnf = CNF_0

@@ -27,16 +27,6 @@ from tests.common import CNF_0, SCM_0, CNF_1, dicts_equal, resdir
 # suppress logging messages.
 TT.LOGGER.setLevel(logging.CRITICAL)
 
-CNF_TMPL_0 = """name: {{ name|default('a') }}
-a: {{ a }}
-b:
-    b:
-      {% for x in b.b -%}
-      - {{ x }}
-      {% endfor %}
-    c: {{ b.c }}
-"""
-
 CNF_TMPL_1 = """a: {{ a }}
 b:
     b:

@@ -1,15 +1,17 @@
 from __future__ import absolute_import
 
+import glob
 import os.path
 import os
-import sys
+import re
 import setuptools
 import setuptools.command.bdist_rpm
 
-sys.path.insert(0, os.path.dirname(__file__))  # load anyconfig from this dir.
 
-from anyconfig.globals import VERSION
-
+# It might throw IndexError and so on.
+VERSION = [re.search(r'^VERSION = "([^"]+)"', l).groups()[0] for l
+           in open(glob.glob("src/*/globals.py")[0]).readlines()
+           if "VERSION" in l][0]
 
 # For daily snapshot versioning mode:
 if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
@@ -40,6 +42,7 @@ class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
 
 setuptools.setup(version=VERSION,
                  cmdclass=dict(bdist_rpm=bdist_rpm),
+                 package_dir={'': 'src'},
                  data_files=[("share/man/man1", ["docs/anyconfig_cli.1"])])
 
 # vim:sw=4:ts=4:et:

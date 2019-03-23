@@ -7,5 +7,5 @@ include docs/*
 include docs/api/*.*
 include pkg/*
 include setup.py
-recursive-include anyconfig *.py
+recursive-include src *.py
 recursive-include tests *.py *.yml *.txt *.json *.yml

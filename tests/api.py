@@ -385,10 +385,6 @@ class Test_32_single_load(unittest.TestCase):
         if "xml" in TT.list_types():
             self._load_and_dump_with_opened_files("a.xml", 'rb', 'wb')
 
-    def test_30_open_bson_file(self):
-        if "bson" in TT.list_types():
-            self._load_and_dump_with_opened_files("a.bson", 'rb', 'wb')
-
     def test_40_open_yaml_file(self):
         if "yaml" in TT.list_types():
             self._load_and_dump_with_opened_files("a.yaml")

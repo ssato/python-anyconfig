@@ -275,15 +275,13 @@ class Test_30_single_load(TestBaseWithIO):
         if not anyconfig.template.SUPPORTED:
             return
 
-        cpath = os.path.join(self.workdir, "a.yaml")
-        TT.open(cpath, mode='w').write(CNF_TMPL_0)
-
+        cpath = os.path.join(resdir(), "30-00-template-cnf.json")
         cnf = TT.single_load(cpath, ac_template=True, ac_context=self.cnf)
         self.assert_dicts_equal(cnf, self.cnf)
 
-        spath = os.path.join(self.workdir, "scm.json")
-        TT.dump(dict(type="integer"), spath)  # Validation should fail.
+        spath = os.path.join(resdir(), "30-00-template-cnf-ng-scm.json")
 
+        # Validation should fail.
         cnf2 = TT.single_load(cpath, ac_template=True, ac_context=self.cnf,
                               ac_schema=spath)
         self.assertTrue(cnf2 is None)

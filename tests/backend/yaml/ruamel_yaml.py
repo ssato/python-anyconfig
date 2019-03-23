@@ -3,35 +3,13 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
-# pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
 import os
 import anyconfig.backend.yaml.pyyaml as TT
 import tests.backend.common as TBC
 
-from anyconfig.compat import OrderedDict
-
-
-CNF_S = """
-a: 0
-b: bbb
-c:
-  - 1
-  - 2
-  - 3
-
-sect0: &sect0
-  d: ["x", "y", "z"]
-sect1:
-  <<: *sect0
-  e: true
-"""
-
-CNF = OrderedDict((("a", 0), ("b", "bbb"), ("c", [1, 2, 3]),
-                   ("sect0", OrderedDict((("d", "x y z".split()), ))),
-                   ("sect1", OrderedDict((("d", "x y z".split()),
-                                          ("e", True))))))
+from .common import CNF_S, CNF
 
 
 class HasParserTrait(TBC.HasParserTrait):

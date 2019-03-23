@@ -27,27 +27,6 @@ from tests.common import CNF_0, SCM_0, CNF_1, dicts_equal, resdir
 # suppress logging messages.
 TT.LOGGER.setLevel(logging.CRITICAL)
 
-CNF_TMPL_1 = """a: {{ a }}
-b:
-    b:
-        {% for x in b.b -%}
-        - {{ x }}
-        {% endfor %}
-    c: {{ b.c }}
-
-name: {{ name }}
-"""
-
-CNF_TMPL_2 = """a: {{ a }}
-b:
-    b:
-        {% for x in b.b -%}
-        - {{ x }}
-        {% endfor %}
-    d: {{ b.d }}
-e: 0
-"""
-
 CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},
                         'a': '0',
                         'b': {'@attrs': {'id': 'b0'}, '@text': 'bbb'},
@@ -519,12 +498,9 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         ctx = self.dic.copy()
         TT.merge(ctx, self.upd, ac_merge=TT.MS_DICTS)
 
-        a_path = self.a_path.replace(".json", ".yml")
-        b_path = self.b_path.replace(".json", ".yml")
-        g_path = self.g_path.replace(".json", ".yml")
-
-        TT.open(a_path, mode='w').write(CNF_TMPL_1)
-        TT.open(b_path, mode='w').write(CNF_TMPL_2)
+        # a_path = os.path.join(resdir(), "30-00-template-cnf.json")
+        b_path = os.path.join(resdir(), "30-10-template-cnf.json")
+        g_path = os.path.join(resdir(), "30-*-template-cnf.json")
 
         opts = dict(ac_merge=TT.MS_DICTS, ac_template=True, ac_context=ctx)
         try:

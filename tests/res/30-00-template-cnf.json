@@ -1,8 +1,12 @@
 {
     "name": "{{ name|default('a') }}",
-    "a": {{ a }},
+    "a": {{ a|default(1) }},
     "b": {
-        "b": [{% for x in b.b %}{{ x }}{% if not loop.last %},{% endif %}{% endfor %}],
-        "c": "{{ b.c }}"
+        "b": [
+        {% if b is defined and b and b.b is defined and b.b -%}
+        {%     for x in b.b %}{{ x }}{% if not loop.last %},{% endif %}{% endfor %}
+        {% else %}1, 2{% endif %}
+        ],
+        "c": "{% if b is defined and b %}{{ b.c|default('C') }}{% else %}'C'{% endif %}"
     }
 }

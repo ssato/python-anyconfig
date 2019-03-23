@@ -1,0 +1,8 @@
+{
+    "a": {{ a }},
+    "b": {
+        "b": [{% for x in b.b %}{{ x }}{% if not loop.last %},{% endif %}{% endfor %}],
+        "c": "{{ b.c }}"
+    },
+    "e": 0
+}

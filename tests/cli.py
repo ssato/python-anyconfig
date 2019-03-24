@@ -91,7 +91,7 @@ class Test_20_Base(RunTestBase):
     def setUp(self):
         self.workdir = tests.common.setup_workdir()
         self.script = os.path.join(tests.common.selfdir(),
-                                   "..", "cli.py")
+                                   "..", "src", "cli.py")
 
     def tearDown(self):
         tests.common.cleanup_workdir(self.workdir)

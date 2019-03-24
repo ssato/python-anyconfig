@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2013 - 2019 Satoru SATOH <satoru.satoh @ gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, too-many-public-methods
@@ -91,12 +91,15 @@ class Test_20_Base(RunTestBase):
     def setUp(self):
         self.workdir = tests.common.setup_workdir()
         self.script = os.path.join(tests.common.selfdir(),
-                                   "..", "src", "cli.py")
+                                   "..", "src", "anyconfig", "cli.py")
 
     def tearDown(self):
         tests.common.cleanup_workdir(self.workdir)
 
     def _assert_run_and_exit(self, *args):
+        if not os.path.exists(self.script):
+            raise RuntimeError("The script was not found: "
+                               "%s" % self.script)
         raised = False
         try:
             _run(*args)

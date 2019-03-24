@@ -90,16 +90,11 @@ class Test_20_Base(RunTestBase):
 
     def setUp(self):
         self.workdir = tests.common.setup_workdir()
-        self.script = os.path.join(tests.common.selfdir(),
-                                   "..", "src", "anyconfig", "cli.py")
 
     def tearDown(self):
         tests.common.cleanup_workdir(self.workdir)
 
     def _assert_run_and_exit(self, *args):
-        if not os.path.exists(self.script):
-            raise RuntimeError("The script was not found: "
-                               "%s" % self.script)
         raised = False
         try:
             _run(*args)

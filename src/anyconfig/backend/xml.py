@@ -452,8 +452,10 @@ def etree_write(tree, stream):
     :param tree: XML ElementTree object
     :param stream: File or file-like object can write to
     """
-    enc = "unicode" if anyconfig.compat.IS_PYTHON_3 else "utf-8"
-    tree.write(stream, encoding=enc, xml_declaration=True)
+    try:
+        tree.write(stream, encoding="utf-8", xml_declaration=True)
+    except TypeError:
+        tree.write(stream, encoding="unicode", xml_declaration=True)
 
 
 class Parser(anyconfig.backend.base.Parser,

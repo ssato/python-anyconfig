@@ -348,7 +348,7 @@ https://github.com/ssato/python-anyconfig/issues.
 The following areas are still insufficient, I think.
 
 - Make python-anyconfig robust for invalid inputs
-- Make python-anyconfig scaled: some functions are limited by max recursion depth.
+- Make python-anyconfig scalable: some functions are limited by max recursion depth.
 - Make python-anyconfig run faster: current implementation might be too complex and it run slower than expected as a result.
 - Documentation:
 

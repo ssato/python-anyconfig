@@ -258,7 +258,6 @@ and backends in charge are enabled and ready to use:
    :widths: 15, 10, 40
 
    YAML, yaml, ``ruamel.yaml`` [#]_ or ``PyYAML`` [#]_
-   ConifgObj, configobj, ``configobj`` [#]_
    TOML, toml, ``toml`` [#]_
 
 - Supported formats of which backends are enabled automatically if required plugin modules are installed: python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may support other formats if corresponding plugin backend modules are installed along with python-anyconfig:
@@ -270,6 +269,7 @@ and backends in charge are enabled and ready to use:
    Amazon Ion, ion, ``anyconfig-ion-backend`` [#]_
    BSON, bson, ``anyconfig-bson-backend`` [#]_
    CBOR, cbor, ``anyconfig-cbor-backend`` [#]_ or ``anyconfig-cbor2-backend`` [#]_
+   ConifgObj, configobj, ``anyconfig-configobj-backend`` [#]_
    MessagePack, msgpack, ``anyconfig-msgpack-backend`` [#]_
 
 The supported formats of python-anyconfig on your system are able to be listed
@@ -294,13 +294,13 @@ or with the API 'anyconfig.list_types()' will show them:
 .. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
 .. [#] https://pypi.python.org/pypi/ruamel.yaml
 .. [#] https://pypi.python.org/pypi/PyYAML
-.. [#] https://pypi.python.org/pypi/configobj
 .. [#] https://pypi.python.org/pypi/toml
 .. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 .. [#] https://pypi.python.org/pypi/anyconfig-ion-backend
 .. [#] https://pypi.python.org/pypi/anyconfig-bson-backend
 .. [#] https://pypi.python.org/pypi/anyconfig-cbor-backend
 .. [#] https://pypi.python.org/pypi/anyconfig-cbor2-backend
+.. [#] https://pypi.python.org/pypi/anyconfig-configobj-backend
 .. [#] https://pypi.python.org/pypi/anyconfig-msgpack-backend
 
 Installation
@@ -322,7 +322,6 @@ enable the features.
    :widths: 20, 10, 25
 
    YAML load/dump, ruamel.yaml or PyYAML, ruamel.yaml will be used instead of PyYAML if it's available to support the YAML 1.2 specification.
-   ConifgObj load/dump, configobj, none
    MessagePack load/dump, msgpack-python, none
    TOML load/dump, toml, none
    BSON load/dump, bson, bson from pymongo package may work and bson [#]_ does not
@@ -392,7 +391,7 @@ https://github.com/ssato/python-anyconfig/issues.
 The following areas are still insufficient, I think.
 
 - Make python-anyconfig robust for invalid inputs
-- Make python-anyconfig scaled: some functions are limited by max recursion depth.
+- Make python-anyconfig scalable: some functions are limited by max recursion depth.
 - Make python-anyconfig run faster: current implementation might be too complex and it run slower than expected as a result.
 - Documentation:
 

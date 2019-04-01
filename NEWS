@@ -1,11 +1,14 @@
-* Thu Feb 14 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.8-99
+* Mon Apr  1 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.8-99
 - api: replace the API 'find_loader' with new APIs 'find' and 'findall'
 - api: add new APIs 'list_by_{cid,type,extension}'
 - cli: make CLI shows more detailed list of parsers
 - cli: add support to load data from stdin
-- enhancement: support multiple backends of YAML and JSON formats
+- enhancement: support multiple different YAML and JSON backends
 - enhancement: make ruamel.yaml based backend works w/o PyYAML
+- change: remove configobj backend and related code including test cases
+- change: move the source dir of this module to simplify configurations
 - Misc other enhancements, refactorings and bug fixes as always
+- seealso: `git log RELEASE_0.9.8.. --reverse` for more details
 
 * Fri Dec 21 2018 Satoru SATOH <ssato@redhat.com> - 0.9.8-1
 - enhancement: add basic support of ruamel.yaml specific features and gives it

@@ -449,17 +449,10 @@ def etree_write(tree, stream):
     """
     Write XML ElementTree 'root' content into 'stream'.
 
-    .. note:
-       It seems that ET.ElementTree.write() cannot process a parameter
-       'xml_declaration' in python 2.6.
-
     :param tree: XML ElementTree object
     :param stream: File or file-like object can write to
     """
-    if anyconfig.compat.IS_PYTHON_2_6:
-        tree.write(stream, encoding='UTF-8')
-    else:
-        tree.write(stream, encoding='UTF-8', xml_declaration=True)
+    tree.write(stream, encoding='UTF-8', xml_declaration=True)
 
 
 class Parser(anyconfig.backend.base.Parser,

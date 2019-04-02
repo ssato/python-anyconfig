@@ -32,11 +32,11 @@ class Test_00(unittest.TestCase):
     >>> psr = TT.make_parser()
     >>> assert isinstance(psr, TT.argparse.ArgumentParser)
     >>> psr.parse_args([])  # doctest: +NORMALIZE_WHITESPACE
-    Namespace(args=None, atype=None, env=False, gen_schema=False, get=None,
-              ignore_missing=False, inputs=[], itype=None, list=False,
-              loglevel=0, merge='merge_dicts', otype=None, output=None,
-              query=None, schema=None, set=None, template=False,
-              validate=False)
+    Namespace(args=None, atype=None, env=False, extra_opts=None,
+              gen_schema=False, get=None, ignore_missing=False, inputs=[],
+              itype=None, list=False, loglevel=0, merge='merge_dicts',
+              otype=None, output=None, query=None, schema=None, set=None,
+              template=False, validate=False)
     """
 
 
@@ -232,6 +232,16 @@ class Test_30_single_input(Test_20_Base):
 
         TT.main(["dummy", "-o", output, infile])
         self.assertTrue(os.path.exists(output))
+
+    def test_80_w_extra_opts(self):
+        infile = os.path.join(tests.common.resdir(), "00-00-cnf.json")
+        output = os.path.join(self.workdir, "out.json")
+        ref = os.path.join(tests.common.resdir(), "00-00-cnf_indented.json")
+
+        TT.main(["dummy", "-o", output, "--extra-opts", "indent:2", infile])
+        self.assertTrue(os.path.exists(output))
+        self.assertEqual(open(output).read().strip().rstrip(),
+                         open(ref).read().strip().rstrip())
 
 
 class Test_40_multi_inputs(Test_20_Base):

@@ -67,7 +67,8 @@ Examples:
 DEFAULTS = dict(loglevel=0, list=False, output=None, itype=None,
                 otype=None, atype=None, merge=API.MS_DICTS,
                 ignore_missing=False, template=False, env=False,
-                schema=None, validate=False, gen_schema=False)
+                schema=None, validate=False, gen_schema=False,
+                extra_opts=None)
 
 
 def to_log_level(level):
@@ -176,6 +177,11 @@ def make_parser(defaults=None):
                       help="Load configuration defaults from "
                            "environment values")
     cpog.add_argument("-S", "--schema", help="Specify Schema file[s] path")
+    cpog.add_argument("-e", "--extra-opts",
+                      help="Extra options given to the API call, "
+                           "--extra-options indent:2 (specify the "
+                           "indent for pretty-printing of JSON outputs) "
+                           "for example")
     cpog.add_argument("-v", "--verbose", action="count", dest="loglevel",
                       help="Verbose mode; -v or -vv (more verbose)")
     return parser
@@ -282,28 +288,33 @@ def _output_type_by_input_path(inpaths, itype, fmsg):
     return otype
 
 
-def _try_dump(cnf, outpath, otype, fmsg):
+def _try_dump(cnf, outpath, otype, fmsg, extra_opts=None):
     """
     :param cnf: Configuration object to print out
     :param outpath: Output file path or None
     :param otype: Output type or None
     :param fmsg: message if it cannot detect otype by 'inpath'
+    :param extra_opts: Map object will be given to API.dump as extra options
     """
+    if extra_opts is None:
+        extra_opts = {}
     try:
-        API.dump(cnf, outpath, otype)
+        API.dump(cnf, outpath, otype, **extra_opts)
     except API.UnknownFileTypeError:
         _exit_with_output(fmsg % outpath, 1)
     except API.UnknownProcessorTypeError:
         _exit_with_output("Invalid output type '%s'" % otype, 1)
 
 
-def _output_result(cnf, outpath, otype, inpaths, itype):
+def _output_result(cnf, outpath, otype, inpaths, itype,
+                   extra_opts=None):
     """
     :param cnf: Configuration object to print out
     :param outpath: Output file path or None
     :param otype: Output type or None
     :param inpaths: List of input file paths
     :param itype: Input type or None
+    :param extra_opts: Map object will be given to API.dump as extra options
     """
     fmsg = ("Uknown file type and cannot detect appropriate backend "
             "from its extension, '%s'")
@@ -316,19 +327,21 @@ def _output_result(cnf, outpath, otype, inpaths, itype):
         if otype is None:
             otype = _output_type_by_input_path(inpaths, itype, fmsg)
 
-    _try_dump(cnf, outpath, otype, fmsg)
+    _try_dump(cnf, outpath, otype, fmsg, extra_opts=extra_opts)
 
 
-def _load_diff(args):
+def _load_diff(args, extra_opts):
     """
     :param args: :class:`argparse.Namespace` object
+    :param extra_opts: Map object given to API.load as extra options
     """
     try:
         diff = API.load(args.inputs, args.itype,
                         ac_ignore_missing=args.ignore_missing,
                         ac_merge=args.merge,
                         ac_template=args.template,
-                        ac_schema=args.schema)
+                        ac_schema=args.schema,
+                        **extra_opts)
     except API.UnknownProcessorTypeError:
         _exit_with_output("Wrong input type '%s'" % args.itype, 1)
     except API.UnknownFileTypeError:
@@ -363,7 +376,12 @@ def main(argv=None):
     """
     args = _parse_args((argv if argv else sys.argv)[1:])
     cnf = os.environ.copy() if args.env else {}
-    diff = _load_diff(args)
+
+    extra_opts = dict()
+    if args.extra_opts:
+        extra_opts = anyconfig.parser.parse(args.extra_opts)
+
+    diff = _load_diff(args, extra_opts)
 
     if cnf:
         API.merge(cnf, diff)
@@ -378,7 +396,8 @@ def main(argv=None):
         _exit_with_output("Validation succeds")
 
     cnf = API.gen_schema(cnf) if args.gen_schema else _do_filter(cnf, args)
-    _output_result(cnf, args.output, args.otype, args.inputs, args.itype)
+    _output_result(cnf, args.output, args.otype, args.inputs, args.itype,
+                   extra_opts=extra_opts)
 
 
 if __name__ == '__main__':

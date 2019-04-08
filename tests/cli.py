@@ -19,7 +19,6 @@ from tests.common import CNF_0
 
 
 CNF_0_PATH = os.path.join(tests.common.resdir(), "00-cnf.yml")
-SCM_0_PATH = os.path.join(tests.common.resdir(), "00-scm.yml")
 
 
 def _run(*args):
@@ -164,7 +163,9 @@ class Test_30_single_input(Test_20_Base):
                                   "--ignore-missing", infile]))
 
     def test_50_w_schema(self):
-        (infile, scmfile) = (CNF_0_PATH, SCM_0_PATH)
+        infile = CNF_0_PATH
+        scmfile = os.path.join(tests.common.resdir(), "00-scm.yml")
+
         output = os.path.join(self.workdir, "output.json")
         self.run_and_check_exit_code(["--schema", scmfile, "--validate",
                                       infile], 0)

@@ -95,13 +95,7 @@ class Test_20_Base(RunTestBase):
         tests.common.cleanup_workdir(self.workdir)
 
     def _assert_run_and_exit(self, *args):
-        raised = False
-        try:
-            _run(*args)
-        except SystemExit:
-            raised = True
-
-        self.assertTrue(raised)
+        self.assertRaises(SystemExit, _run, *args)
 
 
 class Test_30_single_input(Test_20_Base):

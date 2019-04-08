@@ -62,14 +62,8 @@ class Test_10_Validation(Test_00_Base):
         self.assertFalse(ret)
 
     def test_14_validate__ng_no_safe(self):
-        raised = False
-        try:
-            _rc = TT.validate({'a': "aaa"}, self.schema, ac_schema_safe=False)
-            print(_rc)  # Should not be reached here...
-        except Exception:
-            raised = True
-
-        self.assertTrue(raised)
+        self.assertRaises(Exception, TT.validate,
+                          {'a': "aaa"}, self.schema, ac_schema_safe=False)
 
 
 class Test_12_Validation_Errors(Test_00_Base):

@@ -118,11 +118,7 @@ class Test(unittest.TestCase):
 
     def test_30_try_render_with_empty_filepath_and_content(self):
         if TT.SUPPORTED:
-            try:
-                TT.try_render()
-            except ValueError:
-                exc_was_raised = True
-            self.assertTrue(exc_was_raised)
+            self.assertRaises(ValueError, TT.try_render)
 
     def test_40_render__w_filter(self):
         if TT.SUPPORTED:

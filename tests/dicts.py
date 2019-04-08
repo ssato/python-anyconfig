@@ -100,13 +100,7 @@ class Test_10_update_with_replace(unittest.TestCase):
         self.assert_updated(self.other.items())
 
     def test_30_update_with_invalid(self):
-        try:
-            raised = False
-            TT.merge(self.dic, 1)
-        except (ValueError, TypeError):
-            raised = True
-
-        self.assertTrue(raised)
+        self.assertRaises((ValueError, TypeError), TT.merge, self.dic, 1)
 
 
 class Test_20_update_wo_replace(Test_10_update_with_replace):

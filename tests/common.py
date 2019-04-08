@@ -18,7 +18,7 @@ from anyconfig.compat import OrderedDict
 from anyconfig.utils import is_dict_like
 
 
-CNF_0 = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
+CNF_0 = dict(name="a", a=1, b=dict(b=[0, 1], c="C"))
 SCM_0 = {"type": "object",
          "properties": {
              "name": {"type": "string"},

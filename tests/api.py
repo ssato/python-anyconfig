@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2017 Satoru SATOH <ssato at redhat.com>
+# Copyright (C) 2012 - 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, no-member
@@ -92,7 +92,7 @@ class Test_10_find(unittest.TestCase):
 
 class TestBase(unittest.TestCase):
 
-    cnf = dic = dict(a=1, b=dict(b=[0, 1], c="C"), name="a")
+    cnf = dic = CNF_0
     upd = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"), e=0)
 
     def assert_dicts_equal(self, dic, ref, ordered=False):

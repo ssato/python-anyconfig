@@ -1,8 +1,7 @@
 #
 # Forked from m9dicts.tests.{api,dicts}
 #
-# Copyright (C) 2011 - 2016 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2017, 2018 Red Hat, Inc.
+# Copyright (C) 2011 - 2019 Satoru SATOH <satoru.satoh@gmail.com>
 #
 # pylint: disable=missing-docstring,invalid-name,protected-access
 # pylint: disable=ungrouped-imports

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015 - 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring, unused-variable, invalid-name

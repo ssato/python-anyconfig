@@ -1,13 +1,17 @@
 #
-# Copyright (C) - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) - 2018, 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 from __future__ import absolute_import
 
 import os
-import anyconfig.backend.yaml.pyyaml as TT
 import tests.backend.common as TBC
+try:
+    import anyconfig.backend.yaml.pyyaml as TT
+except ImportError:
+    import tests.common
+    tests.common.skip_test()
 
 from .common import CNF_S, CNF
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # Copyright (C) 2017 Red Hat, Inc.
 # License: MIT
 #
@@ -7,8 +7,12 @@
 from __future__ import absolute_import
 
 import os
-import anyconfig.backend.yaml.pyyaml as TT
 import tests.backend.common as TBC
+try:
+    import anyconfig.backend.yaml.pyyaml as TT
+except ImportError:
+    import tests.common
+    tests.common.skip_test()
 
 from .common import CNF_S, CNF
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2015 - 2019 Satoru SATOH <satoru.satoh@gmail.com>
 # Copyright (C) 2017 Red Hat, Inc.
 # License: MIT
 #
@@ -7,7 +7,12 @@
 # pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
-import anyconfig.backend.toml as TT
+try:
+    import anyconfig.backend.toml as TT
+except ImportError:
+    import tests.common
+    raise tests.common.skip_test()
+
 import tests.backend.common as TBC
 
 from anyconfig.compat import OrderedDict as ODict

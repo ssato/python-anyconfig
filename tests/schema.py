@@ -9,7 +9,7 @@ from __future__ import absolute_import, print_function
 import unittest
 import anyconfig.schema as TT
 
-from tests.common import dicts_equal
+from tests.common import dicts_equal, skip_test
 
 
 class Test_00_Base(unittest.TestCase):
@@ -51,6 +51,10 @@ class Test_00_Functions(Test_00_Base):
 
 class Test_10_Validation(Test_00_Base):
 
+    def setUp(self):
+        if not TT.JSONSCHEMA_IS_AVAIL:
+            skip_test()
+
     def test_10_validate(self):
         (ret, msg) = TT.validate(self.obj, self.schema)
         self.assertFalse(msg)
@@ -71,6 +75,10 @@ class Test_12_Validation_Errors(Test_00_Base):
     obj = dict(a=1, b=2.0)
     scm = {"type": "object", "properties": {"a": {"type": "integer"},
                                             "b": {"type": "string"}}}
+
+    def setUp(self):
+        if not TT.JSONSCHEMA_IS_AVAIL:
+            skip_test()
 
     def test_12_validate__ng(self):
         (ret, msg) = TT.validate(self.obj, self.scm, ac_schema_errors=True)

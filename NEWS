@@ -1,4 +1,4 @@
-* Mon Apr  1 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.8-99
+* Sat Apr 27 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.9-1
 - api: replace the API 'find_loader' with new APIs 'find' and 'findall'
 - api: add new APIs 'list_by_{cid,type,extension}'
 - cli: make CLI shows more detailed list of parsers

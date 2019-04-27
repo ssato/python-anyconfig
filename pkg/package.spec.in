@@ -7,15 +7,13 @@ contents merge, templates, query, schema validation and generation support.
 
 %bcond_with optionals
 %bcond_with tests
-
-%if 0%{?fedora} || 0%{?rhel} > 7 || 0%{?epel} > 7
-%bcond_without python3
-%bcond_without doc
-%bcond_without extras
-%else
-%bcond_with python3
 %bcond_with doc
 %bcond_with extras
+
+%if 0%{?rhel} == 7 || 0%{?epel} == 7
+%bcond_without python2
+%else
+%bcond_with python2
 %endif
 
 Name:           python-%{pkgname}
@@ -29,21 +27,24 @@ BuildArch:      noarch
 
 %if %{with doc}
 BuildRequires:  make
-BuildRequires:  python2-docutils
-BuildRequires:  python2-sphinx
-BuildRequires:  python2-configobj
-BuildRequires:  python2-toml
-BuildRequires:  PyYAML
+BuildRequires:  python3-docutils
+BuildRequires:  python3-sphinx
 %endif
+%if %{with python2}
+BuildRequires:  PyYAML
+BuildRequires:  python2-toml
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
-%if %{with python3}
+%else
+BuildRequires:  python3-toml
+BuildRequires:  python3-yaml
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 %endif
 
 %description    %{desc}
 
+%if %{with python2}
 %package -n python2-%{pkgname}
 Summary:        %{summary}
 Requires:       PyYAML
@@ -60,8 +61,8 @@ Requires:       python2-toml
 %{?python_provide:%python_provide python2-%{pkgname}}
 
 %description -n python2-%{pkgname} %{desc}
+%else
 
-%if %{with python3}
 %package -n python3-%{pkgname}
 Summary:        %{summary}
 Requires:       python3-PyYAML
@@ -92,11 +93,11 @@ HTML documentation for %{name}.
 %autosetup -n %{pkgname}-%{version}
 
 %build
+%if %{with python2}
 %py2_build
-
-%if %{with python3}
-%py3_build
 %endif
+
+%py3_build
 
 %if %{with doc}
 make -C docs/ html
@@ -105,6 +106,7 @@ rm -frv docs/build/html/_sources
 %endif
 
 %install
+%if %{with python2}
 %py2_install
 test -d %{buildroot}/usr/bin || {
 install -d %{buildroot}/usr/bin
@@ -120,15 +122,15 @@ if __name__ == '__main__':
 EOF
 }
 chmod +x %{buildroot}/usr/bin/anyconfig_cli
-%if %{with python3}
-%py3_install
 %endif
+%py3_install
 
 %if %{with tests}
 %check
 ./pkg/runtest.sh
 %endif
 
+%if %{with python2}
 %files -n python2-%{pkgname}
 %doc README.rst NEWS AUTHORS.txt
 %license LICENSE.MIT
@@ -137,13 +139,12 @@ chmod +x %{buildroot}/usr/bin/anyconfig_cli
 %else
 %{python2_sitelib}/*
 %endif
+%endif
 
-%if %{with python3}
 %files -n python3-%{pkgname}
 %doc README.rst NEWS AUTHORS.txt
 %license LICENSE.MIT
 %{python3_sitelib}/*
-%endif
 %{_bindir}/anyconfig*
 %{_mandir}/*/anyconfig*.*.gz
 

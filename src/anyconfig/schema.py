@@ -23,8 +23,9 @@
 from __future__ import absolute_import
 try:
     import jsonschema
+    JSONSCHEMA_IS_AVAIL = True
 except ImportError:
-    pass
+    JSONSCHEMA_IS_AVAIL = False
 
 import anyconfig.compat
 import anyconfig.utils
@@ -55,16 +56,10 @@ def _validate_all(data, schema):
     :seealso: https://python-jsonschema.readthedocs.io/en/latest/validate/,
     a section of 'iter_errors' especially
     """
-    try:
-        vldtr = jsonschema.Draft4Validator(schema)  # :raises: SchemaError, ...
-        errors = list(vldtr.iter_errors(data))
+    vldtr = jsonschema.Draft4Validator(schema)  # :raises: SchemaError, ...
+    errors = list(vldtr.iter_errors(data))
 
-        return (not errors, [err.message for err in errors])
-
-    except NameError:
-        return (True, _NA_MSG)
-
-    return (True, '')
+    return (not errors, [err.message for err in errors])
 
 
 def _validate(data, schema, ac_schema_safe=True, **options):
@@ -76,10 +71,6 @@ def _validate(data, schema, ac_schema_safe=True, **options):
     """
     try:
         jsonschema.validate(data, schema, **options)
-        return (True, '')
-
-    except NameError:
-        return (True, _NA_MSG)
 
     except (jsonschema.ValidationError, jsonschema.SchemaError,
             Exception) as exc:
@@ -112,6 +103,9 @@ def validate(data, schema, ac_schema_safe=True, ac_schema_errors=False,
 
     :return: (True if validation succeeded else False, error message[s])
     """
+    if not JSONSCHEMA_IS_AVAIL:
+        return (True, _NA_MSG)
+
     options = anyconfig.utils.filter_options(("cls", ), options)
     if ac_schema_errors:
         return _validate_all(data, schema, **options)

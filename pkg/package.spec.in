@@ -95,9 +95,9 @@ HTML documentation for %{name}.
 %build
 %if %{with python2}
 %py2_build
-%endif
-
+%else
 %py3_build
+%endif
 
 %if %{with doc}
 make -C docs/ html
@@ -122,12 +122,13 @@ if __name__ == '__main__':
 EOF
 }
 chmod +x %{buildroot}/usr/bin/anyconfig_cli
-%endif
+%else
 %py3_install
+%endif
 
 %if %{with tests}
 %check
-./pkg/runtest.sh
+tox -e py$(python -c "import sys; sys.stdout.write(sys.version[:3].replace('.', ''))")
 %endif
 
 %if %{with python2}
@@ -139,12 +140,12 @@ chmod +x %{buildroot}/usr/bin/anyconfig_cli
 %else
 %{python2_sitelib}/*
 %endif
-%endif
-
+%else
 %files -n python3-%{pkgname}
 %doc README.rst NEWS AUTHORS.txt
 %license LICENSE.MIT
 %{python3_sitelib}/*
+%endif
 %{_bindir}/anyconfig*
 %{_mandir}/*/anyconfig*.*.gz
 

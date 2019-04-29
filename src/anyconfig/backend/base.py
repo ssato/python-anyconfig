@@ -160,8 +160,9 @@ class LoaderMixin(object):
     @classmethod
     def allow_primitives(cls):
         """
-        :return: True if the parser.load* may return objects of primitive data
-        types other than mapping types such like JSON parser
+        :return:
+            True if the parser.load* may return objects of primitive data types
+            other than mapping types such like JSON parser
         """
         return cls._allow_primitives
 

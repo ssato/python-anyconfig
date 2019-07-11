@@ -16,36 +16,30 @@ try:
 except ImportError:
     pass
 
-from anyconfig.globals import LOGGER
 
-
-def query(data, **options):
+def query(data, jexp, **options):
     """
     Filter data with given JMESPath expression.
 
     See also: https://github.com/jmespath/jmespath.py and http://jmespath.org.
 
     :param data: Target object (a dict or a dict-like object) to query
-    :param options:
-        Keyword option may include 'ac_query' which is a string represents
-        JMESPath expression.
+    :param jexp: a string represents JMESPath expression
+    :param options: Keyword optios
 
-    :return: Maybe queried result data, primitive (int, str, ...) or dict
+    :return: A tuple of query result and maybe exception if failed
     """
-    expression = options.get("ac_query", None)
-    if expression is None or not expression:
-        return data
-
+    exc = None
     try:
-        pexp = jmespath.compile(expression)
-        return pexp.search(data)
-    except ValueError as exc:  # jmespath.exceptions.*Error inherit from it.
-        LOGGER.warning("Failed to compile or search: exp=%s, exc=%r",
-                       expression, exc)
-    except (NameError, AttributeError):
-        LOGGER.warning("Filter module (jmespath) is not available. "
-                       "Do nothing.")
+        pexp = jmespath.compile(jexp)
+        return (pexp.search(data), exc)
 
-    return data
+    except ValueError as exc:  # jmespath.exceptions.*Error inherit from it.
+        return (data, exc)
+
+    except (NameError, AttributeError):
+        raise ValueError("Required 'jmespath' module is not available.")
+
+    return (None, exc)  # It should not reach here.
 
 # vim:sw=4:ts=4:et:

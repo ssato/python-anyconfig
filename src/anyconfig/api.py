@@ -88,7 +88,6 @@ import warnings
 from anyconfig.globals import (
     LOGGER, IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
 )
-import anyconfig.query
 import anyconfig.globals
 import anyconfig.dicts
 import anyconfig.ioinfo
@@ -101,6 +100,7 @@ from anyconfig.dicts import (
 )
 from anyconfig.backends import Parsers
 from anyconfig.schema import validate, gen_schema
+from anyconfig.query import query
 
 
 def version():
@@ -160,6 +160,23 @@ def _try_validate(cnf, schema, **options):
         return cnf
 
     return None
+
+
+def _try_query(cnf, jexp, **options):
+    """
+    :param cnf: Mapping object represents configuration data
+    :param jexp: JMESPath expression to query or None/False
+    :param options: Keyword options currently not used
+
+    :return: Maybe the result by querying with the JMESPath exp.
+    :raises: jmespath.exceptions.*Error (ValueError)
+    """
+    if jexp:
+        (cnf, exc) = query(cnf, jexp, **options)
+        if exc:
+            raise exc
+
+    return cnf
 
 
 def findall(obj=None, forced_type=None):
@@ -345,7 +362,7 @@ def single_load(input_, ac_parser=None, ac_template=False,
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
     cnf = _try_validate(cnf, schema, **options)
-    return anyconfig.query.query(cnf, **options)
+    return _try_query(cnf, options.get("ac_query", False), **options)
 
 
 def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
@@ -429,7 +446,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
         return anyconfig.dicts.convert_to({}, **options)
 
     cnf = _try_validate(cnf, schema, **options)
-    return anyconfig.query.query(cnf, **options)
+    return _try_query(cnf, options.get("ac_query", False), **options)
 
 
 def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
@@ -520,7 +537,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
 
     cnf = psr.loads(content, ac_dict=ac_dict, **options)
     cnf = _try_validate(cnf, schema, **options)
-    return anyconfig.query.query(cnf, **options)
+    return _try_query(cnf, options.get("ac_query", False), **options)
 
 
 def dump(data, out, ac_parser=None, **options):
@@ -558,18 +575,5 @@ def dumps(data, ac_parser=None, **options):
     """
     psr = find(None, forced_type=ac_parser)
     return psr.dumps(data, **options)
-
-
-def query(data, expression, **options):
-    """
-    API just wraps :func:`anyconfig.query.query`.
-
-    :param data: Config data object to query
-    :param expression: JMESPath expression to query data
-    :param options: Ignored in current implementation
-
-    :return: Query result object may be a primitive (int, str, etc.) or dict.
-    """
-    return anyconfig.query.query(data, ac_query=expression)
 
 # vim:sw=4:ts=4:et:

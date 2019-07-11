@@ -346,7 +346,9 @@ def _load_diff(args, extra_opts):
         _exit_with_output("Wrong input type '%s'" % args.itype, 1)
     except API.UnknownFileTypeError:
         _exit_with_output("No appropriate backend was found for given file "
-                          "'%s'" % args.itype, 1)
+                          "type='%s', inputs=%s" % (args.itype,
+                                                    ", ".join(args.inputs)),
+                          1)
     _exit_if_load_failure(diff,
                           "Failed to load: args=%s" % ", ".join(args.inputs))
 

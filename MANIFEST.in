@@ -7,6 +7,7 @@ include docs/*
 include docs/api/*.*
 include pkg/*
 include setup.py
+include setup.cfg
 recursive-include src *.py
 # for f in tests/**/*.* ; do echo ${f/*\./*.}; done | sort | uniq
 recursive-include tests *.ini *.json *.properties *.py *.sh *.toml *.xml *.yml

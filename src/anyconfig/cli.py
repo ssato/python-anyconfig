@@ -232,7 +232,7 @@ def _parse_args(argv):
             _show_psrs()
         elif args.env:
             cnf = os.environ.copy()
-            _output_result(cnf, args.output, args.otype or "json", None, None)
+            _output_result(cnf, args)
             sys.exit(0)
         else:
             parser.print_usage()
@@ -306,18 +306,16 @@ def _try_dump(cnf, outpath, otype, fmsg, extra_opts=None):
         _exit_with_output("Invalid output type '%s'" % otype, 1)
 
 
-def _output_result(cnf, outpath, otype, inpaths, itype,
-                   extra_opts=None):
+def _output_result(cnf, args, inpaths=None, extra_opts=None):
     """
     :param cnf: Configuration object to print out
-    :param outpath: Output file path or None
-    :param otype: Output type or None
+    :param args: :class:`argparse.Namespace` object
     :param inpaths: List of input file paths
-    :param itype: Input type or None
     :param extra_opts: Map object will be given to API.dump as extra options
     """
     fmsg = ("Uknown file type and cannot detect appropriate backend "
             "from its extension, '%s'")
+    (outpath, otype) = (args.output, args.otype or "json")
 
     if not anyconfig.utils.is_dict_like(cnf):
         _exit_with_output(str(cnf))  # Print primitive types as it is.
@@ -325,7 +323,7 @@ def _output_result(cnf, outpath, otype, inpaths, itype,
     if not outpath or outpath == "-":
         outpath = sys.stdout
         if otype is None:
-            otype = _output_type_by_input_path(inpaths, itype, fmsg)
+            otype = _output_type_by_input_path(inpaths, args.itype, fmsg)
 
     _try_dump(cnf, outpath, otype, fmsg, extra_opts=extra_opts)
 
@@ -398,8 +396,7 @@ def main(argv=None):
         _exit_with_output("Validation succeds")
 
     cnf = API.gen_schema(cnf) if args.gen_schema else _do_filter(cnf, args)
-    _output_result(cnf, args.output, args.otype, args.inputs, args.itype,
-                   extra_opts=extra_opts)
+    _output_result(cnf, args, args.inputs, extra_opts=extra_opts)
 
 
 if __name__ == '__main__':

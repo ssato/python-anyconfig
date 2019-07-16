@@ -24,7 +24,7 @@ python-anyconfig
    :target: https://coveralls.io/r/ssato/python-anyconfig
    :alt: [Coverage Status]
 
-.. image:: https://landscape.io/github/ssato/python-anyconfig/master/landscape.png
+.. image:: https://landscape.io/github/ssato/python-anyconfig/master/landscape.svg?style=flat
    :target: https://landscape.io/github/ssato/python-anyconfig/master
    :alt: [Code Health]
 

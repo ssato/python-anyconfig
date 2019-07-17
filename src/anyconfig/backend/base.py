@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 Satoru SATOH <satoru..satoh @ gmail.com>
+# Copyright (C) 2019 Satoru SATOH <satoru.satoh @ gmail.com>
 # License: MIT
 #
 # pylint: disable=unused-argument
@@ -16,33 +16,6 @@ needed:
   - :meth:`dump_to_string`: Dump config as a string
   - :meth:`dump_to_stream`: Dump config to a file or file-like object
   - :meth:`dump_to_path`: Dump config to a file of given path
-
-Changelog:
-
-.. versionchanged:: 0.9.5
-
-   - Make :class:`Parser` inherited from
-     :class:`anyconfig.models.processor.Processor`
-   - introduce the member _allow_primitives and the class method
-     allow_primitives to :class:`Parser` to allow parsers to load and return
-     data of primitive types other than mapping objects
-
-.. versionchanged:: 0.9.1
-
-   - Rename the member _dict_options to '_dict_opts' to make consistent w/
-     other members such as _load_opts.
-
-.. versionchanged:: 0.8.3
-
-   - Add '_ordered' membmer and a class method :meth:` ordered to
-     :class:`Parser'.
-   - Add '_dict_options` member to the class :class:`Parser`.
-
-.. versionchanged:: 0.2
-
-   - The methods :meth:`load_impl`, :meth:`dump_impl` are deprecated and
-     replaced with :meth:`load_from_stream` and :meth:`load_from_path`,
-     :meth:`dump_to_string` and :meth:`dump_to_path` respectively.
 """
 from __future__ import absolute_import
 
@@ -160,8 +133,9 @@ class LoaderMixin(object):
     @classmethod
     def allow_primitives(cls):
         """
-        :return: True if the parser.load* may return objects of primitive data
-        types other than mapping types such like JSON parser
+        :return:
+            True if the parser.load* may return objects of primitive data types
+            other than mapping types such like JSON parser
         """
         return cls._allow_primitives
 

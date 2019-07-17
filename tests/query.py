@@ -18,29 +18,25 @@ class Test_00_Functions(unittest.TestCase):
         self.assertTrue(dicts_equal(dic, ref),
                         "%r%s vs.%s%r" % (dic, os.linesep, os.linesep, ref))
 
+    def _assert_query(self, data_exp_ref_list, dicts=False):
+        _assert = self._assert_dicts_equal if dicts else self.assertEqual
+        for data, exp, ref in data_exp_ref_list:
+            try:
+                _assert(TT.query(data, exp)[0], ref)
+            except ValueError:
+                pass
+
     def test_10_query(self):
-        try:
-            if TT.jmespath:
-                self.assertEqual(TT.query({"a": 1}, ac_query="a"), 1)
-                self.assertEqual(TT.query({"a": {"b": 2}}, ac_query="a.b"), 2)
-        except (NameError, AttributeError):
-            pass
+        self._assert_query([({"a": 1}, "a", 1),
+                            ({"a": {"b": 2}}, "a.b", 2)])
 
     def test_12_invalid_query(self):
         data = {"a": 1}
-        try:
-            if TT.jmespath:
-                self._assert_dicts_equal(TT.query(data, ac_query="b."), data)
-        except (NameError, AttributeError):
-            pass
+        self._assert_query([(data, "b.", data)])
 
     def test_14_empty_query(self):
         data = {"a": 1}
-        try:
-            if TT.jmespath:
-                self._assert_dicts_equal(TT.query(data, ac_query=None), data)
-                self._assert_dicts_equal(TT.query(data, ac_query=''), data)
-        except (NameError, AttributeError):
-            pass
+        self._assert_query([(data, None, data),
+                            (data, '', data)])
 
 # vim:sw=4:ts=4:et:

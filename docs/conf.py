@@ -5,7 +5,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                os.path.pardir)))
+                                                os.path.pardir, "src")))
 
 extensions = ['sphinx.ext.autodoc']
 source_suffix = '.rst'

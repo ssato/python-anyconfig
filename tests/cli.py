@@ -7,6 +7,8 @@ from __future__ import absolute_import
 
 import os
 import os.path
+import shutil
+import tempfile
 import unittest
 
 import anyconfig.cli as TT
@@ -50,6 +52,14 @@ class RunTestBase(unittest.TestCase):
             (self.assertNotEqual if _not else self.assertEqual)(ecode, code)
 
 
+class RunTestWithTmpdir(RunTestBase):
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir)
+
+
 class Test_10(RunTestBase):
     infile = os.path.join(tests.common.resdir(), "00-cnf.json")
 
@@ -76,13 +86,17 @@ class Test_10(RunTestBase):
         self.run_and_check_exit_code([__file__, __file__ + '.un_ext'],
                                      _not=True)
 
+
+class Test_12(RunTestWithTmpdir):
+    infile = os.path.join(tests.common.resdir(), "00-cnf.json")
+
     def test_60_unknown_out_file_type(self):
-        self.run_and_check_exit_code([self.infile, "-o", "t.unknown_ext"],
-                                     _not=True)
+        opath = os.path.join(self.tmpdir, "t.unknown_ext")
+        self.run_and_check_exit_code([self.infile, "-o", opath], _not=True)
 
     def test_62_unknown_out_parser_type(self):
-        self.run_and_check_exit_code([self.infile, "-O", "unknown_psr"],
-                                     _not=True)
+        opath = os.path.join(self.tmpdir, "t.unknown_psr")
+        self.run_and_check_exit_code([self.infile, "-O", opath], _not=True)
 
 
 class Test_20_Base(RunTestBase):

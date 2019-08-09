@@ -11,4 +11,4 @@ include setup.cfg
 include tox.ini
 recursive-include src *.py
 # for f in tests/**/*.* ; do echo ${f/*\./*.}; done | sort | uniq
-recursive-include tests *.ini *.json *.properties *.py *.sh *.toml *.xml *.yml
+recursive-include tests *.ini *.json *.properties *.py *.sh *.toml *.xml *.yml *.bats

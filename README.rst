@@ -322,10 +322,8 @@ enable the features.
    :widths: 20, 10, 25
 
    YAML load/dump, ruamel.yaml or PyYAML, ruamel.yaml will be used instead of PyYAML if it's available to support the YAML 1.2 specification.
-   MessagePack load/dump, msgpack-python, none
    TOML load/dump, toml, none
    BSON load/dump, bson, bson from pymongo package may work and bson [#]_ does not
-   CBOR load/dump, anyconfig-cbor-backend, none
    Template config, Jinja2 [#]_ , none
    Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
    Query with JMESPath expression, jmespath [#]_ , none

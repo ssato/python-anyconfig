@@ -13,6 +13,11 @@ import itertools
 import os.path
 import types
 
+try:
+    import collections.abc as collections_abc
+except ImportError:
+    collections_abc = collections
+
 import anyconfig.compat
 import anyconfig.globals
 
@@ -386,7 +391,7 @@ def noop(val, *args, **kwargs):
     return val
 
 
-_LIST_LIKE_TYPES = (collections.Iterable, collections.Sequence)
+_LIST_LIKE_TYPES = (collections_abc.Iterable, collections_abc.Sequence)
 
 
 def is_dict_like(obj):

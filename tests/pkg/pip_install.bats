@@ -11,12 +11,14 @@
 #  1 test, 0 failures
 #  [ssato@f30]
 
-TDIR=
+SRCDIR=${SRCDIR:-.}
+TDIR=${PIP_TARGET_DIR:-}
+
 # DEVEL_ERPS="$(sed -nr '/^devel =/,/^.options.packages.find/s/[[:blank:]]+([a-zA-Z0-9]+).*/\1/p' setup.cfg)"
 DEVEL_ERPS="coveralls flake8 mock nose pylint pycodestyle"
 
 function setup () {
-    TDIR=$(mktemp --directory)
+    [[ -n ${TDIR} ]] || TDIR=$(mktemp --directory)
 }
 
 function teardown () {
@@ -26,7 +28,7 @@ function teardown () {
 }
 
 @test "Test required packages are installed" {
-    run pip3 install -U -t ${TDIR} .
+    run pip3 install -U -t ${TDIR} ${SRCDIR:?}
     run echo ${TDIR}/anyconfig*.dist-info;
     [[ ${status} -eq 0 ]]
 
@@ -38,7 +40,7 @@ function teardown () {
 }
 
 @test "Test extra required package is installed" {
-    run pip3 install -U -t ${TDIR} '.[toml]'
+    run pip3 install -U -t ${TDIR} ${SRCDIR}'[toml]'
     run echo ${TDIR}/anyconfig*.dist-info;
     [[ ${status} -eq 0 ]]
 
@@ -50,7 +52,7 @@ function teardown () {
 }
 
 @test "Test extra required packages are installed" {
-    run pip3 install -U -t ${TDIR} '.[devel]'
+    run pip3 install -U -t ${TDIR} ${SRCDIR}'[devel]'
     run echo ${TDIR}/anyconfig*.dist-info;
     [[ ${status} -eq 0 ]]
 

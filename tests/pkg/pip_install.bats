@@ -14,8 +14,9 @@
 SRCDIR=${SRCDIR:-.}
 TDIR=${PIP_TARGET_DIR:-}
 
-# DEVEL_ERPS="$(sed -nr '/^devel =/,/^.options.packages.find/s/[[:blank:]]+([a-zA-Z0-9]+).*/\1/p' setup.cfg)"
-DEVEL_ERPS="coveralls flake8 mock nose pylint pycodestyle"
+# TODO: Resolve deps automatically
+# DEVEL_DEPS="$(sed -nr '/^devel =/,/^.options.packages.find/s/[[:blank:]]+([a-zA-Z0-9]+).*/\1/p' setup.cfg)"
+DEVEL_DEPS="${DEVEL_DEPS:-coveralls flake8 mock nose pylint pycodestyle}"
 
 function setup () {
     [[ -n ${TDIR} ]] || TDIR=$(mktemp --directory)
@@ -59,7 +60,7 @@ function teardown () {
     [[ ${status} -eq 0 ]]
     [[ -d ${TDIR}/anyconfig ]]
 
-    for erp in ${DEVEL_ERPS:?}; do
+    for erp in ${DEVEL_DEPS:?}; do
         run echo ${TDIR}/{erp}*
         echo "status = ${status}"
         echo "output = ${output}"

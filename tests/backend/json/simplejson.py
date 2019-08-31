@@ -21,8 +21,10 @@ class HasParserTrait(TBC.HasParserTrait):
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
     load_options = dump_options = dict(parse_int=None, indent=2)
-    load_options["use_decimal"] = True
     empty_patterns = [('', {}), ('{}', {}), ('[]', []), ('null', None)]
+
+    if TT.SIMPLEJSON_AVAIL:
+        load_options["use_decimal"] = True
 
 
 class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):

@@ -13,11 +13,13 @@ import unittest
 
 import anyconfig.cli as TT
 import anyconfig.api
+import anyconfig.query
+import anyconfig.schema
 import anyconfig.template
 import tests.common
 import tests.api
 
-from tests.common import CNF_0
+from tests.common import CNF_0, skip_test
 
 
 CNF_0_PATH = os.path.join(tests.common.resdir(), "00-cnf.yml")
@@ -177,6 +179,9 @@ class Test_30_single_input(Test_20_Base):
                                   "--ignore-missing", infile]))
 
     def test_50_w_schema(self):
+        if not anyconfig.schema.JSONSCHEMA_IS_AVAIL:
+            skip_test()
+
         infile = CNF_0_PATH
         scmfile = os.path.join(tests.common.resdir(), "00-scm.yml")
 
@@ -320,6 +325,9 @@ class Test_50_others_w_input(Test_20_Base):
         self.run_and_check_exit_code(["-o", outfile, infile], 1)
 
     def test_30_w_query_option(self):
+        if not getattr(anyconfig.query, "jmespath", False):
+            skip_test()
+
         self.run_and_check_exit_code(["-Q", "b.b[::-1]", self.infile], 0)
 
 

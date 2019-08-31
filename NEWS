@@ -1,3 +1,18 @@
+* Sat Aug 31 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.10-1
+- api: change the API qeury to raise exceptions if jmespath is not avail
+- fix/change: drop python 3.4 and 3.5 support
+- fix: add missing files in sdist
+- fix: [doc] plugins are needed to support CBOR and MessagePack
+- fix: [rpm] disable python 2 build by default
+- fix: access containers via collections.abc if available
+- enhancement: [cli] print inputs info also if those types are unknown
+- enhancement: add options.extras_require for convenience
+- enhancement: add some test cases for pip install
+- enhancement: add test cases to build docs and py3.7 min in Travis-CI
+- change: change my contact address in the copyright header
+- Misc other enhancements, refactorings and bug fixes as always
+- seealso: `git log RELEASE_0.9.8.. --reverse` for more details
+
 * Sat Apr 27 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.9-1
 - api: replace the API 'find_loader' with new APIs 'find' and 'findall'
 - api: add new APIs 'list_by_{cid,type,extension}'

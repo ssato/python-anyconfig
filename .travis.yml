@@ -9,6 +9,10 @@ matrix:
     - python: 3.7
       dist: xenial
       sudo: true
+    - python: 3.7
+      dist: xenial
+      sudo: true
+      env: TOXENV=py37-min
 # see: http://docs.travis-ci.com/user/caching/#pip-cache
 cache: pip
 # see: http://docs.travis-ci.com/user/migrating-from-legacy/

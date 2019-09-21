@@ -5,11 +5,14 @@
 #
 # Example:
 #
-# [ssato@f30]/tmp/ac-test% ./tests/pkg/extra_requires.bats
-#  ✓ Test the configuration file with using dhcpd
+# ssato@fc30% ./tests/pkg/pip_install.bats
+# ✓ Test required packages are installed
+# ✓ Test extra required package is installed
+# ✓ Test extra required packages are installed
 #
-#  1 test, 0 failures
-#  [ssato@f30]
+# 3 tests, 0 failures
+# ssato@fc30%
+#
 
 SRCDIR=${SRCDIR:-.}
 TDIR=${PIP_TARGET_DIR:-}

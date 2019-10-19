@@ -17,6 +17,10 @@ matrix:
       dist: xenial
       sudo: true
       env: TOXENV=py37-doc
+    # TODO: Not work because of https://gitlab.com/pycqa/flake8/issues/289
+    #- python: 3.8-dev
+    #  dist: xenial
+    #  sudo: true
 # see: http://docs.travis-ci.com/user/caching/#pip-cache
 cache: pip
 # see: http://docs.travis-ci.com/user/migrating-from-legacy/

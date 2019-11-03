@@ -6,7 +6,11 @@
 # pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
-import anyconfig.backend.json.simplejson as TT
+try:
+    import anyconfig.backend.json._simplejson as TT
+except ImportError:
+    import tests.common
+    tests.common.skip_test()
 
 from .default import TBC, CNF_0_S, CNF_0
 

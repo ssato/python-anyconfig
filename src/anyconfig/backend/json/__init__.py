@@ -21,7 +21,7 @@ Parser = default.Parser  # To keep backward compatibility.
 PARSERS = [Parser]
 
 try:
-    from .simplejson import Parser as SimpleJsonParser
+    from ._simplejson import Parser as SimpleJsonParser
     PARSERS.append(SimpleJsonParser)
 except ImportError:
     pass

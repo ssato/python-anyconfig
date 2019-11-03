@@ -25,13 +25,7 @@ Changelog:
 """
 from __future__ import absolute_import
 
-try:
-    import simplejson as json
-    SIMPLEJSON_AVAIL = True
-except ImportError:
-    import json
-    SIMPLEJSON_AVAIL = False
-
+import simplejson as json
 import anyconfig
 
 from .common import JSON_LOAD_OPTS, JSON_DUMP_OPTS, Parser as BaseParser

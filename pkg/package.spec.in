@@ -10,12 +10,6 @@ contents merge, templates, query, schema validation and generation support.
 %bcond_with doc
 %bcond_with extras
 
-%if 0%{?rhel} == 7 || 0%{?epel} == 7
-%bcond_without python2
-%else
-%bcond_with python2
-%endif
-
 Name:           python-%{pkgname}
 Version:        @VERSION@
 Release:        1%{?dist}
@@ -30,38 +24,12 @@ BuildRequires:  make
 BuildRequires:  python3-docutils
 BuildRequires:  python3-sphinx
 %endif
-%if %{with python2}
-BuildRequires:  PyYAML
-BuildRequires:  python2-toml
-BuildRequires:  python2-devel
-BuildRequires:  python2-setuptools
-%else
 BuildRequires:  python3-toml
 BuildRequires:  python3-yaml
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
-%endif
 
 %description    %{desc}
-
-%if %{with python2}
-%package -n python2-%{pkgname}
-Summary:        %{summary}
-Requires:       PyYAML
-Requires:       python2-setuptools
-%if %{with extras}
-Requires:       python2-jinja2
-Requires:       python2-jsonschema
-Requires:       python2-ruamel-yaml
-%endif
-%if %{with optionals}
-Requires:       python2-configobj
-Requires:       python2-toml
-%endif
-%{?python_provide:%python_provide python2-%{pkgname}}
-
-%description -n python2-%{pkgname} %{desc}
-%else
 
 %package -n python3-%{pkgname}
 Summary:        %{summary}
@@ -79,7 +47,6 @@ Requires:       python3-toml
 %{?python_provide:%python_provide python3-%{pkgname}}
 
 %description -n python3-%{pkgname} %{desc}
-%endif
 
 %if %{with doc}
 %package        doc
@@ -93,11 +60,7 @@ HTML documentation for %{name}.
 %autosetup -n %{pkgname}-%{version}
 
 %build
-%if %{with python2}
-%py2_build
-%else
 %py3_build
-%endif
 
 %if %{with doc}
 make -C docs/ html
@@ -106,46 +69,17 @@ rm -frv docs/build/html/_sources
 %endif
 
 %install
-%if %{with python2}
-%py2_install
-test -d %{buildroot}/usr/bin || {
-install -d %{buildroot}/usr/bin
-cat << EOF > %{buildroot}/usr/bin/anyconfig_cli
-#! /usr/bin/python
-import sys
-from pkg_resources import load_entry_point
-
-if __name__ == '__main__':
-    sys.exit(
-        load_entry_point('anyconfig', 'console_scripts', 'anyconfig_cli')()
-    )
-EOF
-}
-chmod +x %{buildroot}/usr/bin/anyconfig_cli
-%else
 %py3_install
-%endif
 
 %if %{with tests}
 %check
 tox -e py$(python -c "import sys; sys.stdout.write(sys.version[:3].replace('.', ''))")
 %endif
 
-%if %{with python2}
-%files -n python2-%{pkgname}
-%doc README.rst NEWS AUTHORS.txt
-%license LICENSE.MIT
-%if 0%{?rhel} == 7
-%{python_sitelib}/*
-%else
-%{python2_sitelib}/*
-%endif
-%else
 %files -n python3-%{pkgname}
 %doc README.rst NEWS AUTHORS.txt
 %license LICENSE.MIT
 %{python3_sitelib}/*
-%endif
 %{_bindir}/anyconfig*
 %{_mandir}/*/anyconfig*.*.gz
 

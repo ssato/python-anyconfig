@@ -1,3 +1,7 @@
+* Mon Nov  3 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.10.999-1
+- fix: rename anyconfig.backend.json.simplejson to avoid conflicts
+- change: [rpm] drop support of python 2 build
+
 * Sat Aug 31 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.10-1
 - api: change the API qeury to raise exceptions if jmespath is not avail
 - fix/change: drop python 3.4 and 3.5 support

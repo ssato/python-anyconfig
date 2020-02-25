@@ -88,7 +88,7 @@ def load(stream, container=dict):
     """
     ret = container()
 
-    for line in stream.readlines():
+    for line in stream:
         line = line.rstrip()
         if line is None or not line:
             continue

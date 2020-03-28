@@ -405,7 +405,7 @@ def is_dict_like(obj):
     >>> is_dict_like(anyconfig.compat.OrderedDict((('a', 1), ('b', 2))))
     True
     """
-    return isinstance(obj, (dict, collections.Mapping))  # any others?
+    return isinstance(obj, (dict, collections_abc.Mapping))  # any others?
 
 
 def is_namedtuple(obj):

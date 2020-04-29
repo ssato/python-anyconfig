@@ -12,7 +12,7 @@ import setuptools.command.bdist_rpm
 
 # It might throw IndexError and so on.
 VERSION = [re.search(r'^VERSION = "([^"]+)"', l).groups()[0] for l
-           in open(glob.glob("src/*/globals.py")[0]).readlines()
+           in open(glob.glob("src/*/globals.py")[0])
            if "VERSION" in l][0]
 
 # For daily snapshot versioning mode:

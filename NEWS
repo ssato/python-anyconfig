@@ -1,5 +1,15 @@
-* Mon Nov  3 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.10.999-1
+* Wed Apr 29 2020 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.10.999-1
 - fix: rename anyconfig.backend.json.simplejson to avoid conflicts
+- fix: rename anyconfig.backend.json.simplejson avoid conflicts, may close #113
+- fix: avoid to call (file).readlines to reduce memory usage 
+- fix deprecated collections reference by rhilfers, thanks a lot!
+- fix: workaround for 'unknown' package build issues in older linux dists like
+  CentOS 7.x, may close #114
+- fix: add workarounds for the F401 (import-but-not-used) errors by flake8
+- fix: drop hack for py26 not supported any more
+- fix/enhancement: misc fixes and enhancments on tox and travis related CI stuff
+- enhancement: add some more project metadata like project_urls
+- change: drop python 2 suppport in the RPM SPEC
 - change: [rpm] drop support of python 2 build
 
 * Sat Aug 31 2019 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.10-1

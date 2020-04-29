@@ -1,4 +1,4 @@
-* Wed Apr 29 2020 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.10.999-1
+* Wed Apr 29 2020 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.11-1
 - fix: rename anyconfig.backend.json.simplejson to avoid conflicts
 - fix: rename anyconfig.backend.json.simplejson avoid conflicts, may close #113
 - fix: avoid to call (file).readlines to reduce memory usage 

@@ -1,4 +1,3 @@
--r test_requirements.txt
 anyconfig-bson-backend
 anyconfig-cbor-backend
 anyconfig-cbor2-backend

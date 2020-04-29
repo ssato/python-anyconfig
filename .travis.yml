@@ -16,8 +16,9 @@ matrix:
       env: TOXENV=doc
     - python: 3.7
       env: TOXENV=min
-    - python: 3.7
-      env: TOXENV=dists
+# disabled because it takes some time.
+#    - python: 3.7
+#      env: TOXENV=dists
 
 # see: http://docs.travis-ci.com/user/caching/#pip-cache
 cache: pip

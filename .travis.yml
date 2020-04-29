@@ -3,24 +3,9 @@ language: python
 python:
     - 2.7
     - 3.6
-# .. seealso:: https://github.com/travis-ci/travis-ci/issues/9815
-matrix:
-  include:
-    - python: 3.7
-      dist: xenial
-      sudo: true
-    - python: 3.7
-      dist: xenial
-      sudo: true
-      env: TOXENV=py37-min
-    - python: 3.7
-      dist: xenial
-      sudo: true
-      env: TOXENV=py37-doc
-    # TODO: Not work because of https://gitlab.com/pycqa/flake8/issues/289
-    #- python: 3.8-dev
-    #  dist: xenial
-    #  sudo: true
+    - 3.7
+    - 3.8
+
 # see: http://docs.travis-ci.com/user/caching/#pip-cache
 cache: pip
 # see: http://docs.travis-ci.com/user/migrating-from-legacy/

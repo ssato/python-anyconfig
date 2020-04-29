@@ -84,7 +84,7 @@ from __future__ import absolute_import
 import warnings
 
 # Import some global constants will be re-exported:
-from anyconfig.globals import (
+from anyconfig.globals import (  # noqa: F401
     LOGGER, IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
 )
 import anyconfig.globals
@@ -93,12 +93,12 @@ import anyconfig.ioinfo
 import anyconfig.template
 import anyconfig.utils
 
-from anyconfig.dicts import (
+from anyconfig.dicts import (  # noqa: F401
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    get, set_, merge  # flake8: noqa
+    get, set_, merge
 )
 from anyconfig.backends import Parsers
-from anyconfig.schema import validate, gen_schema
+from anyconfig.schema import validate, gen_schema  # noqa: F401
 from anyconfig.query import query
 
 

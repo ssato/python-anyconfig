@@ -1,10 +1,21 @@
 # see: http://about.travis-ci.org/docs/user/languages/python/
 language: python
 python:
-    - 2.7
-    - 3.6
-    - 3.7
-    - 3.8
+    - "2.7"
+    - "3.6"
+    - "3.7"
+    - "3.8"
+
+# .. seealso:: https://github.com/travis-ci/travis-ci/issues/9815
+matrix:
+  include:
+    - python: 3.7
+    - python: 3.7
+      env: TOXENV=plugins
+    - python: 3.7
+      env: TOXENV=doc
+    - python: 3.7
+      env: TOXENV=min
 
 # see: http://docs.travis-ci.com/user/caching/#pip-cache
 cache: pip

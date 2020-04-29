@@ -81,7 +81,6 @@ r"""Public APIs of anyconfig module.
 """
 from __future__ import absolute_import
 
-import os.path
 import warnings
 
 # Import some global constants will be re-exported:

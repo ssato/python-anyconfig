@@ -33,7 +33,7 @@ class Processor(object):
     def cid(cls):
         """Processor class ID
         """
-        return repr(cls) if cls._cid is None else cls._cid
+        return repr(cls) if getattr(cls, "_cid", None) is None else cls._cid
 
     @classmethod
     def type(cls):

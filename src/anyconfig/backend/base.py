@@ -367,7 +367,7 @@ class Parser(TextFilesMixin, LoaderMixin, DumperMixin,
 
     .. seealso:: the doc of :class:`anyconfig.models.processor.Processor`
     """
-    pass
+    _cid = "base"
 
 
 class FromStringLoaderMixin(LoaderMixin):

@@ -12,7 +12,7 @@ contents merge, templates, query, schema validation and generation support.
 
 Name:           python-%{pkgname}
 Version:        @VERSION@
-Release:        1%{?dist}
+Release:        @RELEASE@
 Summary:        Python library to load and dump configuration files in various formats
 License:        MIT
 URL:            https://github.com/ssato/python-anyconfig

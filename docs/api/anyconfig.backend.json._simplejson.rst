@@ -1,7 +1,7 @@
-:mod:`anyconfig.backend.json.simplejson`
+:mod:`anyconfig.backend.json._simplejson`
 ==========================================
 
-.. automodule:: anyconfig.backend.json.simplejson
+.. automodule:: anyconfig.backend.json._simplejson
     :members:
     :special-members:
     :private-members:

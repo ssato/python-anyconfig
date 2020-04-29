@@ -29,6 +29,8 @@ except ImportError:  # python < 2.7 doesn't have it.
         def emit(self, record):
             pass
 
+from collections import OrderedDict  # noqa: F401
+
 
 (_PY_MAJOR, _PY_MINOR) = sys.version_info[:2]
 IS_PYTHON_3 = _PY_MAJOR == 3
@@ -95,12 +97,7 @@ else:
 
     iteritems = py_iteritems
     raw_input = raw_input
-    STR_TYPES = (str, unicode)
+    STR_TYPES = (str, unicode)  # noqa: F821
     getargspec = inspect.getargspec  # flake8: noqa
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict  # Python 2.6
 
 # vim:sw=4:ts=4:et:

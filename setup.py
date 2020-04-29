@@ -40,7 +40,8 @@ class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
                 in open(self.spec_tmpl).readlines()]
 
 
-setuptools.setup(version=VERSION,
+setuptools.setup(name="anyconfig",   # Avoid 'Unknown' package in older ones.
+                 version=VERSION,
                  cmdclass=dict(bdist_rpm=bdist_rpm),
                  package_dir={'': 'src'},
                  data_files=[("share/man/man1", ["docs/anyconfig_cli.1"])])

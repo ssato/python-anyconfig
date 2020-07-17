@@ -172,7 +172,7 @@ def _dumps(cnf, **kwargs):
 
     :return: String representation of 'cnf' object in INI format
     """
-    return os.linesep.join(l for l in _dumps_itr(cnf))
+    return os.linesep.join(line for line in _dumps_itr(cnf))
 
 
 class Parser(anyconfig.backend.base.Parser,

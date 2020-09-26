@@ -22,9 +22,7 @@ import anyconfig.utils
 
 _ENCODING = locale.getdefaultlocale()[1] or 'UTF-8'
 
-logging.basicConfig(format="%(levelname)s: %(message)s")
-LOGGER = logging.getLogger("anyconfig")
-LOGGER.addHandler(logging.StreamHandler())
+LOGGER = None
 
 if anyconfig.compat.IS_PYTHON_3:
     import io
@@ -69,6 +67,16 @@ DEFAULTS = dict(loglevel=0, list=False, output=None, itype=None,
                 ignore_missing=False, template=False, env=False,
                 schema=None, validate=False, gen_schema=False,
                 extra_opts=None)
+
+
+def init_logger():
+    """Initialize the logger.
+    """
+    global LOGGER
+
+    logging.basicConfig(format="%(levelname)s: %(message)s")
+    LOGGER = logging.getLogger("anyconfig")
+    LOGGER.addHandler(logging.StreamHandler())
 
 
 def to_log_level(level):
@@ -374,6 +382,8 @@ def main(argv=None):
     """
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
+    init_logger()
+
     args = _parse_args((argv if argv else sys.argv)[1:])
     cnf = os.environ.copy() if args.env else {}
 

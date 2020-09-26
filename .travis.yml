@@ -1,7 +1,6 @@
 # see: http://about.travis-ci.org/docs/user/languages/python/
 language: python
 python:
-    - "2.7"
     - "3.6"
     - "3.7"
     - "3.8"

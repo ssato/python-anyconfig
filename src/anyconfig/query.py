@@ -2,6 +2,8 @@
 # Copyright (C) 2017 Satoru SATOH <ssato redhat.com>
 # License: MIT
 #
+# pylint: disable=bare-except
+#
 r"""anyconfig.query module to support query data with JMESPath expressions.
 
 Changelog:
@@ -17,7 +19,7 @@ except ImportError:
     pass
 
 
-def query(data, jexp, **options):
+def query(data, jexp, **_options):
     """
     Filter data with given JMESPath expression.
 
@@ -40,6 +42,7 @@ def query(data, jexp, **options):
     except (NameError, AttributeError):
         raise ValueError("Required 'jmespath' module is not available.")
 
-    return (None, exc)  # It should not reach here.
+    except:
+        return (None, exc)
 
 # vim:sw=4:ts=4:et:

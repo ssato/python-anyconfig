@@ -7,14 +7,11 @@
 """anyconfig globals.
 """
 import collections
-import anyconfig.init
 
 
 PACKAGE = "anyconfig"
 AUTHOR = "Satoru SATOH <satoru.satoh@gmail.com>"
 VERSION = "0.9.11"
-
-LOGGER = anyconfig.init.getLogger(PACKAGE)
 
 IOI_KEYS = "src type path opener extension".split()
 IOInfo = collections.namedtuple("IOInfo", IOI_KEYS)

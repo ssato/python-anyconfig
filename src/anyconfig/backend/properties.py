@@ -31,15 +31,14 @@ Changelog:
 """
 from __future__ import absolute_import
 
-import logging
 import os
 import re
+import warnings
 
 import anyconfig.backend.base
 import anyconfig.compat
 
 
-LOGGER = logging.getLogger(__name__)
 _COMMENT_MARKERS = ("#", "!")
 
 
@@ -68,7 +67,7 @@ def _parseline(line):
     key = pair[0].rstrip()
 
     if len(pair) < 2:
-        LOGGER.warning("Invalid line found: %s", line)
+        warnings.warn("Invalid line found: {}".format(line), SyntaxWarning)
         return (key or None, '')
 
     return (key, pair[1].strip())
@@ -185,7 +184,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
         (key, val) = _parseline(line)
         if key is None:
-            LOGGER.warning("Failed to parse the line: %s", line)
+            warnings.warn("Failed to parse the line: {}".format(line))
             continue
 
         ret[key] = unescape(val)

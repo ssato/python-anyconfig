@@ -6,7 +6,6 @@
 from __future__ import absolute_import
 
 import copy
-import logging
 import io
 import os
 import os.path
@@ -26,9 +25,6 @@ from tests.common import (
     CNF_0, SCM_0, CNF_1, dicts_equal, resdir, skip_test
 )
 
-
-# suppress logging messages.
-TT.LOGGER.setLevel(logging.CRITICAL)
 
 CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},
                         'a': '0',

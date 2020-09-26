@@ -8,7 +8,7 @@
 """
 from __future__ import absolute_import
 
-import logging
+import warnings
 
 import anyconfig.compat
 import anyconfig.ioinfo
@@ -26,7 +26,6 @@ import anyconfig.backend.yaml
 import anyconfig.backend.xml
 
 
-LOGGER = logging.getLogger(__name__)
 PARSERS = [anyconfig.backend.ini.Parser,
            anyconfig.backend.pickle.Parser,
            anyconfig.backend.properties.Parser,
@@ -34,18 +33,18 @@ PARSERS = [anyconfig.backend.ini.Parser,
 
 PARSERS.extend(anyconfig.backend.json.PARSERS)
 
-_NA_MSG = "%s is not available. Disabled %s support."
+_NA_MSG = "'{}' module is not available. Disabled {} support."
 
 if anyconfig.backend.yaml.PARSERS:
     PARSERS.extend(anyconfig.backend.yaml.PARSERS)
 else:
-    LOGGER.info(_NA_MSG, "yaml module", "YAML")
+    warnings.warn(_NA_MSG.format("yaml", "YAML"), ImportWarning)
 
 try:
     import anyconfig.backend.toml
     PARSERS.append(anyconfig.backend.toml.Parser)
 except ImportError:
-    LOGGER.info(_NA_MSG, "toml module", "TOML")
+    warnings.warn(_NA_MSG.format("toml", "TOML"), ImportWarning)
 
 
 class Parsers(anyconfig.processors.Processors,

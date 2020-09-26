@@ -11,14 +11,6 @@ import sys
 
 class TestImportErrors(unittest.TestCase):
 
-    def test_10_ac_compat(self):
-        fun = "NullHandler"
-        sys.modules["logging"] = None
-        import anyconfig.compat
-
-        self.assertFalse(fun in globals())
-        self.assertFalse(getattr(anyconfig.compat, fun) is None)
-
     def test_20_ac_backends(self):
         for mod in ("yaml", "msgpack", "toml", "bson"):
             sys.modules[mod] = None

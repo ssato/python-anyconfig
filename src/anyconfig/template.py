@@ -13,12 +13,11 @@ from __future__ import absolute_import
 
 import codecs
 import locale
-import logging
 import os
+import warnings
 
 import anyconfig.compat
 
-LOGGER = logging.getLogger(__name__)
 RENDER_S_OPTS = ['ctx', 'paths', 'filters']
 RENDER_OPTS = RENDER_S_OPTS + ['ask']
 SUPPORTED = False
@@ -35,8 +34,8 @@ try:
         return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
 
 except ImportError:
-    LOGGER.warning("Jinja2 is not available on your system, so "
-                   "template support will be disabled.")
+    warnings.warn("Jinja2 is not available on your system, so "
+                  "template support will be disabled.")
 
     class TemplateNotFound(RuntimeError):
         """Dummy exception"""
@@ -185,7 +184,6 @@ def try_render(filepath=None, content=None, **options):
         raise ValueError("Either 'path' or 'content' must be some value!")
 
     tmpl_s = filepath or content[:10] + " ..."
-    LOGGER.debug("Compiling: %s", tmpl_s)
     try:
         if content is None:
             render_opts = anyconfig.utils.filter_options(RENDER_OPTS, options)
@@ -193,8 +191,8 @@ def try_render(filepath=None, content=None, **options):
         render_s_opts = anyconfig.utils.filter_options(RENDER_S_OPTS, options)
         return render_s(content, **render_s_opts)
     except Exception as exc:
-        LOGGER.warning("Failed to compile '%s'. It may not be a template.%s"
-                       "exc=%r", tmpl_s, os.linesep, exc)
+        warnings.warn("Failed to compile '{}'. It may not be a template.{}"
+                      "exc={!r}".format(tmpl_s, os.linesep, exc))
         return None
 
 # vim:sw=4:ts=4:et:

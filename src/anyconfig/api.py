@@ -85,7 +85,7 @@ import warnings
 
 # Import some global constants will be re-exported:
 from anyconfig.globals import (  # noqa: F401
-    LOGGER, IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
+    IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
 )
 import anyconfig.globals
 import anyconfig.dicts
@@ -153,7 +153,7 @@ def _try_validate(cnf, schema, **options):
     if schema:
         (valid, msg) = validate(cnf, schema, **options)
         if msg:
-            LOGGER.warning(msg)
+            warnings.warn(msg)
 
     if valid:
         return cnf
@@ -229,7 +229,6 @@ def _maybe_schema(**options):
         # may be different from the original config file's format, perhaps.
         options["ac_parser"] = None
         options["ac_schema"] = None  # Avoid infinite loop.
-        LOGGER.info("Loading schema: %s", ac_schema)
         return load(ac_schema, **options)
 
     return None
@@ -293,7 +292,6 @@ def _single_load(input_, ac_parser=None, ac_template=False,
                       "'ac_ignore_missing' instead", DeprecationWarning)
         options["ac_ignore_missing"] = options["ignore_missing"]
 
-    LOGGER.info("Loading: %s", filepath)
     if ac_template and filepath is not None:
         content = anyconfig.template.try_render(filepath=filepath,
                                                 ctx=ac_context, **options)
@@ -515,8 +513,8 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
     :raises: ValueError, UnknownProcessorTypeError
     """
     if ac_parser is None:
-        LOGGER.warning("ac_parser was not given but it's must to find correct "
-                       "parser to load configurations from string.")
+        warnings.warn("ac_parser was not given but it's must to find correct "
+                      "parser to load configurations from string.")
         return None
 
     psr = find(None, forced_type=ac_parser)
@@ -557,7 +555,6 @@ def dump(data, out, ac_parser=None, **options):
     """
     ioi = anyconfig.ioinfo.make(out)
     psr = find(ioi, forced_type=ac_parser)
-    LOGGER.info("Dumping: %s", ioi.path)
     psr.dump(data, ioi, **options)
 
 

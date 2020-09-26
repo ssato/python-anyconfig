@@ -20,7 +20,6 @@ needed:
 from __future__ import absolute_import
 
 import functools
-import logging
 import os
 
 import anyconfig.compat
@@ -29,7 +28,6 @@ import anyconfig.models.processor
 import anyconfig.utils
 
 
-LOGGER = logging.getLogger(__name__)
 TEXT_FILE = True
 
 
@@ -42,7 +40,6 @@ def ensure_outdir_exists(filepath):
     outdir = os.path.dirname(filepath)
 
     if outdir and not os.path.exists(outdir):
-        LOGGER.debug("Making output dir: %s", outdir)
         os.makedirs(outdir)
 
 

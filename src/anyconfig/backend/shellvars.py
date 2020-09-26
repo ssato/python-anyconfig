@@ -21,15 +21,12 @@ Changelog:
 """
 from __future__ import absolute_import
 
-import logging
 import itertools
 import os
 import re
+import warnings
 
 import anyconfig.backend.base
-
-
-LOGGER = logging.getLogger(__name__)
 
 
 def _parseline(line):
@@ -56,7 +53,7 @@ def _parseline(line):
                      r"(?:\"(.*[^\\])\")|(?:'(.*[^\\])')|"
                      r"(?:([^\"'#\s]+)))?)\s*#*", line)
     if not match:
-        LOGGER.warning("Invalid line found: %s", line)
+        warnings.warn("Invalid line found: {}".format(line), SyntaxWarning)
         return (None, None)
 
     tpl = match.groups()
@@ -95,7 +92,8 @@ def load(stream, container=dict):
 
         (key, val) = _parseline(line)
         if key is None:
-            LOGGER.warning("Empty val in the line: %s", line)
+            warnings.warn("Empty val in the line: {}".format(line),
+                          SyntaxWarning)
             continue
 
         ret[key] = val

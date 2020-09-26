@@ -49,7 +49,6 @@ class Test10(unittest.TestCase):
         tests.common.cleanup_workdir(self.workdir)
 
     def test_10_ensure_outdir_exists(self):
-        TT.LOGGER.setLevel(TT.logging.WARN)  # suppress info/debug log msgs.
         outdir = os.path.join(self.workdir, "outdir")
         outfile = os.path.join(outdir, "a.txt")
         TT.ensure_outdir_exists(outfile)

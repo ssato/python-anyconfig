@@ -9,9 +9,9 @@ from __future__ import absolute_import, print_function
 import argparse
 import codecs
 import locale
-import logging
 import os
 import sys
+import warnings
 
 import anyconfig.api as API
 import anyconfig.compat
@@ -21,8 +21,6 @@ import anyconfig.utils
 
 
 _ENCODING = locale.getdefaultlocale()[1] or 'UTF-8'
-
-LOGGER = None
 
 if anyconfig.compat.IS_PYTHON_3:
     import io
@@ -67,34 +65,6 @@ DEFAULTS = dict(loglevel=0, list=False, output=None, itype=None,
                 ignore_missing=False, template=False, env=False,
                 schema=None, validate=False, gen_schema=False,
                 extra_opts=None)
-
-
-def init_logger():
-    """Initialize the logger.
-    """
-    global LOGGER
-
-    logging.basicConfig(format="%(levelname)s: %(message)s")
-    LOGGER = logging.getLogger("anyconfig")
-    LOGGER.addHandler(logging.StreamHandler())
-
-
-def to_log_level(level):
-    """
-    :param level: Logging level in int = 0 .. 2
-
-    >>> to_log_level(0) == logging.WARN
-    True
-    >>> to_log_level(5)  # doctest: +IGNORE_EXCEPTION_DETAIL, +ELLIPSIS
-    Traceback (most recent call last):
-        ...
-    ValueError: wrong log level passed: 5
-    >>>
-    """
-    if level < 0 or level >= 3:
-        raise ValueError("wrong log level passed: " + str(level))
-
-    return [logging.WARN, logging.INFO, logging.DEBUG][level]
 
 
 _ATYPE_HELP_FMT = """\
@@ -230,7 +200,8 @@ def _parse_args(argv):
     """
     parser = make_parser()
     args = parser.parse_args(argv)
-    LOGGER.setLevel(to_log_level(args.loglevel))
+    if args.loglevel:
+        warnings.simplefilter("always")
 
     if args.inputs:
         if '-' in args.inputs:
@@ -382,8 +353,6 @@ def main(argv=None):
     """
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
-    init_logger()
-
     args = _parse_args((argv if argv else sys.argv)[1:])
     cnf = os.environ.copy() if args.env else {}
 

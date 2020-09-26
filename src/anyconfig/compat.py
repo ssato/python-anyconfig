@@ -17,18 +17,6 @@ try:
 except ImportError:
     pathlib = None
 
-try:
-    from logging import NullHandler
-except ImportError:  # python < 2.7 doesn't have it.
-    import logging
-
-    class NullHandler(logging.Handler):
-        """
-        Logging handler does nothing.
-        """
-        def emit(self, record):
-            pass
-
 from collections import OrderedDict  # noqa: F401
 
 

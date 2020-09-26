@@ -42,7 +42,7 @@ def query(data, jexp, **_options):
     except (NameError, AttributeError):
         raise ValueError("Required 'jmespath' module is not available.")
 
-    except:
+    except:  # noqa: E722
         return (None, exc)
 
 # vim:sw=4:ts=4:et:

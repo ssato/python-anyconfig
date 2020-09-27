@@ -5,16 +5,17 @@
 # pylint: disable=missing-docstring, invalid-name, no-member
 from __future__ import absolute_import
 
+import collections
 import copy
 import io
 import os
 import os.path
+import pathlib
 import unittest
 
 import anyconfig.api as TT
 import anyconfig.backends
 import anyconfig.backend.json
-import anyconfig.compat
 import anyconfig.dicts
 import anyconfig.processors
 import anyconfig.schema
@@ -40,7 +41,7 @@ CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},
 NULL_CNTNR = TT.anyconfig.dicts.convert_to({})
 
 
-class MyODict(anyconfig.compat.OrderedDict):
+class MyODict(collections.OrderedDict):
     pass
 
 
@@ -167,7 +168,6 @@ class Test_22_single_load(TestBase):
 
     a_path = os.path.join(resdir(), "00-cnf.json")
     cnf = CNF_1
-    pathlib = anyconfig.compat.pathlib
 
     def test_10__single_load(self):
         res = TT.single_load(self.a_path)
@@ -187,10 +187,9 @@ class Test_22_single_load(TestBase):
         self.assert_dicts_equal(res, self.cnf)
 
     def test_30__single_load__pathlib(self):
-        if self.pathlib:
-            pobj = self.pathlib.Path(self.a_path)
-            res = TT.single_load(pobj)
-            self.assert_dicts_equal(res, self.cnf)
+        pobj = pathlib.Path(self.a_path)
+        res = TT.single_load(pobj)
+        self.assert_dicts_equal(res, self.cnf)
 
 
 class TestBaseWithIO(TestBase):
@@ -307,7 +306,7 @@ class Test_30_single_load(TestBaseWithIO):
         # items and the tests might fail.
         res = TT.single_load(self.a_path, ac_ordered=True)
         self.assert_dicts_equal(res, self.cnf, ordered=True)
-        self.assertTrue(isinstance(res, anyconfig.compat.OrderedDict))
+        self.assertTrue(isinstance(res, collections.OrderedDict))
 
     def test_22_dump_and_single_load__w_ac_dict_option(self):
         TT.dump(self.cnf, self.a_path)

@@ -9,7 +9,7 @@ from __future__ import absolute_import
 import anyconfig.backend.json.default as TT
 import tests.backend.common as TBC
 
-from anyconfig.compat import OrderedDict
+from collections import OrderedDict
 
 
 CNF_0_S = TBC.read_from_res("20-00-cnf.json")

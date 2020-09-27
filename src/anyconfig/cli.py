@@ -7,36 +7,27 @@
 from __future__ import absolute_import, print_function
 
 import argparse
-import codecs
+import io
 import locale
 import os
 import sys
 import warnings
 
 import anyconfig.api as API
-import anyconfig.compat
 import anyconfig.globals
 import anyconfig.parser
 import anyconfig.utils
 
 
-_ENCODING = locale.getdefaultlocale()[1] or 'UTF-8'
+_ENCODING = (locale.getdefaultlocale()[1] or 'UTF-8').lower()
 
-if anyconfig.compat.IS_PYTHON_3:
-    import io
-
-    _ENCODING = _ENCODING.lower()
-
-    # TODO: What should be done for an error, "AttributeError: '_io.StringIO'
-    # object has no attribute 'buffer'"?
-    try:
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=_ENCODING)
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=_ENCODING)
-    except AttributeError:
-        pass
-else:
-    sys.stdout = codecs.getwriter(_ENCODING)(sys.stdout)
-    sys.stderr = codecs.getwriter(_ENCODING)(sys.stderr)
+# TODO: What should be done for an error, "AttributeError: '_io.StringIO'
+# object has no attribute 'buffer'"?
+try:
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=_ENCODING)
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=_ENCODING)
+except AttributeError:
+    pass
 
 USAGE = """\
 %(prog)s [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]

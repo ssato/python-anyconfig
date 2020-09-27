@@ -6,22 +6,15 @@
 """
 from __future__ import absolute_import
 
-import collections
+import collections.abc
 import functools
 import glob
 import itertools
 import os.path
+import pathlib
 import types
 
-try:
-    import collections.abc as collections_abc
-except ImportError:
-    collections_abc = collections
-
-import anyconfig.compat
 import anyconfig.globals
-
-from anyconfig.compat import pathlib
 
 
 def groupby(itr, key_fn=None):
@@ -107,7 +100,7 @@ def concat(xss):
     >>> concat((i, i*2) for i in range(3))
     [0, 0, 1, 2, 2, 4]
     """
-    return list(anyconfig.compat.from_iterable(xs for xs in xss))
+    return list(itertools.chain.from_iterable(xs for xs in xss))
 
 
 def normpath(path):
@@ -128,7 +121,7 @@ def is_path(obj):
     :param obj: file path or something
     :return: True if 'obj' is a file path
     """
-    return isinstance(obj, anyconfig.compat.STR_TYPES)
+    return isinstance(obj, str)
 
 
 def is_path_obj(obj):
@@ -137,14 +130,11 @@ def is_path_obj(obj):
     :param obj: a pathlib.Path object or something
     :return: True if 'obj' is a pathlib.Path object
 
-    >>> from anyconfig.compat import pathlib
-    >>> if pathlib is not None:
-    ...      obj = pathlib.Path(__file__)
-    ...      assert is_path_obj(obj)
-    >>>
+    >>> obj = pathlib.Path(__file__)
+    >>> assert is_path_obj(obj)
     >>> assert not is_path_obj(__file__)
     """
-    return pathlib is not None and isinstance(obj, pathlib.Path)
+    return isinstance(obj, pathlib.Path)
 
 
 def is_file_stream(obj):
@@ -210,11 +200,8 @@ def is_path_like_object(obj, marker='*'):
     >>> assert is_path_like_object(__file__)
     >>> assert not is_path_like_object("/a/b/c/*.json", '*')
 
-    >>> from anyconfig.compat import pathlib
-    >>> if pathlib is not None:
-    ...      assert is_path_like_object(pathlib.Path("a.ini"))
-    ...      assert not is_path_like_object(pathlib.Path("x.ini"), 'x')
-
+    >>> assert is_path_like_object(pathlib.Path("a.ini"))
+    >>> assert not is_path_like_object(pathlib.Path("x.ini"), 'x')
     >>> assert is_path_like_object(open(__file__))
     """
     return ((is_path(obj) and marker not in obj) or
@@ -240,8 +227,9 @@ def get_path_from_stream(strm):
     :return: Path of given file or file-like object or None
     :raises: ValueError
 
+    >>> import io
     >>> assert __file__ == get_path_from_stream(open(__file__, 'r'))
-    >>> assert get_path_from_stream(anyconfig.compat.StringIO()) is None
+    >>> assert get_path_from_stream(io.StringIO()) is None
     >>> get_path_from_stream(__file__)  # doctest: +ELLIPSIS
     Traceback (most recent call last):
         ...
@@ -311,7 +299,8 @@ def are_same_file_types(objs):
     True
     >>> are_same_file_types(["a.yml", "b.json"])
     False
-    >>> strm = anyconfig.compat.StringIO()
+    >>> import io
+    >>> strm = io.StringIO()
     >>> are_same_file_types(["a.yml", "b.yml", strm])
     False
     """
@@ -366,7 +355,8 @@ def expand_paths(paths, marker='*'):
     >>> assert expand_paths(paths_s) == ref
     >>> ref = ["/etc/a.conf"] + ref
     >>> assert expand_paths(["/etc/a.conf", paths_s]) == ref
-    >>> strm = anyconfig.compat.StringIO()
+    >>> import io
+    >>> strm = io.StringIO()
     >>> assert expand_paths(["/etc/a.conf", strm]) == ["/etc/a.conf", strm]
     """
     if is_path(paths) and marker in paths:
@@ -391,7 +381,7 @@ def noop(val, *args, **kwargs):
     return val
 
 
-_LIST_LIKE_TYPES = (collections_abc.Iterable, collections_abc.Sequence)
+_LIST_LIKE_TYPES = (collections.abc.Iterable, collections.abc.Sequence)
 
 
 def is_dict_like(obj):
@@ -402,14 +392,16 @@ def is_dict_like(obj):
     False
     >>> is_dict_like({})
     True
-    >>> is_dict_like(anyconfig.compat.OrderedDict((('a', 1), ('b', 2))))
+    >>> import collections
+    >>> is_dict_like(collections.OrderedDict((('a', 1), ('b', 2))))
     True
     """
-    return isinstance(obj, (dict, collections_abc.Mapping))  # any others?
+    return isinstance(obj, (dict, collections.abc.Mapping))  # any others?
 
 
 def is_namedtuple(obj):
     """
+    >>> import collections
     >>> p0 = collections.namedtuple("Point", "x y")(1, 2)
     >>> is_namedtuple(p0)
     True
@@ -440,7 +432,7 @@ def is_list_like(obj):
     False
     """
     return isinstance(obj, _LIST_LIKE_TYPES) and \
-        not (isinstance(obj, anyconfig.compat.STR_TYPES) or is_dict_like(obj))
+        not (isinstance(obj, str) or is_dict_like(obj))
 
 
 def filter_options(keys, options):

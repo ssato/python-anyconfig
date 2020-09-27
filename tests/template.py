@@ -6,7 +6,7 @@
 import os.path
 import os
 import unittest
-import mock
+import unittest.mock
 
 import anyconfig.template as TT
 import tests.common
@@ -68,8 +68,6 @@ class Test(unittest.TestCase):
 
     def test_22_render__w_wrong_tpath(self):
         if TT.SUPPORTED:
-            mpt = "anyconfig.compat.raw_input"
-
             ng_t = os.path.join(self.workdir, "ng.j2")
             ok_t = os.path.join(self.workdir, "ok.j2")
             ok_t_content = "a: {{ a }}"
@@ -78,7 +76,8 @@ class Test(unittest.TestCase):
 
             open(ok_t, 'w').write(ok_t_content)
 
-            with mock.patch(mpt, return_value=ok_t):
+            with unittest.mock.patch("builtins.input") as mock_input:
+                mock_input.return_value = ok_t
                 c_r = TT.render(ng_t, ctx, ask=True)
                 self.assertEqual(c_r, ok_content)
             try:

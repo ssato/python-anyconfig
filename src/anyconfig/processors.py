@@ -14,7 +14,6 @@ from __future__ import absolute_import
 import operator
 import pkg_resources
 
-import anyconfig.compat
 import anyconfig.ioinfo
 import anyconfig.models.processor
 import anyconfig.utils

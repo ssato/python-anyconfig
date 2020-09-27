@@ -58,8 +58,10 @@ Changelog:
    - Added XML dump support.
 """
 from __future__ import absolute_import
-from io import BytesIO
 
+import collections
+import io
+import itertools
 import operator
 import re
 try:
@@ -71,7 +73,6 @@ except ImportError:
         import elementtree.ElementTree as ET
 
 import anyconfig.backend.base
-import anyconfig.compat
 import anyconfig.utils
 import anyconfig.parser
 
@@ -154,7 +155,7 @@ def _dicts_have_unique_keys(dics):
     >>> _dicts_have_unique_keys([{}, {}])
     True
     """
-    key_itr = anyconfig.compat.from_iterable(d.keys() for d in dics)
+    key_itr = itertools.chain.from_iterable(d.keys() for d in dics)
     return len(set(key_itr)) == sum(len(d) for d in dics)
 
 
@@ -171,8 +172,8 @@ def _merge_dicts(dics, container=dict):
     >>> sorted(kv for kv in _merge_dicts(({'a': 1}, {'b': 2})).items())
     [('a', 1), ('b', 2)]
     """
-    dic_itr = anyconfig.compat.from_iterable(d.items() for d in dics)
-    return container(anyconfig.compat.OrderedDict(dic_itr))
+    dic_itr = itertools.chain.from_iterable(d.items() for d in dics)
+    return container(collections.OrderedDict(dic_itr))
 
 
 def _parse_text(val, **options):
@@ -368,7 +369,7 @@ def _elem_set_attrs(obj, parent, to_str):
 
     :return: None but parent will be modified
     """
-    for attr, val in anyconfig.compat.iteritems(obj):
+    for attr, val in obj.items():
         parent.set(attr, to_str(val))
 
 
@@ -378,7 +379,7 @@ def _elem_from_descendants(children_nodes, **options):
     :param options: Keyword options, see :func:`container_to_etree`
     """
     for child in children_nodes:  # child should be a dict-like object.
-        for ckey, cval in anyconfig.compat.iteritems(child):
+        for ckey, cval in child.items():
             celem = ET.Element(ckey)
             container_to_etree(cval, parent=celem, **options)
             yield celem
@@ -431,7 +432,7 @@ def container_to_etree(obj, parent=None, to_str=None, **options):
     options = _complement_tag_options(options)
     (attrs, text, children) = operator.itemgetter(*_ATC)(options)
 
-    for key, val in anyconfig.compat.iteritems(obj):
+    for key, val in obj.items():
         if key == attrs:
             _elem_set_attrs(val, parent, to_str)
         elif key == text:
@@ -484,10 +485,7 @@ class Parser(anyconfig.backend.base.Parser,
         :return: Dict-like object holding config parameters
         """
         root = ET.fromstring(content)
-        if anyconfig.compat.IS_PYTHON_3:
-            stream = BytesIO(content)
-        else:
-            stream = anyconfig.compat.StringIO(content)
+        stream = io.BytesIO(content)
         nspaces = _namespaces_from_file(stream)
         return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)
@@ -527,7 +525,7 @@ class Parser(anyconfig.backend.base.Parser,
         :return: string represents the configuration
         """
         tree = container_to_etree(cnf, **opts)
-        buf = BytesIO()
+        buf = io.BytesIO()
         etree_write(tree, buf)
         return buf.getvalue()
 

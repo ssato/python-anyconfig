@@ -5,9 +5,9 @@
 # pylint: disable=missing-docstring, invalid-name
 import os.path
 import os
+import pathlib
 import unittest
 
-import anyconfig.compat
 import anyconfig.ioinfo as TT
 import anyconfig.utils
 
@@ -41,10 +41,7 @@ class Test_10_inspect_io_obj(unittest.TestCase):
         self.assertEqual(res[2], anyconfig.utils.noop)
 
     def test_30_path_obj(self):
-        if anyconfig.compat.pathlib is None:
-            return
-
-        ipo = anyconfig.compat.pathlib.Path(IPATH_0)
+        ipo = pathlib.Path(IPATH_0)
         self.assertEqual(TT.inspect_io_obj(ipo),
                          (IOI_PATH_OBJ, IPATH_0_FULL, ipo.open, IPATH_0_EXT))
 
@@ -70,14 +67,10 @@ class Test_30_make(unittest.TestCase):
 
     def test_40__pathlib(self):
         ipath = self.ipath
-        if anyconfig.compat.pathlib is not None:
-            # Replace w/ pathlib.Path object.
-            ipath = anyconfig.compat.pathlib.Path(ipath)
-            itype = IOI_PATH_OBJ
-            opener = ipath.open
-        else:
-            itype = IOI_PATH_STR
-            opener = open
+        # Replace w/ pathlib.Path object.
+        ipath = pathlib.Path(ipath)
+        itype = IOI_PATH_OBJ
+        opener = ipath.open
 
         res = self.fun(ipath)
         self.__checks_helper(res, ipath, self.ipath_full, itype, opener,

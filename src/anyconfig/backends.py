@@ -10,7 +10,6 @@ from __future__ import absolute_import
 
 import warnings
 
-import anyconfig.compat
 import anyconfig.ioinfo
 import anyconfig.processors
 import anyconfig.singleton

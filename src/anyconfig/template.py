@@ -16,7 +16,8 @@ import locale
 import os
 import warnings
 
-import anyconfig.compat
+import anyconfig.utils
+
 
 RENDER_S_OPTS = ['ctx', 'paths', 'filters']
 RENDER_OPTS = RENDER_S_OPTS + ['ask']
@@ -159,12 +160,10 @@ def render(filepath, ctx=None, paths=None, ask=False, filters=None):
         if not ask:
             raise
 
-        usr_tmpl = anyconfig.compat.raw_input(os.linesep + ""
-                                              "*** Missing template "
-                                              "'%s'. Please enter absolute "
-                                              "or relative path starting from "
-                                              "'.' to the template file: " %
-                                              mtmpl)
+        usr_tmpl = input(os.linesep + "*** Missing template "
+                         "'{}'. Please enter absolute "
+                         "or relative path starting from "
+                         "'.' to the template file: ".format(mtmpl))
         usr_tmpl = os.path.normpath(usr_tmpl.strip())
         paths = make_template_paths(usr_tmpl, paths)
 

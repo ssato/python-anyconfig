@@ -7,14 +7,13 @@ import os.path
 import tempfile
 import unittest
 
+from collections import OrderedDict
+
 try:
     from unittest import SkipTest
 except ImportError:
     from nose.plugins.skip import SkipTest
 
-import anyconfig.compat
-
-from anyconfig.compat import OrderedDict
 from anyconfig.utils import is_dict_like
 
 
@@ -98,7 +97,7 @@ def to_bytes(astr):
     """
     Convert a string to bytes. Do nothing in python 2.6.
     """
-    return bytes(astr, 'utf-8') if anyconfig.compat.IS_PYTHON_3 else astr
+    return bytes(astr, 'utf-8')
 
 
 def skip_test():

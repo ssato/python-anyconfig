@@ -3,9 +3,9 @@
 # License: MIT
 #
 from __future__ import absolute_import
+from collections import OrderedDict
 
 import tests.backend.common as TBC
-from anyconfig.compat import OrderedDict
 
 
 CNF_S = TBC.read_from_res("20-00-cnf.yml")

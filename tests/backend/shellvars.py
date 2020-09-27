@@ -7,10 +7,10 @@
 # pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
+from collections import OrderedDict
+
 import anyconfig.backend.shellvars as TT
 import tests.backend.common as TBC
-
-from anyconfig.compat import OrderedDict
 
 
 CNF = OrderedDict((("a", "0"), ("b", "bbb"), ("c", "ccc"), ("d", "ddd"),

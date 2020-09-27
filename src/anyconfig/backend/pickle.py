@@ -35,15 +35,10 @@ except ImportError:
     import pickle
 
 import anyconfig.backend.base
-import anyconfig.compat
 
 
-if anyconfig.compat.IS_PYTHON_3:
-    LOAD_OPTS = ["fix_imports", "encoding", "errors"]
-    DUMP_OPTS = ["protocol", "fix_imports"]
-else:
-    LOAD_OPTS = []
-    DUMP_OPTS = ["protocol"]
+LOAD_OPTS = ["fix_imports", "encoding", "errors"]
+DUMP_OPTS = ["protocol", "fix_imports"]
 
 
 class Parser(anyconfig.backend.base.StringStreamFnParser,

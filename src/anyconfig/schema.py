@@ -27,7 +27,6 @@ try:
 except ImportError:
     JSONSCHEMA_IS_AVAIL = False
 
-import anyconfig.compat
 import anyconfig.utils
 
 
@@ -39,13 +38,6 @@ _SIMPLETYPE_MAP = {list: "array", tuple: "array",
                    dict: "object",
                    str: "string"}
 _SIMPLE_TYPES = (bool, int, float, str)
-
-if not anyconfig.compat.IS_PYTHON_3:
-    try:
-        _SIMPLETYPE_MAP[unicode] = "string"
-        _SIMPLE_TYPES = (bool, int, float, str, unicode)
-    except NameError:
-        pass
 
 
 def _validate_all(data, schema):

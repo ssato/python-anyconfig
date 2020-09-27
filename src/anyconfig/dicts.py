@@ -13,6 +13,7 @@ r"""Utility functions to operate on mapping objects such as get, set and merge.
 
 """
 from __future__ import absolute_import
+import collections
 import functools
 import operator
 import re
@@ -311,7 +312,7 @@ def _make_recur(obj, make_fn, ac_ordered=False, ac_dict=None, **options):
     :return: Mapping object
     """
     if ac_dict is None:
-        ac_dict = anyconfig.compat.OrderedDict if ac_ordered else dict
+        ac_dict = collections.OrderedDict if ac_ordered else dict
 
     return ac_dict((k, None if v is None else make_fn(v, **options))
                    for k, v in obj.items())
@@ -341,7 +342,7 @@ def convert_to(obj, ac_ordered=False, ac_dict=None, **options):
 
     :return: A dict or OrderedDict or object of 'cls'
 
-    >>> OD = anyconfig.compat.OrderedDict
+    >>> OD = collections.OrderedDict
     >>> convert_to(OD((('a', 1) ,)), cls=dict)
     {'a': 1}
     >>> convert_to(OD((('a', OD((('b', OD((('c', 1), ))), ))), )), cls=dict)

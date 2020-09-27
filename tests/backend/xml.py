@@ -7,9 +7,11 @@
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports,protected-access
 from __future__ import absolute_import
+
+import io
 import unittest
+
 import anyconfig.backend.xml as TT
-import anyconfig.compat
 import tests.backend.common as TBC
 
 from tests.common import dicts_equal, to_bytes
@@ -33,7 +35,7 @@ class Test_00(unittest.TestCase):
     def test_10__namespaces_from_file(self):
         ref = {"http://example.com/ns/config": '',
                "http://example.com/ns/config/val": "val"}
-        xmlfile = anyconfig.compat.StringIO(TBC.read_from_res("20-00-cnf.xml"))
+        xmlfile = io.StringIO(TBC.read_from_res("20-00-cnf.xml"))
         self.assertTrue(dicts_equal(TT._namespaces_from_file(xmlfile), ref))
 
     def test_20__process_elem_text__whitespaces(self):

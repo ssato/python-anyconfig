@@ -6,7 +6,9 @@
 from __future__ import absolute_import
 
 import os.path
+import pathlib
 import unittest
+
 import anyconfig.backend.json
 import anyconfig.backend.json.default as JSON
 try:
@@ -18,7 +20,6 @@ import anyconfig.backends as TT
 import anyconfig.ioinfo
 import tests.common as TC
 
-from anyconfig.compat import pathlib
 from anyconfig.globals import (
     UnknownProcessorTypeError, UnknownFileTypeError
 )

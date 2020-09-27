@@ -7,6 +7,8 @@
 # pylint: disable=ungrouped-imports
 from __future__ import absolute_import
 
+from collections import OrderedDict as ODict
+
 try:
     import anyconfig.backend.toml as TT
 except ImportError:
@@ -14,8 +16,6 @@ except ImportError:
     raise tests.common.skip_test()
 
 import tests.backend.common as TBC
-
-from anyconfig.compat import OrderedDict as ODict
 
 
 _DOB = TT.toml.loads("dob = 1979-05-27T07:32:00Z")['dob']

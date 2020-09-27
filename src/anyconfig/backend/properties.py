@@ -36,7 +36,6 @@ import re
 import warnings
 
 import anyconfig.backend.base
-import anyconfig.compat
 
 
 _COMMENT_MARKERS = ("#", "!")
@@ -143,7 +142,8 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     :param comment_markers: Comment markers, e.g. '#' (hash)
     :return: Dict-like object holding properties
 
-    >>> to_strm = anyconfig.compat.StringIO
+    >>> import io
+    >>> to_strm = io.StringIO
     >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
     >>> load(to_strm(''))
     {}
@@ -222,7 +222,7 @@ class Parser(anyconfig.backend.base.StreamParser):
         :param stream: Java properties file or file like object
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        for key, val in anyconfig.compat.iteritems(cnf):
+        for key, val in cnf.items():
             stream.write("%s = %s%s" % (key, escape(val), os.linesep))
 
 # vim:sw=4:ts=4:et:

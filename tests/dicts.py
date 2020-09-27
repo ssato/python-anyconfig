@@ -9,10 +9,12 @@ from __future__ import absolute_import
 
 import copy
 import unittest
+
+from collections import OrderedDict
+
 import anyconfig.dicts as TT
 
 from tests.common import dicts_equal
-from anyconfig.compat import OrderedDict
 from anyconfig.utils import is_dict_like
 
 

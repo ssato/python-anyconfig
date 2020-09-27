@@ -19,10 +19,11 @@ needed:
 """
 from __future__ import absolute_import
 
+import collections
 import functools
+import io
 import os
 
-import anyconfig.compat
 import anyconfig.globals
 import anyconfig.models.processor
 import anyconfig.utils
@@ -160,7 +161,7 @@ class LoaderMixin(object):
         if _dicts and callable(_dicts[0]):
             return _dicts[0]
         if self.ordered() and options.get("ac_ordered", False):
-            return anyconfig.compat.OrderedDict
+            return collections.OrderedDict
 
         return dict
 
@@ -419,7 +420,7 @@ class FromStreamLoaderMixin(LoaderMixin):
 
         :return: Dict-like object holding config parameters
         """
-        return self.load_from_stream(anyconfig.compat.StringIO(content),
+        return self.load_from_stream(io.StringIO(content),
                                      container, **kwargs)
 
     def load_from_path(self, filepath, container, **kwargs):
@@ -487,7 +488,7 @@ class ToStreamDumperMixin(DumperMixin):
 
         :return: Dict-like object holding config parameters
         """
-        stream = anyconfig.compat.StringIO()
+        stream = io.StringIO()
         self.dump_to_stream(cnf, stream, **kwargs)
         return stream.getvalue()
 

@@ -33,12 +33,12 @@ Changelog:
 """
 from __future__ import absolute_import
 
+import configparser
 import os
 import anyconfig.backend.base
 import anyconfig.parser as P
 import anyconfig.utils
 
-from anyconfig.compat import configparser, iteritems, IS_PYTHON_3
 from anyconfig.utils import filter_options
 
 
@@ -131,17 +131,14 @@ def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
     :return: Dict or dict-like object represents config values
     """
     (kwargs_1, psr) = _make_parser(**kwargs)
-    if IS_PYTHON_3:
-        psr.read_file(stream, **kwargs_1)
-    else:
-        psr.readfp(stream, **kwargs_1)
+    psr.read_file(stream, **kwargs_1)
 
     cnf = container()
     kwargs["sep"] = sep
 
     defaults = psr.defaults()
     if defaults:
-        cnf[dkey] = container(_parsed_items(iteritems(defaults), **kwargs))
+        cnf[dkey] = container(_parsed_items(defaults.items(), **kwargs))
 
     for sect in psr.sections():
         cnf[sect] = container(_parsed_items(psr.items(sect), **kwargs))
@@ -153,10 +150,10 @@ def _dumps_itr(cnf, dkey=DEFAULTSECT):
     """
     :param cnf: Configuration data to dump
     """
-    for sect, params in iteritems(cnf):
+    for sect, params in cnf.items():
         yield "[%s]" % sect
 
-        for key, val in iteritems(params):
+        for key, val in params.items():
             if sect != dkey and dkey in cnf and cnf[dkey].get(key) == val:
                 continue  # It should be in [DEFAULT] section.
 

@@ -11,7 +11,7 @@ import unittest
 import anyconfig.backend.properties as TT
 import tests.backend.common as TBC
 
-from anyconfig.compat import OrderedDict
+from collections import OrderedDict
 
 
 CNF = OrderedDict((("a", "0"), ("b", "bbb"), ("c", ""),

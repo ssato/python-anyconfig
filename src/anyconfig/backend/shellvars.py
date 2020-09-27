@@ -71,7 +71,7 @@ def load(stream, container=dict):
         Factory function to create a dict-like object to store properties
     :return: Dict-like object holding shell variables' definitions
 
-    >>> from anyconfig.compat import StringIO as to_strm
+    >>> from io import StringIO as to_strm
     >>> load(to_strm(''))
     {}
     >>> load(to_strm("# "))
@@ -131,7 +131,7 @@ class Parser(anyconfig.backend.base.StreamParser):
         :param stream: Shell script file or file like object
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        for key, val in anyconfig.compat.iteritems(cnf):
+        for key, val in cnf.items():
             stream.write("%s='%s'%s" % (key, val, os.linesep))
 
 # vim:sw=4:ts=4:et:

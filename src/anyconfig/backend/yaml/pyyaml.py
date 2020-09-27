@@ -46,7 +46,6 @@ except ImportError:
     from yaml import SafeLoader as Loader, Dumper
 
 import anyconfig.backend.base
-import anyconfig.compat
 import anyconfig.utils
 
 from . import common

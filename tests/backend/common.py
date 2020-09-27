@@ -15,7 +15,7 @@ from os import linesep as lsep
 import tests.common
 import anyconfig.ioinfo
 
-from anyconfig.compat import OrderedDict
+from collections import OrderedDict
 from tests.common import to_bytes as _bytes
 
 

@@ -1,6 +1,7 @@
 #
 # Copyright (C) 2018 Satoru SATOH <ssato @ redhat.com>
-# License: MIT
+# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh @ gmmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=invalid-name
 r"""Functions for value objects represent inputs and outputs.

@@ -1,6 +1,7 @@
 #
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
-# License: MIT
+# Copyright (C) 2014 - 2020 Satoru SATOH <satoru.satoh @ gmail.com>
+# SPDX-License-Identifier: MIT
 #
 """Misc parsers
 """

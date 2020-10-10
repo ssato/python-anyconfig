@@ -1,6 +1,7 @@
 #
-# Copyright (C) 2015 - 2017 Satoru SATOH <ssato redhat.com>
-# License: MIT
+# Copyright (C) 2015 - 2018 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# SPDX-License-Identifier: MIT
 #
 """anyconfig.schema module.
 

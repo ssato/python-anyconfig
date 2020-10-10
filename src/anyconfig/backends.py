@@ -1,6 +1,7 @@
 #
 # Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
-# License: MIT
+# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh @ gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # Suppress: import positions after some globals are defined
 # pylint: disable=wrong-import-position

@@ -1,8 +1,8 @@
 #
 # Jinja2 (http://jinja.pocoo.org) based template renderer.
 #
-# Author: Satoru SATOH <ssato redhat.com>
-# License: MIT
+# Copyright (C) Satoru SATOH <satoru.satoh@gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-argument,wrong-import-position,wrong-import-order
 """anyconfig.template module

@@ -3,7 +3,8 @@
 #
 # Copyright (C) 2011 - 2015 Red Hat, Inc.
 # Copyright (C) 2011 - 2017 Satoru SATOH <ssato redhat.com>
-# License: MIT
+# Copyright (C) 2018 - 2020 Satoru SATOH <satoru.satoh gmail.com>
+# SPDX-License-Identifier: MIT
 #
 r"""Utility functions to operate on mapping objects such as get, set and merge.
 

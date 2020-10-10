@@ -1,6 +1,6 @@
 #
-# Copyright (C) 2015 - 2019 Satoru SATOH <satoru.satoh@gmail.com>
-# License: MIT
+# Copyright (C) 2015 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # Ref. python -c "import toml; help(toml); ..."
 #

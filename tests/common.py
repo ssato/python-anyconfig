@@ -5,16 +5,11 @@
 # pylint: disable=missing-docstring
 import os.path
 import tempfile
-import unittest
-
-from collections import OrderedDict
 
 try:
     from unittest import SkipTest
 except ImportError:
     from nose.plugins.skip import SkipTest
-
-from anyconfig.utils import is_dict_like
 
 
 CNF_0 = dict(name="a", a=1, b=dict(b=[0, 1], c="C"))
@@ -76,23 +71,6 @@ def cleanup_workdir(workdir):
     os.system("rm -rf " + workdir)
 
 
-def dicts_equal(dic, ref, ordered=False):
-    """Compare (maybe nested) dicts.
-    """
-    if not is_dict_like(dic) or not is_dict_like(ref):
-        return dic == ref
-
-    fnc = list if ordered else sorted
-    if fnc(dic.keys()) != fnc(ref.keys()):
-        return False
-
-    for key in ref.keys():
-        if key not in dic or not dicts_equal(dic[key], ref[key]):
-            return False
-
-    return True
-
-
 def to_bytes(astr):
     """
     Convert a string to bytes. Do nothing in python 2.6.
@@ -102,29 +80,5 @@ def to_bytes(astr):
 
 def skip_test():
     raise SkipTest
-
-
-class Test(unittest.TestCase):
-
-    def test_dicts_equal(self):
-        dic0 = {'a': 1}
-        dic1 = OrderedDict((('a', [1, 2, 3]),
-                            ('b', OrderedDict((('c', "CCC"), )))))
-        dic2 = dic1.copy()
-        dic2["b"] = None
-
-        dic3 = OrderedDict((('b', OrderedDict((('c', "CCC"), ))),
-                            ('a', [1, 2, 3])))
-
-        self.assertTrue(dicts_equal({}, {}))
-        self.assertTrue(dicts_equal(dic0, dic0))
-        self.assertTrue(dicts_equal(dic1, dic1))
-        self.assertTrue(dicts_equal(dic2, dic2))
-        self.assertTrue(dicts_equal(dic1, dic3))
-
-        self.assertFalse(dicts_equal(dic0, {}))
-        self.assertFalse(dicts_equal(dic0, dic1))
-        self.assertFalse(dicts_equal(dic1, dic2))
-        self.assertFalse(dicts_equal(dic1, dic3, ordered=True))
 
 # vim:sw=4:ts=4:et:

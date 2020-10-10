@@ -9,14 +9,12 @@ import os
 import unittest
 import anyconfig.query as TT
 
-from tests.common import dicts_equal
-
 
 class Test_00_Functions(unittest.TestCase):
 
     def _assert_dicts_equal(self, dic, ref):
-        self.assertTrue(dicts_equal(dic, ref),
-                        "%r%s vs.%s%r" % (dic, os.linesep, os.linesep, ref))
+        self.assertEqual(dic, ref,
+                         "%r%s vs.%s%r" % (dic, os.linesep, os.linesep, ref))
 
     def _assert_query(self, data_exp_ref_list, dicts=False):
         _assert = self._assert_dicts_equal if dicts else self.assertEqual

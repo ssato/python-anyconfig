@@ -14,7 +14,6 @@ from collections import OrderedDict
 
 import anyconfig.dicts as TT
 
-from tests.common import dicts_equal
 from anyconfig.utils import is_dict_like
 
 
@@ -24,7 +23,7 @@ class Test_10_get(unittest.TestCase):
         dic = dict(a=1, b=[1, 2])
         (dic2, err) = TT.get(dic, '')
         self.assertEqual(err, '')
-        self.assertTrue(dicts_equal(dic2, dic))
+        self.assertEqual(dic2, dic)
 
     def test_20_json_pointer(self):
         # test case in rfc, http://tools.ietf.org/html/rfc6901
@@ -39,7 +38,7 @@ class Test_10_get(unittest.TestCase):
                " ": 7,
                "m~n": 8}
 
-        self.assertTrue(dicts_equal(TT.get(dic, "")[0], dic))
+        self.assertTrue(TT.get(dic, "")[0], dic)
         self.assertEqual(TT.get(dic, "/foo")[0], ["bar", "baz"])
         self.assertEqual(TT.get(dic, "/foo/0")[0], "bar")
         self.assertEqual(TT.get(dic, "/")[0], 0)
@@ -158,7 +157,7 @@ class Test_40_merge(unittest.TestCase):
         exp["name"] = dic["name"]
 
         TT.merge(dic, self.upd, ac_merge=TT.MS_REPLACE)
-        self.assertTrue(dicts_equal(dic, exp))
+        self.assertEqual(dic, exp)
 
     def test_20_update_wo_replace(self):
         dic = copy.deepcopy(self.dic)
@@ -166,7 +165,7 @@ class Test_40_merge(unittest.TestCase):
         exp["e"] = self.upd["e"]
 
         TT.merge(dic, self.upd, ac_merge=TT.MS_NO_REPLACE)
-        self.assertTrue(dicts_equal(dic, exp))
+        self.assertEqual(dic, exp)
 
     def test_30_update_with_merge(self):
         dic = copy.deepcopy(self.dic)
@@ -175,7 +174,7 @@ class Test_40_merge(unittest.TestCase):
         exp["name"] = dic["name"]
 
         TT.merge(dic, self.upd, ac_merge=TT.MS_DICTS)
-        self.assertTrue(dicts_equal(dic, exp))
+        self.assertEqual(dic, exp)
 
     def test_40_update_with_merge_lists(self):
         dic = copy.deepcopy(self.dic)
@@ -185,7 +184,7 @@ class Test_40_merge(unittest.TestCase):
         exp["name"] = dic["name"]
 
         TT.merge(dic, self.upd, ac_merge=TT.MS_DICTS_AND_LISTS)
-        self.assertTrue(dicts_equal(dic, exp))
+        self.assertEqual(dic, exp)
 
     def test_50_update_with_custom_merge(self):
         def set_none_merge_strat(self, other, key, *args, **kwargs):
@@ -196,6 +195,6 @@ class Test_40_merge(unittest.TestCase):
         exp = dict(zip(dic.keys(), [None for _ in dic]))
 
         TT.merge(dic, self.upd, ac_merge=set_none_merge_strat)
-        self.assertTrue(dicts_equal(dic, exp))
+        self.assertEqual(dic, exp)
 
 # vim:sw=4:ts=4:et:

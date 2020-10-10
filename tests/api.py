@@ -23,7 +23,7 @@ import anyconfig.template
 import tests.common
 
 from tests.common import (
-    CNF_0, SCM_0, CNF_1, dicts_equal, resdir, skip_test
+    CNF_0, SCM_0, CNF_1, resdir, skip_test
 )
 
 
@@ -96,8 +96,10 @@ class TestBase(unittest.TestCase):
     upd = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"), e=0)
 
     def assert_dicts_equal(self, dic, ref, ordered=False):
-        self.assertTrue(dicts_equal(dic, ref, ordered=ordered),
-                        "%r%s vs.%s%r" % (dic, os.linesep, os.linesep, ref))
+        self.assertEqual(
+            dic, ref,
+            "%r%s vs.%s%r" % (dic, os.linesep, os.linesep, ref)
+        )
 
 
 class Test_20_dumps_and_loads(TestBase):
@@ -264,7 +266,7 @@ class Test_30_single_load(TestBaseWithIO):
         a2_path = os.path.join(resdir(), "00-00-cnf.json")  # Not a template
 
         cnf1 = TT.single_load(a_path, ac_template=True, ac_context=self.cnf)
-        self.assertTrue(dicts_equal(self.cnf, cnf1), str(cnf1))
+        self.assertEqual(self.cnf, cnf1, str(cnf1))
 
         cnf2 = TT.single_load(a2_path, ac_template=True)
         self.assertEqual(cnf2["a"], 1)
@@ -287,7 +289,7 @@ class Test_30_single_load(TestBaseWithIO):
         cnf_1 = TT.single_load(cnf_path, ac_schema=scm_path)
 
         self.assertFalse(cnf_1 is None)  # Validation should succeed.
-        self.assertTrue(dicts_equal(cnf_1, cnf), cnf_1)
+        self.assertEqual(cnf_1, cnf, cnf_1)
 
         cnf_2 = cnf.copy()
         cnf_2["a"] = "aaa"  # It's type should be integer not string.
@@ -341,7 +343,7 @@ class Test_32_single_load(unittest.TestCase):
             self.assertTrue(_is_file_object(inp))
             self.assertEqual(inp.mode, rmode)
             cpair = (self.cnf, cnf1)
-            self.assertTrue(dicts_equal(*cpair), "%r vs. %r" % cpair)
+            self.assertEqual(*cpair)
 
     def test_10_open_json_file(self):
         self._load_and_dump_with_opened_files("a.json")

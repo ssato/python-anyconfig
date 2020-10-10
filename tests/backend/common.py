@@ -59,8 +59,8 @@ class TestBase(unittest.TestCase, HasParserTrait):
     def _assert_dicts_equal(self, cnf, ordered=False, cls=None, ref=None):
         if ref is None:
             ref = self.cnf
-        self.assertTrue(tests.common.dicts_equal(cnf, ref, ordered=ordered),
-                        "%s %r%svs.%s %r" % (lsep, cnf, lsep, lsep, ref))
+        self.assertEqual(cnf, ref,
+                         "%s %r%svs.%s %r" % (lsep, cnf, lsep, lsep, ref))
         # .. note::
         #    'cnf' may not be an instance of 'cls' even if ac_dict option was
         #    given because parsers may not allow customize dict class to used

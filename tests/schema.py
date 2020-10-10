@@ -9,7 +9,7 @@ from __future__ import absolute_import, print_function
 import unittest
 import anyconfig.schema as TT
 
-from tests.common import dicts_equal, skip_test
+from tests.common import skip_test
 
 
 class Test_00_Base(unittest.TestCase):
@@ -36,17 +36,17 @@ class Test_00_Functions(Test_00_Base):
     def test_20_array_to_schema(self):
         scm = TT.array_to_schema([1])
         ref = dict(items=dict(type="integer"), type="array")
-        self.assertTrue(dicts_equal(scm, ref), scm)
+        self.assertEqual(scm, ref, scm)
 
     def test_22_array_to_schema__empty_array(self):
         scm = TT.array_to_schema([])
         ref = dict(items=dict(type="string"), type="array")
-        self.assertTrue(dicts_equal(scm, ref), scm)
+        self.assertEqual(scm, ref, scm)
 
     def test_30_object_to_schema_nodes_iter(self):
         scm = TT.object_to_schema({'a': 1})
         ref = dict(type="object", properties=dict(a=dict(type="integer")))
-        self.assertTrue(dicts_equal(scm, ref), scm)
+        self.assertEqual(scm, ref, scm)
 
 
 class Test_10_Validation(Test_00_Base):
@@ -95,11 +95,11 @@ class Test_20_GenSchema(Test_00_Base):
 
         scm = TT.gen_schema([1])
         ref_scm = {'items': {'type': 'integer'}, 'type': 'array'}
-        self.assertTrue(dicts_equal(scm, ref_scm))
+        self.assertEqual(scm, ref_scm)
 
         scm = TT.gen_schema({'a': 1})
         ref_scm = {'properties': {'a': {'type': 'integer'}}, 'type': 'object'}
-        self.assertTrue(dicts_equal(scm, ref_scm))
+        self.assertEqual(scm, ref_scm)
 
     def test_42_gen_schema_and_validate(self):
         scm = TT.gen_schema(self.obj)
@@ -107,7 +107,7 @@ class Test_20_GenSchema(Test_00_Base):
 
     def test_44_gen_schema__complex_types(self):
         scm = TT.gen_schema(self.obj2)
-        self.assertTrue(dicts_equal(scm, self.ref_scm))
+        self.assertEqual(scm, self.ref_scm)
 
     def test_46_gen_schema_and_validate__complex_types(self):
         scm = TT.gen_schema(self.obj2)
@@ -144,17 +144,17 @@ class Test_30_GenStrictSchema(Test_00_Base):
         scm = _gen_scm([1])
         ref_scm = {'items': {'type': 'integer'}, 'type': 'array',
                    'minItems': 1, 'uniqueItems': True}
-        self.assertTrue(dicts_equal(scm, ref_scm))
+        self.assertEqual(scm, ref_scm)
 
         scm = _gen_scm(["aaa", "bbb", "aaa"])
         ref_scm = {'items': {'type': 'string'}, 'type': 'array',
                    'minItems': 3, 'uniqueItems': False}
-        self.assertTrue(dicts_equal(scm, ref_scm))
+        self.assertEqual(scm, ref_scm)
 
         scm = _gen_scm({'a': 1})
         ref_scm = {'properties': {'a': {'type': 'integer'}},
                    'type': 'object', 'required': ['a']}
-        self.assertTrue(dicts_equal(scm, ref_scm))
+        self.assertEqual(scm, ref_scm)
 
     def test_42_gen_schema_and_validate(self):
         scm = _gen_scm(self.obj)
@@ -162,7 +162,7 @@ class Test_30_GenStrictSchema(Test_00_Base):
 
     def test_44_gen_schema__complex_types(self):
         scm = _gen_scm(self.obj2)
-        self.assertTrue(dicts_equal(scm, self.ref_scm))
+        self.assertEqual(scm, self.ref_scm)
 
     def test_46_gen_schema_and_validate__complex_types(self):
         scm = _gen_scm(self.obj2)

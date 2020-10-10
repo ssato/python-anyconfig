@@ -14,7 +14,7 @@ import unittest
 import anyconfig.backend.xml as TT
 import tests.backend.common as TBC
 
-from tests.common import dicts_equal, to_bytes
+from tests.common import to_bytes
 
 
 CNF_0 = {'config': {'@attrs': {'val:name': 'foo',
@@ -36,7 +36,7 @@ class Test_00(unittest.TestCase):
         ref = {"http://example.com/ns/config": '',
                "http://example.com/ns/config/val": "val"}
         xmlfile = io.StringIO(TBC.read_from_res("20-00-cnf.xml"))
-        self.assertTrue(dicts_equal(TT._namespaces_from_file(xmlfile), ref))
+        self.assertEqual(TT._namespaces_from_file(xmlfile), ref)
 
     def test_20__process_elem_text__whitespaces(self):
         (elem, dic, subdic) = (TT.ET.XML("<a> </a>"), {}, {})
@@ -47,73 +47,73 @@ class Test_00(unittest.TestCase):
     def test_22__process_elem_text__wo_attrs_and_children(self):
         (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")
-        self.assertTrue(dicts_equal(dic, {"a": 'A'}))
+        self.assertEqual(dic, {"a": 'A'})
         self.assertTrue(not subdic)
 
     def test_22__process_elem_text__wo_attrs_and_children_parse(self):
         (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text",
                               ac_parse_value=True)
-        self.assertTrue(dicts_equal(dic, {"a": 'A'}))
+        self.assertEqual(dic, {"a": 'A'})
         self.assertTrue(not subdic)
 
         (elem, dic, subdic) = (TT.ET.XML("<a>1</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text",
                               ac_parse_value=True)
-        self.assertTrue(dicts_equal(dic, {"a": 1}))
+        self.assertEqual(dic, {"a": 1})
         self.assertTrue(not subdic)
 
     def test_24__process_elem_text__w_attrs(self):
         (elem, dic, subdic) = (TT.ET.XML("<a id='1'>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")
         self.assertTrue(not dic)
-        self.assertTrue(dicts_equal(subdic, {"#text": 'A'}))
+        self.assertEqual(subdic, {"#text": 'A'})
 
     def test_24__process_elem_text__w_children(self):
         (elem, dic, subdic) = (TT.ET.XML("<a>A<b/></a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")
         self.assertTrue(not dic)
-        self.assertTrue(dicts_equal(subdic, {"#text": 'A'}))
+        self.assertEqual(subdic, {"#text": 'A'})
 
     def test_30__process_elem_attrs__wo_text_and_children(self):
         (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic)
         self.assertTrue(not dic)
-        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": 'A'}}))
+        self.assertEqual(subdic, {"@attrs": {"id": 'A'}})
 
     def test_32__process_elem_attrs__w_text(self):
         (elem, dic, subdic) = (TT.ET.XML("<a id='A'>AAA</a>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic)
         self.assertTrue(not dic)
-        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": 'A'}}))
+        self.assertEqual(subdic, {"@attrs": {"id": 'A'}})
 
     def test_34__process_elem_attrs__merge_attrs(self):
         (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic, merge_attrs=True)
-        self.assertTrue(dicts_equal(dic, {"a": {"id": 'A'}}))
+        self.assertEqual(dic, {"a": {"id": 'A'}})
         self.assertTrue(not subdic)
 
     def test_36__process_elem_attrs__wo_text_and_children_parse(self):
         (elem, dic, subdic) = (TT.ET.XML("<a id='1'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic, ac_parse_value=True)
         self.assertTrue(not dic)
-        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": 1}}))
+        self.assertEqual(subdic, {"@attrs": {"id": 1}})
 
         (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic, ac_parse_value=True)
         self.assertTrue(not dic)
-        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": 'A'}}))
+        self.assertEqual(subdic, {"@attrs": {"id": 'A'}})
 
         (elem, dic, subdic) = (TT.ET.XML("<a id='true'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic, ac_parse_value=True)
         self.assertTrue(not dic)
-        self.assertTrue(dicts_equal(subdic, {"@attrs": {"id": True}}))
+        self.assertEqual(subdic, {"@attrs": {"id": True}})
 
     def test_40__process_children_elems__root(self):
         (elem, dic, subdic) = (TT.ET.XML("<list><i>A</i><i>B</i></list>"), {},
                                {})
         TT._process_children_elems(elem, dic, subdic)
-        self.assertTrue(dicts_equal(dic, {"list": [{"i": "A"}, {"i": "B"}]}))
+        self.assertEqual(dic, {"list": [{"i": "A"}, {"i": "B"}]})
         self.assertTrue(not subdic)
 
     def test_42__process_children_elems__w_attr(self):
@@ -124,12 +124,12 @@ class Test_00(unittest.TestCase):
 
         TT._process_children_elems(elem, dic, subdic, children="#children")
         self.assertTrue(not dic)
-        self.assertTrue(dicts_equal(subdic, ref), subdic)
+        self.assertEqual(subdic, ref, subdic)
 
     def test_44__process_children_elems__w_children_have_unique_keys(self):
         (elem, dic, subdic) = (TT.ET.XML("<a><x>X</x><y>Y</y></a>"), {}, {})
         TT._process_children_elems(elem, dic, subdic)
-        self.assertTrue(dicts_equal(dic, {"a": {"x": "X", "y": "Y"}}))
+        self.assertEqual(dic, {"a": {"x": "X", "y": "Y"}})
         self.assertTrue(not subdic)
 
     def test_46__process_children_elems__w_merge_attrs(self):
@@ -137,8 +137,7 @@ class Test_00(unittest.TestCase):
         dic = {"a": {"@attrs": {"z": "Z"}}}
         subdic = dic["a"]["@attrs"]
         TT._process_children_elems(elem, dic, subdic, merge_attrs=True)
-        self.assertTrue(dicts_equal(dic, {"a": {"x": "X", "y": "Y",
-                                                "z": "Z"}}), dic)
+        self.assertEqual(dic, {"a": {"x": "X", "y": "Y", "z": "Z"}}, dic)
 
 
 class Test_00_1(unittest.TestCase):

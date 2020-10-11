@@ -40,8 +40,9 @@ def query(data, jexp, **_options):
     except ValueError as exc:  # jmespath.exceptions.*Error inherit from it.
         return (data, exc)
 
-    except (NameError, AttributeError):
-        raise ValueError("Required 'jmespath' module is not available.")
+    except (NameError, AttributeError) as exc:
+        raise ValueError("Required 'jmespath' module is not available."
+                         ) from exc
 
     except:  # noqa: E722
         return (None, exc)

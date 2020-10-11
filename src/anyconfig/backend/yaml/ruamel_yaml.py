@@ -47,8 +47,8 @@ from . import common
 
 try:
     ryaml.YAML  # flake8: noqa
-except AttributeError:
-    raise ImportError("ruamel.yaml may be too old to use!")
+except AttributeError as exc:
+    raise ImportError("ruamel.yaml may be too old to use!") from exc
 
 _YAML_INIT_KWARGS = ["typ", "pure", "plug_ins"]  # kwargs for ruamel.yaml.YAML
 _YAML_INSTANCE_MEMBERS = ['allow_duplicate_keys', 'allow_unicode',

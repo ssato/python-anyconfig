@@ -245,71 +245,6 @@ def get_path_from_stream(strm):
     return None
 
 
-def _try_to_get_extension(obj):
-    """
-    Try to get file extension from given path or file object.
-
-    :param obj: a file, file-like object or something
-    :return: File extension or None
-
-    >>> _try_to_get_extension("a.py")
-    'py'
-    """
-    if is_path(obj):
-        path = obj
-
-    elif is_path_obj(obj):
-        return obj.suffix[1:]
-
-    elif is_file_stream(obj):
-        try:
-            path = get_path_from_stream(obj)
-        except ValueError:
-            return None
-
-    elif is_ioinfo(obj):
-        path = obj.path
-
-    else:
-        return None
-
-    if path:
-        return get_file_extension(path)
-
-    return None
-
-
-def are_same_file_types(objs):
-    """
-    Are given (maybe) file objs same type (extension) ?
-
-    :param objs: A list of file path or file(-like) objects
-
-    >>> are_same_file_types([])
-    False
-    >>> are_same_file_types(["a.conf"])
-    True
-    >>> are_same_file_types(["a.conf", "b.conf"])
-    True
-    >>> are_same_file_types(["a.yml", "b.yml"])
-    True
-    >>> are_same_file_types(["a.yml", "b.json"])
-    False
-    >>> import io
-    >>> strm = io.StringIO()
-    >>> are_same_file_types(["a.yml", "b.yml", strm])
-    False
-    """
-    if not objs:
-        return False
-
-    ext = _try_to_get_extension(objs[0])
-    if ext is None:
-        return False
-
-    return all(_try_to_get_extension(p) == ext for p in objs[1:])
-
-
 @functools.lru_cache()
 def split_re(marker: str, sep: str = os.path.sep) -> typing.Pattern:
     """Generate a regexp pattern object to split path by marker.
@@ -408,6 +343,71 @@ def expand_paths(paths: typing.Union[PathsT, typing.Tuple, typing.IO],
     :param marker: Glob marker character or string, e.g. '*'
     """
     return sorted(expand_paths_itr(paths, marker=marker), key=maybe_path_key)
+
+
+def _try_to_get_extension(obj):
+    """
+    Try to get file extension from given path or file object.
+
+    :param obj: a file, file-like object or something
+    :return: File extension or None
+
+    >>> _try_to_get_extension("a.py")
+    'py'
+    """
+    if is_path(obj):
+        path = obj
+
+    elif is_path_obj(obj):
+        return obj.suffix[1:]
+
+    elif is_file_stream(obj):
+        try:
+            path = get_path_from_stream(obj)
+        except ValueError:
+            return None
+
+    elif is_ioinfo(obj):
+        path = obj.path
+
+    else:
+        return None
+
+    if path:
+        return get_file_extension(path)
+
+    return None
+
+
+def are_same_file_types(objs):
+    """
+    Are given (maybe) file objs same type (extension) ?
+
+    :param objs: A list of file path or file(-like) objects
+
+    >>> are_same_file_types([])
+    False
+    >>> are_same_file_types(["a.conf"])
+    True
+    >>> are_same_file_types(["a.conf", "b.conf"])
+    True
+    >>> are_same_file_types(["a.yml", "b.yml"])
+    True
+    >>> are_same_file_types(["a.yml", "b.json"])
+    False
+    >>> import io
+    >>> strm = io.StringIO()
+    >>> are_same_file_types(["a.yml", "b.yml", strm])
+    False
+    """
+    if not objs:
+        return False
+
+    ext = _try_to_get_extension(objs[0])
+    if ext is None:
+        return False
+
+    return all(_try_to_get_extension(p) == ext for p in objs[1:])
 
 
 def noop(val, *_args, **_kwargs):

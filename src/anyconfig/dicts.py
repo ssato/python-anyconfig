@@ -160,7 +160,7 @@ def _are_list_like(*objs):
     return all(anyconfig.utils.is_list_like(obj) for obj in objs)
 
 
-def _update_with_replace(self, other, key, val=None, **options):
+def _update_with_replace(self, other, key, val=None, **_options):
     """
     Replace value of a mapping object 'self' with 'other' has if both have same
     keys on update. Otherwise, just keep the value of 'self'.
@@ -175,7 +175,7 @@ def _update_with_replace(self, other, key, val=None, **options):
     self[key] = other[key] if val is None else val
 
 
-def _update_wo_replace(self, other, key, val=None, **options):
+def _update_wo_replace(self, other, key, val=None, **_options):
     """
     Never update (replace) the value of 'self' with 'other''s, that is, only
     the values 'self' does not have its key will be added on update.

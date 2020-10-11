@@ -172,6 +172,7 @@ def find_by_maybe_file(obj, prs):
     return find_by_fileext(obj.extension, prs)  # :: [Processor], never []
 
 
+# pylint: disable=unused-argument
 def findall(obj, prs, forced_type=None,
             cls=anyconfig.models.processor.Processor):
     """
@@ -200,6 +201,7 @@ def findall(obj, prs, forced_type=None,
     return pclss
 
 
+# pylint: enable=unused-argument
 def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
     """
     :param obj:

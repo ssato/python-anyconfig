@@ -22,6 +22,30 @@ class Test(unittest.TestCase):
         self.assertEqual(TT.get_file_extension("/a/b.txt"), "txt")
         self.assertEqual(TT.get_file_extension("/a/b/c.tar.xz"), "xz")
 
+    def test_10_get_path_from_stream(self):
+        this = __file__
+
+        with pathlib.Path(this).open() as strm:
+            self.assertEqual(TT.get_path_from_stream(strm), this)
+
+        with self.assertRaises(ValueError):
+            TT.get_path_from_stream(this)
+
+        self.assertTrue(TT.get_path_from_stream(this, safe=True) is None)
+
+    def test_20_are_same_file_types(self):
+        fun = TT.are_same_file_types
+        this = pathlib.Path(__file__)
+
+        self.assertFalse(fun([]))
+        self.assertTrue(fun([this]))
+        self.assertTrue(fun([this, this]))
+        self.assertFalse(fun([this, pathlib.Path('/etc/hosts')]))
+
+        with this.open() as fio:
+            self.assertTrue(fun([fio]))
+            self.assertTrue(fun([fio, this]))
+
 
 class TestCaseWithWorkdir(tests.common.TestCaseWithWorkdir):
 

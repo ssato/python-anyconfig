@@ -215,30 +215,23 @@ def is_paths(maybe_paths, marker='*'):
              all(is_path(p) or is_ioinfo(p) for p in maybe_paths)))
 
 
-def get_path_from_stream(strm):
+def get_path_from_stream(strm: typing.IO, safe: bool = False
+                         ) -> typing.Optional[str]:
     """
     Try to get file path from given file or file-like object 'strm'.
 
-    :param strm: A file or file-like object
-    :return: Path of given file or file-like object or None
+    :param strm: A file or file-like object might have its file path info
+    :return: file path or None
     :raises: ValueError
-
-    >>> import io
-    >>> assert __file__ == get_path_from_stream(open(__file__, 'r'))
-    >>> assert get_path_from_stream(io.StringIO()) is None
-    >>> get_path_from_stream(__file__)  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-        ...
-    ValueError: ...
     """
-    if not is_file_stream(strm):
+    if not is_file_stream(strm) and not safe:
         raise ValueError("Given object does not look a file/file-like "
                          "object: %r" % strm)
 
     path = getattr(strm, "name", None)
     if path is not None:
         try:
-            return normpath(path)
+            return str(pathlib.Path(path).resolve())
         except (TypeError, ValueError):
             pass
 
@@ -279,14 +272,13 @@ def split_path_by_marker(path: str, marker: str = '*',
     return split_re(marker, sep=sep).match(path).groups()
 
 
-PathT = typing.Union[str, pathlib.Path]
-PathsT = typing.Union[PathT, typing.Iterable[PathT]]
+PathOrIO = typing.Union[pathlib.Path, typing.IO]
 
 
 def expand_paths_itr(paths: typing.Union[str, pathlib.Path,
                                          typing.Tuple, typing.IO],
                      marker: str = '*'
-                     ) -> typing.Iterator[pathlib.Path, typing.IO]:
+                     ) -> typing.Iterator[PathOrIO]:
     """
     :param paths:
         A glob path pattern string or pathlib.Path object holding such path, or
@@ -346,60 +338,33 @@ def expand_paths(paths: typing.Union[str, pathlib.Path,
     return sorted(expand_paths_itr(paths, marker=marker), key=maybe_path_key)
 
 
-def _try_to_get_extension(obj):
+def _try_to_get_extension(obj: PathOrIO) -> typing.Optional[str]:
     """
     Try to get file extension from given path or file object.
 
     :param obj: a file, file-like object or something
     :return: File extension or None
 
-    >>> _try_to_get_extension("a.py")
+    >>> path = pathlib.Path(__file__)
+    >>> _try_to_get_extension(path)
+    'py'
+    >>> with path.open() as fio:
+    ...     _try_to_get_extension(fio)
     'py'
     """
-    if is_path(obj):
-        path = obj
-
-    elif is_path_obj(obj):
+    if isinstance(obj, pathlib.Path):
         return obj.suffix[1:]
 
-    elif is_file_stream(obj):
-        try:
-            path = get_path_from_stream(obj)
-        except ValueError:
-            return None
-
-    elif is_ioinfo(obj):
-        path = obj.path
-
-    else:
+    path = get_path_from_stream(obj, safe=True)
+    if path is None:
         return None
 
-    if path:
-        return get_file_extension(path)
-
-    return None
+    return _try_to_get_extension(pathlib.Path(path))
 
 
-def are_same_file_types(objs):
+def are_same_file_types(objs: typing.List[PathOrIO]) -> bool:
     """
-    Are given (maybe) file objs same type (extension) ?
-
-    :param objs: A list of file path or file(-like) objects
-
-    >>> are_same_file_types([])
-    False
-    >>> are_same_file_types(["a.conf"])
-    True
-    >>> are_same_file_types(["a.conf", "b.conf"])
-    True
-    >>> are_same_file_types(["a.yml", "b.yml"])
-    True
-    >>> are_same_file_types(["a.yml", "b.json"])
-    False
-    >>> import io
-    >>> strm = io.StringIO()
-    >>> are_same_file_types(["a.yml", "b.yml", strm])
-    False
+    Are given objects, pathlib.Path or io, same type (have same extension)?
     """
     if not objs:
         return False

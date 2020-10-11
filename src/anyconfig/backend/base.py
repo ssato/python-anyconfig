@@ -510,7 +510,6 @@ class StringParser(Parser, FromStringLoaderMixin, ToStringDumperMixin):
 
     Parser classes inherit this class must define these methods.
     """
-    pass
 
 
 class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
@@ -520,7 +519,6 @@ class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
     Parser classes inherit this class must define these methods.
     """
-    pass
 
 
 def load_with_fn(load_fn, content_or_strm, container, allow_primitives=False,

@@ -40,7 +40,6 @@ except ImportError:
 
     class TemplateNotFound(RuntimeError):
         """Dummy exception"""
-        pass
 
     def tmpl_env(*_args):
         """Dummy function"""

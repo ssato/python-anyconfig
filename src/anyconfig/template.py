@@ -4,7 +4,7 @@
 # Copyright (C) Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=unused-argument,wrong-import-position,wrong-import-order
+# pylint: disable=wrong-import-position,wrong-import-order
 """anyconfig.template module
 
 Template rendering module for jinja2-based template config files.
@@ -42,7 +42,7 @@ except ImportError:
         """Dummy exception"""
         pass
 
-    def tmpl_env(*args):
+    def tmpl_env(*_args):
         """Dummy function"""
         return None
 

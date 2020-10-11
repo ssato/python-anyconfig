@@ -3,7 +3,6 @@
 # Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=unused-argument
 r"""Abstract implementation of backend modules:
 
 Backend module must implement a parser class inherits :class:`Parser` or its

@@ -3,7 +3,7 @@
 # Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-#  pylint: disable=unused-argument, deprecated-method
+#  pylint: disable=deprecated-method
 r"""INI backend:
 
 - Format to support: INI or INI like ones
@@ -162,10 +162,10 @@ def _dumps_itr(cnf, dkey=DEFAULTSECT):
         yield ''  # it will be a separator between each sections.
 
 
-def _dumps(cnf, **kwargs):
+def _dumps(cnf, **_kwargs):
     """
     :param cnf: Configuration data to dump
-    :param kwargs: optional keyword parameters to be sanitized :: dict
+    :param _kwargs: optional keyword parameters to be sanitized :: dict
 
     :return: String representation of 'cnf' object in INI format
     """

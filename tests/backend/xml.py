@@ -14,7 +14,7 @@ import unittest
 import anyconfig.backend.xml as TT
 import tests.backend.common as TBC
 
-from tests.common import to_bytes
+from tests.backend.common import to_bytes
 
 
 CNF_0 = {'config': {'@attrs': {'val:name': 'foo',

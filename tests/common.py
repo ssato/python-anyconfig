@@ -71,13 +71,6 @@ def cleanup_workdir(workdir):
     os.system("rm -rf " + workdir)
 
 
-def to_bytes(astr):
-    """
-    Convert a string to bytes. Do nothing in python 2.6.
-    """
-    return bytes(astr, 'utf-8')
-
-
 def skip_test():
     raise SkipTest
 

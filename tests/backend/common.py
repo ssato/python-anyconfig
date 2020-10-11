@@ -16,7 +16,6 @@ import tests.common
 import anyconfig.ioinfo
 
 from collections import OrderedDict
-from tests.common import to_bytes as _bytes
 
 
 CNF_0 = OrderedDict((("DEFAULT", OrderedDict((("a", "0"), ("b", "bbb"),
@@ -27,9 +26,18 @@ CNF_0 = OrderedDict((("DEFAULT", OrderedDict((("a", "0"), ("b", "bbb"),
 CNF_1 = copy.deepcopy(CNF_0)
 CNF_1["sect0"]["d"] = CNF_1["sect0"]["d"].split()
 
-CNF_2 = OrderedDict((("a", 0.1), ("b", _bytes("bbb")),
-                     ("sect0", OrderedDict((("c", [_bytes("x"), _bytes("y"),
-                                                   _bytes("z")]), )))))
+
+def to_bytes(astr):
+    """Convert a string to bytes.
+    """
+    return bytes(astr, 'utf-8')
+
+
+CNF_2 = OrderedDict((("a", 0.1),
+                     ("b", to_bytes("bbb")),
+                     ("sect0",
+                      OrderedDict((("c", [to_bytes("x"), to_bytes("y"),
+                                          to_bytes("z")]), )))))
 
 
 def read_from_res(filename):

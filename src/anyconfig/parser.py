@@ -129,7 +129,7 @@ def parse_attrlist_0(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     >>> parse_attrlist_0("obsoletes:sysdata;conflicts:sysdata-old")
     [('obsoletes', 'sysdata'), ('conflicts', 'sysdata-old')]
     """
-    return [(a, vs) for a, vs in attr_val_itr(str_, avs_sep, vs_sep, as_sep)]
+    return list(attr_val_itr(str_, avs_sep, vs_sep, as_sep))
 
 
 def parse_attrlist(str_, avs_sep=":", vs_sep=",", as_sep=";"):

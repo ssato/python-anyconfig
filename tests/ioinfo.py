@@ -66,7 +66,7 @@ class Test_30_make(unittest.TestCase):
     (ipath, ipath_full) = (IPATH_0, IPATH_0_FULL)
 
     def __init__(self, *args, **kwargs):
-        super(Test_30_make, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fun = TT.make
 
     def __checks_helper(self, inp, *args):

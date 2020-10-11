@@ -395,7 +395,7 @@ class Test_34_single_load(TestBaseWithIO):
 class TestBaseWithIOMultiFiles(TestBaseWithIO):
 
     def setUp(self):
-        super(TestBaseWithIOMultiFiles, self).setUp()
+        super().setUp()
         self.b_path = os.path.join(self.workdir, "b.json")
         self.g_path = os.path.join(self.workdir, "*.json")
 

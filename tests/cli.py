@@ -304,7 +304,7 @@ class Test_40_multi_inputs(Test_20_Base):
 class Test_50_others_w_input(Test_20_Base):
 
     def setUp(self):
-        super(Test_50_others_w_input, self).setUp()
+        super().setUp()
         dic = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
         self.infile = os.path.join(self.workdir, "a.json")
         anyconfig.api.dump(dic, self.infile)

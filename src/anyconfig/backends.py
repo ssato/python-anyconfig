@@ -60,6 +60,6 @@ class Parsers(anyconfig.processors.Processors,
         if processors is None:
             processors = PARSERS
 
-        super(Parsers, self).__init__(processors)
+        super().__init__(processors)
 
 # vim:sw=4:ts=4:et:

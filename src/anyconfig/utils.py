@@ -242,7 +242,7 @@ def get_path_from_stream(strm: typing.IO, safe: bool = False
 def split_re(marker: str, sep: str = os.path.sep) -> typing.Pattern:
     """Generate a regexp pattern object to split path by marker.
     """
-    return re.compile(r'([^{}]+){}(.*\{}.*)'.format(marker, sep, marker))
+    return re.compile(r'([^{0}]+){1}(.*\{0}.*)'.format(marker, sep))
 
 
 def split_path_by_marker(path: str, marker: str = '*',

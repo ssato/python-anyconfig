@@ -13,6 +13,9 @@ r"""Functions for value objects represent inputs and outputs.
   path, opener, etc.
 """
 from __future__ import absolute_import
+
+import os.path
+
 import anyconfig.utils
 
 from anyconfig.globals import (
@@ -48,7 +51,7 @@ def guess_io_type(obj):
     if anyconfig.utils.is_file_stream(obj):
         return IOI_STREAM
 
-    raise ValueError("Unknown I/O type object: %r" % obj)
+    raise ValueError("Unknown I/O type object: {!r}".format(obj))
 
 
 def inspect_io_obj(obj):
@@ -59,22 +62,26 @@ def inspect_io_obj(obj):
     :raises: UnknownFileTypeError
     """
     itype = guess_io_type(obj)
+    opener = anyconfig.utils.noop
 
     if itype == IOI_PATH_STR:
-        ipath = anyconfig.utils.normpath(obj)
+        ipath = os.path.normpath(obj)
         ext = anyconfig.utils.get_file_extension(ipath)
         opener = open
+
     elif itype == IOI_PATH_OBJ:
-        ipath = anyconfig.utils.normpath(obj.as_posix())
-        ext = anyconfig.utils.get_file_extension(ipath)
+        path = obj.expanduser().resolve()
+
+        ipath = str(path)
+        ext = path.suffix[1:]
         opener = obj.open
+
     elif itype == IOI_STREAM:
         ipath = anyconfig.utils.get_path_from_stream(obj)
         ext = anyconfig.utils.get_file_extension(ipath) if ipath else None
-        opener = anyconfig.utils.noop
+
     elif itype == IOI_NONE:
         ipath = ext = None
-        opener = anyconfig.utils.noop
     else:
         raise UnknownFileTypeError("%r" % obj)
 

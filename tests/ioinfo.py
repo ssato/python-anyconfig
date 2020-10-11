@@ -12,7 +12,7 @@ import anyconfig.ioinfo as TT
 import anyconfig.utils
 
 from anyconfig.globals import (
-    IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
+    IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM, IOI_NONE
 )
 
 import tests.common as TC
@@ -21,6 +21,22 @@ import tests.common as TC
 IPATH_0 = os.path.join(TC.resdir(), "00-cnf.json")
 IPATH_0_FULL = anyconfig.utils.normpath(IPATH_0)
 IPATH_0_EXT = anyconfig.utils.get_file_extension(IPATH_0)
+
+
+class Test_00(unittest.TestCase):
+
+    def test_10_guess_io_type(self):
+        this = pathlib.Path(__file__)
+
+        self.assertEqual(TT.guess_io_type(None), IOI_NONE)
+        self.assertEqual(TT.guess_io_type(str(this)), IOI_PATH_STR)
+        self.assertEqual(TT.guess_io_type(this), IOI_PATH_OBJ)
+
+        with this.open() as fio:
+            self.assertEqual(TT.guess_io_type(fio), IOI_STREAM)
+
+        with self.assertRaises(ValueError):
+            TT.guess_io_type(0)
 
 
 class Test_10_inspect_io_obj(unittest.TestCase):

@@ -332,9 +332,10 @@ def maybe_path_key(obj: typing.Union[pathlib.Path, typing.IO]
     return obj
 
 
-def expand_paths(paths: typing.Union[PathsT, typing.Tuple, typing.IO],
+def expand_paths(paths: typing.Union[str, pathlib.Path,
+                                     typing.Tuple, typing.IO],
                  marker: str = '*'
-                 ) -> typing.Iterable[typing.Union[PathsT, typing.IO]]:
+                 ) -> typing.Iterable[typing.Union[pathlib.Path, typing.IO]]:
     """
     :param paths:
         A glob path pattern string or pathlib.Path object holding such path, or

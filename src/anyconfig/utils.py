@@ -370,8 +370,7 @@ def expand_paths(paths, marker='*'):
     return list(_expand_paths_itr(paths, marker=marker))
 
 
-# pylint: disable=unused-argument
-def noop(val, *args, **kwargs):
+def noop(val, *_args, **_kwargs):
     """A function does nothing.
 
     >>> noop(1)

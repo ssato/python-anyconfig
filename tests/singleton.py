@@ -33,7 +33,7 @@ class TestSingleton(unittest.TestCase):
         self.assertTrue(a1 is a2)
 
     def test_30_mixin(self):
-        class Base(object):
+        class Base:
             pass
 
         class A(Base, TT.Singleton):

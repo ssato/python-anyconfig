@@ -66,7 +66,7 @@ def _not_implemented(*args, **kwargs):
     raise NotImplementedError()
 
 
-class TextFilesMixin(object):
+class TextFilesMixin:
     """Mixin class to open configuration files as a plain text.
 
     Arguments of :func:`open` is different depends on python versions.
@@ -97,7 +97,7 @@ class BinaryFilesMixin(TextFilesMixin):
     _open_flags = ('rb', 'wb')
 
 
-class LoaderMixin(object):
+class LoaderMixin:
     """
     Mixin class to load data.
 
@@ -269,7 +269,7 @@ class LoaderMixin(object):
         return cnf
 
 
-class DumperMixin(object):
+class DumperMixin:
     """
     Mixin class to dump data.
 

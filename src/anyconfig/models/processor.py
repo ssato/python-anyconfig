@@ -12,7 +12,7 @@ r"""Abstract processor module.
 from __future__ import absolute_import
 
 
-class Processor(object):
+class Processor:
     """
     Abstract processor class to provide basic implementation of some methods,
     interfaces and members.

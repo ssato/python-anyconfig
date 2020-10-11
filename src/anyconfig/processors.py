@@ -226,7 +226,7 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
     return pclss[0]()
 
 
-class Processors(object):
+class Processors:
     """An abstract class of which instance holding processors.
     """
     _pgroup = None  # processor group name to load plugins

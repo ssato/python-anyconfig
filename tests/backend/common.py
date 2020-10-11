@@ -48,7 +48,7 @@ class MyDict(dict):
     pass
 
 
-class HasParserTrait(object):
+class HasParserTrait:
 
     psr = None  # Must be a parser instance.
     cnf_s = None  # Do.

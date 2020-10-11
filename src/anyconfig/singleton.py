@@ -13,7 +13,7 @@ from __future__ import absolute_import
 import threading
 
 
-class Singleton(object):
+class Singleton:
     """Singleton utilizes __new__ special method.
 
     .. note:: Inherited classes are equated with base class inherit this.

@@ -9,11 +9,13 @@ from __future__ import absolute_import
 
 import collections.abc
 import functools
-import glob
 import itertools
 import os.path
+import os
+import re
 import pathlib
 import types
+import typing
 
 import anyconfig.globals
 
@@ -48,13 +50,6 @@ def get_file_extension(file_path):
         return _ext[1:] if _ext.startswith('.') else _ext
 
     return ""
-
-
-def sglob(files_pattern):
-    """
-    glob.glob alternative of which results sorted always.
-    """
-    return sorted(glob.glob(files_pattern))
 
 
 def is_iterable(obj):
@@ -315,59 +310,104 @@ def are_same_file_types(objs):
     return all(_try_to_get_extension(p) == ext for p in objs[1:])
 
 
-def _expand_paths_itr(paths, marker='*'):
-    """Iterator version of :func:`expand_paths`.
+@functools.lru_cache()
+def split_re(marker: str, sep: str = os.path.sep) -> typing.Pattern:
+    """Generate a regexp pattern object to split path by marker.
     """
-    for path in paths:
-        if is_path(path):
-            if marker in path:  # glob path pattern
-                for ppath in sglob(path):
-                    yield ppath
-            else:
-                yield path  # a simple file path
-        elif is_path_obj(path):
-            if marker in path.as_posix():
-                for ppath in sglob(path.as_posix()):
-                    yield normpath(ppath)
-            else:
-                yield normpath(path.as_posix())
-        elif is_ioinfo(path):
-            yield path.path
-        else:  # A file or file-like object
+    return re.compile(r'([^{}]+){}(.*\{}.*)'.format(marker, sep, marker))
+
+
+def split_path_by_marker(path: str, marker: str = '*',
+                         sep: str = os.path.sep
+                         ) -> typing.Tuple[typing.Optional[str],
+                                           typing.Optional[str]]:
+    """
+    Split given path string by the marker.
+
+    >>> split_path_by_marker('a.txt')
+    ('a.txt', None)
+    >>> split_path_by_marker('*.txt')
+    (None, '*.txt')
+    >>> split_path_by_marker('a/*.txt')
+    ('a', '*.txt')
+    >>> split_path_by_marker('a/b/*.txt')
+    ('a/b', '*.txt')
+    >>> split_path_by_marker('a/b/*/*.txt')
+    ('a/b', '*/*.txt')
+    """
+    if marker not in path:
+        return (path, None)
+
+    if sep not in path:
+        return (None, path)
+
+    return split_re(marker, sep=sep).match(path).groups()
+
+
+PathT = typing.Union[str, pathlib.Path]
+PathsT = typing.Union[PathT, typing.Iterable[PathT]]
+
+
+def expand_paths_itr(paths: typing.Union[str, pathlib.Path,
+                                         typing.Tuple, typing.IO],
+                     marker: str = '*'
+                     ) -> typing.Iterator[pathlib.Path, typing.IO]:
+    """
+    :param paths:
+        A glob path pattern string or pathlib.Path object holding such path, or
+        a list consists of path strings or glob path pattern strings or
+        pathlib.Path object holding such ones.
+
+    :param marker: A character or string to globbing paths
+    """
+    if isinstance(paths, (str, pathlib.Path)):
+        if isinstance(paths, pathlib.Path):
+            paths = str(paths)
+
+        (base, pattern) = split_path_by_marker(paths, marker=marker)
+
+        if pattern is None:
+            yield pathlib.Path(base)
+            return
+
+        base = pathlib.Path(os.curdir if base is None else base).resolve()
+        for path in sorted(base.glob(pattern)):
             yield path
 
+    elif is_file_stream(paths):
+        yield paths
 
-def expand_paths(paths, marker='*'):
+    elif is_ioinfo(paths):
+        yield pathlib.Path(paths.path)
+
+    else:
+        for path in paths:
+            for cpath in expand_paths_itr(path, marker=marker):
+                yield cpath
+
+
+def maybe_path_key(obj: typing.Union[pathlib.Path, typing.IO]
+                   ) -> typing.Union[pathlib.Path, str, int]:
+    """
+    Key function for maybe path object :: str | pathlib.Path | Tuple | IO
+    """
+    if is_file_stream(obj):
+        return getattr(obj, "name", id(obj))
+
+    return obj
+
+
+def expand_paths(paths: typing.Union[PathsT, typing.Tuple, typing.IO],
+                 marker: str = '*'
+                 ) -> typing.Iterable[typing.Union[PathsT, typing.IO]]:
     """
     :param paths:
         A glob path pattern string or pathlib.Path object holding such path, or
         a list consists of path strings or glob path pattern strings or
         pathlib.Path object holding such ones, or file objects
     :param marker: Glob marker character or string, e.g. '*'
-
-    :return: List of path strings
-
-    >>> expand_paths([])
-    []
-    >>> expand_paths("/usr/lib/a/b.conf /etc/a/b.conf /run/a/b.conf".split())
-    ['/usr/lib/a/b.conf', '/etc/a/b.conf', '/run/a/b.conf']
-    >>> paths_s = os.path.join(os.path.dirname(__file__), "u*.py")
-    >>> ref = sglob(paths_s)
-    >>> assert expand_paths(paths_s) == ref
-    >>> ref = ["/etc/a.conf"] + ref
-    >>> assert expand_paths(["/etc/a.conf", paths_s]) == ref
-    >>> import io
-    >>> strm = io.StringIO()
-    >>> assert expand_paths(["/etc/a.conf", strm]) == ["/etc/a.conf", strm]
     """
-    if is_path(paths) and marker in paths:
-        return sglob(paths)
-
-    if is_path_obj(paths) and marker in paths.as_posix():
-        # TBD: Is it better to return [p :: pathlib.Path] instead?
-        return [normpath(p) for p in sglob(paths.as_posix())]
-
-    return list(_expand_paths_itr(paths, marker=marker))
+    return sorted(expand_paths_itr(paths, marker=marker), key=maybe_path_key)
 
 
 def noop(val, *_args, **_kwargs):

@@ -106,7 +106,7 @@ def version():
     """
     :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
     """
-    return anyconfig.globals.VERSION.split('.')
+    return anyconfig.__version__.split('.')
 
 
 def load_plugins():

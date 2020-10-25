@@ -21,7 +21,6 @@ validation/generation support.
 - Copr RPM repos: https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/
 
 """
-from .globals import AUTHOR, VERSION
 from .api import (
     single_load, multi_load, load, loads, dump, dumps, validate, gen_schema,
     list_types, find, findall, merge, get, set_, open,
@@ -29,8 +28,7 @@ from .api import (
     UnknownProcessorTypeError, UnknownFileTypeError
 )
 
-__author__ = AUTHOR
-__version__ = VERSION
+__version__ = "0.9.11"
 
 __all__ = [
     "single_load", "multi_load", "load", "loads", "dump", "dumps", "validate",

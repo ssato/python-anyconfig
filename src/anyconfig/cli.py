@@ -14,10 +14,7 @@ import os
 import sys
 import warnings
 
-import anyconfig.api as API
-import anyconfig.globals
-import anyconfig.parser
-import anyconfig.utils
+from . import __version__ as VERSION, api as API, parser, utils
 
 
 _ENCODING = (locale.getdefaultlocale()[1] or 'UTF-8').lower()
@@ -107,7 +104,7 @@ def make_parser(defaults=None):
 
     parser.add_argument("inputs", type=str, nargs='*', help="Input files")
     parser.add_argument("--version", action="version",
-                        version="%%(prog)s %s" % anyconfig.globals.VERSION)
+                        version="%%(prog)s %s" % VERSION)
 
     lpog = parser.add_argument_group("List specific options")
     lpog.add_argument("-L", "--list", action="store_true",
@@ -288,7 +285,7 @@ def _output_result(cnf, args, inpaths=None, extra_opts=None):
             "from its extension, '%s'")
     (outpath, otype) = (args.output, args.otype or "json")
 
-    if not anyconfig.utils.is_dict_like(cnf):
+    if not utils.is_dict_like(cnf):
         _exit_with_output(str(cnf))  # Print primitive types as it is.
 
     if not outpath or outpath == "-":
@@ -336,7 +333,7 @@ def _do_filter(cnf, args):
         cnf = _do_get(cnf, args.get)
     elif args.set:
         (key, val) = args.set.split('=')
-        API.set_(cnf, key, anyconfig.parser.parse(val))
+        API.set_(cnf, key, parser.parse(val))
 
     return cnf
 
@@ -350,7 +347,7 @@ def main(argv=None):
 
     extra_opts = dict()
     if args.extra_opts:
-        extra_opts = anyconfig.parser.parse(args.extra_opts)
+        extra_opts = parser.parse(args.extra_opts)
 
     diff = _load_diff(args, extra_opts)
 
@@ -360,7 +357,7 @@ def main(argv=None):
         cnf = diff
 
     if args.args:
-        diff = anyconfig.parser.parse(args.args)
+        diff = parser.parse(args.args)
         API.merge(cnf, diff)
 
     if args.validate:

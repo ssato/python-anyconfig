@@ -13,7 +13,9 @@ from __future__ import absolute_import
 
 import codecs
 import locale
+import pathlib
 import os
+import typing
 import warnings
 
 import anyconfig.utils
@@ -61,7 +63,9 @@ def copen(filepath, flag='r', encoding=None):
     return codecs.open(filepath, flag, encoding)
 
 
-def make_template_paths(template_file, paths=None):
+def make_template_paths(template_file: pathlib.Path,
+                        paths: typing.Optional[str] = None
+                        ) -> typing.List[str]:
     """
     Make up a list of template search paths from given 'template_file'
     (absolute or relative path to the template file) and/or 'paths' (a list of
@@ -77,15 +81,18 @@ def make_template_paths(template_file, paths=None):
     >>> make_template_paths("/path/to/a/template")
     ['/path/to/a']
     >>> make_template_paths("/path/to/a/template", ["/tmp"])
-    ['/tmp', '/path/to/a']
+    ['/path/to/a', '/tmp']
     >>> os.chdir("/tmp")
     >>> make_template_paths("./path/to/a/template")
     ['/tmp/path/to/a']
     >>> make_template_paths("./path/to/a/template", ["/tmp"])
-    ['/tmp', '/tmp/path/to/a']
+    ['/tmp/path/to/a', '/tmp']
     """
-    tmpldir = os.path.abspath(os.path.dirname(template_file))
-    return [tmpldir] if paths is None else paths + [tmpldir]
+    tmpldir = str(pathlib.Path(template_file).parent.resolve())
+    if paths:
+        return [tmpldir] + paths
+
+    return [tmpldir]
 
 
 def render_s(tmpl_s, ctx=None, paths=None, filters=None):
@@ -142,7 +149,11 @@ def render_impl(template_file, ctx=None, paths=None, filters=None):
     return env.get_template(os.path.basename(template_file)).render(**ctx)
 
 
-def render(filepath, ctx=None, paths=None, ask=False, filters=None):
+def render(filepath: str,
+           ctx: typing.Optional[typing.Mapping] = None,
+           paths: typing.Optional[str] = None,
+           ask: bool = False,
+           filters: typing.Optional[typing.Callable] = None):
     """
     Compile and render template and return the result as a string.
 
@@ -153,8 +164,9 @@ def render(filepath, ctx=None, paths=None, ask=False, filters=None):
     :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
     """
+    fpath = pathlib.Path(filepath)
     try:
-        return render_impl(filepath, ctx, paths, filters)
+        return render_impl(fpath, ctx, paths, filters)
     except TemplateNotFound as mtmpl:
         if not ask:
             raise
@@ -163,7 +175,7 @@ def render(filepath, ctx=None, paths=None, ask=False, filters=None):
                          "'{}'. Please enter absolute "
                          "or relative path starting from "
                          "'.' to the template file: ".format(mtmpl))
-        usr_tmpl = os.path.normpath(usr_tmpl.strip())
+        usr_tmpl = pathlib.Path(usr_tmpl.strip())
         paths = make_template_paths(usr_tmpl, paths)
 
         return render_impl(usr_tmpl, ctx, paths, filters)

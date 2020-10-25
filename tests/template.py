@@ -5,6 +5,7 @@
 # pylint: disable=missing-docstring, unused-variable, invalid-name
 import os.path
 import os
+import pathlib
 import unittest
 import unittest.mock
 
@@ -31,60 +32,54 @@ def negate(value):
     return -value
 
 
-class Test(unittest.TestCase):
+@unittest.skipIf(not TT.SUPPORTED, 'Template library is not available.')
+class TestCase(tests.common.TestCaseWithWorkdir):
 
     templates = TMPLS
 
     def setUp(self):
-        self.workdir = tests.common.setup_workdir()
+        super().setUp()
         for fname, tmpl_s, _ctx in self.templates + [TMPL_WITH_FILTER]:
             fpath = os.path.join(self.workdir, fname)
             open(fpath, 'w').write(tmpl_s)
 
-    def tearDown(self):
-        tests.common.cleanup_workdir(self.workdir)
-
     def test_10_render_impl__wo_paths(self):
-        if TT.SUPPORTED:
-            for fname, _str, ctx in self.templates:
-                fpath = os.path.join(self.workdir, fname)
-                c_r = TT.render_impl(fpath)
-                self.assertEqual(c_r, ctx)
+        for fname, _str, ctx in self.templates:
+            fpath = os.path.join(self.workdir, fname)
+            c_r = TT.render_impl(fpath)
+            self.assertEqual(c_r, ctx)
 
     def test_12_render_impl__w_paths(self):
-        if TT.SUPPORTED:
-            for fname, _str, ctx in self.templates:
-                fpath = os.path.join(self.workdir, fname)
-                c_r = TT.render_impl(os.path.basename(fpath),
-                                     paths=[os.path.dirname(fpath)])
-                self.assertEqual(c_r, ctx)
+        for fname, _str, ctx in self.templates:
+            fpath = os.path.join(self.workdir, fname)
+            c_r = TT.render_impl(os.path.basename(fpath),
+                                 paths=[os.path.dirname(fpath)])
+            self.assertEqual(c_r, ctx)
 
     def test_20_render__wo_paths(self):
-        if TT.SUPPORTED:
-            for fname, _str, ctx in self.templates:
-                fpath = os.path.join(self.workdir, fname)
-                c_r = TT.render(fpath)
-                self.assertEqual(c_r, ctx)
+        for fname, _str, ctx in self.templates:
+            fpath = os.path.join(self.workdir, fname)
+            c_r = TT.render(fpath)
+            self.assertEqual(c_r, ctx)
 
     def test_22_render__w_wrong_tpath(self):
-        if TT.SUPPORTED:
-            ng_t = os.path.join(self.workdir, "ng.j2")
-            ok_t = os.path.join(self.workdir, "ok.j2")
-            ok_t_content = "a: {{ a }}"
-            ok_content = "a: aaa"
-            ctx = dict(a="aaa", )
+        ng_t = os.path.join(self.workdir, "ng.j2")
+        ok_t = os.path.join(self.workdir, "ok.j2")
+        ok_t_content = "a: {{ a }}"
+        ok_content = "a: aaa"
+        ctx = dict(a="aaa", )
 
-            open(ok_t, 'w').write(ok_t_content)
+        open(ok_t, 'w').write(ok_t_content)
 
-            with unittest.mock.patch("builtins.input") as mock_input:
-                mock_input.return_value = ok_t
-                c_r = TT.render(ng_t, ctx, ask=True)
-                self.assertEqual(c_r, ok_content)
-            try:
-                TT.render(ng_t, ctx, ask=False)
-                assert False  # force raising an exception.
-            except TT.TemplateNotFound:
-                pass
+        with unittest.mock.patch("builtins.input") as mock_input:
+            mock_input.return_value = ok_t
+            c_r = TT.render(ng_t, ctx, ask=True)
+            self.assertEqual(c_r, ok_content)
+        try:
+            TT.render(ng_t, ctx, ask=False)
+            assert False  # force raising an exception.
+        except TT.TemplateNotFound:
+            pass
 
     def test_24_render__wo_paths(self):
         if TT.SUPPORTED:
@@ -101,29 +96,28 @@ class Test(unittest.TestCase):
             self.assertEqual(c_r, "aaa")
 
     def test_25_render__w_prefer_paths(self):
-        if TT.SUPPORTED:
-            fname = self.templates[0][0]
-            assert os.path.exists(os.path.join(self.workdir, fname))
+        workdir = pathlib.Path(self.workdir / 'a' / 'b' / 'c')
+        workdir.mkdir(parents=True)
 
-            subdir = os.path.join(self.workdir, "a/b/c")
-            os.makedirs(subdir)
+        assert workdir.exists()
 
-            tmpl = os.path.join(subdir, fname)
-            open(tmpl, 'w').write("{{ a|default('aaa') }}")
+        tmpl_ref = pathlib.Path(self.workdir / 'ref_25_0.j2')
+        tmpl_ref.write_text("{{ a | d('A') }}\n")
 
-            c_r = TT.render(tmpl, paths=[self.workdir])
-            self.assertNotEqual(c_r, "aaa")
-            self.assertEqual(c_r, self.templates[0][-1])
+        tmpl = pathlib.Path(workdir / 'd.j2')
+        tmpl.write_text("{{ a | d('xyz') }}\n")
+
+        c_r = TT.render(tmpl, paths=[self.workdir])
+        self.assertNotEqual(c_r, 'A')
+        self.assertEqual(c_r, 'xyz')
 
     def test_30_try_render_with_empty_filepath_and_content(self):
-        if TT.SUPPORTED:
-            self.assertRaises(ValueError, TT.try_render)
+        self.assertRaises(ValueError, TT.try_render)
 
     def test_40_render__w_filter(self):
-        if TT.SUPPORTED:
-            fname, _, ctx = TMPL_WITH_FILTER
-            fpath = os.path.join(self.workdir, fname)
-            c_r = TT.render(fpath, filters={"negate": negate})
-            self.assertEqual(c_r, ctx)
+        fname, _, ctx = TMPL_WITH_FILTER
+        fpath = os.path.join(self.workdir, fname)
+        c_r = TT.render(fpath, filters={"negate": negate})
+        self.assertEqual(c_r, ctx)
 
 # vim:sw=4:ts=4:et:

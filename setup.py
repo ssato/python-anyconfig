@@ -2,18 +2,23 @@
 """
 from __future__ import absolute_import
 
-import glob
-import os.path
 import os
+import pathlib
 import re
 import setuptools
 import setuptools.command.bdist_rpm
 
 
 # It might throw IndexError and so on.
-VERSION = [re.search(r'^VERSION = "([^"]+)"', l).groups()[0] for l
-           in open(glob.glob("src/*/globals.py")[0])
-           if "VERSION" in l][0]
+VERSION = '0.1.0'
+VER_REG = re.compile(r'^__version__ = "([^"]+)"')
+
+for fpath in pathlib.Path('src').glob('*/*.py'):
+    for line in fpath.open():
+        match = VER_REG.match(line)
+        if match:
+            VERSION = match.groups()[0]
+            break
 
 # For daily snapshot versioning mode:
 RELEASE = "1%{?dist}"
@@ -40,11 +45,10 @@ def _replace(line):
 class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
     """Override the default content of the RPM SPEC.
     """
-    spec_tmpl = os.path.join(os.path.abspath(os.curdir),
-                             "pkg/package.spec.in")
+    spec_tmpl = pathlib.Path('pkg/package.spec.in').resolve()
 
     def _make_spec_file(self):
-        return [_replace(l.rstrip()) for l in open(self.spec_tmpl)]
+        return [_replace(line.rstrip()) for line in self.spec_tmpl.open()]
 
 
 setuptools.setup(name="anyconfig",   # Avoid 'Unknown' package in older ones.

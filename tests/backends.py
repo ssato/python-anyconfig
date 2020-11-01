@@ -5,7 +5,6 @@
 # pylint: disable=missing-docstring, invalid-name
 from __future__ import absolute_import
 
-import os.path
 import pathlib
 import unittest
 
@@ -25,7 +24,7 @@ from anyconfig.globals import (
 )
 
 
-CNF_PATH = os.path.join(TC.resdir(), "00-cnf.json")
+CNF_PATH = TC.respath('00-cnf.json')
 
 
 class Test(unittest.TestCase):

@@ -5,7 +5,7 @@
 # pylint: disable=missing-docstring
 r"""Common utilities for test cases.
 """
-import os.path
+import os
 import pathlib
 import shutil
 import tempfile
@@ -32,21 +32,25 @@ CNF_1 = {"a": 1, "b": {"b": [1, 2], "c": "C"}, "name": "aaa"}
 
 def selfdir():
     """
-    >>> os.path.exists(selfdir())
+    >>> selfdir().exist
     True
     """
-    return os.path.dirname(__file__)
+    return pathlib.Path(__file__).parent.resolve()
 
 
-def resdir():
+def respath(filename: str) -> str:
     """
-    >>> assert os.path.exists(resdir())
+    :pattern: Resource path path or path glob pattern
+
+    >>> assert respath("00-cnf.json").endswith('/res/00-cnf.json')
+    >>>
     """
-    return os.path.join(selfdir(), "res")
+    return str(selfdir() / "res" / filename)
 
 
 def setup_workdir():
     """
+    >>> import os.path
     >>> workdir = setup_workdir()
     >>> assert workdir != '.'
     >>> assert workdir != '/'
@@ -61,6 +65,7 @@ def cleanup_workdir(workdir):
     """
     FIXME: Danger!
 
+    >>> import os.path
     >>> from os import linesep as lsep
     >>> workdir = setup_workdir()
     >>> os.path.exists(workdir)

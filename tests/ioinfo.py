@@ -18,7 +18,7 @@ from anyconfig.globals import (
 import tests.common as TC
 
 
-IPATH_0 = os.path.join(TC.resdir(), "00-cnf.json")
+IPATH_0 = TC.respath('00-cnf.json')
 IPATH_0_FULL = anyconfig.utils.normpath(IPATH_0)
 IPATH_0_EXT = anyconfig.utils.get_file_extension(IPATH_0)
 

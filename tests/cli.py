@@ -22,7 +22,7 @@ import tests.api
 from tests.common import CNF_0, skip_test
 
 
-CNF_0_PATH = os.path.join(tests.common.resdir(), "00-cnf.yml")
+CNF_0_PATH = tests.common.respath('00-cnf.yml')
 
 
 def _run(*args):
@@ -63,7 +63,7 @@ class RunTestWithTmpdir(RunTestBase):
 
 
 class Test_10(RunTestBase):
-    infile = os.path.join(tests.common.resdir(), "00-cnf.json")
+    infile = tests.common.respath('00-cnf.json')
 
     def test_10_show_usage(self):
         self.run_and_check_exit_code(["--help"])
@@ -90,7 +90,7 @@ class Test_10(RunTestBase):
 
 
 class Test_12(RunTestWithTmpdir):
-    infile = os.path.join(tests.common.resdir(), "00-cnf.json")
+    infile = tests.common.respath('00-cnf.json')
 
     def test_60_unknown_out_file_type(self):
         opath = os.path.join(self.tmpdir, "t.unknown_ext")
@@ -183,7 +183,7 @@ class Test_30_single_input(Test_20_Base):
             skip_test()
 
         infile = CNF_0_PATH
-        scmfile = os.path.join(tests.common.resdir(), "00-scm.yml")
+        scmfile = tests.common.respath('00-scm.yml')
 
         output = os.path.join(self.workdir, "output.json")
         self.run_and_check_exit_code(["--schema", scmfile, "--validate",
@@ -248,9 +248,9 @@ class Test_30_single_input(Test_20_Base):
         self.assertTrue(os.path.exists(output))
 
     def test_80_w_extra_opts(self):
-        infile = os.path.join(tests.common.resdir(), "00-00-cnf.json")
+        infile = tests.common.respath('00-00-cnf.json')
         output = os.path.join(self.workdir, "out.json")
-        ref = os.path.join(tests.common.resdir(), "00-00-cnf_indented.json")
+        ref = tests.common.respath('00-00-cnf_indented.json')
 
         TT.main(["dummy", "-o", output, "--extra-opts", "indent:2", infile])
         self.assertTrue(os.path.exists(output))
@@ -284,7 +284,7 @@ class Test_40_multi_inputs(Test_20_Base):
         if not anyconfig.template.SUPPORTED:
             return
 
-        infile = os.path.join(tests.common.resdir(), "30-00-template-cnf.json")
+        infile = tests.common.respath('30-00-template-cnf.json')
         output = os.path.join(self.workdir, "output.json")
 
         TT.main(["dummy", "--template", "-o", output, infile])
@@ -294,7 +294,7 @@ class Test_40_multi_inputs(Test_20_Base):
         if not anyconfig.template.SUPPORTED:
             return
 
-        infile = os.path.join(tests.common.resdir(), "30-*-template-cnf.json")
+        infile = tests.common.respath('30-*-template-cnf.json')
         output = os.path.join(self.workdir, "output.json")
 
         TT.main(["dummy", "--template", "-o", output, infile])

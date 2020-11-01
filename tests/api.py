@@ -23,7 +23,7 @@ import anyconfig.template
 import tests.common
 
 from tests.common import (
-    CNF_0, SCM_0, CNF_1, resdir, skip_test
+    CNF_0, SCM_0, CNF_1, respath, skip_test
 )
 
 
@@ -168,7 +168,7 @@ class Test_20_dumps_and_loads(TestBase):
 
 class Test_22_single_load(TestBase):
 
-    a_path = os.path.join(resdir(), "00-cnf.json")
+    a_path = respath('00-cnf.json')
     cnf = CNF_1
 
     def test_10__single_load(self):
@@ -247,11 +247,11 @@ class Test_30_single_load(TestBaseWithIO):
         if not anyconfig.template.SUPPORTED:
             return
 
-        cpath = os.path.join(resdir(), "30-00-template-cnf.json")
+        cpath = respath('30-00-template-cnf.json')
         cnf = TT.single_load(cpath, ac_template=True, ac_context=self.cnf)
         self.assert_dicts_equal(cnf, self.cnf)
 
-        spath = os.path.join(resdir(), "30-00-template-cnf-ng-scm.json")
+        spath = respath('30-00-template-cnf-ng-scm.json')
 
         # Validation should fail.
         cnf2 = TT.single_load(cpath, ac_template=True, ac_context=self.cnf,
@@ -262,8 +262,8 @@ class Test_30_single_load(TestBaseWithIO):
         if not anyconfig.template.SUPPORTED:
             return
 
-        a_path = os.path.join(resdir(), "30-00-cnf.json")
-        a2_path = os.path.join(resdir(), "00-00-cnf.json")  # Not a template
+        a_path = respath('30-00-cnf.json')
+        a2_path = respath('00-00-cnf.json')  # Not a template
 
         cnf1 = TT.single_load(a_path, ac_template=True, ac_context=self.cnf)
         self.assertEqual(self.cnf, cnf1, str(cnf1))
@@ -504,9 +504,9 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         ctx = self.dic.copy()
         TT.merge(ctx, self.upd, ac_merge=TT.MS_DICTS)
 
-        # a_path = os.path.join(resdir(), "30-00-template-cnf.json")
-        b_path = os.path.join(resdir(), "30-10-template-cnf.json")
-        g_path = os.path.join(resdir(), "30-*-template-cnf.json")
+        # a_path = respath('30-00-template-cnf.json')
+        b_path = respath('30-10-template-cnf.json')
+        g_path = respath('30-*-template-cnf.json')
 
         opts = dict(ac_merge=TT.MS_DICTS, ac_template=True, ac_context=ctx)
         try:
@@ -530,10 +530,10 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
 class Test_44_multi_load(TestBase):
 
     def test_10_multi_load_w_validation_for_partial_single_config_files(self):
-        cpaths = [os.path.join(resdir(), "00-00-cnf.json"),
-                  os.path.join(resdir(), "00-01-cnf.json"),
-                  os.path.join(resdir(), "00-02-cnf.json")]
-        spath = os.path.join(resdir(), "00-scm.json")
+        cpaths = [respath('00-00-cnf.json'),
+                  respath('00-01-cnf.json'),
+                  respath('00-02-cnf.json')]
+        spath = respath('00-scm.json')
 
         cnf = TT.multi_load(cpaths, ac_schema=spath)
         ref = TT.multi_load(cpaths)

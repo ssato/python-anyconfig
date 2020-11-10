@@ -19,7 +19,7 @@ import anyconfig.template
 import tests.common
 import tests.api
 
-from tests.common import CNF_0, skip_test
+from tests.common import CNF_0
 
 
 CNF_0_PATH = tests.common.respath('00-cnf.yml')
@@ -178,10 +178,9 @@ class Test_30_single_input(Test_20_Base):
         self.assertFalse(TT.main(["dummy", "-O", "json",
                                   "--ignore-missing", infile]))
 
+    @unittest.skipIf(not anyconfig.schema.JSONSCHEMA_IS_AVAIL,
+                     "json schema lib is not available")
     def test_50_w_schema(self):
-        if not anyconfig.schema.JSONSCHEMA_IS_AVAIL:
-            skip_test()
-
         infile = CNF_0_PATH
         scmfile = tests.common.respath('00-scm.yml')
 
@@ -324,10 +323,9 @@ class Test_50_others_w_input(Test_20_Base):
         outfile = os.path.join(self.workdir, "out.conf")
         self.run_and_check_exit_code(["-o", outfile, infile], 1)
 
+    @unittest.skipIf(not getattr(anyconfig.query, "jmespath", False),
+                     "jmespath lib is not available")
     def test_30_w_query_option(self):
-        if not getattr(anyconfig.query, "jmespath", False):
-            skip_test()
-
         self.run_and_check_exit_code(["-Q", "b.b[::-1]", self.infile], 0)
 
 

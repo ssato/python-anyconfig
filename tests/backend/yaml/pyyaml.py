@@ -11,8 +11,8 @@ import tests.backend.common as TBC
 try:
     import anyconfig.backend.yaml.pyyaml as TT
 except ImportError:
-    import tests.common
-    tests.common.skip_test()
+    import unittest
+    raise unittest.SkipTest
 
 from .common import CNF_S, CNF
 

@@ -9,8 +9,8 @@ from __future__ import absolute_import
 try:
     import anyconfig.backend.json._simplejson as TT
 except ImportError:
-    import tests.common
-    tests.common.skip_test()
+    import unittest
+    raise unittest.SkipTest
 
 from .default import TBC, CNF_0_S, CNF_0
 

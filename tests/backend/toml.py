@@ -12,8 +12,8 @@ from collections import OrderedDict as ODict
 try:
     import anyconfig.backend.toml as TT
 except ImportError:
-    import tests.common
-    raise tests.common.skip_test()
+    import unittest
+    raise unittest.SkipTest
 
 import tests.backend.common as TBC
 

@@ -23,7 +23,7 @@ import anyconfig.template
 import tests.common
 
 from tests.common import (
-    CNF_0, SCM_0, CNF_1, respath, skip_test
+    CNF_0, SCM_0, CNF_1, respath
 )
 
 
@@ -156,10 +156,9 @@ class Test_20_dumps_and_loads(TestBase):
         self.assertEqual(cnf_2["b"]["b"], CNF_0["b"]["b"])
         self.assertEqual(cnf_2["b"]["c"], CNF_0["b"]["c"])
 
+    @unittest.skipIf(not anyconfig.schema.JSONSCHEMA_IS_AVAIL,
+                     "json schema lib is not available")
     def test_49_loads_w_validation_error(self):
-        if not anyconfig.schema.JSONSCHEMA_IS_AVAIL:
-            skip_test()
-
         cnf_s = """{"a": "aaa"}"""
         scm_s = TT.dumps(SCM_0, "json")
         cnf_2 = TT.loads(cnf_s, ac_parser="json", ac_schema=scm_s)
@@ -271,10 +270,9 @@ class Test_30_single_load(TestBaseWithIO):
         cnf2 = TT.single_load(a2_path, ac_template=True)
         self.assertEqual(cnf2["a"], 1)
 
+    @unittest.skipIf(not anyconfig.schema.JSONSCHEMA_IS_AVAIL,
+                     "json schema lib is not available")
     def test_19_dump_and_single_load_with_validation(self):
-        if not anyconfig.schema.JSONSCHEMA_IS_AVAIL:
-            skip_test()
-
         cnf = CNF_0
         scm = SCM_0
 
@@ -608,10 +606,8 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
         self.assertEqual(cnf_2["b"]["b"], CNF_0["b"]["b"])
         self.assertEqual(cnf_2["b"]["c"], CNF_0["b"]["c"])
 
+    @unittest.skipIf('yml' not in TT.list_types(), "yaml lib is not available")
     def test_38_load_w_validation_yaml(self):
-        if "yml" not in TT.list_types():
-            skip_test()
-
         cnf_path = os.path.join(self.workdir, "cnf.yml")
         scm_path = os.path.join(self.workdir, "scm.yml")
         TT.dump(CNF_0, cnf_path)

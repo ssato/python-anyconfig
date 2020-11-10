@@ -11,11 +11,6 @@ import shutil
 import tempfile
 import unittest
 
-try:
-    from unittest import SkipTest
-except ImportError:
-    from nose.plugins.skip import SkipTest
-
 
 CNF_0 = dict(name="a", a=1, b=dict(b=[0, 1], c="C"))
 SCM_0 = {"type": "object",
@@ -79,10 +74,6 @@ def cleanup_workdir(workdir):
     assert workdir != '.'
 
     os.system("rm -rf " + workdir)
-
-
-def skip_test():
-    raise SkipTest
 
 
 class TestCaseWithWorkdir(unittest.TestCase):

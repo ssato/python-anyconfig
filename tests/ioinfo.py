@@ -3,7 +3,6 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name
-import os.path
 import os
 import pathlib
 import unittest

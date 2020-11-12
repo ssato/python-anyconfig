@@ -1,64 +1,47 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2015 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2016 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import os.path
+import copy
+import pathlib
+import tempfile
 import unittest
 
 import anyconfig as TT
-import tests.common
 
 
-class Test(unittest.TestCase):
+class TestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.workdir = tests.common.setup_workdir()
-
-    def tearDown(self):
-        tests.common.cleanup_workdir(self.workdir)
+    obj = dict(name="a", a=1, b=dict(b=[0, 1], c='C'))
 
     def test_10_dump_and_load(self):
-        obj = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-        obj_path = os.path.join(self.workdir, "a.json")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            obj_path = pathlib.Path(tmpdir) / 'a.json'
 
-        TT.dump(obj, obj_path)
-        self.assertTrue(os.path.exists(obj_path))
+            TT.dump(self.obj, obj_path)
+            self.assertTrue(obj_path.exists())
 
-        obj1 = TT.load(obj_path)
-
-        self.assertEqual(obj1["name"], obj["name"])
-        self.assertEqual(obj1["a"], obj["a"])
-        self.assertEqual(obj1["b"]["b"], obj["b"]["b"])
-        self.assertEqual(obj1["b"]["c"], obj["b"]["c"])
+            obj1 = TT.load(obj_path)
+            self.assertEqual(self.obj, obj1)
 
     def test_20_dump_and_multi_load(self):
-        obja = dict(name="a", a=1, b=dict(b=[0, 1], c="C"))
-        objb = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d="D"))
+        obj_diff = dict(a=2, b=dict(b=[1, 2, 3, 4, 5], d='D'))
 
-        a_path = os.path.join(self.workdir, "a.json")
-        b_path = os.path.join(self.workdir, "b.json")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            a_path = pathlib.Path(tmpdir) / 'a.json'
+            b_path = pathlib.Path(tmpdir) / 'b.json'
 
-        TT.dump(obja, a_path)
-        self.assertTrue(os.path.exists(a_path))
+            TT.dump(self.obj, a_path)
+            self.assertTrue(a_path.exists())
 
-        TT.dump(objb, b_path)
-        self.assertTrue(os.path.exists(b_path))
+            TT.dump(obj_diff, b_path)
+            self.assertTrue(b_path.exists())
 
-        obja1 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_DICTS)
-
-        self.assertEqual(obja1["name"], obja["name"])
-        self.assertEqual(obja1["a"], objb["a"])
-        self.assertEqual(obja1["b"]["b"], objb["b"]["b"])
-        self.assertEqual(obja1["b"]["c"], obja["b"]["c"])
-        self.assertEqual(obja1["b"]["d"], objb["b"]["d"])
-
-        obja2 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_DICTS_AND_LISTS)
-
-        self.assertEqual(obja2["name"], obja["name"])
-        self.assertEqual(obja2["a"], objb["a"])
-        self.assertEqual(obja2["b"]["b"], [0, 1, 2, 3, 4, 5])
-        self.assertEqual(obja2["b"]["c"], obja["b"]["c"])
-        self.assertEqual(obja2["b"]["d"], objb["b"]["d"])
+            ref = copy.copy(self.obj)
+            obj_1 = TT.multi_load([a_path, b_path], ac_merge=TT.MS_DICTS)
+            TT.merge(ref, obj_diff, ac_merge=TT.MS_DICTS)
+            self.assertEqual(obj_1, ref)
 
 # vim:sw=4:ts=4:et:

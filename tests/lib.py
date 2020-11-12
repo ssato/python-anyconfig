@@ -3,11 +3,10 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import os.path
+import pathlib
 import subprocess
+import tempfile
 import unittest
-
-import tests.common
 
 
 SCRIPT_TO_USE_ANYCONFIG = """\
@@ -25,20 +24,14 @@ def check_output(cmd):
     return proc.communicate()[0]
 
 
-class Test(unittest.TestCase):
-
-    def setUp(self):
-        self.workdir = tests.common.setup_workdir()
-        self.script = os.path.join(self.workdir, "a.py")
-
-    def tearDown(self):
-        tests.common.cleanup_workdir(self.workdir)
+class TestCase(unittest.TestCase):
 
     def test_00_run_script(self):
-        with open(self.script, 'w') as fileobj:
-            fileobj.write(SCRIPT_TO_USE_ANYCONFIG)
+        with tempfile.TemporaryDirectory(prefix='anyconfig-tests-') as tmpdir:
+            script = pathlib.Path(tmpdir) / "a.py"
+            script.write_text(SCRIPT_TO_USE_ANYCONFIG)
 
-            out = check_output(["python", self.script])
+            out = check_output(["python", str(script)])
             self.assertTrue(out in (b'', ''))
 
 # vim:sw=4:ts=4:et:

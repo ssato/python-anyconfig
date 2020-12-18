@@ -24,6 +24,19 @@ class HasParserTrait(TBC.HasParserTrait):
     cnf_s = CNF_S
 
 
+class Test_00(TBC.unittest.TestCase):
+
+    def test_yml_fnc_by_name(self):
+        self.assertTrue(TT.yml_fnc_by_name("load", ac_safe=True),
+                        TT.yaml.safe_load)
+        self.assertTrue(TT.yml_fnc_by_name("dump", ac_safe=True, aaa=True),
+                        TT.yaml.safe_dump)
+        self.assertTrue(TT.yml_fnc_by_name("load", ac_safe=False),
+                        TT.yaml.load)
+        self.assertTrue(TT.yml_fnc_by_name("dump", ac_safe=False),
+                        TT.yaml.dump)
+
+
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
     load_options = dict(ac_safe=True, Loader=TT.yaml.loader.Loader)

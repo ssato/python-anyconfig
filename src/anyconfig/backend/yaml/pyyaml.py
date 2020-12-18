@@ -127,6 +127,17 @@ def _customized_dumper(container, dumper=Dumper):
     return dumper
 
 
+def yml_fnc_by_name(fname, **options):
+    """Utility functo to get yaml loading/dumping function by name.
+
+    :param fname:
+        "load" or "dump", not checked but it should be OK.
+        see also :func:`yml_load` and :func:`yml_dump`
+    :param options: keyword args may contain "ac_safe" to load/dump safely
+    """
+    return getattr(yaml, r"safe_" + fname if options.get("ac_safe") else fname)
+
+
 def yml_fnc(fname, *args, **options):
     """An wrapper of yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
 
@@ -136,9 +147,8 @@ def yml_fnc(fname, *args, **options):
     :param args: [stream] for load or [cnf, stream] for dump
     :param options: keyword args may contain "ac_safe" to load/dump safely
     """
-    key = "ac_safe"
-    fnc = getattr(yaml, r"safe_" + fname if options.get(key) else fname)
-    return fnc(*args, **common.filter_from_options(key, options))
+    fnc = yml_fnc_by_name(fname, **options)
+    return fnc(*args, **common.filter_from_options("ac_safe", options))
 
 
 def yml_load(stream, container, yml_fnc=yml_fnc, **options):
@@ -150,8 +160,10 @@ def yml_load(stream, container, yml_fnc=yml_fnc, **options):
     :return: Mapping object
     """
     if options.get("ac_safe", False):
-        options = {}  # yaml.safe_load does not process Loader opts.
-    elif not options.get("Loader"):
+        # .. note:: yaml.safe_load does not support any keyword options.
+        options = dict(ac_safe=True)
+
+    elif not options.get("Loader", False):
         maybe_container = options.get("ac_dict", False)
         if maybe_container and callable(maybe_container):
             container = maybe_container
@@ -175,7 +187,8 @@ def yml_dump(data, stream, yml_fnc=yml_fnc, **options):
     _is_dict = anyconfig.utils.is_dict_like(data)
 
     if options.get("ac_safe", False):
-        options = {}
+        options = dict(ac_safe=True)  # Same as yml_load.
+
     elif not options.get("Dumper", False) and _is_dict:
         # TODO: Any other way to get its constructor?
         maybe_container = options.get("ac_dict", type(data))

@@ -1,0 +1,22 @@
+---
+# .. seealso:: https://github.com/ymyzk/tox-gh-actions
+#
+name: Tests inside CentOS container
+# yamllint disable-line rule:truthy
+on:
+  - push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: pycontribs/centos:8
+    env:
+      TOXENV: py36
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install dependencies
+        run: pip3 install tox tox-gh-actions
+      - name: Test with tox
+        run: tox
+
+# vim:sw=2:ts=2:et:

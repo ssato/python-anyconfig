@@ -54,14 +54,13 @@ def guess_io_type(obj):
     raise ValueError("Unknown I/O type object: {!r}".format(obj))
 
 
-def inspect_io_obj(obj):
+def inspect_io_obj(obj, itype):
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
 
     :return: A tuple of (objtype, objpath, objopener)
     :raises: UnknownFileTypeError
     """
-    itype = guess_io_type(obj)
     opener = anyconfig.utils.noop
 
     if itype == IOI_PATH_STR:
@@ -85,7 +84,7 @@ def inspect_io_obj(obj):
     else:
         raise UnknownFileTypeError("%r" % obj)
 
-    return (itype, ipath, opener, ext)
+    return (ipath, opener, ext)
 
 
 def make(obj):
@@ -100,7 +99,9 @@ def make(obj):
     if anyconfig.utils.is_ioinfo(obj):
         return obj
 
-    (itype, ipath, opener, ext) = inspect_io_obj(obj)
+    itype = guess_io_type(obj)
+
+    (ipath, opener, ext) = inspect_io_obj(obj, itype)
     return IOInfo(src=obj, type=itype, path=ipath, opener=opener,
                   extension=ext)
 

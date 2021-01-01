@@ -41,24 +41,24 @@ class Test_00(unittest.TestCase):
 class Test_10_inspect_io_obj(unittest.TestCase):
 
     def test_10_path_str(self):
-        self.assertEqual(TT.inspect_io_obj(IPATH_0),
-                         (IOI_PATH_STR, IPATH_0_FULL, open, IPATH_0_EXT))
+        self.assertEqual(TT.inspect_io_obj(IPATH_0, IOI_PATH_STR),
+                         (IPATH_0_FULL, open, IPATH_0_EXT))
 
     def test_20_stream(self):
-        self.assertEqual(TT.inspect_io_obj(open(IPATH_0)),
-                         (IOI_STREAM, IPATH_0_FULL,
-                          anyconfig.utils.noop, IPATH_0_EXT))
+        self.assertEqual(TT.inspect_io_obj(open(IPATH_0), IOI_STREAM),
+                         (IPATH_0_FULL, anyconfig.utils.noop, IPATH_0_EXT))
 
     def test_22_stream(self):
         stdin = os.fdopen(0)
-        res = TT.inspect_io_obj(stdin)
-        self.assertEqual(res[0], IOI_STREAM)
-        self.assertEqual(res[2], anyconfig.utils.noop)
+        res = TT.inspect_io_obj(stdin, IOI_STREAM)
+        self.assertEqual(res[0], None)
+        self.assertEqual(res[1], anyconfig.utils.noop)
+        self.assertEqual(res[2], None)
 
     def test_30_path_obj(self):
         ipo = pathlib.Path(IPATH_0)
-        self.assertEqual(TT.inspect_io_obj(ipo),
-                         (IOI_PATH_OBJ, IPATH_0_FULL, ipo.open, IPATH_0_EXT))
+        self.assertEqual(TT.inspect_io_obj(ipo, IOI_PATH_OBJ),
+                         (IPATH_0_FULL, ipo.open, IPATH_0_EXT))
 
 
 class Test_30_make(unittest.TestCase):

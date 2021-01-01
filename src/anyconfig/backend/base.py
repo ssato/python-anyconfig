@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Abstract implementation of backend modules:
@@ -21,7 +21,7 @@ from __future__ import absolute_import
 import collections
 import functools
 import io
-import os
+import pathlib
 
 import anyconfig.globals
 import anyconfig.models.processor
@@ -37,10 +37,7 @@ def ensure_outdir_exists(filepath):
 
     :param filepath: path of file to dump
     """
-    outdir = os.path.dirname(filepath)
-
-    if outdir and not os.path.exists(outdir):
-        os.makedirs(outdir)
+    pathlib.Path(filepath).parent.mkdir(parents=True, exist_ok=True)
 
 
 def to_method(func):
@@ -261,7 +258,7 @@ class LoaderMixin:
         if anyconfig.utils.is_stream_ioinfo(ioi):
             cnf = self.load_from_stream(ioi.src, container, **options)
         else:
-            if ac_ignore_missing and not os.path.exists(ioi.path):
+            if ac_ignore_missing and not pathlib.Path(ioi.path).exists():
                 return container()
 
             cnf = self.load_from_path(ioi.path, container, **options)

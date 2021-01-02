@@ -154,8 +154,9 @@ def is_ioinfo(obj, keys=None):
     >>> assert not is_ioinfo({})
     >>> assert not is_ioinfo(('a', 1, {}))
 
-    >>> inp = anyconfig.globals.IOInfo("/etc/hosts", "path", "/etc/hosts",
-    ...                                None, open)
+    >>> inp = anyconfig.globals.IOInfo("/etc/hosts",
+    ...                                anyconfig.globals.IOI_PATH_STR,
+    ...                                "/etc/hosts", None)
     >>> assert is_ioinfo(inp)
     """
     if keys is None:
@@ -173,7 +174,7 @@ def is_stream_ioinfo(obj):
     :return: True if given IOInfo object 'obj' is of file / file-like object
 
     >>> ioi = anyconfig.globals.IOInfo(None, anyconfig.globals.IOI_STREAM,
-    ...                                None, None, None)
+    ...                                None, None)
     >>> assert is_stream_ioinfo(ioi)
     >>> assert not is_stream_ioinfo(__file__)
     """

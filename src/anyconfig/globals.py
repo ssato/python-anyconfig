@@ -9,7 +9,7 @@
 import collections
 
 
-IOI_KEYS = "src type path opener extension".split()
+IOI_KEYS = "src type path extension".split()
 IOInfo = collections.namedtuple("IOInfo", IOI_KEYS)
 
 IOI_TYPES = (IOI_NONE, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM) = \

@@ -6,6 +6,11 @@
 # pylint: disable=invalid-name
 r"""Functions for value objects represent inputs and outputs.
 
+.. versionchanged:: 0.10.1
+
+- simplify inspect_io_obj and make; detect type in make, remove the member
+  opener from ioinfo object, etc.
+
 .. versionadded:: 0.9.5
 
 - Add functions to make and process input and output object holding some
@@ -14,7 +19,7 @@ r"""Functions for value objects represent inputs and outputs.
 """
 from __future__ import absolute_import
 
-import os.path
+import pathlib
 
 import anyconfig.utils
 
@@ -58,22 +63,14 @@ def inspect_io_obj(obj, itype):
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
 
-    :return: A tuple of (objtype, objpath, objopener)
+    :return: A tuple of (filepath, fileext)
     :raises: UnknownFileTypeError
     """
-    opener = anyconfig.utils.noop
-
-    if itype == IOI_PATH_STR:
-        ipath = os.path.normpath(obj)
-        ext = anyconfig.utils.get_file_extension(ipath)
-        opener = open
-
-    elif itype == IOI_PATH_OBJ:
+    if itype == IOI_PATH_OBJ:
         path = obj.expanduser().resolve()
 
         ipath = str(path)
         ext = path.suffix[1:]
-        opener = obj.open
 
     elif itype == IOI_STREAM:
         ipath = anyconfig.utils.get_path_from_stream(obj)
@@ -84,7 +81,7 @@ def inspect_io_obj(obj, itype):
     else:
         raise UnknownFileTypeError("%r" % obj)
 
-    return (ipath, opener, ext)
+    return (ipath, ext)
 
 
 def make(obj):
@@ -101,8 +98,11 @@ def make(obj):
 
     itype = guess_io_type(obj)
 
-    (ipath, opener, ext) = inspect_io_obj(obj, itype)
-    return IOInfo(src=obj, type=itype, path=ipath, opener=opener,
-                  extension=ext)
+    if itype == IOI_PATH_STR:
+        obj = pathlib.Path(obj)
+        itype = IOI_PATH_OBJ
+
+    (ipath, ext) = inspect_io_obj(obj, itype)
+    return IOInfo(src=obj, type=itype, path=ipath, extension=ext)
 
 # vim:sw=4:ts=4:et:

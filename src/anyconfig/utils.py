@@ -99,17 +99,6 @@ def concat(xss):
     return list(itertools.chain.from_iterable(xs for xs in xss))
 
 
-def normpath(path):
-    """Normalize path.
-
-    - eliminating double slashes, etc. (os.path.normpath)
-    - ensure paths contain ~[user]/ expanded.
-
-    :param path: Path string :: str
-    """
-    return os.path.normpath(os.path.expanduser(path) if '~' in path else path)
-
-
 def is_path(obj):
     """
     Is given object 'obj' a file path?

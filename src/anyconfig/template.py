@@ -146,7 +146,7 @@ def render_impl(template_file, ctx=None, paths=None, filters=None):
     if ctx is None:
         ctx = {}
 
-    return env.get_template(os.path.basename(template_file)).render(**ctx)
+    return env.get_template(pathlib.Path(template_file).name).render(**ctx)
 
 
 def render(filepath: str,

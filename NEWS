@@ -1,3 +1,19 @@
+* Sun Jan  3 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.10.0-1
+- Security fix release
+- fix: [pyyaml] process 'ac_safe' argument correctly
+- change: drop python 2.x support
+- fix: suppress warning of flake8 as same as pylint
+- fix: ensure default value returned for non-expected exceptions in .query
+- fix: catch cases if neigther xml.etree.{c,}ElementTree were missing correctly
+- change: replace logging.warn with warnings.warn, and remove other logging code
+- change: delay to initialize logger in cli module
+- enhancement: add github actions based ci stuff
+- fix: add python 3.8 and 3.9 as supported versions
+- fix: many pylint's warnings
+- change: started to use pathlib instead of os.path
+- Misc other enhancements, refactorings and bug fixes as always
+- seealso: `git log RELEASE_0.10.0.. --reverse` for more details
+
 * Wed Apr 29 2020 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.11-1
 - fix: rename anyconfig.backend.json.simplejson to avoid conflicts
 - fix: rename anyconfig.backend.json.simplejson avoid conflicts, may close #113

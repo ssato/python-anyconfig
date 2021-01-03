@@ -28,7 +28,7 @@ from .api import (
     UnknownProcessorTypeError, UnknownFileTypeError
 )
 
-__version__ = "0.9.11"
+__version__ = "0.10.0"
 
 __all__ = [
     "single_load", "multi_load", "load", "loads", "dump", "dumps", "validate",

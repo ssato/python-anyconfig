@@ -19,7 +19,7 @@ python-anyconfig
    :alt: [Test status]
 
 .. image:: https://github.com/ssato/python-anyconfig/workflows/Tests/badge.svg
-   :target: https://github.com/ssato/python-anyconfig/workflows/Tests/badge.svg
+   :target: https://github.com/ssato/python-anyconfig/actions?query=workflow%3ATests
    :alt: [Github Actions: Test status]
 
 

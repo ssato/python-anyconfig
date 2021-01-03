@@ -34,12 +34,13 @@ class Test_00(unittest.TestCase):
 
     >>> psr = TT.make_parser()
     >>> assert isinstance(psr, TT.argparse.ArgumentParser)
-    >>> psr.parse_args([])  # doctest: +NORMALIZE_WHITESPACE
-    Namespace(args=None, atype=None, env=False, extra_opts=None,
-              gen_schema=False, get=None, ignore_missing=False, inputs=[],
-              itype=None, list=False, loglevel=0, merge='merge_dicts',
-              otype=None, output=None, query=None, schema=None, set=None,
-              template=False, validate=False)
+    >>> args = psr.parse_args([])
+    >>> ref = dict(args=None, atype=None, env=False, extra_opts=None,
+    ...            gen_schema=False, get=None, ignore_missing=False, inputs=[],
+    ...            itype=None, list=False, loglevel=0, merge='merge_dicts',
+    ...            otype=None, output=None, query=None, schema=None, set=None,
+    ...            template=False, validate=False)
+    >>> assert vars(args) == ref
     """
 
 

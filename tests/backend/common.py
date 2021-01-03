@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
@@ -7,7 +8,7 @@
 from __future__ import absolute_import
 
 import copy
-import os.path
+import pathlib
 import unittest
 
 from os import linesep as lsep
@@ -156,7 +157,9 @@ class TestBaseWithIO(TestBase):
 
             exts = self.psr.extensions()
             ext = exts[0] if exts else "conf"
-            self.cnf_path = os.path.join(self.workdir, "cnf_0." + ext)
+            cnf_path = pathlib.Path(self.workdir) / ("cnf_0." + ext)
+
+            self.cnf_path = str(cnf_path)
             self.ioi = self._to_ioinfo(self.cnf_path)
 
             with self.psr.wopen(self.cnf_path) as out:

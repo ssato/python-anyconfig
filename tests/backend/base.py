@@ -6,7 +6,7 @@
 from __future__ import absolute_import
 
 import os
-import os.path
+import pathlib
 import unittest
 
 import anyconfig.backend.base as TT  # stands for test target
@@ -31,10 +31,10 @@ class Test00(unittest.TestCase):
         self.assertTrue(isinstance(cnf, type(MZERO)))
 
     def test_30_load__ac_ignore_missing(self):
-        cpath = os.path.join(os.curdir, "conf_file_not_exist.json")
-        assert not os.path.exists(cpath)
+        cpath = pathlib.Path(os.curdir) / "conf_file_not_exist.json"
+        assert not cpath.exists()
 
-        ioi = anyconfig.ioinfo.make(cpath)
+        ioi = anyconfig.ioinfo.make(str(cpath))
         cnf = self.psr.load(ioi, ac_ignore_missing=True)
         self.assertEqual(cnf, MZERO)
         self.assertTrue(isinstance(cnf, type(MZERO)))
@@ -49,15 +49,18 @@ class Test10(unittest.TestCase):
         tests.common.cleanup_workdir(self.workdir)
 
     def test_10_ensure_outdir_exists(self):
-        outdir = os.path.join(self.workdir, "outdir")
-        outfile = os.path.join(outdir, "a.txt")
-        TT.ensure_outdir_exists(outfile)
+        outdir = pathlib.Path(self.workdir) / "outdir"
+        outfile = str(outdir / "a.txt")
 
-        self.assertTrue(os.path.exists(outdir))
+        TT.ensure_outdir_exists(outfile)
+        self.assertTrue(outdir.exists())
 
     def test_12_ensure_outdir_exists__no_dir(self):
-        TT.ensure_outdir_exists("a.txt")
-        self.assertFalse(os.path.exists(os.path.dirname("a.txt")))
+        workdir = pathlib.Path(self.workdir)
+        outpath = workdir / "a.txt"
+
+        TT.ensure_outdir_exists(str(outpath))
+        self.assertTrue(workdir.exists())
 
 
 class Test20(unittest.TestCase):

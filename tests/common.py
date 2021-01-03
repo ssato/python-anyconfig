@@ -45,11 +45,10 @@ def respath(filename: str) -> str:
 
 def setup_workdir():
     """
-    >>> import os.path
     >>> workdir = setup_workdir()
     >>> assert workdir != '.'
     >>> assert workdir != '/'
-    >>> os.path.exists(workdir)
+    >>> pathlib.Path(workdir).exists()
     True
     >>> os.rmdir(workdir)
     """
@@ -60,14 +59,13 @@ def cleanup_workdir(workdir):
     """
     FIXME: Danger!
 
-    >>> import os.path
     >>> from os import linesep as lsep
-    >>> workdir = setup_workdir()
-    >>> os.path.exists(workdir)
+    >>> workdir = pathlib.Path(setup_workdir())
+    >>> workdir.exists()
     True
-    >>> open(os.path.join(workdir, "workdir.stamp"), 'w').write("OK!" + lsep)
-    >>> cleanup_workdir(workdir)
-    >>> os.path.exists(workdir)
+    >>> (workdir / "workdir.stamp").open('w').write("OK!" + lsep)
+    >>> cleanup_workdir(str(workdir))
+    >>> workdir.exists()
     False
     """
     assert workdir != '/'

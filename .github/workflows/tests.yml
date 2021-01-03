@@ -25,5 +25,7 @@ jobs:
           pip install tox tox-gh-actions
       - name: Test with tox
         run: tox
+        env:
+          PLATFORM: ${{ matrix.platform }}
 
 # vim:sw=2:ts=2:et:

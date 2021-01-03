@@ -99,18 +99,18 @@ def make_parser(defaults=None):
     mt_help = "Select strategy to merge multiple configs from " + \
         mts_s + " [%(merge)s]" % defaults
 
-    parser = argparse.ArgumentParser(usage=USAGE)
-    parser.set_defaults(**defaults)
+    apsr = argparse.ArgumentParser(usage=USAGE)
+    apsr.set_defaults(**defaults)
 
-    parser.add_argument("inputs", type=str, nargs='*', help="Input files")
-    parser.add_argument("--version", action="version",
-                        version="%%(prog)s %s" % VERSION)
+    apsr.add_argument("inputs", type=str, nargs='*', help="Input files")
+    apsr.add_argument("--version", action="version",
+                      version="%%(prog)s %s" % VERSION)
 
-    lpog = parser.add_argument_group("List specific options")
+    lpog = apsr.add_argument_group("List specific options")
     lpog.add_argument("-L", "--list", action="store_true",
                       help="List supported config types")
 
-    spog = parser.add_argument_group("Schema specific options")
+    spog = apsr.add_argument_group("Schema specific options")
     spog.add_argument("--validate", action="store_true",
                       help="Only validate input files and do not output. "
                            "You must specify schema file with -S/--schema "
@@ -119,23 +119,23 @@ def make_parser(defaults=None):
                       help="Generate JSON schema for givne config file[s] "
                            "and output it instead of (merged) configuration.")
 
-    gspog = parser.add_argument_group("Query/Get/set options")
+    gspog = apsr.add_argument_group("Query/Get/set options")
     gspog.add_argument("-Q", "--query", help=_QUERY_HELP)
     gspog.add_argument("--get", help=_GET_HELP)
     gspog.add_argument("--set", help=_SET_HELP)
 
-    parser.add_argument("-o", "--output", help="Output file path")
-    parser.add_argument("-I", "--itype", choices=ctypes, metavar="ITYPE",
-                        help=(type_help % "Input"))
-    parser.add_argument("-O", "--otype", choices=ctypes, metavar="OTYPE",
-                        help=(type_help % "Output"))
-    parser.add_argument("-M", "--merge", choices=mts, metavar="MERGE",
-                        help=mt_help)
-    parser.add_argument("-A", "--args", help="Argument configs to override")
-    parser.add_argument("--atype", choices=ctypes, metavar="ATYPE",
-                        help=_ATYPE_HELP_FMT % ctypes_s)
+    apsr.add_argument("-o", "--output", help="Output file path")
+    apsr.add_argument("-I", "--itype", choices=ctypes, metavar="ITYPE",
+                      help=(type_help % "Input"))
+    apsr.add_argument("-O", "--otype", choices=ctypes, metavar="OTYPE",
+                      help=(type_help % "Output"))
+    apsr.add_argument("-M", "--merge", choices=mts, metavar="MERGE",
+                      help=mt_help)
+    apsr.add_argument("-A", "--args", help="Argument configs to override")
+    apsr.add_argument("--atype", choices=ctypes, metavar="ATYPE",
+                      help=_ATYPE_HELP_FMT % ctypes_s)
 
-    cpog = parser.add_argument_group("Common options")
+    cpog = apsr.add_argument_group("Common options")
     cpog.add_argument("-x", "--ignore-missing", action="store_true",
                       help="Ignore missing input files")
     cpog.add_argument("-T", "--template", action="store_true",
@@ -151,7 +151,7 @@ def make_parser(defaults=None):
                            "for example")
     cpog.add_argument("-v", "--verbose", action="count", dest="loglevel",
                       help="Verbose mode; -v or -vv (more verbose)")
-    return parser
+    return apsr
 
 
 def _exit_with_output(content, exit_code=0):
@@ -187,8 +187,8 @@ def _parse_args(argv):
     :param argv: Argument list to parse or None (sys.argv will be set).
     :return: argparse.Namespace object or None (exit before return)
     """
-    parser = make_parser()
-    args = parser.parse_args(argv)
+    apsr = make_parser()
+    args = apsr.parse_args(argv)
     if args.loglevel:
         warnings.simplefilter("always")
 
@@ -203,7 +203,7 @@ def _parse_args(argv):
             _output_result(cnf, args)
             sys.exit(0)
         else:
-            parser.print_usage()
+            apsr.print_usage()
             sys.exit(1)
 
     if args.validate and args.schema is None:

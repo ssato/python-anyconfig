@@ -11,6 +11,7 @@
 - fix: add python 3.8 and 3.9 as supported versions
 - fix: many pylint's warnings
 - change: started to use pathlib instead of os.path
+- fix: pylint's warn, redefined-outer-name (parser)
 - Misc other enhancements, refactorings and bug fixes as always
 - seealso: `git log RELEASE_0.10.0.. --reverse` for more details
 

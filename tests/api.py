@@ -9,7 +9,6 @@ import collections
 import copy
 import io
 import os
-import os.path
 import pathlib
 import unittest
 
@@ -196,28 +195,28 @@ class Test_22_single_load(TestBase):
 class TestBaseWithIO(TestBase):
 
     def setUp(self):
-        self.workdir = tests.common.setup_workdir()
-        self.a_path = os.path.join(self.workdir, "a.json")
+        self.workdir = pathlib.Path(tests.common.setup_workdir())
+        self.a_path = self.workdir / "a.json"
         self.exp = copy.deepcopy(self.dic)
 
     def tearDown(self):
-        tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(str(self.workdir))
 
 
 class Test_30_single_load(TestBaseWithIO):
 
     def test_10_dump_and_single_load(self):
         TT.dump(self.cnf, self.a_path)
-        self.assertTrue(os.path.exists(self.a_path))
+        self.assertTrue(self.a_path.exists())
 
         res = TT.single_load(self.a_path)
         self.assert_dicts_equal(res, self.cnf)
 
     def test_11_dump_and_single_load__to_from_stream(self):
-        TT.dump(self.cnf, TT.open(self.a_path, mode='w'))
-        self.assertTrue(os.path.exists(self.a_path))
+        TT.dump(self.cnf, self.a_path.open('w'))
+        self.assertTrue(self.a_path.exists())
 
-        res = TT.single_load(TT.open(self.a_path))
+        res = TT.single_load(self.a_path.open())
         self.assert_dicts_equal(res, self.cnf)
 
     def test_12_dump_and_single_load__no_parser(self):
@@ -225,8 +224,8 @@ class Test_30_single_load(TestBaseWithIO):
                           TT.single_load, "dummy.ext_not_exist")
 
     def test_14_single_load__ignore_missing(self):
-        cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
-        assert not os.path.exists(cpath)
+        cpath = pathlib.Path(os.curdir) / "conf_file_should_not_exist"
+        assert not cpath.exists()
 
         self.assertEqual(TT.single_load(cpath, "ini", ac_ignore_missing=True),
                          NULL_CNTNR)
@@ -236,8 +235,8 @@ class Test_30_single_load(TestBaseWithIO):
             return
 
         cnf_s = "name: '{{ name'"  # Should cause template renering error.
-        cpath = os.path.join(self.workdir, "a.yaml")
-        TT.open(cpath, mode='w').write(cnf_s)
+        cpath = self.workdir / "a.yaml"
+        cpath.write_text(cnf_s)
 
         cnf = TT.single_load(cpath, ac_template=True, ac_context=dict(a=1))
         self.assertEqual(cnf["name"], "{{ name")
@@ -276,13 +275,13 @@ class Test_30_single_load(TestBaseWithIO):
         cnf = CNF_0
         scm = SCM_0
 
-        cnf_path = os.path.join(self.workdir, "cnf_19.json")
-        scm_path = os.path.join(self.workdir, "scm_19.json")
+        cnf_path = self.workdir / "cnf_19.json"
+        scm_path = self.workdir / "scm_19.json"
 
         TT.dump(cnf, cnf_path)
         TT.dump(scm, scm_path)
-        self.assertTrue(os.path.exists(cnf_path))
-        self.assertTrue(os.path.exists(scm_path))
+        self.assertTrue(cnf_path.exists())
+        self.assertTrue(scm_path.exists())
 
         cnf_1 = TT.single_load(cnf_path, ac_schema=scm_path)
 
@@ -291,16 +290,16 @@ class Test_30_single_load(TestBaseWithIO):
 
         cnf_2 = cnf.copy()
         cnf_2["a"] = "aaa"  # It's type should be integer not string.
-        cnf_2_path = os.path.join(self.workdir, "cnf_19_2.json")
+        cnf_2_path = self.workdir / "cnf_19_2.json"
         TT.dump(cnf_2, cnf_2_path)
-        self.assertTrue(os.path.exists(cnf_2_path))
+        self.assertTrue(cnf_2_path.exists())
 
         cnf_3 = TT.single_load(cnf_2_path, ac_schema=scm_path)
         self.assertTrue(cnf_3 is None)  # Validation should fail.
 
     def test_20_dump_and_single_load__w_ordered_option(self):
         TT.dump(self.cnf, self.a_path)
-        self.assertTrue(os.path.exists(self.a_path))
+        self.assertTrue(self.a_path.exists())
 
         # It works w/ JSON backend but some backend cannot keep the order of
         # items and the tests might fail.
@@ -310,7 +309,7 @@ class Test_30_single_load(TestBaseWithIO):
 
     def test_22_dump_and_single_load__w_ac_dict_option(self):
         TT.dump(self.cnf, self.a_path)
-        self.assertTrue(os.path.exists(self.a_path))
+        self.assertTrue(self.a_path.exists())
 
         res = TT.single_load(self.a_path, ac_dict=MyODict)
         self.assert_dicts_equal(res, self.cnf, ordered=True)
@@ -322,14 +321,14 @@ class Test_32_single_load(unittest.TestCase):
     cnf = CNF_XML_1
 
     def setUp(self):
-        self.workdir = tests.common.setup_workdir()
+        self.workdir = pathlib.Path(tests.common.setup_workdir())
 
     def tearDown(self):
-        tests.common.cleanup_workdir(self.workdir)
+        tests.common.cleanup_workdir(str(self.workdir))
 
     def _load_and_dump_with_opened_files(self, filename, rmode='r', wmode='w',
                                          **oopts):
-        cpath = os.path.join(self.workdir, filename)
+        cpath = self.workdir / filename
 
         with TT.open(cpath, 'w', **oopts) as out:
             TT.dump(self.cnf, out)
@@ -359,8 +358,8 @@ class Test_32_single_load(unittest.TestCase):
 class Test_34_single_load(TestBaseWithIO):
 
     def test_10_single_load_w_validation(self):
-        cnf_path = os.path.join(self.workdir, "cnf.json")
-        scm_path = os.path.join(self.workdir, "scm.json")
+        cnf_path = self.workdir / "cnf.json"
+        scm_path = self.workdir / "scm.json"
         TT.dump(CNF_0, cnf_path)
         TT.dump(SCM_0, scm_path)
 
@@ -372,7 +371,7 @@ class Test_34_single_load(TestBaseWithIO):
         self.assertEqual(cnf_2["b"]["c"], CNF_0["b"]["c"])
 
     def test_20_single_load_w_query(self):
-        cpath = os.path.join(self.workdir, "cnf.json")
+        cpath = self.workdir / "cnf.json"
         TT.dump(CNF_0, cpath)
 
         try:
@@ -394,8 +393,8 @@ class TestBaseWithIOMultiFiles(TestBaseWithIO):
 
     def setUp(self):
         super().setUp()
-        self.b_path = os.path.join(self.workdir, "b.json")
-        self.g_path = os.path.join(self.workdir, "*.json")
+        self.b_path = self.workdir / "b.json"
+        self.g_path = self.workdir / "*.json"
 
         exp = copy.deepcopy(self.upd)  # Assume MS_DICTS strategy was used.
         exp["b"]["c"] = self.dic["b"]["c"]
@@ -409,8 +408,8 @@ class Test_40_multi_load_with_strategies(TestBaseWithIOMultiFiles):
         TT.dump(self.dic, self.a_path)
         TT.dump(self.upd, self.b_path)
 
-        self.assertTrue(os.path.exists(self.a_path))
-        self.assertTrue(os.path.exists(self.b_path))
+        self.assertTrue(self.a_path.exists())
+        self.assertTrue(self.b_path.exists())
 
         res0 = TT.multi_load(self.g_path, ac_merge=merge)
         res1 = TT.multi_load([self.g_path, self.b_path], ac_merge=merge)
@@ -447,7 +446,7 @@ class Test_40_multi_load_with_strategies(TestBaseWithIOMultiFiles):
         self._check_multi_load_with_strategy(exp, merge=TT.MS_NO_REPLACE)
 
     def test_60_wrong_merge_strategy(self):
-        cpath = os.path.join(self.workdir, "a.json")
+        cpath = self.workdir / "a.json"
         TT.dump(dict(a=1, b=2), cpath)
         try:
             TT.multi_load([cpath, cpath], ac_merge="merge_st_not_exist")
@@ -462,7 +461,7 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         self.assertEqual(TT.multi_load([]), NULL_CNTNR)
 
     def test_20_dump_and_multi_load__mixed_file_types(self):
-        c_path = os.path.join(self.workdir, "c.yml")
+        c_path = self.workdir / "c.yml"
 
         TT.dump(self.dic, self.a_path)  # JSON
         try:
@@ -470,8 +469,8 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         except (TT.UnknownProcessorTypeError, TT.UnknownFileTypeError):
             return  # YAML backend is not available in this env.
 
-        self.assertTrue(os.path.exists(self.a_path))
-        self.assertTrue(os.path.exists(c_path))
+        self.assertTrue(self.a_path.exists())
+        self.assertTrue(c_path.exists())
 
         res = TT.multi_load([self.a_path, c_path])
         self.assert_dicts_equal(res, self.exp)
@@ -484,8 +483,8 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         self.assert_dicts_equal(res, self.exp)
 
     def test_40_multi_load__ignore_missing(self):
-        cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
-        assert not os.path.exists(cpath)
+        cpath = pathlib.Path(os.curdir) / "conf_file_should_not_exist"
+        assert not cpath.exists()
 
         self.assertEqual(TT.multi_load([cpath], ac_parser="ini",
                                        ac_ignore_missing=True),
@@ -544,8 +543,8 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
         TT.dump(self.dic, self.a_path)
         TT.dump(self.upd, self.b_path)
 
-        self.assertTrue(os.path.exists(self.a_path))
-        self.assertTrue(os.path.exists(self.b_path))
+        self.assertTrue(self.a_path.exists())
+        self.assertTrue(self.b_path.exists())
 
         res = TT.load(self.a_path)
         self.assert_dicts_equal(res, self.dic)
@@ -560,7 +559,7 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
         with TT.open(self.a_path, mode='w') as strm:
             TT.dump(self.dic, strm)
 
-        self.assertTrue(os.path.exists(self.a_path))
+        self.assertTrue(self.a_path.exists())
 
         with TT.open(self.a_path) as strm:
             res = TT.load(strm, ac_parser="json")
@@ -568,10 +567,10 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
 
     def test_32_dump_and_load__w_options(self):
         TT.dump(self.dic, self.a_path, indent=2)
-        self.assertTrue(os.path.exists(self.a_path))
+        self.assertTrue(self.a_path.exists())
 
         TT.dump(self.upd, self.b_path, indent=2)
-        self.assertTrue(os.path.exists(self.b_path))
+        self.assertTrue(self.b_path.exists())
 
         res = TT.load(self.a_path, parse_int=int)
         dic = copy.deepcopy(self.dic)
@@ -586,16 +585,16 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
         self.assert_dicts_equal(res, exp)
 
     def test_34_load__ignore_missing(self):
-        cpath = os.path.join(os.curdir, "conf_file_should_not_exist")
-        assert not os.path.exists(cpath)
+        cpath = pathlib.Path(os.curdir) / "conf_file_should_not_exist"
+        assert not cpath.exists()
 
         self.assertEqual(TT.load([cpath], ac_parser="ini",
                                  ignore_missing=True),
                          NULL_CNTNR)
 
     def test_36_load_w_validation(self):
-        cnf_path = os.path.join(self.workdir, "cnf.json")
-        scm_path = os.path.join(self.workdir, "scm.json")
+        cnf_path = self.workdir / "cnf.json"
+        scm_path = self.workdir / "scm.json"
         TT.dump(CNF_0, cnf_path)
         TT.dump(SCM_0, scm_path)
 
@@ -608,8 +607,8 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
 
     @unittest.skipIf('yml' not in TT.list_types(), "yaml lib is not available")
     def test_38_load_w_validation_yaml(self):
-        cnf_path = os.path.join(self.workdir, "cnf.yml")
-        scm_path = os.path.join(self.workdir, "scm.yml")
+        cnf_path = self.workdir / "cnf.yml"
+        scm_path = self.workdir / "scm.yml"
         TT.dump(CNF_0, cnf_path)
         TT.dump(SCM_0, scm_path)
 
@@ -622,8 +621,8 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
 
     def test_39_single_load__w_validation(self):
         (cnf, scm) = (CNF_0, SCM_0)
-        cpath = os.path.join(self.workdir, "cnf.json")
-        spath = os.path.join(self.workdir, "scm.json")
+        cpath = self.workdir / "cnf.json"
+        spath = self.workdir / "scm.json"
 
         TT.dump(cnf, cpath)
         TT.dump(scm, spath)
@@ -632,7 +631,7 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
         self.assert_dicts_equal(cnf, cnf1)
 
     def test_40_load_w_query(self):
-        cnf_path = os.path.join(self.workdir, "cnf.json")
+        cnf_path = self.workdir / "cnf.json"
         TT.dump(CNF_0, cnf_path)
 
         try:

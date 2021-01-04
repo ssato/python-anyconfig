@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 - 2019 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2013 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, too-many-public-methods
@@ -280,20 +280,18 @@ class Test_40_multi_inputs(Test_20_Base):
         _run("-o", output, *inputs)
         self.assertTrue(output.exists())
 
+    @unittest.skipIf(not anyconfig.template.SUPPORTED,
+                     "jinja2 is not available")
     def test_20_w_template(self):
-        if not anyconfig.template.SUPPORTED:
-            return
-
         infile = tests.common.respath('30-00-template-cnf.json')
         output = self.workdir / "output.json"
 
         _run("--template", "-o", output, infile)
         self.assertTrue(output.exists())
 
+    @unittest.skipIf(not anyconfig.template.SUPPORTED,
+                     "jinja2 is not available")
     def test_30_w_template(self):
-        if not anyconfig.template.SUPPORTED:
-            return
-
         infile = tests.common.respath('30-*-template-cnf.json')
         output = self.workdir / "output.json"
 

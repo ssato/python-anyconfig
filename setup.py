@@ -51,6 +51,7 @@ class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
         return [_replace(line.rstrip()) for line in self.spec_tmpl.open()]
 
 
-setuptools.setup(version=VERSION, cmdclass=dict(bdist_rpm=bdist_rpm))
+setuptools.setup(version=VERSION, cmdclass=dict(bdist_rpm=bdist_rpm),
+                 data_files=[("share/man/man1", ["docs/anyconfig_cli.1"])]))
 
 # vim:sw=4:ts=4:et:

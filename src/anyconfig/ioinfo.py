@@ -37,10 +37,7 @@ def guess_io_type(obj):
 
     >>> apath = "/path/to/a_conf.ext"
     >>> assert guess_io_type(apath) == IOI_PATH_STR
-
-    >>> import pathlib
-    >>> if pathlib is not None:
-    ...     assert guess_io_type(pathlib.Path(apath)) == IOI_PATH_OBJ
+    >>> assert guess_io_type(pathlib.Path(apath)) == IOI_PATH_OBJ
     >>> assert guess_io_type(open(__file__)) == IOI_STREAM
     >>> guess_io_type(1)  # doctest: +ELLIPSIS
     Traceback (most recent call last):

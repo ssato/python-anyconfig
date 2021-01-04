@@ -25,7 +25,7 @@ RELEASE = "1%{?dist}"
 if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
     import datetime
     RELEASE = RELEASE.replace('1',
-                              datetime.datetime.now().strftime(".%Y%m%d"))
+                              datetime.datetime.now().strftime("%Y%m%d"))
 
 
 def _replace(line):
@@ -51,10 +51,6 @@ class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
         return [_replace(line.rstrip()) for line in self.spec_tmpl.open()]
 
 
-setuptools.setup(name="anyconfig",   # Avoid 'Unknown' package in older ones.
-                 version=VERSION,
-                 cmdclass=dict(bdist_rpm=bdist_rpm),
-                 package_dir={'': 'src'},
-                 data_files=[("share/man/man1", ["docs/anyconfig_cli.1"])])
+setuptools.setup(version=VERSION, cmdclass=dict(bdist_rpm=bdist_rpm))
 
 # vim:sw=4:ts=4:et:

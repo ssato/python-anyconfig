@@ -202,7 +202,8 @@ def is_paths(maybe_paths, marker='*'):
     return ((is_path(maybe_paths) and marker in maybe_paths) or  # Path str
             (is_path_obj(maybe_paths) and marker in maybe_paths.as_posix()) or
             (is_iterable(maybe_paths) and
-             all(is_path(p) or is_ioinfo(p) for p in maybe_paths)))
+             all(is_path(p) or is_ioinfo(p) or is_path_obj(p)
+                 for p in maybe_paths)))
 
 
 def get_path_from_stream(strm: typing.IO, safe: bool = False

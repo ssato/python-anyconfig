@@ -2,18 +2,17 @@
 #
 # pylint:disable=invalid-name
 import sys
-import os
+import pathlib
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                os.path.pardir, "src")))
+sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve() / 'src'))
 
 extensions = ['sphinx.ext.autodoc']
 source_suffix = '.rst'
 master_doc = 'index'
 
 project = u'python-anyconfig'
-copyright = u'2015, Satoru SATOH <ssato@redhat.com>'
-version = '0.0.10'
+copyright = u'2021, Satoru SATOH <satoru.satoh@gmail.com>'
+version = '0.10.0'
 release = version
 
 exclude_patterns = []

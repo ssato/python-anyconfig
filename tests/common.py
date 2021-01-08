@@ -27,7 +27,7 @@ CNF_1 = {"a": 1, "b": {"b": [1, 2], "c": "C"}, "name": "aaa"}
 
 def selfdir():
     """
-    >>> selfdir().exist
+    >>> selfdir().exists()
     True
     """
     return pathlib.Path(__file__).parent.resolve()
@@ -63,7 +63,7 @@ def cleanup_workdir(workdir):
     >>> workdir = pathlib.Path(setup_workdir())
     >>> workdir.exists()
     True
-    >>> (workdir / "workdir.stamp").open('w').write("OK!" + lsep)
+    >>> _ = (workdir / "workdir.stamp").open('w').write("OK!" + lsep)
     >>> cleanup_workdir(str(workdir))
     >>> workdir.exists()
     False

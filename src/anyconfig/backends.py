@@ -9,6 +9,7 @@
 """
 from __future__ import absolute_import
 
+import typing
 import warnings
 
 import anyconfig.ioinfo
@@ -26,12 +27,17 @@ import anyconfig.backend.yaml
 import anyconfig.backend.xml
 
 
-PARSERS = [anyconfig.backend.ini.Parser,
-           anyconfig.backend.pickle.Parser,
-           anyconfig.backend.properties.Parser,
-           anyconfig.backend.shellvars.Parser, anyconfig.backend.xml.Parser]
+# .. note:: This does not work.
+# ParserT = anyconfig.backend.base.Parser
+ParserT = typing.Type[anyconfig.backend.base.Parser]
+ParsersT = typing.List[anyconfig.backend.base.Parser]
 
-PARSERS.extend(anyconfig.backend.json.PARSERS)
+PARSERS: ParsersT = [anyconfig.backend.ini.Parser,
+                     anyconfig.backend.pickle.Parser,
+                     anyconfig.backend.properties.Parser,
+                     anyconfig.backend.shellvars.Parser,
+                     anyconfig.backend.xml.Parser,
+                     *anyconfig.backend.json.PARSERS]
 
 _NA_MSG = "'{}' module is not available. Disabled {} support."
 
@@ -54,7 +60,7 @@ class Parsers(anyconfig.processors.Processors,
     """
     _pgroup = "anyconfig_backends"
 
-    def __init__(self, processors=None):
+    def __init__(self, processors: typing.Optional[ParsersT] = None):
         """Initialize with PARSERS.
         """
         if processors is None:

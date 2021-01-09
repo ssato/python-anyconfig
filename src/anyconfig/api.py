@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
@@ -82,58 +82,66 @@ r"""Public APIs of anyconfig module.
 from __future__ import absolute_import
 
 import warnings
+import typing
 
-# Import some global constants will be re-exported:
-from anyconfig.globals import (  # noqa: F401
-    IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
-)
 import anyconfig.globals
 import anyconfig.dicts
 import anyconfig.ioinfo
 import anyconfig.template
 import anyconfig.utils
 
+from anyconfig.backends import (
+    ParserT, Parsers
+)
 from anyconfig.dicts import (  # noqa: F401
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
     get, set_, merge
 )
-from anyconfig.backends import Parsers
-from anyconfig.schema import validate, gen_schema  # noqa: F401
+# Import some global constants will be re-exported:
+from anyconfig.globals import (  # noqa: F401
+    IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
+)
 from anyconfig.query import query
+from anyconfig.schema import validate, gen_schema  # noqa: F401
+from anyconfig.types import (
+    ContextT, ConfigT, FileOrPathT, FileOrPathOrIOInfoT, IterableT, ListT,
+    MaybeDataT, ParserTypeT, SchemaT
+)
 
 
-def version():
+def version() -> ListT[int]:
     """
     :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
     """
     return anyconfig.__version__.split('.')
 
 
-def load_plugins():
+def load_plugins() -> None:
     """[Re-]Load pluggable parsers.
     """
     Parsers().load_plugins()
 
 
-def list_types():
+def list_types() -> ListT[ParserTypeT]:
     """List supported parser types.
     """
     return sorted(Parsers().list_x("type"))
 
 
-def list_by_cid():
+def list_by_cid() -> ListT[ParserT]:
     """List supported parsers, [(cid, [Parser_class])].
     """
     return Parsers().list_by_x("cid")
 
 
-def list_by_type():
+def list_by_type() -> ListT[str]:
     """List supported parser by types, [(type, [Parser_class])].
     """
     return Parsers().list_by_x("type")
 
 
-def list_by_extension():
+def list_by_extension() -> ListT[typing.Tuple[ParserTypeT,
+                                              ListT[ParserT]]]:
     """
     List supported parser by file extension supported, [(extension,
     [Parser_class])].
@@ -141,7 +149,8 @@ def list_by_extension():
     return Parsers().list_by_x("extensions")
 
 
-def _try_validate(cnf, schema, **options):
+def _try_validate(cnf: ConfigT, schema: SchemaT, **options
+                  ) -> typing.Optional[ConfigT]:
     """
     :param cnf: Mapping object represents configuration data
     :param schema: JSON schema object
@@ -161,7 +170,7 @@ def _try_validate(cnf, schema, **options):
     return None
 
 
-def _try_query(cnf, jexp, **options):
+def _try_query(cnf: ConfigT, jexp: str, **options) -> ConfigT:
     """
     :param cnf: Mapping object represents configuration data
     :param jexp: JMESPath expression to query or None/False
@@ -178,7 +187,9 @@ def _try_query(cnf, jexp, **options):
     return cnf
 
 
-def findall(obj=None, forced_type=None):
+def findall(obj: FileOrPathOrIOInfoT = None,
+            forced_type: typing.Optional[ParserTypeT] = None
+            ) -> IterableT[ParserT]:
     """
     Find out parser objects can load and/or dump data from given 'obj' which
     may be a file path, file or file-like object, pathlib.Path object or an
@@ -195,7 +206,8 @@ def findall(obj=None, forced_type=None):
     return Parsers().findall(obj, forced_type=forced_type)
 
 
-def find(obj=None, forced_type=None):
+def find(obj: FileOrPathOrIOInfoT = None,
+         forced_type: typing.Optional[ParserTypeT] = None) -> ParserT:
     """
     This function is very similar to the above :func:`find` but returns a
     parser objects instead of a list of parser objects.
@@ -212,7 +224,7 @@ def find(obj=None, forced_type=None):
     return Parsers().find(obj, forced_type=forced_type)
 
 
-def _maybe_schema(**options):
+def _maybe_schema(**options) -> typing.Optional[SchemaT]:
     """
     :param options: Optional keyword arguments such as
 
@@ -235,7 +247,9 @@ def _maybe_schema(**options):
 
 
 # pylint: disable=redefined-builtin
-def open(path, mode=None, ac_parser=None, **options):
+def open(path: FileOrPathOrIOInfoT, mode: str = None,
+         ac_parser: typing.Optional[ParserTypeT] = None, **options
+         ) -> typing.Optional[typing.IO]:
     """
     Open given configuration file with appropriate open flag.
 
@@ -261,8 +275,11 @@ def open(path, mode=None, ac_parser=None, **options):
     return psr.ropen(path, **options)
 
 
-def _single_load(input_, ac_parser=None, ac_template=False,
-                 ac_context=None, **options):
+def _single_load(input_: FileOrPathOrIOInfoT,
+                 ac_parser: typing.Optional[ParserTypeT] = None,
+                 ac_template: typing.Optional[FileOrPathOrIOInfoT] = None,
+                 ac_context: typing.Optional[ContextT] = None, **options
+                 ) -> MaybeDataT:
     """
     :param input_:
         File path or file or file-like object or pathlib.Path object represents
@@ -301,8 +318,11 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     return psr.load(ioi, **options)
 
 
-def single_load(input_, ac_parser=None, ac_template=False,
-                ac_context=None, **options):
+def single_load(input_: FileOrPathOrIOInfoT,
+                ac_parser: typing.Optional[ParserTypeT] = None,
+                ac_template: typing.Optional[FileOrPathOrIOInfoT] = None,
+                ac_context: typing.Optional[ContextT] = None, **options
+                ) -> MaybeDataT:
     r"""
     Load single configuration file.
 
@@ -362,8 +382,11 @@ def single_load(input_, ac_parser=None, ac_template=False,
     return _try_query(cnf, options.get("ac_query", False), **options)
 
 
-def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
-               **options):
+def multi_load(inputs: typing.Iterable[FileOrPathOrIOInfoT],
+               ac_parser: typing.Optional[ParserTypeT] = None,
+               ac_template: typing.Optional[FileOrPathOrIOInfoT] = None,
+               ac_context: typing.Optional[ContextT] = None, **options
+               ) -> MaybeDataT:
     r"""
     Load multiple config files.
 
@@ -446,8 +469,12 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
     return _try_query(cnf, options.get("ac_query", False), **options)
 
 
-def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
-         ac_context=None, **options):
+def load(path_specs: typing.Iterable[FileOrPathOrIOInfoT],
+         ac_parser: typing.Optional[ParserTypeT] = None,
+         ac_dict: typing.Optional[typing.Callable] = None,
+         ac_template: typing.Optional[FileOrPathOrIOInfoT] = None,
+         ac_context: typing.Optional[ContextT] = None, **options
+         ) -> MaybeDataT:
     r"""
     Load single or multiple config files or multiple config files specified in
     given paths pattern or pathlib.Path object represents config files or a
@@ -491,8 +518,12 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
                       **options)
 
 
-def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
-          ac_context=None, **options):
+def loads(content: str,
+          ac_parser: typing.Optional[ParserTypeT] = None,
+          ac_dict: typing.Optional[typing.Callable] = None,
+          ac_template: typing.Optional[FileOrPathOrIOInfoT] = None,
+          ac_context: typing.Optional[ContextT] = None, **options
+          ) -> MaybeDataT:
     """
     :param content: Configuration file's content (a string)
     :param ac_parser: Forced parser type or ID or parser object
@@ -537,7 +568,9 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
     return _try_query(cnf, options.get("ac_query", False), **options)
 
 
-def dump(data, out, ac_parser=None, **options):
+def dump(data: MaybeDataT, out: FileOrPathT,
+         ac_parser: typing.Optional[ParserTypeT] = None,
+         **options) -> None:
     """
     Save 'data' to 'out'.
 
@@ -558,7 +591,9 @@ def dump(data, out, ac_parser=None, **options):
     psr.dump(data, ioi, **options)
 
 
-def dumps(data, ac_parser=None, **options):
+def dumps(data: MaybeDataT,
+          ac_parser: typing.Optional[ParserTypeT] = None,
+          **options) -> str:
     """
     Return string representation of 'data' in forced type format.
 

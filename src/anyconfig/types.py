@@ -23,4 +23,6 @@ ContextT = typing.Mapping
 
 MaybeDataT = typing.Optional[typing.Mapping]
 
+ParserTypeT = str
+
 # vim:sw=4:ts=4:et:

@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2011 - 2015 Red Hat, Inc.
 # Copyright (C) 2011 - 2017 Satoru SATOH <ssato redhat.com>
-# Copyright (C) 2018 - 2020 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Utility functions to operate on mapping objects such as get, set and merge.
@@ -14,10 +14,13 @@ r"""Utility functions to operate on mapping objects such as get, set and merge.
 
 """
 from __future__ import absolute_import
+
 import collections
 import functools
 import operator
 import re
+import typing
+
 import anyconfig.utils
 
 
@@ -30,11 +33,11 @@ MERGE_STRATEGIES = (MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS)
 
 PATH_SEPS = ('/', '.')
 
-_JSNP_GET_ARRAY_IDX_REG = re.compile(r"(?:0|[1-9][0-9]*)")
-_JSNP_SET_ARRAY_IDX = re.compile(r"(?:0|[1-9][0-9]*|-)")
+_JSNP_GET_ARRAY_IDX_REG: typing.Pattern = re.compile(r"(?:0|[1-9][0-9]*)")
+_JSNP_SET_ARRAY_IDX: typing.Pattern = re.compile(r"(?:0|[1-9][0-9]*|-)")
 
 
-def _jsnp_unescape(jsn_s):
+def _jsnp_unescape(jsn_s: str) -> str:
     """
     Parse and decode given encoded JSON Pointer expression, convert ~1 to
     / and ~0 to ~.
@@ -49,7 +52,8 @@ def _jsnp_unescape(jsn_s):
     return jsn_s.replace('~1', '/').replace('~0', '~')
 
 
-def _split_path(path, seps=PATH_SEPS):
+def _split_path(path: str, seps: typing.Iterable[str] = PATH_SEPS
+                ) -> typing.List[str]:
     """
     Parse path expression and return list of path items.
 
@@ -76,7 +80,9 @@ def _split_path(path, seps=PATH_SEPS):
     return [path]
 
 
-def mk_nested_dic(path, val, seps=PATH_SEPS):
+def mk_nested_dic(path: str, val: typing.Any,
+                  seps: typing.Iterable[str] = PATH_SEPS
+                  ) -> typing.Optional[typing.Dict]:
     """
     Make a nested dict iteratively.
 
@@ -91,12 +97,15 @@ def mk_nested_dic(path, val, seps=PATH_SEPS):
     """
     ret = None
     for key in reversed(_split_path(path, seps)):
-        ret = {key: val if ret is None else ret.copy()}
+        ret = {key: val if ret is None else ret.copy()}  # type: ignore
 
     return ret
 
 
-def get(dic, path, seps=PATH_SEPS, idx_reg=_JSNP_GET_ARRAY_IDX_REG):
+def get(dic: typing.Dict, path: str,
+        seps: typing.Iterable[str] = PATH_SEPS,
+        idx_reg: typing.Pattern = _JSNP_GET_ARRAY_IDX_REG
+        ) -> typing.Tuple[typing.Any, str]:
     """getter for nested dicts.
 
     :param dic: a dict[-like] object
@@ -133,7 +142,8 @@ def get(dic, path, seps=PATH_SEPS, idx_reg=_JSNP_GET_ARRAY_IDX_REG):
         return (None, str(exc))
 
 
-def set_(dic, path, val, seps=PATH_SEPS):
+def set_(dic: typing.Dict, path: str, val: typing.Any,
+         seps: typing.Iterable[str] = PATH_SEPS) -> None:
     """setter for nested dicts.
 
     :param dic: a dict[-like] object support recursive merge operations
@@ -145,10 +155,10 @@ def set_(dic, path, val, seps=PATH_SEPS):
     >>> d['a']['b']['d']
     3
     """
-    merge(dic, mk_nested_dic(path, val, seps), ac_merge=MS_DICTS)
+    merge(dic, mk_nested_dic(path, val, seps) or {}, ac_merge=MS_DICTS)
 
 
-def _are_list_like(*objs):
+def _are_list_like(*objs) -> bool:
     """
     >>> _are_list_like([], (), [x for x in range(10)], (x for x in range(4)))
     True
@@ -160,7 +170,9 @@ def _are_list_like(*objs):
     return all(anyconfig.utils.is_list_like(obj) for obj in objs)
 
 
-def _update_with_replace(self, other, key, val=None, **_options):
+def _update_with_replace(self: typing.Dict, other: typing.Dict,
+                         key: str, val: typing.Any = None, **_options
+                         ) -> None:
     """
     Replace value of a mapping object 'self' with 'other' has if both have same
     keys on update. Otherwise, just keep the value of 'self'.
@@ -175,7 +187,9 @@ def _update_with_replace(self, other, key, val=None, **_options):
     self[key] = other[key] if val is None else val
 
 
-def _update_wo_replace(self, other, key, val=None, **_options):
+def _update_wo_replace(self: typing.Dict, other: typing.Dict,
+                       key: str, val: typing.Any = None, **_options
+                       ) -> None:
     """
     Never update (replace) the value of 'self' with 'other''s, that is, only
     the values 'self' does not have its key will be added on update.
@@ -191,7 +205,8 @@ def _update_wo_replace(self, other, key, val=None, **_options):
         _update_with_replace(self, other, key, val=val)
 
 
-def _merge_list(self, key, lst):
+def _merge_list(self: typing.Dict, key: str, lst: typing.Iterable
+                ) -> None:
     """
     :param key: self[key] will be updated
     :param lst: Other list to merge
@@ -199,7 +214,8 @@ def _merge_list(self, key, lst):
     self[key] += [x for x in lst if x not in self[key]]
 
 
-def _merge_other(self, key, val):
+def _merge_other(self: typing.Dict, key: str, val: typing.Any
+                 ) -> None:
     """
     :param key: self[key] will be updated
     :param val: Other val to merge (update/replace)
@@ -207,8 +223,10 @@ def _merge_other(self, key, val):
     self[key] = val  # Just overwrite it by default implementation.
 
 
-def _update_with_merge(self, other, key, val=None, merge_lists=False,
-                       **options):
+def _update_with_merge(self: typing.Dict, other: typing.Dict,
+                       key: str, val: typing.Any = None,
+                       merge_lists: bool = False, **options
+                       ) -> None:
     """
     Merge the value of self with other's recursively. Behavior of merge will be
     vary depends on types of original and new values.
@@ -242,7 +260,9 @@ def _update_with_merge(self, other, key, val=None, merge_lists=False,
         self[key] = val
 
 
-def _update_with_merge_lists(self, other, key, val=None, **options):
+def _update_with_merge_lists(self: typing.Dict, other: typing.Dict,
+                             key: str, val: typing.Any = None, **options
+                             ) -> None:
     """
     Similar to _update_with_merge but merge lists always.
 
@@ -262,25 +282,30 @@ _MERGE_FNS = {MS_REPLACE: _update_with_replace,
               MS_DICTS_AND_LISTS: _update_with_merge_lists}
 
 
-def _get_update_fn(strategy):
+def _get_update_fn(strategy: typing.Union[typing.Optional[str],
+                                          typing.Callable] = None
+                   ) -> typing.Callable:
     """
     Select dict-like class based on merge strategy and orderness of keys.
 
     :param merge: Specify strategy from MERGE_STRATEGIES of how to merge dicts.
     :return: Callable to update objects
     """
+    if callable(strategy):
+        return strategy
+
     if strategy is None:
         strategy = MS_DICTS
     try:
-        return _MERGE_FNS[strategy]
+        return _MERGE_FNS[strategy]  # type: ignore
     except KeyError as exc:
-        if callable(strategy):
-            return strategy
+        raise ValueError(
+            "Wrong merge strategy: {!r}".format(strategy)
+        ) from exc
 
-        raise ValueError("Wrong merge strategy: %r" % strategy) from exc
 
-
-def merge(self, other, ac_merge=MS_DICTS, **options):
+def merge(self: typing.Dict, other: typing.Dict,
+          ac_merge: str = MS_DICTS, **options) -> None:
     """
     Update (merge) a mapping object 'self' with other mapping object or an
     iterable yields (key, value) tuples based on merge strategy 'ac_merge'.
@@ -302,7 +327,10 @@ def merge(self, other, ac_merge=MS_DICTS, **options):
             raise type(exc)("%s other=%r" % (str(exc), other))
 
 
-def _make_recur(obj, make_fn, ac_ordered=False, ac_dict=None, **options):
+def _make_recur(obj: typing.Dict, make_fn: typing.Callable,
+                ac_ordered: bool = False,
+                ac_dict: typing.Optional[typing.Callable] = None, **options
+                ) -> typing.Dict:
     """
     :param obj: A mapping objects or other primitive object
     :param make_fn: Function to make/convert to
@@ -310,7 +338,7 @@ def _make_recur(obj, make_fn, ac_ordered=False, ac_dict=None, **options):
     :param ac_dict: Callable to convert 'obj' to mapping object
     :param options: Optional keyword arguments.
 
-    :return: Mapping object
+    :return: Dict object
     """
     if ac_dict is None:
         ac_dict = collections.OrderedDict if ac_ordered else dict
@@ -319,18 +347,21 @@ def _make_recur(obj, make_fn, ac_ordered=False, ac_dict=None, **options):
                    for k, v in obj.items())
 
 
-def _make_iter(obj, make_fn, **options):
+def _make_iter(obj: typing.Dict, make_fn: typing.Callable, **options
+               ) -> typing.Dict:
     """
     :param obj: A mapping objects or other primitive object
     :param make_fn: Function to make/convert to
     :param options: Optional keyword arguments.
 
-    :return: Mapping object
+    :return: Dict object
     """
     return type(obj)(make_fn(v, **options) for v in obj)
 
 
-def convert_to(obj, ac_ordered=False, ac_dict=None, **options):
+def convert_to(obj: typing.Dict, ac_ordered: bool = False,
+               ac_dict: typing.Optional[typing.Callable] = None, **options
+               ) -> typing.Dict:
     """
     Convert a mapping objects to a dict or object of 'to_type' recursively.
     Borrowed basic idea and implementation from bunch.unbunchify. (bunch is

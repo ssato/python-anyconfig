@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2011 - 2013 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2014 - 2020 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2014 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Misc parsers
@@ -8,14 +8,18 @@
 from __future__ import absolute_import
 
 import re
+import typing
 
 
-INT_PATTERN = re.compile(r"^(\d|([1-9]\d+))$")
-BOOL_PATTERN = re.compile(r"^(true|false)$", re.I)
-STR_PATTERN = re.compile(r"^['\"](.*)['\"]$")
+INT_PATTERN: typing.Pattern = re.compile(r"^(\d|([1-9]\d+))$")
+BOOL_PATTERN: typing.Pattern = re.compile(r"^(true|false)$", re.I)
+STR_PATTERN: typing.Pattern = re.compile(r"^['\"](.*)['\"]$")
+
+ValueT = typing.Union[str, int, bool]
+ValueOrValuesT = typing.Union[ValueT, typing.List[ValueT]]
 
 
-def parse_single(str_):
+def parse_single(str_: str) -> ValueT:
     """
     Very simple parser to parse expressions represent some single values.
 
@@ -61,7 +65,7 @@ def parse_single(str_):
     return str_
 
 
-def parse_list(str_, sep=","):
+def parse_list(str_: str, sep: str = ",") -> typing.List[ValueT]:
     """
     Simple parser to parse expressions reprensent some list values.
 
@@ -83,7 +87,9 @@ def parse_list(str_, sep=","):
     return [parse_single(x) for x in str_.split(sep) if x]
 
 
-def attr_val_itr(str_, avs_sep=":", vs_sep=",", as_sep=";"):
+def attr_val_itr(str_: str, avs_sep: str = ":", vs_sep: str = ",",
+                 as_sep: str = ";"
+                 ) -> typing.Iterator[typing.Tuple[str, ValueOrValuesT]]:
     """
     Atrribute and value pair parser.
 
@@ -93,16 +99,16 @@ def attr_val_itr(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     :param as_sep: char to separate attributes
     """
     for rel in parse_list(str_, as_sep):
-        if avs_sep not in rel or rel.endswith(avs_sep):
+        if avs_sep not in rel or rel.endswith(avs_sep):  # type: ignore
             continue
 
-        (_attr, _values) = parse_list(rel, avs_sep)
+        (_attr, _values) = parse_list(rel, avs_sep)  # type: ignore
 
         if vs_sep in str(_values):
-            _values = parse_list(_values, vs_sep)
+            _values = parse_list(_values, vs_sep)  # type: ignore
 
         if _values:
-            yield (_attr, _values)
+            yield (_attr, _values)  # type: ignore
 
 
 def parse_attrlist_0(str_, avs_sep=":", vs_sep=",", as_sep=";"):

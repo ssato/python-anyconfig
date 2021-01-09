@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2018 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Abstract processor module.
@@ -10,6 +10,13 @@ r"""Abstract processor module.
    - Add to abstract processors such like Parsers (loaders and dumpers).
 """
 from __future__ import absolute_import
+
+import typing
+
+
+CidT = str
+TypeT = str
+ExtensionT = str
 
 
 class Processor:
@@ -25,40 +32,40 @@ class Processor:
        This class ifself is not a singleton but its children classes should so
        in most cases, I think.
     """
-    _cid = None
-    _type = None
-    _priority = 0   # 0 (lowest priority) .. 99  (highest priority)
-    _extensions = []
+    _cid: CidT = ''
+    _type: TypeT = 'processor'
+    _priority: int = 0   # 0 (lowest priority) .. 99  (highest priority)
+    _extensions: typing.Iterable[ExtensionT] = []
 
     @classmethod
-    def cid(cls):
+    def cid(cls) -> CidT:
         """Processor class ID
         """
-        return repr(cls) if getattr(cls, "_cid", None) is None else cls._cid
+        return repr(cls) if not cls._cid else cls._cid
 
     @classmethod
-    def type(cls):
+    def type(cls) -> TypeT:
         """Processors' type
         """
         return cls._type
 
     @classmethod
-    def priority(cls):
+    def priority(cls) -> int:
         """Processors's priority
         """
         return cls._priority
 
     @classmethod
-    def extensions(cls):
+    def extensions(cls) -> typing.Iterable[ExtensionT]:
         """A list of file extensions of files which this process can process.
         """
         return cls._extensions
 
     @classmethod
-    def __eq__(cls, other):
+    def __eq__(cls, other) -> bool:
         return cls.cid() == other.cid()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return ("<Processor cid=%s, type=%s, prio=%d, "
                 "extensions=%r" % (self.cid(), self.type(), self.priority(),
                                    self.extensions()))

@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh @ gmmail.com>
+# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh @ gmmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=invalid-name
@@ -20,6 +20,7 @@ r"""Functions for value objects represent inputs and outputs.
 from __future__ import absolute_import
 
 import pathlib
+import typing
 
 import anyconfig.utils
 
@@ -29,7 +30,11 @@ from anyconfig.globals import (
 )
 
 
-def guess_io_type(obj):
+IoinfoT = typing.Optional[typing.Union[str, pathlib.Path, typing.IO]]
+IoiTypeT = str
+
+
+def guess_io_type(obj: IoinfoT) -> IoiTypeT:
     """Guess input or output type of 'obj'.
 
     :param obj: a path string, a pathlib.Path or a file / file-like object
@@ -56,7 +61,9 @@ def guess_io_type(obj):
     raise ValueError("Unknown I/O type object: {!r}".format(obj))
 
 
-def inspect_io_obj(obj, itype):
+def inspect_io_obj(obj, itype: IoiTypeT
+                   ) -> typing.Tuple[typing.Optional[str],
+                                     typing.Optional[str]]:
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
 
@@ -74,14 +81,14 @@ def inspect_io_obj(obj, itype):
         ext = anyconfig.utils.get_file_extension(ipath) if ipath else None
 
     elif itype == IOI_NONE:
-        ipath = ext = None
+        ipath = ext = None  # type: ignore
     else:
         raise UnknownFileTypeError("%r" % obj)
 
     return (ipath, ext)
 
 
-def make(obj):
+def make(obj) -> IoinfoT:
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
     :return:

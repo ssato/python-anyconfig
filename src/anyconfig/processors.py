@@ -17,16 +17,19 @@ import pkg_resources
 import typing
 
 import anyconfig.ioinfo
-import anyconfig.models.processor
 import anyconfig.utils
 
 from anyconfig.globals import (
     UnknownProcessorTypeError, UnknownFileTypeError, IOInfo
 )
+from .models import processor
+
+
+ProcessorT = processor.Processor
 
 
 def _load_plugins_itr(pgroup: str, safe: bool = True
-                      ) -> typing.Iterator[anyconfig.models.processor]:
+                      ) -> typing.Iterator[ProcessorT]:
     """
     .. seealso:: the doc of :func:`load_plugins`
     """
@@ -40,7 +43,7 @@ def _load_plugins_itr(pgroup: str, safe: bool = True
 
 
 def load_plugins(pgroup: str, safe: bool = True
-                 ) -> typing.List[anyconfig.models.processor]:
+                 ) -> typing.List[ProcessorT]:
     """
     :param pgroup: A string represents plugin type, e.g. anyconfig_backends
     :param safe: Do not raise ImportError during load if True
@@ -49,8 +52,7 @@ def load_plugins(pgroup: str, safe: bool = True
     return list(_load_plugins_itr(pgroup, safe=safe))
 
 
-def sort_by_prio(prs: typing.List[anyconfig.models.processor]
-                 ) -> typing.List[anyconfig.models.processor]:
+def sort_by_prio(prs: typing.List[ProcessorT]) -> typing.List[ProcessorT]:
     """
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: Sambe as above but sorted by priority
@@ -76,8 +78,8 @@ def select_by_key(items: typing.Iterable[typing.Tuple[typing.List[typing.Any],
                 in anyconfig.utils.groupby(itr, operator.itemgetter(0)))
 
 
-def list_by_x(prs: typing.List[anyconfig.models.processor], key: str
-              ) -> typing.List[anyconfig.models.processor]:
+def list_by_x(prs: typing.List[ProcessorT], key: str
+              ) -> typing.List[ProcessorT]:
     """
     :param key: Grouping key, "type" or "extensions"
     :return:
@@ -101,8 +103,8 @@ def list_by_x(prs: typing.List[anyconfig.models.processor], key: str
 
 
 def findall_with_pred(predicate: typing.Callable,
-                      prs: typing.List[anyconfig.models.processor]
-                      ) -> typing.List[anyconfig.models.processor]:
+                      prs: typing.List[ProcessorT]
+                      ) -> typing.List[ProcessorT]:
     """
     :param predicate: any callable to filter results
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
@@ -112,7 +114,7 @@ def findall_with_pred(predicate: typing.Callable,
                   key=operator.methodcaller("priority"), reverse=True)
 
 
-def maybe_processor(type_or_id, cls=anyconfig.models.processor.Processor):
+def maybe_processor(type_or_id, cls=processor.Processor):
     """
     :param type_or_id:
         Type of the data to process or ID of the processor class or
@@ -185,7 +187,7 @@ def find_by_maybe_file(obj, prs):
 
 # pylint: disable=unused-argument
 def findall(obj, prs, forced_type=None,
-            cls=anyconfig.models.processor.Processor):
+            cls=processor.Processor):
     """
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
@@ -213,7 +215,7 @@ def findall(obj, prs, forced_type=None,
 
 
 # pylint: enable=unused-argument
-def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
+def find(obj, prs, forced_type=None, cls=processor.Processor):
     """
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
@@ -332,7 +334,7 @@ class Processors:
                          "but it was '%s'" % key)
 
     def findall(self, obj, forced_type=None,
-                cls=anyconfig.models.processor.Processor):
+                cls=processor.Processor):
         """
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an
@@ -346,8 +348,7 @@ class Processors:
         return [p() for p in findall(obj, self.list(),
                                      forced_type=forced_type, cls=cls)]
 
-    def find(self, obj, forced_type=None,
-             cls=anyconfig.models.processor.Processor):
+    def find(self, obj, forced_type=None, cls=processor.Processor):
         """
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an

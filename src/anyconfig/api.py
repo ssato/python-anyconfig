@@ -160,9 +160,10 @@ def _try_validate(cnf: ConfigT, schema: SchemaT, **options
     """
     valid = True
     if schema:
-        (valid, msg) = validate(cnf, schema, **options)
-        if msg:
-            warnings.warn(msg)
+        (valid, msgs) = validate(cnf, schema, **options)
+        if msgs:
+            for msg in msgs:
+                warnings.warn(msg)
 
     if valid:
         return cnf

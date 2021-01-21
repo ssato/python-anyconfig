@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unidiomatic-typecheck
@@ -14,6 +14,7 @@ from __future__ import absolute_import
 
 import operator
 import pkg_resources
+import typing
 
 import anyconfig.ioinfo
 import anyconfig.models.processor
@@ -24,7 +25,8 @@ from anyconfig.globals import (
 )
 
 
-def _load_plugins_itr(pgroup, safe=True):
+def _load_plugins_itr(pgroup: str, safe: bool = True
+                      ) -> typing.Iterator[anyconfig.models.processor]:
     """
     .. seealso:: the doc of :func:`load_plugins`
     """
@@ -37,7 +39,8 @@ def _load_plugins_itr(pgroup, safe=True):
             raise
 
 
-def load_plugins(pgroup, safe=True):
+def load_plugins(pgroup: str, safe: bool = True
+                 ) -> typing.List[anyconfig.models.processor]:
     """
     :param pgroup: A string represents plugin type, e.g. anyconfig_backends
     :param safe: Do not raise ImportError during load if True
@@ -46,7 +49,8 @@ def load_plugins(pgroup, safe=True):
     return list(_load_plugins_itr(pgroup, safe=safe))
 
 
-def sort_by_prio(prs):
+def sort_by_prio(prs: typing.List[anyconfig.models.processor]
+                 ) -> typing.List[anyconfig.models.processor]:
     """
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: Sambe as above but sorted by priority
@@ -54,7 +58,11 @@ def sort_by_prio(prs):
     return sorted(prs, key=operator.methodcaller("priority"), reverse=True)
 
 
-def select_by_key(items, sort_fn=sorted):
+def select_by_key(items: typing.Iterable[typing.Tuple[typing.List[typing.Any],
+                                                      typing.Any]],
+                  sort_fn: typing.Callable = sorted
+                  ) -> typing.List[typing.Tuple[typing.Any,
+                                                typing.List[typing.Any]]]:
     """
     :param items: A list of tuples of keys and values, [([key], val)]
     :return: A list of tuples of key and values, [(key, [val])]
@@ -68,7 +76,8 @@ def select_by_key(items, sort_fn=sorted):
                 in anyconfig.utils.groupby(itr, operator.itemgetter(0)))
 
 
-def list_by_x(prs, key):
+def list_by_x(prs: typing.List[anyconfig.models.processor], key: str
+              ) -> typing.List[anyconfig.models.processor]:
     """
     :param key: Grouping key, "type" or "extensions"
     :return:
@@ -91,7 +100,9 @@ def list_by_x(prs, key):
     return res
 
 
-def findall_with_pred(predicate, prs):
+def findall_with_pred(predicate: typing.Callable,
+                      prs: typing.List[anyconfig.models.processor]
+                      ) -> typing.List[anyconfig.models.processor]:
     """
     :param predicate: any callable to filter results
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes

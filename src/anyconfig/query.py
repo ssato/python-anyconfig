@@ -1,11 +1,11 @@
 #
 # Copyright (C) 2017, 2018 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=bare-except
 #
-r"""anyconfig.query module to support query data with JMESPath expressions.
+r"""anyconfig.query module TO SUPport query data with JMESPath expressions.
 
 Changelog:
 
@@ -14,13 +14,17 @@ Changelog:
    - Added to query config data with JMESPath expression, http://jmespath.org
 """
 from __future__ import absolute_import
+
+import typing
+
 try:
     import jmespath
 except ImportError:
     pass
 
 
-def query(data, jexp, **_options):
+def query(data: typing.Mapping, jexp: str, **_options
+          ) -> typing.Tuple[typing.Optional[typing.Mapping], typing.Any]:
     """
     Filter data with given JMESPath expression.
 
@@ -32,7 +36,7 @@ def query(data, jexp, **_options):
 
     :return: A tuple of query result and maybe exception if failed
     """
-    exc = None
+    exc: typing.Optional[typing.Any] = None
     try:
         pexp = jmespath.compile(jexp)
         return (pexp.search(data), exc)

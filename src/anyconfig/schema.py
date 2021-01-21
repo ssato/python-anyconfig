@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2015 - 2018 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """anyconfig.schema module.
@@ -22,6 +22,9 @@
    Added new API :func:`validate` to validate config with JSON schema
 """
 from __future__ import absolute_import
+
+import typing
+
 try:
     import jsonschema
     JSONSCHEMA_IS_AVAIL = True
@@ -31,17 +34,24 @@ except ImportError:
 import anyconfig.utils
 
 
+ScmT = typing.Dict[str, typing.Any]
+
 _NA_MSG = "Validation module (jsonschema) is not available"
 
-_SIMPLETYPE_MAP = {list: "array", tuple: "array",
-                   bool: "boolean",
-                   int: "integer", float: "number",
-                   dict: "object",
-                   str: "string"}
-_SIMPLE_TYPES = (bool, int, float, str)
+_SIMPLETYPE_MAP: typing.Dict[typing.Type, str] = {
+    list: "array",
+    tuple: "array",
+    bool: "boolean",
+    int: "integer",
+    float: "number",
+    dict: "object",
+    str: "string"
+}
+_SIMPLE_TYPES: typing.Iterable[typing.Type] = (bool, int, float, str)
 
 
-def _validate_all(data, schema):
+def _validate_all(data, schema: typing.Dict, **options
+                  ) -> typing.Tuple[bool, typing.List[str]]:
     """
     See the descritpion of :func:`validate` for more details of parameters and
     return value.
@@ -49,13 +59,15 @@ def _validate_all(data, schema):
     :seealso: https://python-jsonschema.readthedocs.io/en/latest/validate/,
     a section of 'iter_errors' especially
     """
-    vldtr = jsonschema.Draft4Validator(schema)  # :raises: SchemaError, ...
+    # :raises: SchemaError, ...
+    vldtr = jsonschema.Draft4Validator(schema, **options)
     errors = list(vldtr.iter_errors(data))
 
     return (not errors, [err.message for err in errors])
 
 
-def _validate(data, schema, ac_schema_safe=True, **options):
+def _validate(data, schema: typing.Dict, ac_schema_safe: bool = True,
+              **options) -> typing.Tuple[bool, typing.List[str]]:
     """
     See the descritpion of :func:`validate` for more details of parameters and
     return value.
@@ -68,14 +80,15 @@ def _validate(data, schema, ac_schema_safe=True, **options):
     except (jsonschema.ValidationError, jsonschema.SchemaError,
             Exception) as exc:
         if ac_schema_safe:
-            return (False, str(exc))  # Validation was failed.
+            return (False, [str(exc)])  # Validation was failed.
         raise
 
-    return (True, '')
+    return (True, [])
 
 
-def validate(data, schema, ac_schema_safe=True, ac_schema_errors=False,
-             **options):
+def validate(data, schema: typing.Dict, ac_schema_safe: bool = True,
+             ac_schema_errors: bool = False, **options
+             ) -> typing.Tuple[bool, typing.List[str]]:
     """
     Validate target object with given schema object, loaded from JSON schema.
 
@@ -97,7 +110,7 @@ def validate(data, schema, ac_schema_safe=True, ac_schema_errors=False,
     :return: (True if validation succeeded else False, error message[s])
     """
     if not JSONSCHEMA_IS_AVAIL:
-        return (True, _NA_MSG)
+        return (True, [_NA_MSG])
 
     options = anyconfig.utils.filter_options(("cls", ), options)
     if ac_schema_errors:
@@ -106,7 +119,8 @@ def validate(data, schema, ac_schema_safe=True, ac_schema_errors=False,
     return _validate(data, schema, ac_schema_safe, **options)
 
 
-def _process_options(**options):
+def _process_options(**options
+                     ) -> typing.Tuple[typing.Dict[typing.Type, str], bool]:
     """
     Helper function to process keyword arguments passed to gen_schema.
 
@@ -116,7 +130,7 @@ def _process_options(**options):
             bool(options.get("ac_schema_strict", False)))
 
 
-def array_to_schema(arr, **options):
+def array_to_schema(arr: typing.Iterable[typing.Mapping], **options) -> ScmT:
     """
     Generate a JSON schema object with type annotation added for given object.
 
@@ -135,13 +149,13 @@ def array_to_schema(arr, **options):
                items=gen_schema(arr[0] if arr else "str", **options))
     if strict:
         nitems = len(arr)
-        scm["minItems"] = nitems
-        scm["uniqueItems"] = len(set(arr)) == nitems
+        scm["minItems"] = nitems  # type: ignore
+        scm["uniqueItems"] = len(set(arr)) == nitems  # type: ignore
 
     return scm
 
 
-def object_to_schema(obj, **options):
+def object_to_schema(obj: typing.Mapping, **options) -> ScmT:
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -164,7 +178,7 @@ def object_to_schema(obj, **options):
     return scm
 
 
-def gen_schema(data, **options):
+def gen_schema(data, **options) -> ScmT:
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.

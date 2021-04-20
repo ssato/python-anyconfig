@@ -361,7 +361,7 @@ def main(argv=None):
         API.merge(cnf, diff)
 
     if args.validate:
-        _exit_with_output("Validation succeds")
+        _exit_with_output("Validation succeeds")
 
     cnf = API.gen_schema(cnf) if args.gen_schema else _do_filter(cnf, args)
     _output_result(cnf, args, args.inputs, extra_opts=extra_opts)

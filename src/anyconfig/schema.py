@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2015 - 2018 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """anyconfig.schema module.
@@ -49,7 +49,7 @@ def _validate_all(data, schema):
     :seealso: https://python-jsonschema.readthedocs.io/en/latest/validate/,
     a section of 'iter_errors' especially
     """
-    vldtr = jsonschema.Draft4Validator(schema)  # :raises: SchemaError, ...
+    vldtr = jsonschema.Draft7Validator(schema)  # :raises: SchemaError, ...
     errors = list(vldtr.iter_errors(data))
 
     return (not errors, [err.message for err in errors])
@@ -63,8 +63,10 @@ def _validate(data, schema, ac_schema_safe=True, **options):
     Validate target object 'data' with given schema object.
     """
     try:
-        jsonschema.validate(data, schema, **options)
-
+        jsonschema.validate(
+            data, schema, format_checker=jsonschema.draft7_format_checker,
+            **options
+        )
     except (jsonschema.ValidationError, jsonschema.SchemaError,
             Exception) as exc:
         if ac_schema_safe:

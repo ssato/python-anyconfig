@@ -1,3 +1,9 @@
+* Thu Apr 22 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.10.1-1
+- change: migrate os.path, etc. to pathlib
+- fix: [schema] update the version of the validator and enable format checker 
+- Misc other enhancements, refactorings and bug fixes as always
+- seealso: `git log RELEASE_0.10.1.. --reverse` for more details
+
 * Sun Jan  3 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.10.0-1
 - Security fix release
 - fix: [pyyaml] process 'ac_safe' argument correctly

@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # For 'anyconfig.open':
@@ -28,7 +28,7 @@ from .api import (
     UnknownProcessorTypeError, UnknownFileTypeError
 )
 
-__version__ = "0.10.0"
+__version__ = "0.10.1"
 
 __all__ = [
     "single_load", "multi_load", "load", "loads", "dump", "dumps", "validate",

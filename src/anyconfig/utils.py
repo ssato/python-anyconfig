@@ -134,7 +134,7 @@ def is_file_stream(obj):
     return getattr(obj, "read", False)
 
 
-def is_ioinfo(obj, keys=None):
+def is_ioinfo(obj):
     """
     :return: True if given 'obj' is a 'IOInfo' namedtuple object.
 
@@ -148,11 +148,8 @@ def is_ioinfo(obj, keys=None):
     ...                                "/etc/hosts", None)
     >>> assert is_ioinfo(inp)
     """
-    if keys is None:
-        keys = anyconfig.globals.IOI_KEYS
-
     if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
-        return all(k in obj._asdict() for k in keys)
+        return all(k in obj._asdict() for k in anyconfig.globals.IOI_KEYS)
 
     return False
 

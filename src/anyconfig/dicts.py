@@ -1,9 +1,8 @@
 #
 # Forked from m9dicts.{api,dicts}.
 #
-# Copyright (C) 2011 - 2015 Red Hat, Inc.
-# Copyright (C) 2011 - 2017 Satoru SATOH <ssato redhat.com>
-# Copyright (C) 2018 - 2020 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2021 Red Hat, Inc.
+# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Utility functions to operate on mapping objects such as get, set and merge.
@@ -13,12 +12,12 @@ r"""Utility functions to operate on mapping objects such as get, set and merge.
    :mod:`m9dicts.dicts`
 
 """
-from __future__ import absolute_import
 import collections
 import functools
 import operator
 import re
-import anyconfig.utils
+
+from . import utils
 
 
 # Merge strategies:
@@ -126,7 +125,7 @@ def get(dic, path, seps=PATH_SEPS, idx_reg=_JSNP_GET_ARRAY_IDX_REG):
             return (dic[items[0]], '')
 
         prnt = functools.reduce(operator.getitem, items[:-1], dic)
-        arr = anyconfig.utils.is_list_like(prnt) and idx_reg.match(items[-1])
+        arr = utils.is_list_like(prnt) and idx_reg.match(items[-1])
         return (prnt[int(items[-1])], '') if arr else (prnt[items[-1]], '')
 
     except (TypeError, KeyError, IndexError) as exc:
@@ -157,7 +156,7 @@ def _are_list_like(*objs):
     >>> _are_list_like([], "aaa")
     False
     """
-    return all(anyconfig.utils.is_list_like(obj) for obj in objs)
+    return all(utils.is_list_like(obj) for obj in objs)
 
 
 def _update_with_replace(self, other, key, val=None, **_options):
@@ -232,7 +231,7 @@ def _update_with_merge(self, other, key, val=None, merge_lists=False,
 
     if key in self:
         val0 = self[key]  # Original value
-        if anyconfig.utils.is_dict_like(val0):  # It needs recursive updates.
+        if utils.is_dict_like(val0):  # It needs recursive updates.
             merge(self[key], val, merge_lists=merge_lists, **options)
         elif merge_lists and _are_list_like(val, val0):
             _merge_list(self, key, val)
@@ -350,9 +349,9 @@ def convert_to(obj, ac_ordered=False, ac_dict=None, **options):
     {'a': {'b': {'c': 1}}}
     """
     options.update(ac_ordered=ac_ordered, ac_dict=ac_dict)
-    if anyconfig.utils.is_dict_like(obj):
+    if utils.is_dict_like(obj):
         return _make_recur(obj, convert_to, **options)
-    if anyconfig.utils.is_list_like(obj):
+    if utils.is_list_like(obj):
         return _make_iter(obj, convert_to, **options)
 
     return obj

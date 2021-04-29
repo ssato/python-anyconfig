@@ -1,0 +1,32 @@
+#
+# Copyright (C) 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# SPDX-License-Identifier: MIT
+#
+# pylint: disable=too-few-public-methods
+"""anyconfig basic data types.
+"""
+import typing
+
+
+class BaseError(RuntimeError):
+    """Base Error exception."""
+    _msg_fmt: str = 'forced_type: {!s}'
+
+    def __init__(self, arg: typing.Optional[typing.Any] = None):
+        super().__init__(self._msg_fmt.format(str(arg)))
+
+
+class UnknownParserTypeError(BaseError):
+    """Raise if no parsers were found for given type."""
+    _msg_fmt: str = 'No parser found for type: {!s}'
+
+
+class UnknownProcessorTypeError(UnknownParserTypeError):
+    """Raise if no processors were found for given type."""
+
+
+class UnknownFileTypeError(BaseError):
+    """Raise if not parsers were found for given file path."""
+    _msg_fmt: str = 'No parser found for file: {!s}'
+
+# vim:sw=4:ts=4:et:

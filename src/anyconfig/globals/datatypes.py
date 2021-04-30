@@ -29,4 +29,8 @@ class IOInfo(typing.NamedTuple):
 
 IOI_KEYS: typing.Tuple[str, ...] = IOInfo._fields
 
+PathT = typing.Union[str, pathlib.Path]
+PathOrIOT = typing.Union[PathT, typing.IO]
+PathOrIOInfoT = typing.Union[PathT, IOInfo]
+
 # vim:sw=4:ts=4:et:

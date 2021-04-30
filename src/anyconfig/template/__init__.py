@@ -10,7 +10,7 @@ try:
 except ImportError:  # jinja2 may not be available.
     SUPPORTED = False  # type: ignore
 
-    def try_render(*_args, **_kwargs) -> None:
+    def try_render(*_args, **_kwargs) -> None:  # type: ignore
         """Dummy function does nothing but returns None.
         """
         return None

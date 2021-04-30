@@ -27,6 +27,6 @@ class IOInfo(typing.NamedTuple):
     extension: str
 
 
-IOI_KEYS: typing.Tuple[typing.Optional[typing.Any]] = IOInfo._fields
+IOI_KEYS: typing.Tuple[str, ...] = IOInfo._fields
 
 # vim:sw=4:ts=4:et:

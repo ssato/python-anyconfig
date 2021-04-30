@@ -8,7 +8,11 @@ import pathlib
 import unittest
 import unittest.mock
 
-import anyconfig.template as TT
+try:
+    import anyconfig.template.jinja2_ as TT
+except ImportError:
+    raise unittest.SkipTest('jinja2 does not look available.')
+
 import tests.common
 
 
@@ -31,10 +35,10 @@ def negate(value):
     return -value
 
 
-@unittest.skipIf(not TT.SUPPORTED, 'Template library is not available.')
 class TestCase(tests.common.TestCaseWithWorkdir):
 
     templates = TMPLS
+    curdir = str(pathlib.Path('..').resolve())
 
     def setUp(self):
         super().setUp()
@@ -75,24 +79,23 @@ class TestCase(tests.common.TestCaseWithWorkdir):
         try:
             TT.render(str(ng_t), ctx, ask=False)
             assert False  # force raising an exception.
-        except TT.TemplateNotFound:
+        except TT.jinja2.TemplateNotFound:
             pass
 
     def test_24_render__wo_paths(self):
-        if TT.SUPPORTED:
-            fname = self.templates[0][0]
-            workdir = pathlib.Path(self.workdir)
+        fname = self.templates[0][0]
+        workdir = pathlib.Path(self.workdir)
 
-            assert workdir / fname
+        assert workdir / fname
 
-            subdir = workdir / "a/b/c"
-            subdir.mkdir(parents=True)
+        subdir = workdir / "a/b/c"
+        subdir.mkdir(parents=True)
 
-            tmpl = subdir / fname
-            tmpl.write_text("{{ a|default('aaa') }}")
+        tmpl = subdir / fname
+        tmpl.write_text("{{ a|default('aaa') }}")
 
-            c_r = TT.render(str(tmpl))
-            self.assertEqual(c_r, "aaa")
+        c_r = TT.render(str(tmpl))
+        self.assertEqual(c_r, "aaa")
 
     def test_25_render__w_prefer_paths(self):
         workdir = pathlib.Path(self.workdir / 'a' / 'b' / 'c')

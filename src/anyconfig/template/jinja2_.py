@@ -11,60 +11,40 @@ Template rendering module for jinja2-based template config files.
 """
 from __future__ import absolute_import
 
-import codecs
-import locale
 import pathlib
 import os
 import typing
 import warnings
 
-import anyconfig.utils
+import jinja2
+import jinja2.exceptions
+
+from .. import globals as globals_, utils
 
 
-RENDER_S_OPTS = ['ctx', 'paths', 'filters']
+PathsT = typing.Union[
+    str,  # .. seealso:: jinja2.loaders.FileSystemLoader.__init__
+    globals_.PathT,
+    typing.Iterable[globals_.PathT]
+]
+
+MaybePathsT = typing.Optional[PathsT]
+MaybeContextT = typing.Optional[typing.Dict[str, typing.Any]]
+MaybeFiltersT = typing.Optional[typing.Iterable[typing.Callable]]
+
+RENDER_S_OPTS: typing.List[str] = ['ctx', 'paths', 'filters']
 RENDER_OPTS = RENDER_S_OPTS + ['ask']
-SUPPORTED = False
-try:
-    import jinja2
-    from jinja2.exceptions import TemplateNotFound
-
-    SUPPORTED = True
-
-    def tmpl_env(paths):
-        """
-        :param paths: A list of template search paths
-        """
-        return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
-
-except ImportError:
-    warnings.warn("Jinja2 is not available on your system, so "
-                  "template support will be disabled.")
-
-    class TemplateNotFound(RuntimeError):
-        """Dummy exception"""
-
-    def tmpl_env(*_args):
-        """Dummy function"""
-        return None
 
 
-def copen(filepath, flag='r', encoding=None):
-
+def tmpl_env(paths: PathsT) -> jinja2.Environment:
     """
-    FIXME: How to test this ?
-
-    >>> c = copen(__file__)
-    >>> c is not None
-    True
+    :param paths: A list of template search paths
     """
-    if encoding is None:
-        encoding = locale.getdefaultlocale()[1]
-
-    return codecs.open(filepath, flag, encoding)
+    return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
 
 
-def make_template_paths(template_file: pathlib.Path,
-                        paths: typing.Optional[str] = None
+def make_template_paths(template_file: PathsT,
+                        paths: MaybePathsT = None
                         ) -> typing.List[str]:
     """
     Make up a list of template search paths from given 'template_file'
@@ -90,12 +70,14 @@ def make_template_paths(template_file: pathlib.Path,
     """
     tmpldir = str(pathlib.Path(template_file).parent.resolve())
     if paths:
-        return [tmpldir] + paths
+        return [tmpldir] + list(paths)
 
     return [tmpldir]
 
 
-def render_s(tmpl_s, ctx=None, paths=None, filters=None):
+def render_s(tmpl_s: str, ctx: MaybeContextT = None,
+             paths: MaybePathsT = None, filters: MaybeFiltersT = None
+             ) -> str:
     """
     Compile and render given template string 'tmpl_s' with context 'context'.
 
@@ -108,15 +90,17 @@ def render_s(tmpl_s, ctx=None, paths=None, filters=None):
     >>> render_s("aaa") == "aaa"
     True
     >>> s = render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
-    >>> if SUPPORTED:
-    ...     assert s == 'a = 1, b = "bbb"'
+    >>> assert s == 'a = 1, b = "bbb"'
     """
     if paths is None:
         paths = [os.curdir]
 
-    env = tmpl_env(paths)
-
-    if env is None:
+    # .. seealso:: jinja2.environment._environment_sanity_check
+    try:
+        env = tmpl_env(paths)
+    except AssertionError as exc:
+        warnings.warn(f'Something went wrong with: paths={paths!r}, '
+                      f'exc={exc!s}')
         return tmpl_s
 
     if filters is not None:
@@ -125,10 +109,13 @@ def render_s(tmpl_s, ctx=None, paths=None, filters=None):
     if ctx is None:
         ctx = {}
 
-    return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
+    return typing.cast(jinja2.Environment, tmpl_env(paths)
+                       ).from_string(tmpl_s).render(**ctx)
 
 
-def render_impl(template_file, ctx=None, paths=None, filters=None):
+def render_impl(template_file: PathsT, ctx: MaybeContextT = None,
+                paths: MaybePathsT = None, filters: MaybeFiltersT = None
+                ) -> str:
     """
     :param template_file: Absolute or relative path to the template file
     :param ctx: Context dict needed to instantiate templates
@@ -138,7 +125,7 @@ def render_impl(template_file, ctx=None, paths=None, filters=None):
     env = tmpl_env(make_template_paths(template_file, paths))
 
     if env is None:
-        return copen(template_file).read()
+        return open(template_file).read()
 
     if filters is not None:
         env.filters.update(filters)
@@ -149,11 +136,9 @@ def render_impl(template_file, ctx=None, paths=None, filters=None):
     return env.get_template(pathlib.Path(template_file).name).render(**ctx)
 
 
-def render(filepath: str,
-           ctx: typing.Optional[typing.Mapping] = None,
-           paths: typing.Optional[str] = None,
-           ask: bool = False,
-           filters: typing.Optional[typing.Callable] = None):
+def render(filepath: str, ctx: MaybeContextT = None,
+           paths: MaybePathsT = None, ask: bool = False,
+           filters: MaybeFiltersT = None) -> str:
     """
     Compile and render template and return the result as a string.
 
@@ -167,7 +152,7 @@ def render(filepath: str,
     fpath = pathlib.Path(filepath)
     try:
         return render_impl(fpath, ctx, paths, filters)
-    except TemplateNotFound as mtmpl:
+    except jinja2.exceptions.TemplateNotFound as mtmpl:
         if not ask:
             raise
 
@@ -181,7 +166,9 @@ def render(filepath: str,
         return render_impl(usr_tmpl, ctx, paths, filters)
 
 
-def try_render(filepath=None, content=None, **options):
+def try_render(filepath: typing.Optional[str] = None,
+               content: typing.Optional[str] = None,
+               **options) -> typing.Optional[str]:
     """
     Compile and render template and return the result as a string.
 
@@ -193,16 +180,22 @@ def try_render(filepath=None, content=None, **options):
     if filepath is None and content is None:
         raise ValueError("Either 'path' or 'content' must be some value!")
 
-    tmpl_s = filepath or content[:10] + " ..."
     try:
         if content is None:
-            render_opts = anyconfig.utils.filter_options(RENDER_OPTS, options)
-            return render(filepath, **render_opts)
-        render_s_opts = anyconfig.utils.filter_options(RENDER_S_OPTS, options)
+            render_opts = utils.filter_options(RENDER_OPTS, options)
+            return render(typing.cast(str, filepath), **render_opts)
+
+        render_s_opts = utils.filter_options(RENDER_S_OPTS, options)
         return render_s(content, **render_s_opts)
-    except Exception as exc:
-        warnings.warn("Failed to compile '{}'. It may not be a template.{}"
-                      "exc={!r}".format(tmpl_s, os.linesep, exc))
+
+    except Exception as exc:  # pylint: disable=broad-except
+        if filepath:
+            tmpl_s = filepath
+        else:
+            tmpl_s = typing.cast(str, content)[:10] + " ..."
+
+        warnings.warn(f"Failed to compile '{tmpl_s!r}'. It may not be "
+                      f'a template.{os.linesep}, exc={exc!s}')
         return None
 
 # vim:sw=4:ts=4:et:

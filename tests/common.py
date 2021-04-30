@@ -75,15 +75,14 @@ def cleanup_workdir(workdir):
 
 
 class TestCaseWithWorkdir(unittest.TestCase):
+    curdir = str(pathlib.Path('.').resolve())
 
     def setUp(self):
         self.workdir = pathlib.Path(setup_workdir()).resolve()
 
     def tearDown(self):
         workdir = self.workdir
-        ng_dirs = ('/',
-                   str(self.workdir.home()),
-                   str(pathlib.Path('.').resolve()))
+        ng_dirs = ('/', str(self.workdir.home()), self.curdir)
 
         if str(workdir) not in ng_dirs:
             shutil.rmtree(workdir)

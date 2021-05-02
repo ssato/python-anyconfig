@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2017 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2017 Red Hat, Inc.
+# Copyright (C) 2017 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods

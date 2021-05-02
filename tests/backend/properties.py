@@ -1,7 +1,6 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2017 Red Hat, Inc.
-# License: MIT
+# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports

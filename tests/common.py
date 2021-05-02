@@ -1,6 +1,6 @@
 #
-# Copyright (C) 2011 - 2016 Satoru SATOH <ssato at redhat.com>
-# Copyright (C) 2017 - 2018 Satoru SATOH <satoru.satoh at gmail.com>
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
 r"""Common utilities for test cases.

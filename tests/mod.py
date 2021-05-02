@@ -1,7 +1,6 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2016 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
-# License: MIT
+# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
 import copy

@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2012 - 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # For 'anyconfig.open':

@@ -1,6 +1,6 @@
 #
-# Copyright (C) 2017 Satoru SATOH <ssato at redhat.com>
-# License: MIT
+# Copyright (C) 2017 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring, invalid-name
 from __future__ import absolute_import

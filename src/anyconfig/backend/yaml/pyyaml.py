@@ -36,8 +36,6 @@ Changelog:
    - Changed special keyword option 'ac_safe' from 'safe' to avoid
      possibility of option conflicts in the future.
 """
-from __future__ import absolute_import
-
 import yaml
 try:
     from yaml import CSafeLoader as Loader, CDumper as Dumper

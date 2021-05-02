@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-from __future__ import absolute_import
 
 import unittest
 import sys

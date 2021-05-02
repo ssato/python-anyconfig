@@ -1,10 +1,8 @@
 #
-# Copyright (C) - 2018, 2019 Satoru SATOH <satoru.satoh@gmail.com>
-# License: MIT
+# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
-from __future__ import absolute_import
-
 import os
 import tests.backend.common as TBC
 try:

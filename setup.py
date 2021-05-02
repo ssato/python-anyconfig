@@ -1,7 +1,5 @@
 """setup.py to build package.
 """
-from __future__ import absolute_import
-
 import os
 import pathlib
 import re

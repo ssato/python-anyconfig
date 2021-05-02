@@ -22,8 +22,6 @@ Changelog:
 
    - Exported from ..json.py
 """
-from __future__ import absolute_import
-
 import simplejson as json
 import anyconfig
 

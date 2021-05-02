@@ -4,8 +4,6 @@
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports
-from __future__ import absolute_import
-
 import unittest
 import anyconfig.backend.properties as TT
 import tests.backend.common as TBC

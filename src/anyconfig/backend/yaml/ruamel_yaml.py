@@ -35,8 +35,6 @@ Changelog:
    - Split from the common yaml backend and start to support ruamel.yaml
      specific features.
 """
-from __future__ import absolute_import
-
 import ruamel.yaml as ryaml
 import anyconfig.backend.base
 import anyconfig.utils

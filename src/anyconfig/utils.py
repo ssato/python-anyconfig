@@ -4,8 +4,6 @@
 #
 """Misc utility routines for anyconfig module.
 """
-from __future__ import absolute_import
-
 import collections.abc
 import functools
 import itertools

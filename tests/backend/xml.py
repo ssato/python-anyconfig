@@ -5,7 +5,6 @@
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports,protected-access
-from __future__ import absolute_import
 
 import io
 import unittest

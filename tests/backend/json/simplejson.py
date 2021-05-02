@@ -4,7 +4,6 @@
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports
-from __future__ import absolute_import
 
 try:
     import anyconfig.backend.json._simplejson as TT

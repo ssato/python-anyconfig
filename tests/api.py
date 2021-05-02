@@ -3,8 +3,6 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, no-member
-from __future__ import absolute_import
-
 import collections
 import copy
 import io

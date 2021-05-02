@@ -13,7 +13,6 @@ Changelog:
 
    - Started to split JSON support modules
 """
-from __future__ import absolute_import
 from . import default
 
 Parser = default.Parser  # To keep backward compatibility.

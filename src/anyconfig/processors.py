@@ -9,8 +9,6 @@ r"""Abstract processor module.
 
    - Add to abstract processors such like Parsers (loaders and dumpers).
 """
-from __future__ import absolute_import
-
 import operator
 import pkg_resources
 

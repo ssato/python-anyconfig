@@ -18,8 +18,6 @@ Changelog:
    - Added an experimental parser for simple shelll vars' definitions w/o shell
      variable expansions nor complex shell statements like conditionals.
 """
-from __future__ import absolute_import
-
 import itertools
 import os
 import re

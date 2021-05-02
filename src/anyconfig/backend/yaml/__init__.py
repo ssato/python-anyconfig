@@ -14,8 +14,6 @@ Changelog:
    - Split PyYaml-based and ruamel.yaml based backend modules
    - Add support of some of ruamel.yaml specific features.
 """
-from __future__ import absolute_import
-
 try:
     from . import pyyaml
     PARSERS = [pyyaml.Parser]

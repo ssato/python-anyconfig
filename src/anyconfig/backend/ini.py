@@ -30,8 +30,6 @@ Changelog:
    - Introduce 'ac_parse_value' keyword option to switch behaviors, same as
      original configparser and rich backend parsing each parameter values.
 """
-from __future__ import absolute_import
-
 import configparser
 import os
 import anyconfig.backend.base

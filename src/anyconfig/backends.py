@@ -6,8 +6,6 @@
 # pylint: disable=wrong-import-position
 """A module to aggregate config parser (loader/dumper) backends.
 """
-from __future__ import absolute_import
-
 import warnings
 
 import anyconfig.ioinfo

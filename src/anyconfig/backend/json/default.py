@@ -32,8 +32,6 @@ Changelog:
 
 .. versionadded:: 0.0.1
 """
-from __future__ import absolute_import
-
 import json
 import anyconfig.backend.base
 

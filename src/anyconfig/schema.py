@@ -20,7 +20,6 @@
 .. versionadded:: 0.0.10
    Added new API :func:`validate` to validate config with JSON schema
 """
-from __future__ import absolute_import
 try:
     import jsonschema
     JSONSCHEMA_IS_AVAIL = True

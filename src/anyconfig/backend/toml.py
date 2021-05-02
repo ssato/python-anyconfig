@@ -19,8 +19,6 @@ Changelog:
 
     .. versionadded:: 0.1.0
 """
-from __future__ import absolute_import
-
 import toml
 import anyconfig.backend.base
 from anyconfig.backend.base import to_method

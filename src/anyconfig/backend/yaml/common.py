@@ -4,7 +4,6 @@
 #
 r"""Common parts for YAML backends:
 """
-from __future__ import absolute_import
 import anyconfig.backend.base
 
 

@@ -4,8 +4,6 @@
 #
 """CLI frontend module for anyconfig.
 """
-from __future__ import absolute_import, print_function
-
 import argparse
 import io
 import locale

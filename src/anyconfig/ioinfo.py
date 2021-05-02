@@ -16,7 +16,6 @@ r"""Functions for value objects represent inputs and outputs.
   attributes like input and output type (path, stream or pathlib.Path object),
   path, opener, etc.
 """
-from __future__ import absolute_import
 
 import pathlib
 

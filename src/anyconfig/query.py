@@ -12,7 +12,6 @@ Changelog:
 
    - Added to query config data with JMESPath expression, http://jmespath.org
 """
-from __future__ import absolute_import
 try:
     import jmespath
 except ImportError:

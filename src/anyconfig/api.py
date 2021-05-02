@@ -78,8 +78,6 @@ r"""Public APIs of anyconfig module.
 
    - Export factory method (create) of anyconfig.mergeabledict.MergeableDict
 """
-from __future__ import absolute_import
-
 import warnings
 
 # Import some global constants will be re-exported:

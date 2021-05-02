@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2015 Satoru SATOH <ssato @ redhat.com>
+# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring, protected-access, invalid-name
@@ -23,7 +23,7 @@ class Test00(unittest.TestCase):
         self.psr = TT.Parser()
 
     def test_10_type(self):
-        self.assertEqual(self.psr.type(), TT.Parser._type)
+        self.assertEqual(self.psr.type(), str(TT.Parser._type))
 
     def test_20_loads__null_content(self):
         cnf = self.psr.loads('')

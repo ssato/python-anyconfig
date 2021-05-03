@@ -5,7 +5,12 @@
 # pylint: disable=missing-docstring, invalid-name, protected-access
 # pylint: disable=bare-except
 import unittest
-import anyconfig.schema as TT
+
+try:
+    import anyconfig.schema.jsonschema_ as TT
+    SUPPORTED: bool = True
+except ImportError:
+    SUPPORTED: bool = False  # type: ignore
 
 
 class Test_00_Base(unittest.TestCase):
@@ -24,7 +29,7 @@ class Test_00_Base(unittest.TestCase):
                                     'type': 'object'}},
                'type': 'object'}
 
-    opts = dict(ac_schema_typemap=TT._SIMPLETYPE_MAP)
+    opts = dict(ac_schema_typemap=SUPPORTED)
 
 
 class Test_00_Functions(Test_00_Base):
@@ -45,8 +50,7 @@ class Test_00_Functions(Test_00_Base):
         self.assertEqual(scm, ref, scm)
 
 
-@unittest.skipIf(not TT.JSONSCHEMA_IS_AVAIL,
-                 "json schema lib is not available")
+@unittest.skipIf(not SUPPORTED, "json schema lib is not available")
 class Test_10_Validation(Test_00_Base):
 
     def test_10_validate(self):
@@ -64,8 +68,7 @@ class Test_10_Validation(Test_00_Base):
                           {'a': "aaa"}, self.schema, ac_schema_safe=False)
 
 
-@unittest.skipIf(not TT.JSONSCHEMA_IS_AVAIL,
-                 "json schema lib is not available")
+@unittest.skipIf(not SUPPORTED, "json schema lib is not available")
 class Test_12_Validation_Errors(Test_00_Base):
 
     obj = dict(a=1, b=2.0)

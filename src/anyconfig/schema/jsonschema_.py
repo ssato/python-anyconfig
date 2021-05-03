@@ -2,44 +2,27 @@
 # Copyright (C) 2015 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""anyconfig.schema module.
+"""Implementation using jsonschema provides the following functions.
 
-.. versionchanged:: 0.9.4
-   Change parameter passed to :func:`validate`, s/.*safe/ac_schema_safe/g
+- validate(data: typing.Dict[str, typing.Any],
+           schema: typing.Dict[str, typing.Any],
+           ac_schema_safe: bool = True, ac_schema_errors: bool = False,
+           **options) -> typing.Tuple[bool, str]:
+  validate with schema
 
-.. versionchanged:: 0.8.3
-   Replace format_checker with cls option
-
-.. versionchanged:: 0.7.0
-   allow passing 'ac_schema_strict' to API :func:`gen_schema` to generate more
-   strict and precise JSON schema object
-
-.. versionadded:: 0.0.11
-   Added new API :func:`gen_schema` to generate schema object
-
-.. versionadded:: 0.0.10
-   Added new API :func:`validate` to validate config with JSON schema
+- gen_schema(data: typing.Dict[str, typing.Any],
+             **options) -> typing.Dict[str, typing.Any]:
+  Generate an object represents a schema
 """
-try:
-    import jsonschema
-    JSONSCHEMA_IS_AVAIL = True
-except ImportError:
-    JSONSCHEMA_IS_AVAIL = False
+import typing
 
-import anyconfig.utils
+import jsonschema
 
-
-_NA_MSG = "Validation module (jsonschema) is not available"
-
-_SIMPLETYPE_MAP = {list: "array", tuple: "array",
-                   bool: "boolean",
-                   int: "integer", float: "number",
-                   dict: "object",
-                   str: "string"}
-_SIMPLE_TYPES = (bool, int, float, str)
+from .. import utils
+from .common import DataT, ResultT
 
 
-def _validate_all(data, schema):
+def _validate_all(data: DataT, schema: DataT, **_options) -> ResultT:
     """
     See the descritpion of :func:`validate` for more details of parameters and
     return value.
@@ -53,7 +36,8 @@ def _validate_all(data, schema):
     return (not errors, [err.message for err in errors])
 
 
-def _validate(data, schema, ac_schema_safe=True, **options):
+def _validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+              **options: typing.Any) -> ResultT:
     """
     See the descritpion of :func:`validate` for more details of parameters and
     return value.
@@ -74,8 +58,9 @@ def _validate(data, schema, ac_schema_safe=True, **options):
     return (True, '')
 
 
-def validate(data, schema, ac_schema_safe=True, ac_schema_errors=False,
-             **options):
+def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+             ac_schema_errors: bool = False, **options: typing.Any
+             ) -> ResultT:
     """
     Validate target object with given schema object, loaded from JSON schema.
 
@@ -96,14 +81,17 @@ def validate(data, schema, ac_schema_safe=True, ac_schema_errors=False,
 
     :return: (True if validation succeeded else False, error message[s])
     """
-    if not JSONSCHEMA_IS_AVAIL:
-        return (True, _NA_MSG)
-
-    options = anyconfig.utils.filter_options(("cls", ), options)
+    options = utils.filter_options(('cls', ), options)
     if ac_schema_errors:
         return _validate_all(data, schema, **options)
 
     return _validate(data, schema, ac_schema_safe, **options)
+
+
+_SIMPLETYPE_MAP: typing.Dict[typing.Any, str] = {
+    list: 'array', tuple: 'array', bool: 'boolean', int: 'integer', float:
+    'number', dict: 'object', str: 'string'
+}
 
 
 def _process_options(**options):
@@ -112,11 +100,11 @@ def _process_options(**options):
 
     :return: A tuple of (typemap :: dict, strict :: bool)
     """
-    return (options.get("ac_schema_typemap", _SIMPLETYPE_MAP),
-            bool(options.get("ac_schema_strict", False)))
+    return (options.get('ac_schema_typemap', _SIMPLETYPE_MAP),
+            bool(options.get('ac_schema_strict', False)))
 
 
-def array_to_schema(arr, **options):
+def array_to_schema(iarr: typing.Iterable[DataT], **options) -> DataT:
     """
     Generate a JSON schema object with type annotation added for given object.
 
@@ -130,18 +118,20 @@ def array_to_schema(arr, **options):
     """
     (typemap, strict) = _process_options(**options)
 
-    arr = list(arr)
-    scm = dict(type=typemap[list],
-               items=gen_schema(arr[0] if arr else "str", **options))
+    arr: typing.List[DataT] = list(iarr)
+    scm = {
+        'type': typemap[list],
+        'items': gen_schema(arr[0] if arr else "str", **options)
+    }
     if strict:
         nitems = len(arr)
-        scm["minItems"] = nitems
-        scm["uniqueItems"] = len(set(arr)) == nitems
+        scm['minItems'] = nitems
+        scm['uniqueItems'] = len(set(arr)) == nitems
 
     return scm
 
 
-def object_to_schema(obj, **options):
+def object_to_schema(obj: DataT, **options) -> DataT:
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -157,14 +147,18 @@ def object_to_schema(obj, **options):
     (typemap, strict) = _process_options(**options)
 
     props = dict((k, gen_schema(v, **options)) for k, v in obj.items())
-    scm = dict(type=typemap[dict], properties=props)
+    scm = {'type': typemap[dict], 'properties': props}
     if strict:
         scm["required"] = sorted(props.keys())
 
     return scm
 
 
-def gen_schema(data, **options):
+_SIMPLE_TYPES = (bool, int, float, str)
+MaybeDataT = typing.Union[DataT, bool, int, float, str, None]
+
+
+def gen_schema(data: MaybeDataT, **options) -> DataT:
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -178,19 +172,20 @@ def gen_schema(data, **options):
     :return: A dict represents JSON schema of this node
     """
     if data is None:
-        return dict(type="null")
+        return {'type': 'null'}
 
     _type = type(data)
 
     if _type in _SIMPLE_TYPES:
         typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
-        scm = dict(type=typemap[_type])
+        scm = {'type': typemap[_type]}
 
-    elif anyconfig.utils.is_dict_like(data):
-        scm = object_to_schema(data, **options)
+    elif utils.is_dict_like(data):
+        scm = object_to_schema(data, **options)  # type: ignore
 
-    elif anyconfig.utils.is_list_like(data):
-        scm = array_to_schema(data, **options)
+    elif utils.is_list_like(data):
+        scm = array_to_schema(typing.cast(typing.Iterable[DataT], data),
+                              **options)
 
     return scm
 

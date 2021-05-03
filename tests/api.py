@@ -153,7 +153,7 @@ class Test_20_dumps_and_loads(TestBase):
         self.assertEqual(cnf_2["b"]["b"], CNF_0["b"]["b"])
         self.assertEqual(cnf_2["b"]["c"], CNF_0["b"]["c"])
 
-    @unittest.skipIf(not anyconfig.schema.JSONSCHEMA_IS_AVAIL,
+    @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                      "json schema lib is not available")
     def test_49_loads_w_validation_error(self):
         cnf_s = """{"a": "aaa"}"""
@@ -267,7 +267,7 @@ class Test_30_single_load(TestBaseWithIO):
         cnf2 = TT.single_load(a2_path, ac_template=True)
         self.assertEqual(cnf2["a"], 1)
 
-    @unittest.skipIf(not anyconfig.schema.JSONSCHEMA_IS_AVAIL,
+    @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                      "json schema lib is not available")
     def test_19_dump_and_single_load_with_validation(self):
         cnf = CNF_0

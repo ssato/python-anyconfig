@@ -24,29 +24,26 @@ class Processor:
        This class ifself is not a singleton but its children classes should so
        in most cases, I think.
     """
-    _cid: typing.Optional[str] = None
-    _type: typing.Optional[str] = None
+    _cid: str = ''
+    _type: str = ''
     _priority: int = 0   # 0 (lowest priority) .. 99  (highest priority)
     _extensions: typing.List[str] = []
 
     @classmethod
     def cid(cls) -> str:
-        """Processor class ID
+        """Processor class ID.
         """
-        return typing.cast(
-            str,
-            repr(cls) if getattr(cls, "_cid", None) is None else cls._cid
-        )
+        return cls._cid
 
     @classmethod
     def type(cls) -> str:
-        """Processors' type
+        """Processors' type.
         """
         return str(cls._type)
 
     @classmethod
     def priority(cls) -> int:
-        """Processors's priority
+        """Processors's priority.
         """
         return cls._priority
 
@@ -58,9 +55,13 @@ class Processor:
 
     @classmethod
     def __eq__(cls, other) -> bool:
+        """Test equality.
+        """
         return cls.cid() == other.cid()
 
     def __str__(self) -> str:
+        """A string repr.
+        """
         return (
             f'<Processor cid={self.cid()}, type={self.type()}, '
             f'prio={self.priority()}, extensions={self.extensions()!r}'

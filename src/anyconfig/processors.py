@@ -21,9 +21,13 @@ from anyconfig.globals import (
 )
 
 
-def _load_plugins_itr(pgroup, safe=True):
+def load_plugins(pgroup: str, safe: bool = True):
     """
-    .. seealso:: the doc of :func:`load_plugins`
+    Generator to yield a :class:`anyconfig.models.processor.Processor` object.
+
+    :param pgroup: A string represents plugin type, e.g. anyconfig_backends
+    :param safe: Do not raise ImportError during load if True
+    :raises: ImportError
     """
     for res in pkg_resources.iter_entry_points(pgroup):
         try:
@@ -32,15 +36,6 @@ def _load_plugins_itr(pgroup, safe=True):
             if safe:
                 continue
             raise
-
-
-def load_plugins(pgroup, safe=True):
-    """
-    :param pgroup: A string represents plugin type, e.g. anyconfig_backends
-    :param safe: Do not raise ImportError during load if True
-    :raises: ImportError
-    """
-    return list(_load_plugins_itr(pgroup, safe=safe))
 
 
 def sort_by_prio(prs):
@@ -235,23 +230,24 @@ class Processors:
         """
         self._processors = dict()  # {<processor_class_id>: <processor_class>}
         if processors is not None:
-            self.register(*processors)
+            for pcls in processors:
+                self.register(pcls)
 
         self.load_plugins()
 
-    def register(self, *pclss):
+    def register(self, pcls):
         """
-        :param pclss: A list of :class:`Processor` or its children classes
+        :param pclss: :class:`Processor` or its children classes
         """
-        for pcls in pclss:
-            if pcls.cid() not in self._processors:
-                self._processors[pcls.cid()] = pcls
+        if pcls.cid() not in self._processors:
+            self._processors[pcls.cid()] = pcls
 
     def load_plugins(self):
         """Load and register pluggable processor classes internally.
         """
         if self._pgroup:
-            self.register(*load_plugins(self._pgroup))
+            for pcls in load_plugins(self._pgroup):
+                self.register(pcls)
 
     def list(self, sort=False):
         """

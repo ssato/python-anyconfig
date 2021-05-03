@@ -6,6 +6,7 @@
 # pylint: disable=wrong-import-position
 """A module to aggregate config parser (loader/dumper) backends.
 """
+import typing
 import warnings
 
 import anyconfig.ioinfo
@@ -22,11 +23,15 @@ import anyconfig.backend.shellvars
 import anyconfig.backend.yaml
 import anyconfig.backend.xml
 
+ParserTVar = typing.TypeVar('ParserTVar', bound=anyconfig.backend.base.Parser)
+ParsersT = typing.List[ParserTVar]
 
-PARSERS = [anyconfig.backend.ini.Parser,
-           anyconfig.backend.pickle.Parser,
-           anyconfig.backend.properties.Parser,
-           anyconfig.backend.shellvars.Parser, anyconfig.backend.xml.Parser]
+PARSERS: ParsersT = [
+    anyconfig.backend.ini.Parser,
+    anyconfig.backend.pickle.Parser,
+    anyconfig.backend.properties.Parser,
+    anyconfig.backend.shellvars.Parser, anyconfig.backend.xml.Parser
+]
 
 PARSERS.extend(anyconfig.backend.json.PARSERS)
 
@@ -49,9 +54,9 @@ class Parsers(anyconfig.processors.Processors,
     """
     Manager class for parsers.
     """
-    _pgroup = "anyconfig_backends"
+    _pgroup: str = "anyconfig_backends"
 
-    def __init__(self, processors=None):
+    def __init__(self, processors: typing.Optional[ParsersT] = None) -> None:
         """Initialize with PARSERS.
         """
         if processors is None:

@@ -13,10 +13,16 @@ Changelog:
 
    - Started to split JSON support modules
 """
+import typing
+
+import anyconfig.backend.base
 from . import default
 
+
+ParserTVar = typing.TypeVar('ParserTVar', bound=anyconfig.backend.base.Parser)
+
 Parser = default.Parser  # To keep backward compatibility.
-PARSERS = [Parser]
+PARSERS: typing.List[ParserTVar] = [Parser]
 
 try:
     from ._simplejson import Parser as SimpleJsonParser

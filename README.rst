@@ -14,14 +14,9 @@ python-anyconfig
    :target: https://pypi.python.org/pypi/anyconfig/
    :alt: MIT License
 
-.. image:: https://img.shields.io/travis/ssato/python-anyconfig.svg
-   :target: https://travis-ci.org/ssato/python-anyconfig
-   :alt: [Test status]
-
 .. image:: https://github.com/ssato/python-anyconfig/workflows/Tests/badge.svg
    :target: https://github.com/ssato/python-anyconfig/actions?query=workflow%3ATests
    :alt: [Github Actions: Test status]
-
 
 .. image:: https://img.shields.io/coveralls/ssato/python-anyconfig.svg
    :target: https://coveralls.io/r/ssato/python-anyconfig

@@ -193,7 +193,6 @@ def findall(obj, prs, forced_type=None,
     return pclss
 
 
-# pylint: enable=unused-argument
 def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
     """
     :param obj:

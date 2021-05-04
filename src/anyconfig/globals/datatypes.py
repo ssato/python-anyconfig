@@ -9,19 +9,18 @@ import pathlib
 import typing
 
 
-IOI_NONE = None
 IOI_PATH_STR: str = 'path'
 IOI_PATH_OBJ: str = 'pathlib.Path'
 IOI_STREAM: str = 'stream'
 
-IOI_TYPES: typing.FrozenSet[typing.Optional[str]] = frozenset(
-    (IOI_NONE, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM)
+IOI_TYPES: typing.FrozenSet[str] = frozenset(
+    (IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM)
 )
 
 
 class IOInfo(typing.NamedTuple):
     """Equivalent to collections.namedtuple."""
-    src: typing.Optional[typing.Union[str, pathlib.Path, typing.IO]]
+    src: typing.Union[str, pathlib.Path, typing.IO]
     type: str
     path: str
     extension: str

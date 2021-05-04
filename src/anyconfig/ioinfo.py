@@ -16,18 +16,21 @@ r"""Functions for value objects represent inputs and outputs.
   attributes like input and output type (path, stream or pathlib.Path object),
   path, opener, etc.
 """
-
 import pathlib
+import typing
 
 import anyconfig.utils
 
 from anyconfig.globals import (
-    IOInfo, IOI_NONE, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
+    IOInfo, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
     UnknownFileTypeError
 )
 
 
-def guess_io_type(obj):
+IoiTypeT = str
+
+
+def guess_io_type(obj: typing.Any) -> IoiTypeT:
     """Guess input or output type of 'obj'.
 
     :param obj: a path string, a pathlib.Path or a file / file-like object
@@ -42,8 +45,6 @@ def guess_io_type(obj):
         ...
     ValueError: ...
     """
-    if obj is None:
-        return IOI_NONE
     if anyconfig.utils.is_path(obj):
         return IOI_PATH_STR
     if anyconfig.utils.is_path_obj(obj):
@@ -54,7 +55,8 @@ def guess_io_type(obj):
     raise ValueError("Unknown I/O type object: {!r}".format(obj))
 
 
-def inspect_io_obj(obj, itype):
+def inspect_io_obj(obj: typing.Any, itype: IoiTypeT
+                   ) -> typing.Tuple[str, str]:
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
 
@@ -68,18 +70,16 @@ def inspect_io_obj(obj, itype):
         ext = path.suffix[1:]
 
     elif itype == IOI_STREAM:
-        ipath = anyconfig.utils.get_path_from_stream(obj)
-        ext = anyconfig.utils.get_file_extension(ipath) if ipath else None
+        ipath = anyconfig.utils.get_path_from_stream(obj) or ''
+        ext = anyconfig.utils.get_file_extension(ipath) if ipath else ''
 
-    elif itype == IOI_NONE:
-        ipath = ext = None
     else:
         raise UnknownFileTypeError("%r" % obj)
 
     return (ipath, ext)
 
 
-def make(obj):
+def make(obj: typing.Any) -> IOInfo:
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
     :return:

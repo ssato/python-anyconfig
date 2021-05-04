@@ -11,7 +11,7 @@ import anyconfig.ioinfo as TT
 import anyconfig.utils
 
 from anyconfig.globals import (
-    IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM, IOI_NONE
+    IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM
 )
 
 import tests.common as TC
@@ -27,7 +27,6 @@ class Test_00(unittest.TestCase):
     def test_10_guess_io_type(self):
         this = pathlib.Path(__file__)
 
-        self.assertEqual(TT.guess_io_type(None), IOI_NONE)
         self.assertEqual(TT.guess_io_type(str(this)), IOI_PATH_STR)
         self.assertEqual(TT.guess_io_type(this), IOI_PATH_OBJ)
 
@@ -47,8 +46,8 @@ class Test_10_inspect_io_obj(unittest.TestCase):
     def test_22_stream(self):
         stdin = os.fdopen(0)
         res = TT.inspect_io_obj(stdin, IOI_STREAM)
-        self.assertEqual(res[0], None)
-        self.assertEqual(res[1], None)
+        self.assertEqual(res[0], '')
+        self.assertEqual(res[1], '')
 
     def test_30_path_obj(self):
         ipo = pathlib.Path(IPATH_0)

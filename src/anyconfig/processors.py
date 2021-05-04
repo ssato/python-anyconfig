@@ -30,7 +30,7 @@ ProcClsT = typing.Type[ProcT]
 
 def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
     """
-    A generator function to yield an instance of
+    A generator function to yield a class object of
     :class:`anyconfig.models.processor.Processor`.
 
     :param pgroup: A string represents plugin type, e.g. anyconfig_backends

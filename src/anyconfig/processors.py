@@ -10,6 +10,9 @@ r"""Abstract processor module.
    - Add to abstract processors such like Parsers (loaders and dumpers).
 """
 import operator
+import typing
+import warnings
+
 import pkg_resources
 
 import anyconfig.ioinfo
@@ -21,21 +24,22 @@ from anyconfig.globals import (
 )
 
 
-def load_plugins(pgroup: str, safe: bool = True):
+ProcT = typing.TypeVar('ProcT', bound=anyconfig.models.processor.Processor)
+ProcClsT = typing.Type[ProcT]
+
+
+def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
     """
-    Generator to yield a :class:`anyconfig.models.processor.Processor` object.
+    A generator function to yield an instance of
+    :class:`anyconfig.models.processor.Processor`.
 
     :param pgroup: A string represents plugin type, e.g. anyconfig_backends
-    :param safe: Do not raise ImportError during load if True
-    :raises: ImportError
     """
     for res in pkg_resources.iter_entry_points(pgroup):
         try:
             yield res.load()
-        except ImportError:
-            if safe:
-                continue
-            raise
+        except ImportError as exc:
+            warnings.warn(f'Failed to load plugin, exc={exc!s}')
 
 
 def sort_by_prio(prs):

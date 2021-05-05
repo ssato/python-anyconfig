@@ -5,14 +5,20 @@
 """Misc parsers
 """
 import re
+import typing
+import warnings
 
 
-INT_PATTERN = re.compile(r"^(\d|([1-9]\d+))$")
-BOOL_PATTERN = re.compile(r"^(true|false)$", re.I)
-STR_PATTERN = re.compile(r"^['\"](.*)['\"]$")
+INT_PATTERN: typing.Pattern = re.compile(r"^(\d|([1-9]\d+))$")
+BOOL_PATTERN: typing.Pattern = re.compile(r"^(true|false)$", re.I)
+STR_PATTERN: typing.Pattern = re.compile(r"^['\"](.*)['\"]$")
 
 
-def parse_single(str_):
+PrimitiveT = typing.Union[str, int, bool]
+PrimitivesT = typing.List[PrimitiveT]
+
+
+def parse_single(str_: str) -> PrimitiveT:
     """
     Very simple parser to parse expressions represent some single values.
 
@@ -58,7 +64,7 @@ def parse_single(str_):
     return str_
 
 
-def parse_list(str_, sep=","):
+def parse_list(str_: str, sep: str = ',') -> PrimitivesT:
     """
     Simple parser to parse expressions reprensent some list values.
 
@@ -80,7 +86,11 @@ def parse_list(str_, sep=","):
     return [parse_single(x) for x in str_.split(sep) if x]
 
 
-def attr_val_itr(str_, avs_sep=":", vs_sep=",", as_sep=";"):
+AttrValsT = typing.Tuple[str, typing.Union[PrimitivesT, PrimitiveT]]
+
+
+def attr_val_itr(str_: str, avs_sep: str = ':', vs_sep: str = ',',
+                 as_sep: str = ';') -> typing.Iterator[AttrValsT]:
     """
     Atrribute and value pair parser.
 
@@ -90,19 +100,26 @@ def attr_val_itr(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     :param as_sep: char to separate attributes
     """
     for rel in parse_list(str_, as_sep):
+        rel = typing.cast(str, rel)
         if avs_sep not in rel or rel.endswith(avs_sep):
             continue
 
-        (_attr, _values) = parse_list(rel, avs_sep)
+        (_attr, _values, *_rest) = parse_list(rel, avs_sep)
+
+        if _rest:
+            warnings.warn(f'Extra strings {_rest!s} in {rel!s}'
+                          f'It should be in the form of attr{avs_sep}value.')
+
+        _attr = typing.cast(str, _attr)
 
         if vs_sep in str(_values):
-            _values = parse_list(_values, vs_sep)
+            yield (_attr, parse_list(typing.cast(str, _values), vs_sep))
+        elif _values:
+            yield (_attr, typing.cast(PrimitiveT, _values))
 
-        if _values:
-            yield (_attr, _values)
 
-
-def parse_attrlist_0(str_, avs_sep=":", vs_sep=",", as_sep=";"):
+def parse_attrlist_0(str_: str, avs_sep: str = ':', vs_sep: str = ',',
+                     as_sep: str = ';') -> typing.List[AttrValsT]:
     """
     Simple parser to parse expressions in the form of
     [ATTR1:VAL0,VAL1,...;ATTR2:VAL0,VAL2,..].
@@ -129,7 +146,11 @@ def parse_attrlist_0(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     return list(attr_val_itr(str_, avs_sep, vs_sep, as_sep))
 
 
-def parse_attrlist(str_, avs_sep=":", vs_sep=",", as_sep=";"):
+AttrValsDictT = typing.Dict[str, typing.Union[PrimitivesT, PrimitiveT]]
+
+
+def parse_attrlist(str_: str, avs_sep: str = ':', vs_sep: str = ',',
+                   as_sep: str = ';') -> AttrValsDictT:
     """
     Simple parser to parse expressions in the form of
     [ATTR1:VAL0,VAL1,...;ATTR2:VAL0,VAL2,..].
@@ -145,7 +166,15 @@ def parse_attrlist(str_, avs_sep=":", vs_sep=",", as_sep=";"):
     return dict(parse_attrlist_0(str_, avs_sep, vs_sep, as_sep))
 
 
-def parse(str_, lsep=",", avsep=":", vssep=",", avssep=";"):
+ResultsT = typing.Union[
+    PrimitiveT,
+    PrimitivesT,
+    AttrValsDictT
+]
+
+
+def parse(str_: str, lsep: str = ',', avsep: str = ':', vssep: str = ',',
+          avssep: str = ';') -> ResultsT:
     """Generic parser"""
     if avsep in str_:
         return parse_attrlist(str_, avsep, vssep, avssep)

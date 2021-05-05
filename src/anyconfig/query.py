@@ -12,13 +12,20 @@ Changelog:
 
    - Added to query config data with JMESPath expression, http://jmespath.org
 """
+import typing
+
 try:
     import jmespath
 except ImportError:
     pass
 
 
-def query(data, jexp, **_options):
+DataT = typing.Mapping[str, typing.Any]
+
+
+def query(data: DataT, jexp: str, **_options
+          ) -> typing.Tuple[typing.Optional[DataT],
+                            typing.Optional[Exception]]:
     """
     Filter data with given JMESPath expression.
 
@@ -30,7 +37,7 @@ def query(data, jexp, **_options):
 
     :return: A tuple of query result and maybe exception if failed
     """
-    exc = None
+    exc: typing.Optional[Exception] = None
     try:
         pexp = jmespath.compile(jexp)
         return (pexp.search(data), exc)

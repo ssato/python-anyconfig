@@ -44,7 +44,7 @@ def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
             warnings.warn(f'Failed to load plugin, exc={exc!s}')
 
 
-def sort_by_prio(prs: ProcClssT) -> ProcClssT:
+def sort_by_prio(prs: typing.Iterable[ProcClsT]) -> ProcClssT:
     """
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: Sambe as above but sorted by priority

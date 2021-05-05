@@ -17,7 +17,11 @@ import typing
 import anyconfig.globals
 
 
-def groupby(itr, key_fn=None):
+def groupby(itr: typing.Iterable[typing.Any],
+            key_fn: typing.Optional[typing.Callable[..., typing.Any]] = None
+            ) -> typing.Iterable[
+                typing.Tuple[typing.Any, typing.Iterable[typing.Any]]
+            ]:
     """
     An wrapper function around itertools.groupby to sort each results.
 
@@ -33,7 +37,7 @@ def groupby(itr, key_fn=None):
     return itertools.groupby(sorted(itr, key=key_fn), key=key_fn)
 
 
-def get_file_extension(file_path):
+def get_file_extension(file_path: str) -> str:
     """
     >>> get_file_extension("/a/b/c")
     ''
@@ -49,7 +53,7 @@ def get_file_extension(file_path):
     return ""
 
 
-def is_iterable(obj):
+def is_iterable(obj: typing.Any) -> bool:
     """
     >>> is_iterable([])
     True
@@ -74,7 +78,8 @@ def is_iterable(obj):
          bool(getattr(obj, "next", False)))
 
 
-def concat(xss):
+def concat(xss: typing.Iterable[typing.Iterable[typing.Any]]
+           ) -> typing.List[typing.Any]:
     """
     Concatenates a list of lists.
 
@@ -96,7 +101,7 @@ def concat(xss):
     return list(itertools.chain.from_iterable(xs for xs in xss))
 
 
-def is_path(obj):
+def is_path(obj: typing.Any) -> bool:
     """
     Is given object 'obj' a file path?
 
@@ -106,7 +111,7 @@ def is_path(obj):
     return isinstance(obj, str)
 
 
-def is_path_obj(obj):
+def is_path_obj(obj: typing.Any) -> bool:
     """Is given object 'input' a pathlib.Path object?
 
     :param obj: a pathlib.Path object or something
@@ -119,7 +124,7 @@ def is_path_obj(obj):
     return isinstance(obj, pathlib.Path)
 
 
-def is_file_stream(obj):
+def is_file_stream(obj: typing.Any) -> bool:
     """Is given object 'input' a file stream (file/file-like object)?
 
     :param obj: a file / file-like (stream) object or something
@@ -131,7 +136,7 @@ def is_file_stream(obj):
     return getattr(obj, "read", False)
 
 
-def is_ioinfo(obj):
+def is_ioinfo(obj: typing.Any) -> bool:
     """
     :return: True if given 'obj' is a 'IOInfo' namedtuple object.
 
@@ -145,13 +150,14 @@ def is_ioinfo(obj):
     ...                                "/etc/hosts", None)
     >>> assert is_ioinfo(inp)
     """
-    if isinstance(obj, tuple) and getattr(obj, "_asdict", False):
+    if isinstance(obj, tuple) and getattr(obj, '_asdict', False):
+        obj = typing.cast(anyconfig.globals.IOInfo, obj)
         return all(k in obj._asdict() for k in anyconfig.globals.IOI_KEYS)
 
     return False
 
 
-def is_stream_ioinfo(obj):
+def is_stream_ioinfo(obj: typing.Any) -> bool:
     """
     :param obj: IOInfo object or something
     :return: True if given IOInfo object 'obj' is of file / file-like object
@@ -164,7 +170,7 @@ def is_stream_ioinfo(obj):
     return getattr(obj, "type", None) == anyconfig.globals.IOI_STREAM
 
 
-def is_path_like_object(obj, marker='*'):
+def is_path_like_object(obj: typing.Any, marker: str = '*') -> bool:
     """
     Is given object 'obj' a path string, a pathlib.Path, a file / file-like
     (stream) or IOInfo namedtuple object?
@@ -189,7 +195,7 @@ def is_path_like_object(obj, marker='*'):
             is_file_stream(obj) or is_ioinfo(obj))
 
 
-def is_paths(maybe_paths, marker='*'):
+def is_paths(maybe_paths: typing.Any, marker: str = '*') -> bool:
     """
     Does given object 'maybe_paths' consist of path or path pattern strings?
     """
@@ -254,7 +260,7 @@ def split_path_by_marker(path: str, marker: str = '*',
     if sep not in path:
         return (None, path)
 
-    return split_re(marker, sep=sep).match(path).groups()
+    return split_re(marker, sep=sep).match(path).groups()  # type: ignore
 
 
 PathOrIO = typing.Union[pathlib.Path, typing.IO]
@@ -287,10 +293,12 @@ def expand_paths_itr(paths: typing.Union[str, pathlib.Path,
             yield path
 
     elif is_file_stream(paths):
-        yield paths
+        yield typing.cast(typing.IO, paths)
 
     elif is_ioinfo(paths):
-        yield pathlib.Path(paths.path)
+        yield pathlib.Path(
+            typing.cast(anyconfig.globals.IOInfo, paths).path
+        )
 
     else:
         for path in paths:
@@ -298,15 +306,15 @@ def expand_paths_itr(paths: typing.Union[str, pathlib.Path,
                 yield cpath
 
 
-def maybe_path_key(obj: typing.Union[pathlib.Path, typing.IO]
+def maybe_path_key(obj: typing.Union[pathlib.Path, typing.IO, str]
                    ) -> typing.Union[pathlib.Path, str, int]:
     """
     Key function for maybe path object :: str | pathlib.Path | Tuple | IO
     """
     if is_file_stream(obj):
-        return getattr(obj, "name", id(obj))
+        return getattr(obj, 'name', id(obj))
 
-    return obj
+    return obj  # type: ignore
 
 
 def expand_paths(paths: typing.Union[str, pathlib.Path,
@@ -361,7 +369,7 @@ def are_same_file_types(objs: typing.List[PathOrIO]) -> bool:
     return all(_try_to_get_extension(p) == ext for p in objs[1:])
 
 
-def noop(val, *_args, **_kwargs):
+def noop(val: typing.Any, *_args, **_kwargs) -> typing.Any:
     """A function does nothing.
 
     >>> noop(1)
@@ -375,7 +383,7 @@ def noop(val, *_args, **_kwargs):
 _LIST_LIKE_TYPES = (collections.abc.Iterable, collections.abc.Sequence)
 
 
-def is_dict_like(obj):
+def is_dict_like(obj: typing.Any) -> bool:
     """
     :param obj: Any object behaves like a dict.
 
@@ -390,7 +398,7 @@ def is_dict_like(obj):
     return isinstance(obj, (dict, collections.abc.Mapping))  # any others?
 
 
-def is_namedtuple(obj):
+def is_namedtuple(obj: typing.Any) -> bool:
     """
     >>> import collections
     >>> p0 = collections.namedtuple("Point", "x y")(1, 2)
@@ -402,7 +410,7 @@ def is_namedtuple(obj):
     return isinstance(obj, tuple) and hasattr(obj, "_asdict")
 
 
-def is_list_like(obj):
+def is_list_like(obj: typing.Any) -> bool:
     """
     >>> is_list_like([])
     True
@@ -426,7 +434,9 @@ def is_list_like(obj):
         not (isinstance(obj, str) or is_dict_like(obj))
 
 
-def filter_options(keys, options):
+def filter_options(keys: typing.Iterable[str],
+                   options: typing.Dict[str, typing.Any]
+                   ) -> typing.Dict[str, typing.Any]:
     """
     Filter 'options' with given 'keys'.
 
@@ -441,7 +451,8 @@ def filter_options(keys, options):
     return dict((k, options[k]) for k in keys if k in options)
 
 
-def memoize(fnc):
+def memoize(fnc: typing.Callable[..., typing.Any]
+            ) -> typing.Callable[..., typing.Any]:
     """memoization function.
 
     >>> import random

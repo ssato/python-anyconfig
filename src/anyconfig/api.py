@@ -80,23 +80,23 @@ r"""Public APIs of anyconfig module.
 """
 import warnings
 
+import anyconfig
+
 # Import some global constants will be re-exported:
-from anyconfig.globals import (  # noqa: F401
+from .globals import (  # noqa: F401
     IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
 )
-import anyconfig.globals
-import anyconfig.dicts
-import anyconfig.ioinfo
-import anyconfig.template
-import anyconfig.utils
+from . import (
+    dicts, ioinfo, template, utils,
+)
 
-from anyconfig.dicts import (  # noqa: F401
+from .dicts import (  # noqa: F401
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
     get, set_, merge
 )
-from anyconfig.backends import Parsers
-from anyconfig.schema import validate, gen_schema  # noqa: F401
-from anyconfig.query import query
+from .backends import Parsers
+from .schema import validate, gen_schema  # noqa: F401
+from .query import query
 
 
 def version():
@@ -277,7 +277,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     :return: Mapping object
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = anyconfig.ioinfo.make(input_)
+    ioi = ioinfo.make(input_)
     psr = find(ioi, forced_type=ac_parser)
     filepath = ioi.path
 
@@ -290,8 +290,8 @@ def _single_load(input_, ac_parser=None, ac_template=False,
         options["ac_ignore_missing"] = options["ignore_missing"]
 
     if ac_template and filepath is not None:
-        content = anyconfig.template.try_render(filepath=filepath,
-                                                ctx=ac_context, **options)
+        content = template.try_render(filepath=filepath, ctx=ac_context,
+                                      **options)
         if content is not None:
             return psr.loads(content, **options)
 
@@ -401,8 +401,8 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
 
           - ac_merge (merge): Specify strategy of how to merge results loaded
             from multiple configuration files. See the doc of
-            :mod:`anyconfig.dicts` for more details of strategies. The default
-            is anyconfig.dicts.MS_DICTS.
+            :mod:`dicts` for more details of strategies. The default
+            is dicts.MS_DICTS.
 
           - ac_marker (marker): Globbing marker to detect paths patterns.
 
@@ -421,8 +421,8 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
                            **options)
     options["ac_schema"] = None  # Avoid to load schema more than twice.
 
-    paths = anyconfig.utils.expand_paths(inputs, marker=marker)
-    if anyconfig.utils.are_same_file_types(paths):
+    paths = utils.expand_paths(inputs, marker=marker)
+    if utils.are_same_file_types(paths):
         ac_parser = find(paths[0], forced_type=ac_parser)
 
     cnf = ac_context
@@ -437,7 +437,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
                 merge(cnf, cups, **options)
 
     if cnf is None:
-        return anyconfig.dicts.convert_to({}, **options)
+        return dicts.convert_to({}, **options)
 
     cnf = _try_validate(cnf, schema, **options)
     return _try_query(cnf, options.get("ac_query", False), **options)
@@ -475,12 +475,12 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
-    if anyconfig.utils.is_path_like_object(path_specs, marker):
+    if utils.is_path_like_object(path_specs, marker):
         return single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                            ac_template=ac_template, ac_context=ac_context,
                            **options)
 
-    if not anyconfig.utils.is_paths(path_specs, marker):
+    if not utils.is_paths(path_specs, marker):
         raise ValueError("Possible invalid input %r" % path_specs)
 
     return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
@@ -524,8 +524,8 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
                        **options)
 
     if ac_template:
-        compiled = anyconfig.template.try_render(content=content,
-                                                 ctx=ac_context, **options)
+        compiled = template.try_render(content=content, ctx=ac_context,
+                                       **options)
         if compiled is not None:
             content = compiled
 
@@ -550,7 +550,7 @@ def dump(data, out, ac_parser=None, **options):
 
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = anyconfig.ioinfo.make(out)
+    ioi = ioinfo.make(out)
     psr = find(ioi, forced_type=ac_parser)
     psr.dump(data, ioi, **options)
 

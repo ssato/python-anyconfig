@@ -20,12 +20,14 @@ import anyconfig.models.processor
 import anyconfig.utils
 
 from anyconfig.globals import (
-    UnknownProcessorTypeError, UnknownFileTypeError, IOInfo
+    UnknownProcessorTypeError, UnknownFileTypeError, IOInfo,
+    PathOrIOInfoT
 )
 
 
 ProcT = typing.TypeVar('ProcT', bound=anyconfig.models.processor.Processor)
 ProcClsT = typing.Type[ProcT]
+ProcClssT = typing.List[ProcClsT]
 
 
 def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
@@ -42,7 +44,7 @@ def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
             warnings.warn(f'Failed to load plugin, exc={exc!s}')
 
 
-def sort_by_prio(prs):
+def sort_by_prio(prs: ProcClssT) -> ProcClssT:
     """
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: Sambe as above but sorted by priority
@@ -50,7 +52,11 @@ def sort_by_prio(prs):
     return sorted(prs, key=operator.methodcaller("priority"), reverse=True)
 
 
-def select_by_key(items, sort_fn=sorted):
+def select_by_key(items: typing.Iterable[
+                    typing.Tuple[typing.List[str], typing.Any]
+                  ],
+                  sort_fn: typing.Callable[..., typing.Any] = sorted
+                  ) -> typing.List[typing.Tuple[str, typing.List[typing.Any]]]:
     """
     :param items: A list of tuples of keys and values, [([key], val)]
     :return: A list of tuples of key and values, [(key, [val])]
@@ -64,7 +70,8 @@ def select_by_key(items, sort_fn=sorted):
                 in anyconfig.utils.groupby(itr, operator.itemgetter(0)))
 
 
-def list_by_x(prs, key):
+def list_by_x(prs: typing.Iterable[ProcClsT], key: str
+              ) -> typing.List[typing.Tuple[str, ProcClssT]]:
     """
     :param key: Grouping key, "type" or "extensions"
     :return:
@@ -78,8 +85,10 @@ def list_by_x(prs, key):
                      key=operator.itemgetter(0))
 
     elif key == "extensions":
-        res = select_by_key(((p.extensions(), p) for p in prs),
-                            sort_fn=sort_by_prio)
+        res: typing.List[  # type: ignore
+            typing.Tuple[str, ProcClssT]
+        ] = select_by_key(((p.extensions(), p) for p in prs),
+                          sort_fn=sort_by_prio)
     else:
         raise ValueError("Argument 'key' must be 'type' or "
                          "'extensions' but it was '%s'" % key)
@@ -87,7 +96,8 @@ def list_by_x(prs, key):
     return res
 
 
-def findall_with_pred(predicate, prs):
+def findall_with_pred(predicate: typing.Callable[..., bool],
+                      prs: ProcClssT) -> ProcClssT:
     """
     :param predicate: any callable to filter results
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
@@ -97,7 +107,9 @@ def findall_with_pred(predicate, prs):
                   key=operator.methodcaller("priority"), reverse=True)
 
 
-def maybe_processor(type_or_id, cls=anyconfig.models.processor.Processor):
+def maybe_processor(type_or_id: typing.Union[ProcT, ProcClsT],
+                    cls: ProcClsT = anyconfig.models.processor.Processor
+                    ) -> typing.Optional[ProcT]:
     """
     :param type_or_id:
         Type of the data to process or ID of the processor class or
@@ -109,13 +121,14 @@ def maybe_processor(type_or_id, cls=anyconfig.models.processor.Processor):
     if isinstance(type_or_id, cls):
         return type_or_id
 
-    if type(type_or_id) == type(cls) and issubclass(type_or_id, cls):
-        return type_or_id()
+    if type(type_or_id) == type(cls):
+        if issubclass(typing.cast(ProcClsT, type_or_id), cls):
+            return type_or_id()  # type: ignore
 
     return None
 
 
-def find_by_type_or_id(type_or_id, prs):
+def find_by_type_or_id(type_or_id: str, prs: ProcClssT) -> ProcClssT:
     """
     :param type_or_id: Type of the data to process or ID of the processor class
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
@@ -135,7 +148,7 @@ def find_by_type_or_id(type_or_id, prs):
     return pclss
 
 
-def find_by_fileext(fileext, prs):
+def find_by_fileext(fileext: str, prs: ProcClssT) -> ProcClssT:
     """
     :param fileext: File extension
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
@@ -153,7 +166,7 @@ def find_by_fileext(fileext, prs):
     return pclss  # :: [Processor], never []
 
 
-def find_by_maybe_file(obj, prs):
+def find_by_maybe_file(obj: PathOrIOInfoT, prs: ProcClssT) -> ProcClssT:
     """
     :param obj:
         a file path, file or file-like object, pathlib.Path object or an
@@ -169,8 +182,10 @@ def find_by_maybe_file(obj, prs):
 
 
 # pylint: disable=unused-argument
-def findall(obj, prs, forced_type=None,
-            cls=anyconfig.models.processor.Processor):
+def findall(obj: PathOrIOInfoT, prs: ProcClssT,
+            forced_type: typing.Optional[str] = None,
+            cls: ProcClsT = anyconfig.models.processor.Processor
+            ) -> ProcClssT:
     """
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
@@ -197,7 +212,10 @@ def findall(obj, prs, forced_type=None,
     return pclss
 
 
-def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
+def find(obj: PathOrIOInfoT, prs: ProcClssT,
+         forced_type: typing.Union[ProcClsT, ProcClssT, str, None] = None,
+         cls: ProcClsT = anyconfig.models.processor.Processor
+         ) -> ProcT:
     """
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
@@ -212,12 +230,16 @@ def find(obj, prs, forced_type=None, cls=anyconfig.models.processor.Processor):
     :return: an instance of processor class to process 'obj' data
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    if forced_type is not None:
-        processor = maybe_processor(forced_type, cls=cls)
+    if forced_type is not None and not isinstance(forced_type, str):
+        processor = maybe_processor(
+            typing.cast(typing.Union[ProcT, ProcClsT], forced_type), cls=cls
+        )
         if processor is not None:
             return processor
 
-    pclss = findall(obj, prs, forced_type=forced_type, cls=cls)
+    pclss = findall(
+        obj, prs, forced_type=typing.cast(str, forced_type), cls=cls
+    )
     return pclss[0]()
 
 
@@ -226,33 +248,34 @@ class Processors:
     """
     _pgroup: str = ''  # processor group name to load plugins
 
-    def __init__(self, processors=None):
+    def __init__(self, processors: ProcClssT = None) -> None:
         """
         :param processors:
             A list of :class:`Processor` or its children class objects or None
         """
-        self._processors = dict()  # {<processor_class_id>: <processor_class>}
+        # {<processor_class_id>: <processor_class>}
+        self._processors: typing.Dict[str, ProcClsT] = dict()
         if processors is not None:
             for pcls in processors:
                 self.register(pcls)
 
         self.load_plugins()
 
-    def register(self, pcls):
+    def register(self, pcls: ProcClsT) -> None:
         """
         :param pclss: :class:`Processor` or its children classes
         """
         if pcls.cid() not in self._processors:
             self._processors[pcls.cid()] = pcls
 
-    def load_plugins(self):
+    def load_plugins(self) -> None:
         """Load and register pluggable processor classes internally.
         """
         if self._pgroup:
             for pcls in load_plugins(self._pgroup):
                 self.register(pcls)
 
-    def list(self, sort=False):
+    def list(self, sort: bool = False) -> ProcClssT:
         """
         :param sort: Result will be sorted if it's True
         :return: A list of :class:`Processor` or its children classes
@@ -261,9 +284,9 @@ class Processors:
         if sort:
             return sorted(prs, key=operator.methodcaller("cid"))
 
-        return prs
+        return list(prs)
 
-    def list_by_cid(self):
+    def list_by_cid(self) -> typing.List[typing.Tuple[str, ProcClssT]]:
         """
         :return:
             A list of :class:`Processor` or its children classes grouped by
@@ -273,7 +296,7 @@ class Processors:
         return sorted(((cid, [prs[cid]]) for cid in sorted(prs.keys())),
                       key=operator.itemgetter(0))
 
-    def list_by_type(self):
+    def list_by_type(self) -> typing.List[typing.Tuple[str, ProcClssT]]:
         """
         :return:
             A list of :class:`Processor` or its children classes grouped by
@@ -281,7 +304,8 @@ class Processors:
         """
         return list_by_x(self.list(), "type")
 
-    def list_by_x(self, item=None):
+    def list_by_x(self, item: typing.Optional[str] = None
+                  ) -> typing.List[typing.Tuple[str, ProcClssT]]:
         """
         :param item: Grouping key, one of "cid", "type" and "extensions"
         :return:
@@ -294,14 +318,14 @@ class Processors:
             res = [(cid, [prs[cid]]) for cid in sorted(prs.keys())]
 
         elif item in ("type", "extensions"):
-            res = list_by_x(prs.values(), item)
+            res = list_by_x(prs.values(), typing.cast(str, item))
         else:
             raise ValueError("keyword argument 'item' must be one of "
                              "None, 'cid', 'type' and 'extensions' "
                              "but it was '%s'" % item)
         return res
 
-    def list_x(self, key=None):
+    def list_x(self, key: typing.Optional[str] = None) -> typing.List[str]:
         """
         :param key: Which of key to return from "cid", "type", and "extention"
         :return: A list of x 'key'
@@ -316,8 +340,10 @@ class Processors:
                          "None, 'cid', 'type' and 'extension' "
                          "but it was '%s'" % key)
 
-    def findall(self, obj, forced_type=None,
-                cls=anyconfig.models.processor.Processor):
+    def findall(self, obj: PathOrIOInfoT,
+                forced_type: typing.Optional[str] = None,
+                cls: ProcClsT = anyconfig.models.processor.Processor
+                ) -> typing.List[ProcT]:
         """
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an
@@ -331,8 +357,10 @@ class Processors:
         return [p() for p in findall(obj, self.list(),
                                      forced_type=forced_type, cls=cls)]
 
-    def find(self, obj, forced_type=None,
-             cls=anyconfig.models.processor.Processor):
+    def find(self, obj: PathOrIOInfoT,
+             forced_type: typing.Optional[str] = None,
+             cls: ProcClsT = anyconfig.models.processor.Processor
+             ) -> typing.List[ProcT]:
         """
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an

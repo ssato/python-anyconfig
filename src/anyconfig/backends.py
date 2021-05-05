@@ -9,10 +9,8 @@
 import typing
 import warnings
 
-import anyconfig.ioinfo
 import anyconfig.processors
 import anyconfig.singleton
-import anyconfig.utils
 
 import anyconfig.backend.base
 import anyconfig.backend.ini

@@ -9,7 +9,6 @@ import unittest
 
 import anyconfig.backend.base.base as TT  # stands for test target
 import anyconfig.ioinfo
-import tests.common
 
 
 MZERO = TT.Parser()._container_factory()()
@@ -36,29 +35,6 @@ class Test00(unittest.TestCase):
         cnf = self.psr.load(ioi, ac_ignore_missing=True)
         self.assertEqual(cnf, MZERO)
         self.assertTrue(isinstance(cnf, type(MZERO)))
-
-
-class Test10(unittest.TestCase):
-
-    def setUp(self):
-        self.workdir = tests.common.setup_workdir()
-
-    def tearDown(self):
-        tests.common.cleanup_workdir(self.workdir)
-
-    def test_10_ensure_outdir_exists(self):
-        outdir = pathlib.Path(self.workdir) / "outdir"
-        outfile = str(outdir / "a.txt")
-
-        TT.ensure_outdir_exists(outfile)
-        self.assertTrue(outdir.exists())
-
-    def test_12_ensure_outdir_exists__no_dir(self):
-        workdir = pathlib.Path(self.workdir)
-        outpath = workdir / "a.txt"
-
-        TT.ensure_outdir_exists(str(outpath))
-        self.assertTrue(workdir.exists())
 
 
 class Test20(unittest.TestCase):

@@ -16,41 +16,16 @@ needed:
   - :meth:`dump_to_path`: Dump config to a file of given path
 """
 import collections
-import functools
 import io
 import pathlib
 
-import anyconfig.globals
 import anyconfig.models.processor
 import anyconfig.utils
 
+from .utils import ensure_outdir_exists
+
 
 TEXT_FILE = True
-
-
-def ensure_outdir_exists(filepath):
-    """
-    Make dir to dump 'filepath' if that dir does not exist.
-
-    :param filepath: path of file to dump
-    """
-    pathlib.Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-
-
-def to_method(func):
-    """
-    Lift :func:`func` to a method; it will be called with the first argument
-    'self' ignored.
-
-    :param func: Any callable object
-    """
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        """Wrapper function.
-        """
-        return func(*args[1:], **kwargs)
-
-    return wrapper
 
 
 def _not_implemented(*args, **kwargs):

@@ -5,21 +5,23 @@
 r"""Backend basic classes, functions and constants.
 """
 from .base import (
-    ensure_outdir_exists, to_method,
     TextFilesMixin, BinaryFilesMixin,
     Parser,
     FromStreamLoaderMixin,
     ToStringDumperMixin, ToStreamDumperMixin,
     StreamParser, StringStreamFnParser,
 )
+from .utils import (
+    ensure_outdir_exists, to_method
+)
 
 __all__ = [
-    'ensure_outdir_exists', 'to_method',
     'TextFilesMixin', 'BinaryFilesMixin',
     'Parser',
     'FromStreamLoaderMixin',
     'ToStringDumperMixin', 'ToStreamDumperMixin',
     'StreamParser', 'StringStreamFnParser',
+    'ensure_outdir_exists', 'to_method',
 ]
 
 # vim:sw=4:ts=4:et:

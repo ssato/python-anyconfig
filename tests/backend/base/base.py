@@ -7,7 +7,7 @@ import os
 import pathlib
 import unittest
 
-import anyconfig.backend.base as TT  # stands for test target
+import anyconfig.backend.base.base as TT  # stands for test target
 import anyconfig.ioinfo
 import tests.common
 

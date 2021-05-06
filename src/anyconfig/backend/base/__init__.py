@@ -5,11 +5,15 @@
 r"""Backend basic classes, functions and constants.
 """
 from .base import (
-    TextFilesMixin, BinaryFilesMixin,
     Parser,
-    FromStreamLoaderMixin,
     ToStringDumperMixin, ToStreamDumperMixin,
     StreamParser, StringStreamFnParser,
+)
+from .loaders import (
+    FromStringLoaderMixin, FromStreamLoaderMixin
+)
+from .mixins import (
+    TextFilesMixin, BinaryFilesMixin
 )
 from .utils import (
     ensure_outdir_exists, to_method
@@ -18,7 +22,7 @@ from .utils import (
 __all__ = [
     'TextFilesMixin', 'BinaryFilesMixin',
     'Parser',
-    'FromStreamLoaderMixin',
+    'FromStringLoaderMixin', 'FromStreamLoaderMixin',
     'ToStringDumperMixin', 'ToStreamDumperMixin',
     'StreamParser', 'StringStreamFnParser',
     'ensure_outdir_exists', 'to_method',

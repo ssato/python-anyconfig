@@ -15,227 +15,18 @@ needed:
   - :meth:`dump_to_stream`: Dump config to a file or file-like object
   - :meth:`dump_to_path`: Dump config to a file of given path
 """
-import collections
 import io
-import pathlib
 
 import anyconfig.models.processor
 import anyconfig.utils
 
-from .utils import ensure_outdir_exists
-
-
-TEXT_FILE = True
-
-
-def _not_implemented(*args, **kwargs):
-    """
-    Utility function to raise NotImplementedError.
-    """
-    raise NotImplementedError()
-
-
-class TextFilesMixin:
-    """Mixin class to open configuration files as a plain text.
-
-    Arguments of :func:`open` is different depends on python versions.
-
-    - python 2: https://docs.python.org/2/library/functions.html#open
-    - python 3: https://docs.python.org/3/library/functions.html#open
-    """
-    _open_flags = ('r', 'w')
-
-    @classmethod
-    def ropen(cls, filepath, **kwargs):
-        """
-        :param filepath: Path to file to open to read data
-        """
-        return open(filepath, cls._open_flags[0], **kwargs)
-
-    @classmethod
-    def wopen(cls, filepath, **kwargs):
-        """
-        :param filepath: Path to file to open to write data to
-        """
-        return open(filepath, cls._open_flags[1], **kwargs)
-
-
-class BinaryFilesMixin(TextFilesMixin):
-    """Mixin class to open binary (byte string) configuration files.
-    """
-    _open_flags = ('rb', 'wb')
-
-
-class LoaderMixin:
-    """
-    Mixin class to load data.
-
-    Inherited classes must implement the following methods.
-
-    - :meth:`load_from_string`: Load config from string
-    - :meth:`load_from_stream`: Load config from a file or file-like object
-    - :meth:`load_from_path`: Load config from file of given path
-
-    Member variables:
-
-    - _load_opts: Backend specific options on load
-    - _ordered: True if the parser keep the order of items by default
-    - _allow_primitives: True if the parser.load* may return objects of
-      primitive data types other than mapping types such like JSON parser
-    - _dict_opts: Backend options to customize dict class to make results
-    """
-    _load_opts = []
-    _ordered = False
-    _allow_primitives = False
-    _dict_opts = []
-
-    @classmethod
-    def ordered(cls):
-        """
-        :return: True if parser can keep the order of keys else False.
-        """
-        return cls._ordered
-
-    @classmethod
-    def allow_primitives(cls):
-        """
-        :return:
-            True if the parser.load* may return objects of primitive data types
-            other than mapping types such like JSON parser
-        """
-        return cls._allow_primitives
-
-    @classmethod
-    def dict_options(cls):
-        """
-        :return: List of dict factory options
-        """
-        return cls._dict_opts
-
-    def _container_factory(self, **options):
-        """
-        The order of prirorities are ac_dict, backend specific dict class
-        option, ac_ordered.
-
-        :param options: Keyword options may contain 'ac_ordered'.
-        :return: Factory (class or function) to make an container.
-        """
-        ac_dict = options.get("ac_dict", False)
-        _dicts = [x for x in (options.get(o) for o in self.dict_options())
-                  if x]
-
-        if self.dict_options() and ac_dict and callable(ac_dict):
-            return ac_dict  # Higher priority than ac_ordered.
-        if _dicts and callable(_dicts[0]):
-            return _dicts[0]
-        if self.ordered() and options.get("ac_ordered", False):
-            return collections.OrderedDict
-
-        return dict
-
-    def _load_options(self, container, **options):
-        """
-        Select backend specific loading options.
-        """
-        # Force set dict option if available in backend. For example,
-        # options["object_hook"] will be OrderedDict if 'container' was
-        # OrderedDict in JSON backend.
-        for opt in self.dict_options():
-            options.setdefault(opt, container)
-
-        return anyconfig.utils.filter_options(self._load_opts, options)
-
-    def load_from_string(self, content, container, **kwargs):
-        """
-        Load config from given string 'content'.
-
-        :param content: Config content string
-        :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
-
-        :return: Dict-like object holding config parameters
-        """
-        _not_implemented(self, content, container, **kwargs)
-
-    def load_from_path(self, filepath, container, **kwargs):
-        """
-        Load config from given file path 'filepath`.
-
-        :param filepath: Config file path
-        :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
-
-        :return: Dict-like object holding config parameters
-        """
-        _not_implemented(self, filepath, container, **kwargs)
-
-    def load_from_stream(self, stream, container, **kwargs):
-        """
-        Load config from given file like object 'stream`.
-
-        :param stream:  Config file or file like object
-        :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
-
-        :return: Dict-like object holding config parameters
-        """
-        _not_implemented(self, stream, container, **kwargs)
-
-    def loads(self, content, **options):
-        """
-        Load config from given string 'content' after some checks.
-
-        :param content:  Config file content
-        :param options:
-            options will be passed to backend specific loading functions.
-            please note that options have to be sanitized w/
-            :func:`anyconfig.utils.filter_options` later to filter out options
-            not in _load_opts.
-
-        :return: dict or dict-like object holding configurations
-        """
-        container = self._container_factory(**options)
-        if not content or content is None:
-            return container()
-
-        options = self._load_options(container, **options)
-        return self.load_from_string(content, container, **options)
-
-    def load(self, ioi, ac_ignore_missing=False, **options):
-        """
-        Load config from a file path or a file / file-like object which 'ioi'
-        refering after some checks.
-
-        :param ioi:
-            'anyconfig.globals.IOInfo' namedtuple object provides various info
-            of input object to load data from
-
-        :param ac_ignore_missing:
-            Ignore and just return empty result if given `ioi` object does not
-            exist in actual.
-        :param options:
-            options will be passed to backend specific loading functions.
-            please note that options have to be sanitized w/
-            :func:`anyconfig.utils.filter_options` later to filter out options
-            not in _load_opts.
-
-        :return: dict or dict-like object holding configurations
-        """
-        container = self._container_factory(**options)
-        options = self._load_options(container, **options)
-
-        if not ioi:
-            return container()
-
-        if anyconfig.utils.is_stream_ioinfo(ioi):
-            cnf = self.load_from_stream(ioi.src, container, **options)
-        else:
-            if ac_ignore_missing and not pathlib.Path(ioi.path).exists():
-                return container()
-
-            cnf = self.load_from_path(ioi.path, container, **options)
-
-        return cnf
+from .loaders import (
+    LoaderMixin, FromStringLoaderMixin, FromStreamLoaderMixin
+)
+from .mixins import TextFilesMixin
+from .utils import (
+    ensure_outdir_exists, not_implemented
+)
 
 
 class DumperMixin:
@@ -263,7 +54,7 @@ class DumperMixin:
 
         :return: string represents the configuration
         """
-        _not_implemented(self, cnf, **kwargs)
+        not_implemented(self, cnf, **kwargs)
 
     def dump_to_path(self, cnf, filepath, **kwargs):
         """
@@ -273,7 +64,7 @@ class DumperMixin:
         :param filepath: Config file path
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
-        _not_implemented(self, cnf, filepath, **kwargs)
+        not_implemented(self, cnf, filepath, **kwargs)
 
     def dump_to_stream(self, cnf, stream, **kwargs):
         """
@@ -285,7 +76,7 @@ class DumperMixin:
         :param stream:  Config file or file like object
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
-        _not_implemented(self, cnf, stream, **kwargs)
+        not_implemented(self, cnf, stream, **kwargs)
 
     def dumps(self, cnf, **kwargs):
         """
@@ -334,75 +125,6 @@ class Parser(TextFilesMixin, LoaderMixin, DumperMixin,
     .. seealso:: the doc of :class:`anyconfig.models.processor.Processor`
     """
     _cid = "base"
-
-
-class FromStringLoaderMixin(LoaderMixin):
-    """
-    Abstract config parser provides a method to load configuration from string
-    content to help implement parser of which backend lacks of such function.
-
-    Parser classes inherit this class have to override the method
-    :meth:`load_from_string` at least.
-    """
-    def load_from_stream(self, stream, container, **kwargs):
-        """
-        Load config from given stream 'stream'.
-
-        :param stream: Config file or file-like object
-        :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
-
-        :return: Dict-like object holding config parameters
-        """
-        return self.load_from_string(stream.read(), container, **kwargs)
-
-    def load_from_path(self, filepath, container, **kwargs):
-        """
-        Load config from given file path 'filepath'.
-
-        :param filepath: Config file path
-        :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
-
-        :return: Dict-like object holding config parameters
-        """
-        with self.ropen(filepath) as inp:
-            return self.load_from_stream(inp, container, **kwargs)
-
-
-class FromStreamLoaderMixin(LoaderMixin):
-    """
-    Abstract config parser provides a method to load configuration from string
-    content to help implement parser of which backend lacks of such function.
-
-    Parser classes inherit this class have to override the method
-    :meth:`load_from_stream` at least.
-    """
-    def load_from_string(self, content, container, **kwargs):
-        """
-        Load config from given string 'cnf_content'.
-
-        :param content: Config content string
-        :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
-
-        :return: Dict-like object holding config parameters
-        """
-        return self.load_from_stream(io.StringIO(content),
-                                     container, **kwargs)
-
-    def load_from_path(self, filepath, container, **kwargs):
-        """
-        Load config from given file path 'filepath'.
-
-        :param filepath: Config file path
-        :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
-
-        :return: Dict-like object holding config parameters
-        """
-        with self.ropen(filepath) as inp:
-            return self.load_from_stream(inp, container, **kwargs)
 
 
 class ToStringDumperMixin(DumperMixin):

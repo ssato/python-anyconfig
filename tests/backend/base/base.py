@@ -3,7 +3,6 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring, protected-access, invalid-name
-import os
 import pathlib
 import unittest
 
@@ -14,7 +13,7 @@ import anyconfig.ioinfo
 MZERO = TT.Parser()._container_factory()()
 
 
-class Test00(unittest.TestCase):
+class TestCase(unittest.TestCase):
 
     def setUp(self):
         self.psr = TT.Parser()
@@ -28,31 +27,12 @@ class Test00(unittest.TestCase):
         self.assertTrue(isinstance(cnf, type(MZERO)))
 
     def test_30_load__ac_ignore_missing(self):
-        cpath = pathlib.Path(os.curdir) / "conf_file_not_exist.json"
+        cpath = pathlib.Path.cwd() / 'conf_file_not_exist.json'
         assert not cpath.exists()
 
         ioi = anyconfig.ioinfo.make(str(cpath))
         cnf = self.psr.load(ioi, ac_ignore_missing=True)
         self.assertEqual(cnf, MZERO)
         self.assertTrue(isinstance(cnf, type(MZERO)))
-
-
-class Test20(unittest.TestCase):
-
-    def test_10_TextFilesMixin_ropen(self):
-        with TT.TextFilesMixin.ropen("/dev/null") as fileobj:
-            self.assertEqual(fileobj.mode, 'r')
-
-    def test_10_TextFilesMixin_wopen(self):
-        with TT.TextFilesMixin.wopen("/dev/null") as fileobj:
-            self.assertEqual(fileobj.mode, 'w')
-
-    def test_20_BinaryFilesMixin_ropen(self):
-        with TT.BinaryFilesMixin.ropen("/dev/null") as fileobj:
-            self.assertEqual(fileobj.mode, 'rb')
-
-    def test_20_BinaryFilesMixin_wopen(self):
-        with TT.BinaryFilesMixin.wopen("/dev/null") as fileobj:
-            self.assertEqual(fileobj.mode, 'wb')
 
 # vim:sw=4:ts=4:et:

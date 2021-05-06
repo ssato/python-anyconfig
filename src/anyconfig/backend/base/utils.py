@@ -6,9 +6,10 @@ r"""Utility functions in anyconfig.backend.base.
 """
 import functools
 import pathlib
+import typing
 
 
-def ensure_outdir_exists(filepath):
+def ensure_outdir_exists(filepath: typing.Union[str, pathlib.Path]) -> None:
     """
     Make dir to dump 'filepath' if that dir does not exist.
 
@@ -17,7 +18,8 @@ def ensure_outdir_exists(filepath):
     pathlib.Path(filepath).parent.mkdir(parents=True, exist_ok=True)
 
 
-def to_method(func):
+def to_method(func: typing.Callable[..., typing.Any]
+              ) -> typing.Callable[..., typing.Any]:
     """
     Lift :func:`func` to a method; it will be called with the first argument
     'self' ignored.

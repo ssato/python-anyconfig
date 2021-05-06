@@ -32,4 +32,6 @@ PathT = typing.Union[str, pathlib.Path]
 PathOrIOT = typing.Union[PathT, typing.IO]
 PathOrIOInfoT = typing.Union[PathT, IOInfo]
 
+InDataT = typing.Mapping[str, typing.Any]
+
 # vim:sw=4:ts=4:et:

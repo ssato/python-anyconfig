@@ -7,8 +7,8 @@ r"""misc global constants, variables, classes and so on.
 from .datatypes import (
     IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
     IOI_TYPES, IOInfo, IOI_KEYS,
-    PathT, PathOrIOT, PathOrIOInfoT
-
+    PathT, PathOrIOT, PathOrIOInfoT,
+    InDataT
 )
 from .errors import (
     UnknownParserTypeError, UnknownProcessorTypeError, UnknownFileTypeError
@@ -19,6 +19,7 @@ __all__ = [
     'IOI_PATH_STR', 'IOI_PATH_OBJ', 'IOI_STREAM', 'IOI_TYPES',
     'IOInfo', 'IOI_KEYS',
     'PathT', 'PathOrIOT', 'PathOrIOInfoT',
+    'InDataT',
     'UnknownParserTypeError', 'UnknownProcessorTypeError',
     'UnknownFileTypeError',
 ]

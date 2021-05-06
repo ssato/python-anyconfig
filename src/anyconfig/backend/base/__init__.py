@@ -6,8 +6,10 @@ r"""Backend basic classes, functions and constants.
 """
 from .base import (
     Parser,
-    ToStringDumperMixin, ToStreamDumperMixin,
     StreamParser, StringStreamFnParser,
+)
+from .dumpers import (
+    ToStringDumperMixin, ToStreamDumperMixin,
 )
 from .loaders import (
     FromStringLoaderMixin, FromStreamLoaderMixin
@@ -20,11 +22,11 @@ from .utils import (
 )
 
 __all__ = [
-    'TextFilesMixin', 'BinaryFilesMixin',
     'Parser',
-    'FromStringLoaderMixin', 'FromStreamLoaderMixin',
-    'ToStringDumperMixin', 'ToStreamDumperMixin',
     'StreamParser', 'StringStreamFnParser',
+    'ToStringDumperMixin', 'ToStreamDumperMixin',
+    'FromStringLoaderMixin', 'FromStreamLoaderMixin',
+    'TextFilesMixin', 'BinaryFilesMixin',
     'ensure_outdir_exists', 'to_method',
 ]
 

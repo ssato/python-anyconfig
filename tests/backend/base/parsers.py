@@ -2,11 +2,11 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, protected-access, invalid-name
+# pylint: disable=missing-docstring, invalid-name
 import pathlib
 import unittest
 
-import anyconfig.backend.base.base as TT  # stands for test target
+import anyconfig.backend.base.parsers as TT
 import anyconfig.ioinfo
 
 

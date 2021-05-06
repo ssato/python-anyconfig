@@ -24,10 +24,9 @@ from .dumpers import (
 from .loaders import (
     LoaderMixin, FromStringLoaderMixin, FromStreamLoaderMixin
 )
-from .mixins import TextFilesMixin
 
 
-class Parser(TextFilesMixin, LoaderMixin, DumperMixin,
+class Parser(LoaderMixin, DumperMixin,
              anyconfig.models.processor.Processor):
     """
     Abstract parser to provide basic implementation of some methods, interfaces

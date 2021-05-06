@@ -7,7 +7,6 @@ r"""Abstract and basic dumpes.
 import io
 
 from ... import utils
-from .mixins import TextFilesMixin
 from .utils import (
     ensure_outdir_exists, not_implemented
 )

@@ -17,6 +17,10 @@ FILENAME = 'file_not_exist.txt'
 
 class TestCase(unittest.TestCase):
 
+    def test_not_implemented(self):
+        with self.assertRaises(NotImplementedError):
+            TT.not_implemented()
+
     def test_ensure_outdir_exists_for_file_if_it_exists(self):
         outdir = pathlib.Path.cwd()
         outfile = outdir / FILENAME

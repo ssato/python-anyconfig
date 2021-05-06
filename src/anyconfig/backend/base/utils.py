@@ -9,6 +9,13 @@ import pathlib
 import typing
 
 
+def not_implemented(*_args, **_kwargs) -> None:
+    """
+    Utility function to raise NotImplementedError.
+    """
+    raise NotImplementedError()
+
+
 def ensure_outdir_exists(filepath: typing.Union[str, pathlib.Path]) -> None:
     """
     Make dir to dump 'filepath' if that dir does not exist.

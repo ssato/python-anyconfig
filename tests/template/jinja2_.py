@@ -48,13 +48,13 @@ class TestCase(tests.common.TestCaseWithWorkdir):
     def test_10_render_impl__wo_paths(self):
         for fname, _str, ctx in self.templates:
             fpath = pathlib.Path(self.workdir) / fname
-            c_r = TT.render_impl(str(fpath))
+            c_r = TT.render_impl(fpath)
             self.assertEqual(c_r, ctx)
 
     def test_12_render_impl__w_paths(self):
         for fname, _str, ctx in self.templates:
             fpath = pathlib.Path(self.workdir) / fname
-            c_r = TT.render_impl(fpath.name, paths=[self.workdir])
+            c_r = TT.render_impl(fpath, paths=[self.workdir])
             self.assertEqual(c_r, ctx)
 
     def test_20_render__wo_paths(self):

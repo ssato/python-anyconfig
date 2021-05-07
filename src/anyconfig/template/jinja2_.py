@@ -17,15 +17,11 @@ import warnings
 import jinja2
 import jinja2.exceptions
 
-from .. import globals as globals_, utils
+from .. import utils
 
 
-PathsT = typing.Union[
-    str,  # .. seealso:: jinja2.loaders.FileSystemLoader.__init__
-    globals_.PathT,
-    typing.Iterable[globals_.PathT]
-]
-
+# .. seealso:: jinja2.loaders.FileSystemLoader.__init__
+PathsT = typing.List[typing.Union[str, pathlib.Path]]
 MaybePathsT = typing.Optional[PathsT]
 MaybeContextT = typing.Optional[typing.Dict[str, typing.Any]]
 MaybeFiltersT = typing.Optional[typing.Iterable[typing.Callable]]
@@ -34,14 +30,19 @@ RENDER_S_OPTS: typing.List[str] = ['ctx', 'paths', 'filters']
 RENDER_OPTS = RENDER_S_OPTS + ['ask']
 
 
-def tmpl_env(paths: PathsT) -> jinja2.Environment:
+def tmpl_env(paths: MaybePathsT) -> jinja2.Environment:
     """
     :param paths: A list of template search paths
     """
-    return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
+    if paths is None:
+        paths = []
+
+    return jinja2.Environment(
+        loader=jinja2.FileSystemLoader([str(p) for p in paths])
+    )
 
 
-def make_template_paths(template_file: PathsT,
+def make_template_paths(template_file: pathlib.Path,
                         paths: MaybePathsT = None
                         ) -> typing.List[str]:
     """
@@ -56,25 +57,27 @@ def make_template_paths(template_file: PathsT,
     :param paths: A list of template search paths
     :return: List of template paths ([str])
 
-    >>> make_template_paths("/path/to/a/template")
+    >>> p = pathlib.Path
+    >>> make_template_paths(p('/path/to/a/template'))
     ['/path/to/a']
-    >>> make_template_paths("/path/to/a/template", ["/tmp"])
+    >>> make_template_paths(p('/path/to/a/template'), ["/tmp"])
     ['/path/to/a', '/tmp']
     >>> os.chdir("/tmp")
-    >>> make_template_paths("./path/to/a/template")
+    >>> make_template_paths(p('./path/to/a/template'))
     ['/tmp/path/to/a']
-    >>> make_template_paths("./path/to/a/template", ["/tmp"])
+    >>> make_template_paths(p('./path/to/a/template'), ["/tmp"])
     ['/tmp/path/to/a', '/tmp']
     """
-    tmpldir = str(pathlib.Path(template_file).parent.resolve())
+    tmpldir = str(template_file.parent.resolve())
     if paths:
-        return [tmpldir] + list(paths)
+        return [tmpldir] + [str(p) for p in paths]
 
     return [tmpldir]
 
 
 def render_s(tmpl_s: str, ctx: MaybeContextT = None,
-             paths: MaybePathsT = None, filters: MaybeFiltersT = None
+             paths: MaybePathsT = None,
+             filters: MaybeFiltersT = None
              ) -> str:
     """
     Compile and render given template string 'tmpl_s' with context 'context'.
@@ -111,7 +114,7 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
                        ).from_string(tmpl_s).render(**ctx)
 
 
-def render_impl(template_file: PathsT, ctx: MaybeContextT = None,
+def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
                 paths: MaybePathsT = None, filters: MaybeFiltersT = None
                 ) -> str:
     """
@@ -120,7 +123,7 @@ def render_impl(template_file: PathsT, ctx: MaybeContextT = None,
     :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
     """
-    env = tmpl_env(make_template_paths(template_file, paths))
+    env = tmpl_env(make_template_paths(template_file, paths))  # type: ignore
 
     if env is None:
         return open(template_file).read()
@@ -135,7 +138,8 @@ def render_impl(template_file: PathsT, ctx: MaybeContextT = None,
 
 
 def render(filepath: str, ctx: MaybeContextT = None,
-           paths: MaybePathsT = None, ask: bool = False,
+           paths: MaybePathsT = None,
+           ask: bool = False,
            filters: MaybeFiltersT = None) -> str:
     """
     Compile and render template and return the result as a string.
@@ -158,10 +162,10 @@ def render(filepath: str, ctx: MaybeContextT = None,
                          "'{}'. Please enter absolute "
                          "or relative path starting from "
                          "'.' to the template file: ".format(mtmpl))
-        usr_tmpl = pathlib.Path(usr_tmpl.strip())
-        paths = make_template_paths(usr_tmpl, paths)
+        usr_tmpl_2 = pathlib.Path(usr_tmpl.strip()).resolve()
+        paths_2 = make_template_paths(usr_tmpl_2, paths)
 
-        return render_impl(usr_tmpl, ctx, paths, filters)
+        return render_impl(usr_tmpl_2, ctx, paths_2, filters)  # type: ignore
 
 
 def try_render(filepath: typing.Optional[str] = None,

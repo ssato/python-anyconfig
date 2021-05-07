@@ -19,7 +19,7 @@ import anyconfig.ioinfo
 import anyconfig.models.processor
 import anyconfig.utils
 
-from anyconfig.globals import (
+from anyconfig.common import (
     UnknownProcessorTypeError, UnknownFileTypeError, IOInfo,
     PathOrIOInfoT
 )
@@ -170,7 +170,7 @@ def find_by_maybe_file(obj: PathOrIOInfoT, prs: ProcClssT) -> ProcClssT:
     """
     :param obj:
         a file path, file or file-like object, pathlib.Path object or an
-        'anyconfig.globals.IOInfo' (namedtuple) object
+        'anyconfig.common.IOInfo' (namedtuple) object
     :param cps_by_ext: A list of processor classes
     :return: A list of processor classes to process given (maybe) file
     :raises: UnknownFileTypeError
@@ -189,7 +189,7 @@ def findall(obj: PathOrIOInfoT, prs: ProcClssT,
     """
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
-        'anyconfig.globals.IOInfo` (namedtuple) object
+        'anyconfig.common.IOInfo` (namedtuple) object
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param forced_type:
         Forced processor type of the data to process or ID of the processor
@@ -219,7 +219,7 @@ def find(obj: PathOrIOInfoT, prs: ProcClssT,
     """
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
-        'anyconfig.globals.IOInfo' (namedtuple) object
+        'anyconfig.common.IOInfo' (namedtuple) object
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param forced_type:
         Forced processor type of the data to process or ID of the processor
@@ -347,7 +347,7 @@ class Processors:
         """
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an
-            'anyconfig.globals.IOInfo' (namedtuple) object
+            'anyconfig.common.IOInfo' (namedtuple) object
         :param forced_type: Forced processor type to find
         :param cls: A class object to compare with 'ptype'
 
@@ -364,7 +364,7 @@ class Processors:
         """
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an
-            'anyconfig.globals.IOInfo' (namedtuple) object
+            'anyconfig.common.IOInfo' (namedtuple) object
         :param forced_type: Forced processor type to find
         :param cls: A class object to compare with 'ptype'
 

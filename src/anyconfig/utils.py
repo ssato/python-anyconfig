@@ -14,7 +14,7 @@ import pathlib
 import types
 import typing
 
-import anyconfig.globals
+import anyconfig.common
 
 
 def groupby(itr: typing.Iterable[typing.Any],
@@ -145,14 +145,14 @@ def is_ioinfo(obj: typing.Any) -> bool:
     >>> assert not is_ioinfo({})
     >>> assert not is_ioinfo(('a', 1, {}))
 
-    >>> inp = anyconfig.globals.IOInfo("/etc/hosts",
-    ...                                anyconfig.globals.IOI_PATH_STR,
+    >>> inp = anyconfig.common.IOInfo("/etc/hosts",
+    ...                                anyconfig.common.IOI_PATH_STR,
     ...                                "/etc/hosts", None)
     >>> assert is_ioinfo(inp)
     """
     if isinstance(obj, tuple) and getattr(obj, '_asdict', False):
-        obj = typing.cast(anyconfig.globals.IOInfo, obj)
-        return all(k in obj._asdict() for k in anyconfig.globals.IOI_KEYS)
+        obj = typing.cast(anyconfig.common.IOInfo, obj)
+        return all(k in obj._asdict() for k in anyconfig.common.IOI_KEYS)
 
     return False
 
@@ -162,12 +162,12 @@ def is_stream_ioinfo(obj: typing.Any) -> bool:
     :param obj: IOInfo object or something
     :return: True if given IOInfo object 'obj' is of file / file-like object
 
-    >>> ioi = anyconfig.globals.IOInfo(None, anyconfig.globals.IOI_STREAM,
+    >>> ioi = anyconfig.common.IOInfo(None, anyconfig.common.IOI_STREAM,
     ...                                None, None)
     >>> assert is_stream_ioinfo(ioi)
     >>> assert not is_stream_ioinfo(__file__)
     """
-    return getattr(obj, "type", None) == anyconfig.globals.IOI_STREAM
+    return getattr(obj, "type", None) == anyconfig.common.IOI_STREAM
 
 
 def is_path_like_object(obj: typing.Any, marker: str = '*') -> bool:
@@ -300,7 +300,7 @@ def expand_paths_itr(paths: typing.Union[str, pathlib.Path,
 
     elif is_ioinfo(paths):
         yield pathlib.Path(
-            typing.cast(anyconfig.globals.IOInfo, paths).path
+            typing.cast(anyconfig.common.IOInfo, paths).path
         )
 
     else:

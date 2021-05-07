@@ -10,7 +10,7 @@ import unittest
 import anyconfig.ioinfo as TT
 import anyconfig.utils
 
-from anyconfig.globals import (
+from anyconfig.common import (
     IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM
 )
 

@@ -21,7 +21,7 @@ import typing
 
 import anyconfig.utils
 
-from anyconfig.globals import (
+from anyconfig.common import (
     IOInfo, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
     UnknownFileTypeError
 )
@@ -34,7 +34,7 @@ def guess_io_type(obj: typing.Any) -> IoiTypeT:
     """Guess input or output type of 'obj'.
 
     :param obj: a path string, a pathlib.Path or a file / file-like object
-    :return: IOInfo type defined in anyconfig.globals.IOI_TYPES
+    :return: IOInfo type defined in anyconfig.common.IOI_TYPES
 
     >>> apath = "/path/to/a_conf.ext"
     >>> assert guess_io_type(apath) == IOI_PATH_STR

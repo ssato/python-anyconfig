@@ -2,7 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# Suppress: import positions after some globals are defined
+# Suppress import positions after some global variables are defined
 # pylint: disable=wrong-import-position
 """A module to aggregate config parser (loader/dumper) backends.
 """

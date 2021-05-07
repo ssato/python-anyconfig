@@ -86,7 +86,7 @@ class DumperMixin:
 
         :param cnf: Configuration data to dump
         :param ioi:
-            an 'anyconfig.globals.IOInfo' namedtuple object provides various
+            an 'anyconfig.cmmon.IOInfo' namedtuple object provides various
             info of input object to load data from
 
         :param kwargs: optional keyword parameters to be sanitized :: dict

@@ -83,7 +83,7 @@ import warnings
 import anyconfig
 
 # Import some global constants will be re-exported:
-from .globals import (  # noqa: F401
+from .common import (  # noqa: F401
     IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
 )
 from . import (
@@ -179,11 +179,11 @@ def findall(obj=None, forced_type=None):
     """
     Find out parser objects can load and/or dump data from given 'obj' which
     may be a file path, file or file-like object, pathlib.Path object or an
-    'anyconfig.globals.IOInfo' (namedtuple) object.
+    'anyconfig.common.IOInfo' (namedtuple) object.
 
     :param obj:
         a file path, file or file-like object, pathlib.Path object, an
-        'anyconfig.globals.IOInfo' (namedtuple) object, or None
+        'anyconfig.common.IOInfo' (namedtuple) object, or None
     :param forced_type:
         Forced configuration parser type or parser object itself
     :return: A list of instances of processor classes to process 'obj'
@@ -199,7 +199,7 @@ def find(obj=None, forced_type=None):
 
     :param obj:
         a file path, file or file-like object, pathlib.Path object, an
-        'anyconfig.globals.IOInfo' (namedtuple) object, or None
+        'anyconfig.common.IOInfo' (namedtuple) object, or None
     :param forced_type:
         Forced configuration parser type or parser object itself
     :return:
@@ -263,7 +263,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     """
     :param input_:
         File path or file or file-like object or pathlib.Path object represents
-        the file or a namedtuple 'anyconfig.globals.IOInfo' object represents
+        the file or a namedtuple 'anyconfig.common.IOInfo' object represents
         some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
@@ -311,7 +311,7 @@ def single_load(input_, ac_parser=None, ac_template=False,
 
     :param input\_:
         File path or file or file-like object or pathlib.Path object represents
-        the file or a namedtuple 'anyconfig.globals.IOInfo' object represents
+        the file or a namedtuple 'anyconfig.common.IOInfo' object represents
         some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
@@ -371,7 +371,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
 
     The first argument 'inputs' may be a list of a file paths or a glob pattern
     specifying them or a pathlib.Path object represents file[s] or a namedtuple
-    'anyconfig.globals.IOInfo' object represents some inputs to load some data
+    'anyconfig.common.IOInfo' object represents some inputs to load some data
     from.
 
     About glob patterns, for example, is, if a.yml, b.yml and c.yml are in the
@@ -385,7 +385,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
     :param inputs:
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
-        file or a namedtuple 'anyconfig.globals.IOInfo' object represents some
+        file or a namedtuple 'anyconfig.common.IOInfo' object represents some
         inputs to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
@@ -448,12 +448,12 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     r"""
     Load single or multiple config files or multiple config files specified in
     given paths pattern or pathlib.Path object represents config files or a
-    namedtuple 'anyconfig.globals.IOInfo' object represents some inputs.
+    namedtuple 'anyconfig.common.IOInfo' object represents some inputs.
 
     :param path_specs:
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
-        file or a namedtuple 'anyconfig.globals.IOInfo' object represents some
+        file or a namedtuple 'anyconfig.common.IOInfo' object represents some
         inputs to load some data from.
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:
@@ -541,7 +541,7 @@ def dump(data, out, ac_parser=None, **options):
     :param data: A mapping object may have configurations data to dump
     :param out:
         An output file path, a file, a file-like object, :class:`pathlib.Path`
-        object represents the file or a namedtuple 'anyconfig.globals.IOInfo'
+        object represents the file or a namedtuple 'anyconfig.common.IOInfo'
         object represents output to dump some data to.
     :param ac_parser: Forced parser type or parser object
     :param options:

@@ -6,7 +6,7 @@ r"""Utility functions in anyconfig.backend.base.
 """
 import typing
 
-from ...globals import (
+from ...common import (
     InDataT, IOInfo, PathOrIOInfoT
 )
 

@@ -168,7 +168,7 @@ class LoaderMixin:
         refering after some checks.
 
         :param ioi:
-            'anyconfig.globals.IOInfo' namedtuple object provides various info
+            'anyconfig.common.IOInfo' namedtuple object provides various info
             of input object to load data from
 
         :param ac_ignore_missing:

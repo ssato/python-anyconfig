@@ -9,7 +9,7 @@ import anyconfig.ioinfo
 import anyconfig.models.processor
 import anyconfig.processors as TT
 
-from anyconfig.globals import (
+from anyconfig.common import (
     UnknownProcessorTypeError, UnknownFileTypeError
 )
 

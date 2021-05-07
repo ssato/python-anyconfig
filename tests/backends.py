@@ -18,7 +18,7 @@ import anyconfig.backends as TT
 import anyconfig.ioinfo
 import tests.common as TC
 
-from anyconfig.globals import (
+from anyconfig.common import (
     UnknownProcessorTypeError, UnknownFileTypeError
 )
 

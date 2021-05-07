@@ -7,9 +7,17 @@ r"""Abstract and basic loaders.
 import collections
 import io
 import pathlib
+import typing
 
 from ... import utils
+from .datatypes import (
+    InDataExT, IoiT, GenContainerT, OptionsT
+)
+from .mixins import TextFilesMixin
 from .utils import not_implemented
+
+
+DATA_DEFAULT: InDataExT = dict()
 
 
 class LoaderMixin:
@@ -30,20 +38,20 @@ class LoaderMixin:
       primitive data types other than mapping types such like JSON parser
     - _dict_opts: Backend options to customize dict class to make results
     """
-    _load_opts = []
-    _ordered = False
-    _allow_primitives = False
-    _dict_opts = []
+    _load_opts: typing.List[str] = []
+    _ordered: bool = False
+    _allow_primitives: bool = False
+    _dict_opts: typing.List[str] = []
 
     @classmethod
-    def ordered(cls):
+    def ordered(cls) -> bool:
         """
         :return: True if parser can keep the order of keys else False.
         """
         return cls._ordered
 
     @classmethod
-    def allow_primitives(cls):
+    def allow_primitives(cls) -> bool:
         """
         :return:
             True if the parser.load* may return objects of primitive data types
@@ -52,13 +60,13 @@ class LoaderMixin:
         return cls._allow_primitives
 
     @classmethod
-    def dict_options(cls):
+    def dict_options(cls) -> typing.List[str]:
         """
         :return: List of dict factory options
         """
         return cls._dict_opts
 
-    def _container_factory(self, **options):
+    def _container_factory(self, **options) -> GenContainerT:
         """
         The order of prirorities are ac_dict, backend specific dict class
         option, ac_ordered.
@@ -79,7 +87,7 @@ class LoaderMixin:
 
         return dict
 
-    def _load_options(self, container, **options):
+    def _load_options(self, container: GenContainerT, **options) -> OptionsT:
         """
         Select backend specific loading options.
         """
@@ -91,7 +99,8 @@ class LoaderMixin:
 
         return utils.filter_options(self._load_opts, options)
 
-    def load_from_string(self, content, container, **kwargs):
+    def load_from_string(self, content: str, container: GenContainerT,
+                         **kwargs) -> InDataExT:
         """
         Load config from given string 'content'.
 
@@ -102,8 +111,10 @@ class LoaderMixin:
         :return: Dict-like object holding config parameters
         """
         not_implemented(self, content, container, **kwargs)
+        return DATA_DEFAULT
 
-    def load_from_path(self, filepath, container, **kwargs):
+    def load_from_path(self, filepath: str, container: GenContainerT,
+                       **kwargs) -> InDataExT:
         """
         Load config from given file path 'filepath`.
 
@@ -114,8 +125,10 @@ class LoaderMixin:
         :return: Dict-like object holding config parameters
         """
         not_implemented(self, filepath, container, **kwargs)
+        return DATA_DEFAULT
 
-    def load_from_stream(self, stream, container, **kwargs):
+    def load_from_stream(self, stream: typing.IO, container: GenContainerT,
+                         **kwargs) -> InDataExT:
         """
         Load config from given file like object 'stream`.
 
@@ -126,8 +139,9 @@ class LoaderMixin:
         :return: Dict-like object holding config parameters
         """
         not_implemented(self, stream, container, **kwargs)
+        return DATA_DEFAULT
 
-    def loads(self, content, **options):
+    def loads(self, content: str, **options) -> InDataExT:
         """
         Load config from given string 'content' after some checks.
 
@@ -147,7 +161,8 @@ class LoaderMixin:
         options = self._load_options(container, **options)
         return self.load_from_string(content, container, **options)
 
-    def load(self, ioi, ac_ignore_missing=False, **options):
+    def load(self, ioi: IoiT, ac_ignore_missing: bool = False,
+             **options) -> InDataExT:
         """
         Load config from a file path or a file / file-like object which 'ioi'
         refering after some checks.
@@ -174,7 +189,9 @@ class LoaderMixin:
             return container()
 
         if utils.is_stream_ioinfo(ioi):
-            cnf = self.load_from_stream(ioi.src, container, **options)
+            cnf = self.load_from_stream(
+                typing.cast(typing.IO, ioi.src), container, **options
+            )
         else:
             if ac_ignore_missing and not pathlib.Path(ioi.path).exists():
                 return container()
@@ -184,7 +201,7 @@ class LoaderMixin:
         return cnf
 
 
-class FromStringLoaderMixin(LoaderMixin):
+class FromStringLoaderMixin(LoaderMixin, TextFilesMixin):
     """
     Abstract config parser provides a method to load configuration from string
     content to help implement parser of which backend lacks of such function.
@@ -192,7 +209,8 @@ class FromStringLoaderMixin(LoaderMixin):
     Parser classes inherit this class have to override the method
     :meth:`load_from_string` at least.
     """
-    def load_from_stream(self, stream, container, **kwargs):
+    def load_from_stream(self, stream: typing.IO, container: GenContainerT,
+                         **kwargs) -> InDataExT:
         """
         Load config from given stream 'stream'.
 
@@ -204,7 +222,8 @@ class FromStringLoaderMixin(LoaderMixin):
         """
         return self.load_from_string(stream.read(), container, **kwargs)
 
-    def load_from_path(self, filepath, container, **kwargs):
+    def load_from_path(self, filepath: str, container: GenContainerT,
+                       **kwargs) -> InDataExT:
         """
         Load config from given file path 'filepath'.
 
@@ -218,7 +237,7 @@ class FromStringLoaderMixin(LoaderMixin):
             return self.load_from_stream(inp, container, **kwargs)
 
 
-class FromStreamLoaderMixin(LoaderMixin):
+class FromStreamLoaderMixin(LoaderMixin, TextFilesMixin):
     """
     Abstract config parser provides a method to load configuration from string
     content to help implement parser of which backend lacks of such function.
@@ -226,7 +245,8 @@ class FromStreamLoaderMixin(LoaderMixin):
     Parser classes inherit this class have to override the method
     :meth:`load_from_stream` at least.
     """
-    def load_from_string(self, content, container, **kwargs):
+    def load_from_string(self, content: str, container: GenContainerT,
+                         **kwargs) -> InDataExT:
         """
         Load config from given string 'cnf_content'.
 
@@ -239,7 +259,8 @@ class FromStreamLoaderMixin(LoaderMixin):
         return self.load_from_stream(io.StringIO(content),
                                      container, **kwargs)
 
-    def load_from_path(self, filepath, container, **kwargs):
+    def load_from_path(self, filepath: str, container: GenContainerT,
+                       **kwargs) -> InDataExT:
         """
         Load config from given file path 'filepath'.
 

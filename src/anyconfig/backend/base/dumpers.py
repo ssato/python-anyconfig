@@ -8,8 +8,8 @@ import io
 import typing
 
 from ... import utils
-from ...globals import (
-    InDataT, IOInfo
+from .datatypes import (
+    InDataT, IoiT
 )
 from .mixins import TextFilesMixin
 from .utils import (
@@ -80,7 +80,7 @@ class DumperMixin:
         kwargs = utils.filter_options(self._dump_opts, kwargs)
         return self.dump_to_string(cnf, **kwargs)
 
-    def dump(self, cnf: InDataT, ioi: IOInfo, **kwargs):
+    def dump(self, cnf: InDataT, ioi: IoiT, **kwargs):
         """
         Dump config 'cnf' to output object of which 'ioi' refering.
 

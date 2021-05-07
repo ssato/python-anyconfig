@@ -4,6 +4,8 @@
 #
 r"""Backend basic classes, functions and constants.
 """
+import typing
+
 from .dumpers import (
     ToStringDumperMixin, ToStreamDumperMixin,
 )
@@ -21,12 +23,17 @@ from .parsers import (
     StreamParser, StringStreamFnParser,
 )
 
+
+ParserTVar = typing.TypeVar('ParserTVar', bound=Parser)
+ParsersT = typing.List[ParserTVar]
+
 __all__ = [
     'ToStringDumperMixin', 'ToStreamDumperMixin',
     'FromStringLoaderMixin', 'FromStreamLoaderMixin',
     'TextFilesMixin', 'BinaryFilesMixin',
     'ensure_outdir_exists', 'to_method',
     'Parser', 'StreamParser', 'StringStreamFnParser',
+    'ParserTVar', 'ParsersT',
 ]
 
 # vim:sw=4:ts=4:et:

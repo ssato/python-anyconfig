@@ -20,7 +20,7 @@ from .utils import (
 )
 from .parsers import (
     Parser,
-    StreamParser, StringStreamFnParser,
+    StringParser, StreamParser, StringStreamFnParser,
 )
 
 

@@ -61,10 +61,7 @@ import io
 import itertools
 import operator
 import re
-try:
-    import xml.etree.ElementTree as ET
-except ImportError:
-    import elementtree.ElementTree as ET  # type: ignore
+import xml.etree.ElementTree as ET
 
 import anyconfig.backend.base
 import anyconfig.utils

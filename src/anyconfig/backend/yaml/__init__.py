@@ -14,22 +14,19 @@ Changelog:
    - Split PyYaml-based and ruamel.yaml based backend modules
    - Add support of some of ruamel.yaml specific features.
 """
-import typing
-
-import anyconfig.backend.base
+from ..base import ParsersT
 
 
-ParserTVar = typing.TypeVar('ParserTVar', bound=anyconfig.backend.base.Parser)
 try:
     from . import pyyaml
-    PARSERS: typing.List[ParserTVar] = [pyyaml.Parser]
+    PARSERS: ParsersT = [pyyaml.Parser]
 except ImportError:
-    PARSERS: typing.List[ParserTVar] = []
+    PARSERS: ParsersT = []  # type: ignore
 
 try:
     from . import ruamel_yaml as ryaml
     PARSERS.append(ryaml.Parser)
 except ImportError:
-    ryaml = False
+    pass
 
 # vim:sw=4:ts=4:et:

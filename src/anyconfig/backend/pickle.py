@@ -30,7 +30,7 @@ Changelog:
 try:
     import cPickle as pickle
 except ImportError:
-    import pickle
+    import pickle  # type: ignore
 
 import anyconfig.backend.base
 

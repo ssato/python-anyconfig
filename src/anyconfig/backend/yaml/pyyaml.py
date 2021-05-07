@@ -40,7 +40,7 @@ import yaml
 try:
     from yaml import CSafeLoader as Loader, CDumper as Dumper
 except ImportError:
-    from yaml import SafeLoader as Loader, Dumper
+    from yaml import SafeLoader as Loader, Dumper  # type: ignore
 
 import anyconfig.backend.base
 import anyconfig.utils

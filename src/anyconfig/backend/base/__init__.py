@@ -32,7 +32,8 @@ __all__ = [
     'FromStringLoaderMixin', 'FromStreamLoaderMixin',
     'TextFilesMixin', 'BinaryFilesMixin',
     'ensure_outdir_exists', 'to_method',
-    'Parser', 'StreamParser', 'StringStreamFnParser',
+    'Parser',
+    'StringParser', 'StreamParser', 'StringStreamFnParser',
     'ParserTVar', 'ParsersT',
 ]
 

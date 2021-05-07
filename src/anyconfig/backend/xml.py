@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
@@ -62,12 +62,9 @@ import itertools
 import operator
 import re
 try:
-    import xml.etree.cElementTree as ET
+    import xml.etree.ElementTree as ET
 except ImportError:
-    try:
-        import xml.etree.ElementTree as ET
-    except ImportError:
-        import elementtree.ElementTree as ET
+    import elementtree.ElementTree as ET  # type: ignore
 
 import anyconfig.backend.base
 import anyconfig.utils

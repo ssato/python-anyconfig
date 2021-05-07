@@ -238,15 +238,14 @@ def split_re(marker: str, sep: str = os.path.sep) -> typing.Pattern:
 
 def split_path_by_marker(path: str, marker: str = '*',
                          sep: str = os.path.sep
-                         ) -> typing.Tuple[typing.Optional[str],
-                                           typing.Optional[str]]:
+                         ) -> typing.Tuple[str, str]:
     """
     Split given path string by the marker.
 
     >>> split_path_by_marker('a.txt')
-    ('a.txt', None)
+    ('a.txt', '')
     >>> split_path_by_marker('*.txt')
-    (None, '*.txt')
+    ('', '*.txt')
     >>> split_path_by_marker('a/*.txt')
     ('a', '*.txt')
     >>> split_path_by_marker('a/b/*.txt')
@@ -255,12 +254,16 @@ def split_path_by_marker(path: str, marker: str = '*',
     ('a/b', '*/*.txt')
     """
     if marker not in path:
-        return (path, None)
+        return (path, '')
 
     if sep not in path:
-        return (None, path)
+        return ('', path)
 
-    return split_re(marker, sep=sep).match(path).groups()  # type: ignore
+    matched = split_re(marker, sep=sep).match(path)
+    if not matched:
+        raise ValueError(f'Looks invalid: {path}')
+
+    return typing.cast(typing.Tuple[str, str], matched.groups())
 
 
 PathOrIO = typing.Union[pathlib.Path, typing.IO]
@@ -284,12 +287,12 @@ def expand_paths_itr(paths: typing.Union[str, pathlib.Path,
 
         (base, pattern) = split_path_by_marker(paths, marker=marker)
 
-        if pattern is None:
+        if not pattern:
             yield pathlib.Path(base)
             return
 
-        base = pathlib.Path(os.curdir if base is None else base).resolve()
-        for path in sorted(base.glob(pattern)):
+        base_2 = pathlib.Path(os.curdir if not base else base).resolve()
+        for path in sorted(base_2.glob(pattern)):
             yield path
 
     elif is_file_stream(paths):

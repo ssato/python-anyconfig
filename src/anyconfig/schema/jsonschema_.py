@@ -2,7 +2,7 @@
 # Copyright (C) 2015 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Implementation using jsonschema provides the following functions.
+r"""Implementation using jsonschema provides the following functions.
 
 - validate(data: typing.Dict[str, typing.Any],
            schema: typing.Dict[str, typing.Any],

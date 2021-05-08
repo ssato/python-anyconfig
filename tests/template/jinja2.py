@@ -9,7 +9,7 @@ import unittest
 import unittest.mock
 
 try:
-    import anyconfig.template.jinja2_ as TT
+    import anyconfig.template.jinja2 as TT
 except ImportError:
     raise unittest.SkipTest('jinja2 does not look available.')
 

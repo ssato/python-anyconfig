@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=wrong-import-position,wrong-import-order
-"""anyconfig.template module
+"""anyconfig.template.jinja2_ module
 
 Template rendering module for jinja2-based template config files.
 """

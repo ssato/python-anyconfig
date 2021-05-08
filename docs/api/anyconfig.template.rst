@@ -6,3 +6,6 @@
     :undoc-members:
     :show-inheritance:
 
+.. toctree::
+
+   anyconfig.template.jinja2

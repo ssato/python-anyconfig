@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 #  pylint: disable=deprecated-method
@@ -32,21 +32,20 @@ Changelog:
 """
 import configparser
 import os
-import anyconfig.backend.base
-import anyconfig.parser as P
-import anyconfig.utils
+import typing
 
-from anyconfig.utils import filter_options
+from .. import parser, utils
+from . import base
 
 
 _SEP = ','
 try:
-    DEFAULTSECT = configparser.DEFAULTSECT
+    DEFAULTSECT: str = configparser.DEFAULTSECT
 except AttributeError:
-    DEFAULTSECT = "DEFAULT"
+    DEFAULTSECT: str = 'DEFAULT'  # type: ignore
 
 
-def _parse(val_s, sep=_SEP):
+def _parse(val_s: str, sep: str = _SEP):
     """
     FIXME: May be too naive implementation.
 
@@ -64,12 +63,14 @@ def _parse(val_s, sep=_SEP):
             (val_s.startswith("'") and val_s.endswith("'")):
         return val_s[1:-1]
     if sep in val_s:
-        return [P.parse(x) for x in P.parse_list(val_s)]
+        return [
+            parser.parse(typing.cast(str, x)) for x in parser.parse_list(val_s)
+        ]
 
-    return P.parse(val_s)
+    return parser.parse(val_s)
 
 
-def _to_s(val, sep=", "):
+def _to_s(val: typing.Any, sep: str = ', ') -> str:
     """Convert any to string.
 
     :param val: An object
@@ -80,21 +81,23 @@ def _to_s(val, sep=", "):
     >>> _to_s("aaa")
     'aaa'
     """
-    if anyconfig.utils.is_iterable(val):
+    if utils.is_iterable(val):
         return sep.join(str(x) for x in val)
 
     return str(val)
 
 
-def _parsed_items(items, sep=_SEP, **options):
+def _parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
+                  sep: str = _SEP, **options
+                  ) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
     """
     :param items: List of pairs, [(key, value)], or generator yields pairs
     :param sep: Seprator string
     :return: Generator to yield (key, value) pair of 'dic'
     """
-    parse = _parse if options.get("ac_parse_value") else anyconfig.utils.noop
+    parse = _parse if options.get("ac_parse_value") else utils.noop
     for key, val in items:
-        yield (key, parse(val, sep))
+        yield (key, parse(val, sep))  # type: ignore
 
 
 def _make_parser(**kwargs):
@@ -102,9 +105,10 @@ def _make_parser(**kwargs):
     :return: (keyword args to be used, parser object)
     """
     # Optional arguements for configparser.SafeConfigParser{,readfp}
-    kwargs_0 = filter_options(("defaults", "dict_type", "allow_no_value"),
-                              kwargs)
-    kwargs_1 = filter_options(("filename", ), kwargs)
+    kwargs_0 = utils.filter_options(
+        ("defaults", "dict_type", "allow_no_value"), kwargs
+    )
+    kwargs_1 = utils.filter_options(("filename", ), kwargs)
 
     try:
         parser = configparser.SafeConfigParser(**kwargs_0)
@@ -112,7 +116,7 @@ def _make_parser(**kwargs):
         # .. note::
         #    It seems ConfigParser.*ConfigParser in python 2.6 does not support
         #    'allow_no_value' option parameter, and TypeError will be thrown.
-        kwargs_0 = filter_options(("defaults", "dict_type"), kwargs)
+        kwargs_0 = utils.filter_options(("defaults", "dict_type"), kwargs)
         parser = configparser.SafeConfigParser(**kwargs_0)
 
     return (kwargs_1, parser)
@@ -143,7 +147,8 @@ def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
     return cnf
 
 
-def _dumps_itr(cnf, dkey=DEFAULTSECT):
+def _dumps_itr(cnf: typing.Dict[str, typing.Any],
+               dkey: str = DEFAULTSECT):
     """
     :param cnf: Configuration data to dump
     """
@@ -159,7 +164,7 @@ def _dumps_itr(cnf, dkey=DEFAULTSECT):
         yield ''  # it will be a separator between each sections.
 
 
-def _dumps(cnf, **_kwargs):
+def _dumps(cnf: typing.Dict[str, typing.Any], **_kwargs) -> str:
     """
     :param cnf: Configuration data to dump
     :param _kwargs: optional keyword parameters to be sanitized :: dict
@@ -169,20 +174,20 @@ def _dumps(cnf, **_kwargs):
     return os.linesep.join(line for line in _dumps_itr(cnf))
 
 
-class Parser(anyconfig.backend.base.Parser,
-             anyconfig.backend.base.FromStreamLoaderMixin,
-             anyconfig.backend.base.ToStringDumperMixin):
+class Parser(base.Parser, base.FromStreamLoaderMixin,
+             base.ToStringDumperMixin):
     """
     Ini config files parser.
     """
-    _cid = "ini"
-    _type = "ini"
-    _extensions = ["ini"]
-    _load_opts = ["defaults", "dict_type", "allow_no_value", "filename",
-                  "ac_parse_value"]
-    _dict_opts = ["dict_type"]
+    _cid: str = 'ini'
+    _type: str = 'ini'
+    _extensions: typing.List[str] = ['ini']
+    _load_opts: typing.List[str] = [
+        "defaults", "dict_type", "allow_no_value", "filename", "ac_parse_value"
+    ]
+    _dict_opts: typing.List[str] = ["dict_type"]
 
-    dump_to_string = anyconfig.backend.base.to_method(_dumps)
-    load_from_stream = anyconfig.backend.base.to_method(_load)
+    dump_to_string = base.to_method(_dumps)
+    load_from_stream = base.to_method(_load)
 
 # vim:sw=4:ts=4:et:

@@ -24,8 +24,8 @@ from .parsers import (
 )
 
 
-ParserTVar = typing.TypeVar('ParserTVar', bound=Parser)
-ParsersT = typing.List[ParserTVar]
+ParserT = typing.TypeVar('ParserT', bound=Parser)
+ParsersT = typing.List[ParserT]
 
 __all__ = [
     'ToStringDumperMixin', 'ToStreamDumperMixin',
@@ -34,7 +34,7 @@ __all__ = [
     'ensure_outdir_exists', 'to_method',
     'Parser',
     'StringParser', 'StreamParser', 'StringStreamFnParser',
-    'ParserTVar', 'ParsersT',
+    'ParserT', 'ParsersT',
 ]
 
 # vim:sw=4:ts=4:et:

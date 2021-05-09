@@ -32,7 +32,7 @@ import os
 import re
 import warnings
 
-import anyconfig.backend.base
+from . import base
 
 
 _COMMENT_MARKERS = ("#", "!")
@@ -189,7 +189,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     return ret
 
 
-class Parser(anyconfig.backend.base.StreamParser):
+class Parser(base.StreamParser):
     """
     Parser for Java properties files.
     """

@@ -8,7 +8,7 @@ Changelog:
 
 .. versionadded:: 0.9.8
 """
-import anyconfig.backend.base
+from .. import base
 
 
 JSON_LOAD_OPTS = ["cls", "object_hook", "parse_float", "parse_int",
@@ -20,7 +20,7 @@ JSON_DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
 JSON_DICT_OPTS = ["object_pairs_hook", "object_hook"]
 
 
-class Parser(anyconfig.backend.base.StringStreamFnParser):
+class Parser(base.StringStreamFnParser):
     """
     Parser for JSON files.
     """

@@ -42,9 +42,9 @@ try:
 except ImportError:
     from yaml import SafeLoader as Loader, Dumper  # type: ignore
 
-import anyconfig.backend.base
-import anyconfig.utils
-
+from ...dicts import convert_to
+from ...utils import is_dict_like
+from .. import base
 from . import common
 
 
@@ -181,7 +181,7 @@ def yml_dump(data, stream, yml_fnc=yml_fnc, **options):
     :param data: Some data to dump
     :param stream: a file or file-like object to dump YAML data
     """
-    _is_dict = anyconfig.utils.is_dict_like(data)
+    _is_dict = is_dict_like(data)
 
     if options.get("ac_safe", False):
         options = dict(ac_safe=True)  # Same as yml_load.
@@ -193,7 +193,7 @@ def yml_dump(data, stream, yml_fnc=yml_fnc, **options):
 
     if _is_dict:
         # Type information and the order of items are lost on dump currently.
-        data = anyconfig.dicts.convert_to(data, ac_dict=dict)
+        data = convert_to(data, ac_dict=dict)
         options = common.filter_from_options("ac_dict", options)
 
     return yml_fnc("dump", data, stream, **options)
@@ -211,7 +211,7 @@ class Parser(common.Parser):
                   "allow_unicode", "line_break", "encoding", "explicit_start",
                   "explicit_end", "version", "tags"]
 
-    load_from_stream = anyconfig.backend.base.to_method(yml_load)
-    dump_to_stream = anyconfig.backend.base.to_method(yml_dump)
+    load_from_stream = base.to_method(yml_load)
+    dump_to_stream = base.to_method(yml_dump)
 
 # vim:sw=4:ts=4:et:

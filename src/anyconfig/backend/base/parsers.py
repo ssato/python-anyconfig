@@ -17,9 +17,8 @@ needed:
 """
 import typing
 
-import anyconfig.models.processor
-import anyconfig.utils
-
+from ...models import processor
+from ...utils import is_dict_like
 from .datatypes import (
     InDataExT, GenContainerT
 )
@@ -31,8 +30,7 @@ from .loaders import (
 )
 
 
-class Parser(LoaderMixin, DumperMixin,
-             anyconfig.models.processor.Processor):
+class Parser(LoaderMixin, DumperMixin, processor.Processor):
     """
     Abstract parser to provide basic implementation of some methods, interfaces
     and members.
@@ -91,7 +89,7 @@ def load_with_fn(load_fn: typing.Optional[LoadFnT],
         raise TypeError('The first argument "load_fn" must be a callable!')
 
     ret = load_fn(content_or_strm, **options)
-    if anyconfig.utils.is_dict_like(ret):
+    if is_dict_like(ret):
         return container() if (ret is None or not ret) else container(ret)
 
     return ret if allow_primitives else container(ret)

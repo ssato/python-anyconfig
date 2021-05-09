@@ -23,7 +23,7 @@ import os
 import re
 import warnings
 
-import anyconfig.backend.base
+from . import base
 
 
 def _parseline(line):
@@ -98,7 +98,7 @@ def load(stream, container=dict):
     return ret
 
 
-class Parser(anyconfig.backend.base.StreamParser):
+class Parser(base.StreamParser):
     """
     Parser for Shell variable definition files.
     """

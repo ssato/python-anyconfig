@@ -20,11 +20,12 @@ Changelog:
     .. versionadded:: 0.1.0
 """
 import toml
-import anyconfig.backend.base
-from anyconfig.backend.base import to_method
+
+from . import base
+from .base import to_method
 
 
-class Parser(anyconfig.backend.base.StringStreamFnParser):
+class Parser(base.StringStreamFnParser):
     """
     TOML parser.
     """

@@ -63,9 +63,11 @@ import operator
 import re
 import xml.etree.ElementTree as ET
 
-import anyconfig.backend.base
-import anyconfig.utils
-import anyconfig.parser
+from . import base
+from ..parser import parse_single
+from ..utils import (
+    get_path_from_stream, is_dict_like, is_iterable, noop
+)
 
 
 _TAGS = dict(attrs="@attrs", text="@text", children="@children")
@@ -172,7 +174,7 @@ def _parse_text(val, **options):
     :return: Parsed value or value itself depends on 'ac_parse_value'
     """
     if val and options.get("ac_parse_value", False):
-        return anyconfig.parser.parse_single(val)
+        return parse_single(val)
 
     return val
 
@@ -205,7 +207,7 @@ def _parse_attrs(elem, container=dict, **options):
     """
     adic = dict((_tweak_ns(a, **options), v) for a, v in elem.attrib.items())
     if options.get("ac_parse_value", False):
-        return container(dict((k, anyconfig.parser.parse_single(v))
+        return container(dict((k, parse_single(v))
                               for k, v in adic.items()))
 
     return container(adic)
@@ -348,7 +350,7 @@ def _to_str_fn(**options):
     :param options: Keyword options might have 'ac_parse_value' key
     :param to_str: Callable to convert value to string
     """
-    return str if options.get("ac_parse_value") else anyconfig.utils.noop
+    return str if options.get("ac_parse_value") else noop
 
 
 def _elem_set_attrs(obj, parent, to_str):
@@ -386,7 +388,7 @@ def _get_or_update_parent(key, val, to_str, parent=None, **options):
     """
     elem = ET.Element(key)
 
-    vals = val if anyconfig.utils.is_iterable(val) else [val]
+    vals = val if is_iterable(val) else [val]
     for val_ in vals:
         container_to_etree(val_, parent=elem, to_str=to_str, **options)
 
@@ -415,7 +417,7 @@ def container_to_etree(obj, parent=None, to_str=None, **options):
     if to_str is None:
         to_str = _to_str_fn(**options)
 
-    if not anyconfig.utils.is_dict_like(obj):
+    if not is_dict_like(obj):
         if parent is not None and obj:
             parent.text = to_str(obj)  # Parent is a leaf text node.
         return parent  # All attributes and text should be set already.
@@ -451,9 +453,7 @@ def etree_write(tree, stream):
         tree.write(stream, encoding="unicode", xml_declaration=True)
 
 
-class Parser(anyconfig.backend.base.Parser,
-             anyconfig.backend.base.ToStreamDumperMixin,
-             anyconfig.backend.base.BinaryFilesMixin):
+class Parser(base.Parser, base.ToStreamDumperMixin, base.BinaryFilesMixin):
     """
     Parser for XML files.
     """
@@ -503,7 +503,7 @@ class Parser(anyconfig.backend.base.Parser,
         :return: Dict-like object holding config parameters
         """
         root = ET.parse(stream).getroot()
-        path = anyconfig.utils.get_path_from_stream(stream)
+        path = get_path_from_stream(stream)
         nspaces = _namespaces_from_file(path)
         return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)

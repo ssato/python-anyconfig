@@ -34,7 +34,10 @@ import configparser
 import os
 import typing
 
-from .. import parser, utils
+from ..parser import parse, parse_list
+from ..utils import (
+    filter_options, is_iterable, noop
+)
 from . import base
 
 
@@ -63,11 +66,9 @@ def _parse(val_s: str, sep: str = _SEP):
             (val_s.startswith("'") and val_s.endswith("'")):
         return val_s[1:-1]
     if sep in val_s:
-        return [
-            parser.parse(typing.cast(str, x)) for x in parser.parse_list(val_s)
-        ]
+        return [parse(typing.cast(str, x)) for x in parse_list(val_s)]
 
-    return parser.parse(val_s)
+    return parse(val_s)
 
 
 def _to_s(val: typing.Any, sep: str = ', ') -> str:
@@ -81,7 +82,7 @@ def _to_s(val: typing.Any, sep: str = ', ') -> str:
     >>> _to_s("aaa")
     'aaa'
     """
-    if utils.is_iterable(val):
+    if is_iterable(val):
         return sep.join(str(x) for x in val)
 
     return str(val)
@@ -95,7 +96,7 @@ def _parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
     :param sep: Seprator string
     :return: Generator to yield (key, value) pair of 'dic'
     """
-    parse = _parse if options.get("ac_parse_value") else utils.noop
+    parse = _parse if options.get("ac_parse_value") else noop
     for key, val in items:
         yield (key, parse(val, sep))  # type: ignore
 
@@ -105,21 +106,21 @@ def _make_parser(**kwargs):
     :return: (keyword args to be used, parser object)
     """
     # Optional arguements for configparser.SafeConfigParser{,readfp}
-    kwargs_0 = utils.filter_options(
+    kwargs_0 = filter_options(
         ("defaults", "dict_type", "allow_no_value"), kwargs
     )
-    kwargs_1 = utils.filter_options(("filename", ), kwargs)
+    kwargs_1 = filter_options(("filename", ), kwargs)
 
     try:
-        parser = configparser.SafeConfigParser(**kwargs_0)
+        psr = configparser.SafeConfigParser(**kwargs_0)
     except TypeError:
         # .. note::
         #    It seems ConfigParser.*ConfigParser in python 2.6 does not support
         #    'allow_no_value' option parameter, and TypeError will be thrown.
-        kwargs_0 = utils.filter_options(("defaults", "dict_type"), kwargs)
-        parser = configparser.SafeConfigParser(**kwargs_0)
+        kwargs_0 = filter_options(("defaults", "dict_type"), kwargs)
+        psr = configparser.SafeConfigParser(**kwargs_0)
 
-    return (kwargs_1, parser)
+    return (kwargs_1, psr)
 
 
 def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):

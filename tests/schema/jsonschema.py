@@ -7,7 +7,7 @@
 import unittest
 
 try:
-    import anyconfig.schema.jsonschema_ as TT
+    import anyconfig.schema.jsonschema as TT
     SUPPORTED: bool = True
 except ImportError:
     SUPPORTED: bool = False  # type: ignore

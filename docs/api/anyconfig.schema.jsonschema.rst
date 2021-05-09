@@ -1,7 +1,7 @@
-:mod:`anyconfig.schema.jsonschema_`
+:mod:`anyconfig.schema.jsonschema`
 ====================================
 
-.. automodule:: anyconfig.schema.jsonschema_
+.. automodule:: anyconfig.schema.jsonschema
     :members:
     :undoc-members:
     :show-inheritance:

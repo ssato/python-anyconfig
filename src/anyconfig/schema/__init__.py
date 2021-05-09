@@ -5,7 +5,7 @@
 r"""misc global constants, variables, classes and so on.
 """
 try:
-    from .jsonschema_ import validate, gen_schema
+    from .jsonschema import validate, gen_schema
     SUPPORTED: bool = True
 except ImportError:
     from .default import validate, gen_schema

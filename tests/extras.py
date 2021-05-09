@@ -10,13 +10,13 @@ import sys
 
 class TestImportErrors(unittest.TestCase):
 
-    def test_20_ac_backends(self):
+    def test_20_ac_parsers(self):
         for mod in ("yaml", "msgpack", "toml", "bson"):
             sys.modules[mod] = None
-            import anyconfig.backends
+            import anyconfig.parsers
 
             self.assertTrue(sys.modules[mod] is None)
-            self.assertFalse(anyconfig.backends is None)
+            self.assertFalse(anyconfig.parsers is None)
 
     def test_30_ac_schema(self):
         mod = "jsonschema"

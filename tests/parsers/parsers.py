@@ -14,7 +14,7 @@ try:
 except ImportError:
     PYYAML = None
 
-import anyconfig.backends as TT
+import anyconfig.parsers.parsers as TT
 import anyconfig.ioinfo
 import tests.common as TC
 

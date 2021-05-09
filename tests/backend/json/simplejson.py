@@ -6,7 +6,7 @@
 # pylint: disable=ungrouped-imports
 
 try:
-    import anyconfig.backend.json._simplejson as TT
+    import anyconfig.backend.json.simplejson as TT
 except ImportError:
     import unittest
     raise unittest.SkipTest

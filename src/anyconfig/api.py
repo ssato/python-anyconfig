@@ -94,7 +94,10 @@ from .dicts import (  # noqa: F401
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
     get, set_, merge
 )
-from .backends import Parsers
+from .parsers import (  # noqa: F401
+    load_plugins, list_types, list_by_cid, list_by_type, list_by_extension,
+    findall, find
+)
 from .schema import validate, gen_schema  # noqa: F401
 from .query import query
 
@@ -104,38 +107,6 @@ def version():
     :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
     """
     return anyconfig.__version__.split('.')
-
-
-def load_plugins():
-    """[Re-]Load pluggable parsers.
-    """
-    Parsers().load_plugins()
-
-
-def list_types():
-    """List supported parser types.
-    """
-    return sorted(Parsers().list_x("type"))
-
-
-def list_by_cid():
-    """List supported parsers, [(cid, [Parser_class])].
-    """
-    return Parsers().list_by_x("cid")
-
-
-def list_by_type():
-    """List supported parser by types, [(type, [Parser_class])].
-    """
-    return Parsers().list_by_x("type")
-
-
-def list_by_extension():
-    """
-    List supported parser by file extension supported, [(extension,
-    [Parser_class])].
-    """
-    return Parsers().list_by_x("extensions")
 
 
 def _try_validate(cnf, schema, **options):
@@ -173,40 +144,6 @@ def _try_query(cnf, jexp, **options):
             raise exc
 
     return cnf
-
-
-def findall(obj=None, forced_type=None):
-    """
-    Find out parser objects can load and/or dump data from given 'obj' which
-    may be a file path, file or file-like object, pathlib.Path object or an
-    'anyconfig.common.IOInfo' (namedtuple) object.
-
-    :param obj:
-        a file path, file or file-like object, pathlib.Path object, an
-        'anyconfig.common.IOInfo' (namedtuple) object, or None
-    :param forced_type:
-        Forced configuration parser type or parser object itself
-    :return: A list of instances of processor classes to process 'obj'
-    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
-    """
-    return Parsers().findall(obj, forced_type=forced_type)
-
-
-def find(obj=None, forced_type=None):
-    """
-    This function is very similar to the above :func:`find` but returns a
-    parser objects instead of a list of parser objects.
-
-    :param obj:
-        a file path, file or file-like object, pathlib.Path object, an
-        'anyconfig.common.IOInfo' (namedtuple) object, or None
-    :param forced_type:
-        Forced configuration parser type or parser object itself
-    :return:
-        An instance of processor class of highest priority to process 'obj'
-    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
-    """
-    return Parsers().find(obj, forced_type=forced_type)
 
 
 def _maybe_schema(**options):

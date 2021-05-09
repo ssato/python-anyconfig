@@ -104,7 +104,8 @@ def _process_options(**options):
             bool(options.get('ac_schema_strict', False)))
 
 
-def array_to_schema(iarr: typing.Iterable[DataT], **options) -> DataT:
+def array_to_schema(iarr: typing.Iterable[DataT], **options
+                    ) -> typing.Dict[str, typing.Any]:
     """
     Generate a JSON schema object with type annotation added for given object.
 

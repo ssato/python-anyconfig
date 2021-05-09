@@ -7,7 +7,7 @@
 import typing
 
 
-DataT = typing.Dict[str, typing.Any]
+DataT = typing.Mapping[str, typing.Any]
 ResultT = typing.Tuple[bool, typing.Union[str, typing.List[str]]]
 
 MaybeDataT = typing.Union[DataT, bool, int, float, str, None]

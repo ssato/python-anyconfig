@@ -2,6 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
+# pylint: disable=consider-using-with
 r"""Basic mixin classes for anyconfig.backend.**.*.
 """
 import typing

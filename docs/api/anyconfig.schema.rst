@@ -10,4 +10,4 @@
 
    anyconfig.schema.common
    anyconfig.schema.default
-   anyconfig.schema.jsonschema_
+   anyconfig.schema.jsonschema

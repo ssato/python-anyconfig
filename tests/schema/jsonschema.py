@@ -52,6 +52,7 @@ class Test_00_Functions(Test_00_Base):
 
 @unittest.skipIf(not SUPPORTED, "json schema lib is not available")
 class Test_10_Validation(Test_00_Base):
+    obj_ng = dict(a='aaa')
 
     def test_10_validate(self):
         (ret, msg) = TT.validate(self.obj, self.schema)
@@ -59,13 +60,23 @@ class Test_10_Validation(Test_00_Base):
         self.assertTrue(ret)
 
     def test_12_validate__ng(self):
-        (ret, msg) = TT.validate({'a': "aaa"}, self.schema)
+        (ret, msg) = TT.validate(self.obj_ng, self.schema)
         self.assertTrue(msg)
         self.assertFalse(ret)
 
     def test_14_validate__ng_no_safe(self):
-        self.assertRaises(Exception, TT.validate,
-                          {'a': "aaa"}, self.schema, ac_schema_safe=False)
+        self.assertRaises(Exception, TT.validate, self.obj_ng,
+                          self.schema, ac_schema_safe=False)
+
+    def test_20_is_valid_or_fail_ok(self):
+        TT.is_valid_or_fail(self.obj, self.schema)
+
+    def test_22_is_valid_or_fail_ok(self):
+        TT.is_valid_or_fail(self.obj_ng, self.schema, ac_schema_safe=True)
+
+    def test_24_is_valid_or_fail_ng_1(self):
+        self.assertRaises(TT.ValidationError, TT.is_valid_or_fail,
+                          self.obj_ng, self.schema)
 
 
 @unittest.skipIf(not SUPPORTED, "json schema lib is not available")
@@ -75,7 +86,7 @@ class Test_12_Validation_Errors(Test_00_Base):
     scm = {"type": "object", "properties": {"a": {"type": "integer"},
                                             "b": {"type": "string"}}}
 
-    def test_12_validate__ng(self):
+    def test_10_validate__ng(self):
         (ret, msg) = TT.validate(self.obj, self.scm, ac_schema_errors=True)
         self.assertTrue(msg)  # ["'a' is not of type ...", "'b' is not ..."]
         self.assertFalse(ret)

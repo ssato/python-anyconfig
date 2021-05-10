@@ -7,7 +7,9 @@
 """
 import typing
 
-from .common import DataT, ResultT, MaybeDataT
+from .common import (
+    DataT, ResultT, MaybeDataT
+)
 
 
 def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
@@ -17,6 +19,15 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
     Dummy function does not validate at all in actual.
     """
     return (True, 'Validation module (jsonschema) is not available')
+
+
+def is_valid_or_fail(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+                     ac_schema_errors: bool = False, **options: typing.Any
+                     ) -> None:
+    """
+    Dummy function never raise exceptions.
+    """
+    return
 
 
 def gen_schema(data: MaybeDataT, **options) -> DataT:

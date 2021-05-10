@@ -15,9 +15,11 @@ r"""Implementation using jsonschema provides the following functions.
   Generate an object represents a schema
 """
 import typing
+import warnings
 
 import jsonschema
 
+from ..common import ValidationError
 from ..utils import (
     filter_options, is_dict_like, is_list_like
 )
@@ -88,6 +90,27 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
         return _validate_all(data, schema, **options)
 
     return _validate(data, schema, ac_schema_safe, **options)
+
+
+def is_valid_or_fail(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+                     ac_schema_errors: bool = False, **options: typing.Any
+                     ) -> None:
+    """
+    Raise ValidationError if data `data` was invalidated by schema `schema`.
+    """
+    if schema is None or not schema:
+        return
+
+    (_success, error_or_errors) = validate(
+        data, schema, ac_schema_safe=ac_schema_safe,
+        ac_schema_errors=ac_schema_errors, **options
+    )
+    if error_or_errors:
+        msg = f'scm={schema!s}, err={error_or_errors!s}'
+        if ac_schema_safe:
+            warnings.warn(msg)
+        else:
+            raise ValidationError(msg)
 
 
 _SIMPLETYPE_MAP: typing.Dict[typing.Any, str] = {

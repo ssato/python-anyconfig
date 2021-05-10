@@ -6,5 +6,9 @@
     :undoc-members:
     :show-inheritance:
     
-..    :special-members:
-.. :private-members:
+.. toctree::
+
+   anyconfig.api.datatypes
+   anyconfig.api.dump_
+   anyconfig.api.load_
+   anyconfig.api.open_

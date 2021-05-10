@@ -13,6 +13,9 @@ from .parsers import Parsers
 
 
 ParserClssT = typing.List[typing.Type[ParserT]]
+MaybeParserT = typing.Optional[
+    typing.Union[str, ParserT, typing.Type[ParserT]]
+]
 
 
 def load_plugins() -> None:
@@ -68,7 +71,7 @@ def findall(obj: typing.Optional[PathOrIOInfoT] = None,
 
 
 def find(obj: typing.Optional[PathOrIOInfoT] = None,
-         forced_type: typing.Optional[str] = None) -> ParserT:
+         forced_type: MaybeParserT = None) -> ParserT:
     """
     This function is very similar to the above :func:`findall` but returns
     *a processor object* instead of a list of processor objects.

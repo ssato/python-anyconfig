@@ -13,4 +13,6 @@ ProcT = typing.TypeVar('ProcT', bound=processor.Processor)
 ProcClsT = typing.Type[ProcT]
 ProcClssT = typing.List[ProcClsT]
 
+MaybeProcT = typing.Optional[typing.Union[str, ProcT, ProcClsT]]
+
 # vim:sw=4:ts=4:et:

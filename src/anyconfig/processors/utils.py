@@ -18,7 +18,7 @@ from ..ioinfo import make as ioinfo_make
 from ..models import processor
 from ..utils import concat, groupby
 from .common import (
-    ProcT, ProcClsT, ProcClssT
+    ProcT, ProcClsT, ProcClssT, MaybeProcT
 )
 
 
@@ -162,9 +162,7 @@ def find_by_maybe_file(obj: PathOrIOInfoT, prs: ProcClssT) -> ProcClssT:
     return find_by_fileext(obj.extension, prs)  # :: [Processor], never []
 
 
-# pylint: disable=unused-argument
-def findall(obj: typing.Optional[PathOrIOInfoT],
-            prs: ProcClssT,
+def findall(obj: typing.Optional[PathOrIOInfoT], prs: ProcClssT,
             forced_type: typing.Optional[str] = None,
             ) -> ProcClssT:
     """
@@ -196,7 +194,7 @@ def findall(obj: typing.Optional[PathOrIOInfoT],
 
 
 def find(obj: typing.Optional[PathOrIOInfoT], prs: ProcClssT,
-         forced_type: typing.Union[ProcClsT, ProcClssT, str, None] = None,
+         forced_type: MaybeProcT = None,
          ) -> ProcT:
     """
     :param obj:
@@ -218,8 +216,11 @@ def find(obj: typing.Optional[PathOrIOInfoT], prs: ProcClssT,
         proc = maybe_processor(
             typing.cast(typing.Union[ProcT, ProcClsT], forced_type)
         )
-        if proc is not None:
-            return proc
+        if proc is None:
+            raise ValueError('Wrong processor class or instance '
+                             f'was given: {forced_type!r}')
+
+        return proc
 
     pclss = findall(obj, prs, forced_type=typing.cast(str, forced_type))
     return pclss[0]()

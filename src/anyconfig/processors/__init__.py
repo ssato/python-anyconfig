@@ -14,7 +14,7 @@ objects, related utility functions and data types.
    - Add to abstract processors such like Parsers (loaders and dumpers).
 """
 from .common import (
-    ProcT, ProcClsT, ProcClssT
+    ProcT, ProcClsT, ProcClssT, MaybeProcT
 )
 from .processors import Processors
 from .utils import (
@@ -22,7 +22,7 @@ from .utils import (
 )
 
 __all__ = [
-    'ProcT', 'ProcClsT', 'ProcClssT',
+    'ProcT', 'ProcClsT', 'ProcClssT', 'MaybeProcT',
     'Processors',
     'list_by_x', 'load_plugins',
 ]

@@ -11,7 +11,7 @@ import typing
 from ..common import PathOrIOInfoT
 from . import utils
 from .common import (
-    ProcT, ProcClsT, ProcClssT
+    ProcT, ProcClsT, ProcClssT, MaybeProcT
 )
 
 
@@ -121,7 +121,6 @@ class Processors:
             a file path, file, file-like object, pathlib.Path object or an
             'anyconfig.common.IOInfo' (namedtuple) object
         :param forced_type: Forced processor type to find
-        :param cls: A class object to compare with 'ptype'
 
         :return: A list of instances of processor classes to process 'obj'
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
@@ -132,13 +131,14 @@ class Processors:
         ]
 
     def find(self, obj: typing.Optional[PathOrIOInfoT],
-             forced_type: typing.Optional[str] = None) -> ProcT:
+             forced_type: MaybeProcT = None) -> ProcT:
         """
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an
             'anyconfig.common.IOInfo' (namedtuple) object
-        :param forced_type: Forced processor type to find
-        :param cls: A class object to compare with 'ptype'
+        :param forced_type:
+            Forced processor type to find or a processor class object or a
+            processor intance
 
         :return: an instance of processor class to process 'obj'
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError

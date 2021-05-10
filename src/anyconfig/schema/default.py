@@ -22,7 +22,7 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
 
 
 def is_valid(data: DataT, schema: DataT, ac_schema_safe: bool = True,
-             ac_schema_errors: bool = False, **options) -> None:
+             ac_schema_errors: bool = False, **options) -> bool:
     """
     Dummy function never raise exceptions.
     """

@@ -22,12 +22,9 @@ class Singleton:
 
     def __new__(cls):
         if cls.__instance is None:
-            cls.__lock.acquire()
-            if cls.__instance is None:
-                try:
+            with cls.__lock:
+                if cls.__instance is None:
                     cls.__instance = object.__new__(cls)
-                finally:
-                    cls.__lock.release()
 
         return cls.__instance
 

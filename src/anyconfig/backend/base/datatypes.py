@@ -7,7 +7,7 @@ r"""Utility functions in anyconfig.backend.base.
 import typing
 
 from ...common import (
-    InDataT, IOInfo, PathOrIOInfoT, PrimitiveT, InDataExT
+    InDataT, IOInfo, PathOrIOInfoT, InDataExT
 )
 
 

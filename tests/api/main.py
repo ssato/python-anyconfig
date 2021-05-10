@@ -33,7 +33,7 @@ CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},
                                   '@children': [{'item': 'i'},
                                                 {'item': 'j'}]}}}
 
-NULL_CNTNR = TT.anyconfig.dicts.convert_to({})
+NULL_CNTNR = anyconfig.dicts.convert_to({})
 
 
 class MyODict(collections.OrderedDict):

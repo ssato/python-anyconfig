@@ -6,7 +6,7 @@
 
 import os
 import unittest
-import anyconfig.query as TT
+import anyconfig.query.query as TT
 
 
 class Test_00_Functions(unittest.TestCase):

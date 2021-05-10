@@ -3,147 +3,22 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
-r"""Public APIs of anyconfig module.
-
-.. versionchanged:: 0.9.9
-
-   - Removed the API 'find_loader'
-   - Added new APIs :func:`find` and :func:`findall` to :func:`find parsers`
-     (loaders and dumpers) to suppport to find multiple parsers, and replace
-     the API 'find_loader'
-   - Added new APIs :func:`list_by_cid`, :func:`list_by_type` and
-     :func:`list_by_extension` to list parsers by various viewpoints.
-
-.. versionadded:: 0.9.8
-
-   - Added new API load_plugins to [re-]load plugins
-
-.. versionadded:: 0.9.5
-
-   - Added pathlib support. Now all of load and dump APIs can process
-     pathlib.Path object basically.
-   - 'ignore_missing' keyword option for load APIs are now marked as deprecated
-     and will be removed soon.
-   - Allow to load data other than mapping objects for some backends such as
-     JSON and YAML.
-
-.. versionadded:: 0.8.3
-
-   - Added ac_dict keyword option to pass dict factory (any callable like
-     function or class) to make dict-like object in backend parsers.
-   - Added ac_query keyword option to query data with JMESPath expression.
-   - Added experimental query api to query data with JMESPath expression.
-   - Removed ac_namedtuple keyword option.
-   - Export :func:`merge`.
-   - Stop exporting :func:`to_container` which was deprecated and removed.
-
-.. versionadded:: 0.8.2
-
-   - Added new API, version to provide version information.
-
-.. versionadded:: 0.8.0
-
-   - Removed set_loglevel API as it does not help much.
-   - Added :func:`open` API to open files with appropriate open mode.
-   - Added custom exception classes, :class:`UnknownProcessorTypeError` and
-     :class:`UnknownFileTypeError` to express specific errors.
-   - Change behavior of the API :func:`find_loader` and others to make them
-     fail firt and raise exceptions (ValueError, UnknownProcessorTypeError or
-     UnknownFileTypeError) as much as possible if wrong parser type for uknown
-     file type was given.
-
-.. versionadded:: 0.5.0
-
-   - Most keyword arguments passed to APIs are now position independent.
-   - Added ac_namedtuple parameter to \*load and \*dump APIs.
-
-.. versionchanged:: 0.3
-
-   - Replaced 'forced_type' optional argument of some public APIs with
-     'ac_parser' to allow skip of config parser search by passing parser object
-     previously found and instantiated.
-
-     Also removed some optional arguments, 'ignore_missing', 'merge' and
-     'marker', from definitions of some public APIs as these may not be changed
-     from default in common use cases.
-
-.. versionchanged:: 0.2
-
-   - Now APIs :func:`find_loader`, :func:`single_load`, :func:`multi_load`,
-     :func:`load` and :func:`dump` can process a file/file-like object or a
-     list of file/file-like objects instead of a file path or a list of file
-     paths.
-
-.. versionadded:: 0.2
-
-   - Export factory method (create) of anyconfig.mergeabledict.MergeableDict
+r"""Public APIs of anyconfig module to load configuration files.
 """
 import warnings
 
-import anyconfig
-
-# Import some global constants will be re-exported:
-from .common import (  # noqa: F401
-    IOI_PATH_OBJ, UnknownProcessorTypeError, UnknownFileTypeError
+from ..dicts import (
+    convert_to as dicts_convert_to,
+    merge as dicts_merge
 )
-from . import (
-    dicts, ioinfo, template, utils,
+from ..ioinfo import make as ioinfo_make
+from ..parsers import find as parsers_find
+from ..query import try_query
+from ..schema import is_valid
+from ..template import try_render
+from ..utils import (
+    are_same_file_types, expand_paths, is_path_like_object, is_paths
 )
-
-from .dicts import (  # noqa: F401
-    MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
-    get, set_, merge
-)
-from .parsers import (  # noqa: F401
-    load_plugins, list_types, list_by_cid, list_by_type, list_by_extension,
-    findall, find
-)
-from .schema import validate, gen_schema  # noqa: F401
-from .query import query
-
-
-def version():
-    """
-    :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
-    """
-    return anyconfig.__version__.split('.')
-
-
-def _try_validate(cnf, schema, **options):
-    """
-    :param cnf: Mapping object represents configuration data
-    :param schema: JSON schema object
-    :param options: Keyword options passed to :func:`jsonschema.validate`
-
-    :return: Given 'cnf' as it is if validation succeeds else None
-    """
-    valid = True
-    if schema:
-        (valid, msg) = validate(cnf, schema, **options)
-        if msg:
-            warnings.warn(msg)
-
-    if valid:
-        return cnf
-
-    return None
-
-
-def _try_query(cnf, jexp, **options):
-    """
-    :param cnf: Mapping object represents configuration data
-    :param jexp: JMESPath expression to query or None/False
-    :param options: Keyword options currently not used
-
-    :return: Maybe the result by querying with the JMESPath exp.
-    :raises: jmespath.exceptions.*Error (ValueError)
-    """
-    if jexp:
-        (cnf, exc) = query(cnf, jexp, **options)
-        if exc:
-            raise exc
-
-    return cnf
 
 
 def _maybe_schema(**options):
@@ -168,33 +43,6 @@ def _maybe_schema(**options):
     return None
 
 
-# pylint: disable=redefined-builtin
-def open(path, mode=None, ac_parser=None, **options):
-    """
-    Open given configuration file with appropriate open flag.
-
-    :param path: Configuration file path
-    :param mode:
-        Can be 'r' and 'rb' for reading (default) or 'w', 'wb' for writing.
-        Please note that even if you specify 'r' or 'w', it will be changed to
-        'rb' or 'wb' if selected backend, xml and configobj for example, for
-        given config file prefer that.
-    :param options:
-        Optional keyword arguments passed to the internal file opening APIs of
-        each backends such like 'buffering' optional parameter passed to
-        builtin 'open' function.
-
-    :return: A file object or None on any errors
-    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
-    """
-    psr = find(path, forced_type=ac_parser)
-
-    if mode is not None and mode.startswith('w'):
-        return psr.wopen(path, **options)
-
-    return psr.ropen(path, **options)
-
-
 def _single_load(input_, ac_parser=None, ac_template=False,
                  ac_context=None, **options):
     """
@@ -214,8 +62,8 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     :return: Mapping object
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = ioinfo.make(input_)
-    psr = find(ioi, forced_type=ac_parser)
+    ioi = ioinfo_make(input_)
+    psr = parsers_find(ioi, forced_type=ac_parser)
     filepath = ioi.path
 
     # .. note::
@@ -227,8 +75,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
         options["ac_ignore_missing"] = options["ignore_missing"]
 
     if ac_template and filepath is not None:
-        content = template.try_render(filepath=filepath, ctx=ac_context,
-                                      **options)
+        content = try_render(filepath=filepath, ctx=ac_context, **options)
         if content is not None:
             return psr.loads(content, **options)
 
@@ -292,8 +139,10 @@ def single_load(input_, ac_parser=None, ac_template=False,
                        ac_context=ac_context, **options)
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
-    cnf = _try_validate(cnf, schema, **options)
-    return _try_query(cnf, options.get("ac_query", False), **options)
+    if not is_valid(cnf, schema, **options):
+        return None
+
+    return try_query(cnf, options.get('ac_query', False), **options)
 
 
 def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
@@ -358,9 +207,9 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
                            **options)
     options["ac_schema"] = None  # Avoid to load schema more than twice.
 
-    paths = utils.expand_paths(inputs, marker=marker)
-    if utils.are_same_file_types(paths):
-        ac_parser = find(paths[0], forced_type=ac_parser)
+    paths = expand_paths(inputs, marker=marker)
+    if are_same_file_types(paths):
+        ac_parser = parsers_find(paths[0], forced_type=ac_parser)
 
     cnf = ac_context
     for path in paths:
@@ -371,13 +220,15 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
             if cnf is None:
                 cnf = cups
             else:
-                merge(cnf, cups, **options)
+                dicts_merge(cnf, cups, **options)
 
     if cnf is None:
-        return dicts.convert_to({}, **options)
+        return dicts_convert_to({}, **options)
 
-    cnf = _try_validate(cnf, schema, **options)
-    return _try_query(cnf, options.get("ac_query", False), **options)
+    if not is_valid(cnf, schema, **options):
+        return None
+
+    return try_query(cnf, options.get('ac_query', False), **options)
 
 
 def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
@@ -412,12 +263,12 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     """
     marker = options.setdefault("ac_marker", options.get("marker", '*'))
 
-    if utils.is_path_like_object(path_specs, marker):
+    if is_path_like_object(path_specs, marker):
         return single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                            ac_template=ac_template, ac_context=ac_context,
                            **options)
 
-    if not utils.is_paths(path_specs, marker):
+    if not is_paths(path_specs, marker):
         raise ValueError("Possible invalid input %r" % path_specs)
 
     return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
@@ -451,7 +302,7 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
                       "parser to load configurations from string.")
         return None
 
-    psr = find(None, forced_type=ac_parser)
+    psr = parsers_find(None, forced_type=ac_parser)
     schema = None
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
@@ -461,49 +312,14 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
                        **options)
 
     if ac_template:
-        compiled = template.try_render(content=content, ctx=ac_context,
-                                       **options)
+        compiled = try_render(content=content, ctx=ac_context, **options)
         if compiled is not None:
             content = compiled
 
     cnf = psr.loads(content, ac_dict=ac_dict, **options)
-    cnf = _try_validate(cnf, schema, **options)
-    return _try_query(cnf, options.get("ac_query", False), **options)
+    if not is_valid(cnf, schema, **options):
+        return None
 
-
-def dump(data, out, ac_parser=None, **options):
-    """
-    Save 'data' to 'out'.
-
-    :param data: A mapping object may have configurations data to dump
-    :param out:
-        An output file path, a file, a file-like object, :class:`pathlib.Path`
-        object represents the file or a namedtuple 'anyconfig.common.IOInfo'
-        object represents output to dump some data to.
-    :param ac_parser: Forced parser type or parser object
-    :param options:
-        Backend specific optional arguments, e.g. {"indent": 2} for JSON
-        loader/dumper backend
-
-    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
-    """
-    ioi = ioinfo.make(out)
-    psr = find(ioi, forced_type=ac_parser)
-    psr.dump(data, ioi, **options)
-
-
-def dumps(data, ac_parser=None, **options):
-    """
-    Return string representation of 'data' in forced type format.
-
-    :param data: Config data object to dump
-    :param ac_parser: Forced parser type or ID or parser object
-    :param options: see :func:`dump`
-
-    :return: Backend-specific string representation for the given data
-    :raises: ValueError, UnknownProcessorTypeError
-    """
-    psr = find(None, forced_type=ac_parser)
-    return psr.dumps(data, **options)
+    return try_query(cnf, options.get('ac_query', False), **options)
 
 # vim:sw=4:ts=4:et:

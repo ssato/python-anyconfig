@@ -13,18 +13,28 @@ Changelog:
    - Added to query config data with JMESPath expression, http://jmespath.org
 """
 import typing
+import jmespath
 
-try:
-    import jmespath
-except ImportError:
-    pass
-
-
-DataT = typing.Mapping[str, typing.Any]
+from ..common import InDataT
+from .datatypes import MaybeJexp
 
 
-def query(data: DataT, jexp: str, **_options
-          ) -> typing.Tuple[typing.Optional[DataT],
+def try_query(data: InDataT, jexp: MaybeJexp = None, **options) -> InDataT:
+    """
+    Try to query data with JMESPath expression `jexp`.
+    """
+    if jexp is None or not jexp:
+        return data
+
+    (odata, exc) = query(data, typing.cast(str, jexp), **options)
+    if exc:
+        raise exc
+
+    return odata  # type: ignore
+
+
+def query(data: InDataT, jexp: str, **_options
+          ) -> typing.Tuple[typing.Optional[InDataT],
                             typing.Optional[Exception]]:
     """
     Filter data with given JMESPath expression.
@@ -33,7 +43,7 @@ def query(data: DataT, jexp: str, **_options
 
     :param data: Target object (a dict or a dict-like object) to query
     :param jexp: a string represents JMESPath expression
-    :param options: Keyword optios
+    :param options: Keyword options
 
     :return: A tuple of query result and maybe exception if failed
     """
@@ -44,10 +54,6 @@ def query(data: DataT, jexp: str, **_options
 
     except ValueError as exc:  # jmespath.exceptions.*Error inherit from it.
         return (data, exc)
-
-    except (NameError, AttributeError) as exc:
-        raise ValueError("Required 'jmespath' module is not available."
-                         ) from exc
 
     except:  # noqa: E722
         return (None, exc)

@@ -21,13 +21,12 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
     return (True, 'Validation module (jsonschema) is not available')
 
 
-def is_valid_or_fail(data: DataT, schema: DataT, ac_schema_safe: bool = True,
-                     ac_schema_errors: bool = False, **options: typing.Any
-                     ) -> None:
+def is_valid(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+             ac_schema_errors: bool = False, **options) -> None:
     """
     Dummy function never raise exceptions.
     """
-    return
+    return True
 
 
 def gen_schema(data: MaybeDataT, **options) -> DataT:

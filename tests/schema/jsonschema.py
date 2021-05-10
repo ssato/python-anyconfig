@@ -68,15 +68,17 @@ class Test_10_Validation(Test_00_Base):
         self.assertRaises(Exception, TT.validate, self.obj_ng,
                           self.schema, ac_schema_safe=False)
 
-    def test_20_is_valid_or_fail_ok(self):
-        TT.is_valid_or_fail(self.obj, self.schema)
+    def test_20_is_valid_ok(self):
+        self.assertTrue(TT.is_valid(self.obj, self.schema))
 
-    def test_22_is_valid_or_fail_ok(self):
-        TT.is_valid_or_fail(self.obj_ng, self.schema, ac_schema_safe=True)
+    def test_22_is_valid_ng(self):
+        self.assertFalse(
+            TT.is_valid(self.obj_ng, self.schema, ac_schema_safe=True)
+        )
 
     def test_24_is_valid_or_fail_ng_1(self):
-        self.assertRaises(TT.ValidationError, TT.is_valid_or_fail,
-                          self.obj_ng, self.schema)
+        with self.assertRaises(TT.ValidationError):
+            TT.is_valid(self.obj_ng, self.schema, ac_schema_safe=False)
 
 
 @unittest.skipIf(not SUPPORTED, "json schema lib is not available")

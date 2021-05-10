@@ -5,15 +5,15 @@
 r"""misc global constants, variables, classes and so on.
 """
 try:
-    from .jsonschema import validate, is_valid_or_fail, gen_schema
+    from .jsonschema import validate, is_valid, gen_schema
     SUPPORTED: bool = True
 except ImportError:
-    from .default import validate, is_valid_or_fail, gen_schema
+    from .default import validate, is_valid, gen_schema
     SUPPORTED = False  # type: ignore
 
 
 __all__ = [
-    'validate', 'is_valid_or_fail', 'gen_schema', 'SUPPORTED'
+    'validate', 'is_valid', 'gen_schema', 'SUPPORTED'
 ]
 
 # vim:sw=4:ts=4:et:

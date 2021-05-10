@@ -78,7 +78,7 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
         - ac_schema_safe: Exception (jsonschema.ValidationError or
           jsonschema.SchemaError or others) will be thrown during validation
           process due to any validation or related errors. However, these will
-          be catched by default, and will be re-raised if 'ac_safe' is False.
+          be catched by default, and will be re-raised if this value is False.
 
         - ac_schema_errors: Lazily yield each of the validation errors and
           returns all of them if validation fails.
@@ -92,25 +92,27 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
     return _validate(data, schema, ac_schema_safe, **options)
 
 
-def is_valid_or_fail(data: DataT, schema: DataT, ac_schema_safe: bool = True,
-                     ac_schema_errors: bool = False, **options: typing.Any
-                     ) -> None:
+def is_valid(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+             ac_schema_errors: bool = False, **options) -> bool:
     """
     Raise ValidationError if data `data` was invalidated by schema `schema`.
     """
     if schema is None or not schema:
-        return
+        return True
 
     (_success, error_or_errors) = validate(
-        data, schema, ac_schema_safe=ac_schema_safe,
+        data, schema, ac_schema_safe=True,
         ac_schema_errors=ac_schema_errors, **options
     )
     if error_or_errors:
         msg = f'scm={schema!s}, err={error_or_errors!s}'
         if ac_schema_safe:
             warnings.warn(msg)
-        else:
-            raise ValidationError(msg)
+            return False
+
+        raise ValidationError(msg)
+
+    return True
 
 
 _SIMPLETYPE_MAP: typing.Dict[typing.Any, str] = {

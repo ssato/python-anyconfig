@@ -11,7 +11,8 @@ from .datatypes import (
     InDataT
 )
 from .errors import (
-    UnknownParserTypeError, UnknownProcessorTypeError, UnknownFileTypeError
+    UnknownParserTypeError, UnknownProcessorTypeError, UnknownFileTypeError,
+    ValidationError
 )
 
 
@@ -21,7 +22,7 @@ __all__ = [
     'PathT', 'PathOrIOT', 'PathOrIOInfoT',
     'InDataT',
     'UnknownParserTypeError', 'UnknownProcessorTypeError',
-    'UnknownFileTypeError',
+    'UnknownFileTypeError', 'ValidationError',
 ]
 
 # vim:sw=4:ts=4:et:

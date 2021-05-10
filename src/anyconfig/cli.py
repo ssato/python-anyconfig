@@ -11,7 +11,7 @@ import os
 import sys
 import warnings
 
-from . import __version__ as VERSION, api as API, parser, utils
+from . import api as API, parser, utils
 
 
 _ENCODING = (locale.getdefaultlocale()[1] or 'UTF-8').lower()
@@ -101,7 +101,7 @@ def make_parser(defaults=None):
 
     apsr.add_argument("inputs", type=str, nargs='*', help="Input files")
     apsr.add_argument("--version", action="version",
-                      version="%%(prog)s %s" % VERSION)
+                      version="%%(prog)s %s" % API.version())
 
     lpog = apsr.add_argument_group("List specific options")
     lpog.add_argument("-L", "--list", action="store_true",
@@ -325,7 +325,7 @@ def _do_filter(cnf, args):
     :return: 'cnf' may be updated
     """
     if args.query:
-        cnf = API.query(cnf, args.query)
+        cnf = API.try_query(cnf, args.query)
     elif args.get:
         cnf = _do_get(cnf, args.get)
     elif args.set:

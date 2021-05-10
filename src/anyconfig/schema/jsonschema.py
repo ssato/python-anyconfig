@@ -18,7 +18,9 @@ import typing
 
 import jsonschema
 
-from .. import utils
+from ..utils import (
+    filter_options, is_dict_like, is_list_like
+)
 from .common import DataT, ResultT
 
 
@@ -81,7 +83,7 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
 
     :return: (True if validation succeeded else False, error message[s])
     """
-    options = utils.filter_options(('cls', ), options)
+    options = filter_options(('cls', ), options)
     if ac_schema_errors:
         return _validate_all(data, schema, **options)
 
@@ -181,10 +183,10 @@ def gen_schema(data: MaybeDataT, **options) -> DataT:
         typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
         scm = {'type': typemap[_type]}
 
-    elif utils.is_dict_like(data):
+    elif is_dict_like(data):
         scm = object_to_schema(data, **options)  # type: ignore
 
-    elif utils.is_list_like(data):
+    elif is_list_like(data):
         scm = array_to_schema(typing.cast(typing.Iterable[DataT], data),
                               **options)
 

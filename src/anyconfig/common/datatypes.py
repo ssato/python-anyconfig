@@ -34,4 +34,7 @@ PathOrIOInfoT = typing.Union[PathT, IOInfo]
 
 InDataT = typing.Mapping[str, typing.Any]
 
+PrimitiveT = typing.Union[int, None, float, bool, InDataT]
+InDataExT = typing.Union[PrimitiveT, InDataT]
+
 # vim:sw=4:ts=4:et:

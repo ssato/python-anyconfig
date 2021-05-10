@@ -7,13 +7,10 @@ r"""Utility functions in anyconfig.backend.base.
 import typing
 
 from ...common import (
-    InDataT, IOInfo, PathOrIOInfoT
+    InDataT, IOInfo, PathOrIOInfoT, PrimitiveT, InDataExT
 )
 
 
-PrimitiveT = typing.Union[str, int, None, float, bool, InDataT]
-
-InDataExT = typing.Union[PrimitiveT, InDataT]
 OutDataExT = InDataExT
 
 IoiT = IOInfo

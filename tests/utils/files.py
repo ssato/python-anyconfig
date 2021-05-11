@@ -82,17 +82,16 @@ class TestCase(unittest.TestCase):
 
     def test_are_same_file_types(self):
         fun = TT.are_same_file_types
-        this = pathlib.Path(__file__)
+        this_py = pathlib.Path(__file__)
+        this = TT.ioinfo_make(this_py)
+        other = TT.ioinfo_make(this_py.parent / 'setup.cfg')
 
         for inp, exp in (([], False),
                          ([this], True),
                          ([this, this], True),
-                         ([this, this.parent / 'setup.cfg'], False),
+                         ([this, other], False),
+                         ([this, other], False),
                          ):
             (self.assertTrue if exp else self.assertFalse)(fun(inp))
-
-        with this.open() as fio:
-            self.assertTrue(fun([fio]))
-            self.assertTrue(fun([fio, this]))
 
 # vim:sw=4:ts=4:et:

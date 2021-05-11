@@ -154,41 +154,14 @@ def expand_paths(paths: PathOrIOInfoT, marker: str = GLOB_MARKER
     )
 
 
-def _try_to_get_extension(obj: PathOrIO) -> typing.Optional[str]:
-    """
-    Try to get file extension from given path or file object.
-
-    :param obj: a file, file-like object or something
-    :return: File extension or None
-
-    >>> path = pathlib.Path(__file__)
-    >>> _try_to_get_extension(path)
-    'py'
-    >>> with path.open() as fio:
-    ...     _try_to_get_extension(fio)
-    'py'
-    """
-    if isinstance(obj, pathlib.Path):
-        return obj.suffix[1:]
-
-    path = get_path_from_stream(obj, safe=True)
-    if path is None:
-        return None
-
-    return _try_to_get_extension(pathlib.Path(path))
-
-
-def are_same_file_types(objs: typing.List[PathOrIO]) -> bool:
+def are_same_file_types(objs: typing.List[IOInfo]) -> bool:
     """
     Are given objects, pathlib.Path or io, same type (have same extension)?
     """
     if not objs:
         return False
 
-    ext = _try_to_get_extension(objs[0])
-    if ext is None:
-        return False
-
-    return all(_try_to_get_extension(p) == ext for p in objs[1:])
+    ext = objs[0].extension
+    return all(p.extension == ext for p in objs[1:])
 
 # vim:sw=4:ts=4:et:

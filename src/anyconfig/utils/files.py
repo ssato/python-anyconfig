@@ -121,7 +121,7 @@ def expand_paths_itr(paths: typing.Union[PathOrIOInfoT,
             yield path
 
     elif is_file_stream(paths):
-        yield paths
+        yield paths  # type: ignore
 
     elif is_ioinfo(paths):
         yield typing.cast(IOInfo, paths)
@@ -142,7 +142,7 @@ def path_key(obj: PathOrIOInfoT
         return getattr(obj, 'name', id(obj))  # str | int
 
     if is_ioinfo(obj):
-        return obj.path
+        return obj.path  # type: ignore
 
     if is_path_obj(obj):
         return str(obj)

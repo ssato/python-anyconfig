@@ -28,9 +28,9 @@ class IOInfo(typing.NamedTuple):
 
 IOI_KEYS: typing.Tuple[str, ...] = IOInfo._fields
 
-PathT = typing.Union[str, pathlib.Path]
-PathOrIOT = typing.Union[PathT, typing.IO]
-PathOrIOInfoT = typing.Union[PathT, IOInfo]
+PathOrIOT = typing.Union[str, pathlib.Path, typing.IO]
+PathOrIOInfoT = typing.Union[PathOrIOT, IOInfo]
+
 
 InDataT = typing.Mapping[str, typing.Any]
 

@@ -11,6 +11,8 @@ import unittest
 
 import anyconfig.utils.files as TT
 
+from anyconfig.ioinfo import make as ioinfo_make
+
 
 class TestCase(unittest.TestCase):
 
@@ -58,7 +60,7 @@ class TestCase(unittest.TestCase):
             path = tdir / 'd.txt'
             for inp, exp in ((str(path), [path]),
                              (path, [path]),
-                             (TT.ioinfo_make(path), [path]),
+                             (ioinfo_make(path), [ioinfo_make(path)]),
                              (tdir / '*.txt',
                               [tdir / 'd.txt', tdir / 'e.txt']),
                              (tdir.parent / '**' / '*.txt',
@@ -71,20 +73,17 @@ class TestCase(unittest.TestCase):
                               [tdir / 'd.txt', tdir / 'e.txt'])
                              ):
                 self.assertEqual(
-                    TT.expand_paths(inp), [TT.ioinfo_make(e) for e in exp],
-                    f'{inp!r} vs. {exp!r}'
+                    TT.expand_paths(inp), exp, f'{inp!r} vs. {exp!r}'
                 )
 
             with path.open() as fobj:
-                self.assertEqual(
-                    TT.expand_paths(fobj), [TT.ioinfo_make(fobj)]
-                )
+                self.assertEqual(TT.expand_paths(fobj), [fobj])
 
     def test_are_same_file_types(self):
         fun = TT.are_same_file_types
         this_py = pathlib.Path(__file__)
-        this = TT.ioinfo_make(this_py)
-        other = TT.ioinfo_make(this_py.parent / 'setup.cfg')
+        this = ioinfo_make(this_py)
+        other = ioinfo_make(this_py.parent / 'setup.cfg')
 
         for inp, exp in (([], False),
                          ([this], True),

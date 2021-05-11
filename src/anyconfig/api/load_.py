@@ -5,8 +5,12 @@
 # pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs of anyconfig module to load configuration files.
 """
+import typing
 import warnings
 
+from ..common import (
+    InDataT, InDataExT, PathOrIOInfoT
+)
 from ..dicts import (
     convert_to as dicts_convert_to,
     merge as dicts_merge
@@ -19,9 +23,16 @@ from ..template import try_render
 from ..utils import (
     are_same_file_types, expand_paths, is_path_like_object, is_paths
 )
+from .datatypes import (
+    ParserT
+)
 
 
-def _maybe_schema(**options):
+MappingT = typing.Mapping[str, typing.Any]
+MaybeParserOrIdOrTypeT = typing.Optional[typing.Union[str, ParserT]]
+
+
+def _maybe_schema(**options) -> typing.Optional[InDataT]:
     """
     :param options: Optional keyword arguments such as
 
@@ -43,8 +54,11 @@ def _maybe_schema(**options):
     return None
 
 
-def _single_load(input_, ac_parser=None, ac_template=False,
-                 ac_context=None, **options):
+def _single_load(input_: PathOrIOInfoT,
+                 ac_parser: MaybeParserOrIdOrTypeT = None,
+                 ac_template: typing.Optional[PathOrIOInfoT] = None,
+                 ac_context: typing.Optional[MappingT] = None,
+                 **options) -> InDataExT:
     """
     :param input_:
         File path or file or file-like object or pathlib.Path object represents
@@ -63,7 +77,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     ioi = ioinfo_make(input_)
-    psr = parsers_find(ioi, forced_type=ac_parser)
+    psr: ParserT = parsers_find(ioi, forced_type=ac_parser)
     filepath = ioi.path
 
     # .. note::
@@ -74,7 +88,7 @@ def _single_load(input_, ac_parser=None, ac_template=False,
                       "'ac_ignore_missing' instead", DeprecationWarning)
         options["ac_ignore_missing"] = options["ignore_missing"]
 
-    if ac_template and filepath is not None:
+    if ac_template is not None and filepath is not None:
         content = try_render(filepath=filepath, ctx=ac_context, **options)
         if content is not None:
             return psr.loads(content, **options)
@@ -82,8 +96,11 @@ def _single_load(input_, ac_parser=None, ac_template=False,
     return psr.load(ioi, **options)
 
 
-def single_load(input_, ac_parser=None, ac_template=False,
-                ac_context=None, **options):
+def single_load(input_: PathOrIOInfoT,
+                ac_parser: MaybeParserOrIdOrTypeT = None,
+                ac_template: typing.Optional[PathOrIOInfoT] = None,
+                ac_context: typing.Optional[MappingT] = None,
+                **options) -> InDataExT:
     r"""
     Load single configuration file.
 
@@ -139,14 +156,18 @@ def single_load(input_, ac_parser=None, ac_template=False,
                        ac_context=ac_context, **options)
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
-    if not is_valid(cnf, schema, **options):
+    if schema and not is_valid(cnf, schema, **options):
         return None
 
     return try_query(cnf, options.get('ac_query', False), **options)
 
 
-def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
-               **options):
+def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
+                                    PathOrIOInfoT],
+               ac_parser: MaybeParserOrIdOrTypeT = None,
+               ac_template: typing.Optional[PathOrIOInfoT] = None,
+               ac_context: typing.Optional[MappingT] = None,
+               **options) -> InDataExT:
     r"""
     Load multiple config files.
 
@@ -207,7 +228,7 @@ def multi_load(inputs, ac_parser=None, ac_template=False, ac_context=None,
                            **options)
     options["ac_schema"] = None  # Avoid to load schema more than twice.
 
-    paths = expand_paths(inputs, marker=marker)
+    paths = [ioinfo_make(p) for p in expand_paths(inputs, marker=marker)]
     if are_same_file_types(paths):
         ac_parser = parsers_find(paths[0], forced_type=ac_parser)
 

@@ -7,12 +7,13 @@
 """
 import typing
 
-from .common import (
-    DataT, ResultT, MaybeDataT
+from ..common import (
+    InDataT, InDataExT
 )
+from .common import ResultT
 
 
-def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options: typing.Any
              ) -> ResultT:
     """
@@ -21,7 +22,7 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
     return (True, 'Validation module (jsonschema) is not available')
 
 
-def is_valid(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+def is_valid(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options) -> bool:
     """
     Dummy function never raise exceptions.
@@ -29,7 +30,7 @@ def is_valid(data: DataT, schema: DataT, ac_schema_safe: bool = True,
     return True
 
 
-def gen_schema(data: MaybeDataT, **options) -> DataT:
+def gen_schema(data: InDataExT, **options) -> InDataT:
     """
     Dummy function generates an empty dict in actual.
     """

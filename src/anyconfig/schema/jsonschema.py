@@ -20,15 +20,15 @@ import warnings
 import jsonschema
 
 from ..common import (
-    ValidationError, InDataExT
+    ValidationError, InDataExT, InDataT
 )
 from ..utils import (
     filter_options, is_dict_like, is_list_like
 )
-from .common import DataT, ResultT
+from .common import ResultT
 
 
-def _validate_all(data: DataT, schema: DataT, **_options) -> ResultT:
+def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:
     """
     See the descritpion of :func:`validate` for more details of parameters and
     return value.
@@ -42,7 +42,7 @@ def _validate_all(data: DataT, schema: DataT, **_options) -> ResultT:
     return (not errors, [err.message for err in errors])
 
 
-def _validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+def _validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
               **options: typing.Any) -> ResultT:
     """
     See the descritpion of :func:`validate` for more details of parameters and
@@ -64,7 +64,7 @@ def _validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
     return (True, '')
 
 
-def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options: typing.Any
              ) -> ResultT:
     """
@@ -94,7 +94,7 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
     return _validate(data, schema, ac_schema_safe, **options)
 
 
-def is_valid(data: InDataExT, schema: DataT, ac_schema_safe: bool = True,
+def is_valid(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options) -> bool:
     """
     Raise ValidationError if data `data` was invalidated by schema `schema`.
@@ -133,7 +133,7 @@ def _process_options(**options):
             bool(options.get('ac_schema_strict', False)))
 
 
-def array_to_schema(iarr: typing.Iterable[DataT], **options
+def array_to_schema(iarr: typing.Iterable[InDataT], **options
                     ) -> typing.Dict[str, typing.Any]:
     """
     Generate a JSON schema object with type annotation added for given object.
@@ -148,7 +148,7 @@ def array_to_schema(iarr: typing.Iterable[DataT], **options
     """
     (typemap, strict) = _process_options(**options)
 
-    arr: typing.List[DataT] = list(iarr)
+    arr: typing.List[InDataT] = list(iarr)
     scm = {
         'type': typemap[list],
         'items': gen_schema(arr[0] if arr else "str", **options)
@@ -161,7 +161,7 @@ def array_to_schema(iarr: typing.Iterable[DataT], **options
     return scm
 
 
-def object_to_schema(obj: DataT, **options) -> DataT:
+def object_to_schema(obj: InDataT, **options) -> InDataT:
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -185,10 +185,9 @@ def object_to_schema(obj: DataT, **options) -> DataT:
 
 
 _SIMPLE_TYPES = (bool, int, float, str)
-MaybeDataT = typing.Union[DataT, bool, int, float, str, None]
 
 
-def gen_schema(data: MaybeDataT, **options) -> DataT:
+def gen_schema(data: InDataExT, **options) -> InDataT:
     """
     Generate a node represents JSON schema object with type annotation added
     for given object node.
@@ -214,8 +213,9 @@ def gen_schema(data: MaybeDataT, **options) -> DataT:
         scm = object_to_schema(data, **options)  # type: ignore
 
     elif is_list_like(data):
-        scm = array_to_schema(typing.cast(typing.Iterable[DataT], data),
-                              **options)
+        scm = array_to_schema(
+            typing.cast(typing.Iterable[InDataT], data), **options
+        )
 
     return scm
 

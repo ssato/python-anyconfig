@@ -10,7 +10,7 @@ import typing
 from ..common import (
     InDataT, InDataExT
 )
-from .common import ResultT
+from .datatypes import ResultT
 
 
 def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,

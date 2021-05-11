@@ -10,7 +10,7 @@ import typing
 
 from ..common import PathOrIOInfoT
 from . import utils
-from .common import (
+from .datatypes import (
     ProcT, ProcClsT, ProcClssT, MaybeProcT
 )
 

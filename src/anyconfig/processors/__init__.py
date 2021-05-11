@@ -13,7 +13,7 @@ objects, related utility functions and data types.
 
    - Add to abstract processors such like Parsers (loaders and dumpers).
 """
-from .common import (
+from .datatypes import (
     ProcT, ProcClsT, ProcClssT, MaybeProcT
 )
 from .processors import Processors

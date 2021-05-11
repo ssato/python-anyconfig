@@ -17,7 +17,7 @@ from ..common import (
 from ..ioinfo import make as ioinfo_make
 from ..models import processor
 from ..utils import concat, groupby
-from .common import (
+from .datatypes import (
     ProcT, ProcClsT, ProcClssT, MaybeProcT
 )
 

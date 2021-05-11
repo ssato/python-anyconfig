@@ -13,15 +13,11 @@ import pathlib
 import typing
 
 from ..common import (
-    IOInfo, PathOrIOInfoT
+    GLOB_MARKER, IOInfo, PathOrIOInfoT
 )
 from .detectors import (
-    is_file_stream, is_ioinfo
+    is_file_stream, is_ioinfo, is_path_obj
 )
-from ..ioinfo import make as ioinfo_make
-
-
-GLOB_MARKER = '*'
 
 
 def get_file_extension(file_path: str) -> str:
@@ -98,13 +94,10 @@ def split_path_by_marker(path: str, marker: str = GLOB_MARKER,
     return typing.cast(typing.Tuple[str, str], matched.groups())
 
 
-PathOrIO = typing.Union[pathlib.Path, typing.IO]
-
-
 def expand_paths_itr(paths: typing.Union[PathOrIOInfoT,
                                          typing.List[PathOrIOInfoT]],
                      marker: str = GLOB_MARKER
-                     ) -> typing.Iterator[IOInfo]:
+                     ) -> typing.Iterator[PathOrIOInfoT]:
     """
     :param paths:
         A glob path pattern string or pathlib.Path object holding such path, or
@@ -120,15 +113,15 @@ def expand_paths_itr(paths: typing.Union[PathOrIOInfoT,
         (base, pattern) = split_path_by_marker(paths, marker=marker)
 
         if not pattern:
-            yield ioinfo_make(pathlib.Path(base))
+            yield pathlib.Path(base)
             return
 
         base_2 = pathlib.Path(os.curdir if not base else base).resolve()
         for path in sorted(base_2.glob(pattern)):
-            yield ioinfo_make(path)
+            yield path
 
     elif is_file_stream(paths):
-        yield ioinfo_make(paths)
+        yield paths
 
     elif is_ioinfo(paths):
         yield typing.cast(IOInfo, paths)
@@ -139,8 +132,26 @@ def expand_paths_itr(paths: typing.Union[PathOrIOInfoT,
                 yield cpath
 
 
+def path_key(obj: PathOrIOInfoT
+             ) -> typing.Union[int, str, pathlib.Path, IOInfo]:
+    """
+    Key function to sort a list of objects consist of str (path) | pathlib.Path
+    | typing.IO | IOInfo.
+    """
+    if is_file_stream(obj):
+        return getattr(obj, 'name', id(obj))  # str | int
+
+    if is_ioinfo(obj):
+        return obj.path
+
+    if is_path_obj(obj):
+        return str(obj)
+
+    return obj
+
+
 def expand_paths(paths: PathOrIOInfoT, marker: str = GLOB_MARKER
-                 ) -> typing.Iterable[IOInfo]:
+                 ) -> typing.Iterable[PathOrIOInfoT]:
     """
     :param paths:
         A glob path pattern string or pathlib.Path object holding such path, or
@@ -148,10 +159,7 @@ def expand_paths(paths: PathOrIOInfoT, marker: str = GLOB_MARKER
         pathlib.Path object holding such ones, or file objects
     :param marker: Glob marker character or string, e.g. '*'
     """
-    return sorted(
-        expand_paths_itr(paths, marker=marker),
-        key=operator.attrgetter('path')
-    )
+    return sorted(expand_paths_itr(paths, marker=marker), key=path_key)
 
 
 def are_same_file_types(objs: typing.List[IOInfo]) -> bool:

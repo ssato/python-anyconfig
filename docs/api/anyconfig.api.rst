@@ -9,6 +9,6 @@
 .. toctree::
 
    anyconfig.api.datatypes
-   anyconfig.api.dump_
-   anyconfig.api.load_
-   anyconfig.api.open_
+   anyconfig.api._dump
+   anyconfig.api._load
+   anyconfig.api._open

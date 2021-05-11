@@ -1,7 +1,7 @@
-:mod:`anyconfig.api.dump_`
+:mod:`anyconfig.api._load`
 ===============================
 
-.. automodule:: anyconfig.api.dump_
+.. automodule:: anyconfig.api._load
     :members:
     :undoc-members:
     :show-inheritance:

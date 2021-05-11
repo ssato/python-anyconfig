@@ -84,13 +84,13 @@ r"""Public APIs of anyconfig module.
    - Export factory method (create) of anyconfig.mergeabledict.MergeableDict
 """
 from .datatypes import MaybeDataT
-from .dump_ import (
+from ._dump import (
     dump, dumps
 )
-from .load_ import (
+from ._load import (
     single_load, multi_load, load, loads
 )
-from .open_ import open  # pylint: disable=redefined-builtin
+from ._open import open  # pylint: disable=redefined-builtin
 
 # Export some more APIs originally from other sub modules.
 from ..backend import ParserT

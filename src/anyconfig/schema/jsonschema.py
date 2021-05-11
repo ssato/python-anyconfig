@@ -19,7 +19,9 @@ import warnings
 
 import jsonschema
 
-from ..common import ValidationError
+from ..common import (
+    ValidationError, InDataExT
+)
 from ..utils import (
     filter_options, is_dict_like, is_list_like
 )
@@ -92,7 +94,7 @@ def validate(data: DataT, schema: DataT, ac_schema_safe: bool = True,
     return _validate(data, schema, ac_schema_safe, **options)
 
 
-def is_valid(data: DataT, schema: DataT, ac_schema_safe: bool = True,
+def is_valid(data: InDataExT, schema: DataT, ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options) -> bool:
     """
     Raise ValidationError if data `data` was invalidated by schema `schema`.

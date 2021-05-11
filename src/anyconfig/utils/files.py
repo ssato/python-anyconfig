@@ -5,7 +5,6 @@
 """Utility funtions to process file and file paths.
 """
 import functools
-import operator
 import os.path
 import os
 import re

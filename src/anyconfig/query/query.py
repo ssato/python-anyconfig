@@ -13,20 +13,32 @@ Changelog:
    - Added to query config data with JMESPath expression, http://jmespath.org
 """
 import typing
+import warnings
+
 import jmespath
 
-from ..common import InDataT
+from ..common import (
+    InDataExT, InDataT
+)
+from ..utils import is_dict_like
 from .datatypes import MaybeJexp
 
 
-def try_query(data: InDataT, jexp: MaybeJexp = None, **options) -> InDataT:
+def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
     """
     Try to query data with JMESPath expression `jexp`.
     """
     if jexp is None or not jexp:
         return data
 
-    (odata, exc) = query(data, typing.cast(str, jexp), **options)
+    if not is_dict_like(data):  # Some primitive types like int, str.
+        warnings.warn('Could not query because given data is not '
+                      f'a mapping object (type? {type(data)}')
+        return data
+
+    (odata, exc) = query(
+        typing.cast(InDataT, data), typing.cast(str, jexp), **options
+    )
     if exc:
         raise exc
 

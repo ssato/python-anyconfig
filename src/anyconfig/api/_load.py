@@ -21,14 +21,15 @@ from ..query import try_query
 from ..schema import is_valid
 from ..template import try_render
 from ..utils import (
-    are_same_file_types, expand_paths, is_path_like_object, is_paths
+    are_same_file_types, expand_paths,
+    is_dict_like, is_path_like_object, is_paths
 )
 from .datatypes import (
     ParserT
 )
 
 
-MappingT = typing.Mapping[str, typing.Any]
+MappingT = typing.Dict[str, typing.Any]
 MaybeParserOrIdOrTypeT = typing.Optional[typing.Union[str, ParserT]]
 
 
@@ -239,14 +240,14 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
                             ac_template=ac_template, ac_context=cnf, **opts)
         if cups:
             if cnf is None:
-                cnf = cups
-            else:
-                dicts_merge(cnf, cups, **options)
+                cnf = cups  # type: ignore
+            elif is_dict_like(cups):
+                dicts_merge(cnf, typing.cast(MappingT, cups), **options)
 
     if cnf is None:
         return dicts_convert_to({}, **options)
 
-    if not is_valid(cnf, schema, **options):
+    if schema and not is_valid(cnf, schema, **options):
         return None
 
     return try_query(cnf, options.get('ac_query', False), **options)

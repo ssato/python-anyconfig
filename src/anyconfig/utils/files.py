@@ -93,8 +93,8 @@ def split_path_by_marker(path: str, marker: str = GLOB_MARKER,
     return typing.cast(typing.Tuple[str, str], matched.groups())
 
 
-def expand_paths_itr(paths: typing.Union[PathOrIOInfoT,
-                                         typing.List[PathOrIOInfoT]],
+def expand_paths_itr(paths: typing.Union[typing.Iterable[PathOrIOInfoT],
+                                         PathOrIOInfoT],
                      marker: str = GLOB_MARKER
                      ) -> typing.Iterator[PathOrIOInfoT]:
     """
@@ -146,10 +146,12 @@ def path_key(obj: PathOrIOInfoT
     if is_path_obj(obj):
         return str(obj)
 
-    return obj
+    return obj  # type: ignore
 
 
-def expand_paths(paths: PathOrIOInfoT, marker: str = GLOB_MARKER
+def expand_paths(paths: typing.Union[typing.Iterable[PathOrIOInfoT],
+                                     PathOrIOInfoT],
+                 marker: str = GLOB_MARKER
                  ) -> typing.Iterable[PathOrIOInfoT]:
     """
     :param paths:

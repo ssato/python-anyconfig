@@ -42,6 +42,9 @@ python-anyconfig
    :target: http://python-anyconfig.readthedocs.io/en/latest/?badge=latest
    :alt: [Doc Status]
 
+.. .. image:: https://img.shields.io/github/contributors/ssato/python-anyconfig
+   :target: https://github.com/ssato/python-anyconfig/graphs/contributors/
+   :alt: [GitHub contributors]
 
 Introduction
 =============

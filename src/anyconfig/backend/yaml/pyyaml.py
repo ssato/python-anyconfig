@@ -65,18 +65,19 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
         """
         loader.flatten_mapping(node)
         if not isinstance(node, yaml.MappingNode):
-            msg = "expected a mapping node, but found %s" % node.id
-            raise yaml.constructor.ConstructorError(None, None, msg,
-                                                    node.start_mark)
+            raise yaml.constructor.ConstructorError(
+                None, None, f'expected a mapping node, but found {node.id}',
+                node.start_mark
+            )
         mapping = container()
         for key_node, value_node in node.value:
             key = loader.construct_object(key_node, deep=deep)
             try:
                 hash(key)
             except TypeError as exc:
-                eargs = ("while constructing a mapping",
+                eargs = ('while constructing a mapping',
                          node.start_mark,
-                         "found unacceptable key (%s)" % exc,
+                         f'found unacceptable key ({exc!s})',
                          key_node.start_mark)
                 raise yaml.constructor.ConstructorError(*eargs)
             value = loader.construct_object(value_node, deep=deep)
@@ -84,7 +85,7 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
 
         return mapping
 
-    tag = "tag:yaml.org,2002:python/unicode"
+    tag = 'tag:yaml.org,2002:python/unicode'
 
     def construct_ustr(loader, node):
         """Unicode string constructor"""
@@ -111,7 +112,7 @@ def _customized_dumper(container, dumper=Dumper):
 
     def ustr_representer(dumper, data):
         """Unicode string representer"""
-        tag = "tag:yaml.org,2002:python/unicode"
+        tag = 'tag:yaml.org,2002:python/unicode'
         return dumper.represent_scalar(tag, data)
 
     try:
@@ -132,7 +133,7 @@ def yml_fnc_by_name(fname, **options):
         see also :func:`yml_load` and :func:`yml_dump`
     :param options: keyword args may contain "ac_safe" to load/dump safely
     """
-    return getattr(yaml, r"safe_" + fname if options.get("ac_safe") else fname)
+    return getattr(yaml, f'safe_{fname}' if options.get('ac_safe') else fname)
 
 
 def yml_fnc(fname, *args, **options):
@@ -145,7 +146,7 @@ def yml_fnc(fname, *args, **options):
     :param options: keyword args may contain "ac_safe" to load/dump safely
     """
     fnc = yml_fnc_by_name(fname, **options)
-    return fnc(*args, **common.filter_from_options("ac_safe", options))
+    return fnc(*args, **common.filter_from_options('ac_safe', options))
 
 
 def yml_load(stream, container, yml_fnc=yml_fnc, **options):
@@ -156,19 +157,19 @@ def yml_load(stream, container, yml_fnc=yml_fnc, **options):
 
     :return: Mapping object
     """
-    if options.get("ac_safe", False):
+    if options.get('ac_safe', False):
         # .. note:: yaml.safe_load does not support any keyword options.
         options = dict(ac_safe=True)
 
-    elif not options.get("Loader", False):
-        maybe_container = options.get("ac_dict", False)
+    elif not options.get('Loader', False):
+        maybe_container = options.get('ac_dict', False)
         if maybe_container and callable(maybe_container):
             container = maybe_container
 
-        options["Loader"] = _customized_loader(container)
+        options['Loader'] = _customized_loader(container)
 
-    ret = yml_fnc("load", stream,
-                  **common.filter_from_options("ac_dict", options))
+    ret = yml_fnc('load', stream,
+                  **common.filter_from_options('ac_dict', options))
     if ret is None:
         return container()
 
@@ -183,33 +184,33 @@ def yml_dump(data, stream, yml_fnc=yml_fnc, **options):
     """
     _is_dict = is_dict_like(data)
 
-    if options.get("ac_safe", False):
+    if options.get('ac_safe', False):
         options = dict(ac_safe=True)  # Same as yml_load.
 
-    elif not options.get("Dumper", False) and _is_dict:
+    elif not options.get('Dumper', False) and _is_dict:
         # TODO: Any other way to get its constructor?
-        maybe_container = options.get("ac_dict", type(data))
-        options["Dumper"] = _customized_dumper(maybe_container)
+        maybe_container = options.get('ac_dict', type(data))
+        options['Dumper'] = _customized_dumper(maybe_container)
 
     if _is_dict:
         # Type information and the order of items are lost on dump currently.
         data = convert_to(data, ac_dict=dict)
-        options = common.filter_from_options("ac_dict", options)
+        options = common.filter_from_options('ac_dict', options)
 
-    return yml_fnc("dump", data, stream, **options)
+    return yml_fnc('dump', data, stream, **options)
 
 
 class Parser(common.Parser):
     """
     Parser for YAML files.
     """
-    _cid = "pyyaml"
+    _cid = 'pyyaml'
     _priority = 30  # Higher priority than ruamel.yaml.
-    _load_opts = ["Loader", "ac_safe", "ac_dict"]
-    _dump_opts = ["stream", "ac_safe", "Dumper", "default_style",
-                  "default_flow_style", "canonical", "indent", "width",
-                  "allow_unicode", "line_break", "encoding", "explicit_start",
-                  "explicit_end", "version", "tags"]
+    _load_opts = ['Loader', 'ac_safe', 'ac_dict']
+    _dump_opts = ['stream', 'ac_safe', 'Dumper', 'default_style',
+                  'default_flow_style', 'canonical', 'indent', 'width',
+                  'allow_unicode', 'line_break', 'encoding', 'explicit_start',
+                  'explicit_end', 'version', 'tags']
 
     load_from_stream = base.to_method(yml_load)
     dump_to_stream = base.to_method(yml_dump)

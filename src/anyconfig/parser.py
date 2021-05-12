@@ -27,21 +27,21 @@ def parse_single(str_: str) -> PrimitiveT:
 
     >>> parse_single(None)
     ''
-    >>> parse_single("0")
+    >>> parse_single('0')
     0
-    >>> parse_single("123")
+    >>> parse_single('123')
     123
-    >>> parse_single("True")
+    >>> parse_single('True')
     True
-    >>> parse_single("a string")
+    >>> parse_single('a string')
     'a string'
     >>> parse_single('"a string"')
     'a string'
     >>> parse_single("'a string'")
     'a string'
-    >>> parse_single("0.1")
+    >>> parse_single('0.1')
     '0.1'
-    >>> parse_single("    a string contains extra whitespaces     ")
+    >>> parse_single('    a string contains extra whitespaces     ')
     'a string contains extra whitespaces'
     """
     if str_ is None:
@@ -72,15 +72,15 @@ def parse_list(str_: str, sep: str = ',') -> PrimitivesT:
     :param sep: Char to separate items of list
     :return: [Int | Bool | String]
 
-    >>> parse_list("")
+    >>> parse_list('')
     []
-    >>> parse_list("1")
+    >>> parse_list('1')
     [1]
-    >>> parse_list("a,b")
+    >>> parse_list('a,b')
     ['a', 'b']
-    >>> parse_list("1,2")
+    >>> parse_list('1,2')
     [1, 2]
-    >>> parse_list("a,b,")
+    >>> parse_list('a,b,')
     ['a', 'b']
     """
     return [parse_single(x) for x in str_.split(sep) if x]
@@ -134,13 +134,13 @@ def parse_attrlist_0(str_: str, avs_sep: str = ':', vs_sep: str = ',',
             where key = (Int | String | ...),
             value = (Int | Bool | String | ...) | [Int | Bool | String | ...]
 
-    >>> parse_attrlist_0("a:1")
+    >>> parse_attrlist_0('a:1')
     [('a', 1)]
-    >>> parse_attrlist_0("a:1;b:xyz")
+    >>> parse_attrlist_0('a:1;b:xyz')
     [('a', 1), ('b', 'xyz')]
-    >>> parse_attrlist_0("requires:bash,zsh")
+    >>> parse_attrlist_0('requires:bash,zsh')
     [('requires', ['bash', 'zsh'])]
-    >>> parse_attrlist_0("obsoletes:sysdata;conflicts:sysdata-old")
+    >>> parse_attrlist_0('obsoletes:sysdata;conflicts:sysdata-old')
     [('obsoletes', 'sysdata'), ('conflicts', 'sysdata-old')]
     """
     return list(attr_val_itr(str_, avs_sep, vs_sep, as_sep))
@@ -160,7 +160,7 @@ def parse_attrlist(str_: str, avs_sep: str = ':', vs_sep: str = ',',
     :param vs_sep:  char to separate values
     :param as_sep:  char to separate attributes
 
-    >>> parse_attrlist("requires:bash,zsh")
+    >>> parse_attrlist('requires:bash,zsh')
     {'requires': ['bash', 'zsh']}
     """
     return dict(parse_attrlist_0(str_, avs_sep, vs_sep, as_sep))

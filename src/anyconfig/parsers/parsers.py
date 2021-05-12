@@ -17,7 +17,7 @@ class Parsers(Processors, Singleton):
     """
     Manager class for parsers.
     """
-    _pgroup: str = "anyconfig_backends"
+    _pgroup: str = 'anyconfig_backends'
 
     def __init__(self, prcs: typing.Optional[ParsersT] = None
                  ) -> None:

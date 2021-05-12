@@ -45,9 +45,9 @@ def _jsnp_unescape(jsn_s: str) -> str:
 
     .. note:: JSON Pointer: http://tools.ietf.org/html/rfc6901
 
-    >>> _jsnp_unescape("/a~1b")
+    >>> _jsnp_unescape('/a~1b')
     '/a/b'
-    >>> _jsnp_unescape("~1aaa~1~0bbb")
+    >>> _jsnp_unescape('~1aaa~1~0bbb')
     '/aaa/~bbb'
     """
     return jsn_s.replace('~1', '/').replace('~0', '~')
@@ -90,9 +90,9 @@ def mk_nested_dic(path: str, val: typing.Any,
     :param val: Value to set
     :param seps: Separator char candidates
 
-    >>> mk_nested_dic("a.b.c", 1)
+    >>> mk_nested_dic('a.b.c', 1)
     {'a': {'b': {'c': 1}}}
-    >>> mk_nested_dic("/a/b/c", 1)
+    >>> mk_nested_dic('/a/b/c', 1)
     {'a': {'b': {'c': 1}}}
     """
     ret: DictT = dict()
@@ -114,16 +114,16 @@ def get(dic: DictT, path: str, seps: typing.Tuple[str, ...] = PATH_SEPS,
 
     >>> d = {'a': {'b': {'c': 0, 'd': [1, 2]}}, '': 3}
     >>> assert get(d, '/') == (3, '')  # key becomes '' (empty string).
-    >>> assert get(d, "/a/b/c") == (0, '')
-    >>> sorted(get(d, "a.b")[0].items())
+    >>> assert get(d, '/a/b/c') == (0, '')
+    >>> sorted(get(d, 'a.b')[0].items())
     [('c', 0), ('d', [1, 2])]
-    >>> (get(d, "a.b.d"), get(d, "/a/b/d/1"))
+    >>> (get(d, 'a.b.d'), get(d, '/a/b/d/1'))
     (([1, 2], ''), (2, ''))
     >>> get(d, "a.b.key_not_exist")  # doctest: +ELLIPSIS
     (None, "'...'")
-    >>> get(d, "/a/b/d/2")
+    >>> get(d, '/a/b/d/2')
     (None, 'list index out of range')
-    >>> get(d, "/a/b/d/-")  # doctest: +ELLIPSIS
+    >>> get(d, '/a/b/d/-')  # doctest: +ELLIPSIS
     (None, 'list indices must be integers...')
     """
     items = [_jsnp_unescape(s) for s in _split_path(path, seps)]  # : [str]
@@ -165,7 +165,7 @@ def _are_list_like(*objs: typing.Any) -> bool:
     True
     >>> _are_list_like([], {})
     False
-    >>> _are_list_like([], "aaa")
+    >>> _are_list_like([], 'aaa')
     False
     """
     return all(utils.is_list_like(obj) for obj in objs)

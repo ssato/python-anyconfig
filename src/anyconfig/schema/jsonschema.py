@@ -151,7 +151,7 @@ def array_to_schema(iarr: typing.Iterable[InDataT], **options
     arr: typing.List[InDataT] = list(iarr)
     scm = {
         'type': typemap[list],
-        'items': gen_schema(arr[0] if arr else "str", **options)
+        'items': gen_schema(arr[0] if arr else 'str', **options)
     }
     if strict:
         nitems = len(arr)
@@ -179,7 +179,7 @@ def object_to_schema(obj: InDataT, **options) -> InDataT:
     props = dict((k, gen_schema(v, **options)) for k, v in obj.items())
     scm = {'type': typemap[dict], 'properties': props}
     if strict:
-        scm["required"] = sorted(props.keys())
+        scm['required'] = sorted(props.keys())
 
     return scm
 
@@ -206,7 +206,7 @@ def gen_schema(data: InDataExT, **options) -> InDataT:
     _type = type(data)
 
     if _type in _SIMPLE_TYPES:
-        typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
+        typemap = options.get('ac_schema_typemap', _SIMPLETYPE_MAP)
         scm = {'type': typemap[_type]}
 
     elif is_dict_like(data):

@@ -50,7 +50,7 @@ def _parseline(line):
                      r"(?:\"(.*[^\\])\")|(?:'(.*[^\\])')|"
                      r"(?:([^\"'#\s]+)))?)\s*#*", line)
     if not match:
-        warnings.warn("Invalid line found: {}".format(line), SyntaxWarning)
+        warnings.warn(f'Invalid line found: {line}', SyntaxWarning)
         return (None, None)
 
     tpl = match.groups()
@@ -89,8 +89,7 @@ def load(stream, container=dict):
 
         (key, val) = _parseline(line)
         if key is None:
-            warnings.warn("Empty val in the line: {}".format(line),
-                          SyntaxWarning)
+            warnings.warn(f'Empty val in the line: {line}', SyntaxWarning)
             continue
 
         ret[key] = val
@@ -102,10 +101,10 @@ class Parser(base.StreamParser):
     """
     Parser for Shell variable definition files.
     """
-    _cid = "shellvars"
-    _type = "shellvars"
+    _cid = 'shellvars'
+    _type = 'shellvars'
     _ordered = True
-    _dict_opts = ["ac_dict"]
+    _dict_opts = ['ac_dict']
 
     def load_from_stream(self, stream, container, **kwargs):
         """
@@ -129,6 +128,6 @@ class Parser(base.StreamParser):
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in cnf.items():
-            stream.write("%s='%s'%s" % (key, val, os.linesep))
+            stream.write(f"{key}='{val}'{os.linesep}")
 
 # vim:sw=4:ts=4:et:

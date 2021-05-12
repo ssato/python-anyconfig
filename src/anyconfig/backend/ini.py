@@ -96,7 +96,7 @@ def _parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
     :param sep: Seprator string
     :return: Generator to yield (key, value) pair of 'dic'
     """
-    parse = _parse if options.get("ac_parse_value") else noop
+    parse = _parse if options.get('ac_parse_value') else noop
     for key, val in items:
         yield (key, parse(val, sep))  # type: ignore
 
@@ -107,9 +107,9 @@ def _make_parser(**kwargs):
     """
     # Optional arguements for configparser.SafeConfigParser{,readfp}
     kwargs_0 = filter_options(
-        ("defaults", "dict_type", "allow_no_value"), kwargs
+        ('defaults', 'dict_type', 'allow_no_value'), kwargs
     )
-    kwargs_1 = filter_options(("filename", ), kwargs)
+    kwargs_1 = filter_options(('filename', ), kwargs)
 
     try:
         psr = configparser.SafeConfigParser(**kwargs_0)
@@ -117,7 +117,7 @@ def _make_parser(**kwargs):
         # .. note::
         #    It seems ConfigParser.*ConfigParser in python 2.6 does not support
         #    'allow_no_value' option parameter, and TypeError will be thrown.
-        kwargs_0 = filter_options(("defaults", "dict_type"), kwargs)
+        kwargs_0 = filter_options(('defaults', 'dict_type'), kwargs)
         psr = configparser.SafeConfigParser(**kwargs_0)
 
     return (kwargs_1, psr)
@@ -136,7 +136,7 @@ def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
     psr.read_file(stream, **kwargs_1)
 
     cnf = container()
-    kwargs["sep"] = sep
+    kwargs['sep'] = sep
 
     defaults = psr.defaults()
     if defaults:
@@ -154,13 +154,13 @@ def _dumps_itr(cnf: typing.Dict[str, typing.Any],
     :param cnf: Configuration data to dump
     """
     for sect, params in cnf.items():
-        yield "[%s]" % sect
+        yield f'[{sect}]'
 
         for key, val in params.items():
             if sect != dkey and dkey in cnf and cnf[dkey].get(key) == val:
                 continue  # It should be in [DEFAULT] section.
 
-            yield "%s = %s" % (key, _to_s(val))
+            yield f'{key!s} = {_to_s(val)}'
 
         yield ''  # it will be a separator between each sections.
 
@@ -184,9 +184,9 @@ class Parser(base.Parser, base.FromStreamLoaderMixin,
     _type: str = 'ini'
     _extensions: typing.List[str] = ['ini']
     _load_opts: typing.List[str] = [
-        "defaults", "dict_type", "allow_no_value", "filename", "ac_parse_value"
+        'defaults', 'dict_type', 'allow_no_value', 'filename', 'ac_parse_value'
     ]
-    _dict_opts: typing.List[str] = ["dict_type"]
+    _dict_opts: typing.List[str] = ['dict_type']
 
     dump_to_string = base.to_method(_dumps)
     load_from_stream = base.to_method(_load)

@@ -33,8 +33,8 @@ Changelog:
 .. versionadded:: 0.0.1
 """
 import json
-import anyconfig.backend.base
 
+from .. import base
 from .common import Parser as BaseParser
 
 
@@ -45,9 +45,9 @@ class Parser(BaseParser):
     _cid = "std.json"
     _priority = 30  # Higher priority than others.
 
-    _load_from_string_fn = anyconfig.backend.base.to_method(json.loads)
-    _load_from_stream_fn = anyconfig.backend.base.to_method(json.load)
-    _dump_to_string_fn = anyconfig.backend.base.to_method(json.dumps)
-    _dump_to_stream_fn = anyconfig.backend.base.to_method(json.dump)
+    _load_from_string_fn = base.to_method(json.loads)
+    _load_from_stream_fn = base.to_method(json.load)
+    _dump_to_string_fn = base.to_method(json.dumps)
+    _dump_to_stream_fn = base.to_method(json.dump)
 
 # vim:sw=4:ts=4:et:

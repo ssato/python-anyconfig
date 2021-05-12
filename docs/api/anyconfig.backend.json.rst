@@ -11,5 +11,4 @@
 .. toctree::
 
    anyconfig.backend.json.default
-   anyconfig.backend.json._simplejson
-
+   anyconfig.backend.json.simplejson

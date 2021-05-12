@@ -36,9 +36,9 @@ Changelog:
      specific features.
 """
 import ruamel.yaml as ryaml
-import anyconfig.backend.base
-import anyconfig.utils
 
+from ...utils import filter_options
+from .. import base
 from . import common
 
 
@@ -80,8 +80,8 @@ def yml_fnc(fname, *args, **options):
     if "ac_safe" in options:
         options["typ"] = "safe"  # Override it.
 
-    iopts = anyconfig.utils.filter_options(_YAML_INIT_KWARGS, options)
-    oopts = anyconfig.utils.filter_options(_YAML_INSTANCE_MEMBERS, options)
+    iopts = filter_options(_YAML_INIT_KWARGS, options)
+    oopts = filter_options(_YAML_INSTANCE_MEMBERS, options)
 
     yml = ryaml.YAML(**iopts)
     for attr, val in oopts.items():
@@ -120,7 +120,7 @@ class Parser(common.Parser):
     _load_opts = _YAML_OPTS
     _dump_opts = _YAML_OPTS
 
-    load_from_stream = anyconfig.backend.base.to_method(yml_load)
-    dump_to_stream = anyconfig.backend.base.to_method(yml_dump)
+    load_from_stream = base.to_method(yml_load)
+    dump_to_stream = base.to_method(yml_dump)
 
 # vim:sw=4:ts=4:et:

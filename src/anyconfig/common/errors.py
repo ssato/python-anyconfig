@@ -29,4 +29,9 @@ class UnknownFileTypeError(BaseError):
     """Raise if not parsers were found for given file path."""
     _msg_fmt: str = 'No parser found for file: {!s}'
 
+
+class ValidationError(BaseError):
+    """Raise if validation failed."""
+    _msg_fmt: str = 'Validation failed: {!s}'
+
 # vim:sw=4:ts=4:et:

@@ -4,7 +4,8 @@
 #
 r"""Common parts for YAML backends:
 """
-import anyconfig.backend.base
+from ...utils import filter_options
+from .. import base
 
 
 def filter_from_options(key, options):
@@ -17,11 +18,10 @@ def filter_from_options(key, options):
     >>> filter_from_options('a', dict(a=1, b=2))
     {'b': 2}
     """
-    return anyconfig.utils.filter_options([k for k in options.keys()
-                                           if k != key], options)
+    return filter_options([k for k in options.keys() if k != key], options)
 
 
-class Parser(anyconfig.backend.base.StreamParser):
+class Parser(base.StreamParser):
     """
     Parser for YAML files.
     """

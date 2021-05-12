@@ -5,7 +5,7 @@
 r"""misc global constants, variables, classes and so on.
 """
 try:
-    from .jinja2_ import try_render
+    from .jinja2 import try_render
     SUPPORTED: bool = True
 except ImportError:  # jinja2 may not be available.
     SUPPORTED = False  # type: ignore

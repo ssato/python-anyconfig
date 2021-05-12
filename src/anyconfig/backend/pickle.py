@@ -32,15 +32,14 @@ try:
 except ImportError:
     import pickle  # type: ignore
 
-import anyconfig.backend.base
+from . import base
 
 
 LOAD_OPTS = ["fix_imports", "encoding", "errors"]
 DUMP_OPTS = ["protocol", "fix_imports"]
 
 
-class Parser(anyconfig.backend.base.StringStreamFnParser,
-             anyconfig.backend.base.BinaryFilesMixin):
+class Parser(base.StringStreamFnParser, base.BinaryFilesMixin):
     """
     Parser for Pickle files.
     """
@@ -51,9 +50,9 @@ class Parser(anyconfig.backend.base.StringStreamFnParser,
     _dump_opts = DUMP_OPTS
     _allow_primitives = True
 
-    _load_from_string_fn = anyconfig.backend.base.to_method(pickle.loads)
-    _load_from_stream_fn = anyconfig.backend.base.to_method(pickle.load)
-    _dump_to_string_fn = anyconfig.backend.base.to_method(pickle.dumps)
-    _dump_to_stream_fn = anyconfig.backend.base.to_method(pickle.dump)
+    _load_from_string_fn = base.to_method(pickle.loads)
+    _load_from_stream_fn = base.to_method(pickle.load)
+    _dump_to_string_fn = base.to_method(pickle.dumps)
+    _dump_to_stream_fn = base.to_method(pickle.dump)
 
 # vim:sw=4:ts=4:et:

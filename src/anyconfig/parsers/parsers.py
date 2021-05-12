@@ -1,0 +1,31 @@
+#
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# SPDX-License-Identifier: MIT
+#
+# Suppress import positions after some global variables are defined
+# pylint: disable=wrong-import-position
+"""A module to aggregate config parser (loader/dumper) backends.
+"""
+import typing
+
+from ..backend import ParsersT, PARSERS
+from ..processors import Processors
+from ..singleton import Singleton
+
+
+class Parsers(Processors, Singleton):
+    """
+    Manager class for parsers.
+    """
+    _pgroup: str = "anyconfig_backends"
+
+    def __init__(self, prcs: typing.Optional[ParsersT] = None
+                 ) -> None:
+        """Initialize with PARSERS.
+        """
+        if prcs is None:
+            prcs = PARSERS
+
+        super().__init__(prcs)
+
+# vim:sw=4:ts=4:et:

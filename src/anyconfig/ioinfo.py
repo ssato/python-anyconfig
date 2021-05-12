@@ -19,11 +19,14 @@ r"""Functions for value objects represent inputs and outputs.
 import pathlib
 import typing
 
-import anyconfig.utils
-
-from anyconfig.common import (
+from .common import (
     IOInfo, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
     UnknownFileTypeError
+)
+from .utils import (
+    is_path, is_path_obj, is_file_stream,
+    get_path_from_stream, get_file_extension,
+    is_ioinfo
 )
 
 
@@ -45,11 +48,11 @@ def guess_io_type(obj: typing.Any) -> IoiTypeT:
         ...
     ValueError: ...
     """
-    if anyconfig.utils.is_path(obj):
+    if is_path(obj):
         return IOI_PATH_STR
-    if anyconfig.utils.is_path_obj(obj):
+    if is_path_obj(obj):
         return IOI_PATH_OBJ
-    if anyconfig.utils.is_file_stream(obj):
+    if is_file_stream(obj):
         return IOI_STREAM
 
     raise ValueError("Unknown I/O type object: {!r}".format(obj))
@@ -70,8 +73,8 @@ def inspect_io_obj(obj: typing.Any, itype: IoiTypeT
         ext = path.suffix[1:]
 
     elif itype == IOI_STREAM:
-        ipath = anyconfig.utils.get_path_from_stream(obj) or ''
-        ext = anyconfig.utils.get_file_extension(ipath) if ipath else ''
+        ipath = get_path_from_stream(obj) or ''
+        ext = get_file_extension(ipath) if ipath else ''
 
     else:
         raise UnknownFileTypeError("%r" % obj)
@@ -88,7 +91,7 @@ def make(obj: typing.Any) -> IOInfo:
 
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    if anyconfig.utils.is_ioinfo(obj):
+    if is_ioinfo(obj):
         return obj
 
     itype = guess_io_type(obj)

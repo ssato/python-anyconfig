@@ -3,7 +3,6 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, no-member
-import io
 import pathlib
 import pickle
 import tempfile
@@ -20,24 +19,16 @@ class TestCase(unittest.TestCase):
     def test_open_text_io(self):
         path = respath('common/10.json')
         with TT.open(path) as fio:
-            self.assertTrue(
-                isinstance(fio, io.TextIOBase),
-                f'{fio!r}'
-            )
             self.assertEqual(fio.mode, 'r')
 
     def test_open_byte_io(self):
         cnf = dict(a=1, b='b')
 
         with tempfile.TemporaryDirectory() as workdir:
-            path = pathlib.Path(workdir)
+            path = pathlib.Path(workdir) / 'test.pkl'
             pickle.dump(cnf, path.open(mode='wb'))
 
             with TT.open(path) as fio:
-                self.assertTrue(
-                    isinstance(fio, io.TextIOBase),
-                    f'{path}'
-                )
                 self.assertEqual(fio.mode, 'rb')
 
 # vim:sw=4:ts=4:et:

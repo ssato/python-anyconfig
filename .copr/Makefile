@@ -1,8 +1,11 @@
-dist:
-	mkdir -p $@
+# ref. https://docs.pagure.org/copr.copr/user_documentation.html#scm
+#      ('make srpm' section)
 
-srpm: dist
-	dnf -y install python3
-	python3 setup.py bdist_rpm --source-only
+makefile_dir := $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
+outdir ?= $(makefile_dir)/../dist
+
+srpm:
+	dnf install -y tox python3
+	python3 setup.py bdist_rpm --source-only --dist-dir=$(outdir)
 
 .PHONY: srpm

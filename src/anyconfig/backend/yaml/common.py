@@ -25,10 +25,10 @@ class Parser(base.StreamParser):
     """
     Parser for YAML files.
     """
-    _type = "yaml"
-    _extensions = ["yaml", "yml"]
+    _type = 'yaml'
+    _extensions = ['yaml', 'yml']
     _ordered = True
     _allow_primitives = True
-    _dict_opts = ["ac_dict"]
+    _dict_opts = ['ac_dict']
 
 # vim:sw=4:ts=4:et:

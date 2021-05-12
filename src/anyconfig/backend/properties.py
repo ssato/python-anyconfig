@@ -35,7 +35,7 @@ import warnings
 from . import base
 
 
-_COMMENT_MARKERS = ("#", "!")
+_COMMENT_MARKERS = ('#', '!')
 
 
 def _parseline(line):
@@ -63,7 +63,7 @@ def _parseline(line):
     key = pair[0].rstrip()
 
     if len(pair) < 2:
-        warnings.warn("Invalid line found: {}".format(line), SyntaxWarning)
+        warnings.warn(f'Invalid line found: {line}', SyntaxWarning)
         return (key or None, '')
 
     return (key, pair[1].strip())
@@ -181,7 +181,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
         (key, val) = _parseline(line)
         if key is None:
-            warnings.warn("Failed to parse the line: {}".format(line))
+            warnings.warn(f'Failed to parse the line: {line}')
             continue
 
         ret[key] = unescape(val)
@@ -193,11 +193,11 @@ class Parser(base.StreamParser):
     """
     Parser for Java properties files.
     """
-    _cid = "properties"
-    _type = "properties"
-    _extensions = ["properties"]
+    _cid = 'properties'
+    _type = 'properties'
+    _extensions = ['properties']
     _ordered = True
-    _dict_opts = ["ac_dict"]
+    _dict_opts = ['ac_dict']
 
     def load_from_stream(self, stream, container, **kwargs):
         """
@@ -220,6 +220,6 @@ class Parser(base.StreamParser):
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in cnf.items():
-            stream.write("%s = %s%s" % (key, escape(val), os.linesep))
+            stream.write(f'{key} = {escape(val)}{os.linesep}')
 
 # vim:sw=4:ts=4:et:

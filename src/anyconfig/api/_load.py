@@ -84,10 +84,10 @@ def _single_load(input_: PathOrIOInfoT,
     # .. note::
     #    This will be kept for backward compatibility until 'ignore_missing'
     #    option is deprecated and removed completely.
-    if "ignore_missing" in options:
+    if 'ignore_missing' in options:
         warnings.warn("keyword option 'ignore_missing' is deprecated, use "
                       "'ac_ignore_missing' instead", DeprecationWarning)
-        options["ac_ignore_missing"] = options["ignore_missing"]
+        options['ac_ignore_missing'] = options['ignore_missing']
 
     if ac_template is not None and filepath is not None:
         content = try_render(filepath=filepath, ctx=ac_context, **options)
@@ -224,10 +224,10 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
     :return: Mapping object or any query result might be primitive objects
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    marker = options.setdefault("ac_marker", options.get("marker", '*'))
+    marker = options.setdefault('ac_marker', options.get('marker', '*'))
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
-    options["ac_schema"] = None  # Avoid to load schema more than twice.
+    options['ac_schema'] = None  # Avoid to load schema more than twice.
 
     paths = [ioinfo_make(p) for p in expand_paths(inputs, marker=marker)]
     if are_same_file_types(paths):
@@ -283,7 +283,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     :return: Mapping object or any query result might be primitive objects
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    marker = options.setdefault("ac_marker", options.get("marker", '*'))
+    marker = options.setdefault('ac_marker', options.get('marker', '*'))
 
     if is_path_like_object(path_specs, marker):
         return single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
@@ -291,7 +291,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
                            **options)
 
     if not is_paths(path_specs, marker):
-        raise ValueError("Possible invalid input %r" % path_specs)
+        raise ValueError(f'Possible invalid input {path_specs!r}')
 
     return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                       ac_template=ac_template, ac_context=ac_context,
@@ -326,9 +326,9 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
 
     psr = parsers_find(None, forced_type=ac_parser)
     schema = None
-    ac_schema = options.get("ac_schema", None)
+    ac_schema = options.get('ac_schema', None)
     if ac_schema is not None:
-        options["ac_schema"] = None
+        options['ac_schema'] = None
         schema = loads(ac_schema, ac_parser=psr, ac_dict=ac_dict,
                        ac_template=ac_template, ac_context=ac_context,
                        **options)

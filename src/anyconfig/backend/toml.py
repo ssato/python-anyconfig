@@ -29,11 +29,11 @@ class Parser(base.StringStreamFnParser):
     """
     TOML parser.
     """
-    _cid = "toml"
-    _type = "toml"
-    _extensions = ["toml"]
+    _cid = 'toml'
+    _type = 'toml'
+    _extensions = ['toml']
     _ordered = True
-    _load_opts = _dump_opts = _dict_opts = ["_dict"]
+    _load_opts = _dump_opts = _dict_opts = ['_dict']
 
     _load_from_string_fn = to_method(toml.loads)
     _load_from_stream_fn = to_method(toml.load)

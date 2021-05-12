@@ -35,17 +35,17 @@ except ImportError:
 from . import base
 
 
-LOAD_OPTS = ["fix_imports", "encoding", "errors"]
-DUMP_OPTS = ["protocol", "fix_imports"]
+LOAD_OPTS = ['fix_imports', 'encoding', 'errors']
+DUMP_OPTS = ['protocol', 'fix_imports']
 
 
 class Parser(base.StringStreamFnParser, base.BinaryFilesMixin):
     """
     Parser for Pickle files.
     """
-    _cid = "pickle"
-    _type = "pickle"
-    _extensions = ["pkl", "pickle"]
+    _cid = 'pickle'
+    _type = 'pickle'
+    _extensions = ['pkl', 'pickle']
     _load_opts = LOAD_OPTS
     _dump_opts = DUMP_OPTS
     _allow_primitives = True

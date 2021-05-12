@@ -39,7 +39,7 @@ def guess_io_type(obj: typing.Any) -> IoiTypeT:
     :param obj: a path string, a pathlib.Path or a file / file-like object
     :return: IOInfo type defined in anyconfig.common.IOI_TYPES
 
-    >>> apath = "/path/to/a_conf.ext"
+    >>> apath = '/path/to/a_conf.ext'
     >>> assert guess_io_type(apath) == IOI_PATH_STR
     >>> assert guess_io_type(pathlib.Path(apath)) == IOI_PATH_OBJ
     >>> assert guess_io_type(open(__file__)) == IOI_STREAM
@@ -55,7 +55,7 @@ def guess_io_type(obj: typing.Any) -> IoiTypeT:
     if is_file_stream(obj):
         return IOI_STREAM
 
-    raise ValueError("Unknown I/O type object: {!r}".format(obj))
+    raise ValueError(f'Unknown I/O type object: {obj!r}')
 
 
 def inspect_io_obj(obj: typing.Any, itype: IoiTypeT
@@ -77,7 +77,7 @@ def inspect_io_obj(obj: typing.Any, itype: IoiTypeT
         ext = get_file_extension(ipath) if ipath else ''
 
     else:
-        raise UnknownFileTypeError("%r" % obj)
+        raise UnknownFileTypeError(repr(obj))
 
     return (ipath, ext)
 

@@ -60,12 +60,12 @@ def make_template_paths(template_file: pathlib.Path,
     >>> p = pathlib.Path
     >>> make_template_paths(p('/path/to/a/template'))
     ['/path/to/a']
-    >>> make_template_paths(p('/path/to/a/template'), ["/tmp"])
+    >>> make_template_paths(p('/path/to/a/template'), ['/tmp'])
     ['/path/to/a', '/tmp']
-    >>> os.chdir("/tmp")
+    >>> os.chdir('/tmp')
     >>> make_template_paths(p('./path/to/a/template'))
     ['/tmp/path/to/a']
-    >>> make_template_paths(p('./path/to/a/template'), ["/tmp"])
+    >>> make_template_paths(p('./path/to/a/template'), ['/tmp'])
     ['/tmp/path/to/a', '/tmp']
     """
     tmpldir = str(template_file.parent.resolve())
@@ -88,7 +88,7 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
     :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
 
-    >>> render_s("aaa") == "aaa"
+    >>> render_s('aaa') == 'aaa'
     True
     >>> s = render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
     >>> assert s == 'a = 1, b = "bbb"'
@@ -100,8 +100,9 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
     try:
         env = tmpl_env(paths)
     except AssertionError as exc:
-        warnings.warn(f'Something went wrong with: paths={paths!r}, '
-                      f'exc={exc!s}')
+        warnings.warn(
+            f'Something went wrong with: paths={paths!r}, exc={exc!s}'
+        )
         return tmpl_s
 
     if filters is not None:
@@ -158,10 +159,10 @@ def render(filepath: str, ctx: MaybeContextT = None,
         if not ask:
             raise
 
-        usr_tmpl = input(os.linesep + "*** Missing template "
-                         "'{}'. Please enter absolute "
-                         "or relative path starting from "
-                         "'.' to the template file: ".format(mtmpl))
+        usr_tmpl = input(
+            f"{os.linesep}*** Missing template '{mtmpl}'. Please enter "
+            "absolute or relative path starts from '.' to the template file: "
+        )
         usr_tmpl_2 = pathlib.Path(usr_tmpl.strip()).resolve()
         paths_2 = make_template_paths(usr_tmpl_2, paths)
 
@@ -194,7 +195,7 @@ def try_render(filepath: typing.Optional[str] = None,
         if filepath:
             tmpl_s = filepath
         else:
-            tmpl_s = typing.cast(str, content)[:10] + " ..."
+            tmpl_s = typing.cast(str, content)[:10] + ' ...'
 
         warnings.warn(f"Failed to compile '{tmpl_s!r}'. It may not be "
                       f'a template.{os.linesep}, exc={exc!s}')

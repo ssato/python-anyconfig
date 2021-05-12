@@ -45,9 +45,9 @@ from . import common
 try:
     ryaml.YAML  # flake8: noqa
 except AttributeError as exc:
-    raise ImportError("ruamel.yaml may be too old to use!") from exc
+    raise ImportError('ruamel.yaml may be too old to use!') from exc
 
-_YAML_INIT_KWARGS = ["typ", "pure", "plug_ins"]  # kwargs for ruamel.yaml.YAML
+_YAML_INIT_KWARGS = ['typ', 'pure', 'plug_ins']  # kwargs for ruamel.yaml.YAML
 _YAML_INSTANCE_MEMBERS = ['allow_duplicate_keys', 'allow_unicode',
                           'block_seq_indent', 'canonical', 'composer',
                           'constructor', 'default_flow_style', 'default_style',
@@ -77,8 +77,8 @@ def yml_fnc(fname, *args, **options):
     """
     options = common.filter_from_options("ac_dict", options)
 
-    if "ac_safe" in options:
-        options["typ"] = "safe"  # Override it.
+    if 'ac_safe' in options:
+        options['typ'] = 'safe'  # Override it.
 
     iopts = filter_options(_YAML_INIT_KWARGS, options)
     oopts = filter_options(_YAML_INSTANCE_MEMBERS, options)
@@ -93,7 +93,7 @@ def yml_fnc(fname, *args, **options):
 def yml_load(stream, container, **options):
     """.. seealso:: :func:`anyconfig.backend.yaml.pyyaml.yml_load`
     """
-    ret = yml_fnc("load", stream, **options)
+    ret = yml_fnc('load', stream, **options)
     if ret is None:
         return container()
 
@@ -110,13 +110,13 @@ def yml_dump(data, stream, **options):
     #     else:
     #         factory = dict
     #     data = anyconfig.dicts.convert_to(data, ac_dict=factory)
-    return yml_fnc("dump", data, stream, **options)
+    return yml_fnc('dump', data, stream, **options)
 
 
 class Parser(common.Parser):
     """Parser for YAML files.
     """
-    _cid = "ruamel.yaml"
+    _cid = 'ruamel.yaml'
     _load_opts = _YAML_OPTS
     _dump_opts = _YAML_OPTS
 

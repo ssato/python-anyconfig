@@ -30,7 +30,7 @@ def is_iterable(obj: typing.Any) -> bool:
     >>> g = (x for x in range(10))
     >>> is_iterable(g)
     True
-    >>> is_iterable("abc")
+    >>> is_iterable('abc')
     False
     >>> is_iterable(0)
     False
@@ -39,7 +39,7 @@ def is_iterable(obj: typing.Any) -> bool:
     """
     return isinstance(obj, (list, tuple, types.GeneratorType)) or \
         (not isinstance(obj, (int, str, dict)) and
-         bool(getattr(obj, "next", False)))
+         bool(getattr(obj, 'next', False)))
 
 
 def is_path(obj: typing.Any) -> bool:
@@ -82,12 +82,12 @@ def is_ioinfo(obj: typing.Any) -> bool:
     :return: True if given 'obj' is a 'IOInfo' namedtuple object.
 
     >>> assert not is_ioinfo(1)
-    >>> assert not is_ioinfo("aaa")
+    >>> assert not is_ioinfo('aaa')
     >>> assert not is_ioinfo({})
     >>> assert not is_ioinfo(('a', 1, {}))
 
     >>> from ..common import IOI_PATH_STR
-    >>> inp = IOInfo("/etc/hosts", IOI_PATH_STR, "/etc/hosts", None)
+    >>> inp = IOInfo('/etc/hosts', IOI_PATH_STR, '/etc/hosts', None)
     >>> assert is_ioinfo(inp)
     """
     if isinstance(obj, tuple) and getattr(obj, '_asdict', False):
@@ -105,7 +105,7 @@ def is_stream_ioinfo(obj: typing.Any) -> bool:
     >>> assert is_stream_ioinfo(ioi)
     >>> assert not is_stream_ioinfo(__file__)
     """
-    return getattr(obj, "type", None) == IOI_STREAM
+    return getattr(obj, 'type', None) == IOI_STREAM
 
 
 def is_path_like_object(obj: typing.Any, marker: str = GLOB_MARKER) -> bool:
@@ -122,10 +122,10 @@ def is_path_like_object(obj: typing.Any, marker: str = GLOB_MARKER) -> bool:
         (stream) object
 
     >>> assert is_path_like_object(__file__)
-    >>> assert not is_path_like_object("/a/b/c/*.json", '*')
+    >>> assert not is_path_like_object('/a/b/c/*.json', '*')
 
-    >>> assert is_path_like_object(pathlib.Path("a.ini"))
-    >>> assert not is_path_like_object(pathlib.Path("x.ini"), 'x')
+    >>> assert is_path_like_object(pathlib.Path('a.ini'))
+    >>> assert not is_path_like_object(pathlib.Path('x.ini'), 'x')
     >>> assert is_path_like_object(open(__file__))
     """
     return ((is_path(obj) and marker not in obj) or
@@ -137,7 +137,7 @@ def is_dict_like(obj: typing.Any) -> bool:
     """
     :param obj: Any object behaves like a dict.
 
-    >>> is_dict_like("a string")
+    >>> is_dict_like('a string')
     False
     >>> is_dict_like({})
     True
@@ -164,7 +164,7 @@ def is_list_like(obj: typing.Any) -> bool:
     >>> g = (x for x in range(10))
     >>> is_list_like(g)
     True
-    >>> is_list_like("abc")
+    >>> is_list_like('abc')
     False
     >>> is_list_like(0)
     False

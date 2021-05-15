@@ -14,14 +14,14 @@ Changelog:
    - Split PyYaml-based and ruamel.yaml based backend modules
    - Add support of some of ruamel.yaml specific features.
 """
-from ..base import ParsersT
+from ..base import ParserClssT
 
 
 try:
     from . import pyyaml
-    PARSERS: ParsersT = [pyyaml.Parser]
+    PARSERS: ParserClssT = [pyyaml.Parser]
 except ImportError:
-    PARSERS: ParsersT = []  # type: ignore
+    PARSERS: ParserClssT = []  # type: ignore
 
 try:
     from . import ruamel_yaml as ryaml

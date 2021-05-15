@@ -10,6 +10,7 @@ from ..models import processor
 
 
 ProcT = typing.TypeVar('ProcT', bound=processor.Processor)
+ProcsT = typing.List[ProcT]
 ProcClsT = typing.Type[ProcT]
 ProcClssT = typing.List[ProcClsT]
 

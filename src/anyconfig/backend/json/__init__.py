@@ -14,11 +14,11 @@ Changelog:
    - Started to split JSON support modules
 """
 from . import default
-from ..base import ParsersT
+from ..base import ParserClssT
 
 
 Parser = default.Parser  # To keep backward compatibility.
-PARSERS: ParsersT = [Parser]
+PARSERS: ParserClssT = [Parser]
 
 try:
     from .simplejson import Parser as SimpleJsonParser

@@ -8,135 +8,213 @@ import unittest
 import anyconfig.ioinfo
 import anyconfig.processors.utils as TT
 
-from anyconfig.common import (
-    UnknownProcessorTypeError, UnknownFileTypeError
-)
-
 from .common import A, A2, A3, B, C, PRS
 
 
-class Test_12_list_functions(unittest.TestCase):
-
-    def test_10_list_by_x(self):
-        self.assertRaises(ValueError, TT.list_by_x, PRS, 'undef')
-        self.assertEqual(TT.list_by_x([], 'type'), [])
-
-    def test_20_list_by_type(self):
-        exp = sorted([(A.type(), [A3, A2, A]), (B.type(), [B, C])],
-                     key=TT.operator.itemgetter(0))
-        self.assertEqual(TT.list_by_x(PRS, 'type'), exp)
-
-    def test_30_list_by_extensions(self):
-        exp = sorted([('js', [A3, A2, A]),
-                      ('json', [A3, A2, A]),
-                      ('jsn', [A3, A2, A]),
-                      ('yaml', [B, C]),
-                      ('yml', [B, C])],
-                     key=TT.operator.itemgetter(0))
-        self.assertEqual(TT.list_by_x(PRS, 'extensions'), exp)
+PRS = [p() for p in PRS]  # Instantiate all.
 
 
-class Test_20_findall_functions(unittest.TestCase):
+class TestCase(unittest.TestCase):
 
-    def test_10_findall_with_pred__type(self):
+    def test_select_by_key(self):
+        ies = (([], []),
+               (((['a'], 1), ), [('a', [1])]),
+               (((['a', 'aaa'], 1),
+                 (['b', 'bb'], 2),
+                 (['a'], 3)),
+                [('a', [1, 3]),
+                 ('aaa', [1]),
+                 ('b', [2]),
+                 ('bb', [2])]))
+
+        for inp, exp in ies:
+            self.assertEqual(TT.select_by_key(inp), exp)
+
+    def test_select_by_key_reversed(self):
+        ies = ((((['a', 'aaa'], 1),
+                 (['a'], 3)),
+                [('a', [3, 1]),
+                 ('aaa', [1])]),
+               )
+
+        def sfn(itr):
+            return sorted(itr, reverse=True)
+
+        for inp, exp in ies:
+            self.assertEqual(TT.select_by_key(inp, sfn), exp)
+
+    def test_list_by_x(self):
+        (a, a2, a3, b, c) = (A(), A2(), A3(), B(), C())
+        ies = ((([], 'type'), []),
+               (([a], 'type'), [(a.type(), [a])]),
+               (([a], 'extensions'),
+                [(x, [a]) for x in a.extensions()]),
+               (((a, a2, a3), 'type'),
+                [(a.type(), [a3, a2, a])]),
+               (([a, b, c], 'type'),
+                [(a.type(), [a]), (b.type(), [b, c])]),
+               ((PRS, 'type'),
+                [(a.type(), [a3, a2, a]), (b.type(), [b, c])]),
+               ((PRS, 'extensions'),
+                [('js', [a3, a2, a]), ('json', [a3, a2, a]),
+                 ('jsn', [a3, a2, a]), ('yaml', [b, c]), ('yml', [b, c])]),
+               )
+
+        for prs_key, exp in ies:
+            self.assertEqual(
+                sorted(TT.list_by_x(*prs_key)), sorted(exp)
+            )
+
+    def test_list_by_x_ng_cases(self):
+        with self.assertRaises(ValueError):
+            TT.list_by_x(PRS, 'undef')
+
+    def test_findall_with_pred__type(self):
         def _findall_by_type(typ):
             return TT.findall_with_pred(lambda p: p.type() == typ, PRS)
 
-        self.assertEqual(_findall_by_type('json'), [A3, A2, A])
-        self.assertEqual(_findall_by_type('yaml'), [B, C])
-        self.assertEqual(_findall_by_type('undefined'), [])
+        (a, a2, a3, b, c) = (A(), A2(), A3(), B(), C())
+        ies = (('json', [a3, a2, a]),
+               ('yaml', [b, c]),
+               ('undefined', []),
+               )
 
-    def test_20_findall_with_pred__ext(self):
+        for inp, exp in ies:
+            self.assertEqual(_findall_by_type(inp), exp)
+
+    def test_findall_with_pred__ext(self):
         def _findall_with_pred__ext(ext):
             return TT.findall_with_pred(lambda p: ext in p.extensions(), PRS)
 
-        self.assertEqual(_findall_with_pred__ext('js'), [A3, A2, A])
-        self.assertEqual(_findall_with_pred__ext('yml'), [B, C])
-        self.assertEqual(_findall_with_pred__ext('xyz'), [])
+        (a, a2, a3, b, c) = (A(), A2(), A3(), B(), C())
+        ies = (('js', [a3, a2, a]),
+               ('yml', [b, c]),
+               ('xyz', []),
+               )
 
-
-class Test_30_find_functions(unittest.TestCase):
+        for inp, exp in ies:
+            self.assertEqual(_findall_with_pred__ext(inp), exp)
 
     def assertInstance(self, obj, cls):
         self.assertTrue(isinstance(obj, cls))
 
-    def test_16_maybe_processor(self):
-        self.assertTrue(isinstance(TT.maybe_processor(A3, A3), A3))
-        self.assertTrue(isinstance(TT.maybe_processor(A3(), A3), A3))
-        self.assertTrue(TT.maybe_processor('undef', A3) is None)
+    def test_maybe_processor(self):
+        a3 = A3()
+        ies = (((a3, A3), True),
+               ((A3, A3), True),
+               ((B, A3), False),
+               )
+        for inp, exp in ies:
+            afn = self.assertTrue if exp else self.assertFalse
+            res = TT.maybe_processor(*inp)
+            afn(isinstance(res, A3))
 
-    def test_20_find_by_type_or_id(self):
-        self.assertEqual(TT.find_by_type_or_id('json', PRS), [A3, A2, A])
-        self.assertEqual(TT.find_by_type_or_id('yaml', PRS), [B, C])
-        self.assertEqual(TT.find_by_type_or_id('dummy', PRS), [C])
+            if not exp:
+                self.assertTrue(res is None)
 
-    def test_22_find_by_type_or_id__ng_cases(self):
-        self.assertRaises(UnknownProcessorTypeError,
-                          TT.find_by_type_or_id, 'xyz', PRS)
+    def test_find_by_type_or_id(self):
+        (a, a2, a3, b, c) = (A(), A2(), A3(), B(), C())
+        ies = ((('json', PRS), [a3, a2, a]),
+               (('yaml', PRS), [b, c]),
+               (('dummy', PRS), [c]),
+               )
+        for inp, exp in ies:
+            self.assertEqual(TT.find_by_type_or_id(*inp), exp)
 
-    def test_30_find_by_fileext(self):
-        self.assertEqual(TT.find_by_fileext('jsn', PRS), [A3, A2, A])
-        self.assertEqual(TT.find_by_fileext('yml', PRS), [B, C])
+    def test_find_by_type_or_id_ng_cases(self):
+        with self.assertRaises(TT.UnknownProcessorTypeError):
+            TT.find_by_type_or_id('xyz', PRS)
 
-    def test_32_find_by_fileext__ng_cases(self):
-        self.assertRaises(UnknownFileTypeError, TT.find_by_fileext, 'xyz', PRS)
+    def test_find_by_fileext(self):
+        ies = ((('js', PRS), [A3(), A2(), A()]),
+               (('yml', PRS), [B(), C()]),
+               )
+        for inp, exp in ies:
+            self.assertEqual(TT.find_by_fileext(*inp), exp)
 
-    def test_40_find_by_maybe_file(self):
-        self.assertEqual(TT.find_by_maybe_file('/path/to/a.jsn', PRS),
-                         [A3, A2, A])
-        self.assertEqual(TT.find_by_maybe_file('../../path/to/b.yml', PRS),
-                         [B, C])
+    def test_find_by_fileext_ng_cases(self):
+        with self.assertRaises(TT.UnknownFileTypeError):
+            TT.find_by_fileext('xyz', PRS)
+
+    def test_find_by_maybe_file(self):
+        (a, a2, a3, b, c) = (A(), A2(), A3(), B(), C())
         obj = anyconfig.ioinfo.make('/path/to/a.json')
-        self.assertEqual(TT.find_by_maybe_file(obj, PRS), [A3, A2, A])
 
-    def test_42_find_by_maybe_file__ng_cases(self):
-        self.assertRaises(UnknownFileTypeError, TT.find_by_maybe_file,
-                          '/tmp/x.xyz', PRS)
-        self.assertRaises(UnknownFileTypeError, TT.find_by_maybe_file,
-                          '/dev/null', PRS)
+        ies = ((('/path/to/a.jsn', PRS), [a3, a2, a]),
+               (('../../path/to/b.yml', PRS), [b, c]),
+               ((obj, PRS), [a3, a2, a]),
+               )
 
+        for inp, exp in ies:
+            self.assertEqual(TT.find_by_maybe_file(*inp), exp)
 
-class Test_32_find_functions(unittest.TestCase):
+    def test_find_by_maybe_file_ng_cases(self):
+        ies = (('/tmp/x.xyz', PRS),
+               ('/dev/null', PRS),
+               )
+        for inp in ies:
+            with self.assertRaises(TT.UnknownFileTypeError):
+                TT.find_by_maybe_file(*inp)
 
-    def test_10_findall__wo_path_nor_type(self):
-        self.assertRaises(ValueError, TT.findall, None, PRS, None)
+    def test_findall_ng_cases(self):
+        ies = (
+               ((None, PRS, None), ValueError),  # w/o path nor type
+               (('/tmp/x.xyz', PRS, None), TT.UnknownFileTypeError),
+               (('/dev/null', PRS, None), TT.UnknownFileTypeError),
+               ((None, PRS, 'xyz'), TT.UnknownProcessorTypeError),
+               )
+        for inp, exc in ies:
+            with self.assertRaises(exc):
+                TT.findall(*inp)
 
-    def test_12_findall__uknown_file_type(self):
-        self.assertRaises(UnknownFileTypeError, TT.findall, '/tmp/x.xyz', PRS)
-        self.assertRaises(UnknownFileTypeError, TT.findall, '/dev/null', PRS)
-
-    def test_14_findall__uknown_type(self):
-        self.assertRaises(UnknownProcessorTypeError,
-                          TT.findall, None, PRS, 'xyz')
-
-    def test_20_find__maybe_file(self):
-        self.assertEqual(TT.findall('/path/to/a.jsn', PRS), [A3, A2, A])
-        self.assertEqual(TT.findall('../../path/to/b.yml', PRS), [B, C])
-
+    def test_findall_by_maybe_file(self):
+        (a, a2, a3, b, c) = (A(), A2(), A3(), B(), C())
         obj = anyconfig.ioinfo.make('/path/to/a.json')
-        self.assertEqual(TT.findall(obj, PRS), [A3, A2, A])
 
-    def test_22_findall__type_or_id(self):
-        self.assertEqual(TT.findall(None, PRS, forced_type='json'),
-                         [A3, A2, A])
-        self.assertEqual(TT.findall(None, PRS, forced_type='yaml'), [B, C])
-        self.assertEqual(TT.findall(None, PRS, 'dummy'), [C])
+        ies = ((('/path/to/a.jsn', PRS), [a3, a2, a]),
+               (('../../path/to/b.yml', PRS), [b, c]),
+               ((obj, PRS), [a3, a2, a]),
+               )
+        for inp, exp in ies:
+            self.assertEqual(TT.findall(*inp), exp)
 
-    def test_30_find__forced_type(self):
-        self.assertEqual(TT.find(None, PRS, forced_type=A2), A2)
-        self.assertEqual(TT.find(None, PRS, forced_type=A2()), A2)
-        self.assertEqual(TT.find(None, PRS, forced_type=C.cid()), C)
+    def test_findall_by_type_or_id(self):
+        (a, a2, a3, b, c) = (A(), A2(), A3(), B(), C())
+        ies = (((None, PRS, 'json'), [a3, a2, a]),
+               ((None, PRS, 'yaml'), [b, c]),
+               ((None, PRS, 'dummy'), [c]),
+               )
+        for inp, exp in ies:
+            self.assertEqual(TT.findall(*inp), exp)
 
-    def test_32_find__maybe_file(self):
-        self.assertEqual(TT.find('/path/to/a.jsn', PRS), A3)
-        self.assertEqual(TT.find('../../path/to/b.yml', PRS), B)
+    def test_find_by_forced_type(self):
+        a2 = A2()
+        c = C()
+        ies = (((None, PRS, A2), a2),
+               ((None, PRS, A2), a2),
+               ((None, PRS, c.cid()), c),
+               )
 
+        for inp, exp in ies:
+            self.assertEqual(TT.find(*inp), exp)
+
+    def test_find__maybe_file(self):
+        (a3, b) = (A3(), B())
         obj = anyconfig.ioinfo.make('/path/to/a.json')
-        self.assertEqual(TT.find(obj, PRS), A3)
 
-    def test_34_find__type_or_id(self):
-        self.assertEqual(TT.find(None, PRS, forced_type='json'), A3)
-        self.assertEqual(TT.find(None, PRS, forced_type='yaml'), B)
-        self.assertEqual(TT.find(None, PRS, forced_type='dummy'), C)
+        ies = ((('/path/to/a.jsn', PRS), a3),
+               (('../../path/to/b.yml', PRS), b),
+               ((obj, PRS), a3),
+               )
+        for inp, exp in ies:
+            self.assertEqual(TT.find(*inp), exp)
+
+    def test_find__type_or_id(self):
+        ies = (((None, PRS, 'json'), A3()),
+               ((None, PRS, 'yaml'), B()),
+               ((None, PRS, 'dummy'), C()),
+               )
+        for inp, exp in ies:
+            self.assertEqual(TT.find(*inp), exp)
 
 # vim:sw=4:ts=4:et:

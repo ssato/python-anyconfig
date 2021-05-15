@@ -2,53 +2,70 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, invalid-name, no-member
+# pylint: disable=missing-docstring, invalid-name
+import operator
 import unittest
 
-import anyconfig.parsers.parsers
 import anyconfig.parsers.utils as TT
-import anyconfig.processors.utils
 
 from anyconfig.common import (
     UnknownFileTypeError, UnknownProcessorTypeError
 )
+from anyconfig.backend.json import PARSERS as JSON_PSR_CLSS
+from anyconfig.parsers.parsers import Parsers
 
 
-class Test_10_find(unittest.TestCase):
+PSRS = Parsers().list()
+JSON_PSRS = sorted(
+    (p() for p in JSON_PSR_CLSS),
+    key=operator.methodcaller('priority'), reverse=True
+)
 
-    psrs = anyconfig.parsers.parsers.Parsers().list()
 
-    def _assert_isinstances(self, obj, clss, msg=False):
-        self.assertTrue(any(isinstance(obj, cls) for cls in clss),
-                        msg or "%r vs %r" % (obj, clss))
+class TestCase(unittest.TestCase):
 
-    def test_10_find__w_parser_type_or_instance(self):
-        def _findall_by_type(typ):
-            fnc = anyconfig.processors.utils.findall_with_pred
-            return fnc(lambda p: typ == p.type(), self.psrs)
+    def test_load_plugins(self):
+        TT.load_plugins()
+        self.assertTrue(PSRS)
 
-        cpath = "dummy.conf"
-        for psr in self.psrs:
-            ldrs = _findall_by_type(psr.type())
-            self._assert_isinstances(TT.find(cpath, psr.type()), ldrs)
-            self._assert_isinstances(TT.find(cpath, psr()), ldrs)
+    def test_list_types(self):
+        res = TT.list_types()
+        self.assertTrue(bool(res))
+        self.assertTrue(any(x in res for x in ('json', 'ini', 'xml')))
 
-    def test_20_find__w_parser_by_file(self):
-        def _find_ldrs_by_ext(ext):
-            fnc = anyconfig.processors.utils.findall_with_pred
-            return fnc(lambda p: ext in p.extensions(), self.psrs)
+    def test_list_by_x(self):
+        for lfn in (TT.list_by_cid, TT.list_by_type, TT.list_by_extension):
+            psrs = lfn()
+            self.assertTrue(bool(psrs))
 
-        for psr in self.psrs:
-            for ext in psr.extensions():
-                ldrs = _find_ldrs_by_ext(ext)
-                self._assert_isinstances(TT.find("dummy." + ext), ldrs)
+    def test_findall_ng_cases(self):
+        ies = (((None, None), ValueError),  # w/o path nor type
+               (('/tmp/x.xyz', None), UnknownFileTypeError),
+               (('/dev/null', None), UnknownFileTypeError),
+               ((None, 'xyz'), UnknownProcessorTypeError),
+               )
+        for inp, exc in ies:
+            with self.assertRaises(exc):
+                TT.findall(*inp)
 
-    def test_30_find__unknown_parser_type(self):
-        self.assertRaises(UnknownProcessorTypeError,
-                          TT.find, "a.cnf", "type_not_exist")
+    def test_findall(self):
+        argss = (('foo.json', None),
+                 (None, 'json'),
+                 )
+        for args in argss:
+            psrs = TT.findall(*args)
 
-    def test_40_find__unknown_file_type(self):
-        self.assertRaises(UnknownFileTypeError,
-                          TT.find, "dummy.ext_not_found")
+            self.assertTrue(bool(psrs))
+            self.assertEqual(psrs, JSON_PSRS)
+
+    def test_find(self):
+        argss = (('foo.json', None),
+                 (None, 'json'),
+                 (None, JSON_PSR_CLSS[0]),
+                 (None, JSON_PSRS[0]),
+                 )
+        for args in argss:
+            psr = TT.find(*args)
+            self.assertEqual(psr, JSON_PSRS[0])
 
 # vim:sw=4:ts=4:et:

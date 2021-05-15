@@ -11,7 +11,7 @@ import typing
 from ..common import PathOrIOInfoT
 from . import utils
 from .datatypes import (
-    ProcT, ProcClsT, ProcClssT, MaybeProcT
+    ProcT, ProcsT, ProcClsT, ProcClssT, MaybeProcT
 )
 
 
@@ -26,8 +26,8 @@ class Processors:
             A list of :class:`anyconfig.models.processor.Processor` or its
             children class objects to initialize this, or None
         """
-        # {<processor_class_id>: <processor_class>}
-        self._processors: typing.Dict[str, ProcClsT] = dict()
+        # {<processor_class_id>: <processor_instance>}
+        self._processors: typing.Dict[str, ProcT] = dict()  # type: ignore
         if processors is not None:
             for pcls in processors:
                 self.register(pcls)
@@ -39,7 +39,7 @@ class Processors:
         :param pclss: :class:`Processor` or its children class objects
         """
         if pcls.cid() not in self._processors:
-            self._processors[pcls.cid()] = pcls
+            self._processors[pcls.cid()] = pcls()
 
     def load_plugins(self) -> None:
         """Load and register pluggable processor classes internally.
@@ -59,7 +59,7 @@ class Processors:
 
         return list(prs)
 
-    def list_by_cid(self) -> typing.List[typing.Tuple[str, ProcClssT]]:
+    def list_by_cid(self) -> typing.List[typing.Tuple[str, ProcsT]]:
         """
         :return:
             A list of :class:`Processor` or its children classes grouped by
@@ -69,16 +69,16 @@ class Processors:
         return sorted(((cid, [prs[cid]]) for cid in sorted(prs.keys())),
                       key=operator.itemgetter(0))
 
-    def list_by_type(self) -> typing.List[typing.Tuple[str, ProcClssT]]:
+    def list_by_type(self) -> typing.List[typing.Tuple[str, ProcsT]]:
         """
         :return:
             A list of :class:`Processor` or its children classes grouped by
             each type, [(type, [:class:`Processor`)]]
         """
-        return utils.list_by_x(self.list(), 'type')
+        return utils.list_by_x(self.list(), 'type')  # type: ignore
 
     def list_by_x(self, item: typing.Optional[str] = None
-                  ) -> typing.List[typing.Tuple[str, ProcClssT]]:
+                  ) -> typing.List[typing.Tuple[str, ProcsT]]:
         """
         :param item: Grouping key, one of 'cid', 'type' and 'extensions'
         :return:
@@ -125,10 +125,7 @@ class Processors:
         :return: A list of instances of processor classes to process 'obj'
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
-        return [
-            p() for p
-            in utils.findall(obj, self.list(), forced_type=forced_type)
-        ]
+        return utils.findall(obj, self.list(), forced_type=forced_type)
 
     def find(self, obj: typing.Optional[PathOrIOInfoT],
              forced_type: MaybeProcT = None) -> ProcT:

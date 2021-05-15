@@ -18,11 +18,11 @@ from ..ioinfo import make as ioinfo_make
 from ..models import processor
 from ..utils import concat, groupby
 from .datatypes import (
-    ProcT, ProcClsT, ProcClssT, MaybeProcT
+    ProcT, ProcsT, ProcClsT, MaybeProcT
 )
 
 
-def sort_by_prio(prs: typing.Iterable[ProcClsT]) -> ProcClssT:
+def sort_by_prio(prs: typing.Iterable[ProcT]) -> ProcsT:
     """
     Sort an iterable of processor classes by each priority.
 
@@ -49,8 +49,8 @@ def select_by_key(items: typing.Iterable[
                 for k, g in groupby(itr, operator.itemgetter(0)))
 
 
-def list_by_x(prs: typing.Iterable[ProcClsT], key: str
-              ) -> typing.List[typing.Tuple[str, ProcClssT]]:
+def list_by_x(prs: typing.Iterable[ProcT], key: str
+              ) -> typing.List[typing.Tuple[str, ProcsT]]:
     """
     :param key: Grouping key, 'type' or 'extensions'
     :return:
@@ -65,7 +65,7 @@ def list_by_x(prs: typing.Iterable[ProcClsT], key: str
 
     elif key == 'extensions':
         res: typing.List[  # type: ignore
-            typing.Tuple[str, ProcClssT]
+            typing.Tuple[str, ProcsT]
         ] = select_by_key(((p.extensions(), p) for p in prs),
                           sort_fn=sort_by_prio)
     else:
@@ -77,7 +77,7 @@ def list_by_x(prs: typing.Iterable[ProcClsT], key: str
 
 
 def findall_with_pred(predicate: typing.Callable[..., bool],
-                      prs: ProcClssT) -> ProcClssT:
+                      prs: ProcsT) -> ProcsT:
     """
     :param predicate: any callable to filter results
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
@@ -110,7 +110,7 @@ def maybe_processor(type_or_id: typing.Union[ProcT, ProcClsT],
     return None
 
 
-def find_by_type_or_id(type_or_id: str, prs: ProcClssT) -> ProcClssT:
+def find_by_type_or_id(type_or_id: str, prs: ProcsT) -> ProcsT:
     """
     :param type_or_id: Type of the data to process or ID of the processor class
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
@@ -130,7 +130,7 @@ def find_by_type_or_id(type_or_id: str, prs: ProcClssT) -> ProcClssT:
     return pclss
 
 
-def find_by_fileext(fileext: str, prs: ProcClssT) -> ProcClssT:
+def find_by_fileext(fileext: str, prs: ProcsT) -> ProcsT:
     """
     :param fileext: File extension
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
@@ -148,7 +148,7 @@ def find_by_fileext(fileext: str, prs: ProcClssT) -> ProcClssT:
     return pclss  # :: [Processor], never []
 
 
-def find_by_maybe_file(obj: PathOrIOInfoT, prs: ProcClssT) -> ProcClssT:
+def find_by_maybe_file(obj: PathOrIOInfoT, prs: ProcsT) -> ProcsT:
     """
     :param obj:
         a file path, file or file-like object, pathlib.Path object or an
@@ -163,9 +163,9 @@ def find_by_maybe_file(obj: PathOrIOInfoT, prs: ProcClssT) -> ProcClssT:
     return find_by_fileext(obj.extension, prs)  # :: [Processor], never []
 
 
-def findall(obj: typing.Optional[PathOrIOInfoT], prs: ProcClssT,
+def findall(obj: typing.Optional[PathOrIOInfoT], prs: ProcsT,
             forced_type: typing.Optional[str] = None,
-            ) -> ProcClssT:
+            ) -> ProcsT:
     """
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
@@ -195,7 +195,7 @@ def findall(obj: typing.Optional[PathOrIOInfoT], prs: ProcClssT,
     return pclss
 
 
-def find(obj: typing.Optional[PathOrIOInfoT], prs: ProcClssT,
+def find(obj: typing.Optional[PathOrIOInfoT], prs: ProcsT,
          forced_type: MaybeProcT = None,
          ) -> ProcT:
     """
@@ -224,8 +224,8 @@ def find(obj: typing.Optional[PathOrIOInfoT], prs: ProcClssT,
 
         return proc
 
-    pclss = findall(obj, prs, forced_type=typing.cast(str, forced_type))
-    return pclss[0]()
+    procs = findall(obj, prs, forced_type=typing.cast(str, forced_type))
+    return procs[0]
 
 
 def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:

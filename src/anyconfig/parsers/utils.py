@@ -12,7 +12,6 @@ from ..backend import ParserT, ParsersT
 from .parsers import Parsers
 
 
-ParserClssT = typing.List[typing.Type[ParserT]]
 MaybeParserT = typing.Optional[
     typing.Union[str, ParserT, typing.Type[ParserT]]
 ]
@@ -30,30 +29,30 @@ def list_types() -> typing.List[str]:
     return sorted(Parsers().list_x('type'))
 
 
-def list_by_cid() -> typing.List[typing.Tuple[str, ParserClssT]]:
+def list_by_cid() -> typing.List[typing.Tuple[str, ParsersT]]:
     """
-    List processors by each cid, [(cid, [Parser_class])].
+    List processors by each cid.
     """
     return Parsers().list_by_x('cid')
 
 
-def list_by_type() -> typing.List[typing.Tuple[str, ParserClssT]]:
+def list_by_type() -> typing.List[typing.Tuple[str, ParsersT]]:
     """
-    List processor by eacch type, [(type, [Parser_class])].
+    List processor by eacch type.
     """
     return Parsers().list_by_x('type')
 
 
-def list_by_extension() -> typing.List[typing.Tuple[str, ParserClssT]]:
+def list_by_extension() -> typing.List[typing.Tuple[str, ParsersT]]:
     """
-    List processor by file extension supported, [(extension, [Parser_class])].
+    List processor by file extension supported.
     """
     return Parsers().list_by_x('extensions')
 
 
 def findall(obj: typing.Optional[PathOrIOInfoT] = None,
             forced_type: typing.Optional[str] = None
-            ) -> ParsersT:
+            ) -> typing.List[ParserT]:
     """
     Find out processor objects can process data from given 'obj' which may be a
     file path, file or file-like object, pathlib.Path object or an

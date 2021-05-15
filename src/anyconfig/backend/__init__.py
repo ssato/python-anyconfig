@@ -6,11 +6,9 @@
 # pylint: disable=wrong-import-position
 """A collection of default backend modules.
 """
-import typing
 import warnings
 
 from . import (
-    base,
     ini,
     json,
     pickle,
@@ -19,12 +17,12 @@ from . import (
     yaml,
     xml
 )
+from .base import (
+    ParserT, ParsersT, ParserClssT
+)
 
 
-ParserT = typing.TypeVar('ParserT', bound=base.Parser)
-ParsersT = typing.List[ParserT]
-
-PARSERS: ParsersT = [
+PARSERS: ParserClssT = [
     ini.Parser, pickle.Parser, properties.Parser, shellvars.Parser, xml.Parser
 ] + json.PARSERS
 
@@ -40,5 +38,11 @@ try:
     PARSERS.append(toml.Parser)
 except ImportError:
     warnings.warn(_NA_MSG.format('toml', 'TOML'), ImportWarning)
+
+
+__all__ = [
+    'ParserT', 'ParsersT', 'ParserClssT',
+    'PARSERS',
+]
 
 # vim:sw=4:ts=4:et:

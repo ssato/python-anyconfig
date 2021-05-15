@@ -8,7 +8,7 @@
 """
 import typing
 
-from ..backend import ParsersT, PARSERS
+from ..backend import ParserClssT, PARSERS
 from ..processors import Processors
 from ..singleton import Singleton
 
@@ -19,7 +19,7 @@ class Parsers(Processors, Singleton):
     """
     _pgroup: str = 'anyconfig_backends'
 
-    def __init__(self, prcs: typing.Optional[ParsersT] = None
+    def __init__(self, prcs: typing.Optional[ParserClssT] = None
                  ) -> None:
         """Initialize with PARSERS.
         """

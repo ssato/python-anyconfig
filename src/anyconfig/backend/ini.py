@@ -96,9 +96,9 @@ def _parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
     :param sep: Seprator string
     :return: Generator to yield (key, value) pair of 'dic'
     """
-    parse = _parse if options.get('ac_parse_value') else noop
+    __parse = _parse if options.get('ac_parse_value') else noop
     for key, val in items:
-        yield (key, parse(val, sep))  # type: ignore
+        yield (key, __parse(val, sep))  # type: ignore
 
 
 def _make_parser(**kwargs):

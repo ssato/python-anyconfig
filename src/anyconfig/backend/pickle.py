@@ -27,10 +27,7 @@ Changelog:
 
 .. versionadded:: 0.8.3
 """
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle  # type: ignore
+import pickle
 
 from . import base
 

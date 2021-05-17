@@ -6,6 +6,7 @@ r"""Backend basic classes, functions and constants.
 """
 import typing
 
+from .compat import BinaryFilesMixin
 from .dumpers import (
     ToStringDumperMixin, ToStreamDumperMixin, BinaryDumperMixin
 )
@@ -27,6 +28,7 @@ ParserClssT = typing.List[typing.Type[ParserT]]
 
 
 __all__ = [
+    'BinaryFilesMixin',
     'ToStringDumperMixin', 'ToStreamDumperMixin', 'BinaryDumperMixin',
     'FromStringLoaderMixin', 'FromStreamLoaderMixin', 'BinaryLoaderMixin',
     'ensure_outdir_exists', 'to_method',

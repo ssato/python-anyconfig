@@ -1,6 +1,6 @@
 #
-# Copyright (C) 2011 - 2016 Satoru SATOH <ssato at redhat.com>
-# Copyright (C) 2017 - 2018 Satoru SATOH <satoru.satoh at gmail.com>
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
 r"""Common utilities for test cases.
@@ -75,15 +75,14 @@ def cleanup_workdir(workdir):
 
 
 class TestCaseWithWorkdir(unittest.TestCase):
+    curdir = str(pathlib.Path('.').resolve())
 
     def setUp(self):
         self.workdir = pathlib.Path(setup_workdir()).resolve()
 
     def tearDown(self):
         workdir = self.workdir
-        ng_dirs = ('/',
-                   str(self.workdir.home()),
-                   str(pathlib.Path('.').resolve()))
+        ng_dirs = ('/', str(self.workdir.home()), self.curdir)
 
         if str(workdir) not in ng_dirs:
             shutil.rmtree(workdir)

@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2017, 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2017 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Pickle backend:
@@ -28,35 +27,32 @@ Changelog:
 
 .. versionadded:: 0.8.3
 """
-from __future__ import absolute_import
-
 try:
     import cPickle as pickle
 except ImportError:
-    import pickle
+    import pickle  # type: ignore
 
-import anyconfig.backend.base
-
-
-LOAD_OPTS = ["fix_imports", "encoding", "errors"]
-DUMP_OPTS = ["protocol", "fix_imports"]
+from . import base
 
 
-class Parser(anyconfig.backend.base.StringStreamFnParser,
-             anyconfig.backend.base.BinaryFilesMixin):
+LOAD_OPTS = ['fix_imports', 'encoding', 'errors']
+DUMP_OPTS = ['protocol', 'fix_imports']
+
+
+class Parser(base.StringStreamFnParser, base.BinaryFilesMixin):
     """
     Parser for Pickle files.
     """
-    _cid = "pickle"
-    _type = "pickle"
-    _extensions = ["pkl", "pickle"]
+    _cid = 'pickle'
+    _type = 'pickle'
+    _extensions = ['pkl', 'pickle']
     _load_opts = LOAD_OPTS
     _dump_opts = DUMP_OPTS
     _allow_primitives = True
 
-    _load_from_string_fn = anyconfig.backend.base.to_method(pickle.loads)
-    _load_from_stream_fn = anyconfig.backend.base.to_method(pickle.load)
-    _dump_to_string_fn = anyconfig.backend.base.to_method(pickle.dumps)
-    _dump_to_stream_fn = anyconfig.backend.base.to_method(pickle.dump)
+    _load_from_string_fn = base.to_method(pickle.loads)
+    _load_from_stream_fn = base.to_method(pickle.load)
+    _dump_to_string_fn = base.to_method(pickle.dumps)
+    _dump_to_stream_fn = base.to_method(pickle.dump)
 
 # vim:sw=4:ts=4:et:

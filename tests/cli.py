@@ -3,7 +3,6 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, too-many-public-methods
-from __future__ import absolute_import
 
 import os
 import pathlib
@@ -180,7 +179,7 @@ class Test_30_single_input(Test_20_Base):
 
         self.assertFalse(_run("-O", "json", "--ignore-missing", infile))
 
-    @unittest.skipIf(not anyconfig.schema.JSONSCHEMA_IS_AVAIL,
+    @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                      "json schema lib is not available")
     def test_50_w_schema(self):
         infile = CNF_0_PATH

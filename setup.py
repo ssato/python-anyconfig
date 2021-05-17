@@ -1,7 +1,5 @@
 """setup.py to build package.
 """
-from __future__ import absolute_import
-
 import os
 import pathlib
 import re
@@ -13,7 +11,7 @@ import setuptools.command.bdist_rpm
 VERSION = '0.1.0'
 VER_REG = re.compile(r'^__version__ = "([^"]+)"')
 
-for fpath in pathlib.Path('src').glob('*/*.py'):
+for fpath in pathlib.Path('src').glob('*/__init__.py'):
     for line in fpath.open():
         match = VER_REG.match(line)
         if match:

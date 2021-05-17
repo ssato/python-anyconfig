@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh @ gmmail.com>
+# Copyright (C) 2018 - 2020 Satoru SATOH <satoru.satoh @ gmmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=invalid-name
@@ -17,25 +16,30 @@ r"""Functions for value objects represent inputs and outputs.
   attributes like input and output type (path, stream or pathlib.Path object),
   path, opener, etc.
 """
-from __future__ import absolute_import
-
 import pathlib
+import typing
 
-import anyconfig.utils
-
-from anyconfig.globals import (
-    IOInfo, IOI_NONE, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
+from .common import (
+    IOInfo, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
     UnknownFileTypeError
+)
+from .utils import (
+    is_path, is_path_obj, is_file_stream,
+    get_path_from_stream, get_file_extension,
+    is_ioinfo
 )
 
 
-def guess_io_type(obj):
+IoiTypeT = str
+
+
+def guess_io_type(obj: typing.Any) -> IoiTypeT:
     """Guess input or output type of 'obj'.
 
     :param obj: a path string, a pathlib.Path or a file / file-like object
-    :return: IOInfo type defined in anyconfig.globals.IOI_TYPES
+    :return: IOInfo type defined in anyconfig.common.IOI_TYPES
 
-    >>> apath = "/path/to/a_conf.ext"
+    >>> apath = '/path/to/a_conf.ext'
     >>> assert guess_io_type(apath) == IOI_PATH_STR
     >>> assert guess_io_type(pathlib.Path(apath)) == IOI_PATH_OBJ
     >>> assert guess_io_type(open(__file__)) == IOI_STREAM
@@ -44,19 +48,18 @@ def guess_io_type(obj):
         ...
     ValueError: ...
     """
-    if obj is None:
-        return IOI_NONE
-    if anyconfig.utils.is_path(obj):
+    if is_path(obj):
         return IOI_PATH_STR
-    if anyconfig.utils.is_path_obj(obj):
+    if is_path_obj(obj):
         return IOI_PATH_OBJ
-    if anyconfig.utils.is_file_stream(obj):
+    if is_file_stream(obj):
         return IOI_STREAM
 
-    raise ValueError("Unknown I/O type object: {!r}".format(obj))
+    raise ValueError(f'Unknown I/O type object: {obj!r}')
 
 
-def inspect_io_obj(obj, itype):
+def inspect_io_obj(obj: typing.Any, itype: IoiTypeT
+                   ) -> typing.Tuple[str, str]:
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
 
@@ -70,18 +73,16 @@ def inspect_io_obj(obj, itype):
         ext = path.suffix[1:]
 
     elif itype == IOI_STREAM:
-        ipath = anyconfig.utils.get_path_from_stream(obj)
-        ext = anyconfig.utils.get_file_extension(ipath) if ipath else None
+        ipath = get_path_from_stream(obj) or ''
+        ext = get_file_extension(ipath) if ipath else ''
 
-    elif itype == IOI_NONE:
-        ipath = ext = None
     else:
-        raise UnknownFileTypeError("%r" % obj)
+        raise UnknownFileTypeError(repr(obj))
 
     return (ipath, ext)
 
 
-def make(obj):
+def make(obj: typing.Any) -> IOInfo:
     """
     :param obj: a path string, a pathlib.Path or a file / file-like object
     :return:
@@ -90,7 +91,7 @@ def make(obj):
 
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    if anyconfig.utils.is_ioinfo(obj):
+    if is_ioinfo(obj):
         return obj
 
     itype = guess_io_type(obj)

@@ -19,22 +19,21 @@ Changelog:
 
     .. versionadded:: 0.1.0
 """
-from __future__ import absolute_import
-
 import toml
-import anyconfig.backend.base
-from anyconfig.backend.base import to_method
+
+from . import base
+from .base import to_method
 
 
-class Parser(anyconfig.backend.base.StringStreamFnParser):
+class Parser(base.StringStreamFnParser):
     """
     TOML parser.
     """
-    _cid = "toml"
-    _type = "toml"
-    _extensions = ["toml"]
+    _cid = 'toml'
+    _type = 'toml'
+    _extensions = ['toml']
     _ordered = True
-    _load_opts = _dump_opts = _dict_opts = ["_dict"]
+    _load_opts = _dump_opts = _dict_opts = ['_dict']
 
     _load_from_string_fn = to_method(toml.loads)
     _load_from_stream_fn = to_method(toml.load)

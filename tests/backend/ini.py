@@ -1,9 +1,8 @@
 #
-# Copyright (C) 2012 - 2017 Satoru SATOH <ssato @ redhat.com>
-# License: MIT
+# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
-from __future__ import absolute_import
 
 import anyconfig.backend.ini as TT
 import tests.backend.common as TBC

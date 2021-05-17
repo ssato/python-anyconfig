@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2011 - 2018 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""YAML backends:
@@ -15,18 +14,19 @@ Changelog:
    - Split PyYaml-based and ruamel.yaml based backend modules
    - Add support of some of ruamel.yaml specific features.
 """
-from __future__ import absolute_import
+from ..base import ParserClssT
+
 
 try:
     from . import pyyaml
-    PARSERS = [pyyaml.Parser]
+    PARSERS: ParserClssT = [pyyaml.Parser]
 except ImportError:
-    PARSERS = []
+    PARSERS: ParserClssT = []  # type: ignore
 
 try:
     from . import ruamel_yaml as ryaml
     PARSERS.append(ryaml.Parser)
 except ImportError:
-    ryaml = False
+    pass
 
 # vim:sw=4:ts=4:et:

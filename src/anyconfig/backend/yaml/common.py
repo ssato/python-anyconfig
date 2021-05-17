@@ -1,12 +1,11 @@
 #
-# Copyright (C) 2011 - 2018 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Common parts for YAML backends:
 """
-from __future__ import absolute_import
-import anyconfig.backend.base
+from ...utils import filter_options
+from .. import base
 
 
 def filter_from_options(key, options):
@@ -19,18 +18,17 @@ def filter_from_options(key, options):
     >>> filter_from_options('a', dict(a=1, b=2))
     {'b': 2}
     """
-    return anyconfig.utils.filter_options([k for k in options.keys()
-                                           if k != key], options)
+    return filter_options([k for k in options.keys() if k != key], options)
 
 
-class Parser(anyconfig.backend.base.StreamParser):
+class Parser(base.StreamParser):
     """
     Parser for YAML files.
     """
-    _type = "yaml"
-    _extensions = ["yaml", "yml"]
+    _type = 'yaml'
+    _extensions = ['yaml', 'yml']
     _ordered = True
     _allow_primitives = True
-    _dict_opts = ["ac_dict"]
+    _dict_opts = ['ac_dict']
 
 # vim:sw=4:ts=4:et:

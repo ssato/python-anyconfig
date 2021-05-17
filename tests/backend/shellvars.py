@@ -1,11 +1,9 @@
 #
-# Copyright (C) 2016 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2017 Red Hat, Inc.
-# License: MIT
+# Copyright (C) 2016 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports
-from __future__ import absolute_import
 
 from collections import OrderedDict
 

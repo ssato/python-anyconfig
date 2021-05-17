@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2012 - 2017 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Java properties backend:
@@ -29,16 +28,14 @@ Changelog:
    - Added native Java properties parser instead of a plugin utilizes
      pyjavaproperties module.
 """
-from __future__ import absolute_import
-
 import os
 import re
 import warnings
 
-import anyconfig.backend.base
+from . import base
 
 
-_COMMENT_MARKERS = ("#", "!")
+_COMMENT_MARKERS = ('#', '!')
 
 
 def _parseline(line):
@@ -66,7 +63,7 @@ def _parseline(line):
     key = pair[0].rstrip()
 
     if len(pair) < 2:
-        warnings.warn("Invalid line found: {}".format(line), SyntaxWarning)
+        warnings.warn(f'Invalid line found: {line}', SyntaxWarning)
         return (key or None, '')
 
     return (key, pair[1].strip())
@@ -184,7 +181,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
         (key, val) = _parseline(line)
         if key is None:
-            warnings.warn("Failed to parse the line: {}".format(line))
+            warnings.warn(f'Failed to parse the line: {line}')
             continue
 
         ret[key] = unescape(val)
@@ -192,15 +189,15 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     return ret
 
 
-class Parser(anyconfig.backend.base.StreamParser):
+class Parser(base.StreamParser):
     """
     Parser for Java properties files.
     """
-    _cid = "properties"
-    _type = "properties"
-    _extensions = ["properties"]
+    _cid = 'properties'
+    _type = 'properties'
+    _extensions = ['properties']
     _ordered = True
-    _dict_opts = ["ac_dict"]
+    _dict_opts = ['ac_dict']
 
     def load_from_stream(self, stream, container, **kwargs):
         """
@@ -223,6 +220,6 @@ class Parser(anyconfig.backend.base.StreamParser):
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in cnf.items():
-            stream.write("%s = %s%s" % (key, escape(val), os.linesep))
+            stream.write(f'{key} = {escape(val)}{os.linesep}')
 
 # vim:sw=4:ts=4:et:

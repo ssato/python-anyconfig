@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2016 - 2018 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2016 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Simple Shell vars' definitions backend:
@@ -19,14 +18,12 @@ Changelog:
    - Added an experimental parser for simple shelll vars' definitions w/o shell
      variable expansions nor complex shell statements like conditionals.
 """
-from __future__ import absolute_import
-
 import itertools
 import os
 import re
 import warnings
 
-import anyconfig.backend.base
+from . import base
 
 
 def _parseline(line):
@@ -53,7 +50,7 @@ def _parseline(line):
                      r"(?:\"(.*[^\\])\")|(?:'(.*[^\\])')|"
                      r"(?:([^\"'#\s]+)))?)\s*#*", line)
     if not match:
-        warnings.warn("Invalid line found: {}".format(line), SyntaxWarning)
+        warnings.warn(f'Invalid line found: {line}', SyntaxWarning)
         return (None, None)
 
     tpl = match.groups()
@@ -92,8 +89,7 @@ def load(stream, container=dict):
 
         (key, val) = _parseline(line)
         if key is None:
-            warnings.warn("Empty val in the line: {}".format(line),
-                          SyntaxWarning)
+            warnings.warn(f'Empty val in the line: {line}', SyntaxWarning)
             continue
 
         ret[key] = val
@@ -101,14 +97,14 @@ def load(stream, container=dict):
     return ret
 
 
-class Parser(anyconfig.backend.base.StreamParser):
+class Parser(base.StreamParser):
     """
     Parser for Shell variable definition files.
     """
-    _cid = "shellvars"
-    _type = "shellvars"
+    _cid = 'shellvars'
+    _type = 'shellvars'
     _ordered = True
-    _dict_opts = ["ac_dict"]
+    _dict_opts = ['ac_dict']
 
     def load_from_stream(self, stream, container, **kwargs):
         """
@@ -132,6 +128,6 @@ class Parser(anyconfig.backend.base.StreamParser):
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in cnf.items():
-            stream.write("%s='%s'%s" % (key, val, os.linesep))
+            stream.write(f"{key}='{val}'{os.linesep}")
 
 # vim:sw=4:ts=4:et:

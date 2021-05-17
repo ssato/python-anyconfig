@@ -1,9 +1,8 @@
 #
-# Copyright (C) 2016 Satoru SATOH <ssato @ redhat.com>
-# License: MIT
+# Copyright (C) 2016 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-from __future__ import absolute_import
 
 import unittest
 import sys
@@ -11,13 +10,13 @@ import sys
 
 class TestImportErrors(unittest.TestCase):
 
-    def test_20_ac_backends(self):
+    def test_20_ac_parsers(self):
         for mod in ("yaml", "msgpack", "toml", "bson"):
             sys.modules[mod] = None
-            import anyconfig.backends
+            import anyconfig.parsers
 
             self.assertTrue(sys.modules[mod] is None)
-            self.assertFalse(anyconfig.backends is None)
+            self.assertFalse(anyconfig.parsers is None)
 
     def test_30_ac_schema(self):
         mod = "jsonschema"

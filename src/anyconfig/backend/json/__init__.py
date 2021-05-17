@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""JSON backends:
@@ -14,14 +13,15 @@ Changelog:
 
    - Started to split JSON support modules
 """
-from __future__ import absolute_import
 from . import default
+from ..base import ParserClssT
+
 
 Parser = default.Parser  # To keep backward compatibility.
-PARSERS = [Parser]
+PARSERS: ParserClssT = [Parser]
 
 try:
-    from ._simplejson import Parser as SimpleJsonParser
+    from .simplejson import Parser as SimpleJsonParser
     PARSERS.append(SimpleJsonParser)
 except ImportError:
     pass

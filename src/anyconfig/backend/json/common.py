@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2018 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Globals, functions common in some JSON backends:
@@ -9,25 +8,25 @@ Changelog:
 
 .. versionadded:: 0.9.8
 """
-import anyconfig.backend.base
+from .. import base
 
 
-JSON_LOAD_OPTS = ["cls", "object_hook", "parse_float", "parse_int",
-                  "parse_constant", "object_pairs_hook"]
+JSON_LOAD_OPTS = ['cls', 'object_hook', 'parse_float', 'parse_int',
+                  'parse_constant', 'object_pairs_hook']
 
-JSON_DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
-                  "cls", "indent", "separators", "default", "sort_keys"]
+JSON_DUMP_OPTS = ['skipkeys', 'ensure_ascii', 'check_circular', 'allow_nan',
+                  'cls', 'indent', 'separators', 'default', 'sort_keys']
 
-JSON_DICT_OPTS = ["object_pairs_hook", "object_hook"]
+JSON_DICT_OPTS = ['object_pairs_hook', 'object_hook']
 
 
-class Parser(anyconfig.backend.base.StringStreamFnParser):
+class Parser(base.StringStreamFnParser):
     """
     Parser for JSON files.
     """
-    _cid = "std.json"
-    _type = "json"
-    _extensions = ["json", "jsn", "js"]
+    _cid = 'std.json'
+    _type = 'json'
+    _extensions = ['json', 'jsn', 'js']
     _ordered = True
     _allow_primitives = True
 

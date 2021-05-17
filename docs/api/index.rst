@@ -5,15 +5,13 @@ Code Reference
 
     anyconfig.api
     anyconfig.backend
-    anyconfig.backends
     anyconfig.cli
-    anyconfig.compat
     anyconfig.dicts
-    anyconfig.globals
-    anyconfig.init
+    anyconfig.common
     anyconfig.ioinfo
     anyconfig.models
     anyconfig.parser
+    anyconfig.parsers
     anyconfig.processors
     anyconfig.query
     anyconfig.schema

@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2011 - 2018 Satoru SATOH <ssato@redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
@@ -57,27 +56,21 @@ Changelog:
 
    - Added XML dump support.
 """
-from __future__ import absolute_import
-
 import collections
 import io
 import itertools
 import operator
 import re
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    try:
-        import xml.etree.ElementTree as ET
-    except ImportError:
-        import elementtree.ElementTree as ET
+import xml.etree.ElementTree as ET
 
-import anyconfig.backend.base
-import anyconfig.utils
-import anyconfig.parser
+from . import base
+from ..parser import parse_single
+from ..utils import (
+    get_path_from_stream, is_dict_like, is_iterable, noop
+)
 
 
-_TAGS = dict(attrs="@attrs", text="@text", children="@children")
+_TAGS = dict(attrs='@attrs', text='@text', children='@children')
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
 
@@ -88,9 +81,9 @@ def _iterparse(xmlfile):
     :param xmlfile: XML file or file-like object
     """
     try:
-        return ET.iterparse(xmlfile, events=("start-ns", ))
+        return ET.iterparse(xmlfile, events=('start-ns', ))
     except TypeError:
-        return ET.iterparse(xmlfile, events=(b"start-ns", ))
+        return ET.iterparse(xmlfile, events=(b'start-ns', ))
 
 
 def flip(tpl):
@@ -124,14 +117,14 @@ def _tweak_ns(tag, **options):
     ...           nspaces={"http://example.com/ns/val/": "val"})
     'val:a'
     """
-    nspaces = options.get("nspaces", None)
+    nspaces = options.get('nspaces', None)
     if nspaces is not None:
         matched = _ET_NS_RE.match(tag)
         if matched:
             (uri, tag) = matched.groups()
             prefix = nspaces.get(uri, False)
             if prefix:
-                return "%s:%s" % (prefix, tag)
+                return f'{prefix}:{tag}'
 
     return tag
 
@@ -180,13 +173,13 @@ def _parse_text(val, **options):
     """
     :return: Parsed value or value itself depends on 'ac_parse_value'
     """
-    if val and options.get("ac_parse_value", False):
-        return anyconfig.parser.parse_single(val)
+    if val and options.get('ac_parse_value', False):
+        return parse_single(val)
 
     return val
 
 
-def _process_elem_text(elem, dic, subdic, text="@text", **options):
+def _process_elem_text(elem, dic, subdic, text='@text', **options):
     """
     :param elem: ET Element object which has elem.text
     :param dic: <container> (dict[-like]) object converted from elem
@@ -213,14 +206,14 @@ def _parse_attrs(elem, container=dict, **options):
     :return: Parsed value or value itself depends on 'ac_parse_value'
     """
     adic = dict((_tweak_ns(a, **options), v) for a, v in elem.attrib.items())
-    if options.get("ac_parse_value", False):
-        return container(dict((k, anyconfig.parser.parse_single(v))
+    if options.get('ac_parse_value', False):
+        return container(dict((k, parse_single(v))
                               for k, v in adic.items()))
 
     return container(adic)
 
 
-def _process_elem_attrs(elem, dic, subdic, container=dict, attrs="@attrs",
+def _process_elem_attrs(elem, dic, subdic, container=dict, attrs='@attrs',
                         **options):
     """
     :param elem: ET Element object or None
@@ -233,14 +226,14 @@ def _process_elem_attrs(elem, dic, subdic, container=dict, attrs="@attrs",
     :return: None but updating dic and subdic as side effects
     """
     adic = _parse_attrs(elem, container=container, **options)
-    if not elem.text and not len(elem) and options.get("merge_attrs"):
+    if not elem.text and not len(elem) and options.get('merge_attrs'):
         dic[elem.tag] = adic
     else:
         subdic[attrs] = adic
 
 
 def _process_children_elems(elem, dic, subdic, container=dict,
-                            children="@children", **options):
+                            children='@children', **options):
     """
     :param elem: ET Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
@@ -255,7 +248,7 @@ def _process_children_elems(elem, dic, subdic, container=dict,
     """
     cdics = [elem_to_container(c, container=container, **options)
              for c in elem]
-    merge_attrs = options.get("merge_attrs", False)
+    merge_attrs = options.get('merge_attrs', False)
     sdics = [container(elem.attrib) if merge_attrs else subdic] + cdics
 
     if _dicts_have_unique_keys(sdics):  # ex. <a><b>1</b><c>c</c></a>
@@ -293,7 +286,7 @@ def elem_to_container(elem, container=dict, **options):
 
     elem.tag = _tweak_ns(elem.tag, **options)  # {ns}tag -> ns_prefix:tag
     subdic = dic[elem.tag] = container()
-    options["container"] = container
+    options['container'] = container
 
     if elem.text:
         _process_elem_text(elem, dic, subdic, **options)
@@ -321,7 +314,7 @@ def _complement_tag_options(options):
     [('attrs', '@attrs'), ('children', '@children'), ('text', '#text')]
     """
     if not all(nt in options for nt in _TAGS):
-        tags = options.get("tags", {})
+        tags = options.get('tags', {})
         for ntype, tag in _TAGS.items():
             options[ntype] = tags.get(ntype, tag)
 
@@ -346,7 +339,7 @@ def root_to_container(root, container=dict, nspaces=None, **options):
 
     if nspaces is not None:
         for uri, prefix in nspaces.items():
-            root.attrib["xmlns:" + prefix if prefix else "xmlns"] = uri
+            root.attrib[f'xmlns:{prefix}' if prefix else 'xmlns'] = uri
 
     return elem_to_container(root, container=container, nspaces=nspaces,
                              **_complement_tag_options(options))
@@ -357,7 +350,7 @@ def _to_str_fn(**options):
     :param options: Keyword options might have 'ac_parse_value' key
     :param to_str: Callable to convert value to string
     """
-    return str if options.get("ac_parse_value") else anyconfig.utils.noop
+    return str if options.get('ac_parse_value') else noop
 
 
 def _elem_set_attrs(obj, parent, to_str):
@@ -395,7 +388,7 @@ def _get_or_update_parent(key, val, to_str, parent=None, **options):
     """
     elem = ET.Element(key)
 
-    vals = val if anyconfig.utils.is_iterable(val) else [val]
+    vals = val if is_iterable(val) else [val]
     for val_ in vals:
         container_to_etree(val_, parent=elem, to_str=to_str, **options)
 
@@ -406,7 +399,7 @@ def _get_or_update_parent(key, val, to_str, parent=None, **options):
     return parent
 
 
-_ATC = ("attrs", "text", "children")
+_ATC = ('attrs', 'text', 'children')
 
 
 def container_to_etree(obj, parent=None, to_str=None, **options):
@@ -424,7 +417,7 @@ def container_to_etree(obj, parent=None, to_str=None, **options):
     if to_str is None:
         to_str = _to_str_fn(**options)
 
-    if not anyconfig.utils.is_dict_like(obj):
+    if not is_dict_like(obj):
         if parent is not None and obj:
             parent.text = to_str(obj)  # Parent is a leaf text node.
         return parent  # All attributes and text should be set already.
@@ -455,23 +448,21 @@ def etree_write(tree, stream):
     :param stream: File or file-like object can write to
     """
     try:
-        tree.write(stream, encoding="utf-8", xml_declaration=True)
+        tree.write(stream, encoding='utf-8', xml_declaration=True)
     except TypeError:
-        tree.write(stream, encoding="unicode", xml_declaration=True)
+        tree.write(stream, encoding='unicode', xml_declaration=True)
 
 
-class Parser(anyconfig.backend.base.Parser,
-             anyconfig.backend.base.ToStreamDumperMixin,
-             anyconfig.backend.base.BinaryFilesMixin):
+class Parser(base.Parser, base.ToStreamDumperMixin, base.BinaryFilesMixin):
     """
     Parser for XML files.
     """
-    _cid = "xml"
-    _type = "xml"
-    _extensions = ["xml"]
-    _load_opts = _dump_opts = ["tags", "merge_attrs", "ac_parse_value"]
+    _cid = 'xml'
+    _type = 'xml'
+    _extensions = ['xml']
+    _load_opts = _dump_opts = ['tags', 'merge_attrs', 'ac_parse_value']
     _ordered = True
-    _dict_opts = ["ac_dict"]
+    _dict_opts = ['ac_dict']
 
     def load_from_string(self, content, container, **opts):
         """
@@ -512,7 +503,7 @@ class Parser(anyconfig.backend.base.Parser,
         :return: Dict-like object holding config parameters
         """
         root = ET.parse(stream).getroot()
-        path = anyconfig.utils.get_path_from_stream(stream)
+        path = get_path_from_stream(stream)
         nspaces = _namespaces_from_file(path)
         return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)

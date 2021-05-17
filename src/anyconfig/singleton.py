@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=too-few-public-methods
@@ -9,7 +9,6 @@ r"""Singleton class
 
    - Add to make a kind of manager instancne later to manage plugins.
 """
-from __future__ import absolute_import
 import threading
 
 
@@ -23,12 +22,9 @@ class Singleton:
 
     def __new__(cls):
         if cls.__instance is None:
-            cls.__lock.acquire()
-            if cls.__instance is None:
-                try:
+            with cls.__lock:
+                if cls.__instance is None:
                     cls.__instance = object.__new__(cls)
-                finally:
-                    cls.__lock.release()
 
         return cls.__instance
 

@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2011 - 2018 Satoru SATOH <ssato @ redhat.com>
-# Copyright (C) 2019 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""YAML backend by ruamel.yaml:
@@ -36,21 +35,19 @@ Changelog:
    - Split from the common yaml backend and start to support ruamel.yaml
      specific features.
 """
-from __future__ import absolute_import
-
 import ruamel.yaml as ryaml
-import anyconfig.backend.base
-import anyconfig.utils
 
+from ...utils import filter_options
+from .. import base
 from . import common
 
 
 try:
     ryaml.YAML  # flake8: noqa
 except AttributeError as exc:
-    raise ImportError("ruamel.yaml may be too old to use!") from exc
+    raise ImportError('ruamel.yaml may be too old to use!') from exc
 
-_YAML_INIT_KWARGS = ["typ", "pure", "plug_ins"]  # kwargs for ruamel.yaml.YAML
+_YAML_INIT_KWARGS = ['typ', 'pure', 'plug_ins']  # kwargs for ruamel.yaml.YAML
 _YAML_INSTANCE_MEMBERS = ['allow_duplicate_keys', 'allow_unicode',
                           'block_seq_indent', 'canonical', 'composer',
                           'constructor', 'default_flow_style', 'default_style',
@@ -80,11 +77,11 @@ def yml_fnc(fname, *args, **options):
     """
     options = common.filter_from_options("ac_dict", options)
 
-    if "ac_safe" in options:
-        options["typ"] = "safe"  # Override it.
+    if 'ac_safe' in options:
+        options['typ'] = 'safe'  # Override it.
 
-    iopts = anyconfig.utils.filter_options(_YAML_INIT_KWARGS, options)
-    oopts = anyconfig.utils.filter_options(_YAML_INSTANCE_MEMBERS, options)
+    iopts = filter_options(_YAML_INIT_KWARGS, options)
+    oopts = filter_options(_YAML_INSTANCE_MEMBERS, options)
 
     yml = ryaml.YAML(**iopts)
     for attr, val in oopts.items():
@@ -96,7 +93,7 @@ def yml_fnc(fname, *args, **options):
 def yml_load(stream, container, **options):
     """.. seealso:: :func:`anyconfig.backend.yaml.pyyaml.yml_load`
     """
-    ret = yml_fnc("load", stream, **options)
+    ret = yml_fnc('load', stream, **options)
     if ret is None:
         return container()
 
@@ -113,17 +110,17 @@ def yml_dump(data, stream, **options):
     #     else:
     #         factory = dict
     #     data = anyconfig.dicts.convert_to(data, ac_dict=factory)
-    return yml_fnc("dump", data, stream, **options)
+    return yml_fnc('dump', data, stream, **options)
 
 
 class Parser(common.Parser):
     """Parser for YAML files.
     """
-    _cid = "ruamel.yaml"
+    _cid = 'ruamel.yaml'
     _load_opts = _YAML_OPTS
     _dump_opts = _YAML_OPTS
 
-    load_from_stream = anyconfig.backend.base.to_method(yml_load)
-    dump_to_stream = anyconfig.backend.base.to_method(yml_dump)
+    load_from_stream = base.to_method(yml_load)
+    dump_to_stream = base.to_method(yml_dump)
 
 # vim:sw=4:ts=4:et:

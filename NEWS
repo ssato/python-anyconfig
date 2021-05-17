@@ -1,6 +1,7 @@
 * Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.11.0-1
 - fix: don't sort files on load; may close #124
 - fix/change: re-organize anyconfig.parsers (backends) and anyconfig.processors
+- fix: [packaging] correct the part to find the version of this package
 - change: re-organize global variables, constants and classes
 - change: re-organize and restructure (split) internal modules
 - change: use f-strings and single quotes instead of each alternatives

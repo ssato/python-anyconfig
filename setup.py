@@ -9,9 +9,9 @@ import setuptools.command.bdist_rpm
 
 # It might throw IndexError and so on.
 VERSION = '0.1.0'
-VER_REG = re.compile(r'^__version__ = "([^"]+)"')
+VER_REG = re.compile(r"^__version__ = '([^']+)'")
 
-for fpath in pathlib.Path('src').glob('*/__init__.py'):
+for fpath in pathlib.Path('src').glob('**/__init__.py'):
     for line in fpath.open():
         match = VER_REG.match(line)
         if match:

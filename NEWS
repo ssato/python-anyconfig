@@ -1,12 +1,19 @@
-* Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.10.2-1
+* Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.11.0-1
 - fix: don't sort files on load; may close #124
+- fix/change: re-organize anyconfig.parsers (backends) and anyconfig.processors
+- change: re-organize global variables, constants and classes
+- change: re-organize and restructure (split) internal modules
+- change: use f-strings and single quotes instead of each alternatives
+- change: disable and remove Travis-CI configurations
+- refactor: use relative imports
+- enhancement: add type hints, mypy configuration file and mypy target
 - seealso: `git log RELEASE_0.10.1.. --reverse` for more details
 
 * Thu Apr 22 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.10.1-1
 - change: migrate os.path, etc. to pathlib
 - fix: [schema] update the version of the validator and enable format checker 
 - Misc other enhancements, refactorings and bug fixes as always
-- seealso: `git log RELEASE_0.10.1.. --reverse` for more details
+- seealso: `git log RELEASE_0.10.0.. --reverse` for more details
 
 * Sun Jan  3 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.10.0-1
 - Security fix release
@@ -23,7 +30,7 @@
 - change: started to use pathlib instead of os.path
 - fix: pylint's warn, redefined-outer-name (parser)
 - Misc other enhancements, refactorings and bug fixes as always
-- seealso: `git log RELEASE_0.10.0.. --reverse` for more details
+- seealso: `git log RELEASE_0.9.11.. --reverse` for more details
 
 * Wed Apr 29 2020 Satoru SATOH <satoru.satoh@gmail.com> - 0.9.11-1
 - fix: rename anyconfig.backend.json.simplejson to avoid conflicts

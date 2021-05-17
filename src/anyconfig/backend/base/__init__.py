@@ -7,13 +7,10 @@ r"""Backend basic classes, functions and constants.
 import typing
 
 from .dumpers import (
-    ToStringDumperMixin, ToStreamDumperMixin,
+    ToStringDumperMixin, ToStreamDumperMixin, BinaryDumperMixin
 )
 from .loaders import (
-    FromStringLoaderMixin, FromStreamLoaderMixin
-)
-from .mixins import (
-    TextFilesMixin, BinaryFilesMixin
+    FromStringLoaderMixin, FromStreamLoaderMixin, BinaryLoaderMixin
 )
 from .utils import (
     ensure_outdir_exists, to_method
@@ -30,9 +27,8 @@ ParserClssT = typing.List[typing.Type[ParserT]]
 
 
 __all__ = [
-    'ToStringDumperMixin', 'ToStreamDumperMixin',
-    'FromStringLoaderMixin', 'FromStreamLoaderMixin',
-    'TextFilesMixin', 'BinaryFilesMixin',
+    'ToStringDumperMixin', 'ToStreamDumperMixin', 'BinaryDumperMixin',
+    'FromStringLoaderMixin', 'FromStreamLoaderMixin', 'BinaryLoaderMixin',
     'ensure_outdir_exists', 'to_method',
     'Parser',
     'StringParser', 'StreamParser', 'StringStreamFnParser',

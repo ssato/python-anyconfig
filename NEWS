@@ -1,3 +1,7 @@
+* Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.10.2-1
+- fix: don't sort files on load; may close #124
+- seealso: `git log RELEASE_0.10.1.. --reverse` for more details
+
 * Thu Apr 22 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.10.1-1
 - change: migrate os.path, etc. to pathlib
 - fix: [schema] update the version of the validator and enable format checker 

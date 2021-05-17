@@ -15,7 +15,7 @@ from ..common import (
     GLOB_MARKER, IOInfo, PathOrIOInfoT
 )
 from .detectors import (
-    is_file_stream, is_ioinfo, is_path_obj
+    is_file_stream, is_ioinfo
 )
 
 
@@ -131,24 +131,6 @@ def expand_paths_itr(paths: typing.Union[typing.Iterable[PathOrIOInfoT],
                 yield cpath
 
 
-def path_key(obj: PathOrIOInfoT
-             ) -> typing.Union[int, str, pathlib.Path, IOInfo]:
-    """
-    Key function to sort a list of objects consist of str (path) | pathlib.Path
-    | typing.IO | IOInfo.
-    """
-    if is_file_stream(obj):
-        return getattr(obj, 'name', id(obj))  # str | int
-
-    if is_ioinfo(obj):
-        return obj.path  # type: ignore
-
-    if is_path_obj(obj):
-        return str(obj)
-
-    return obj  # type: ignore
-
-
 def expand_paths(paths: typing.Union[typing.Iterable[PathOrIOInfoT],
                                      PathOrIOInfoT],
                  marker: str = GLOB_MARKER
@@ -160,7 +142,7 @@ def expand_paths(paths: typing.Union[typing.Iterable[PathOrIOInfoT],
         pathlib.Path object holding such ones, or file objects
     :param marker: Glob marker character or string, e.g. '*'
     """
-    return sorted(expand_paths_itr(paths, marker=marker), key=path_key)
+    return list(expand_paths_itr(paths, marker=marker))
 
 
 def are_same_file_types(objs: typing.List[IOInfo]) -> bool:

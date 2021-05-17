@@ -70,7 +70,7 @@ class TestCase(unittest.TestCase):
                                tdir / 'e.txt',
                                tdir / 'f.json']),
                              ([tdir / 'e.txt', tdir / 'd.txt'],
-                              [tdir / 'd.txt', tdir / 'e.txt'])
+                              [tdir / 'e.txt', tdir / 'd.txt'])
                              ):
                 self.assertEqual(
                     TT.expand_paths(inp), exp, f'{inp!r} vs. {exp!r}'

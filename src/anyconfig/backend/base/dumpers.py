@@ -13,7 +13,6 @@ from ...utils import (
 from .datatypes import (
     InDataExT, IoiT
 )
-from .mixins import TextFilesMixin
 from .utils import (
     ensure_outdir_exists, not_implemented
 )
@@ -32,8 +31,16 @@ class DumperMixin:
     Member variables:
 
     - _dump_opts: Backend specific options on dump
+    - _open_write_mode: Backend option to specify write mode passed to open()
     """
     _dump_opts: typing.List[str] = []
+    _open_write_mode = 'w'
+
+    def wopen(self, filepath: str, **kwargs):
+        """
+        Open file ``filepath`` with the write mode ``_open_write_mode``.
+        """
+        return open(filepath, self._open_write_mode, **kwargs)
 
     def dump_to_string(self, cnf: InDataExT, **kwargs) -> str:
         """
@@ -103,7 +110,14 @@ class DumperMixin:
             self.dump_to_path(cnf, ioi.path, **kwargs)
 
 
-class ToStringDumperMixin(DumperMixin, TextFilesMixin):
+class BinaryDumperMixin(DumperMixin):
+    """
+    Mixin class to dump binary (byte string) configuration data.
+    """
+    _open_write_mode: str = 'wb'
+
+
+class ToStringDumperMixin(DumperMixin):
     """
     Abstract config parser provides a method to dump configuration to a file or
     file-like object (stream) and a file of given path to help implement parser
@@ -137,7 +151,7 @@ class ToStringDumperMixin(DumperMixin, TextFilesMixin):
         stream.write(self.dump_to_string(cnf, **kwargs))
 
 
-class ToStreamDumperMixin(DumperMixin, TextFilesMixin):
+class ToStreamDumperMixin(DumperMixin):
     """
     Abstract config parser provides methods to dump configuration to a string
     content or a file of given path to help implement parser of which backend

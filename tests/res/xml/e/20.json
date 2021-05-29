@@ -1,0 +1,18 @@
+{
+    "config": {
+        "@attrs": {
+            "val:name": "foo",
+            "xmlns": "http://example.com/ns/cnf",
+            "xmlns:val": "http://example.com/ns/cnf/val"
+        },
+        "val:a": "0",
+        "val:b": {"@attrs": {"id": "b0"}, "@text": "bbb"},
+        "val:c": null,
+        "sect0": {"val:d": "x, y, z"},
+        "list1": [{"item": "0"}, {"item": "1"}, {"item": "2"}],
+        "list2": {
+            "@attrs": {"id": "list2"},
+            "@children": [{"item": "i"}, {"item": "j"}]
+        }
+    }
+}

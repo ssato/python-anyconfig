@@ -122,34 +122,6 @@ class Test_20_dumps_and_loads(TestBase):
         self.assertTrue(cnf_2 is None, cnf_2)
 
 
-class Test_22_single_load(TestBase):
-
-    a_path = respath('00-cnf.json')
-    cnf = CNF_1
-
-    def test_10__single_load(self):
-        res = TT.single_load(self.a_path)
-        self.assert_dicts_equal(res, self.cnf)
-
-    def test_12__single_load__ac_parser(self):
-        res = TT.single_load(self.a_path, ac_parser="json")
-        self.assert_dicts_equal(res, self.cnf)
-
-    def test_14__single_load__ac_parser_by_id(self):
-        cid = anyconfig.backend.json.Parser.cid()
-        res = TT.single_load(self.a_path, ac_parser=cid)
-        self.assert_dicts_equal(res, self.cnf)
-
-    def test_20__single_load__stream(self):
-        res = TT.single_load(open(self.a_path), ac_parser="json")
-        self.assert_dicts_equal(res, self.cnf)
-
-    def test_30__single_load__pathlib(self):
-        pobj = pathlib.Path(self.a_path)
-        res = TT.single_load(pobj)
-        self.assert_dicts_equal(res, self.cnf)
-
-
 class TestBaseWithIO(TestBase):
 
     def setUp(self):
@@ -180,52 +152,6 @@ class Test_30_single_load(TestBaseWithIO):
     def test_12_dump_and_single_load__no_parser(self):
         self.assertRaises(TT.UnknownFileTypeError,
                           TT.single_load, "dummy.ext_not_exist")
-
-    def test_14_single_load__ignore_missing(self):
-        cpath = pathlib.Path(os.curdir) / "conf_file_should_not_exist"
-        assert not cpath.exists()
-
-        self.assertEqual(TT.single_load(cpath, "ini", ac_ignore_missing=True),
-                         NULL_CNTNR)
-
-    def test_15_single_load__fail_to_render_template(self):
-        if not anyconfig.template.SUPPORTED:
-            return
-
-        cnf_s = "name: '{{ name'"  # Should cause template renering error.
-        cpath = self.workdir / "a.yaml"
-        cpath.write_text(cnf_s)
-
-        cnf = TT.single_load(cpath, ac_template=True, ac_context=dict(a=1))
-        self.assertEqual(cnf["name"], "{{ name")
-
-    def test_16_single_load__template(self):
-        if not anyconfig.template.SUPPORTED:
-            return
-
-        cpath = respath('30-00-template-cnf.json')
-        cnf = TT.single_load(cpath, ac_template=True, ac_context=self.cnf)
-        self.assert_dicts_equal(cnf, self.cnf)
-
-        spath = respath('30-00-template-cnf-ng-scm.json')
-
-        # Validation should fail.
-        cnf2 = TT.single_load(cpath, ac_template=True, ac_context=self.cnf,
-                              ac_schema=spath)
-        self.assertTrue(cnf2 is None)
-
-    def test_18_single_load__templates(self):
-        if not anyconfig.template.SUPPORTED:
-            return
-
-        a_path = respath('30-00-cnf.json')
-        a2_path = respath('00-00-cnf.json')  # Not a template
-
-        cnf1 = TT.single_load(a_path, ac_template=True, ac_context=self.cnf)
-        self.assertEqual(self.cnf, cnf1, str(cnf1))
-
-        cnf2 = TT.single_load(a2_path, ac_template=True)
-        self.assertEqual(cnf2["a"], 1)
 
     @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                      "json schema lib is not available")
@@ -311,40 +237,6 @@ class Test_32_single_load(unittest.TestCase):
         if "yaml" in TT.list_types():
             self._load_and_dump_with_opened_files("a.yaml")
             self._load_and_dump_with_opened_files("a.yml")
-
-
-class Test_34_single_load(TestBaseWithIO):
-
-    def test_10_single_load_w_validation(self):
-        cnf_path = self.workdir / "cnf.json"
-        scm_path = self.workdir / "scm.json"
-        TT.dump(CNF_0, cnf_path)
-        TT.dump(SCM_0, scm_path)
-
-        cnf_2 = TT.single_load(cnf_path, ac_context={}, ac_schema=scm_path)
-
-        self.assertEqual(cnf_2["name"], CNF_0["name"])
-        self.assertEqual(cnf_2["a"], CNF_0["a"])
-        self.assertEqual(cnf_2["b"]["b"], CNF_0["b"]["b"])
-        self.assertEqual(cnf_2["b"]["c"], CNF_0["b"]["c"])
-
-    def test_20_single_load_w_query(self):
-        cpath = self.workdir / "cnf.json"
-        TT.dump(CNF_0, cpath)
-
-        try:
-            if TT.query.jmespath:
-                self.assertEqual(TT.single_load(cpath, ac_query="a"), 1)
-                self.assertEqual(TT.single_load(cpath, ac_query="b.b"), [1, 2])
-                self.assertEqual(TT.single_load(cpath, ac_query="b.b[1]"), 2)
-                self.assertEqual(TT.single_load(cpath, ac_query="b.b[1:]"),
-                                 [2])
-                self.assertEqual(TT.single_load(cpath, ac_query="b.b[::-1]"),
-                                 [2, 1])
-                self.assertEqual(TT.single_load(cpath, ac_query="length(b.b)"),
-                                 2)
-        except (NameError, AttributeError):
-            pass  # jmespath is not available.
 
 
 class TestBaseWithIOMultiFiles(TestBaseWithIO):

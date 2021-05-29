@@ -236,6 +236,7 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
     cnf = ac_context
     for path in paths:
         opts = options.copy()
+
         cups = _single_load(path, ac_parser=ac_parser,
                             ac_template=ac_template, ac_context=cnf, **opts)
         if cups:
@@ -243,6 +244,12 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
                 cnf = cups  # type: ignore
             elif is_dict_like(cups):
                 dicts_merge(cnf, typing.cast(MappingT, cups), **options)
+            elif len(paths) > 1:
+                raise ValueError(
+                    f'Object loaded from {path!r} is not a mapping object and '
+                    'cannot be merged with later ones will be loaded from '
+                    'other inputs.'
+                )
 
     if cnf is None:
         return dicts_convert_to({}, **options)

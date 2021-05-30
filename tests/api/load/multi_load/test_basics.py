@@ -34,12 +34,12 @@ class TestCase(unittest.TestCase):
 
     def test_multi_load_from_path_objects(self):
         for rdir, exp, opts in gen_datasets():
-            res = TT.multi_load(rdir.glob('*.*'), **opts)
+            res = TT.multi_load(rdir.glob('*.json'), **opts)
             self.assertEqual(res, exp)
 
     def test_multi_load_from_glob_path_str(self):
         for rdir, exp, opts in gen_datasets():
-            res = TT.multi_load(str(rdir / '*.*'), **opts)
+            res = TT.multi_load(str(rdir / '*.json'), **opts)
             self.assertEqual(res, exp)
 
 # vim:sw=4:ts=4:et:

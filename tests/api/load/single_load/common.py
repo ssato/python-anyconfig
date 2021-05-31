@@ -20,9 +20,9 @@ class BaseTestCase(unittest.TestCase):
     @property
     def ies(self):
         path = f'json/{self.kind}/*.json'
-        _ies = [
+        _ies = sorted(
             (inp, DATA_00.get(str(inp), None)) for inp in list_resources(path)
-        ]
+        )
         if not _ies:
             raise RuntimeError(f'No data: {path}')
 

@@ -35,6 +35,10 @@ class TestCase(BaseTestCase):
         with self.assertRaises(ValueError):
             TT.single_load('dummy.txt', ac_parser=object())
 
+    def test_single_load_failiure_missing_file(self):
+        with self.assertRaises(FileNotFoundError):
+            TT.single_load('not_exist.json')
+
     def test_single_load_from_stream(self):
         for inp, exp in self.ies:
             res = TT.single_load(open(inp), ac_parser='json')

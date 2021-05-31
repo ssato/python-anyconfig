@@ -19,10 +19,14 @@ class BaseTestCase(unittest.TestCase):
 
     @property
     def ies(self):
-        return (
-            (inp, DATA_00[inp])
-            for inp in list_resources('json/{self.kind}/*.json')
-        )
+        path = f'json/{self.kind}/*.json'
+        _ies = [
+            (inp, DATA_00.get(str(inp), None)) for inp in list_resources(path)
+        ]
+        if not _ies:
+            raise RuntimeError(f'No data: {path}')
+
+        return _ies
 
     @property
     def psr(self):

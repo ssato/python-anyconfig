@@ -12,11 +12,11 @@ from .common import TESTS_DIR
 
 
 DATA_00: typing.Dict[pathlib.Path, typing.Dict[str, typing.Any]] = {
-    TESTS_DIR / 'json/basic/00.json': dict(a=1),
-    TESTS_DIR / 'json/basic/10.json': dict(
+    str(TESTS_DIR / 'res/json/basic/00.json'): dict(a=1),
+    str(TESTS_DIR / 'res/json/basic/10.json'): dict(
         a=1, b=dict(b=[1, 2], c='C'), name='aaa'
     ),
-    TESTS_DIR / 'json/basic/20.json': dict(
+    str(TESTS_DIR / 'res/json/basic/20.json'): dict(
         a=1, b=dict(b=[1, 2], c='C', d=True), e=None, name='aaa'
     ),
 }

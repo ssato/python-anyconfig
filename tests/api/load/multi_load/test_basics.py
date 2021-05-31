@@ -23,7 +23,7 @@ def datasets_itr():
 
 
 def gen_datasets():
-    datasets = datasets_itr()
+    datasets = sorted(datasets_itr())
     if not datasets:
         raise RuntimeError('No test data was found!')
 

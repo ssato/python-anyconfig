@@ -18,7 +18,7 @@ import anyconfig.template
 import tests.common
 
 from tests.common import (
-    CNF_0, SCM_0, CNF_1, respath
+    CNF_0, SCM_0, respath
 )
 
 

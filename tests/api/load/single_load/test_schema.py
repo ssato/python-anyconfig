@@ -36,9 +36,8 @@ class ValidationTestCase(BaseTestCase):
     def test_single_load_with_validation_failures(self):
         with tempfile.TemporaryDirectory() as tdir:
             wdir = pathlib.Path(tdir)
-            scm_path = wdir / 'scm.json'
-            scm_path.write_text(SCM_NG_0)
-            scm = TT.single_load(scm_path)
+            scm = wdir / 'scm.json'
+            scm.write_text(SCM_NG_0)
 
             for inp, _exp in self.ies:
                 self.assertEqual(

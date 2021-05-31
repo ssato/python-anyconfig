@@ -81,15 +81,7 @@ def _single_load(input_: PathOrIOInfoT,
     psr: ParserT = parsers_find(ioi, forced_type=ac_parser)
     filepath = ioi.path
 
-    # .. note::
-    #    This will be kept for backward compatibility until 'ignore_missing'
-    #    option is deprecated and removed completely.
-    if 'ignore_missing' in options:
-        warnings.warn("keyword option 'ignore_missing' is deprecated, use "
-                      "'ac_ignore_missing' instead", DeprecationWarning)
-        options['ac_ignore_missing'] = options['ignore_missing']
-
-    if ac_template is not None and filepath is not None:
+    if ac_template and filepath:
         content = try_render(filepath=filepath, ctx=ac_context, **options)
         if content is not None:
             return psr.loads(content, **options)

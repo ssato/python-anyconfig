@@ -339,10 +339,6 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         self.assertEqual(TT.multi_load([cpath], ac_parser="ini",
                                        ac_ignore_missing=True),
                          NULL_CNTNR)
-        # It will be remove after 'ignore_missing' was deprecated and removed.
-        self.assertEqual(TT.multi_load([cpath], ac_parser="ini",
-                                       ignore_missing=True),
-                         NULL_CNTNR)
 
     def test_50_multi_load__templates(self):
         if not anyconfig.template.SUPPORTED:
@@ -439,7 +435,7 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
         assert not cpath.exists()
 
         self.assertEqual(TT.load([cpath], ac_parser="ini",
-                                 ignore_missing=True),
+                                 ac_ignore_missing=True),
                          NULL_CNTNR)
 
     def test_36_load_w_validation(self):

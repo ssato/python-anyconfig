@@ -40,7 +40,9 @@ class DumperMixin:
         """
         Open file ``filepath`` with the write mode ``_open_write_mode``.
         """
-        return open(filepath, self._open_write_mode, **kwargs)
+        return open(  # pylint: disable=consider-using-with
+            filepath, self._open_write_mode, **kwargs
+        )
 
     def dump_to_string(self, cnf: InDataExT, **kwargs) -> str:
         """

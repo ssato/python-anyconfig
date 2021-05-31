@@ -73,7 +73,9 @@ class LoaderMixin:
         """
         :param filepath: Path to file to open to read data
         """
-        return open(filepath, self._open_read_mode, **kwargs)
+        return open(  # pylint: disable=consider-using-with
+            filepath, self._open_read_mode, **kwargs
+        )
 
     def _container_factory(self, **options) -> GenContainerT:
         """

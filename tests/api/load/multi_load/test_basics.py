@@ -35,7 +35,7 @@ class TestCase(unittest.TestCase):
     def test_multi_load_from_path_objects(self):
         for rdir, exp, opts in gen_datasets():
             res = TT.multi_load(rdir.glob('*.json'), **opts)
-            self.assertEqual(res, exp)
+            self.assertEqual(res, exp, f'{rdir!s}')
 
     def test_multi_load_from_glob_path_str(self):
         for rdir, exp, opts in gen_datasets():

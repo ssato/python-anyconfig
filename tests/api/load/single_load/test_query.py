@@ -5,10 +5,10 @@
 # pylint: disable=missing-docstring
 import anyconfig.api._load as TT
 
-from .common import BaseTestCase
+from .common import TestCaseWithExpctedData
 
 
-class TestCase(BaseTestCase):
+class TestCase(TestCaseWithExpctedData):
 
     kind = 'query'
 
@@ -18,9 +18,8 @@ class TestCase(BaseTestCase):
              # see: tests/res/json/basic/query/q/
              inp.parent / 'q' / inp.name.replace('.json', '.txt'),
              # see: tests/res/json/basic/query/e/
-             inp.parent / 'e' / inp.name
-             )
-            for inp, _exp in self.ies
+             exp)
+            for inp, exp in self.ies
         )
         for inp, query_path, exp_path in iqes:
             query = query_path.read_text().strip()
@@ -28,8 +27,12 @@ class TestCase(BaseTestCase):
             self.assertEqual(TT.single_load(inp, ac_query=query), exp)
 
     def test_single_load_with_wrong_queries(self):
-        for inp, exp in self.ies:
-            self.assertEqual(TT.single_load(inp, ac_query=None), exp)
+        for inp, _exp in self.ies:
+            self.assertEqual(
+                TT.single_load(inp, ac_query=None),
+                TT.single_load(inp),
+                inp
+            )
 
 
 # vim:sw=4:ts=4:et:

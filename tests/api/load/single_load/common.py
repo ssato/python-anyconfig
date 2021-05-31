@@ -32,4 +32,15 @@ class BaseTestCase(unittest.TestCase):
     def psr(self):
         return anyconfig.parsers.find(self.ies[0][0], 'json')
 
+
+class TestCaseWithExpctedData(BaseTestCase):
+
+    # see: tests/res/json/template/ for example.
+    @property
+    def ies(self):
+        return [
+            (inp, inp.parent / 'e' / inp.name)
+            for inp, _exp in super().ies
+        ]
+
 # vim:sw=4:ts=4:et:

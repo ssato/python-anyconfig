@@ -10,12 +10,12 @@ import tempfile
 import anyconfig.api._load as TT
 import anyconfig.template
 
-from .common import BaseTestCase
+from .common import TestCaseWithExpctedData
 
 
 @unittest.skipIf(not anyconfig.template.SUPPORTED,
                  'jinja2 template lib is not available')
-class TemplateTestCase(BaseTestCase):
+class TemplateTestCase(TestCaseWithExpctedData):
 
     kind = 'template'
 
@@ -24,13 +24,15 @@ class TemplateTestCase(BaseTestCase):
             (inp,
              # see: tests/res/json/template/ctx/
              inp.parent / 'ctx' / inp.name,
+             # see: tests/res/json/template/e/
              exp)
             for inp, exp in self.ies
         )
-        for inp, ctx_path, exp in ices:
+        for inp, ctx_path, exp_path in ices:
             ctx = TT.single_load(ctx_path)
+            exp = TT.single_load(exp_path)
             res = TT.single_load(inp, ac_template=True, ac_context=ctx)
-            self.assertEqual(res, exp)
+            self.assertEqual(res, exp, inp)
 
     def test_single_load_from_template_failures(self):
         with tempfile.TemporaryDirectory() as tdir:

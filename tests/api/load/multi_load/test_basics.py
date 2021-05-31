@@ -12,7 +12,7 @@ from .common import RES_DIR
 
 
 def datasets_itr():
-    for rdir in pathlib.Path(RES_DIR / 'multi').glob('*'):
+    for rdir in sorted(pathlib.Path(RES_DIR / 'multi').glob('*')):
         if not rdir.is_dir():
             continue
 
@@ -34,7 +34,7 @@ class TestCase(unittest.TestCase):
 
     def test_multi_load_from_path_objects(self):
         for rdir, exp, opts in gen_datasets():
-            res = TT.multi_load(rdir.glob('*.json'), **opts)
+            res = TT.multi_load(sorted(rdir.glob('*.json')), **opts)
             self.assertEqual(res, exp, f'{rdir!s}')
 
     def test_multi_load_from_glob_path_str(self):

@@ -1,1 +1,1 @@
-{"a": 1, "b": {"b": [1, 2], "c": "C", "d": {{ b.d }} }, "e": {{ 'null' if e is None }}, "name": "aaa"}
+{"a": 1, "b": {"b": [{{ b.b | join(',') }}], "c": "{{ b.c }}", "d": true}, "e": null, "name": "aaa"}

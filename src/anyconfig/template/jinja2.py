@@ -197,8 +197,11 @@ def try_render(filepath: typing.Optional[str] = None,
         else:
             tmpl_s = typing.cast(str, content)[:10] + ' ...'
 
-        warnings.warn(f"Failed to compile '{tmpl_s!r}'. It may not be "
-                      f'a template.{os.linesep}, exc={exc!s}')
+        warnings.warn(
+            f"Failed to compile '{tmpl_s!r}'. It may not be "
+            f'a template.{os.linesep}, exc={exc!s}, '
+            f'filepath={filepath}, options={options!r}'
+        )
         return None
 
 # vim:sw=4:ts=4:et:

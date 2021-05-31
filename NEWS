@@ -1,3 +1,8 @@
+* Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.12.0-1
+- [api] remove the code to keep backward compatibility of the 'ignore_missing'
+  argument passed to loading APIs, load, single_load and multi_load.
+- seealso: `git log RELEASE_0.10.1.. --reverse` for more details
+
 * Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.11.0-1
 - fix: don't sort files on load; may close #124
 - fix/change: re-organize anyconfig.parsers (backends) and anyconfig.processors

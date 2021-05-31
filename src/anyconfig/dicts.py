@@ -205,7 +205,7 @@ def _update_wo_replace(self: DictT, other: DictT, key: str,
     :return: None but 'self' will be updated
     """
     if key not in self:
-        self[key] = other.get(key, val)
+        _update_with_replace(self, other, key, val=val)
 
 
 def _merge_list(self: DictT, key: str,

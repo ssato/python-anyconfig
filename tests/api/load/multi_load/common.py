@@ -5,7 +5,9 @@
 # pylint: disable=missing-docstring
 r"""Common utility functions.
 """
+import functools
 import pathlib
+import unittest
 
 import anyconfig.dicts
 import anyconfig.api as TT
@@ -26,11 +28,21 @@ def datasets_itr(kind):
         yield (rdir, exp, opts)
 
 
-def gen_datasets(kind='basics'):
+def gen_datasets(kind):
     datasets = sorted(datasets_itr(kind))
     if not datasets:
         raise RuntimeError('No test data was found!')
 
     return datasets
+
+
+class BaseTestCase(unittest.TestCase):
+
+    kind = 'basics'
+
+    @property
+    @functools.lru_cache(None)
+    def datasets(self):
+        return gen_datasets(self.kind)
 
 # vim:sw=4:ts=4:et:

@@ -252,59 +252,6 @@ class TestBaseWithIOMultiFiles(TestBaseWithIO):
         self.exp = exp
 
 
-class Test_40_multi_load_with_strategies(TestBaseWithIOMultiFiles):
-
-    def _check_multi_load_with_strategy(self, exp, merge=TT.MS_DICTS):
-        TT.dump(self.dic, self.a_path)
-        TT.dump(self.upd, self.b_path)
-
-        self.assertTrue(self.a_path.exists())
-        self.assertTrue(self.b_path.exists())
-
-        res0 = TT.multi_load(self.g_path, ac_merge=merge)
-        res1 = TT.multi_load([self.g_path, self.b_path], ac_merge=merge)
-
-        self.assertTrue(res0)
-        self.assertTrue(res1)
-
-        self.assert_dicts_equal(res0, exp)
-        self.assert_dicts_equal(res1, exp)
-
-    def test_10_default_merge_strategy(self):
-        exp = copy.deepcopy(self.upd)
-        exp["b"]["c"] = self.dic["b"]["c"]
-        exp["name"] = self.dic["name"]
-
-        self._check_multi_load_with_strategy(exp, merge=None)
-        self._check_multi_load_with_strategy(exp)
-
-    def test_20_merge_dicts_and_lists(self):
-        exp = copy.deepcopy(self.upd)
-        exp["b"]["b"] = [0] + self.upd["b"]["b"]
-        exp["b"]["c"] = self.dic["b"]["c"]
-        exp["name"] = self.dic["name"]
-        self._check_multi_load_with_strategy(exp, merge=TT.MS_DICTS_AND_LISTS)
-
-    def test_30_merge_with_replace(self):
-        exp = copy.deepcopy(self.upd)
-        exp["name"] = self.dic["name"]
-        self._check_multi_load_with_strategy(exp, merge=TT.MS_REPLACE)
-
-    def test_40_merge_wo_replace(self):
-        exp = copy.deepcopy(self.dic)
-        exp["e"] = self.upd["e"]
-        self._check_multi_load_with_strategy(exp, merge=TT.MS_NO_REPLACE)
-
-    def test_60_wrong_merge_strategy(self):
-        cpath = self.workdir / "a.json"
-        TT.dump(dict(a=1, b=2), cpath)
-        try:
-            TT.multi_load([cpath, cpath], ac_merge="merge_st_not_exist")
-            raise RuntimeError("Wrong merge strategy was not handled!")
-        except ValueError:
-            self.assertTrue(bool(1))  # To suppress warn of pylint.
-
-
 class Test_42_multi_load(TestBaseWithIOMultiFiles):
 
     def test_10_multi_load__empty_path_list(self):

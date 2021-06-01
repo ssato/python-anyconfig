@@ -3,31 +3,11 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import pathlib
 import unittest
 
 import anyconfig.api._load as TT
 
-from .common import RES_DIR, DIC_0
-
-
-def datasets_itr():
-    for rdir in sorted(pathlib.Path(RES_DIR / 'multi').glob('*')):
-        if not rdir.is_dir():
-            continue
-
-        exp = TT.single_load(rdir / 'e' / 'exp.json')
-        opts = TT.single_load(rdir / 'options' / '00.json')
-
-        yield (rdir, exp, opts)
-
-
-def gen_datasets():
-    datasets = sorted(datasets_itr())
-    if not datasets:
-        raise RuntimeError('No test data was found!')
-
-    return datasets
+from .common import DIC_0, gen_datasets
 
 
 class TestCase(unittest.TestCase):

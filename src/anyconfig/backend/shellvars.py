@@ -103,6 +103,7 @@ class Parser(base.StreamParser):
     """
     _cid = 'shellvars'
     _type = 'shellvars'
+    _extensions = ['sh']
     _ordered = True
     _dict_opts = ['ac_dict']
 

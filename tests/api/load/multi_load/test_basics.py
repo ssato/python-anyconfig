@@ -3,37 +3,34 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import unittest
-
 import anyconfig.api._load as TT
 
-from .common import DIC_0, gen_datasets
+from .common import DIC_0, BaseTestCase
 
 
-class TestCase(unittest.TestCase):
+class TestCase(BaseTestCase):
 
     def test_multi_load_from_empty_path_list(self):
         self.assertEqual(TT.multi_load([]), DIC_0)
 
     def test_multi_load_from_path_objects(self):
-        for rdir, exp, opts in gen_datasets():
+        for rdir, exp, opts in self.datasets:
             res = TT.multi_load(sorted(rdir.glob('*.json')), **opts)
             self.assertEqual(res, exp, f'{rdir!s}')
 
     def test_multi_load_from_glob_path_str(self):
-        for rdir, exp, opts in gen_datasets():
+        for rdir, exp, opts in self.datasets:
             res = TT.multi_load(str(rdir / '*.json'), **opts)
             self.assertEqual(res, exp, f'{rdir!s}')
 
     def test_multi_load_from_streams(self):
-        for rdir, exp, opts in gen_datasets():
+        for rdir, exp, opts in self.datasets:
             paths = sorted(rdir.glob('*.json'))
             res = TT.multi_load((p.open() for p in paths), **opts)
             self.assertEqual(res, exp, f'{rdir!s}')
 
     def test_multi_load_with_wrong_merge_strategy(self):
-        data = gen_datasets()
-        (rdir, _exp, _opts) = data[0]
+        (rdir, _exp, _opts) = self.datasets[0]
 
         with self.assertRaises(ValueError):
             TT.multi_load(

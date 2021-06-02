@@ -17,6 +17,11 @@ from tests.base import NULL_CNTNR
 from .common import BaseTestCase
 
 
+class MyDict(collections.OrderedDict):
+    """My original dict class keep key orders."""
+    pass
+
+
 class TestCase(BaseTestCase):
 
     def test_single_load(self):
@@ -74,6 +79,12 @@ class TestCase(BaseTestCase):
         for inp, exp in self.ies:
             res = TT.single_load(inp, ac_ordered=True)
             self.assertEqual(res, collections.OrderedDict(exp))
+
+    def test_single_load_with_ac_dict(self):
+        for inp, exp in self.ies:
+            res = TT.single_load(inp, ac_dict=MyDict)
+            self.assertTrue(isinstance(res, MyDict))
+            self.assertEqual(res, exp)
 
 
 class PrimitivesTestCase(BaseTestCase):

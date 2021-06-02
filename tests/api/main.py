@@ -18,7 +18,7 @@ import anyconfig.template
 import tests.common
 
 from tests.common import (
-    CNF_0, SCM_0, respath
+    CNF_0, SCM_0
 )
 
 
@@ -254,60 +254,6 @@ class TestBaseWithIOMultiFiles(TestBaseWithIO):
 
 class Test_42_multi_load(TestBaseWithIOMultiFiles):
 
-    def test_10_multi_load__empty_path_list(self):
-        self.assertEqual(TT.multi_load([]), NULL_CNTNR)
-
-    def test_20_dump_and_multi_load__mixed_file_types(self):
-        c_path = self.workdir / "c.yml"
-
-        TT.dump(self.dic, self.a_path)  # JSON
-        try:
-            TT.dump(self.upd, c_path)  # YAML
-        except (TT.UnknownProcessorTypeError, TT.UnknownFileTypeError):
-            return  # YAML backend is not available in this env.
-
-        self.assertTrue(self.a_path.exists())
-        self.assertTrue(c_path.exists())
-
-        res = TT.multi_load([self.a_path, c_path])
-        self.assert_dicts_equal(res, self.exp)
-
-    def test_30_dump_and_multi_load__to_from_stream(self):
-        TT.dump(self.dic, self.a_path)
-        TT.dump(self.upd, self.b_path)
-
-        res = TT.multi_load([TT.open(self.a_path), TT.open(self.b_path)])
-        self.assert_dicts_equal(res, self.exp)
-
-    def test_40_multi_load__ignore_missing(self):
-        cpath = pathlib.Path(os.curdir) / "conf_file_should_not_exist"
-        assert not cpath.exists()
-
-        self.assertEqual(TT.multi_load([cpath], ac_parser="ini",
-                                       ac_ignore_missing=True),
-                         NULL_CNTNR)
-
-    def test_50_multi_load__templates(self):
-        if not anyconfig.template.SUPPORTED:
-            return
-
-        ctx = self.dic.copy()
-        TT.merge(ctx, self.upd, ac_merge=TT.MS_DICTS)
-
-        # a_path = respath('30-00-template-cnf.json')
-        b_path = respath('30-10-template-cnf.json')
-        g_path = respath('30-*-template-cnf.json')
-
-        opts = dict(ac_merge=TT.MS_DICTS, ac_template=True, ac_context=ctx)
-        try:
-            res0 = TT.multi_load(g_path, **opts)
-            res1 = TT.multi_load([g_path, b_path], **opts)
-        except (TT.UnknownProcessorTypeError, TT.UnknownFileTypeError):
-            return
-
-        self.assert_dicts_equal(res0, self.exp)
-        self.assert_dicts_equal(res1, self.exp)
-
     def test_60_multi_load__w_ac_dict_option(self):
         TT.dump(self.dic, self.a_path)
         TT.dump(self.upd, self.b_path)
@@ -315,19 +261,6 @@ class Test_42_multi_load(TestBaseWithIOMultiFiles):
         res = TT.multi_load(self.g_path, ac_dict=MyODict)
         self.assert_dicts_equal(res, self.exp)
         self.assertTrue(isinstance(res, MyODict))
-
-
-class Test_44_multi_load(TestBase):
-
-    def test_10_multi_load_w_validation_for_partial_single_config_files(self):
-        cpaths = [respath('00-00-cnf.json'),
-                  respath('00-01-cnf.json'),
-                  respath('00-02-cnf.json')]
-        spath = respath('00-scm.json')
-
-        cnf = TT.multi_load(cpaths, ac_schema=spath)
-        ref = TT.multi_load(cpaths)
-        self.assert_dicts_equal(cnf, ref, ordered=False)
 
 
 class Test_50_load_and_dump(TestBaseWithIOMultiFiles):

@@ -3,11 +3,16 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
+import unittest
+
 import anyconfig.api._load as TT
+import anyconfig.query
 
 from .common import TestCaseWithExpctedData
 
 
+@unittest.skipIf(not anyconfig.query.SUPPORTED,
+                 'jmespath lib is not available')
 class TestCase(TestCaseWithExpctedData):
 
     kind = 'query'

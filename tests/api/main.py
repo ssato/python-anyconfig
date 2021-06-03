@@ -16,9 +16,7 @@ import anyconfig.dicts
 import anyconfig.template
 import tests.common
 
-from tests.common import (
-    CNF_0, SCM_0
-)
+from tests.common import CNF_0
 
 
 CNF_XML_1 = {'config': {'@attrs': {'name': 'foo'},

@@ -13,10 +13,13 @@ from tests.base import TESTS_DIR, DATA_00
 def list_test_data(kind: str = 'basics'):
     root = TESTS_DIR / 'res' / 'loads' / kind
     _ies = sorted(
-        (ddir, sorted(
-            (inp, DATA_00.get(str(inp.resolve()), None))
-            for inp in ddir.glob('*.json') if inp.is_file()
-        ))
+        (ddir,
+         [(inp,
+           DATA_00.get(str(inp.resolve()), None)
+           )
+          for inp in sorted(ddir.glob('*.json')) if inp.is_file()
+          ]
+         )
         for ddir in root.glob('*') if ddir.is_dir()
     )
     if not _ies:

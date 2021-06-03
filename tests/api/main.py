@@ -13,7 +13,6 @@ import unittest
 import anyconfig.api as TT
 import anyconfig.backend.json
 import anyconfig.dicts
-import anyconfig.schema
 import anyconfig.template
 import tests.common
 
@@ -102,25 +101,6 @@ class Test_20_dumps_and_loads(TestBase):
 
         self.assertEqual(a1["requires"], a["requires"])
 
-    def test_48_loads_w_validation(self):
-        cnf_s = TT.dumps(CNF_0, "json")
-        scm_s = TT.dumps(SCM_0, "json")
-        cnf_2 = TT.loads(cnf_s, ac_parser="json", ac_context={},
-                         ac_schema=scm_s)
-
-        self.assertEqual(cnf_2["name"], CNF_0["name"])
-        self.assertEqual(cnf_2["a"], CNF_0["a"])
-        self.assertEqual(cnf_2["b"]["b"], CNF_0["b"]["b"])
-        self.assertEqual(cnf_2["b"]["c"], CNF_0["b"]["c"])
-
-    @unittest.skipIf(not anyconfig.schema.SUPPORTED,
-                     "json schema lib is not available")
-    def test_49_loads_w_validation_error(self):
-        cnf_s = """{"a": "aaa"}"""
-        scm_s = TT.dumps(SCM_0, "json")
-        cnf_2 = TT.loads(cnf_s, ac_parser="json", ac_schema=scm_s)
-        self.assertTrue(cnf_2 is None, cnf_2)
-
 
 class TestBaseWithIO(TestBase):
 
@@ -152,34 +132,6 @@ class Test_30_single_load(TestBaseWithIO):
     def test_12_dump_and_single_load__no_parser(self):
         self.assertRaises(TT.UnknownFileTypeError,
                           TT.single_load, "dummy.ext_not_exist")
-
-    @unittest.skipIf(not anyconfig.schema.SUPPORTED,
-                     "json schema lib is not available")
-    def test_19_dump_and_single_load_with_validation(self):
-        cnf = CNF_0
-        scm = SCM_0
-
-        cnf_path = self.workdir / "cnf_19.json"
-        scm_path = self.workdir / "scm_19.json"
-
-        TT.dump(cnf, cnf_path)
-        TT.dump(scm, scm_path)
-        self.assertTrue(cnf_path.exists())
-        self.assertTrue(scm_path.exists())
-
-        cnf_1 = TT.single_load(cnf_path, ac_schema=scm_path)
-
-        self.assertFalse(cnf_1 is None)  # Validation should succeed.
-        self.assertEqual(cnf_1, cnf, cnf_1)
-
-        cnf_2 = cnf.copy()
-        cnf_2["a"] = "aaa"  # It's type should be integer not string.
-        cnf_2_path = self.workdir / "cnf_19_2.json"
-        TT.dump(cnf_2, cnf_2_path)
-        self.assertTrue(cnf_2_path.exists())
-
-        cnf_3 = TT.single_load(cnf_2_path, ac_schema=scm_path)
-        self.assertTrue(cnf_3 is None)  # Validation should fail.
 
     def test_20_dump_and_single_load__w_ordered_option(self):
         TT.dump(self.cnf, self.a_path)
@@ -317,44 +269,6 @@ class Test_50_load_and_dump(TestBaseWithIOMultiFiles):
         self.assertEqual(TT.load([cpath], ac_parser="ini",
                                  ac_ignore_missing=True),
                          NULL_CNTNR)
-
-    def test_36_load_w_validation(self):
-        cnf_path = self.workdir / "cnf.json"
-        scm_path = self.workdir / "scm.json"
-        TT.dump(CNF_0, cnf_path)
-        TT.dump(SCM_0, scm_path)
-
-        cnf_2 = TT.load(cnf_path, ac_context={}, ac_schema=scm_path)
-
-        self.assertEqual(cnf_2["name"], CNF_0["name"])
-        self.assertEqual(cnf_2["a"], CNF_0["a"])
-        self.assertEqual(cnf_2["b"]["b"], CNF_0["b"]["b"])
-        self.assertEqual(cnf_2["b"]["c"], CNF_0["b"]["c"])
-
-    @unittest.skipIf('yml' not in TT.list_types(), "yaml lib is not available")
-    def test_38_load_w_validation_yaml(self):
-        cnf_path = self.workdir / "cnf.yml"
-        scm_path = self.workdir / "scm.yml"
-        TT.dump(CNF_0, cnf_path)
-        TT.dump(SCM_0, scm_path)
-
-        cnf_2 = TT.load(cnf_path, ac_context={}, ac_schema=scm_path)
-
-        self.assertEqual(cnf_2["name"], CNF_0["name"])
-        self.assertEqual(cnf_2["a"], CNF_0["a"])
-        self.assertEqual(cnf_2["b"]["b"], CNF_0["b"]["b"])
-        self.assertEqual(cnf_2["b"]["c"], CNF_0["b"]["c"])
-
-    def test_39_single_load__w_validation(self):
-        (cnf, scm) = (CNF_0, SCM_0)
-        cpath = self.workdir / "cnf.json"
-        spath = self.workdir / "scm.json"
-
-        TT.dump(cnf, cpath)
-        TT.dump(scm, spath)
-
-        cnf1 = TT.single_load(cpath, ac_schema=spath)
-        self.assert_dicts_equal(cnf, cnf1)
 
     def test_40_load_w_query(self):
         cnf_path = self.workdir / "cnf.json"

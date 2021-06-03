@@ -15,7 +15,7 @@ def list_test_data(kind: str = 'basics'):
         ))
         for ddir in root.glob('*') if ddir.is_dir()
     )
-    if not _ies:
+    if not _ies or any(not data for ddir, data in _ies):
         raise RuntimeError(f'No data: {root!s}')
 
     return _ies

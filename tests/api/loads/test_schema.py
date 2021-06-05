@@ -25,26 +25,25 @@ class TestCase(BaseTestCase):
 
     def test_loads_with_schema_validation(self):
         for data in self.each_data():
-            inp = data.inp.read_text()
             scm = data.scm.read_text()
             (exp, opts) = (data.exp, data.opts)
 
-            res = TT.loads(inp, ac_schema=scm, **opts)
-            self.assertEqual(res, exp, f'{data.datadir!s}, {data.inp!s}')
+            res = TT.loads(data.inp, ac_schema=scm, **opts)
+            self.assertEqual(res, exp, f'{data.datadir!s}, {data.path!s}')
 
     def test_loads_with_schema_validation_failures(self):
         opts = dict(ac_parser='json', ac_schema=SCM_NG_0)
 
         for data in self.each_data(load=False):
-            inp = data.inp.read_text()
-
             with warnings.catch_warnings():
                 warnings.simplefilter('ignore')
 
-                res = TT.loads(inp, **opts)
-                self.assertTrue(res is None, f'{data.datadir!s}, {data.inp!s}')
+                res = TT.loads(data.inp, **opts)
+                self.assertTrue(
+                    res is None, f'{data.datadir!s}, {data.path!s}'
+                )
 
             with self.assertRaises(ValidationError):
-                TT.loads(inp, ac_schema_safe=False, **opts)
+                TT.loads(data.inp, ac_schema_safe=False, **opts)
 
 # vim:sw=4:ts=4:et:

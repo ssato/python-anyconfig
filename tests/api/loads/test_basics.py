@@ -16,16 +16,14 @@ class TestCase(BaseTestCase):
 
     def test_loads(self):
         for data in self.each_data():
-            inp = data.inp.read_text()
-            res = TT.loads(inp, **data.opts)
-            self.assertEqual(res, data.exp, f'{data.datadir!s}, {data.inp!s}')
+            res = TT.loads(data.inp, **data.opts)
+            self.assertEqual(res, data.exp, f'{data.datadir!s}, {data.path!s}')
 
     def test_loads_failure_ac_parser_was_not_given(self):
         for data in self.each_data():
-            inp = data.inp.read_text()
             with warnings.catch_warnings(record=True) as warns:
                 warnings.simplefilter('always')
-                self.assertEqual(TT.loads(inp), None)
+                self.assertEqual(TT.loads(data.inp), None)
                 self.assertEqual(len(warns), 1)
                 self.assertTrue(issubclass(warns[-1].category, UserWarning))
                 self.assertTrue(
@@ -34,8 +32,10 @@ class TestCase(BaseTestCase):
 
     def test_loads_failure_invalid_ac_parser_was_given(self):
         for data in self.each_data():
-            inp = data.inp.read_text()
             with self.assertRaises(UnknownProcessorTypeError):
-                self.assertEqual(TT.loads(inp, ac_parser='invalid_id'), None)
+                self.assertEqual(
+                    TT.loads(data.inp, ac_parser='invalid_id'),
+                    None
+                )
 
 # vim:sw=4:ts=4:et:

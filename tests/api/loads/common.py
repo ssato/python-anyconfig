@@ -20,7 +20,8 @@ def identity(obj, *_args, **_opts):
 class TestData(typing.NamedTuple):
     """Equivalent to collections.namedtuple."""
     datadir: pathlib.Path
-    inp: pathlib.Path
+    path: pathlib.Path
+    inp: str
     exp: typing.Union[pathlib.Path, typing.Dict[str, typing.Any]]
     opts: typing.Union[pathlib.Path, typing.Dict[str, typing.Any]]
     scm: pathlib.Path
@@ -42,7 +43,8 @@ class BaseTestCase(unittest.TestCase):
         self.root = TESTS_DIR / 'res' / self.target / self.kind
         datasets = [
             (datadir,
-             [(inp,  # input data
+             [(inp,
+               inp.read_text(),  # input data
                datadir / 'e' / inp.name,  # expected data
                datadir / 'o' / inp.name,  # options data
                datadir / 's' / inp.name,  # schema data
@@ -61,22 +63,14 @@ class BaseTestCase(unittest.TestCase):
             if not data:
                 raise RuntimeError(f'No data in subdir: {datadir!s}')
 
-            for ieosqc in data:
-                inp = ieosqc[0]
-                if not inp.exists() or not inp.is_file():
-                    raise RuntimeError(
-                        "No input data found or it is invalid: "
-                        f'{inp!s} in {datadir!s}'
-                    )
-
         return datasets
 
     def each_data(self, load=True):
         load_fn = anyconfig.api.single_load if load else identity
         for datadir, data in self.test_data:
-            for inp_path, e_path, o_path, s_path, q_path, c_path in data:
+            for path, inp, e_path, o_path, s_path, q_path, c_path in data:
                 yield TestData(
-                    datadir, inp_path,
+                    datadir, path, inp,
                     load_fn(e_path), load_fn(o_path),
                     s_path, q_path, c_path
                 )

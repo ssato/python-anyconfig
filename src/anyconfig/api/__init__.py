@@ -95,7 +95,7 @@ from ._open import open  # pylint: disable=redefined-builtin
 # Export some more APIs originally from other sub modules.
 from ..backend import ParserT
 from ..common import (
-    IOInfo, InDataT,
+    IOInfo, InDataT, InDataExT,
     UnknownFileTypeError, UnknownParserTypeError,
     UnknownProcessorTypeError, ValidationError
 )
@@ -133,7 +133,7 @@ __all__ = [
     'ParserT',
 
     # anyconfig.common
-    'IOInfo', 'InDataT',
+    'IOInfo', 'InDataT', 'InDataExT',
     'UnknownFileTypeError', 'UnknownParserTypeError',
     'UnknownProcessorTypeError', 'ValidationError',
 

@@ -9,6 +9,8 @@ import pathlib
 
 
 TESTS_DIR = pathlib.Path(__file__).parent.parent.resolve()
+RES_DIR = TESTS_DIR / 'res'
+
 NULL_CNTNR = dict()
 
 # vim:sw=4:ts=4:et:

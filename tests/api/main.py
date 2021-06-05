@@ -67,38 +67,6 @@ class Test_20_dumps_and_loads(TestBase):
                        ensure_ascii=False)
         self.assert_dicts_equal(res, self.cnf)
 
-    def test_40_loads_wo_type(self):
-        cnf_s = "requires:bash,zsh"
-        self.assertTrue(TT.loads(cnf_s) is None)
-
-    def test_42_loads_w_type_not_exist(self):
-        a_s = "requires:bash,zsh"
-        self.assertRaises(TT.UnknownProcessorTypeError,
-                          TT.loads, a_s, "type_not_exist")
-
-    def test_44_loads_w_type__template(self):
-        if not anyconfig.template.SUPPORTED:
-            return
-
-        a_s = "requires: [{{ requires|join(', ') }}]"
-        reqs = dict(requires=["bash", "zsh"])
-
-        a1 = TT.loads(a_s, ac_parser="yaml", ac_template=True,
-                      ac_context=reqs)
-
-        self.assertEqual(a1["requires"], reqs["requires"])
-
-    def test_46_loads_w_type__broken_template(self):
-        if not anyconfig.template.SUPPORTED:
-            return
-
-        a = dict(requires="{% }}", )
-        a_s = 'requires: "{% }}"'
-        a1 = TT.loads(a_s, ac_parser="yaml", ac_template=True,
-                      ac_context={})
-
-        self.assertEqual(a1["requires"], a["requires"])
-
 
 class TestBaseWithIO(TestBase):
 

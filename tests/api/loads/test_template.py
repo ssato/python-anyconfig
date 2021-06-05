@@ -20,11 +20,10 @@ class TestCase(BaseTestCase):
 
     def test_loads_template(self):
         for data in self.each_data():
-            inp = data.inp.read_text()
             ctx = TT.single_load(data.ctx, ac_parser='json')
 
-            res = TT.loads(inp, ac_context=ctx, **data.opts)
-            self.assertEqual(res, data.exp, f'{data.datadir!s}, {data.inp!s}')
+            res = TT.loads(data.inp, ac_context=ctx, **data.opts)
+            self.assertEqual(res, data.exp, f'{data.datadir!s}, {data.path!s}')
 
     def test_loads_from_template_failures(self):
         inp = '{"a": "{{ a"}'

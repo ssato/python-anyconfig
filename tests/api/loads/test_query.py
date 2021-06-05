@@ -19,21 +19,18 @@ class TestCase(BaseTestCase):
 
     def test_loads_with_query(self):
         for data in self.each_data():
-            inp = data.inp.read_text()
             query = data.query.read_text()
-
-            res = TT.loads(inp, ac_query=query, **data.opts)
-            self.assertEqual(res, data.exp, f'{data.datadir!s}, {data.inp!s}')
+            res = TT.loads(data.inp, ac_query=query, **data.opts)
+            self.assertEqual(res, data.exp, f'{data.datadir!s}, {data.path!s}')
 
     def test_loads_with_invalid_query(self):
         opts = dict(ac_parser='json')
 
         for data in self.each_data(load=False):
-            inp = data.inp.read_text()
             self.assertEqual(
-                TT.loads(inp, ac_query=None, **opts),
-                TT.single_load(data.inp),
-                f'{data.datadir!s}, {data.inp!s}'
+                TT.loads(data.inp, ac_query=None, **opts),
+                TT.single_load(data.path),
+                f'{data.datadir!s}, {data.path!s}'
             )
 
 # vim:sw=4:ts=4:et:

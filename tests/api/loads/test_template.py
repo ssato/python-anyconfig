@@ -4,31 +4,35 @@
 #
 # pylint: disable=missing-docstring
 import unittest
+import warnings
 
 import anyconfig.api._load as TT
 import anyconfig.template
 
-from .common import list_test_data
+from .common import BaseTestCase
 
 
 @unittest.skipIf(not anyconfig.template.SUPPORTED,
                  'jinja2 template lib is not available')
-class TestCase(unittest.TestCase):
+class TestCase(BaseTestCase):
+
+    kind = 'template'
 
     def test_loads_template(self):
-        for datadir, data in list_test_data('template'):
-            for inp_path, _exp in data:
-                ctx = TT.single_load(datadir / 'ctx' / inp_path.name)
-                exp = TT.single_load(datadir / 'e' / inp_path.name)
-                res = TT.loads(
-                    inp_path.read_text(), ac_parser='json',
-                    ac_template=True, ac_context=ctx
-                )
-                self.assertEqual(res, exp, f'{datadir!s}, {inp_path!s}')
+        for data in self.each_data():
+            inp = data.inp.read_text()
+            ctx = TT.single_load(data.ctx, ac_parser='json')
+
+            res = TT.loads(inp, ac_context=ctx, **data.opts)
+            self.assertEqual(res, data.exp, f'{data.datadir!s}, {data.inp!s}')
 
     def test_loads_from_template_failures(self):
         inp = '{"a": "{{ a"}'
-        res = TT.loads(inp, ac_parser='json', ac_template=True)
-        self.assertEqual(res, dict(a='{{ a'))
+        with warnings.catch_warnings(record=True) as warns:
+            warnings.simplefilter('always')
+            res = TT.loads(inp, ac_parser='json', ac_template=True)
+            self.assertEqual(res, dict(a='{{ a'))
+            self.assertEqual(len(warns), 1)
+            self.assertTrue(issubclass(warns[-1].category, UserWarning))
 
 # vim:sw=4:ts=4:et:

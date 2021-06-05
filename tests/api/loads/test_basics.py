@@ -3,43 +3,39 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import unittest
+import warnings
 
 import anyconfig.api._load as TT
-import anyconfig.api
 
-from .common import list_test_data
+from anyconfig.api import UnknownProcessorTypeError
+
+from .common import BaseTestCase
 
 
-class TestCase(unittest.TestCase):
+class TestCase(BaseTestCase):
 
     def test_loads(self):
-        for datadir, data in list_test_data():
-            for inp_path, exp in data:
-                res = TT.loads(inp_path.read_text(), ac_parser='json')
-                self.assertEqual(res, exp, f'{datadir!s}, {inp_path!s}')
+        for data in self.each_data():
+            inp = data.inp.read_text()
+            res = TT.loads(inp, **data.opts)
+            self.assertEqual(res, data.exp, f'{data.datadir!s}, {data.inp!s}')
 
-    def test_loads_failures(self):
-        for datadir, data in list_test_data('errors'):
-            ioees = sorted(
-                (inp.read_text(),  # input as a string
-                 TT.single_load(inp.parent / 'options' / '00.json'),  # options
-                 TT.single_load(inp.parent / 'e' / 'exp.json'),  # expected...
-                 sorted(  # exceptions
-                    e.name for e in (inp.parent / 'exc').glob('*')
-                 ),
-                 )
-                for inp, _exp in data
-            )
+    def test_loads_failure_ac_parser_was_not_given(self):
+        for data in self.each_data():
+            inp = data.inp.read_text()
+            with warnings.catch_warnings(record=True) as warns:
+                warnings.simplefilter('always')
+                self.assertEqual(TT.loads(inp), None)
+                self.assertEqual(len(warns), 1)
+                self.assertTrue(issubclass(warns[-1].category, UserWarning))
+                self.assertTrue(
+                    'ac_parser was not given but' in str(warns[-1].message)
+                )
 
-            for inp, opts, exp, excs in ioees:
-                if excs:
-                    exc = getattr(anyconfig.api, excs[0], None)
-                    if exc:
-                        with self.assertRaises(exc):
-                            TT.loads(inp, **opts)
-                else:
-                    res = TT.loads(inp, **opts)
-                    self.assertEqual(res, exp, f'{datadir!s}')
+    def test_loads_failure_invalid_ac_parser_was_given(self):
+        for data in self.each_data():
+            inp = data.inp.read_text()
+            with self.assertRaises(UnknownProcessorTypeError):
+                self.assertEqual(TT.loads(inp, ac_parser='invalid_id'), None)
 
 # vim:sw=4:ts=4:et:

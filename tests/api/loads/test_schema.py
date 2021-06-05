@@ -4,13 +4,14 @@
 #
 # pylint: disable=missing-docstring
 import unittest
+import warnings
 
 import anyconfig.api._load as TT
 import anyconfig.schema
 
 from anyconfig.api import ValidationError
 
-from .common import list_test_data
+from .common import BaseTestCase
 
 
 SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
@@ -18,28 +19,32 @@ SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
 
 @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                  'jsonschema lib is not available')
-class TestCase(unittest.TestCase):
+class TestCase(BaseTestCase):
+
+    kind = 'schema'
 
     def test_loads_with_schema_validation(self):
-        for datadir, data in list_test_data('schema'):
-            for inp_path, exp in data:
-                scm = (inp_path.parent / 'schema' / inp_path.name).read_text()
-                res = TT.loads(
-                    inp_path.read_text(), ac_parser='json', ac_schema=scm
-                )
-                self.assertEqual(res, exp, f'{datadir!s}, {inp_path!s}')
+        for data in self.each_data():
+            inp = data.inp.read_text()
+            scm = data.scm.read_text()
+            (exp, opts) = (data.exp, data.opts)
+
+            res = TT.loads(inp, ac_schema=scm, **opts)
+            self.assertEqual(res, exp, f'{data.datadir!s}, {data.inp!s}')
 
     def test_loads_with_schema_validation_failures(self):
         opts = dict(ac_parser='json', ac_schema=SCM_NG_0)
 
-        for datadir, data in list_test_data('schema'):
-            for inp_path, _exp in data:
-                inp = inp_path.read_text()
+        for data in self.each_data(load=False):
+            inp = data.inp.read_text()
+
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore')
 
                 res = TT.loads(inp, **opts)
-                self.assertTrue(res is None, f'{datadir!s}, {inp_path!s}')
+                self.assertTrue(res is None, f'{data.datadir!s}, {data.inp!s}')
 
-                with self.assertRaises(ValidationError):
-                    TT.loads(inp, ac_schema_safe=False, **opts)
+            with self.assertRaises(ValidationError):
+                TT.loads(inp, ac_schema_safe=False, **opts)
 
 # vim:sw=4:ts=4:et:

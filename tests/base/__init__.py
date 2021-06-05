@@ -4,7 +4,7 @@
 #
 r"""Common test Utility functions, constants and global variables, etc.
 """
-from .common import TESTS_DIR, NULL_CNTNR
+from .common import TESTS_DIR, RES_DIR, NULL_CNTNR
 from .datasets import DATA_00
 from .utils import (
     resource_path, list_resources
@@ -12,7 +12,7 @@ from .utils import (
 
 
 __all__ = [
-    'TESTS_DIR', 'NULL_CNTNR',
+    'TESTS_DIR', 'RES_DIR', 'NULL_CNTNR',
     'DATA_00',
     'resource_path', 'list_resources',
 ]

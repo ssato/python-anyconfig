@@ -11,7 +11,7 @@ import anyconfig.schema
 
 from anyconfig.api import ValidationError
 
-from .common import BaseTestCase
+from . import common
 
 
 SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
@@ -19,29 +19,29 @@ SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
 
 @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                  'jsonschema lib is not available')
-class TestCase(BaseTestCase):
-
+class TestCase(common.BaseTestCase):
     kind = 'schema'
 
     def test_loads_with_schema_validation(self):
         for data in self.each_data():
-            scm = data.scm.read_text()
-            (exp, opts) = (data.exp, data.opts)
-
-            res = TT.loads(data.inp, ac_schema=scm, **opts)
-            self.assertEqual(res, exp, f'{data.datadir!s}, {data.path!s}')
+            self.assertEqual(
+                TT.loads(data.inp, ac_schema=data.scm, **data.opts),
+                data.exp,
+                f'{data.datadir!s}, {data.inp_path!s}'
+            )
 
     def test_loads_with_schema_validation_failures(self):
         opts = dict(ac_parser='json', ac_schema=SCM_NG_0)
 
-        for data in self.each_data(load=False):
-            with warnings.catch_warnings():
-                warnings.simplefilter('ignore')
-
-                res = TT.loads(data.inp, **opts)
+        for data in self.each_data():
+            with warnings.catch_warnings(record=True) as warns:
+                warnings.simplefilter('always')
                 self.assertTrue(
-                    res is None, f'{data.datadir!s}, {data.path!s}'
+                    TT.loads(data.inp, **opts) is None,
+                    f'{data.datadir!s}, {data.inp_path!s}'
                 )
+                self.assertTrue(len(warns) > 0)
+                self.assertTrue(issubclass(warns[-1].category, UserWarning))
 
             with self.assertRaises(ValidationError):
                 TT.loads(data.inp, ac_schema_safe=False, **opts)

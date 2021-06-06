@@ -65,7 +65,7 @@ class TestCase(unittest.TestCase):
             ((RES_DIR / 'basics' / '20' / '00.py', ),
              TT.json.load((RES_DIR / 'basics' / '10' / '00.json').open())
              ),
-            ((RES_DIR / 'basics' / '30' / '20.json.txt', ),
+            ((RES_DIR / 'basics' / '30' / '20.txt', ),
              (RES_DIR / 'basics' / '10' / '20.json').read_text()
              ),
         ]
@@ -79,5 +79,20 @@ class TestCase(unittest.TestCase):
         for args in aes:
             with self.assertRaises(ValueError):
                 TT.load_data(*args)
+
+    def test_each_data_from_dir(self):
+        aes = [
+            ((RES_DIR / 'basics' / '10', '*.json', ('c', 'e', 'o', 's')), 3),
+            ((RES_DIR / 'basics' / '20', '*.py'), 1),
+            ((RES_DIR / 'basics' / '30', '*.txt', ('c', 'e', 'o', 's')), 3),
+        ]
+        for args, exp in aes:
+            res = list(TT.each_data_from_dir(*args))
+            self.assertTrue(bool(res))
+            self.assertEqual(len(res), exp)
+
+    def test_each_data_from_dir_failures(self):
+        with self.assertRaises(ValueError):
+            _ = list(TT.each_data_from_dir(SELF))
 
 # vim:sw=4:ts=4:et:

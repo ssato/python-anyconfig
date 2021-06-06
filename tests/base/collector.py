@@ -110,6 +110,7 @@ def each_data_from_dir(datadir: pathlib.Path, pattern: str = '*.json',
         name = inp.stem
 
         yield TDataPaths(
+            datadir,
             inp,
             maybe_data_path(datadir / 'e', name, should_exist),
             maybe_data_path(datadir / 'o', name, should_exist),

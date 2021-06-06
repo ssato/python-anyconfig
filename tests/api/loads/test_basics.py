@@ -9,15 +9,18 @@ import anyconfig.api._load as TT
 
 from anyconfig.api import UnknownProcessorTypeError
 
-from .common import BaseTestCase
+from . import common
 
 
-class TestCase(BaseTestCase):
+class TestCase(common.BaseTestCase):
 
     def test_loads(self):
         for data in self.each_data():
-            res = TT.loads(data.inp, **data.opts)
-            self.assertEqual(res, data.exp, f'{data.datadir!s}, {data.path!s}')
+            self.assertEqual(
+                TT.loads(data.inp, **data.opts),
+                data.exp,
+                f'{data.datadir!s}, {data.inp_path!s}'
+            )
 
     def test_loads_failure_ac_parser_was_not_given(self):
         for data in self.each_data():

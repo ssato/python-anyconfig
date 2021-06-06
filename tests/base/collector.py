@@ -140,12 +140,17 @@ class TDataCollector:
 
     target = 'base'
     kind = 'basics'
-    pattern = '*.json'
+    pattern = '*.json'  # input file name pattern
     should_exist = ('e', )  # expected data files should be found always.
 
-    def __init__(self):
+    root = None
+    datasets = []
+    initialized = False
+
+    def init(self):
         self.root = RES_DIR / self.target / self.kind
         self.datasets = self.load_datasets()
+        self.initialized = True
 
     def load_datasets(self):
         _datasets = [
@@ -174,6 +179,9 @@ class TDataCollector:
         return _datasets
 
     def each_data(self):
+        if not self.initialized:
+            self.init()
+
         for _datadir, data in self.datasets:
             for tdata in data:
                 yield tdata

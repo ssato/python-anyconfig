@@ -22,6 +22,11 @@ class TestCase(common.BaseTestCase):
                 f'{data.datadir!s}, {data.inp_path!s}'
             )
 
+    def test_loads_intentional_failures(self):
+        for data in self.each_data():
+            with self.assertRaises(AssertionError):
+                self.assertEqual(TT.loads(data.inp, **data.opts), {})
+
     def test_loads_failure_ac_parser_was_not_given(self):
         for data in self.each_data():
             with warnings.catch_warnings(record=True) as warns:

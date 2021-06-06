@@ -56,18 +56,6 @@ class TestBase(unittest.TestCase):
         )
 
 
-class Test_20_dumps_and_loads(TestBase):
-
-    def test_30_dumps_and_loads(self):
-        res = TT.loads(TT.dumps(self.cnf, "json"), "json")
-        self.assert_dicts_equal(res, self.cnf)
-
-    def test_30_dumps_and_loads__w_options(self):
-        res = TT.loads(TT.dumps(self.cnf, "json", indent=2), "json",
-                       ensure_ascii=False)
-        self.assert_dicts_equal(res, self.cnf)
-
-
 class TestBaseWithIO(TestBase):
 
     def setUp(self):

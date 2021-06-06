@@ -28,6 +28,14 @@ class TestCase(common.BaseTestCase):
                     f'{data.datadir!s}, {data.inp_path!s}'
                 )
 
+    def test_dump_intentional_failures(self):
+        with tempfile.TemporaryDirectory() as tdir:
+            for data in self.each_data():
+                out = pathlib.Path(tdir) / 'out.json'
+                TT.dump(data.inp, out, **data.opts)
+                with self.assertRaises(AssertionError):
+                    self.assertEqual(out.read_text().strip(), '')
+
     def test_dump_failure_ac_parser_was_not_given(self):
         for data in self.each_data():
             with self.assertRaises(UnknownFileTypeError):

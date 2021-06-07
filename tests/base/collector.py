@@ -2,7 +2,8 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
+"""File based test data collector.
+"""
 import ast
 import importlib.util
 import json
@@ -51,8 +52,8 @@ def maybe_data_path(datadir: pathlib.Path, name: str,
                     file_ext: str = '*'
                     ) -> typing.Optional[pathlib.Path]:
     """
-    Get the file path of extra data from base data filename w/o file extension
-    (pathlib.Path().stem).
+    Get and return the file path of extra data file. Its filename will be
+    computed from the filename of the base data file given.
     """
     pattern = f'{name}.{file_ext}'
     if datadir.exists() and datadir.is_dir():
@@ -72,7 +73,7 @@ def load_data(path: MaybePathT,
               exec_py: bool = False
               ) -> typing.Union[DictT, str]:
     """
-    Load data from given path or retunr the default value.
+    Return data loaded from given path or the default value.
     """
     if path is None and not should_exist:
         return default
@@ -95,6 +96,9 @@ def load_data(path: MaybePathT,
 def each_data_from_dir(datadir: pathlib.Path, pattern: str = '*.json',
                        should_exist: typing.Iterable[str] = ()
                        ) -> typing.Iterator[TDataPaths]:
+    """
+    Yield a collection of paths of data files under given dir.
+    """
     if not datadir.is_dir():
         raise ValueError(f'Not look a data dir: {datadir!s}')
 
@@ -137,7 +141,8 @@ DICT_0 = dict()
 
 
 class TDataCollector:
-
+    """File based test data collector.
+    """
     target = 'base'
     kind = 'basics'
     pattern = '*.json'  # input file name pattern
@@ -148,11 +153,15 @@ class TDataCollector:
     initialized = False
 
     def init(self):
+        """Initialize its members.
+        """
         self.root = RES_DIR / self.target / self.kind
         self.datasets = self.load_datasets()
         self.initialized = True
 
     def load_datasets(self):
+        """Load test data from files.
+        """
         _datasets = [
             (datadir,
              [TData(data.datadir, data.inp,
@@ -179,6 +188,8 @@ class TDataCollector:
         return _datasets
 
     def each_data(self):
+        """Yields test data.
+        """
         if not self.initialized:
             self.init()
 

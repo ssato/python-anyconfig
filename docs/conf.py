@@ -6,7 +6,10 @@ import pathlib
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve() / 'src'))
 
-extensions = ['sphinx.ext.autodoc']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx_autodoc_typehints'
+]
 source_suffix = '.rst'
 master_doc = 'index'
 

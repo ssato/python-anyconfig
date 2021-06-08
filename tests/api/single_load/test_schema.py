@@ -50,7 +50,7 @@ class TestCase(BaseTestCase):
                         ),
                         None
                     )
-                    self.assertEqual(len(warns), 1)
+                    self.assertTrue(len(warns) > 0)
                     self.assertTrue(
                         issubclass(warns[-1].category, UserWarning)
                     )

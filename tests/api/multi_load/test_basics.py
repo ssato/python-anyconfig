@@ -5,13 +5,15 @@
 # pylint: disable=missing-docstring
 import anyconfig.api._load as TT
 
-from .common import DIC_0, BaseTestCase
+from tests.base import NULL_CNTNR
+
+from .common import BaseTestCase
 
 
 class TestCase(BaseTestCase):
 
     def test_multi_load_from_empty_path_list(self):
-        self.assertEqual(TT.multi_load([]), DIC_0)
+        self.assertEqual(TT.multi_load([]), NULL_CNTNR)
 
     def test_multi_load_from_path_objects(self):
         for rdir, exp, opts in self.datasets:
@@ -49,7 +51,7 @@ class TestCase(BaseTestCase):
 
         self.assertEqual(
             TT.multi_load(paths, ac_ignore_missing=True),
-            DIC_0
+            NULL_CNTNR
         )
 
 # vim:sw=4:ts=4:et:

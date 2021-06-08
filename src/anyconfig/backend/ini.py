@@ -105,20 +105,20 @@ def _make_parser(**kwargs):
     """
     :return: (keyword args to be used, parser object)
     """
-    # Optional arguements for configparser.SafeConfigParser{,readfp}
+    # Optional arguements for configparser.ConfigParser{,readfp}
     kwargs_0 = filter_options(
         ('defaults', 'dict_type', 'allow_no_value'), kwargs
     )
     kwargs_1 = filter_options(('filename', ), kwargs)
 
     try:
-        psr = configparser.SafeConfigParser(**kwargs_0)
+        psr = configparser.ConfigParser(**kwargs_0)
     except TypeError:
         # .. note::
         #    It seems ConfigParser.*ConfigParser in python 2.6 does not support
         #    'allow_no_value' option parameter, and TypeError will be thrown.
         kwargs_0 = filter_options(('defaults', 'dict_type'), kwargs)
-        psr = configparser.SafeConfigParser(**kwargs_0)
+        psr = configparser.ConfigParser(**kwargs_0)
 
     return (kwargs_1, psr)
 

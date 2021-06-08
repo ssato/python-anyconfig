@@ -24,8 +24,9 @@ class TestCase(common.BaseTestCase):
 
     def test_loads_with_schema_validation(self):
         for data in self.each_data():
+            scm = data.scm.read_text().strip()
             self.assertEqual(
-                TT.loads(data.inp, ac_schema=data.scm, **data.opts),
+                TT.loads(data.inp, ac_schema=scm, **data.opts),
                 data.exp,
                 f'{data.datadir!s}, {data.inp_path!s}'
             )

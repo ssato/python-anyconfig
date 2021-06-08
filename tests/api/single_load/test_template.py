@@ -4,45 +4,57 @@
 #
 # pylint: disable=missing-docstring
 import pathlib
-import unittest
 import tempfile
+import unittest
+import warnings
 
 import anyconfig.api._load as TT
 import anyconfig.template
 
-from .common import TestCaseWithExpctedData
+from .common import BaseTestCase
 
 
 @unittest.skipIf(not anyconfig.template.SUPPORTED,
                  'jinja2 template lib is not available')
-class TemplateTestCase(TestCaseWithExpctedData):
-
+class TestCase(BaseTestCase):
     kind = 'template'
+    pattern = '*.j2'
 
-    def test_single_load_from_template(self):
-        ices = (
-            (inp,
-             # see: tests/res/json/template/ctx/
-             inp.parent / 'ctx' / inp.name,
-             # see: tests/res/json/template/e/
-             exp)
-            for inp, exp in self.ies
-        )
-        for inp, ctx_path, exp_path in ices:
-            ctx = TT.single_load(ctx_path)
-            exp = TT.single_load(exp_path)
-            res = TT.single_load(inp, ac_template=True, ac_context=ctx)
-            self.assertEqual(res, exp, inp)
+    def test_single_load(self):
+        for data in self.each_data():
+            self.assertEqual(
+                TT.single_load(
+                    data.inp_path, ac_context=data.ctx, **data.opts
+                ),
+                data.exp,
+                f'{data.datadir!s}, {data.inp_path!s}'
+            )
 
-    def test_single_load_from_template_failures(self):
+    def test_single_load_from_invalid_template(self):
         with tempfile.TemporaryDirectory() as tdir:
             wdir = pathlib.Path(tdir)
             inp = wdir / 'test.json'
             inp.write_text('{"a": "{{ a"}')  # broken template string.
 
-            self.assertEqual(
-                TT.single_load(inp, ac_template=True, ac_context=dict(a=1)),
-                dict(a='{{ a')
-            )
+            with warnings.catch_warnings(record=True) as warns:
+                warnings.simplefilter('always')
+                res = TT.single_load(
+                    inp, ac_template=True, ac_context=dict(a=1)
+                )
+                self.assertEqual(res, dict(a='{{ a'))
+                self.assertEqual(len(warns), 1)
+                self.assertTrue(issubclass(warns[-1].category, UserWarning))
+                self.assertTrue('ailed to compile ' in str(warns[-1].message))
+
+    def test_single_load_intentional_failures(self):
+        ng_exp = dict(z=1, zz='zz', zzz=[1, 2, 3], zzzz=dict(z=0))
+        for data in self.each_data():
+            with self.assertRaises(AssertionError):
+                self.assertEqual(
+                    TT.single_load(
+                        data.inp_path, ac_context=data.ctx, **data.opts
+                    ),
+                    ng_exp
+                )
 
 # vim:sw=4:ts=4:et:

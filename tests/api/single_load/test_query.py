@@ -8,36 +8,43 @@ import unittest
 import anyconfig.api._load as TT
 import anyconfig.query
 
-from .common import TestCaseWithExpctedData
+from .common import BaseTestCase
 
 
 @unittest.skipIf(not anyconfig.query.SUPPORTED,
                  'jmespath lib is not available')
-class TestCase(TestCaseWithExpctedData):
-
+class TestCase(BaseTestCase):
     kind = 'query'
 
     def test_single_load(self):
-        iqes = (
-            (inp,
-             # see: tests/res/json/basic/query/q/
-             inp.parent / 'q' / inp.name.replace('.json', '.txt'),
-             # see: tests/res/json/basic/query/e/
-             exp)
-            for inp, exp in self.ies
-        )
-        for inp, query_path, exp_path in iqes:
-            query = query_path.read_text().strip()
-            exp = TT.single_load(exp_path)
-            self.assertEqual(TT.single_load(inp, ac_query=query), exp)
-
-    def test_single_load_with_wrong_queries(self):
-        for inp, _exp in self.ies:
+        for data in self.each_data():
             self.assertEqual(
-                TT.single_load(inp, ac_query=None),
-                TT.single_load(inp),
-                inp
+                TT.single_load(
+                    data.inp_path, ac_query=data.query.strip(), **data.opts
+                ),
+                data.exp,
+                f'{data.datadir!s}, {data.inp_path!s}'
             )
 
+    def test_single_load_with_invalid_query_string(self):
+        for data in self.each_data():
+            self.assertEqual(
+                TT.single_load(
+                    data.inp_path, ac_query=None, **data.opts
+                ),
+                TT.single_load(data.inp_path, **data.opts),
+                f'{data.datadir!s}, {data.inp_path!s}'
+            )
+
+    def test_single_load_intentional_failures(self):
+        for data in self.each_data():
+            with self.assertRaises(AssertionError):
+                exp = dict(z=1, zz='zz', zzz=[1, 2, 3], zzzz=dict(z=0))
+                self.assertEqual(
+                    TT.single_load(
+                        data.inp_path, ac_query=data.query, **data.opts
+                    ),
+                    exp
+                )
 
 # vim:sw=4:ts=4:et:

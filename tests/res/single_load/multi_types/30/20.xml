@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://example.com/ns/cnf"
+        xmlns:val="http://example.com/ns/cnf/val"
+        val:name='foo'>
+  <val:a>0</val:a>
+  <val:b id="b0">bbb</val:b>
+  <val:c/>
+  <sect0>
+    <val:d>x, y, z</val:d>
+  </sect0>
+  <list1>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </list1>
+  <list2 id="list2">
+    <item>i</item>
+    <item>j</item>
+  </list2>
+</config>

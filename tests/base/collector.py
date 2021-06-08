@@ -90,6 +90,8 @@ def load_data(path: MaybePathT,
         if path.suffix == '.txt':
             return path.read_text()
 
+        return path
+
     raise ValueError(f'Not exist or an invalid data: {path!s}')
 
 
@@ -165,10 +167,10 @@ class TDataCollector:
         _datasets = [
             (datadir,
              [TData(data.datadir, data.inp,
-                    load_data(data.inp, should_exist=True),
+                    load_data(data.inp),
                     load_data(data.exp),
                     load_data(data.opts, default=DICT_0),
-                    load_data(data.scm, default=''),
+                    data.scm,
                     load_data(data.query, default=''),
                     load_data(data.ctx, default=DICT_0)
                     )

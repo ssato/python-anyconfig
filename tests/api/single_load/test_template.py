@@ -42,7 +42,7 @@ class TestCase(BaseTestCase):
                     inp, ac_template=True, ac_context=dict(a=1)
                 )
                 self.assertEqual(res, dict(a='{{ a'))
-                self.assertEqual(len(warns), 1)
+                self.assertTrue(len(warns) > 0)
                 self.assertTrue(issubclass(warns[-1].category, UserWarning))
                 self.assertTrue('ailed to compile ' in str(warns[-1].message))
 

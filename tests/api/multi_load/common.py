@@ -6,19 +6,15 @@
 r"""Common utility functions.
 """
 import functools
-import pathlib
 import unittest
 
-import anyconfig.dicts
 import anyconfig.api as TT
 
-
-RES_DIR = pathlib.Path(__file__).parent / '../../../' / 'res'
-DIC_0 = anyconfig.dicts.convert_to(dict())
+from tests.base import RES_DIR
 
 
 def datasets_itr(kind):
-    for rdir in sorted(pathlib.Path(RES_DIR / 'multi' / kind).glob('*')):
+    for rdir in sorted((RES_DIR / 'multi' / kind).glob('*')):
         if not rdir.is_dir():
             continue
 

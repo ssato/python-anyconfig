@@ -13,4 +13,6 @@ RES_DIR = TESTS_DIR / 'res'
 
 NULL_CNTNR = dict()
 
+DATA = '3.149265'  # for test_utils.py
+
 # vim:sw=4:ts=4:et:

@@ -6,24 +6,27 @@
 import pathlib
 import unittest
 
-from tests.base import collector as TT
+from . import common, utils as TT
 
 
-RES_DIR = TT.RES_DIR / 'base'
-DATA = 3.141592
+RES_DIR = common.RES_DIR / 'base'
 SELF = pathlib.Path(__file__)
 
 
 class TestCase(unittest.TestCase):
 
     def test_load_from_py(self):
+        common_py_path = SELF.parent / 'common.py'
         aes = [
-            ((__file__, ), DATA),
-            ((SELF, ), DATA),
-            ((__file__, 'RES_DIR'), RES_DIR)
+            ((common_py_path, ), common.DATA),
+            ((str(common_py_path), ), common.DATA),
+            ((common_py_path, 'RES_DIR'), common.RES_DIR),
         ]
         for args, exp in aes:
-            self.assertEqual(TT.load_from_py(*args), exp)
+            self.assertEqual(
+                TT.load_from_py(*args), exp,
+                f'args: {args!r}, exp: {exp!r}'
+            )
 
     def test_load_literal_data_from_py(self):
         py_path = RES_DIR / 'basics' / '20' / '00.py'

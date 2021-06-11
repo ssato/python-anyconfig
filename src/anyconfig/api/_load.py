@@ -57,7 +57,7 @@ def _maybe_schema(**options) -> typing.Optional[InDataT]:
 
 def _single_load(input_: PathOrIOInfoT,
                  ac_parser: MaybeParserOrIdOrTypeT = None,
-                 ac_template: typing.Optional[PathOrIOInfoT] = None,
+                 ac_template: typing.Optional[bool] = False,
                  ac_context: typing.Optional[MappingT] = None,
                  **options) -> InDataExT:
     """
@@ -91,7 +91,7 @@ def _single_load(input_: PathOrIOInfoT,
 
 def single_load(input_: PathOrIOInfoT,
                 ac_parser: MaybeParserOrIdOrTypeT = None,
-                ac_template: typing.Optional[PathOrIOInfoT] = None,
+                ac_template: typing.Optional[bool] = False,
                 ac_context: typing.Optional[MappingT] = None,
                 **options) -> InDataExT:
     r"""
@@ -158,7 +158,7 @@ def single_load(input_: PathOrIOInfoT,
 def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
                                     PathOrIOInfoT],
                ac_parser: MaybeParserOrIdOrTypeT = None,
-               ac_template: typing.Optional[PathOrIOInfoT] = None,
+               ac_template: typing.Optional[bool] = False,
                ac_context: typing.Optional[MappingT] = None,
                **options) -> InDataExT:
     r"""

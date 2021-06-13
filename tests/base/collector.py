@@ -55,7 +55,11 @@ class TDataCollector:
 
         for datadir, data in _datasets:
             if not data:
-                raise ValueError(f'No data in subdir: {datadir!s}')
+                raise ValueError(
+                    f'No data in subdir: {datadir!s}, '
+                    f'pattern={self.pattern}, '
+                    f'should_exist={self.should_exist!r}'
+                )
 
         return _datasets
 

@@ -42,7 +42,7 @@ def maybe_data_path(datadir: pathlib.Path, name: str,
     """
     pattern = f'{name}.{file_ext}'
     if datadir.exists() and datadir.is_dir():
-        paths = list(datadir.glob(pattern))
+        paths = sorted(datadir.glob(pattern))
         if paths:
             return paths[0]  # There should be just one file found.
 

@@ -57,7 +57,7 @@ def _maybe_schema(**options) -> typing.Optional[InDataT]:
 
 def _single_load(input_: PathOrIOInfoT,
                  ac_parser: MaybeParserOrIdOrTypeT = None,
-                 ac_template: typing.Optional[PathOrIOInfoT] = None,
+                 ac_template: typing.Optional[bool] = False,
                  ac_context: typing.Optional[MappingT] = None,
                  **options) -> InDataExT:
     """
@@ -89,7 +89,7 @@ def _single_load(input_: PathOrIOInfoT,
                       "'ac_ignore_missing' instead", DeprecationWarning)
         options['ac_ignore_missing'] = options['ignore_missing']
 
-    if ac_template is not None and filepath is not None:
+    if ac_template and filepath is not None:
         content = try_render(filepath=filepath, ctx=ac_context, **options)
         if content is not None:
             return psr.loads(content, **options)
@@ -99,7 +99,7 @@ def _single_load(input_: PathOrIOInfoT,
 
 def single_load(input_: PathOrIOInfoT,
                 ac_parser: MaybeParserOrIdOrTypeT = None,
-                ac_template: typing.Optional[PathOrIOInfoT] = None,
+                ac_template: typing.Optional[bool] = False,
                 ac_context: typing.Optional[MappingT] = None,
                 **options) -> InDataExT:
     r"""
@@ -166,7 +166,7 @@ def single_load(input_: PathOrIOInfoT,
 def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
                                     PathOrIOInfoT],
                ac_parser: MaybeParserOrIdOrTypeT = None,
-               ac_template: typing.Optional[PathOrIOInfoT] = None,
+               ac_template: typing.Optional[bool] = False,
                ac_context: typing.Optional[MappingT] = None,
                **options) -> InDataExT:
     r"""

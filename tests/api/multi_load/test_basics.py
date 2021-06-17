@@ -3,42 +3,54 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
+import collections
+
 import anyconfig.api._load as TT
 
-from tests.base import NULL_CNTNR
+from ...base import NULL_CNTNR
+from . import common
 
-from .common import BaseTestCase
+
+class MyDict(collections.OrderedDict):
+    pass
 
 
-class TestCase(BaseTestCase):
+class TestCase(common.BaseTestCase):
 
     def test_multi_load_from_empty_path_list(self):
         self.assertEqual(TT.multi_load([]), NULL_CNTNR)
 
     def test_multi_load_from_path_objects(self):
-        for rdir, exp, opts in self.datasets:
-            res = TT.multi_load(sorted(rdir.glob('*.json')), **opts)
-            self.assertEqual(res, exp, f'{rdir!s}')
+        for tdata in self.each_data():
+            self.assertEqual(
+                TT.multi_load(tdata.inputs, **tdata.opts),
+                tdata.exp
+            )
 
     def test_multi_load_from_glob_path_str(self):
-        for rdir, exp, opts in self.datasets:
-            res = TT.multi_load(str(rdir / '*.json'), **opts)
-            self.assertEqual(res, exp, f'{rdir!s}')
+        for tdata in self.each_data():
+            self.assertEqual(
+                TT.multi_load((str(i) for i in tdata.inputs), **tdata.opts),
+                tdata.exp
+            )
 
     def test_multi_load_from_streams(self):
-        for rdir, exp, opts in self.datasets:
-            paths = sorted(rdir.glob('*.json'))
-            res = TT.multi_load((p.open() for p in paths), **opts)
-            self.assertEqual(res, exp, f'{rdir!s}')
+        for tdata in self.each_data():
+            self.assertEqual(
+                TT.multi_load((i.open() for i in tdata.inputs), **tdata.opts),
+                tdata.exp
+            )
+
+    def test_multi_load_to_ac_dict(self):
+        for tdata in self.each_data():
+            res = TT.multi_load(tdata.inputs, ac_dict=MyDict, **tdata.opts)
+            self.assertEqual(res, tdata.exp, tdata)
+            self.assertTrue(isinstance(res, MyDict))
 
     def test_multi_load_with_wrong_merge_strategy(self):
-        (rdir, _exp, _opts) = self.datasets[0]
-
-        with self.assertRaises(ValueError):
-            TT.multi_load(
-                sorted(rdir.glob('*.json')), ac_merge='wrong_merge_strategy'
-            )
-            raise RuntimeError('Wrong merge strategy was not handled!')
+        for tdata in self.each_data():
+            with self.assertRaises(ValueError):
+                TT.multi_load(tdata.inputs, ac_merge='wrong_merge_strategy')
 
     def test_multi_load_with_ignore_missing_option(self):
         paths = [

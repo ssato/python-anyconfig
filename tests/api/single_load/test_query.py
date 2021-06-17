@@ -8,12 +8,12 @@ import unittest
 import anyconfig.api._load as TT
 import anyconfig.query
 
-from .common import BaseTestCase
+from . import common
 
 
 @unittest.skipIf(not anyconfig.query.SUPPORTED,
                  'jmespath lib is not available')
-class TestCase(BaseTestCase):
+class TestCase(common.BaseTestCase):
     kind = 'query'
 
     def test_single_load(self):

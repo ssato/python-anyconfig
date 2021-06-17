@@ -5,10 +5,10 @@
 # pylint: disable=missing-docstring
 import anyconfig.api._load as TT
 
-from .common import BaseTestCase
+from . import common
 
 
-class TestCase(BaseTestCase):
+class TestCase(common.BaseTestCase):
     kind = 'primitives'
 
     def test_single_load(self):

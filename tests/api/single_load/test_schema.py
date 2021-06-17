@@ -13,7 +13,7 @@ import anyconfig.schema
 
 from anyconfig.api import ValidationError
 
-from .common import BaseTestCase
+from . import common
 
 
 SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
@@ -21,7 +21,7 @@ SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
 
 @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                  'jsonschema lib is not available')
-class TestCase(BaseTestCase):
+class TestCase(common.BaseTestCase):
     kind = 'schema'
 
     def test_single_load(self):

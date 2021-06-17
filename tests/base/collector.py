@@ -4,9 +4,9 @@
 #
 """File based test data collector.
 """
-from .common import RES_DIR
-from .datatypes import TData
-from .utils import load_data, each_data_from_dir
+from . import (
+    common, datatypes, utils
+)
 
 
 DICT_0 = dict()
@@ -27,7 +27,7 @@ class TDataCollector:
     def init(self):
         """Initialize its members.
         """
-        self.root = RES_DIR / self.target / self.kind
+        self.root = common.RES_DIR / self.target / self.kind
         self.datasets = self.load_datasets()
         self.initialized = True
 
@@ -36,15 +36,16 @@ class TDataCollector:
         """
         _datasets = [
             (datadir,
-             [TData(data.datadir, data.inp,
-                    load_data(data.inp),
-                    load_data(data.exp),
-                    load_data(data.opts, default=DICT_0),
-                    data.scm,
-                    load_data(data.query, default=''),
-                    load_data(data.ctx, default=DICT_0)
-                    )
-              for data in each_data_from_dir(
+             [datatypes.TData(
+                data.datadir, data.inp,
+                utils.load_data(data.inp),
+                utils.load_data(data.exp),
+                utils.load_data(data.opts, default=DICT_0),
+                data.scm,
+                utils.load_data(data.query, default=''),
+                utils.load_data(data.ctx, default=DICT_0)
+              )
+              for data in utils.each_data_from_dir(
                   datadir, self.pattern, self.should_exist
               )]
              )

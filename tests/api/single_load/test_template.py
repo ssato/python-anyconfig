@@ -11,12 +11,12 @@ import warnings
 import anyconfig.api._load as TT
 import anyconfig.template
 
-from .common import BaseTestCase
+from . import common
 
 
 @unittest.skipIf(not anyconfig.template.SUPPORTED,
                  'jinja2 template lib is not available')
-class TestCase(BaseTestCase):
+class TestCase(common.BaseTestCase):
     kind = 'template'
     pattern = '*.j2'
 

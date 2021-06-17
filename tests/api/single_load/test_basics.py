@@ -12,9 +12,9 @@ import anyconfig.parsers
 from anyconfig.api import (
     UnknownFileTypeError, UnknownProcessorTypeError
 )
-from tests.base import NULL_CNTNR
+from ... import base
 
-from .common import BaseTestCase
+from . import common
 
 
 JSON_PARSER = anyconfig.parsers.find(None, 'json')
@@ -24,7 +24,7 @@ class MyDict(collections.OrderedDict):
     """My original dict class keep key orders."""
 
 
-class Base(BaseTestCase):
+class Base(common.BaseTestCase):
 
     def test_single_load(self):
         for data in self.each_data():
@@ -110,7 +110,7 @@ class TestCase(Base):
         assert not inp.exists()
 
         res = TT.single_load(inp, ac_parser='json', ac_ignore_missing=True)
-        self.assertEqual(res, NULL_CNTNR)
+        self.assertEqual(res, base.NULL_CNTNR)
 
 
 class AcParserTestCase(Base):

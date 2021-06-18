@@ -5,7 +5,6 @@
 """File based test data collector.
 """
 import inspect
-import pathlib
 
 from . import (
     common, datatypes, utils
@@ -18,7 +17,7 @@ DICT_0 = dict()
 class TDataCollector:
     """File based test data collector.
     """
-    target = 'base'  # Default value will be replaced in self.init.
+    target = ''  # Initial value will be replaced in self.init.
     kind = 'basics'
     pattern = '*.json'  # input file name pattern
     should_exist = ('e', )  # expected data files should be found always.

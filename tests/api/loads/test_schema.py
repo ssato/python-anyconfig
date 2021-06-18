@@ -19,7 +19,7 @@ SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
 
 @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                  'jsonschema lib is not available')
-class TestCase(common.BaseTestCase):
+class TestCase(common.TestCase):
     kind = 'schema'
 
     def test_loads_with_schema_validation(self):

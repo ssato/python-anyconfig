@@ -13,7 +13,7 @@ from . import common
 
 @unittest.skipIf(not anyconfig.query.SUPPORTED,
                  'jmespath lib is not available')
-class TestCase(common.BaseTestCase):
+class TestCase(common.TestCase):
     kind = 'query'
 
     def test_loads_with_query(self):

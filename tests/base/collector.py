@@ -4,6 +4,7 @@
 #
 """File based test data collector.
 """
+import inspect
 import pathlib
 
 from . import (
@@ -17,7 +18,7 @@ DICT_0 = dict()
 class TDataCollector:
     """File based test data collector.
     """
-    target = pathlib.Path(__file__).parent.name
+    target = 'base'  # Default value will be replaced in self.init.
     kind = 'basics'
     pattern = '*.json'  # input file name pattern
     should_exist = ('e', )  # expected data files should be found always.
@@ -26,9 +27,17 @@ class TDataCollector:
     datasets = []
     initialized = False
 
+    @classmethod
+    def resolve_target(cls):
+        """
+        Resolve target by this file path.
+        """
+        return utils.target_by_parent(inspect.getfile(cls))
+
     def init(self):
         """Initialize its members.
         """
+        self.target = self.resolve_target()
         self.root = common.RES_DIR / self.target / self.kind
         self.datasets = self.load_datasets()
         self.initialized = True

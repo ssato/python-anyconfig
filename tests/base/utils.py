@@ -16,6 +16,14 @@ from .datatypes import (
 )
 
 
+def target_by_parent(self: str = __file__):
+    """
+    >>> target_by_parent()
+    'base'
+    """
+    return pathlib.Path(self).parent.name
+
+
 def load_from_py(py_path: typing.Union[str, pathlib.Path],
                  data_name: str = 'DATA') -> DictT:
     """.. note:: It's not safe always.

@@ -15,6 +15,14 @@ SELF = pathlib.Path(__file__)
 
 class TestCase(unittest.TestCase):
 
+    def test_target_by_parent(self):
+        aes = [
+            ((), 'base'),
+            ((__file__, ), 'base'),
+        ]
+        for args, exp in aes:
+            self.assertEqual(TT.target_by_parent(*args), exp)
+
     def test_load_from_py(self):
         common_py_path = SELF.parent / 'common.py'
         aes = [

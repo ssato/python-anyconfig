@@ -7,7 +7,7 @@ from . import common
 
 
 class TestCase(common.TestCase):
-    kind = 'mixed_types'
+    kind = 'multi_types'
     pattern = '*.*'
 
 # vim:sw=4:ts=4:et:

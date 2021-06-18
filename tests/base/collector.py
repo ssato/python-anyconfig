@@ -5,6 +5,8 @@
 """File based test data collector.
 """
 import inspect
+import pathlib
+import typing
 
 from . import (
     common, datatypes, utils
@@ -17,23 +19,25 @@ DICT_0 = dict()
 class TDataCollector:
     """File based test data collector.
     """
-    target = ''  # Initial value will be replaced in self.init.
-    kind = 'basics'
-    pattern = '*.json'  # input file name pattern
-    should_exist = ('e', )  # expected data files should be found always.
+    target: str = ''  # Initial value will be replaced in self.init.
+    kind: str = 'basics'
+    pattern: str = '*.json'  # input file name pattern
 
-    root = None
-    datasets = []
-    initialized = False
+    # sub dir names of expected data files should be found always.
+    should_exist: typing.Iterable[str] = ('e', )
+
+    root: typing.Optional[pathlib.Path] = None
+    datasets: typing.List[datatypes.TData] = []
+    initialized: bool = False
 
     @classmethod
-    def resolve_target(cls):
+    def resolve_target(cls) -> str:
         """
         Resolve target by this file path.
         """
         return utils.target_by_parent(inspect.getfile(cls))
 
-    def init(self):
+    def init(self) -> None:
         """Initialize its members.
         """
         self.target = self.resolve_target()
@@ -41,7 +45,7 @@ class TDataCollector:
         self.datasets = self.load_datasets()
         self.initialized = True
 
-    def load_datasets(self):
+    def load_datasets(self) -> typing.List[datatypes.TData]:
         """Load test data from files.
         """
         _datasets = [
@@ -74,7 +78,7 @@ class TDataCollector:
 
         return _datasets
 
-    def each_data(self):
+    def each_data(self) -> typing.Iterable[datatypes.TData]:
         """Yields test data.
         """
         if not self.initialized:

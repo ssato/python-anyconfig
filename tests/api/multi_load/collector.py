@@ -4,40 +4,22 @@
 #
 """Collector to collect file based test data.
 """
-import pathlib
 import typing
 
 from ... import base
-from .datatypes import TData
-from .utils import each_data_from_dir
+from . import datatypes, utils
 
 
-class DataCollector:
+class DataCollector(base.TDataCollector):
     """Data collector for api.multi_load
     """
-    target: str = 'multi_load'
-    kind: str = 'basics'
-    pattern: str = '*.json'  # input file name pattern
-
-    # expected data files should be found always.
-    should_exist: typing.Iterable[str] = ('e', )
-
-    root: typing.Optional[pathlib.Path] = None
-    datasets: typing.List[TData] = []
-    initialized: bool = False
-
-    def init(self):
-        """Initialize its members.
-        """
-        self.root = base.RES_DIR / self.target / self.kind
-        self.datasets = self.load_datasets()
-        self.initialized = True
-
-    def load_datasets(self) -> typing.List[TData]:
+    def load_datasets(self) -> typing.List[datatypes.TData]:
         """Load test data from files.
         """
         _datasets = sorted(
-            each_data_from_dir(self.root, self.pattern, self.should_exist)
+            utils.each_data_from_dir(
+                self.root, self.pattern, self.should_exist
+            )
         )
         if not _datasets:
             raise ValueError(f'No data: {self.root!s}')
@@ -48,7 +30,7 @@ class DataCollector:
 
         return _datasets
 
-    def each_data(self) -> typing.Iterator[TData]:
+    def each_data(self) -> typing.Iterator[datatypes.TData]:
         """Yields test data.
         """
         if not self.initialized:

@@ -3,21 +3,11 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-import anyconfig.api._load as TT
-
 from . import common
 
 
-class TestCase(common.BaseTestCase):
+class TestCase(common.TestCase):
     kind = 'mixed_types'
     pattern = '*.*'
-
-    def test_multi_load_from_mixed_file_types_data(self):
-        for tdata in self.each_data():
-            self.assertEqual(
-                TT.multi_load(tdata.inputs, **tdata.opts),
-                tdata.exp,
-                tdata
-            )
 
 # vim:sw=4:ts=4:et:

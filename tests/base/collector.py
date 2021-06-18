@@ -40,8 +40,12 @@ class TDataCollector:
     def init(self) -> None:
         """Initialize its members.
         """
-        self.target = self.resolve_target()
-        self.root = common.RES_DIR / self.target / self.kind
+        if not self.target:
+            self.target = self.resolve_target()
+
+        if not self.root:
+            self.root = common.RES_DIR / self.target / self.kind
+
         self.datasets = self.load_datasets()
         self.initialized = True
 

@@ -57,7 +57,7 @@ def _maybe_schema(**options) -> typing.Optional[InDataT]:
 
 def _single_load(input_: PathOrIOInfoT,
                  ac_parser: MaybeParserOrIdOrTypeT = None,
-                 ac_template: typing.Optional[bool] = False,
+                 ac_template: bool = False,
                  ac_context: typing.Optional[MappingT] = None,
                  **options) -> InDataExT:
     """
@@ -91,7 +91,7 @@ def _single_load(input_: PathOrIOInfoT,
 
 def single_load(input_: PathOrIOInfoT,
                 ac_parser: MaybeParserOrIdOrTypeT = None,
-                ac_template: typing.Optional[bool] = False,
+                ac_template: bool = False,
                 ac_context: typing.Optional[MappingT] = None,
                 **options) -> InDataExT:
     r"""
@@ -158,7 +158,7 @@ def single_load(input_: PathOrIOInfoT,
 def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
                                     PathOrIOInfoT],
                ac_parser: MaybeParserOrIdOrTypeT = None,
-               ac_template: typing.Optional[bool] = False,
+               ac_template: bool = False,
                ac_context: typing.Optional[MappingT] = None,
                **options) -> InDataExT:
     r"""
@@ -225,12 +225,12 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
     if are_same_file_types(paths):
         ac_parser = parsers_find(paths[0], forced_type=ac_parser)
 
-    cnf = ac_context
+    cnf = None
     for path in paths:
-        opts = options.copy()
-
-        cups = _single_load(path, ac_parser=ac_parser,
-                            ac_template=ac_template, ac_context=cnf, **opts)
+        cups = _single_load(
+            path, ac_parser=ac_parser, ac_template=ac_template,
+            ac_context=ac_context, **options
+        )
         if cups:
             if cnf is None:
                 cnf = cups  # type: ignore

@@ -5,30 +5,31 @@
 # pylint: disable=missing-docstring
 import unittest
 
-import anyconfig.api._load as TT
 import anyconfig.query
 
-from .common import BaseTestCase
+from . import common
 
 
 @unittest.skipIf(not anyconfig.query.SUPPORTED,
                  'jmespath lib is not available')
-class TestCase(BaseTestCase):
-
+class TestCase(common.TestCase):
     kind = 'query'
+    should_exist = ('e', 'q')
 
-    def test_multi_load_with_query(self):
-        iqes = (
-            (rdir,
-             sorted(rdir.glob('*.json')),   # inputs
-             (rdir / 'q' / 'q.txt').read_text().strip(),
-             exp,
-             opts)
-            for rdir, exp, opts in self.datasets
-        )
+    def test_multi_load(self):
+        for tdata in self.each_data():
+            self.assertEqual(
+                self.target_fn(
+                    tdata.inputs, ac_query=tdata.query, **tdata.opts
+                ),
+                tdata.exp
+            )
 
-        for rdir, inputs, query, exp, opts in iqes:
-            res = TT.multi_load(inputs, ac_query=query)
-            self.assertEqual(res, exp, f'{rdir!s}')
+    def test_multi_load_with_invalid_query(self):
+        for tdata in self.each_data():
+            self.assertEqual(
+                self.target_fn(tdata.inputs, ac_query='', **tdata.opts),
+                self.target_fn(tdata.inputs)
+            )
 
 # vim:sw=4:ts=4:et:

@@ -12,9 +12,8 @@ import anyconfig.parsers
 from anyconfig.api import (
     UnknownFileTypeError, UnknownProcessorTypeError
 )
-from tests.base import NULL_CNTNR
-
-from .common import BaseTestCase
+from ... import base
+from . import common
 
 
 JSON_PARSER = anyconfig.parsers.find(None, 'json')
@@ -24,26 +23,7 @@ class MyDict(collections.OrderedDict):
     """My original dict class keep key orders."""
 
 
-class Base(BaseTestCase):
-
-    def test_single_load(self):
-        for data in self.each_data():
-            self.assertEqual(
-                TT.single_load(data.inp_path, **data.opts),
-                data.exp,
-                f'{data.datadir!s}, {data.inp_path!s}'
-            )
-
-    def test_single_load_intentional_failures(self):
-        for data in self.each_data():
-            with self.assertRaises(AssertionError):
-                self.assertEqual(
-                    TT.single_load(data.inp_path, **data.opts),
-                    None
-                )
-
-
-class TestCase(Base):
+class TestCase(common.TestCase):
 
     def test_single_load_from_stream(self):
         for data in self.each_data():
@@ -110,11 +90,6 @@ class TestCase(Base):
         assert not inp.exists()
 
         res = TT.single_load(inp, ac_parser='json', ac_ignore_missing=True)
-        self.assertEqual(res, NULL_CNTNR)
-
-
-class AcParserTestCase(Base):
-    kind = 'ac_parser'
-    pattern = '*.conf'
+        self.assertEqual(res, base.NULL_CNTNR)
 
 # vim:sw=4:ts=4:et:

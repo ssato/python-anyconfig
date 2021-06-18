@@ -6,20 +6,19 @@
 import pathlib
 import pickle
 import tempfile
-import unittest
 
 import anyconfig.api._open as TT
+import anyconfig.api._load as LD
+
+from . import common
 
 
-from ..common import respath
-
-
-class TestCase(unittest.TestCase):
+class TestCase(common.BaseTestCase):
 
     def test_open_text_io(self):
-        path = respath('common/10.json')
-        with TT.open(path) as fio:
-            self.assertEqual(fio.mode, 'r')
+        for data in self.each_data():
+            with TT.open(data.inp_path, **data.opts) as inp:
+                self.assertEqual(LD.loads(inp.read(), **data.opts), data.inp)
 
     def test_open_byte_io(self):
         cnf = dict(a=1, b='b')
@@ -30,5 +29,9 @@ class TestCase(unittest.TestCase):
 
             with TT.open(path) as fio:
                 self.assertEqual(fio.mode, 'rb')
+                self.assertEqual(
+                    LD.loads(fio.read(), ac_parser='pickle'),
+                    LD.load(path)
+                )
 
 # vim:sw=4:ts=4:et:

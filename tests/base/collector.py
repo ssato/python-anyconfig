@@ -4,9 +4,13 @@
 #
 """File based test data collector.
 """
-from .common import RES_DIR
-from .datatypes import TData
-from .utils import load_data, each_data_from_dir
+import inspect
+import pathlib
+import typing
+
+from . import (
+    common, datatypes, utils
+)
 
 
 DICT_0 = dict()
@@ -15,36 +19,51 @@ DICT_0 = dict()
 class TDataCollector:
     """File based test data collector.
     """
-    target = 'base'
-    kind = 'basics'
-    pattern = '*.json'  # input file name pattern
-    should_exist = ('e', )  # expected data files should be found always.
+    target: str = ''  # Initial value will be replaced in self.init.
+    kind: str = 'basics'
+    pattern: str = '*.json'  # input file name pattern
 
-    root = None
-    datasets = []
-    initialized = False
+    # sub dir names of expected data files should be found always.
+    should_exist: typing.Iterable[str] = ('e', )
 
-    def init(self):
+    root: typing.Optional[pathlib.Path] = None
+    datasets: typing.List[datatypes.TData] = []
+    initialized: bool = False
+
+    @classmethod
+    def resolve_target(cls) -> str:
+        """
+        Resolve target by this file path.
+        """
+        return utils.target_by_parent(inspect.getfile(cls))
+
+    def init(self) -> None:
         """Initialize its members.
         """
-        self.root = RES_DIR / self.target / self.kind
+        if not self.target:
+            self.target = self.resolve_target()
+
+        if not self.root:
+            self.root = common.RES_DIR / self.target / self.kind
+
         self.datasets = self.load_datasets()
         self.initialized = True
 
-    def load_datasets(self):
+    def load_datasets(self) -> typing.List[datatypes.TData]:
         """Load test data from files.
         """
         _datasets = [
             (datadir,
-             [TData(data.datadir, data.inp,
-                    load_data(data.inp),
-                    load_data(data.exp),
-                    load_data(data.opts, default=DICT_0),
-                    data.scm,
-                    load_data(data.query, default=''),
-                    load_data(data.ctx, default=DICT_0)
-                    )
-              for data in each_data_from_dir(
+             [datatypes.TData(
+                data.datadir, data.inp,
+                utils.load_data(data.inp),
+                utils.load_data(data.exp),
+                utils.load_data(data.opts, default=DICT_0),
+                data.scm,
+                utils.load_data(data.query, default=''),
+                utils.load_data(data.ctx, default=DICT_0)
+              )
+              for data in utils.each_data_from_dir(
                   datadir, self.pattern, self.should_exist
               )]
              )
@@ -55,11 +74,15 @@ class TDataCollector:
 
         for datadir, data in _datasets:
             if not data:
-                raise ValueError(f'No data in subdir: {datadir!s}')
+                raise ValueError(
+                    f'No data in subdir: {datadir!s}, '
+                    f'pattern={self.pattern}, '
+                    f'should_exist={self.should_exist!r}'
+                )
 
         return _datasets
 
-    def each_data(self):
+    def each_data(self) -> typing.Iterable[datatypes.TData]:
         """Yields test data.
         """
         if not self.initialized:

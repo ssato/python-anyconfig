@@ -12,7 +12,7 @@ from anyconfig.api import UnknownProcessorTypeError
 from . import common
 
 
-class TestCase(common.BaseTestCase):
+class TestCase(common.TestCase):
 
     def test_loads(self):
         for data in self.each_data():

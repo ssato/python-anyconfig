@@ -5,40 +5,37 @@
 # pylint: disable=missing-docstring
 r"""Common utility functions.
 """
-import functools
 import unittest
 
-import anyconfig.api as TT
+import anyconfig.api._load as TT
 
-from tests.base import RES_DIR
-
-
-def datasets_itr(kind):
-    for rdir in sorted((RES_DIR / 'multi' / kind).glob('*')):
-        if not rdir.is_dir():
-            continue
-
-        exp = TT.single_load(rdir / 'e' / 'exp.json')
-        opts = TT.single_load(rdir / 'options' / '00.json')
-
-        yield (rdir, exp, opts)
+from . import collector
 
 
-def gen_datasets(kind):
-    datasets = sorted(datasets_itr(kind))
-    if not datasets:
-        raise RuntimeError('No test data was found!')
+class TestCase(unittest.TestCase, collector.DataCollector):
 
-    return datasets
+    @staticmethod
+    def target_fn(*args, **kwargs):
+        return TT.multi_load(*args, **kwargs)
 
+    def setUp(self):
+        self.init()
 
-class BaseTestCase(unittest.TestCase):
+    def test_multi_load(self):
+        for tdata in self.each_data():
+            self.assertEqual(
+                self.target_fn(tdata.inputs, **tdata.opts),
+                tdata.exp,
+                tdata
+            )
 
-    kind = 'basics'
-
-    @property
-    @functools.lru_cache(None)
-    def datasets(self):
-        return gen_datasets(self.kind)
+    def test_multi_load_failures(self):
+        for tdata in self.each_data():
+            with self.assertRaises(AssertionError):
+                self.assertEqual(
+                    self.target_fn(tdata.inputs, **tdata.opts),
+                    None,
+                    tdata
+                )
 
 # vim:sw=4:ts=4:et:

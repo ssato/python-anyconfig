@@ -8,22 +8,21 @@ import tempfile
 import unittest
 import warnings
 
-import anyconfig.api._load as TT
 import anyconfig.template
 
-from .common import BaseTestCase
+from . import common
 
 
 @unittest.skipIf(not anyconfig.template.SUPPORTED,
                  'jinja2 template lib is not available')
-class TestCase(BaseTestCase):
+class TestCase(common.TestCase):
     kind = 'template'
     pattern = '*.j2'
 
     def test_single_load(self):
         for data in self.each_data():
             self.assertEqual(
-                TT.single_load(
+                self.target_fn(
                     data.inp_path, ac_context=data.ctx, **data.opts
                 ),
                 data.exp,
@@ -38,7 +37,7 @@ class TestCase(BaseTestCase):
 
             with warnings.catch_warnings(record=True) as warns:
                 warnings.simplefilter('always')
-                res = TT.single_load(
+                res = self.target_fn(
                     inp, ac_template=True, ac_context=dict(a=1)
                 )
                 self.assertEqual(res, dict(a='{{ a'))
@@ -51,7 +50,7 @@ class TestCase(BaseTestCase):
         for data in self.each_data():
             with self.assertRaises(AssertionError):
                 self.assertEqual(
-                    TT.single_load(
+                    self.target_fn(
                         data.inp_path, ac_context=data.ctx, **data.opts
                     ),
                     ng_exp

@@ -1,0 +1,6 @@
+mypy
+types-Jinja2
+types-PyYAML
+types-pkg_resources
+types-simplejson
+types-toml

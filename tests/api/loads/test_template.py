@@ -14,7 +14,7 @@ from . import common
 
 @unittest.skipIf(not anyconfig.template.SUPPORTED,
                  'jinja2 template lib is not available')
-class TestCase(common.BaseTestCase):
+class TestCase(common.TestCase):
     kind = 'template'
 
     def test_loads_template(self):

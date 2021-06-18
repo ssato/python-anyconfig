@@ -8,12 +8,11 @@ import tempfile
 import unittest
 import warnings
 
-import anyconfig.api._load as TT
 import anyconfig.schema
 
 from anyconfig.api import ValidationError
 
-from .common import BaseTestCase
+from . import common
 
 
 SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
@@ -21,18 +20,8 @@ SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
 
 @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                  'jsonschema lib is not available')
-class TestCase(BaseTestCase):
+class TestCase(common.TestCase):
     kind = 'schema'
-
-    def test_single_load(self):
-        for data in self.each_data():
-            self.assertEqual(
-                TT.single_load(
-                    data.inp_path, ac_schema=data.scm, **data.opts
-                ),
-                data.exp,
-                f'{data.datadir!s}, {data.inp_path!s}'
-            )
 
     def test_single_load_with_validateion_failures(self):
         with tempfile.TemporaryDirectory() as tdir:
@@ -44,7 +33,7 @@ class TestCase(BaseTestCase):
                 with warnings.catch_warnings(record=True) as warns:
                     warnings.simplefilter('always')
                     self.assertEqual(
-                        TT.single_load(
+                        self.target_fn(
                             data.inp_path, ac_schema=scm, ac_schema_safe=True,
                             **data.opts
                         ),
@@ -57,7 +46,7 @@ class TestCase(BaseTestCase):
                     self.assertTrue('scm=' in str(warns[-1].message))
 
                 with self.assertRaises(ValidationError):
-                    TT.single_load(
+                    self.target_fn(
                         data.inp_path, ac_schema=scm, ac_schema_safe=False
                     )
 

@@ -5,7 +5,6 @@
 # pylint: disable=missing-docstring
 import unittest
 
-import anyconfig.api._load as TT
 import anyconfig.query
 
 from . import common
@@ -13,13 +12,13 @@ from . import common
 
 @unittest.skipIf(not anyconfig.query.SUPPORTED,
                  'jmespath lib is not available')
-class TestCase(common.BaseTestCase):
+class TestCase(common.TestCase):
     kind = 'query'
 
     def test_single_load(self):
         for data in self.each_data():
             self.assertEqual(
-                TT.single_load(
+                self.target_fn(
                     data.inp_path, ac_query=data.query.strip(), **data.opts
                 ),
                 data.exp,
@@ -29,10 +28,10 @@ class TestCase(common.BaseTestCase):
     def test_single_load_with_invalid_query_string(self):
         for data in self.each_data():
             self.assertEqual(
-                TT.single_load(
+                self.target_fn(
                     data.inp_path, ac_query=None, **data.opts
                 ),
-                TT.single_load(data.inp_path, **data.opts),
+                self.target_fn(data.inp_path, **data.opts),
                 f'{data.datadir!s}, {data.inp_path!s}'
             )
 
@@ -41,7 +40,7 @@ class TestCase(common.BaseTestCase):
             with self.assertRaises(AssertionError):
                 exp = dict(z=1, zz='zz', zzz=[1, 2, 3], zzzz=dict(z=0))
                 self.assertEqual(
-                    TT.single_load(
+                    self.target_fn(
                         data.inp_path, ac_query=data.query, **data.opts
                     ),
                     exp

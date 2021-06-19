@@ -96,29 +96,29 @@ def _parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
     :param sep: Seprator string
     :return: Generator to yield (key, value) pair of 'dic'
     """
-    parse = _parse if options.get('ac_parse_value') else noop
+    __parse = _parse if options.get('ac_parse_value') else noop
     for key, val in items:
-        yield (key, parse(val, sep))  # type: ignore
+        yield (key, __parse(val, sep))  # type: ignore
 
 
 def _make_parser(**kwargs):
     """
     :return: (keyword args to be used, parser object)
     """
-    # Optional arguements for configparser.SafeConfigParser{,readfp}
+    # Optional arguements for configparser.ConfigParser{,readfp}
     kwargs_0 = filter_options(
         ('defaults', 'dict_type', 'allow_no_value'), kwargs
     )
     kwargs_1 = filter_options(('filename', ), kwargs)
 
     try:
-        psr = configparser.SafeConfigParser(**kwargs_0)
+        psr = configparser.ConfigParser(**kwargs_0)
     except TypeError:
         # .. note::
         #    It seems ConfigParser.*ConfigParser in python 2.6 does not support
         #    'allow_no_value' option parameter, and TypeError will be thrown.
         kwargs_0 = filter_options(('defaults', 'dict_type'), kwargs)
-        psr = configparser.SafeConfigParser(**kwargs_0)
+        psr = configparser.ConfigParser(**kwargs_0)
 
     return (kwargs_1, psr)
 

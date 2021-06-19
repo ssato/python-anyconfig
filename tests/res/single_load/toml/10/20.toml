@@ -1,0 +1,7 @@
+a = 1
+name = "aaa"
+
+[b]
+b = [ 1, 2,]
+c = "C"
+d = true

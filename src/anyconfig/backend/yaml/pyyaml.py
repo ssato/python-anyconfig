@@ -136,7 +136,7 @@ def yml_fnc_by_name(fname, **options):
     return getattr(yaml, f'safe_{fname}' if options.get('ac_safe') else fname)
 
 
-def yml_fnc(fname, *args, **options):
+def yml_fnc_(fname, *args, **options):
     """An wrapper of yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
 
     :param fname:
@@ -149,7 +149,7 @@ def yml_fnc(fname, *args, **options):
     return fnc(*args, **common.filter_from_options('ac_safe', options))
 
 
-def yml_load(stream, container, yml_fnc=yml_fnc, **options):
+def yml_load(stream, container, yml_fnc=yml_fnc_, **options):
     """An wrapper of yaml.safe_load and yaml.load.
 
     :param stream: a file or file-like object to load YAML content
@@ -176,7 +176,7 @@ def yml_load(stream, container, yml_fnc=yml_fnc, **options):
     return ret
 
 
-def yml_dump(data, stream, yml_fnc=yml_fnc, **options):
+def yml_dump(data, stream, yml_fnc=yml_fnc_, **options):
     """An wrapper of yaml.safe_dump and yaml.dump.
 
     :param data: Some data to dump

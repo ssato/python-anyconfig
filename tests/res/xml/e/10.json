@@ -1,0 +1,9 @@
+{"a": {
+    "@attrs": {
+        "xmlns": "http://example.com/ns/config",
+        "xmlns:val": "http://example.com/ns/config/val"
+    },
+    "b": "1",
+    "val:c": "C"
+ }
+}

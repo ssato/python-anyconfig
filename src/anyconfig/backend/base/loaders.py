@@ -15,7 +15,6 @@ from ...utils import (
 from .datatypes import (
     InDataExT, IoiT, GenContainerT, OptionsT
 )
-from .mixins import TextFilesMixin
 from .utils import not_implemented
 
 
@@ -39,11 +38,13 @@ class LoaderMixin:
     - _allow_primitives: True if the parser.load* may return objects of
       primitive data types other than mapping types such like JSON parser
     - _dict_opts: Backend options to customize dict class to make results
+    - _open_read_mode: Backend option to specify read mode passed to open()
     """
     _load_opts: typing.List[str] = []
     _ordered: bool = False
     _allow_primitives: bool = False
     _dict_opts: typing.List[str] = []
+    _open_read_mode: str = 'r'
 
     @classmethod
     def ordered(cls) -> bool:
@@ -67,6 +68,14 @@ class LoaderMixin:
         :return: List of dict factory options
         """
         return cls._dict_opts
+
+    def ropen(self, filepath, **kwargs):
+        """
+        :param filepath: Path to file to open to read data
+        """
+        return open(  # pylint: disable=consider-using-with
+            filepath, self._open_read_mode, **kwargs
+        )
 
     def _container_factory(self, **options) -> GenContainerT:
         """
@@ -203,7 +212,14 @@ class LoaderMixin:
         return cnf
 
 
-class FromStringLoaderMixin(LoaderMixin, TextFilesMixin):
+class BinaryLoaderMixin(LoaderMixin):
+    """
+    Mixin class to load binary (byte string) configuration files.
+    """
+    _open_read_mode: str = 'rb'
+
+
+class FromStringLoaderMixin(LoaderMixin):
     """
     Abstract config parser provides a method to load configuration from string
     content to help implement parser of which backend lacks of such function.
@@ -239,7 +255,7 @@ class FromStringLoaderMixin(LoaderMixin, TextFilesMixin):
             return self.load_from_stream(inp, container, **kwargs)
 
 
-class FromStreamLoaderMixin(LoaderMixin, TextFilesMixin):
+class FromStreamLoaderMixin(LoaderMixin):
     """
     Abstract config parser provides a method to load configuration from string
     content to help implement parser of which backend lacks of such function.

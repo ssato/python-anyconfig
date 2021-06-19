@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
@@ -57,7 +57,7 @@ def _maybe_schema(**options) -> typing.Optional[InDataT]:
 
 def _single_load(input_: PathOrIOInfoT,
                  ac_parser: MaybeParserOrIdOrTypeT = None,
-                 ac_template: typing.Optional[bool] = False,
+                 ac_template: bool = False,
                  ac_context: typing.Optional[MappingT] = None,
                  **options) -> InDataExT:
     """
@@ -81,15 +81,7 @@ def _single_load(input_: PathOrIOInfoT,
     psr: ParserT = parsers_find(ioi, forced_type=ac_parser)
     filepath = ioi.path
 
-    # .. note::
-    #    This will be kept for backward compatibility until 'ignore_missing'
-    #    option is deprecated and removed completely.
-    if 'ignore_missing' in options:
-        warnings.warn("keyword option 'ignore_missing' is deprecated, use "
-                      "'ac_ignore_missing' instead", DeprecationWarning)
-        options['ac_ignore_missing'] = options['ignore_missing']
-
-    if ac_template and filepath is not None:
+    if ac_template and filepath:
         content = try_render(filepath=filepath, ctx=ac_context, **options)
         if content is not None:
             return psr.loads(content, **options)
@@ -99,7 +91,7 @@ def _single_load(input_: PathOrIOInfoT,
 
 def single_load(input_: PathOrIOInfoT,
                 ac_parser: MaybeParserOrIdOrTypeT = None,
-                ac_template: typing.Optional[bool] = False,
+                ac_template: bool = False,
                 ac_context: typing.Optional[MappingT] = None,
                 **options) -> InDataExT:
     r"""
@@ -166,7 +158,7 @@ def single_load(input_: PathOrIOInfoT,
 def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
                                     PathOrIOInfoT],
                ac_parser: MaybeParserOrIdOrTypeT = None,
-               ac_template: typing.Optional[bool] = False,
+               ac_template: bool = False,
                ac_context: typing.Optional[MappingT] = None,
                **options) -> InDataExT:
     r"""
@@ -233,16 +225,33 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
     if are_same_file_types(paths):
         ac_parser = parsers_find(paths[0], forced_type=ac_parser)
 
-    cnf = ac_context
+    cnf = None
+    ctx = dicts_convert_to({}, **options)
+    if ac_context:
+        ctx = ac_context.copy()
+
     for path in paths:
-        opts = options.copy()
-        cups = _single_load(path, ac_parser=ac_parser,
-                            ac_template=ac_template, ac_context=cnf, **opts)
+        cups = _single_load(
+            path, ac_parser=ac_parser, ac_template=ac_template,
+            ac_context=ctx, **options
+        )
         if cups:
             if cnf is None:
                 cnf = cups  # type: ignore
-            elif is_dict_like(cups):
-                dicts_merge(cnf, typing.cast(MappingT, cups), **options)
+
+            if is_dict_like(cups):
+                dicts_merge(
+                    typing.cast(MappingT, cnf),
+                    typing.cast(MappingT, cups),
+                    **options
+                )
+                dicts_merge(ctx, typing.cast(MappingT, cups), **options)
+            elif len(paths) > 1:
+                raise ValueError(
+                    f'Object loaded from {path!r} is not a mapping object and '
+                    'cannot be merged with later ones will be loaded from '
+                    'other inputs.'
+                )
 
     if cnf is None:
         return dicts_convert_to({}, **options)

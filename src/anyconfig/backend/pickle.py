@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017 - 2020 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2017 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Pickle backend:
@@ -27,10 +27,7 @@ Changelog:
 
 .. versionadded:: 0.8.3
 """
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle  # type: ignore
+import pickle
 
 from . import base
 
@@ -39,7 +36,8 @@ LOAD_OPTS = ['fix_imports', 'encoding', 'errors']
 DUMP_OPTS = ['protocol', 'fix_imports']
 
 
-class Parser(base.StringStreamFnParser, base.BinaryFilesMixin):
+class Parser(base.StringStreamFnParser,
+             base.BinaryLoaderMixin, base.BinaryDumperMixin):
     """
     Parser for Pickle files.
     """

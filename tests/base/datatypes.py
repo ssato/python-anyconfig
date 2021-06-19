@@ -34,7 +34,7 @@ class TData(typing.NamedTuple):
     exp: DictT
     opts: DictT
     scm: typing.Union[pathlib.Path, str]
-    query: typing.Union[pathlib.Path, str]
+    query: str
     ctx: DictT
 
 # vim:sw=4:ts=4:et:

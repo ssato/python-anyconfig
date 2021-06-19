@@ -226,16 +226,26 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
         ac_parser = parsers_find(paths[0], forced_type=ac_parser)
 
     cnf = None
+    ctx = dicts_convert_to({}, **options)
+    if ac_context:
+        ctx = ac_context.copy()
+
     for path in paths:
         cups = _single_load(
             path, ac_parser=ac_parser, ac_template=ac_template,
-            ac_context=ac_context, **options
+            ac_context=ctx, **options
         )
         if cups:
             if cnf is None:
                 cnf = cups  # type: ignore
-            elif is_dict_like(cups):
-                dicts_merge(cnf, typing.cast(MappingT, cups), **options)
+
+            if is_dict_like(cups):
+                dicts_merge(
+                    typing.cast(MappingT, cnf),
+                    typing.cast(MappingT, cups),
+                    **options
+                )
+                dicts_merge(ctx, typing.cast(MappingT, cups), **options)
             elif len(paths) > 1:
                 raise ValueError(
                     f'Object loaded from {path!r} is not a mapping object and '

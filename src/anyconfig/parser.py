@@ -19,7 +19,7 @@ PrimitiveT = typing.Union[str, int, float, bool]
 PrimitivesT = typing.List[PrimitiveT]
 
 
-def parse_single(str_: str) -> PrimitiveT:
+def parse_single(str_: typing.Optional[str]) -> PrimitiveT:
     """
     Very simple parser to parse an expression represents a primitive value.
 
@@ -67,11 +67,8 @@ def parse_single(str_: str) -> PrimitiveT:
 
 def parse_list(str_: str, sep: str = ',') -> PrimitivesT:
     """
-    Simple parser to parse expressions reprensent some list values.
-
-    :param str_: a string to parse
-    :param sep: Char to separate items of list
-    :return: [Int | Bool | String]
+    Simple parser to parse an expression ``str_`` contains a list of str-es
+    separated with ``sep``, represents a list of primitive values.
 
     >>> parse_list('')
     []
@@ -174,9 +171,13 @@ ResultsT = typing.Union[
 ]
 
 
-def parse(str_: str, lsep: str = ',', avsep: str = ':', vssep: str = ',',
+def parse(str_: typing.Optional[str],
+          lsep: str = ',', avsep: str = ':', vssep: str = ',',
           avssep: str = ';') -> ResultsT:
     """Generic parser"""
+    if str_ is None or not str_:
+        return parse_single(str_)
+
     if avsep in str_:
         return parse_attrlist(str_, avsep, vssep, avssep)
     if lsep in str_:

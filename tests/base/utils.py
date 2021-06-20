@@ -5,6 +5,7 @@
 """File based test data collector.
 """
 import ast
+import collections
 import importlib.util
 import json
 import pathlib
@@ -63,7 +64,8 @@ def maybe_data_path(datadir: pathlib.Path, name: str,
 def load_data(path: MaybePathT,
               default: typing.Optional[typing.Any] = None,
               should_exist: bool = False,
-              exec_py: bool = False
+              exec_py: bool = False,
+              ordered: bool = False
               ) -> typing.Union[DictT, str]:
     """
     Return data loaded from given path or the default value.
@@ -73,6 +75,11 @@ def load_data(path: MaybePathT,
 
     if path.exists():
         if path.suffix == '.json':
+            if ordered:
+                return json.load(
+                    path.open(), object_hook=collections.OrderedDict
+                )
+
             return json.load(path.open())
 
         if path.suffix == '.py':

@@ -10,20 +10,18 @@ import warnings
 
 
 INT_PATTERN: typing.Pattern = re.compile(r"^(\d|([1-9]\d+))$")
+FLOAT_PATTERN: typing.Pattern = re.compile(r"^\d+[\.]\d+$")
 BOOL_PATTERN: typing.Pattern = re.compile(r"^(true|false)$", re.I)
 STR_PATTERN: typing.Pattern = re.compile(r"^['\"](.*)['\"]$")
 
 
-PrimitiveT = typing.Union[str, int, bool]
+PrimitiveT = typing.Union[str, int, float, bool]
 PrimitivesT = typing.List[PrimitiveT]
 
 
 def parse_single(str_: str) -> PrimitiveT:
     """
-    Very simple parser to parse expressions represent some single values.
-
-    :param str_: a string to parse
-    :return: Int | Bool | String
+    Very simple parser to parse an expression represents a primitive value.
 
     >>> parse_single(None)
     ''
@@ -40,7 +38,7 @@ def parse_single(str_: str) -> PrimitiveT:
     >>> parse_single("'a string'")
     'a string'
     >>> parse_single('0.1')
-    '0.1'
+    0.1
     >>> parse_single('    a string contains extra whitespaces     ')
     'a string contains extra whitespaces'
     """
@@ -57,6 +55,9 @@ def parse_single(str_: str) -> PrimitiveT:
 
     if INT_PATTERN.match(str_) is not None:
         return int(str_)
+
+    if FLOAT_PATTERN.match(str_) is not None:
+        return float(str_)
 
     if STR_PATTERN.match(str_) is not None:
         return str_[1:-1]

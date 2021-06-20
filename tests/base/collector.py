@@ -26,6 +26,9 @@ class TDataCollector:
     # sub dir names of expected data files should be found always.
     should_exist: typing.Iterable[str] = ('e', )
 
+    # True if you want to keep the order of keys of dicts loaded.
+    ordered: bool = False
+
     root: typing.Optional[pathlib.Path] = None
     datasets: typing.List[datatypes.TData] = []
     initialized: bool = False
@@ -56,12 +59,12 @@ class TDataCollector:
             (datadir,
              [datatypes.TData(
                 data.datadir, data.inp,
-                utils.load_data(data.inp),
-                utils.load_data(data.exp),
+                utils.load_data(data.inp, ordered=self.ordered),
+                utils.load_data(data.exp, ordered=self.ordered),
                 utils.load_data(data.opts, default=DICT_0),
                 data.scm,
                 utils.load_data(data.query, default=''),
-                utils.load_data(data.ctx, default=DICT_0)
+                utils.load_data(data.ctx, default=DICT_0, ordered=self.ordered)
               )
               for data in utils.each_data_from_dir(
                   datadir, self.pattern, self.should_exist

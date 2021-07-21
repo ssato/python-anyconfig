@@ -6,6 +6,7 @@
 """
 import ast
 import collections
+import importlib.abc
 import importlib.util
 import json
 import pathlib
@@ -27,11 +28,20 @@ def target_by_parent(self: str = __file__):
 
 def load_from_py(py_path: typing.Union[str, pathlib.Path],
                  data_name: str = 'DATA') -> DictT:
-    """.. note:: It's not safe always.
+    """Load from .py files.
+
+    .. note:: It's not safe always.
     """
     spec = importlib.util.spec_from_file_location('testmod', py_path)
-    mod = spec.loader.load_module()
-    return getattr(mod, data_name, None)
+    if spec and isinstance(spec.loader, importlib.abc.Loader):
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        try:
+            return getattr(mod, data_name, None)
+        except (TypeError, ValueError, AttributeError):
+            pass
+
+    return {}
 
 
 def load_literal_data_from_py(py_path: typing.Union[str, pathlib.Path]
@@ -70,10 +80,11 @@ def load_data(path: MaybePathT,
     """
     Return data loaded from given path or the default value.
     """
-    if path is None and not should_exist:
-        return default
+    if path is None or not path:
+        if not should_exist:
+            return {} if default is None else default
 
-    if path.exists():
+    if path and path.exists():
         if path.suffix == '.json':
             if ordered:
                 return json.load(
@@ -85,7 +96,7 @@ def load_data(path: MaybePathT,
         if path.suffix == '.py':
             return (
                 load_from_py if exec_py else load_literal_data_from_py
-            )(path)
+            )(path)  # type: ignore
 
         if path.suffix == '.txt':
             return path.read_text()

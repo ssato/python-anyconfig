@@ -68,7 +68,7 @@ class TestCase(unittest.TestCase):
 
     def test_load_data(self):
         aes = [
-            ((None, ), None),
+            ((None, ), {}),
             ((None, 1), 1),
             ((RES_DIR / 'basics' / '10' / '00.json', ),
              TT.json.load((RES_DIR / 'basics' / '10' / '00.json').open())
@@ -81,7 +81,8 @@ class TestCase(unittest.TestCase):
              ),
         ]
         for args, exp in aes:
-            self.assertEqual(TT.load_data(*args), exp)
+            res = TT.load_data(*args)
+            self.assertEqual(res, exp, res)
 
     def test_load_data_failures(self):
         aes = [

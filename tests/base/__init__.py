@@ -4,7 +4,7 @@
 #
 r"""Common test Utility functions, constants and global variables, etc.
 """
-from .common import TESTS_DIR, RES_DIR, NULL_CNTNR
+from .constants import TESTS_DIR, RES_DIR, NULL_CNTNR
 from .collector import TDataCollector
 from .datatypes import TDataPaths, TData
 from .utils import (

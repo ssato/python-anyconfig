@@ -9,7 +9,7 @@ import pathlib
 import typing
 
 from . import (
-    common, datatypes, utils
+    constants, datatypes, utils
 )
 
 
@@ -47,7 +47,7 @@ class TDataCollector:
             self.target = self.resolve_target()
 
         if not self.root:
-            self.root = common.RES_DIR / self.target / self.kind
+            self.root = constants.RES_DIR / self.target / self.kind
 
         self.datasets = self.load_datasets()
         self.initialized = True

@@ -6,10 +6,10 @@
 import pathlib
 import unittest
 
-from . import common, utils as TT
+from . import constants, utils as TT
 
 
-RES_DIR = common.RES_DIR / 'base'
+RES_DIR = constants.RES_DIR / 'base'
 SELF = pathlib.Path(__file__)
 
 
@@ -24,11 +24,11 @@ class TestCase(unittest.TestCase):
             self.assertEqual(TT.target_by_parent(*args), exp)
 
     def test_load_from_py(self):
-        common_py_path = SELF.parent / 'common.py'
+        constants_py_path = SELF.parent / 'constants.py'
         aes = [
-            ((common_py_path, ), common.DATA),
-            ((str(common_py_path), ), common.DATA),
-            ((common_py_path, 'RES_DIR'), common.RES_DIR),
+            ((constants_py_path, ), constants.DATA),
+            ((str(constants_py_path), ), constants.DATA),
+            ((constants_py_path, 'RES_DIR'), constants.RES_DIR),
         ]
         for args, exp in aes:
             self.assertEqual(

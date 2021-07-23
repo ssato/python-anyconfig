@@ -63,13 +63,13 @@ def inspect_io_obj(obj: MaybeIoObjT, itype: IoiTypeT
     :return: A tuple of (filepath, fileext)
     """
     if itype == IOI_PATH_OBJ:
-        path = obj.expanduser().resolve()
+        path = typing.cast(pathlib.Path, obj).expanduser().resolve()
 
         ipath = str(path)
         ext = path.suffix[1:]
 
     elif itype == IOI_STREAM:
-        ipath = get_path_from_stream(obj) or ''
+        ipath = get_path_from_stream(typing.cast(typing.IO, obj)) or ''
         ext = get_file_extension(ipath) if ipath else ''
 
     else:

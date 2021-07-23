@@ -36,17 +36,7 @@ IoiTypeT = str
 def guess_io_type(obj: typing.Any) -> IoiTypeT:
     """Guess input or output type of 'obj'.
 
-    :param obj: a path string, a pathlib.Path or a file / file-like object
     :return: IOInfo type defined in anyconfig.common.IOI_TYPES
-
-    >>> apath = '/path/to/a_conf.ext'
-    >>> assert guess_io_type(apath) == IOI_PATH_STR
-    >>> assert guess_io_type(pathlib.Path(apath)) == IOI_PATH_OBJ
-    >>> assert guess_io_type(open(__file__)) == IOI_STREAM
-    >>> guess_io_type(1)  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-        ...
-    ValueError: ...
     """
     if is_path(obj):
         return IOI_PATH_STR
@@ -58,13 +48,19 @@ def guess_io_type(obj: typing.Any) -> IoiTypeT:
     raise ValueError(f'Unknown I/O type object: {obj!r}')
 
 
-def inspect_io_obj(obj: typing.Any, itype: IoiTypeT
+MaybeIoObjT = typing.Union[pathlib.Path, typing.IO, typing.Any]
+
+
+def inspect_io_obj(obj: MaybeIoObjT, itype: IoiTypeT
                    ) -> typing.Tuple[str, str]:
     """
-    :param obj: a path string, a pathlib.Path or a file / file-like object
+    Inspect given object ``obj`` and return it with necessary attributes are
+    set if it is one of pathlib.Path or a stream (file or file-like object), or
+    raise :class:`UnknownFileTypeError`
+
+    :param obj: It should be a pathlib.Path or a file / file-like object
 
     :return: A tuple of (filepath, fileext)
-    :raises: UnknownFileTypeError
     """
     if itype == IOI_PATH_OBJ:
         path = obj.expanduser().resolve()

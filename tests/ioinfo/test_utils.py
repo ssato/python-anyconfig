@@ -5,7 +5,7 @@
 # pylint: disable=missing-docstring, invalid-name
 import unittest
 
-import anyconfig.ioinfo as TT
+import anyconfig.ioinfo.utils as TT
 
 from anyconfig.common import (
     IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,

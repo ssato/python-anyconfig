@@ -8,8 +8,44 @@ r"""ioinfo.main to provide internal APIs used from other modules.
 import pathlib
 import typing
 
-from .. import common, utils
-from .utils import guess_io_type, inspect_io_obj
+from .. import common
+
+
+def path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
+    """Normaliez path objects and retunr it with file extension.
+    """
+    abs_path = path.expanduser().resolve()
+    file_ext = abs_path.suffix
+    return (
+        abs_path,
+        file_ext[1:] if file_ext.startswith('.') else ''
+    )
+
+
+def from_path_object(path: pathlib.Path) -> common.IOInfo:
+    """
+    Return an IOInfo object made from :class:`pathlib.Path` object ``path``.
+    """
+    (abs_path, file_ext) = path_and_ext(path)
+
+    return common.IOInfo(
+        abs_path, common.IOI_PATH_OBJ, str(abs_path), file_ext
+    )
+
+
+def from_io_stream(strm: typing.IO) -> common.IOInfo:
+    """
+    Return an IOInfo object made from IO stream object ``strm``.
+    """
+    path = getattr(strm, 'name', '')
+    if path:
+        (abs_path, file_ext) = path_and_ext(pathlib.Path(path))
+    else:
+        (abs_path, file_ext) = (path, '')
+
+    return common.IOInfo(
+        strm, common.IOI_STREAM, str(abs_path), file_ext
+    )
 
 
 def make(obj: typing.Any) -> common.IOInfo:
@@ -21,16 +57,19 @@ def make(obj: typing.Any) -> common.IOInfo:
 
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    if utils.is_ioinfo(obj):
+    if isinstance(obj, common.IOInfo):
         return obj
 
-    itype = guess_io_type(obj)
-
-    if itype == common.IOI_PATH_STR:
+    if isinstance(obj, str):
         obj = pathlib.Path(obj)
-        itype = common.IOI_PATH_OBJ
 
-    (ipath, ext) = inspect_io_obj(obj, itype)
-    return common.IOInfo(src=obj, type=itype, path=ipath, extension=ext)
+    if isinstance(obj, pathlib.Path):
+        return from_path_object(obj)
+
+    # Which is better? isinstance(obj, io.IOBase):
+    if getattr(obj, 'read', False):
+        return from_io_stream(obj)
+
+    raise ValueError(repr(obj))
 
 # vim:sw=4:ts=4:et:

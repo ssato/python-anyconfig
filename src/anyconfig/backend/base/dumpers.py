@@ -93,7 +93,7 @@ class DumperMixin:
 
     def dump(self, cnf: InDataExT, ioi: IoiT, **kwargs):
         """
-        Dump config 'cnf' to output object of which 'ioi' refering.
+        Dump config 'cnf' to output object of which 'ioi' referring.
 
         :param cnf: Configuration data to dump
         :param ioi:

@@ -1,32 +1,20 @@
 #
-# Copyright (C) 2018 - 2020 Satoru SATOH <satoru.satoh @ gmmail.com>
+# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh @ gmmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=invalid-name
-r"""Functions for value objects represent inputs and outputs.
-
-.. versionchanged:: 0.10.1
-
-- simplify inspect_io_obj and make; detect type in make, remove the member
-  opener from ioinfo object, etc.
-
-.. versionadded:: 0.9.5
-
-- Add functions to make and process input and output object holding some
-  attributes like input and output type (path, stream or pathlib.Path object),
-  path, opener, etc.
+r"""ioinfo.utils - provides utility functions for internal use.
 """
 import pathlib
 import typing
 
-from .common import (
-    IOInfo, IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
+from ..common import (
+    IOI_PATH_STR, IOI_PATH_OBJ, IOI_STREAM,
     UnknownFileTypeError
 )
-from .utils import (
+from ..utils import (
     is_path, is_path_obj, is_file_stream,
-    get_path_from_stream, get_file_extension,
-    is_ioinfo
+    get_path_from_stream, get_file_extension
 )
 
 
@@ -76,27 +64,5 @@ def inspect_io_obj(obj: MaybeIoObjT, itype: IoiTypeT
         raise UnknownFileTypeError(repr(obj))
 
     return (ipath, ext)
-
-
-def make(obj: typing.Any) -> IOInfo:
-    """
-    :param obj: a path string, a pathlib.Path or a file / file-like object
-    :return:
-        Namedtuple object represents a kind of input object such as a file /
-        file-like object, path string or pathlib.Path object
-
-    :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
-    """
-    if is_ioinfo(obj):
-        return obj
-
-    itype = guess_io_type(obj)
-
-    if itype == IOI_PATH_STR:
-        obj = pathlib.Path(obj)
-        itype = IOI_PATH_OBJ
-
-    (ipath, ext) = inspect_io_obj(obj, itype)
-    return IOInfo(src=obj, type=itype, path=ipath, extension=ext)
 
 # vim:sw=4:ts=4:et:

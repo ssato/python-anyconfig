@@ -22,7 +22,7 @@ class TestSingleton(unittest.TestCase):
         self.assertTrue(b1 is b2)
         self.assertTrue(a1 is not b1)
 
-    def test_20_decendant(self):
+    def test_20_descendant(self):
         class A(TT.Singleton):
             pass
 

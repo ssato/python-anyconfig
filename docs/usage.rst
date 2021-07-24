@@ -40,7 +40,7 @@ Here are some example code to load single config file:
   yml_psr = anyconfig.find_loader(None, ac_parser="yaml")
   data6 = anyconfig.single_load(cnf_path, yml_psr)  # Or: anyconfig.load(...)
 
-  # Similar to the previous examples but parser is specified explicitely to use
+  # Similar to the previous examples but parser is specified explicitly to use
   # ruamel.yaml based YAML parser instead of PyYAML based one, and give
   # ruamel.yaml specific option.
   data7 = anyconfig.load(cnf_path, ac_parser="ruamel.yaml",
@@ -256,7 +256,7 @@ configurations from the followings and pass it with ac_merge keyword option:
 
     {'a': 1, 'b': [{'c': 3}], 'd': {'e': "bbb", 'f': 3}}
 
-  This is the merge strategy choosen by default.
+  This is the merge strategy chosen by default.
 
 * anyconfig.MS_DICTS_AND_LISTS: Merge dicts and lists recursively. That is, the
   following:
@@ -291,7 +291,7 @@ this:
 
     load(["a.yml", "b.yml"], ac_merge=my_merge_fn)
 
-Please refer to the exsiting functions in anyconfig.dicsts (_update_\*
+Please refer to the existing functions in anyconfig.dicsts (_update_\*
 functions) to implement custom functions to merge nested dicts for more
 details.
 
@@ -406,7 +406,7 @@ with using anyconfig.validate() since 0.0.10.
 .. code-block:: python
 
   # Validate a JSON config file (conf.json) with JSON schema (schema.json).
-  # If validatation suceeds, `rc` -> True, `err` -> ''.
+  # If validatation succeeds, `rc` -> True, `err` -> ''.
   conf1 = anyconfig.load("/path/to/conf.json")
   schema1 = anyconfig.load("/path/to/schema.json")
   (rc, err) = anyconfig.validate(conf1, schema1)

@@ -32,39 +32,39 @@ function teardown () {
 }
 
 @test "Test required packages are installed" {
-    run pip3 install -U -t ${TDIR} ${SRCDIR:?}
-    run echo ${TDIR}/anyconfig*.dist-info;
+    run pip3 install -U -t "${TDIR}" "${SRCDIR:?}"
+    run echo "${TDIR}/anyconfig*.dist-info"
     [[ ${status} -eq 0 ]]
 
     [[ -d ${TDIR}/anyconfig ]]
     [[ -d ${TDIR}/setuptools ]]
 
-    run echo ${TDIR}/setuptools*.dist-info
+    run echo "${TDIR}/setuptools*.dist-info"
     [[ ${status} -eq 0 ]]
 }
 
 @test "Test extra required package is installed" {
-    run pip3 install -U -t ${TDIR} ${SRCDIR}'[toml]'
-    run echo ${TDIR}/anyconfig*.dist-info;
+    run pip3 install -U -t "${TDIR}" "${SRCDIR}"'[toml]'
+    run echo "${TDIR}/anyconfig*.dist-info"
     [[ ${status} -eq 0 ]]
 
     [[ -d ${TDIR}/anyconfig ]]
     [[ -d ${TDIR}/toml ]]
 
-    run echo ${TDIR}/toml*.dist-info
+    run echo "${TDIR}/toml*.dist-info"
     [[ ${status} -eq 0 ]]
 }
 
 @test "Test extra required packages are installed" {
-    run pip3 install -U -t ${TDIR} ${SRCDIR}'[devel]'
-    run echo ${TDIR}/anyconfig*.dist-info;
+    run pip3 install -U -t "${TDIR}" "${SRCDIR}"'[devel]'
+    run echo "${TDIR}/anyconfig*.dist-info"
     [[ ${status} -eq 0 ]]
 
     [[ ${status} -eq 0 ]]
     [[ -d ${TDIR}/anyconfig ]]
 
     for erp in ${DEVEL_DEPS:?}; do
-        run echo ${TDIR}/{erp}*
+        run echo "${TDIR}/{erp}*"
         echo "status = ${status}"
         echo "output = ${output}"
         [[ ${status} -eq 0 ]]

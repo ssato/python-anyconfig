@@ -324,7 +324,7 @@
 - reorder some arguments passed to anyconfig.api.*load to keep consistency in
   the order of arguments among them
 - add --env option to the CLI frontend to pass configuration default values
-  from envrionment variables
+  from environment variables
 - some more minor bug fixes and enhancements
 
 * Fri Mar 13 2015 Satoru SATOH <ssato@redhat.com> - 0.0.6-1
@@ -373,7 +373,7 @@
 
 * Thu May  2 2013 Satoru SATOH <ssato@redhat.com> - 0.0.3.10-1
 - [anyconfig_cli] Fix a typo in its filename; s/anyconfg/anyconfig/g,
-  it's alsot pointed by jonathaneunice-san. Thanks a lot!
+  it's also pointed by jonathaneunice-san. Thanks a lot!
 - Swtich to use setuptools instead of standard distutils to allow writing
   various pluggable backends
 - Implement pluggable backend system w/ using setuptools

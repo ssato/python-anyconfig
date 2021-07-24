@@ -6,16 +6,16 @@ Philosophy behind anyconfig
 
 The reason I made anyconfig is aimed to eliminate the need of manual edit of
 configuration files, which application developers provide in the applications
-orginally, by uesrs. It enables that application developers provide the default
-configuration *and* allow users to customize configuration without direct
-modification of these configuration files at the same time [#]_ .
+originally, by uesrs. It enables that application developers provide the
+default configuration *and* allow users to customize configuration without
+direct modification of these configuration files at the same time [#]_ .
 
 There are still many applications force users to edit configuration files
 directly if any customization was needed. Sometimes application provides
 special configuration tool to hide this fact from users but most tools try to
 modify configuration files directly in the end [#]_ .
 
-With using anyconfig or similar library can merge configuraiton files, users of
+With using anyconfig or similar library can merge configuration files, users of
 applications can customize the behavior of applications by just creation of new
 configuration files to override the default and there is no need to modify the
 default ones.
@@ -27,7 +27,7 @@ Design principle of anyconfig
 -------------------------------
 
 I try to make anyconfig as thin as possible, that is , it works as a thin
-wrapper for the backends acutally does configuration load and dump. Thus,
+wrapper for the backends actually does configuration load and dump. Thus,
 anyconfig does not try to catch any exceptions such as IOError (ex. it failed
 to open configuration files) and OSError (ex. you're not allowed to open
 configuration files) during load and dump of configuration files. You have to

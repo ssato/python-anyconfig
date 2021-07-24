@@ -30,7 +30,7 @@ from .datatypes import ResultT
 
 def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:
     """
-    See the descritpion of :func:`validate` for more details of parameters and
+    See the description of :func:`validate` for more details of parameters and
     return value.
 
     :seealso: https://python-jsonschema.readthedocs.io/en/latest/validate/,
@@ -45,7 +45,7 @@ def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:
 def _validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
               **options: typing.Any) -> ResultT:
     """
-    See the descritpion of :func:`validate` for more details of parameters and
+    See the description of :func:`validate` for more details of parameters and
     return value.
 
     Validate target object 'data' with given schema object.

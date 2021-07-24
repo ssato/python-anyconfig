@@ -2,7 +2,8 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# Some XML modules may be missing and Base.{load,dumps}_impl are not overriden:
+# Some XML modules may be missing and Base.{load,dumps}_impl are not
+# overridden:
 # pylint: disable=import-error, duplicate-except
 # len(elem) is necessary to check that ET.Element object has children.
 # pylint: disable=len-as-condition

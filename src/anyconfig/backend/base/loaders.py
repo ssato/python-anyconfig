@@ -176,7 +176,7 @@ class LoaderMixin:
              **options) -> InDataExT:
         """
         Load config from a file path or a file / file-like object which 'ioi'
-        refering after some checks.
+        referring after some checks.
 
         :param ioi:
             'anyconfig.common.IOInfo' namedtuple object provides various info

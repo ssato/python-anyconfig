@@ -105,7 +105,7 @@ def _make_parser(**kwargs):
     """
     :return: (keyword args to be used, parser object)
     """
-    # Optional arguements for configparser.ConfigParser{,readfp}
+    # Optional arguments for configparser.ConfigParser{,readfp}
     kwargs_0 = filter_options(
         ('defaults', 'dict_type', 'allow_no_value'), kwargs
     )

@@ -103,7 +103,7 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
 
 def _customized_dumper(container, dumper=Dumper):
     """
-    Coutnerpart of :func:`_customized_loader` for dumpers.
+    Counterpart of :func:`_customized_loader` for dumpers.
     """
     def container_representer(dumper, data, mapping_tag=_MAPPING_TAG):
         """Container representer.

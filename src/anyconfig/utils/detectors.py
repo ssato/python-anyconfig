@@ -80,15 +80,6 @@ def is_file_stream(obj: typing.Any) -> bool:
 def is_ioinfo(obj: typing.Any) -> bool:
     """
     :return: True if given 'obj' is a 'IOInfo' namedtuple object.
-
-    >>> assert not is_ioinfo(1)
-    >>> assert not is_ioinfo('aaa')
-    >>> assert not is_ioinfo({})
-    >>> assert not is_ioinfo(('a', 1, {}))
-
-    >>> from ..common import IOI_PATH_STR
-    >>> inp = IOInfo('/etc/hosts', IOI_PATH_STR, '/etc/hosts', None)
-    >>> assert is_ioinfo(inp)
     """
     if isinstance(obj, tuple) and getattr(obj, '_asdict', False):
         return all(k in typing.cast(IOInfo, obj)._asdict() for k in IOI_KEYS)

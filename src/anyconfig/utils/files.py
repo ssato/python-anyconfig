@@ -131,15 +131,4 @@ def expand_paths(paths: typing.Union[typing.Iterable[PathOrIOInfoT],
     """
     return list(expand_paths_itr(paths, marker=marker))
 
-
-def are_same_file_types(objs: typing.List[IOInfo]) -> bool:
-    """
-    Are given objects, pathlib.Path or io, same type (have same extension)?
-    """
-    if not objs:
-        return False
-
-    ext = objs[0].extension
-    return all(p.extension == ext for p in objs[1:])
-
 # vim:sw=4:ts=4:et:

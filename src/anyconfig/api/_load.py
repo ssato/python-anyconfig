@@ -21,12 +21,12 @@ from ..query import try_query
 from ..schema import is_valid
 from ..template import try_render
 from ..utils import (
-    are_same_file_types, expand_paths,
-    is_dict_like, is_path_like_object, is_paths
+    expand_paths, is_dict_like, is_path_like_object, is_paths
 )
 from .datatypes import (
     ParserT
 )
+from .utils import are_same_file_types
 
 
 MappingT = typing.Dict[str, typing.Any]

@@ -18,9 +18,7 @@ from .detectors import (
     is_stream_ioinfo, is_path_like_object, is_paths,
     is_dict_like, is_list_like
 )
-from .files import (
-    get_path_from_stream, expand_paths
-)
+from .files import get_path_from_stream
 from .lists import (
     groupby, concat
 )
@@ -33,7 +31,7 @@ __all__ = [
     'is_iterable', 'is_path', 'is_path_obj', 'is_ioinfo',
     'is_stream_ioinfo', 'is_path_like_object', 'is_paths',
     'is_dict_like', 'is_list_like',
-    'get_path_from_stream', 'expand_paths',
+    'get_path_from_stream',
     'groupby', 'concat',
     'filter_options', 'noop',
 ]

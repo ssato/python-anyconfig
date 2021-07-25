@@ -2,7 +2,12 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""ioinfo module to provide objects wrap pathlib.Path and io objects.
+r"""ioinfo module to provide functions to create IOInfo objects wrap
+pathlib.Path and io objects.
+
+.. versionchanged:: 0.12.0
+
+- Restructure and migrate some utility functions in .utils into this module.
 
 .. versionchanged:: 0.10.1
 
@@ -16,9 +21,10 @@ r"""ioinfo module to provide objects wrap pathlib.Path and io objects.
   path, opener, etc.
 """
 from .factory import make
+from .paths import expand_paths
 
 __all__ = [
-    'make',
+    'make', 'expand_paths'
 ]
 
 # vim:sw=4:ts=4:et:

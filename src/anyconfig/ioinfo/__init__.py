@@ -15,7 +15,7 @@ r"""ioinfo module to provide objects wrap pathlib.Path and io objects.
   attributes like input and output type (path, stream or pathlib.Path object),
   path, opener, etc.
 """
-from .main import make
+from .factory import make
 
 __all__ = [
     'make',

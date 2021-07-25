@@ -8,6 +8,7 @@ r"""Public APIs of anyconfig module to load configuration files.
 import typing
 import warnings
 
+from .. import ioinfo
 from ..common import (
     InDataT, InDataExT, PathOrIOInfoT
 )
@@ -15,13 +16,12 @@ from ..dicts import (
     convert_to as dicts_convert_to,
     merge as dicts_merge
 )
-from ..ioinfo import make as ioinfo_make
 from ..parsers import find as parsers_find
 from ..query import try_query
 from ..schema import is_valid
 from ..template import try_render
 from ..utils import (
-    expand_paths, is_dict_like, is_path_like_object, is_paths
+    is_dict_like, is_path_like_object, is_paths
 )
 from .datatypes import (
     ParserT
@@ -77,7 +77,7 @@ def _single_load(input_: PathOrIOInfoT,
     :return: Mapping object
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = ioinfo_make(input_)
+    ioi = ioinfo.make(input_)
     psr: ParserT = parsers_find(ioi, forced_type=ac_parser)
     filepath = ioi.path
 
@@ -204,8 +204,6 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
             :mod:`dicts` for more details of strategies. The default
             is dicts.MS_DICTS.
 
-          - ac_marker (marker): Globbing marker to detect paths patterns.
-
         - Common backend options:
 
           - ignore_missing: Ignore and just return empty result if given file
@@ -216,12 +214,11 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
     :return: Mapping object or any query result might be primitive objects
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    marker = options.setdefault('ac_marker', options.get('marker', '*'))
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
     options['ac_schema'] = None  # Avoid to load schema more than twice.
 
-    paths = [ioinfo_make(p) for p in expand_paths(inputs, marker=marker)]
+    paths = ioinfo.expand_paths(inputs)
     if are_same_file_types(paths):
         ac_parser = parsers_find(paths[0], forced_type=ac_parser)
 
@@ -292,14 +289,12 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     :return: Mapping object or any query result might be primitive objects
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    marker = options.setdefault('ac_marker', options.get('marker', '*'))
-
-    if is_path_like_object(path_specs, marker):
+    if is_path_like_object(path_specs):
         return single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
                            ac_template=ac_template, ac_context=ac_context,
                            **options)
 
-    if not is_paths(path_specs, marker):
+    if not is_paths(path_specs):
         raise ValueError(f'Possible invalid input {path_specs!r}')
 
     return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,

@@ -16,15 +16,17 @@ from anyconfig.ioinfo import make as ioinfo_make
 
 class TestCase(unittest.TestCase):
 
-    def test_get_file_extension(self):
+    def test_is_io_stream(self):
         ies = (
-            ('', ''),
-            ('/a/b/c', ''),
-            ('/a/b/c.txt', 'txt'),
-            ('/a/b/c/d.txt.gz', 'gz'),
+            (open(__file__), True),
+            (__file__, False),
+            ([__file__], False),
+            (pathlib.Path(__file__), False),
+            ([pathlib.Path(__file__)], False),
         )
         for inp, exp in ies:
-            self.assertEqual(TT.get_file_extension(inp), exp)
+            res = TT.is_io_stream(inp)
+            (self.assertTrue if exp else self.assertFalse)(res)
 
     def test_get_path_from_stream(self):
         this = __file__

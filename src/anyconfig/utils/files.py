@@ -14,25 +14,12 @@ import typing
 from ..common import (
     GLOB_MARKER, IOInfo, PathOrIOInfoT
 )
-from .detectors import (
-    is_file_stream, is_ioinfo
-)
 
 
-def get_file_extension(file_path: str) -> str:
+def is_io_stream(obj: typing.Any) -> bool:
+    """Is given object ``obj`` an IO stream, file or file-like object?
     """
-    Get file extension from the path `file_path`.
-    """
-    default = ''
-
-    if not file_path:
-        return default
-
-    _ext = os.path.splitext(file_path)[-1]
-    if _ext:
-        return _ext[1:] if _ext.startswith('.') else _ext
-
-    return default
+    return callable(getattr(obj, 'read', False))
 
 
 def get_path_from_stream(strm: typing.IO, safe: bool = False) -> str:
@@ -43,7 +30,7 @@ def get_path_from_stream(strm: typing.IO, safe: bool = False) -> str:
     :return: file path or None
     :raises: ValueError
     """
-    if not is_file_stream(strm) and not safe:
+    if not is_io_stream(strm) and not safe:
         raise ValueError(f'It does not look a file[-like] object: {strm!r}')
 
     path = getattr(strm, 'name', None)
@@ -119,10 +106,10 @@ def expand_paths_itr(paths: typing.Union[typing.Iterable[PathOrIOInfoT],
         for path in sorted(base_2.glob(pattern)):
             yield path
 
-    elif is_file_stream(paths):
+    elif is_io_stream(paths):
         yield paths  # type: ignore
 
-    elif is_ioinfo(paths):
+    elif isinstance(paths, IOInfo):
         yield typing.cast(IOInfo, paths)
 
     else:

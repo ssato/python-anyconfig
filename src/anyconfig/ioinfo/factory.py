@@ -9,24 +9,14 @@ import pathlib
 import typing
 
 from .. import common
-
-
-def path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
-    """Normaliez path objects and retunr it with file extension.
-    """
-    abs_path = path.expanduser().resolve()
-    file_ext = abs_path.suffix
-    return (
-        abs_path,
-        file_ext[1:] if file_ext.startswith('.') else ''
-    )
+from . import utils
 
 
 def from_path_object(path: pathlib.Path) -> common.IOInfo:
     """
     Return an IOInfo object made from :class:`pathlib.Path` object ``path``.
     """
-    (abs_path, file_ext) = path_and_ext(path)
+    (abs_path, file_ext) = utils.get_path_and_ext(path)
 
     return common.IOInfo(
         abs_path, common.IOI_PATH_OBJ, str(abs_path), file_ext
@@ -39,7 +29,7 @@ def from_io_stream(strm: typing.IO) -> common.IOInfo:
     """
     path = getattr(strm, 'name', '')
     if path:
-        (abs_path, file_ext) = path_and_ext(pathlib.Path(path))
+        (abs_path, file_ext) = utils.get_path_and_ext(pathlib.Path(path))
     else:
         (abs_path, file_ext) = (path, '')
 

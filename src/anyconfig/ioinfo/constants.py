@@ -2,7 +2,6 @@
 # Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh @ gmmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=invalid-name
 r"""ioinfo.constants to provide global constant variables.
 """
 import os.path

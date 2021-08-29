@@ -5,13 +5,8 @@
 """Functions to detect something.
 """
 import collections.abc
-import pathlib
 import types
 import typing
-
-from ..common import (
-    IOInfo, IOI_KEYS
-)
 
 
 GLOB_MARKER = '*'
@@ -40,76 +35,6 @@ def is_iterable(obj: typing.Any) -> bool:
     return isinstance(obj, (list, tuple, types.GeneratorType)) or \
         (not isinstance(obj, (int, str, dict)) and
          bool(getattr(obj, 'next', False)))
-
-
-def is_path(obj: typing.Any) -> bool:
-    """
-    Is given object 'obj' a file path?
-
-    :param obj: file path or something
-    :return: True if 'obj' is a file path
-    """
-    return isinstance(obj, str)
-
-
-def is_path_obj(obj: typing.Any) -> bool:
-    """Is given object 'input' a pathlib.Path object?
-
-    :param obj: a pathlib.Path object or something
-    :return: True if 'obj' is a pathlib.Path object
-
-    >>> obj = pathlib.Path(__file__)
-    >>> assert is_path_obj(obj)
-    >>> assert not is_path_obj(__file__)
-    """
-    return isinstance(obj, pathlib.Path)
-
-
-def is_file_stream(obj: typing.Any) -> bool:
-    """Is given object 'input' a file stream (file/file-like object)?
-
-    :param obj: a file / file-like (stream) object or something
-    :return: True if 'obj' is a file stream
-
-    >>> assert is_file_stream(open(__file__))
-    >>> assert not is_file_stream(__file__)
-    """
-    return callable(getattr(obj, 'read', False))
-
-
-def is_ioinfo(obj: typing.Any) -> bool:
-    """
-    :return: True if given 'obj' is a 'IOInfo' namedtuple object.
-    """
-    if isinstance(obj, tuple) and getattr(obj, '_asdict', False):
-        return all(k in typing.cast(IOInfo, obj)._asdict() for k in IOI_KEYS)
-
-    return False
-
-
-def is_path_like_object(obj: typing.Any, marker: str = GLOB_MARKER) -> bool:
-    """
-    Is given object 'obj' a path string, a pathlib.Path, a file / file-like
-    (stream) or IOInfo namedtuple object?
-
-    :param obj:
-        a path string, pathlib.Path object, a file / file-like or 'IOInfo'
-        object
-
-    :return:
-        True if 'obj' is a path string or a pathlib.Path object or a file
-        (stream) object
-
-    >>> assert is_path_like_object(__file__)
-    >>> assert not is_path_like_object('/a/b/c/*.json', '*')
-
-    >>> assert is_path_like_object(pathlib.Path('a.ini'))
-    >>> assert not is_path_like_object(pathlib.Path('x.ini'), 'x')
-    >>> assert is_path_like_object(open(__file__))
-    """
-    return ((is_path(obj) and marker not in obj) or
-            (is_path_obj(obj) and marker not in obj.as_posix()) or
-            is_file_stream(obj) or is_ioinfo(obj))
 
 
 def is_dict_like(obj: typing.Any) -> bool:
@@ -152,23 +77,5 @@ def is_list_like(obj: typing.Any) -> bool:
     """
     return isinstance(obj, _LIST_LIKE_TYPES) and \
         not (isinstance(obj, str) or is_dict_like(obj))
-
-
-def is_paths(maybe_paths: typing.Any, marker: str = '*') -> bool:
-    """
-    Does given object 'maybe_paths' consist of path or path pattern strings?
-    """
-    if is_file_stream(maybe_paths) or is_ioinfo(maybe_paths):
-        return False
-
-    return (
-        (is_path(maybe_paths) and marker in maybe_paths) or  # Path str
-        (is_path_obj(maybe_paths) and marker in str(maybe_paths)) or
-        (is_list_like(maybe_paths) and
-         all(
-            is_path(p) or is_ioinfo(p) or is_path_obj(p) or is_file_stream(p)
-            for p in maybe_paths)
-         )
-    )
 
 # vim:sw=4:ts=4:et:

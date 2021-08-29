@@ -6,11 +6,9 @@
 r"""test cases for anyconfig.utils.
 """
 import collections
-import pathlib
 import unittest
 import typing
 
-import anyconfig.ioinfo
 import anyconfig.utils.detectors as TT
 
 
@@ -62,97 +60,6 @@ class TestCase(unittest.TestCase):
              (collections.namedtuple('Point', ('x', 'y'))(1, 2), False),
              ({}, True),
              (collections.OrderedDict((('a', 1), ('b', 2))), True),
-             )
-        )
-
-    def test_is_path(self):
-        self._run(
-            TT.is_path,
-            (
-             (None, False),
-             ('/tmp/t.xt', True),
-             (0, False),
-             (pathlib.Path(__file__), False),
-             (open(__file__), False),
-             (anyconfig.ioinfo.make(__file__), False),
-             )
-        )
-
-    def test_is_path_obj(self):
-        self._run(
-            TT.is_path_obj,
-            (
-             (None, False),
-             (__file__, False),
-             (pathlib.Path(__file__), True),
-             (str(pathlib.Path(__file__).resolve()), False),
-             (open(__file__), False),
-             (anyconfig.ioinfo.make(__file__), False),
-             )
-        )
-
-    def test_is_file_stream(self):
-        self._run(
-            TT.is_file_stream,
-            (
-             (None, False),
-             (__file__, False),
-             (pathlib.Path(__file__), False),
-             (str(pathlib.Path(__file__).resolve()), False),
-             (open(__file__), True),
-             (anyconfig.ioinfo.make(__file__), False),
-             )
-        )
-
-    def test_is_ioinfo(self):
-        self._run(
-            TT.is_ioinfo,
-            (
-             (None, False),
-             (__file__, False),
-             (pathlib.Path(__file__), False),
-             (str(pathlib.Path(__file__).resolve()), False),
-             (open(__file__), False),
-             (anyconfig.ioinfo.make(__file__), True),
-             (anyconfig.ioinfo.make(open(__file__)), True),
-             )
-        )
-
-    def test_is_path_like_object(self):
-        self._run(
-            TT.is_path_like_object,
-            (
-             (False, False),
-             (None, False),
-             (__file__, True),
-             (pathlib.Path(__file__), True),
-             (str(pathlib.Path(__file__).resolve()), True),
-             (open(__file__), True),
-             (anyconfig.ioinfo.make(__file__), True),
-             (anyconfig.ioinfo.make(open(__file__)), True),
-             )
-        )
-
-    def test_is_paths(self):
-        self._run(
-            TT.is_paths,
-            (
-             (False, False),
-             (None, False),
-             (__file__, False),
-             (pathlib.Path(__file__), False),
-             (str(pathlib.Path(__file__).resolve()), False),
-             (open(__file__), False),
-             (anyconfig.ioinfo.make(__file__), False),
-             (anyconfig.ioinfo.make(open(__file__)), False),
-             ('/tmp/*.txt', True),
-             (pathlib.Path('/tmp/*.txt'), True),
-             ((__file__, ), True),
-             ((pathlib.Path(__file__), ), True),
-             ((str(pathlib.Path(__file__).resolve()), ), True),
-             ((open(__file__), ), True),
-             ((anyconfig.ioinfo.make(__file__), ), True),
-             ((anyconfig.ioinfo.make(open(__file__)), ), True),
              )
         )
 

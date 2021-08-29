@@ -10,7 +10,7 @@ import warnings
 
 from .. import ioinfo
 from ..common import (
-    InDataT, InDataExT, PathOrIOInfoT
+    IOInfo, InDataT, InDataExT, PathOrIOInfoT
 )
 from ..dicts import (
     convert_to as dicts_convert_to,
@@ -20,9 +20,7 @@ from ..parsers import find as parsers_find
 from ..query import try_query
 from ..schema import is_valid
 from ..template import try_render
-from ..utils import (
-    is_dict_like, is_path_like_object, is_paths
-)
+from ..utils import is_dict_like
 from .datatypes import (
     ParserT
 )
@@ -55,7 +53,7 @@ def _maybe_schema(**options) -> typing.Optional[InDataT]:
     return None
 
 
-def _single_load(input_: PathOrIOInfoT,
+def _single_load(ioi: IOInfo,
                  ac_parser: MaybeParserOrIdOrTypeT = None,
                  ac_template: bool = False,
                  ac_context: typing.Optional[MappingT] = None,
@@ -77,7 +75,6 @@ def _single_load(input_: PathOrIOInfoT,
     :return: Mapping object
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = ioinfo.make(input_)
     psr: ParserT = parsers_find(ioi, forced_type=ac_parser)
     filepath = ioi.path
 
@@ -145,7 +142,8 @@ def single_load(input_: PathOrIOInfoT,
     :return: Mapping object
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    cnf = _single_load(input_, ac_parser=ac_parser, ac_template=ac_template,
+    ioi = ioinfo.make(input_)
+    cnf = _single_load(ioi, ac_parser=ac_parser, ac_template=ac_template,
                        ac_context=ac_context, **options)
     schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
                            **options)
@@ -218,18 +216,18 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
                            **options)
     options['ac_schema'] = None  # Avoid to load schema more than twice.
 
-    paths = ioinfo.expand_paths(inputs)
-    if are_same_file_types(paths):
-        ac_parser = parsers_find(paths[0], forced_type=ac_parser)
+    iois = ioinfo.makes(inputs)
+    if are_same_file_types(iois):
+        ac_parser = parsers_find(iois[0], forced_type=ac_parser)
 
     cnf = None
     ctx = dicts_convert_to({}, **options)
     if ac_context:
         ctx = ac_context.copy()
 
-    for path in paths:
+    for ioi in iois:
         cups = _single_load(
-            path, ac_parser=ac_parser, ac_template=ac_template,
+            ioi, ac_parser=ac_parser, ac_template=ac_template,
             ac_context=ctx, **options
         )
         if cups:
@@ -243,9 +241,9 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
                     **options
                 )
                 dicts_merge(ctx, typing.cast(MappingT, cups), **options)
-            elif len(paths) > 1:
+            elif len(iois) > 1:
                 raise ValueError(
-                    f'Object loaded from {path!r} is not a mapping object and '
+                    f'Object loaded from {ioi!r} is not a mapping object and '
                     'cannot be merged with later ones will be loaded from '
                     'other inputs.'
                 )
@@ -289,17 +287,19 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     :return: Mapping object or any query result might be primitive objects
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    if is_path_like_object(path_specs):
-        return single_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
+    iois = ioinfo.makes(path_specs)
+    if not iois:
+        raise ValueError(f'Maybe invalid input: {path_specs!r}')
+
+    if len(iois) == 1:
+        return single_load(iois[0], ac_parser=ac_parser, ac_dict=ac_dict,
                            ac_template=ac_template, ac_context=ac_context,
                            **options)
 
-    if not is_paths(path_specs):
-        raise ValueError(f'Possible invalid input {path_specs!r}')
-
-    return multi_load(path_specs, ac_parser=ac_parser, ac_dict=ac_dict,
-                      ac_template=ac_template, ac_context=ac_context,
-                      **options)
+    else:
+        return multi_load(iois, ac_parser=ac_parser, ac_dict=ac_dict,
+                          ac_template=ac_template, ac_context=ac_context,
+                          **options)
 
 
 def loads(content, ac_parser=None, ac_dict=None, ac_template=False,

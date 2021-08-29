@@ -1,18 +1,16 @@
 #
-# Copyright (C) 2012 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=unused-import,import-error,invalid-name
 r"""Public APIs to dump configurations data.
 """
-from ..common import PathOrIOInfoT, InDataExT
-from ..ioinfo import make as ioinfo_make
-from ..parsers import find, MaybeParserT
+from .. import common, ioinfo, parsers
 from .datatypes import ParserT
 
 
-def dump(data: InDataExT, out: PathOrIOInfoT,
-         ac_parser: MaybeParserT = None, **options) -> None:
+def dump(data: common.InDataExT, out: common.PathOrIOInfoT,
+         ac_parser: parsers.MaybeParserT = None, **options
+         ) -> None:
     """
     Save 'data' to 'out'.
 
@@ -28,12 +26,13 @@ def dump(data: InDataExT, out: PathOrIOInfoT,
 
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    ioi = ioinfo_make(out)
-    psr: ParserT = find(ioi, forced_type=ac_parser)
+    ioi = ioinfo.make(out)
+    psr: ParserT = parsers.find(ioi, forced_type=ac_parser)
     psr.dump(data, ioi, **options)
 
 
-def dumps(data: InDataExT, ac_parser: MaybeParserT = None,
+def dumps(data: common.InDataExT,
+          ac_parser: parsers.MaybeParserT = None,
           **options) -> str:
     """
     Return string representation of 'data' in forced type format.
@@ -45,7 +44,7 @@ def dumps(data: InDataExT, ac_parser: MaybeParserT = None,
     :return: Backend-specific string representation for the given data
     :raises: ValueError, UnknownProcessorTypeError
     """
-    psr: ParserT = find(None, forced_type=ac_parser)
+    psr: ParserT = parsers.find(None, forced_type=ac_parser)
     return psr.dumps(data, **options)
 
 # vim:sw=4:ts=4:et:

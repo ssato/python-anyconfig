@@ -10,7 +10,7 @@ import typing
 from ..common import (
     IOInfo, PathOrIOInfoT
 )
-from . import factory, utils
+from . import detectors, factory, utils
 
 
 PathOrPathsT = typing.Union[
@@ -43,7 +43,7 @@ def expand_paths_itr(paths: PathOrPathsT) -> typing.Iterator[PathOrIOInfoT]:
         for path in sorted(base_2.glob(pattern)):
             yield path
 
-    elif utils.is_io_stream(paths):
+    elif detectors.is_io_stream(paths):
         yield paths  # type: ignore
 
     else:

@@ -12,12 +12,6 @@ from .constants import (
 )
 
 
-def is_io_stream(obj: typing.Any) -> bool:
-    """Is given object ``obj`` an IO stream, file or file-like object?
-    """
-    return callable(getattr(obj, 'read', False))
-
-
 def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
     """Normaliez path objects and retunr it with file extension.
     """

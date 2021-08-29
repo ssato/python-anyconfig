@@ -13,18 +13,6 @@ import anyconfig.ioinfo.utils as TT
 
 class TestCase(unittest.TestCase):
 
-    def test_is_io_stream(self):
-        ies = (
-            (open(__file__), True),
-            (__file__, False),
-            ([__file__], False),
-            (pathlib.Path(__file__), False),
-            ([pathlib.Path(__file__)], False),
-        )
-        for inp, exp in ies:
-            res = TT.is_io_stream(inp)
-            (self.assertTrue if exp else self.assertFalse)(res)
-
     def test_get_path_and_ext(self):
         this = pathlib.Path(__file__)
         ies = (

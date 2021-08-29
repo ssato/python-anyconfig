@@ -21,12 +21,13 @@ pathlib.Path and io objects.
   path, opener, etc.
 """
 from .detectors import is_stream
-from .factory import make
+from .factory import make, make_itr
 from .paths import expand_paths
 
 __all__ = [
     'is_stream',
-    'make', 'expand_paths'
+    'make', 'make_itr',
+    'expand_paths'
 ]
 
 # vim:sw=4:ts=4:et:

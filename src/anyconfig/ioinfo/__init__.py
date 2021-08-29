@@ -20,10 +20,12 @@ pathlib.Path and io objects.
   attributes like input and output type (path, stream or pathlib.Path object),
   path, opener, etc.
 """
+from .detectors import is_stream
 from .factory import make
 from .paths import expand_paths
 
 __all__ = [
+    'is_stream',
     'make', 'expand_paths'
 ]
 

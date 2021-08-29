@@ -9,9 +9,7 @@ import io
 import pathlib
 import typing
 
-from ...utils import (
-    filter_options, is_stream_ioinfo
-)
+from ... import ioinfo, utils
 from .datatypes import (
     InDataExT, IoiT, GenContainerT, OptionsT
 )
@@ -108,7 +106,7 @@ class LoaderMixin:
         for opt in self.dict_options():
             options.setdefault(opt, container)
 
-        return filter_options(self._load_opts, options)
+        return utils.filter_options(self._load_opts, options)
 
     def load_from_string(self, content: str, container: GenContainerT,
                          **kwargs) -> InDataExT:
@@ -199,7 +197,7 @@ class LoaderMixin:
         if not ioi:
             return container()
 
-        if is_stream_ioinfo(ioi):
+        if ioinfo.is_stream(ioi):
             cnf = self.load_from_stream(
                 typing.cast(typing.IO, ioi.src), container, **options
             )

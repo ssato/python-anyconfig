@@ -10,7 +10,7 @@ import types
 import typing
 
 from ..common import (
-    IOInfo, IOI_KEYS, IOI_STREAM
+    IOInfo, IOI_KEYS
 )
 
 
@@ -85,18 +85,6 @@ def is_ioinfo(obj: typing.Any) -> bool:
         return all(k in typing.cast(IOInfo, obj)._asdict() for k in IOI_KEYS)
 
     return False
-
-
-def is_stream_ioinfo(obj: typing.Any) -> bool:
-    """
-    :param obj: IOInfo object or something
-    :return: True if given IOInfo object 'obj' is of file / file-like object
-
-    >>> ioi = IOInfo(None, IOI_STREAM, None, None)
-    >>> assert is_stream_ioinfo(ioi)
-    >>> assert not is_stream_ioinfo(__file__)
-    """
-    return getattr(obj, 'type', None) == IOI_STREAM
 
 
 def is_path_like_object(obj: typing.Any, marker: str = GLOB_MARKER) -> bool:

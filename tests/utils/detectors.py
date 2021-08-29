@@ -118,20 +118,6 @@ class TestCase(unittest.TestCase):
              )
         )
 
-    def test_is_stream_ioinfo(self):
-        self._run(
-            TT.is_stream_ioinfo,
-            (
-             (None, False),
-             (__file__, False),
-             (pathlib.Path(__file__), False),
-             (str(pathlib.Path(__file__).resolve()), False),
-             (open(__file__), False),
-             (anyconfig.ioinfo.make(__file__), False),
-             (anyconfig.ioinfo.make(open(__file__)), True),
-             )
-        )
-
     def test_is_path_like_object(self):
         self._run(
             TT.is_path_like_object,

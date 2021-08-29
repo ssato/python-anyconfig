@@ -7,9 +7,7 @@ r"""Abstract and basic dumpes.
 import io
 import typing
 
-from ...utils import (
-    filter_options, is_stream_ioinfo
-)
+from ... import ioinfo, utils
 from .datatypes import (
     InDataExT, IoiT
 )
@@ -88,7 +86,7 @@ class DumperMixin:
 
         :return: string represents the configuration
         """
-        kwargs = filter_options(self._dump_opts, kwargs)
+        kwargs = utils.filter_options(self._dump_opts, kwargs)
         return self.dump_to_string(cnf, **kwargs)
 
     def dump(self, cnf: InDataExT, ioi: IoiT, **kwargs):
@@ -103,9 +101,9 @@ class DumperMixin:
         :param kwargs: optional keyword parameters to be sanitized :: dict
         :raises IOError, OSError, AttributeError: When dump failed.
         """
-        kwargs = filter_options(self._dump_opts, kwargs)
+        kwargs = utils.filter_options(self._dump_opts, kwargs)
 
-        if is_stream_ioinfo(ioi):
+        if ioinfo.is_stream(ioi):
             self.dump_to_stream(cnf, typing.cast(typing.IO, ioi.src), **kwargs)
         else:
             ensure_outdir_exists(ioi.path)

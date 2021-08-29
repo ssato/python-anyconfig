@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A Public API to open configuration files by detecting type automatically.
@@ -7,15 +7,15 @@ r"""A Public API to open configuration files by detecting type automatically.
 import typing
 import warnings
 
-from ..common import PathOrIOInfoT, IOI_STREAM
-from ..ioinfo import make as ioinfo_make
-from ..parsers import find, MaybeParserT
+from .. import ioinfo, parsers
 from .datatypes import ParserT
 
 
 # pylint: disable=redefined-builtin
-def open(path: PathOrIOInfoT, mode: typing.Optional[str] = None,
-         ac_parser: MaybeParserT = None, **options) -> typing.IO:
+def open(path: ioinfo.PathOrIOInfoT,
+         mode: typing.Optional[str] = None,
+         ac_parser: parsers.MaybeParserT = None,
+         **options) -> typing.IO:
     """
     Open given configuration file with appropriate open flag.
 
@@ -36,12 +36,12 @@ def open(path: PathOrIOInfoT, mode: typing.Optional[str] = None,
     if not path:
         raise ValueError(f'Invalid argument, path: {path!r}')
 
-    ioi = ioinfo_make(path)
-    if ioi.type == IOI_STREAM:
+    ioi = ioinfo.make(path)
+    if ioinfo.is_stream(ioi):
         warnings.warn(f'Looks already opened stream: {ioi!r}')
         return typing.cast(typing.IO, ioi.src)
 
-    psr: ParserT = find(ioi, forced_type=ac_parser)
+    psr: ParserT = parsers.find(ioi, forced_type=ac_parser)
 
     if mode is not None and mode.startswith('w'):
         return psr.wopen(ioi.path, **options)

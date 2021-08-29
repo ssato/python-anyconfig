@@ -8,31 +8,27 @@ r"""ioinfo.main to provide internal APIs used from other modules.
 import pathlib
 import typing
 
-from .. import common
-from . import detectors, utils
+from . import constants, datatypes, detectors, utils
 
 
-GLOB_MARKER: str = '*'
-
-
-def from_path_object(path: pathlib.Path) -> common.IOInfo:
+def from_path_object(path: pathlib.Path) -> datatypes.IOInfo:
     """
     Return an IOInfo object made from :class:`pathlib.Path` object ``path``.
     """
     (abs_path, file_ext) = utils.get_path_and_ext(path)
 
-    return common.IOInfo(
-        abs_path, common.IOI_PATH_OBJ, str(abs_path), file_ext
+    return datatypes.IOInfo(
+        abs_path, datatypes.IOI_PATH_OBJ, str(abs_path), file_ext
     )
 
 
-def from_path_str(path: str) -> common.IOInfo:
+def from_path_str(path: str) -> datatypes.IOInfo:
     """Return an IOInfo object made from a str ``path``.
     """
     return from_path_object(pathlib.Path(path).resolve())
 
 
-def from_io_stream(strm: typing.IO) -> common.IOInfo:
+def from_io_stream(strm: typing.IO) -> datatypes.IOInfo:
     """
     Return an IOInfo object made from IO stream object ``strm``.
     """
@@ -42,15 +38,15 @@ def from_io_stream(strm: typing.IO) -> common.IOInfo:
     else:
         (abs_path, file_ext) = (path, '')
 
-    return common.IOInfo(
-        strm, common.IOI_STREAM, str(abs_path), file_ext
+    return datatypes.IOInfo(
+        strm, datatypes.IOI_STREAM, str(abs_path), file_ext
     )
 
 
-def make(obj: typing.Any) -> common.IOInfo:
-    """Make and return a :class:`common.IOInfo` object from object ``obj``.
+def make(obj: typing.Any) -> datatypes.IOInfo:
+    """Make and return a :class:`datatypes.IOInfo` object from object ``obj``.
     """
-    if isinstance(obj, common.IOInfo):
+    if isinstance(obj, datatypes.IOInfo):
         return obj
 
     if isinstance(obj, str):
@@ -81,11 +77,11 @@ def expand_from_path(path: pathlib.Path) -> typing.Iterator[pathlib.Path]:
         yield pathlib.Path(base)
 
 
-def make_itr(obj: typing.Any, marker: str = GLOB_MARKER
-             ) -> typing.Iterator[common.IOInfo]:
-    """Make and yield a series of :class:`common.IOInfo` objects.
+def make_itr(obj: typing.Any, marker: str = constants.GLOB_MARKER
+             ) -> typing.Iterator[datatypes.IOInfo]:
+    """Make and yield a series of :class:`datatypes.IOInfo` objects.
     """
-    if isinstance(obj, common.IOInfo):
+    if isinstance(obj, datatypes.IOInfo):
         yield obj
 
     elif detectors.is_path_str(obj):
@@ -105,9 +101,9 @@ def make_itr(obj: typing.Any, marker: str = GLOB_MARKER
                 yield ioi
 
 
-def makes(obj: typing.Any, marker: str = GLOB_MARKER
-          ) -> typing.List[common.IOInfo]:
-    """Make and return a list of :class:`common.IOInfo` objects.
+def makes(obj: typing.Any, marker: str = constants.GLOB_MARKER
+          ) -> typing.List[datatypes.IOInfo]:
+    """Make and return a list of :class:`datatypes.IOInfo` objects.
     """
     return list(make_itr(obj, marker=marker))
 

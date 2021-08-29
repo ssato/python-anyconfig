@@ -8,6 +8,9 @@ import unittest
 import anyconfig.ioinfo
 import anyconfig.processors.utils as TT
 
+from anyconfig.common import (
+    UnknownFileTypeError, UnknownProcessorTypeError
+)
 from .common import A, A2, A3, B, C, PRS
 
 
@@ -122,7 +125,7 @@ class TestCase(unittest.TestCase):
             self.assertEqual(TT.find_by_type_or_id(*inp), exp)
 
     def test_find_by_type_or_id_ng_cases(self):
-        with self.assertRaises(TT.UnknownProcessorTypeError):
+        with self.assertRaises(UnknownProcessorTypeError):
             TT.find_by_type_or_id('xyz', PRS)
 
     def test_find_by_fileext(self):
@@ -133,7 +136,7 @@ class TestCase(unittest.TestCase):
             self.assertEqual(TT.find_by_fileext(*inp), exp)
 
     def test_find_by_fileext_ng_cases(self):
-        with self.assertRaises(TT.UnknownFileTypeError):
+        with self.assertRaises(UnknownFileTypeError):
             TT.find_by_fileext('xyz', PRS)
 
     def test_find_by_maybe_file(self):
@@ -153,15 +156,15 @@ class TestCase(unittest.TestCase):
                ('/dev/null', PRS),
                )
         for inp in ies:
-            with self.assertRaises(TT.UnknownFileTypeError):
+            with self.assertRaises(UnknownFileTypeError):
                 TT.find_by_maybe_file(*inp)
 
     def test_findall_ng_cases(self):
         ies = (
                ((None, PRS, None), ValueError),  # w/o path nor type
-               (('/tmp/x.xyz', PRS, None), TT.UnknownFileTypeError),
-               (('/dev/null', PRS, None), TT.UnknownFileTypeError),
-               ((None, PRS, 'xyz'), TT.UnknownProcessorTypeError),
+               (('/tmp/x.xyz', PRS, None), UnknownFileTypeError),
+               (('/dev/null', PRS, None), UnknownFileTypeError),
+               ((None, PRS, 'xyz'), UnknownProcessorTypeError),
                )
         for inp, exc in ies:
             with self.assertRaises(exc):

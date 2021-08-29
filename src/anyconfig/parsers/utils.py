@@ -2,14 +2,15 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=unused-import,import-error,invalid-name
 r"""Internal APIs to load, list and find parser class objects.
 """
 import typing
 
-from ..common import PathOrIOInfoT
 from ..backend import ParserT, ParsersT
 from .parsers import Parsers
+
+if typing.TYPE_CHECKING:
+    from .. import ioinfo
 
 
 MaybeParserT = typing.Optional[
@@ -50,17 +51,17 @@ def list_by_extension() -> typing.List[typing.Tuple[str, ParsersT]]:
     return Parsers().list_by_x('extensions')
 
 
-def findall(obj: typing.Optional[PathOrIOInfoT] = None,
+def findall(obj: typing.Optional['ioinfo.PathOrIOInfoT'] = None,
             forced_type: typing.Optional[str] = None
             ) -> typing.List[ParserT]:
     """
     Find out processor objects can process data from given 'obj' which may be a
     file path, file or file-like object, pathlib.Path object or an
-    'anyconfig.common.IOInfo' (namedtuple) object.
+    'anyconfig.ioinfo.IOInfo' (namedtuple) object.
 
     :param obj:
         a file path, file or file-like object, pathlib.Path object, an
-        'anyconfig.common.IOInfo' (namedtuple) object, or None
+        'anyconfig.ioinfo.IOInfo' (namedtuple) object, or None
     :param forced_type: Forced type or id of the processor
 
     :return: A list of instances of processor classes to process 'obj'
@@ -69,7 +70,7 @@ def findall(obj: typing.Optional[PathOrIOInfoT] = None,
     return Parsers().findall(obj, forced_type=forced_type)
 
 
-def find(obj: typing.Optional[PathOrIOInfoT] = None,
+def find(obj: typing.Optional['ioinfo.PathOrIOInfoT'] = None,
          forced_type: MaybeParserT = None) -> ParserT:
     """
     This function is very similar to the above :func:`findall` but returns
@@ -77,7 +78,7 @@ def find(obj: typing.Optional[PathOrIOInfoT] = None,
 
     :param obj:
         a file path, file or file-like object, pathlib.Path object, an
-        'anyconfig.common.IOInfo' (namedtuple) object, or None
+        'anyconfig.ioinfo.IOInfo' (namedtuple) object, or None
     :param forced_type: Forced type or id of the processor
 
     :return:

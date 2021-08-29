@@ -9,9 +9,6 @@ import types
 import typing
 
 
-GLOB_MARKER = '*'
-
-
 def is_iterable(obj: typing.Any) -> bool:
     """
     >>> is_iterable([])

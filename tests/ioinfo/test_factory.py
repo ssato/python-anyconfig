@@ -11,7 +11,7 @@ import unittest
 
 import anyconfig.ioinfo.factory as TT
 
-from anyconfig.common import (
+from anyconfig.ioinfo.datatypes import (
     IOInfo, IOI_PATH_OBJ, IOI_STREAM
 )
 

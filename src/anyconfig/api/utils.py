@@ -2,15 +2,15 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Utility funtions for anyconfig.ionfo.
+"""Utility funtions for anyconfig.api.
 """
 import typing
 
 if typing.TYPE_CHECKING:
-    from .. import common
+    from .. import ioinfo
 
 
-def are_same_file_types(objs: typing.List['common.IOInfo']) -> bool:
+def are_same_file_types(objs: typing.List['ioinfo.IOInfo']) -> bool:
     """
     Are given objects, pathlib.Path or io, same type (have same extension)?
     """

@@ -11,12 +11,7 @@ import warnings
 
 import pkg_resources
 
-from ..common import (
-    IOInfo, PathOrIOInfoT, UnknownFileTypeError, UnknownProcessorTypeError,
-)
-from ..ioinfo import make as ioinfo_make
-from ..models import processor
-from ..utils import concat, groupby
+from .. import common, ioinfo, models, utils
 from .datatypes import (
     ProcT, ProcsT, ProcClsT, MaybeProcT
 )
@@ -44,9 +39,9 @@ def select_by_key(items: typing.Iterable[
     >>> select_by_key([(['a', 'aaa'], 1), (['b', 'bb'], 2), (['a'], 3)])
     [('a', [1, 3]), ('aaa', [1]), ('b', [2]), ('bb', [2])]
     """
-    itr = concat(((k, v) for k in ks) for ks, v in items)
+    itr = utils.concat(((k, v) for k in ks) for ks, v in items)
     return list((k, sort_fn(t[1] for t in g))
-                for k, g in groupby(itr, operator.itemgetter(0)))
+                for k, g in utils.groupby(itr, operator.itemgetter(0)))
 
 
 def list_by_x(prs: typing.Iterable[ProcT], key: str
@@ -60,7 +55,7 @@ def list_by_x(prs: typing.Iterable[ProcT], key: str
     if key == 'type':
         kfn = operator.methodcaller(key)
         res = sorted(((k, sort_by_prio(g)) for k, g
-                      in groupby(prs, kfn)),
+                      in utils.groupby(prs, kfn)),
                      key=operator.itemgetter(0))
 
     elif key == 'extensions':
@@ -88,7 +83,7 @@ def findall_with_pred(predicate: typing.Callable[..., bool],
 
 
 def maybe_processor(type_or_id: typing.Union[ProcT, ProcClsT],
-                    cls: ProcClsT = processor.Processor
+                    cls: ProcClsT = models.processor.Processor
                     ) -> typing.Optional[ProcT]:
     """
     :param type_or_id:
@@ -125,7 +120,7 @@ def find_by_type_or_id(type_or_id: str, prs: ProcsT) -> ProcsT:
 
     pclss = findall_with_pred(pred, prs)
     if not pclss:
-        raise UnknownProcessorTypeError(type_or_id)
+        raise common.UnknownProcessorTypeError(type_or_id)
 
     return pclss
 
@@ -135,7 +130,7 @@ def find_by_fileext(fileext: str, prs: ProcsT) -> ProcsT:
     :param fileext: File extension
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: A list of processor class to processor files with given extension
-    :raises: UnknownFileTypeError
+    :raises: common.UnknownFileTypeError
     """
     def pred(pcls):
         """Predicate"""
@@ -143,33 +138,31 @@ def find_by_fileext(fileext: str, prs: ProcsT) -> ProcsT:
 
     pclss = findall_with_pred(pred, prs)
     if not pclss:
-        raise UnknownFileTypeError(f'file extension={fileext}')
+        raise common.UnknownFileTypeError(f'file extension={fileext}')
 
     return pclss  # :: [Processor], never []
 
 
-def find_by_maybe_file(obj: PathOrIOInfoT, prs: ProcsT) -> ProcsT:
+def find_by_maybe_file(obj: ioinfo.PathOrIOInfoT, prs: ProcsT) -> ProcsT:
     """
     :param obj:
         a file path, file or file-like object, pathlib.Path object or an
-        'anyconfig.common.IOInfo' (namedtuple) object
+        'anyconfig.ioinfo.IOInfo' (namedtuple) object
     :param cps_by_ext: A list of processor classes
     :return: A list of processor classes to process given (maybe) file
-    :raises: UnknownFileTypeError
+    :raises: common.UnknownFileTypeError
     """
-    if not isinstance(obj, IOInfo):
-        obj = ioinfo_make(obj)
-
-    return find_by_fileext(obj.extension, prs)  # :: [Processor], never []
+    # :: [Processor], never []
+    return find_by_fileext(ioinfo.make(obj).extension, prs)
 
 
-def findall(obj: typing.Optional[PathOrIOInfoT], prs: ProcsT,
+def findall(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
             forced_type: typing.Optional[str] = None,
             ) -> ProcsT:
     """
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
-        'anyconfig.common.IOInfo` (namedtuple) object
+        'anyconfig.ioinfo.IOInfo` (namedtuple) object
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param forced_type:
         Forced processor type of the data to process or ID of the processor
@@ -177,8 +170,8 @@ def findall(obj: typing.Optional[PathOrIOInfoT], prs: ProcsT,
 
     :return: A list of instances of processor classes to process 'obj' data
     :raises:
-        ValueError, UnknownProcessorTypeError,
-        UnknownFileTypeError
+        ValueError, common.UnknownProcessorTypeError,
+        common.UnknownFileTypeError
     """
     if (obj is None or not obj) and forced_type is None:
         raise ValueError(
@@ -187,7 +180,7 @@ def findall(obj: typing.Optional[PathOrIOInfoT], prs: ProcsT,
         )
 
     if forced_type is None:
-        pclss = find_by_maybe_file(typing.cast(PathOrIOInfoT, obj),
+        pclss = find_by_maybe_file(typing.cast(ioinfo.PathOrIOInfoT, obj),
                                    prs)  # :: [Processor], never []
     else:
         pclss = find_by_type_or_id(forced_type, prs)  # Do.
@@ -195,13 +188,13 @@ def findall(obj: typing.Optional[PathOrIOInfoT], prs: ProcsT,
     return pclss
 
 
-def find(obj: typing.Optional[PathOrIOInfoT], prs: ProcsT,
+def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
          forced_type: MaybeProcT = None,
          ) -> ProcT:
     """
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
-        'anyconfig.common.IOInfo' (namedtuple) object
+        'anyconfig.ioinfo.IOInfo' (namedtuple) object
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :param forced_type:
         Forced processor type of the data to process or ID of the processor
@@ -211,8 +204,8 @@ def find(obj: typing.Optional[PathOrIOInfoT], prs: ProcsT,
 
     :return: an instance of processor class to process 'obj' data
     :raises:
-        ValueError, UnknownProcessorTypeError,
-        UnknownFileTypeError
+        ValueError, common.UnknownProcessorTypeError,
+        common.UnknownFileTypeError
     """
     if forced_type is not None and not isinstance(forced_type, str):
         proc = maybe_processor(

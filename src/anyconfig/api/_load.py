@@ -10,7 +10,7 @@ import warnings
 
 from .. import ioinfo
 from ..common import (
-    IOInfo, InDataT, InDataExT, PathOrIOInfoT
+    InDataT, InDataExT
 )
 from ..dicts import (
     convert_to as dicts_convert_to,
@@ -53,7 +53,7 @@ def _maybe_schema(**options) -> typing.Optional[InDataT]:
     return None
 
 
-def _single_load(ioi: IOInfo,
+def _single_load(ioi: ioinfo.IOInfo,
                  ac_parser: MaybeParserOrIdOrTypeT = None,
                  ac_template: bool = False,
                  ac_context: typing.Optional[MappingT] = None,
@@ -61,7 +61,7 @@ def _single_load(ioi: IOInfo,
     """
     :param input_:
         File path or file or file-like object or pathlib.Path object represents
-        the file or a namedtuple 'anyconfig.common.IOInfo' object represents
+        the file or a namedtuple 'anyconfig.ioinfo.IOInfo' object represents
         some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
@@ -86,7 +86,7 @@ def _single_load(ioi: IOInfo,
     return psr.load(ioi, **options)
 
 
-def single_load(input_: PathOrIOInfoT,
+def single_load(input_: ioinfo.PathOrIOInfoT,
                 ac_parser: MaybeParserOrIdOrTypeT = None,
                 ac_template: bool = False,
                 ac_context: typing.Optional[MappingT] = None,
@@ -102,7 +102,7 @@ def single_load(input_: PathOrIOInfoT,
 
     :param input\_:
         File path or file or file-like object or pathlib.Path object represents
-        the file or a namedtuple 'anyconfig.common.IOInfo' object represents
+        the file or a namedtuple 'anyconfig.ioinfo.IOInfo' object represents
         some input to load some data from
     :param ac_parser: Forced parser type or parser object itself
     :param ac_template:
@@ -153,8 +153,8 @@ def single_load(input_: PathOrIOInfoT,
     return try_query(cnf, options.get('ac_query', False), **options)
 
 
-def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
-                                    PathOrIOInfoT],
+def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
+                                    ioinfo.PathOrIOInfoT],
                ac_parser: MaybeParserOrIdOrTypeT = None,
                ac_template: bool = False,
                ac_context: typing.Optional[MappingT] = None,
@@ -169,7 +169,7 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
 
     The first argument 'inputs' may be a list of a file paths or a glob pattern
     specifying them or a pathlib.Path object represents file[s] or a namedtuple
-    'anyconfig.common.IOInfo' object represents some inputs to load some data
+    'anyconfig.ioinfo.IOInfo' object represents some inputs to load some data
     from.
 
     About glob patterns, for example, is, if a.yml, b.yml and c.yml are in the
@@ -183,7 +183,7 @@ def multi_load(inputs: typing.Union[typing.Iterable[PathOrIOInfoT],
     :param inputs:
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
-        file or a namedtuple 'anyconfig.common.IOInfo' object represents some
+        file or a namedtuple 'anyconfig.ioinfo.IOInfo' object represents some
         inputs to load some data from
     :param ac_parser: Forced parser type or parser object
     :param ac_template: Assume configuration file may be a template file and
@@ -262,12 +262,12 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     r"""
     Load single or multiple config files or multiple config files specified in
     given paths pattern or pathlib.Path object represents config files or a
-    namedtuple 'anyconfig.common.IOInfo' object represents some inputs.
+    namedtuple 'anyconfig.ioinfo.IOInfo' object represents some inputs.
 
     :param path_specs:
         A list of file path or a glob pattern such as r'/a/b/\*.json'to list of
         files, file or file-like object or pathlib.Path object represents the
-        file or a namedtuple 'anyconfig.common.IOInfo' object represents some
+        file or a namedtuple 'anyconfig.ioinfo.IOInfo' object represents some
         inputs to load some data from.
     :param ac_parser: Forced parser type or parser object
     :param ac_dict:

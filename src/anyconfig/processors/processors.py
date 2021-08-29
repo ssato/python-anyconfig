@@ -8,11 +8,13 @@ objects inherited from it.
 import operator
 import typing
 
-from ..common import PathOrIOInfoT
 from . import utils
 from .datatypes import (
     ProcT, ProcsT, ProcClsT, ProcClssT, MaybeProcT
 )
+
+if typing.TYPE_CHECKING:
+    from .. import ioinfo
 
 
 class Processors:
@@ -113,13 +115,13 @@ class Processors:
                          "None, 'cid', 'type' and 'extension' "
                          f"but it was '{key}'")
 
-    def findall(self, obj: typing.Optional[PathOrIOInfoT],
+    def findall(self, obj: typing.Optional['ioinfo.PathOrIOInfoT'],
                 forced_type: typing.Optional[str] = None
                 ) -> typing.List[ProcT]:
         """
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an
-            'anyconfig.common.IOInfo' (namedtuple) object
+            'anyconfig.ioinfo.IOInfo' (namedtuple) object
         :param forced_type: Forced processor type to find
 
         :return: A list of instances of processor classes to process 'obj'
@@ -127,12 +129,12 @@ class Processors:
         """
         return utils.findall(obj, self.list(), forced_type=forced_type)
 
-    def find(self, obj: typing.Optional[PathOrIOInfoT],
+    def find(self, obj: typing.Optional['ioinfo.PathOrIOInfoT'],
              forced_type: MaybeProcT = None) -> ProcT:
         """
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an
-            'anyconfig.common.IOInfo' (namedtuple) object
+            'anyconfig.ioinfo.IOInfo' (namedtuple) object
         :param forced_type:
             Forced processor type to find or a processor class object or a
             processor intance

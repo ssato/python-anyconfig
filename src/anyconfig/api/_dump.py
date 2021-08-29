@@ -8,7 +8,7 @@ from .. import common, ioinfo, parsers
 from .datatypes import ParserT
 
 
-def dump(data: common.InDataExT, out: common.PathOrIOInfoT,
+def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
          ac_parser: parsers.MaybeParserT = None, **options
          ) -> None:
     """
@@ -17,7 +17,7 @@ def dump(data: common.InDataExT, out: common.PathOrIOInfoT,
     :param data: A mapping object may have configurations data to dump
     :param out:
         An output file path, a file, a file-like object, :class:`pathlib.Path`
-        object represents the file or a namedtuple 'anyconfig.common.IOInfo'
+        object represents the file or a namedtuple 'anyconfig.ioinfo.IOInfo'
         object represents output to dump some data to.
     :param ac_parser: Forced parser type or parser object
     :param options:

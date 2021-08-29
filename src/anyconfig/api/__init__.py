@@ -95,7 +95,7 @@ from ._open import open  # pylint: disable=redefined-builtin
 # Export some more APIs originally from other sub modules.
 from ..backend import ParserT
 from ..common import (
-    IOInfo, InDataT, InDataExT,
+    InDataT, InDataExT,
     UnknownFileTypeError, UnknownParserTypeError,
     UnknownProcessorTypeError, ValidationError
 )
@@ -103,6 +103,7 @@ from ..dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
     merge, get, set_,
 )
+from ..ioinfo import IOInfo
 from ..parsers import (
     load_plugins, list_types, list_by_cid, list_by_type, list_by_extension,
     findall, find, MaybeParserT
@@ -133,7 +134,7 @@ __all__ = [
     'ParserT',
 
     # anyconfig.common
-    'IOInfo', 'InDataT', 'InDataExT',
+    'InDataT', 'InDataExT',
     'UnknownFileTypeError', 'UnknownParserTypeError',
     'UnknownProcessorTypeError', 'ValidationError',
 
@@ -141,6 +142,9 @@ __all__ = [
     'MS_REPLACE', 'MS_NO_REPLACE', 'MS_DICTS', 'MS_DICTS_AND_LISTS',
     'MERGE_STRATEGIES',
     'merge', 'get', 'set_',
+
+    # anyconfig.ioinfo
+    'IOInfo',
 
     # anyconfig.parsers
     'load_plugins', 'list_types', 'list_by_cid', 'list_by_type',

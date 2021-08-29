@@ -7,12 +7,10 @@
 import pathlib
 import typing
 
-from ..common import (
-    IOI_KEYS, IOI_STREAM
-)
+from . import datatypes
 
 
-IOI_KEYS_LIST: typing.List[str] = sorted(IOI_KEYS)
+IOI_KEYS_LIST: typing.List[str] = sorted(datatypes.IOI_KEYS)
 
 
 def is_path_str(obj: typing.Any) -> bool:
@@ -48,6 +46,6 @@ def is_ioinfo(obj: typing.Any) -> bool:
 def is_stream(obj: typing.Any) -> bool:
     """Is given object ``obj`` an IOInfo object with stream type?
     """
-    return getattr(obj, 'type', None) == IOI_STREAM
+    return getattr(obj, 'type', None) == datatypes.IOI_STREAM
 
 # vim:sw=4:ts=4:et:

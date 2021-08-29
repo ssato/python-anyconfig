@@ -104,4 +104,11 @@ def make_itr(obj: typing.Any, marker: str = GLOB_MARKER
             for ioi in make_itr(item, marker=marker):
                 yield ioi
 
+
+def makes(obj: typing.Any, marker: str = GLOB_MARKER
+          ) -> typing.List[common.IOInfo]:
+    """Make and return a list of :class:`common.IOInfo` objects.
+    """
+    return list(make_itr(obj, marker=marker))
+
 # vim:sw=4:ts=4:et:

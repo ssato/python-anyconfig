@@ -21,12 +21,12 @@ pathlib.Path and io objects.
   path, opener, etc.
 """
 from .detectors import is_stream
-from .factory import make, make_itr
+from .factory import make, makes
 from .paths import expand_paths
 
 __all__ = [
     'is_stream',
-    'make', 'make_itr',
+    'make', 'makes',
     'expand_paths'
 ]
 

@@ -22,12 +22,10 @@ pathlib.Path and io objects.
 """
 from .detectors import is_stream
 from .factory import make, makes
-from .paths import expand_paths
 
 __all__ = [
     'is_stream',
     'make', 'makes',
-    'expand_paths'
 ]
 
 # vim:sw=4:ts=4:et:

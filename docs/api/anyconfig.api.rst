@@ -12,3 +12,4 @@
    anyconfig.api._dump
    anyconfig.api._load
    anyconfig.api._open
+   anyconfig.api.utils

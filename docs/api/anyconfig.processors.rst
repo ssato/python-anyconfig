@@ -11,6 +11,6 @@
 
 .. toctree::
 
-   anyconfig.processors.common
+   anyconfig.processors.datatypes
    anyconfig.processors.processors
    anyconfig.processors.utils

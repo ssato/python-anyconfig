@@ -8,9 +8,9 @@
 
 .. toctree::
 
+   anyconfig.backend.base.compat
    anyconfig.backend.base.datatypes
    anyconfig.backend.base.dumpers
    anyconfig.backend.base.loaders
-   anyconfig.backend.base.mixins
    anyconfig.backend.base.parsers
    anyconfig.backend.base.utils

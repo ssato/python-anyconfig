@@ -8,6 +8,6 @@
 
 .. toctree::
 
-   anyconfig.schema.common
+   anyconfig.schema.datatypes
    anyconfig.schema.default
    anyconfig.schema.jsonschema

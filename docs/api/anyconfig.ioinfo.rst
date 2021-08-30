@@ -5,6 +5,11 @@
     :members:
     :undoc-members:
     :show-inheritance:
-    
-..    :special-members:
-.. :private-members:
+
+.. toctree::
+
+   anyconfig.ioinfo.constants
+   anyconfig.ioinfo.datatypes
+   anyconfig.ioinfo.detectors
+   anyconfig.ioinfo.factory
+   anyconfig.ioinfo.utils

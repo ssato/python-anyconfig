@@ -1,7 +1,7 @@
-:mod:`anyconfig.schema.common`
+:mod:`anyconfig.api.utils`
 ===============================
 
-.. automodule:: anyconfig.schema.common
+.. automodule:: anyconfig.api.utils
     :members:
     :undoc-members:
     :show-inheritance:

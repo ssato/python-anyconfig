@@ -10,6 +10,7 @@
 
 .. toctree::
 
+   anyconfig.backend.yaml.common
    anyconfig.backend.yaml.pyyaml
    anyconfig.backend.yaml.ruamel_yaml
 

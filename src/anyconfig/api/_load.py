@@ -296,10 +296,9 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
                            ac_template=ac_template, ac_context=ac_context,
                            **options)
 
-    else:
-        return multi_load(iois, ac_parser=ac_parser, ac_dict=ac_dict,
-                          ac_template=ac_template, ac_context=ac_context,
-                          **options)
+    return multi_load(iois, ac_parser=ac_parser, ac_dict=ac_dict,
+                      ac_template=ac_template, ac_context=ac_context,
+                      **options)
 
 
 def loads(content, ac_parser=None, ac_dict=None, ac_template=False,

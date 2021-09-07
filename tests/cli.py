@@ -302,12 +302,20 @@ class Test_50_others_w_input(Test_20_Base):
 
     def setUp(self):
         super().setUp()
-        dic = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
+        self.dic = dict(name="a", a=1, b=dict(b=[1, 2], c="C"), d=[1, 2])
         self.infile = self.workdir / "a.json"
-        anyconfig.api.dump(dic, self.infile)
+        anyconfig.api.dump(self.dic, self.infile)
 
     def test_10_output_wo_output_option_w_otype(self):
         self.run_and_check_exit_code(["--otype", "json", self.infile])
+
+    def test_11_output_w_output_option_wo_otype(self):
+        outfile = self.workdir / "out.yml"
+        _run("-o", outfile, self.infile)
+        self.assertTrue(outfile.exists())
+        ref = self.workdir / "a.yml"
+        anyconfig.api.dump(self.dic, ref)
+        self.assertEqual(outfile.read_text(), ref.read_text())
 
     def test_12_output_wo_output_option_and_otype_w_itype(self):
         self.run_and_check_exit_code(["--itype", "json", self.infile])

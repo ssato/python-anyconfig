@@ -197,6 +197,7 @@ def _parse_args(argv):
             _show_psrs()
         elif args.env:
             cnf = os.environ.copy()
+            args.otype = args.otype or "json"
             _output_result(cnf, args)
             sys.exit(0)
         else:
@@ -280,7 +281,7 @@ def _output_result(cnf, args, inpaths=None, extra_opts=None):
     """
     fmsg = ("Uknown file type and cannot detect appropriate backend "
             "from its extension, '%s'")
-    (outpath, otype) = (args.output, args.otype or "json")
+    (outpath, otype) = (args.output, args.otype)
 
     if not utils.is_dict_like(cnf):
         _exit_with_output(str(cnf))  # Print primitive types as it is.

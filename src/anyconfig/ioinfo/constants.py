@@ -14,9 +14,9 @@ GLOB_MARKER: str = '*'
 PATH_SEP: str = os.path.sep
 
 SPLIT_PATH_RE: typing.Pattern = re.compile(
-    fr'([^{GLOB_MARKER}]+)'
-    fr'{PATH_SEP}'
-    fr'(.*{GLOB_MARKER}.*)'
+    fr'([^{re.escape(GLOB_MARKER)}]+)'
+    fr'{re.escape(PATH_SEP)}'
+    fr'(.*{re.escape(GLOB_MARKER)}.*)'
 )
 
 # vim:sw=4:ts=4:et:

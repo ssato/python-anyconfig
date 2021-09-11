@@ -58,4 +58,7 @@ class TestCase(unittest.TestCase):
                 res = sorted(TT.expand_from_path(inp))
                 self.assertEqual(res, sorted(exp), f'{inp!r} vs. {exp!r}')
 
+                res_2 = sorted(TT.expand_from_path_2(inp))
+                self.assertEqual(res_2, sorted(exp), f'{inp!r} vs. {exp!r}')
+
 # vim:sw=4:ts=4:et:

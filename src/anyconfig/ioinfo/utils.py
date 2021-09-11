@@ -4,6 +4,8 @@
 #
 """Utility funtions for anyconfig.ionfo.
 """
+import itertools
+import os.path
 import pathlib
 import typing
 
@@ -56,5 +58,33 @@ def expand_from_path(path: pathlib.Path) -> typing.Iterator[pathlib.Path]:
             yield path_2
     else:
         yield pathlib.Path(base)
+
+
+def expand_from_path_2(path: pathlib.Path,
+                       marker: str = GLOB_MARKER
+                       ) -> typing.Iterator[pathlib.Path]:
+    """
+    Expand given path ``path`` contains '*' in its path str and yield
+    :class:`pathlib.Path` objects.
+    """
+    if not path.is_absolute():
+        path = path.resolve()
+
+    idx_part = list(
+        enumerate(itertools.takewhile(lambda p: marker not in p, path.parts))
+    )[-1]
+
+    if not idx_part:
+        raise ValueError(f'It should not happen: {path!r}')
+
+    idx = idx_part[0] + 1
+    if len(path.parts) > idx:
+        base = pathlib.Path(path.parts[0]).joinpath(*path.parts[:idx])
+        pattern = os.path.sep.join(path.parts[idx:])
+        for epath in sorted(base.glob(pattern)):
+            yield epath
+
+    else:  # No marker was found.
+        yield path
 
 # vim:sw=4:ts=4:et:

@@ -24,8 +24,7 @@ A char is 'c'.
 TMPLS = [('00.j2', "{% include '10.j2' %}" + os.linesep, C_1),
          ('10.j2', """{% for c in ['a', 'b', 'c'] -%}
 A char is '{{ c }}'.
-{% endfor %}
-""", C_1)]
+{% endfor %}""" + os.linesep, C_1)]
 
 C_2 = "-1"
 TMPL_WITH_FILTER = ('11.j2', "{{ 1|negate }}", C_2)
@@ -33,6 +32,39 @@ TMPL_WITH_FILTER = ('11.j2', "{{ 1|negate }}", C_2)
 
 def negate(value):
     return -value
+
+
+class FunctionsTestCase(unittest.TestCase):
+
+    def test_make_template_paths(self):
+        tpath0 = pathlib.Path('/path/to/a/')
+        path0 = tpath0 / 'tmpl.j2'
+        tmp0 = pathlib.Path('/tmp')
+        ies = (
+               ((path0, ), [tpath0]),
+               ((path0, [tmp0]), [tpath0, tmp0]),
+               )
+        for inp, exp in ies:
+            self.assertEqual(
+                TT.make_template_paths(*inp), exp
+            )
+
+        saved = pathlib.Path().cwd().resolve()
+        try:
+            os.chdir(str(tmp0))
+            tpath1 = pathlib.Path('.')
+            path1 = tpath1 / 'tmpl.j2'
+            ies = (
+                   ((path1, ), [tmp0]),
+                   ((path1, [tmp0]), [tmp0]),
+                   )
+
+            for inp, exp in ies:
+                self.assertEqual(
+                    TT.make_template_paths(*inp), exp
+                )
+        finally:
+            os.chdir(str(saved))
 
 
 class TestCase(tests.common.TestCaseWithWorkdir):

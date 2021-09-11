@@ -30,7 +30,7 @@ RENDER_S_OPTS: typing.List[str] = ['ctx', 'paths', 'filters']
 RENDER_OPTS = RENDER_S_OPTS + ['ask']
 
 
-def tmpl_env(paths: MaybePathsT) -> jinja2.Environment:
+def tmpl_env(paths: MaybePathsT = None) -> jinja2.Environment:
     """
     :param paths: A list of template search paths
     """
@@ -44,33 +44,19 @@ def tmpl_env(paths: MaybePathsT) -> jinja2.Environment:
 
 def make_template_paths(template_file: pathlib.Path,
                         paths: MaybePathsT = None
-                        ) -> typing.List[str]:
+                        ) -> typing.List[pathlib.Path]:
     """
-    Make up a list of template search paths from given 'template_file'
-    (absolute or relative path to the template file) and/or 'paths' (a list of
-    template search paths given by user).
+    Make up a list of template search paths from given ``template_file`` path
+    (absolute or relative path to the template file) and/or ``paths``, a list
+    of template search paths given by user or None.
 
     NOTE: User-given 'paths' will take higher priority over a dir of
     template_file.
-
-    :param template_file: Absolute or relative path to the template file
-    :param paths: A list of template search paths
-    :return: List of template paths ([str])
-
-    >>> p = pathlib.Path
-    >>> make_template_paths(p('/path/to/a/template'))
-    ['/path/to/a']
-    >>> make_template_paths(p('/path/to/a/template'), ['/tmp'])
-    ['/path/to/a', '/tmp']
-    >>> os.chdir('/tmp')
-    >>> make_template_paths(p('./path/to/a/template'))
-    ['/tmp/path/to/a']
-    >>> make_template_paths(p('./path/to/a/template'), ['/tmp'])
-    ['/tmp/path/to/a', '/tmp']
     """
-    tmpldir = str(template_file.parent.resolve())
+    tmpldir = template_file.parent.resolve()
     if paths:
-        return [tmpldir] + [str(p) for p in paths]
+        return [tmpldir] + [pathlib.Path(p) for p in paths
+                            if str(p) != str(tmpldir)]
 
     return [tmpldir]
 

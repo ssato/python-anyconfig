@@ -42,4 +42,19 @@ def split_path_by_marker(path: str,
 
     return typing.cast(typing.Tuple[str, str], matched.groups())
 
+
+def expand_from_path(path: pathlib.Path) -> typing.Iterator[pathlib.Path]:
+    """
+    Expand given path ``path`` contains '*' in its path str and yield
+    :class:`pathlib.Path` objects.
+    """
+    (base, pattern) = split_path_by_marker(str(path))
+
+    if pattern:
+        base_2 = pathlib.Path(base or '.').resolve()
+        for path_2 in sorted(base_2.glob(pattern)):
+            yield path_2
+    else:
+        yield pathlib.Path(base)
+
 # vim:sw=4:ts=4:et:

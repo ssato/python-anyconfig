@@ -62,21 +62,6 @@ def make(obj: typing.Any) -> datatypes.IOInfo:
     raise ValueError(repr(obj))
 
 
-def expand_from_path(path: pathlib.Path) -> typing.Iterator[pathlib.Path]:
-    """
-    Expand given path ``path`` contains '*' in its path str and yield
-    :class:`pathlib.Path` objects.
-    """
-    (base, pattern) = utils.split_path_by_marker(str(path))
-
-    if pattern:
-        base_2 = pathlib.Path(base or '.').resolve()
-        for path_2 in sorted(base_2.glob(pattern)):
-            yield path_2
-    else:
-        yield pathlib.Path(base)
-
-
 def make_itr(obj: typing.Any, marker: str = constants.GLOB_MARKER
              ) -> typing.Iterator[datatypes.IOInfo]:
     """Make and yield a series of :class:`datatypes.IOInfo` objects.
@@ -85,11 +70,11 @@ def make_itr(obj: typing.Any, marker: str = constants.GLOB_MARKER
         yield obj
 
     elif detectors.is_path_str(obj):
-        for path in expand_from_path(pathlib.Path(obj)):
+        for path in utils.expand_from_path(pathlib.Path(obj)):
             yield from_path_object(path)
 
     elif detectors.is_path_obj(obj):
-        for path in expand_from_path(obj):
+        for path in utils.expand_from_path(obj):
             yield from_path_object(path)
 
     elif detectors.is_io_stream(obj):

@@ -5,13 +5,10 @@
 """Utility funtions for anyconfig.ionfo.
 """
 import itertools
-import os.path
 import pathlib
 import typing
 
-from .constants import (
-    GLOB_MARKER, PATH_SEP, SPLIT_PATH_RE
-)
+from .constants import GLOB_MARKER, PATH_SEP
 
 
 def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
@@ -25,44 +22,9 @@ def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
     )
 
 
-def split_path_by_marker(path: str,
-                         marker: str = GLOB_MARKER,
-                         path_sep: str = PATH_SEP,
-                         split_re: typing.Pattern = SPLIT_PATH_RE
-                         ) -> typing.Tuple[str, str]:
-    """Split given path string by the marker.
-    """
-    if marker not in path:
-        return (path, '')
-
-    if path_sep not in path:
-        return ('', path)
-
-    matched = split_re.match(path)
-    if not matched:
-        raise ValueError(f'Invalid path: {path}')
-
-    return typing.cast(typing.Tuple[str, str], matched.groups())
-
-
-def expand_from_path(path: pathlib.Path) -> typing.Iterator[pathlib.Path]:
-    """
-    Expand given path ``path`` contains '*' in its path str and yield
-    :class:`pathlib.Path` objects.
-    """
-    (base, pattern) = split_path_by_marker(str(path))
-
-    if pattern:
-        base_2 = pathlib.Path(base or '.').resolve()
-        for path_2 in sorted(base_2.glob(pattern)):
-            yield path_2
-    else:
-        yield pathlib.Path(base)
-
-
-def expand_from_path_2(path: pathlib.Path,
-                       marker: str = GLOB_MARKER
-                       ) -> typing.Iterator[pathlib.Path]:
+def expand_from_path(path: pathlib.Path,
+                     marker: str = GLOB_MARKER
+                     ) -> typing.Iterator[pathlib.Path]:
     """
     Expand given path ``path`` contains '*' in its path str and yield
     :class:`pathlib.Path` objects.
@@ -80,7 +42,7 @@ def expand_from_path_2(path: pathlib.Path,
     idx = idx_part[0] + 1
     if len(path.parts) > idx:
         base = pathlib.Path(path.parts[0]).joinpath(*path.parts[:idx])
-        pattern = os.path.sep.join(path.parts[idx:])
+        pattern = PATH_SEP.join(path.parts[idx:])
         for epath in sorted(base.glob(pattern)):
             yield epath
 

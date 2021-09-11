@@ -23,17 +23,6 @@ class TestCase(unittest.TestCase):
             res = TT.get_path_and_ext(inp)
             self.assertEqual(res, exp)
 
-    def test_split_path_by_marker(self):
-        ies = (
-            ('a.txt', ('a.txt', '')),
-            ('*.txt', ('', '*.txt')),
-            ('a/*.txt', ('a', '*.txt')),
-            ('a/b/*.txt', ('a/b', '*.txt')),
-            ('a/b/*/*.txt', ('a/b', '*/*.txt')),
-        )
-        for inp, exp in ies:
-            self.assertEqual(TT.split_path_by_marker(inp), exp)
-
     def test_expand_from_path(self):
         with tempfile.TemporaryDirectory() as workdir:
             tdir = pathlib.Path(str(workdir)) / 'a' / 'b' / 'c'
@@ -57,8 +46,5 @@ class TestCase(unittest.TestCase):
                              ):
                 res = sorted(TT.expand_from_path(inp))
                 self.assertEqual(res, sorted(exp), f'{inp!r} vs. {exp!r}')
-
-                res_2 = sorted(TT.expand_from_path_2(inp))
-                self.assertEqual(res_2, sorted(exp), f'{inp!r} vs. {exp!r}')
 
 # vim:sw=4:ts=4:et:

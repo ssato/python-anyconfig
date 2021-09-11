@@ -21,10 +21,11 @@ A char is 'b'.
 A char is 'c'.
 """
 
-TMPLS = [('00.j2', "{% include '10.j2' %}" + os.linesep, C_1),
+TMPLS = [('00.j2', "{% include '10.j2' -%}", C_1),
          ('10.j2', """{% for c in ['a', 'b', 'c'] -%}
 A char is '{{ c }}'.
-{% endfor %}""" + os.linesep, C_1)]
+{% endfor -%}
+""", C_1)]
 
 C_2 = "-1"
 TMPL_WITH_FILTER = ('11.j2', "{{ 1|negate }}", C_2)
@@ -37,9 +38,9 @@ def negate(value):
 class FunctionsTestCase(unittest.TestCase):
 
     def test_make_template_paths(self):
-        tpath0 = pathlib.Path('/path/to/a/')
+        tpath0 = pathlib.Path('/path/to/a/').resolve()
         path0 = tpath0 / 'tmpl.j2'
-        tmp0 = pathlib.Path('/tmp')
+        tmp0 = pathlib.Path('/tmp').resolve()
         ies = (
                ((path0, ), [tpath0]),
                ((path0, [tmp0]), [tpath0, tmp0]),

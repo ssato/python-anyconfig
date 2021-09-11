@@ -17,9 +17,13 @@ c = anyconfig.load("/") or {}
 anyconfig.dump(c, "/dev/null", "yaml")
 """
 
+NULL_DEV = '/dev/null'
+if not pathlib.Path(NULL_DEV).exists():
+    NULL_DEV = 'NUL'
+
 
 def check_output(cmd):
-    devnull = open('/dev/null', 'w')
+    devnull = open(NULL_DEV, 'w')
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=devnull)
     return proc.communicate()[0]
 

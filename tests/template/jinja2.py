@@ -64,6 +64,8 @@ class FunctionsTestCase(unittest.TestCase):
                 self.assertEqual(
                     TT.make_template_paths(*inp), exp
                 )
+        except FileNotFoundError:
+            pass  # ``tmp0`` does not exist on windows.
         finally:
             os.chdir(str(saved))
 

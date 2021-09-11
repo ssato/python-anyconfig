@@ -52,7 +52,7 @@ def setup_workdir():
     True
     >>> os.rmdir(workdir)
     """
-    return tempfile.mkdtemp(dir="/tmp", prefix="python-anyconfig-tests-")
+    return tempfile.mkdtemp(prefix="python-anyconfig-tests-")
 
 
 def cleanup_workdir(workdir):

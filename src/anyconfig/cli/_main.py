@@ -28,7 +28,7 @@ def try_parse_args(argv):
             args.inputs = sys.stdin
     else:
         if args.list:
-            actions.show_parsers()
+            utils.exit_with_output(utils.make_parsers_txt())
         elif args.env:
             cnf = os.environ.copy()
             actions.output_result(cnf, args)

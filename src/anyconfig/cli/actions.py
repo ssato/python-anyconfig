@@ -4,26 +4,10 @@
 #
 """Utilities for anyconfig.cli.*.
 """
-import os
 import sys
 
 from .. import api, utils as base_utils
 from . import utils
-
-
-def show_parsers():
-    """Show list of info of parsers available
-    """
-    sep = os.linesep
-
-    types = "Supported types: " + ", ".join(api.list_types())
-    cids = "IDs: " + ", ".join(c for c, _ps in api.list_by_cid())
-
-    x_vs_ps = ["  %s: %s" % (x, ", ".join(p.cid() for p in ps))
-               for x, ps in api.list_by_extension()]
-    exts = "File extensions:" + sep + sep.join(x_vs_ps)
-
-    utils.exit_with_output(sep.join([types, exts, cids]))
 
 
 def output_type_by_input_path(inpaths, itype, fmsg):

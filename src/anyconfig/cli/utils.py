@@ -7,15 +7,38 @@
 import functools
 import os
 import sys
+import typing
 
 from .. import api
 
 
 @functools.lru_cache(None)
-def list_parser_types():
+def list_parser_types() -> typing.List[str]:
     """An wrapper to api.list_types() to memoize its result.
     """
     return api.list_types()
+
+
+def make_parsers_txt() -> str:
+    """Make up a text shows list and info of parsers available.
+    """
+    sep = os.linesep
+    indent = '  '
+
+    parser_types = ', '.join(list_parser_types())
+    file_ext_vs_parsers = sep.join(
+        f'{indent}{x}: ' + ', '.join(p.cid() for p in ps)
+        for x, ps in api.list_by_extension()
+    )
+
+    return sep.join(
+        [
+            'Supported file types:',
+            f'{indent}{parser_types}',
+            'Supported file extensions [extension: parsers]:',
+            f'{file_ext_vs_parsers}',
+        ]
+    )
 
 
 def exit_with_output(content, exit_code=0):

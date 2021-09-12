@@ -5,9 +5,10 @@
 """Argument parser.
 """
 import argparse
+import typing
 
 from .. import api
-from . import constants
+from . import constants, utils
 
 
 DEFAULTS = dict(
@@ -17,75 +18,83 @@ DEFAULTS = dict(
 )
 
 
-def make_parser(defaults=None):
+def gen_type_help_txt(types: str, target: str = 'Input') -> str:
+    """Generate a type help txt.
     """
-    :param defaults: Default option values
+    return (f'Select type of {target} files from {types}'
+            '[Automatically detected by those extension]')
+
+
+def make_parser(defaults: typing.Optional[typing.Dict] = None
+                ) -> argparse.ArgumentParser:
+    """Make an instance of argparse.ArgumentParser to parse arguments.
     """
     if defaults is None:
         defaults = DEFAULTS
 
-    ctypes = api.list_types()
-    ctypes_s = ", ".join(ctypes)
-    type_help = "Select type of %s config files from " + \
-        ctypes_s + " [Automatically detected by file ext]"
-
-    mts = api.MERGE_STRATEGIES
-    mts_s = ", ".join(mts)
-    mt_help = "Select strategy to merge multiple configs from " + \
-        mts_s + " [%(merge)s]" % defaults
+    ctypes: typing.List[str] = utils.list_parser_types()
+    ctypes_s: str = ', '.join(ctypes)
 
     apsr = argparse.ArgumentParser(usage=constants.USAGE)
     apsr.set_defaults(**defaults)
 
-    apsr.add_argument("inputs", type=str, nargs='*', help="Input files")
-    apsr.add_argument("--version", action="version",
-                      version="%%(prog)s %s" % api.version())
+    apsr.add_argument('inputs', type=str, nargs='*', help='Input files')
+    apsr.add_argument(
+        '--version', action='version',
+        version=f'%%(prog)s {".".join(api.version())}'
+    )
 
-    lpog = apsr.add_argument_group("List specific options")
-    lpog.add_argument("-L", "--list", action="store_true",
-                      help="List supported config types")
+    apsr.add_argument('-o', '--output', help='Output file path')
+    apsr.add_argument('-I', '--itype', choices=ctypes, metavar='ITYPE',
+                      help=gen_type_help_txt(ctypes_s))
+    apsr.add_argument('-O', '--otype', choices=ctypes, metavar='OTYPE',
+                      help=gen_type_help_txt(ctypes_s, 'Output'))
 
-    spog = apsr.add_argument_group("Schema specific options")
-    spog.add_argument("--validate", action="store_true",
-                      help="Only validate input files and do not output. "
-                           "You must specify schema file with -S/--schema "
-                           "option.")
-    spog.add_argument("--gen-schema", action="store_true",
-                      help="Generate JSON schema for givne config file[s] "
-                           "and output it instead of (merged) configuration.")
-
-    gspog = apsr.add_argument_group("Query/Get/set options")
-    gspog.add_argument("-Q", "--query", help=constants.QUERY_HELP)
-    gspog.add_argument("--get", help=constants.GET_HELP)
-    gspog.add_argument("--set", help=constants.SET_HELP)
-
-    apsr.add_argument("-o", "--output", help="Output file path")
-    apsr.add_argument("-I", "--itype", choices=ctypes, metavar="ITYPE",
-                      help=(type_help % "Input"))
-    apsr.add_argument("-O", "--otype", choices=ctypes, metavar="OTYPE",
-                      help=(type_help % "Output"))
-    apsr.add_argument("-M", "--merge", choices=mts, metavar="MERGE",
+    mss = api.MERGE_STRATEGIES
+    mss_s = ', '.join(mss)
+    mt_help = ('Select strategy to merge multiple configs from '
+               f'{mss_s} {defaults["merge"]}')
+    apsr.add_argument('-M', '--merge', choices=mss, metavar='MERGE',
                       help=mt_help)
-    apsr.add_argument("-A", "--args", help="Argument configs to override")
-    apsr.add_argument("--atype", choices=ctypes, metavar="ATYPE",
+
+    apsr.add_argument('-A', '--args', help='Argument configs to override')
+    apsr.add_argument('--atype', choices=ctypes, metavar='ATYPE',
                       help=constants.ATYPE_HELP_FMT % ctypes_s)
 
-    cpog = apsr.add_argument_group("Common options")
-    cpog.add_argument("-x", "--ignore-missing", action="store_true",
-                      help="Ignore missing input files")
-    cpog.add_argument("-T", "--template", action="store_true",
-                      help="Enable template config support")
-    cpog.add_argument("-E", "--env", action="store_true",
-                      help="Load configuration defaults from "
-                           "environment values")
-    cpog.add_argument("-S", "--schema", help="Specify Schema file[s] path")
-    cpog.add_argument("-e", "--extra-opts",
-                      help="Extra options given to the API call, "
-                           "--extra-options indent:2 (specify the "
-                           "indent for pretty-printing of JSON outputs) "
-                           "for example")
-    cpog.add_argument("-v", "--verbose", action="count", dest="loglevel",
-                      help="Verbose mode; -v or -vv (more verbose)")
+    lpog = apsr.add_argument_group('List specific options')
+    lpog.add_argument('-L', '--list', action='store_true',
+                      help='List supported config types')
+
+    spog = apsr.add_argument_group('Schema specific options')
+    spog.add_argument('--validate', action='store_true',
+                      help='Only validate input files and do not output. '
+                           'You must specify schema file with -S/--schema '
+                           'option.')
+    spog.add_argument('--gen-schema', action='store_true',
+                      help='Generate JSON schema for givne config file[s] '
+                           'and output it instead of (merged) configuration.')
+
+    gspog = apsr.add_argument_group('Query/Get/set options')
+    gspog.add_argument('-Q', '--query', help=constants.QUERY_HELP)
+    gspog.add_argument('--get', help=constants.GET_HELP)
+    gspog.add_argument('--set', help=constants.SET_HELP)
+
+    cpog = apsr.add_argument_group('Common options')
+    cpog.add_argument('-x', '--ignore-missing', action='store_true',
+                      help='Ignore missing input files')
+    cpog.add_argument('-T', '--template', action='store_true',
+                      help='Enable template config support')
+    cpog.add_argument('-E', '--env', action='store_true',
+                      help='Load configuration defaults from '
+                           'environment values')
+    cpog.add_argument('-S', '--schema', help='Specify Schema file[s] path')
+    cpog.add_argument('-e', '--extra-opts',
+                      help='Extra options given to the API call, '
+                           '--extra-options indent:2 (specify the '
+                           'indent for pretty-printing of JSON outputs) '
+                           'for example')
+    cpog.add_argument('-v', '--verbose', action='count', dest='loglevel',
+                      help='Verbose mode; -v or -vv (more verbose)')
     return apsr
 
 # vim:sw=4:ts=4:et:

@@ -10,6 +10,12 @@ from .. import api, utils as base_utils
 from . import utils
 
 
+def show_parsers():
+    """Show list of info of parsers available.
+    """
+    utils.exit_with_output(utils.make_parsers_txt())
+
+
 def output_type_by_input_path(inpaths, itype, fmsg):
     """
     :param inpaths: List of input file paths

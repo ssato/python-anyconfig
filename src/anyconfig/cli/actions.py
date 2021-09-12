@@ -6,10 +6,9 @@
 """
 import os
 import sys
-import warnings
 
 from .. import api, utils as base_utils
-from . import utils, parse_args
+from . import utils
 
 
 def show_parsers():
@@ -87,37 +86,5 @@ def output_result(cnf, args, inpaths=None, extra_opts=None):
             otype = output_type_by_input_path(inpaths, args.itype, fmsg)
 
     try_dump(cnf, outpath, otype, fmsg, extra_opts=extra_opts)
-
-
-def try_parse_args(argv):
-    """
-    Show supported config format types or usage.
-
-    :param argv: Argument list to parse or None (sys.argv will be set).
-    :return: argparse.Namespace object or None (exit before return)
-    """
-    apsr = parse_args.make_parser()
-    args = apsr.parse_args(argv)
-    if args.loglevel:
-        warnings.simplefilter("always")
-
-    if args.inputs:
-        if '-' in args.inputs:
-            args.inputs = sys.stdin
-    else:
-        if args.list:
-            show_parsers()
-        elif args.env:
-            cnf = os.environ.copy()
-            output_result(cnf, args)
-            sys.exit(0)
-        else:
-            apsr.print_usage()
-            sys.exit(1)
-
-    if args.validate and args.schema is None:
-        utils.exit_with_output("--validate option requires --scheme option", 1)
-
-    return args
 
 # vim:sw=4:ts=4:et:

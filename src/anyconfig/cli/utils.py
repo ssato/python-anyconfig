@@ -31,7 +31,7 @@ def exit_with_output(content, exit_code=0):
     sys.exit(exit_code)
 
 
-def show_psrs():
+def show_parsers():
     """Show list of info of parsers available
     """
     sep = os.linesep
@@ -72,7 +72,7 @@ def try_parse_args(argv):
             args.inputs = sys.stdin
     else:
         if args.list:
-            show_psrs()
+            show_parsers()
         elif args.env:
             cnf = os.environ.copy()
             output_result(cnf, args)

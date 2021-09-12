@@ -97,4 +97,13 @@ def make_parser(defaults: typing.Optional[typing.Dict] = None
                       help='Verbose mode; -v or -vv (more verbose)')
     return apsr
 
+
+def parse(argv: typing.List[str]
+          ) -> typing.Tuple[argparse.ArgumentParser, argparse.Namespace]:
+    """
+    Parse given arguments ``argv`` and return it with the parser.
+    """
+    psr = make_parser()
+    return (psr, psr.parse_args(argv))
+
 # vim:sw=4:ts=4:et:

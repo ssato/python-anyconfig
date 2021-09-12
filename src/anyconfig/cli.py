@@ -177,7 +177,7 @@ def _show_psrs():
     _exit_with_output(sep.join([types, exts, cids]))
 
 
-def _parse_args(argv):
+def try_parse_args(argv):
     """
     Show supported config format types or usage.
 
@@ -339,7 +339,7 @@ def main(argv=None):
     """
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
-    args = _parse_args((argv if argv else sys.argv)[1:])
+    args = try_parse_args((argv if argv else sys.argv)[1:])
     cnf = os.environ.copy() if args.env else {}
 
     extra_opts = dict()

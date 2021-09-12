@@ -9,7 +9,7 @@ import os
 import sys
 import warnings
 
-from .. import api, parser, utils
+from .. import api, utils
 from . import parse_args
 
 
@@ -85,19 +85,6 @@ def try_parse_args(argv):
         exit_with_output("--validate option requires --scheme option", 1)
 
     return args
-
-
-def do_get(cnf, get_path):
-    """
-    :param cnf: Configuration object to print out
-    :param get_path: key path given in --get option
-    :return: updated Configuration object if no error
-    """
-    (cnf, err) = api.get(cnf, get_path)
-    if cnf is None:  # Failed to get the result.
-        exit_with_output("Failed to get result: err=%s" % err, 1)
-
-    return cnf
 
 
 def output_type_by_input_path(inpaths, itype, fmsg):
@@ -185,22 +172,5 @@ def load_diff(args, extra_opts):
                          "Failed to load: args=%s" % ", ".join(args.inputs))
 
     return diff
-
-
-def do_filter(cnf, args):
-    """
-    :param cnf: Mapping object represents configuration data
-    :param args: :class:`argparse.Namespace` object
-    :return: 'cnf' may be updated
-    """
-    if args.query:
-        cnf = api.try_query(cnf, args.query)
-    elif args.get:
-        cnf = do_get(cnf, args.get)
-    elif args.set:
-        (key, val) = args.set.split('=')
-        api.set_(cnf, key, parser.parse(val))
-
-    return cnf
 
 # vim:sw=4:ts=4:et:

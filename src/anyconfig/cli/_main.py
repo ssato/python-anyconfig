@@ -8,7 +8,7 @@ import os
 import sys
 
 from .. import api, parser
-from . import utils
+from . import filters, utils
 
 
 def main(argv=None):
@@ -39,7 +39,7 @@ def main(argv=None):
     if args.gen_schema:
         cnf = api.gen_schema(cnf)
     else:
-        cnf = utils.do_filter(cnf, args)
+        cnf = filters.do_filter(cnf, args)
 
     utils.output_result(cnf, args, args.inputs, extra_opts=extra_opts)
 

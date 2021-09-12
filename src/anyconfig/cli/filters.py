@@ -2,36 +2,35 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
+# pylint: disable=broad-except
 """Utilities for anyconfig.cli.*.
 """
+import typing
+
 from .. import api, parser
 from . import utils
 
-
-def do_get(cnf, get_path):
-    """
-    :param cnf: Configuration object to print out
-    :param get_path: key path given in --get option
-    :return: updated Configuration object if no error
-    """
-    (cnf, err) = api.get(cnf, get_path)
-    if cnf is None:  # Failed to get the result.
-        utils.exit_with_output("Failed to get result: err=%s" % err, 1)
-
-    return cnf
+if typing.TYPE_CHECKING:
+    import argparse
 
 
-def do_filter(cnf, args):
-    """
-    :param cnf: Mapping object represents configuration data
-    :param args: :class:`argparse.Namespace` object
-    :return: 'cnf' may be updated
+def do_filter(cnf: typing.Dict[str, typing.Any], args: 'argparse.Namespace'):
+    """Filter ``cnf`` by query/get/set and return filtered result.
     """
     if args.query:
-        cnf = api.try_query(cnf, args.query)
-    elif args.get:
-        cnf = do_get(cnf, args.get)
-    elif args.set:
+        try:
+            return api.try_query(cnf, args.query)
+        except (Exception, ) as exc:
+            utils.exit_with_output(f'Failed to query: exc={exc!s}', 1)
+
+    if args.get:
+        (cnf, err) = api.get(cnf, args.get)
+        if cnf is None:
+            utils.exit_with_output(f'Failed to get result: err={err!s}', 1)
+
+        return cnf
+
+    if args.set:
         (key, val) = args.set.split('=')
         api.set_(cnf, key, parser.parse(val))
 

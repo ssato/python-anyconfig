@@ -4,12 +4,20 @@
 #
 """Utilities for anyconfig.cli.*.
 """
+import functools
 import os
 import sys
 import warnings
 
 from .. import api, parser, utils
 from . import parse_args
+
+
+@functools.lru_cache(None)
+def list_parser_types():
+    """An wrapper to api.list_types() to memoize its result.
+    """
+    return api.list_types()
 
 
 def exit_with_output(content, exit_code=0):

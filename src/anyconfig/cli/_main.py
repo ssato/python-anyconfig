@@ -8,14 +8,14 @@ import os
 import sys
 
 from .. import api, parser
-from . import filters, utils
+from . import actions, filters, utils
 
 
 def main(argv=None):
     """
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
-    args = utils.try_parse_args((argv if argv else sys.argv)[1:])
+    args = actions.try_parse_args((argv if argv else sys.argv)[1:])
     cnf = os.environ.copy() if args.env else {}
 
     extra_opts = dict()
@@ -41,6 +41,6 @@ def main(argv=None):
     else:
         cnf = filters.do_filter(cnf, args)
 
-    utils.output_result(cnf, args, args.inputs, extra_opts=extra_opts)
+    actions.output_result(cnf, args, args.inputs, extra_opts=extra_opts)
 
 # vim:sw=4:ts=4:et:

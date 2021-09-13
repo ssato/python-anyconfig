@@ -7,7 +7,6 @@
 """
 import functools
 import tempfile
-import unittest
 
 from .. import base
 from . import test_base
@@ -47,13 +46,6 @@ class TestCase(test_base.TestCase):
         self.run_main(
             [__file__, __file__ + '.un_ext'], expected()
         )
-
-    @unittest.skip('TODO: fix cases if the type of output is unkonwn.')
-    def test_output_argument_of_unknown_type(self):
-        with tempfile.TemporaryDirectory() as tdir:
-            self.run_main(
-                [JSON_PATH_0, '-o', f'{tdir}/t.unknown_ext'], expected()
-            )
 
     def test_output_option_of_unknown_type(self):
         with tempfile.TemporaryDirectory() as tdir:

@@ -25,7 +25,8 @@ def gen_type_help_txt(types: str, target: str = 'Input') -> str:
             '[Automatically detected by those extension]')
 
 
-def make_parser(defaults: typing.Optional[typing.Dict] = None
+def make_parser(defaults: typing.Optional[typing.Dict] = None,
+                prog: typing.Optional[str] = None
                 ) -> argparse.ArgumentParser:
     """Make an instance of argparse.ArgumentParser to parse arguments.
     """
@@ -35,7 +36,7 @@ def make_parser(defaults: typing.Optional[typing.Dict] = None
     ctypes: typing.List[str] = utils.list_parser_types()
     ctypes_s: str = ', '.join(ctypes)
 
-    apsr = argparse.ArgumentParser(usage=constants.USAGE)
+    apsr = argparse.ArgumentParser(prog=prog, usage=constants.USAGE)
     apsr.set_defaults(**defaults)
 
     apsr.add_argument('inputs', type=str, nargs='*', help='Input files')
@@ -98,12 +99,13 @@ def make_parser(defaults: typing.Optional[typing.Dict] = None
     return apsr
 
 
-def parse(argv: typing.List[str]
+def parse(argv: typing.List[str],
+          prog: typing.Optional[str] = None
           ) -> typing.Tuple[argparse.ArgumentParser, argparse.Namespace]:
     """
     Parse given arguments ``argv`` and return it with the parser.
     """
-    psr = make_parser()
+    psr = make_parser(prog=prog)
     return (psr, psr.parse_args(argv))
 
 # vim:sw=4:ts=4:et:

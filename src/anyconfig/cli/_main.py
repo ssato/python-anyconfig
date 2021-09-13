@@ -6,55 +6,118 @@
 """
 import os
 import sys
+import typing
 import warnings
 
 from .. import api, parser
-from . import actions, filters, parse_args, utils
+from . import (
+    actions, constants, detectors, filters, io, parse_args, utils
+)
+
+if typing.TYPE_CHECKING:
+    import argparse
 
 
-def try_parse_args(argv):
+OUT_ERR = io.make()
+if OUT_ERR:
+    (sys.stdout, sys.stderr) = OUT_ERR
+
+
+def try_special_command_if_no_inputs(args: 'argparse.Namespace') -> None:
     """
-    Show supported config format types or usage.
-
-    :param argv: Argument list to parse or None (sys.argv will be set).
-    :return: argparse.Namespace object or None (exit before return)
+    Run one of some special commands do not require inputs argument.
     """
-    (psr, args) = parse_args.parse(argv)
-    if args.loglevel:
-        warnings.simplefilter("always")
+    assert not args.inputs
 
+    if not args.list and not args.env:
+        utils.exit_with_output('No inputs were given!', 1)
+
+    if not args.output:
+        args.output = sys.stdout
+
+    if args.list:
+        actions.show_parsers_and_exit()
+
+    if args.env:
+        args.otype = detectors.try_detecting_output_type(args)
+        actions.try_output_result(os.environ.copy(), args)
+        sys.exit(0)
+
+
+def process_args_or_run_command(args: 'argparse.Namespace'
+                                ) -> 'argparse.Namespace':
+    """
+    Process ``args``, that is, validate and update it, and raise SystemExit if
+    something goes wrong at once.
+    """
+    # Validate args:
     if args.inputs:
-        if '-' in args.inputs:
-            args.inputs = sys.stdin
+        if not args.itype:
+            if (len(args.inputs) == 1 and
+                    args.inputs[0] == constants.STD_IN_OR_OUT):
+                utils.exit_with_output(
+                    'No input type was given but required for the input "-"',
+                    1
+                )
     else:
-        if args.list:
-            actions.show_parsers()
-        elif args.env:
-            cnf = os.environ.copy()
-            actions.output_result(cnf, args)
-            sys.exit(0)
-        else:
-            psr.print_usage()
-            sys.exit(1)
+        try_special_command_if_no_inputs(args)
 
-    if args.validate and args.schema is None:
-        utils.exit_with_output("--validate option requires --scheme option", 1)
+    if args.validate and not args.schema:
+        utils.exit_with_output(
+            '--validate and --schema options must be used together',
+            1
+        )
+
+    # Update args:
+    if args.loglevel:
+        warnings.simplefilter('always')
+
+    args.otype = detectors.try_detecting_output_type(args)
+
+    if constants.STD_IN_OR_OUT in args.inputs:
+        args.inputs = [
+            sys.stdin if inp == constants.STD_IN_OR_OUT else inp
+            for inp in args.inputs
+        ]
+
+    if not args.output or args.output == constants.STD_IN_OR_OUT:
+        args.output = sys.stdout
 
     return args
+
+
+def try_validate(cnf, args: 'argparse.Namespace') -> None:
+    """
+    Try validate ``cnf`` with the schema loaded from ``args.schema``.
+    """
+    scm = api.load(args.schema)
+    (res, errors) = api.validate(cnf, scm, ac_schema_errors=True)
+
+    if res:
+        msg_code = ('Validation succeeded', 0)
+    else:
+        msg_code = (
+            'Validation failed:'
+            f'{(os.linesep + "  ").join(errors)}',
+            1
+        )
+
+    utils.exit_with_output(*msg_code)
 
 
 def main(argv=None):
     """
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
-    args = try_parse_args((argv if argv else sys.argv)[1:])
+    (_psr, args) = parse_args.parse((argv if argv else sys.argv)[1:])
+    args = process_args_or_run_command(args)
+
     cnf = os.environ.copy() if args.env else {}
 
-    extra_opts = dict()
     if args.extra_opts:
-        extra_opts = parser.parse(args.extra_opts)
+        args.extra_opts = parser.parse(args.extra_opts)
 
-    diff = utils.load_diff(args, extra_opts)
+    diff = utils.load_diff(args, args.extra_opts or {})
 
     if cnf:
         api.merge(cnf, diff)
@@ -65,14 +128,14 @@ def main(argv=None):
         diff = parser.parse(args.args)
         api.merge(cnf, diff)
 
-    if args.validate:
-        utils.exit_with_output("Validation succeeds")
-
     if args.gen_schema:
         cnf = api.gen_schema(cnf)
     else:
         cnf = filters.do_filter(cnf, args)
 
-    actions.output_result(cnf, args, args.inputs, extra_opts=extra_opts)
+    if args.validate:
+        try_validate(cnf, args)
+
+    actions.try_output_result(cnf, args)
 
 # vim:sw=4:ts=4:et:

@@ -49,45 +49,6 @@ class RunTestWithTmpdir(RunTestBase):
         shutil.rmtree(str(self.tmpdir))
 
 
-class Test_10(RunTestBase):
-    infile = tests.common.respath('00-cnf.json')
-
-    def test_10_show_usage(self):
-        self.run_and_check_exit_code(["--help"])
-
-    def test_20_wo_args(self):
-        self.run_and_check_exit_code(_not=True)
-
-    def test_30_wrong_option(self):
-        self.run_and_check_exit_code(["--wrong-option-xyz"], _not=True)
-
-    def test_40_list(self):
-        self.run_and_check_exit_code(["--list"])
-
-    def test_50_unknown_input_file_type(self):
-        self.run_and_check_exit_code([__file__], _not=True)
-
-    def test_52_unknown_input_parser_type(self):
-        self.run_and_check_exit_code([__file__, "-I", "unknown_psr"],
-                                     _not=True)
-
-    def test_54_no_input_type_and_unknown_out_file_type(self):
-        self.run_and_check_exit_code([__file__, __file__ + '.un_ext'],
-                                     _not=True)
-
-
-class Test_12(RunTestWithTmpdir):
-    infile = tests.common.respath('00-cnf.json')
-
-    def test_60_unknown_out_file_type(self):
-        opath = str(self.tmpdir / "t.unknown_ext")
-        self.run_and_check_exit_code([self.infile, "-o", opath], _not=True)
-
-    def test_62_unknown_out_parser_type(self):
-        opath = str(self.tmpdir / "t.unknown_psr")
-        self.run_and_check_exit_code([self.infile, "-O", opath], _not=True)
-
-
 class Test_20_Base(RunTestBase):
 
     def setUp(self):

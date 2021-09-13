@@ -2,7 +2,7 @@
 # Copyright (C) 2013 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, invalid-name, too-many-public-methods
+# pylint: disable=missing-docstring
 """test cases of anyconfig.cli.main without arguments to show info.
 """
 import anyconfig.api

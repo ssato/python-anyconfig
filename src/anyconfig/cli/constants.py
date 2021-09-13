@@ -4,21 +4,6 @@
 #
 """Provides constants for anyconfig.cli.
 """
-import io
-import locale
-import sys
-
-
-ENCODING = (locale.getdefaultlocale()[1] or 'UTF-8').lower()
-
-# TODO: What should be done for an error, "AttributeError: '_io.StringIO'
-# object has no attribute 'buffer'"?
-try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=ENCODING)
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=ENCODING)
-except AttributeError:
-    pass
-
 STD_IN_OR_OUT = '-'
 
 USAGE = """\

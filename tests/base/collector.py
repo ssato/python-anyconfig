@@ -52,24 +52,31 @@ class TDataCollector:
         self.datasets = self.load_datasets()
         self.initialized = True
 
+    def load_data(self, data) -> typing.List[datatypes.TData]:
+        """
+        Load dataset and make an object holding it.
+        """
+        return datatypes.TData(
+            data.datadir, data.inp,
+            utils.load_data(data.inp, ordered=self.ordered),
+            utils.load_data(data.exp, ordered=self.ordered),
+            utils.load_data(data.opts, default=DICT_0),
+            data.scm,
+            utils.load_data(data.query, default=''),
+            utils.load_data(data.ctx, default=DICT_0, ordered=self.ordered)
+        )
+
     def load_datasets(self) -> typing.List[datatypes.TData]:
         """Load test data from files.
         """
         _datasets = [
             (datadir,
-             [datatypes.TData(
-                data.datadir, data.inp,
-                utils.load_data(data.inp, ordered=self.ordered),
-                utils.load_data(data.exp, ordered=self.ordered),
-                utils.load_data(data.opts, default=DICT_0),
-                data.scm,
-                utils.load_data(data.query, default=''),
-                utils.load_data(data.ctx, default=DICT_0, ordered=self.ordered)
-              )
-              for data in utils.each_data_from_dir(
-                  datadir, self.pattern, self.should_exist
-              )]
-             )
+             [
+                self.load_data(data)
+                for data in utils.each_data_from_dir(
+                    datadir, self.pattern, self.should_exist
+                )
+             ])
             for datadir in sorted(self.root.glob('*'))
         ]
         if not _datasets:

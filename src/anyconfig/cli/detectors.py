@@ -39,7 +39,7 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
         return default
 
     try:
-        return api.find(None, io_type).type()
+        return api.find(None, io_type).type()  # type: ignore
 
     except api.UnknownProcessorTypeError:
         # Just ignore it should be wrong type.
@@ -54,7 +54,7 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
 
 def find_by_the_paths(paths: typing.List[str],
                       ignore_errors: bool = True
-                      ) -> str:
+                      ) -> typing.Optional[str]:
     """
     Try to detect file (parser) type from given file paths ``paths``.
     """
@@ -78,7 +78,7 @@ def find_by_the_paths(paths: typing.List[str],
 
     if constants.STD_IN_OR_OUT not in paths:
         try:
-            return api.find(paths[0]).type()
+            return api.find(paths[0]).type()  # type: ignore
 
         except api.UnknownFileTypeError:
             if not ignore_errors:

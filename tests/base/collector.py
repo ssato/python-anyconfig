@@ -52,6 +52,17 @@ class TDataCollector:
         self.datasets = self.load_datasets()
         self.initialized = True
 
+    def each_data_from_dir(self, datadir: pathlib.Path,
+                           ) -> typing.Iterator[datatypes.TDataPaths]:
+        """
+        A method to wraps .utils.each_data_from_dir to allow chilcren classes
+        override this.
+        """
+        for data in utils.each_data_from_dir(
+                datadir, self.pattern, self.should_exist
+                ):
+            yield data
+
     def load_data(self, data) -> typing.List[datatypes.TData]:
         """
         Load dataset and make an object holding it.
@@ -73,9 +84,7 @@ class TDataCollector:
             (datadir,
              [
                 self.load_data(data)
-                for data in utils.each_data_from_dir(
-                    datadir, self.pattern, self.should_exist
-                )
+                for data in self.each_data_from_dir(datadir)
              ])
             for datadir in sorted(self.root.glob('*'))
         ]

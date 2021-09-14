@@ -2,7 +2,7 @@
 # Copyright (C) 2013 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring, invalid-name, too-many-public-methods
+# pylint: disable=missing-docstring
 """test cases for anyconfig.cli module.
 """
 import contextlib
@@ -12,6 +12,8 @@ import unittest
 
 import anyconfig.cli as TT
 
+from . import collector, datatypes
+
 
 def _run(*args: typing.Iterable[str]) -> None:
     """Run anyconfig.cli.main.
@@ -19,28 +21,18 @@ def _run(*args: typing.Iterable[str]) -> None:
     TT.main(['dummy'] + [str(a) for a in args])
 
 
-class Expected(typing.NamedTuple):
-    """Keeps expected result's info.
-    """
-    exit_code: int = 0
-    exit_code_matches: bool = True
-    words_in_stdout: str = ''
-    words_in_stderr: str = ''
-    exception: BaseException = SystemExit
+class TestCase(unittest.TestCase, collector.Collector):
 
-
-class TestCase(unittest.TestCase):
+    def setUp(self):
+        self.init()
 
     def run_main(self,
                  args: typing.Optional[typing.Iterable[str]] = None,
-                 expected: Expected = Expected()
+                 expected: datatypes.Expected = datatypes.Expected()
                  ) -> None:
         """
         Run anyconfig.cli.main and check if the exit code was expected one.
         """
-        if args is None:
-            args = []
-
         with self.assertRaises(expected.exception) as ctx:
             with contextlib.redirect_stdout(io.StringIO()) as stdout:
                 with contextlib.redirect_stderr(io.StringIO()) as stderr:
@@ -61,5 +53,9 @@ class TestCase(unittest.TestCase):
         if expected.words_in_stderr:
             msg = stderr.getvalue()
             self.assertTrue(expected.words_in_stderr in msg, msg)
+
+    def test_runs_for_datasets(self) -> None:
+        for tdata in self.each_data():
+            self.run_main(tdata.args, tdata.exp)
 
 # vim:sw=4:ts=4:et:

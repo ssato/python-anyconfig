@@ -12,7 +12,7 @@ import unittest
 
 import anyconfig.cli as TT
 
-from . import collector, datatypes
+from . import collectors, datatypes
 
 
 def _run(*args: typing.Iterable[str]) -> None:
@@ -21,7 +21,7 @@ def _run(*args: typing.Iterable[str]) -> None:
     TT.main(['dummy'] + [str(a) for a in args])
 
 
-class TestCase(unittest.TestCase, collector.Collector):
+class TestCase(unittest.TestCase, collectors.Collector):
 
     def setUp(self):
         self.init()

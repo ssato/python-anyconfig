@@ -2,7 +2,6 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
-# pylint: disable=missing-docstring
 """Provides base class to collect test data for cli test cases.
 """
 from .. import base
@@ -10,6 +9,8 @@ from . import datatypes
 
 
 class Collector(base.TDataCollector):
+    """Test data collector for test cases with no file outputs.
+    """
 
     def load_data(self, data):
         """Load dataset and make an object keeps it.

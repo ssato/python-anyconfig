@@ -22,11 +22,21 @@ class Expected(typing.NamedTuple):
 
 
 class TData(typing.NamedTuple):
-    """A namedtuple object keeps test data.
+    """A namedtuple object keeps test data to test cases with no file outputs.
     """
     datadir: pathlib.Path
     inp_path: pathlib.Path
     args: typing.List[str] = []
     exp: Expected = Expected()
+
+
+class TData2(typing.NamedTuple):
+    """A namedtuple object keeps test data to test cases with file outputs.
+    """
+    datadir: pathlib.Path
+    inp_path: pathlib.Path
+    opts: typing.List[str] = []
+    exp: Expected = Expected()
+    ref: DictT = {}
 
 # vim:sw=4:ts=4:et:

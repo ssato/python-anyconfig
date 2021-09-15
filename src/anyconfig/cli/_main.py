@@ -137,5 +137,6 @@ def main(argv=None):
         try_validate(cnf, args)
 
     actions.try_output_result(cnf, args)
+    sys.exit(0)
 
 # vim:sw=4:ts=4:et:

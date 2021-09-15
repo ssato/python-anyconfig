@@ -32,5 +32,6 @@ class TData(typing.NamedTuple):
     # Optional extra data.
     outname: str = ''
     ref: typing.Optional[DictT] = None
+    oo_opts: DictT = {}
 
 # vim:sw=4:ts=4:et:

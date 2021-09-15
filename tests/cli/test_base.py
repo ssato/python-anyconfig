@@ -48,8 +48,11 @@ class BaseTestCase(unittest.TestCase):
                 # Run anyconfig.cli.main with arguments.
                 TT.main(args + ['-o', str(opath)])
 
-                odata = base.load_data(opath, should_exist=True)
-                self.assertEqual(odata, tdata.ref)
+                if tdata.exp.exit_code_matches and tdata.exp.exit_code == 0:
+                    self.assertTrue(opath.exists(), str(opath))
+
+                    odata = base.load_data(opath, should_exist=True)
+                    self.assertEqual(odata, tdata.ref, repr(tdata))
         else:
             # Likewise but without -o <output_path> option.
             TT.main(args)

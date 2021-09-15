@@ -69,9 +69,9 @@ class BaseTestCase(unittest.TestCase):
         self.assertTrue(isinstance(exc, expected.exception))
         ecode = getattr(exc, 'error_code', getattr(exc, 'code', 1))
         if expected.exit_code_matches:
-            self.assertEqual(ecode, expected.exit_code)
+            self.assertEqual(ecode, expected.exit_code, f'{tdata!r}')
         else:
-            self.assertNotEqual(ecode, expected.exit_code)
+            self.assertNotEqual(ecode, expected.exit_code, f'{tdata!r}')
 
         if expected.words_in_stdout:
             msg = stdout.getvalue()

@@ -63,7 +63,7 @@ class BaseTestCase(unittest.TestCase):
         """
         expected: datatypes.Expected = tdata.exp
 
-        with self.assertRaises(expected.exception) as ctx:
+        with self.assertRaises(expected.exception, msg=repr(tdata)) as ctx:
             with contextlib.redirect_stdout(io.StringIO()) as stdout:
                 with contextlib.redirect_stderr(io.StringIO()) as stderr:
                     self._run_main(tdata)

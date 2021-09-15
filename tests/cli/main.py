@@ -63,44 +63,6 @@ class Test_20_Base(RunTestBase):
 
 class Test_30_single_input(Test_20_Base):
 
-    def test_10(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-
-        infile = self.workdir / "a.json"
-        output = self.workdir / "b.json"
-
-        anyconfig.api.dump(a, infile)
-        self.assertTrue(infile.exists())
-
-        _run("-o", output, infile)
-        self.assertTrue(output.exists())
-
-    def test_20_wo_input_type(self):
-        self._assert_run_and_exit("a.conf")
-
-    def test_30_w_get_option(self):
-        d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))
-
-        infile = self.workdir / "a.json"
-        output = self.workdir / "b.json"
-
-        anyconfig.api.dump(d, infile)
-        self.assertTrue(infile.exists())
-
-        _run("-o", output, "--get", "a.b", infile)
-        self.assertTrue(output.exists())
-
-        x = anyconfig.api.load(output)
-        self.assertEqual(x, d['a']['b'])
-
-    def test_31_w_get_option_failure(self):
-        (key, no_get_q) = ('a', "wrong_key_0.wrong_key_1")
-        infile = self.workdir / "a.json"
-        anyconfig.api.dump({key: "A"}, infile)
-        self.assertTrue(infile.exists())
-
-        self.run_and_check_exit_code(["--get", no_get_q, infile], 1)
-
     def test_32_w_set_option(self):
         d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))
 

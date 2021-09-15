@@ -10,7 +10,7 @@ from .. import base
 from . import datatypes
 
 
-class Collector(base.TDataCollector):
+class NoOutputDataCollector(base.TDataCollector):
     """Test data collector for test cases with no file outputs.
     """
 
@@ -24,7 +24,7 @@ class Collector(base.TDataCollector):
             base.maybe_data_path(datadir / 'e', name, self.should_exist)
         )
 
-        return datatypes.TData(
+        return datatypes.NoOutputData(
             datadir,
             inp,
             base.load_data(inp) or [],

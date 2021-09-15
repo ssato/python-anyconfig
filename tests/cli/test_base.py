@@ -21,8 +21,11 @@ def _run(*args: typing.Iterable[str]) -> None:
     TT.main(['dummy'] + [str(a) for a in args])
 
 
-class TestCase(unittest.TestCase, collectors.Collector):
-
+class NoOutputDataTestCase(
+    unittest.TestCase, collectors.NoOutputDataCollector
+):
+    """Test cases which does not generate output files.
+    """
     def setUp(self):
         self.init()
 

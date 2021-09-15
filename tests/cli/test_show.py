@@ -10,8 +10,7 @@ import anyconfig.api
 from . import datatypes, test_base
 
 
-class TestCase(test_base.TestCase):
-
+class TestCase(test_base.NoOutputDataTestCase):
     kind = 'show'
 
     def test_show_vesion(self):

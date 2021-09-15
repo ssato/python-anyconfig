@@ -21,7 +21,7 @@ class Expected(typing.NamedTuple):
     exception: BaseException = SystemExit
 
 
-class TData(typing.NamedTuple):
+class NoOutputData(typing.NamedTuple):
     """A namedtuple object keeps test data to test cases with no file outputs.
     """
     datadir: pathlib.Path
@@ -30,7 +30,7 @@ class TData(typing.NamedTuple):
     exp: Expected = Expected()
 
 
-class TData2(typing.NamedTuple):
+class SingleInputData(typing.NamedTuple):
     """A namedtuple object keeps test data to test cases with file outputs.
     """
     datadir: pathlib.Path

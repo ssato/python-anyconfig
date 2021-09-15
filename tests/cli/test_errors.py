@@ -14,7 +14,7 @@ from . import datatypes, test_base
 JSON_PATH_0 = str(base.RES_DIR / 'base/basics/10/00.json')
 
 
-class TestCase(test_base.TestCase):
+class TestCase(test_base.NoOutputDataTestCase):
     kind = 'errors'
 
     def test_output_option_of_unknown_type(self):

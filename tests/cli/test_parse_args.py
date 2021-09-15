@@ -26,7 +26,7 @@ class TestCase(unittest.TestCase):
             otype=None, output=None, query=None, schema=None, set=None,
             template=False, validate=False
         )
-        self.assertEquals(
+        self.assertEqual(
             vars(psr.parse_args([])), ref
         )
 

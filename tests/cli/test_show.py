@@ -7,16 +7,31 @@
 """
 import anyconfig.api
 
-from . import datatypes, test_base
+from . import collectors, datatypes, test_base
 
 
-class TestCase(test_base.NoOutputDataTestCase):
+class Collector(collectors.Collector):
     kind = 'show'
 
-    def test_show_vesion(self):
+
+class TestCase(test_base.NoInputTestCase):
+    collector = Collector()
+
+
+class VersionCollector(collectors.Collector):
+    kind = 'show_version'
+
+    def load_dataset(self, datadir, inp):
         ver = '.'.join(anyconfig.api.version())
-        self.run_main(
-            ['--version'], datatypes.Expected(words_in_stdout=ver)
+        tdata = super().load_dataset(datadir, inp)
+
+        return datatypes.TData(
+            tdata.datadir, tdata.inp_path, tdata.opts,
+            datatypes.Expected(words_in_stdout=ver)
         )
+
+
+class VersionTestCase(test_base.NoInputTestCase):
+    collector = VersionCollector()
 
 # vim:sw=4:ts=4:et:

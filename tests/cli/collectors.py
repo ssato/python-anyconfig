@@ -10,25 +10,30 @@ from .. import base
 from . import datatypes
 
 
-class NoOutputDataCollector(base.TDataCollector):
+class Collector(base.TDataCollector):
     """Test data collector for test cases with no file outputs.
+
+    .. seealso:: tests.base.collector.TDataCollector
     """
-
     def load_dataset(self, datadir: pathlib.Path, inp: pathlib.Path):
-        """Load dataset and make an object keeps it.
-
+        """
         .. seealso:: tests.base.collector.TDataCollector.load_dataset
         """
         name = inp.stem
+        opts = base.maybe_data_path(datadir / 'o', name, self.should_exist)
         exp_data = base.load_data(
             base.maybe_data_path(datadir / 'e', name, self.should_exist)
         )
+        outname = base.maybe_data_path(datadir / 'on', name, self.should_exist)
+        ref = base.maybe_data_path(datadir / 'r', name, self.should_exist)
 
-        return datatypes.NoOutputData(
+        return datatypes.TData(
             datadir,
             inp,
-            base.load_data(inp) or [],
-            datatypes.Expected(**exp_data)
+            base.load_data(opts, default=[]),
+            datatypes.Expected(**exp_data),
+            base.load_data(outname, default=''),
+            base.load_data(ref)
         )
 
 # vim:sw=4:ts=4:et:

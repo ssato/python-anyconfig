@@ -3,29 +3,19 @@
 # License: MIT
 #
 # pylint: disable=missing-docstring
-"""test cases of anyconfig.cli.main without arguments.
+"""test cases of anyconfig.cli.main without arguments and cause errors.
 """
-import tempfile
-
 from .. import base
-from . import datatypes, test_base
+from . import test_base
 
 
-JSON_PATH_0 = str(base.RES_DIR / 'base/basics/10/00.json')
-
-
-class TestCase(test_base.NoOutputDataTestCase):
+class TestCase(test_base.BaseTestCase):
     kind = 'errors'
 
-    def test_output_option_of_unknown_type(self):
-        with tempfile.TemporaryDirectory() as tdir:
-            self.run_main(
-                [
-                    JSON_PATH_0,
-                    '-O', 'unknown_parser_type',
-                    '-o', f'{tdir}/t.unknown_ext'
-                ],
-                datatypes.Expected(exit_code_matches=False)
-            )
+    def make_args(self, tdata):  # pylint: disable=no-self-use
+        """Make arguments to run cli.main.
+        """
+        args = base.load_data(tdata.inp_path, default=[])
+        return ['anyconfig_cli'] + tdata.opts + args
 
 # vim:sw=4:ts=4:et:

@@ -7,39 +7,63 @@
 """
 import contextlib
 import io
-import typing
+import pathlib
+import tempfile
 import unittest
 
 import anyconfig.cli as TT
 
+from .. import base
 from . import collectors, datatypes
 
 
-def _run(*args: typing.Iterable[str]) -> None:
-    """Run anyconfig.cli.main.
+def make_args(_self, tdata):
+    """Make arguments to run cli.main.
     """
-    TT.main(['dummy'] + [str(a) for a in args])
+    return ['anyconfig_cli'] + tdata.opts + [str(tdata.inp_path)]
 
 
-class NoOutputDataTestCase(
-    unittest.TestCase, collectors.NoOutputDataCollector
-):
-    """Test cases which does not generate output files.
+class BaseTestCase(unittest.TestCase):
+    """Base Test case.
     """
+    collector = collectors.Collector()
+    make_args = make_args
+
     def setUp(self):
-        self.init()
+        if self.collector:
+            self.collector.init()
 
-    def run_main(self,
-                 args: typing.Optional[typing.Iterable[str]] = None,
-                 expected: datatypes.Expected = datatypes.Expected()
-                 ) -> None:
+    def _run_main(self, tdata):
+        """Wrapper for cli.main."""
+        args = self.make_args(tdata)
+
+        if tdata.outname:  # Running cli.main will output files.
+            self.assertTrue(
+                tdata.ref is not None,
+                'No reference data was given, {tdata!r}'
+            )
+            with tempfile.TemporaryDirectory() as tdir:
+                opath = pathlib.Path(tdir) / tdata.outname
+
+                # Run anyconfig.cli.main with arguments.
+                TT.main(args + ['-o', str(opath)])
+
+                odata = base.load_data(opath, should_exist=True)
+                self.assertEqual(odata, tdata.ref)
+        else:
+            # Likewise but without -o <output_path> option.
+            TT.main(args)
+
+    def run_main(self, tdata) -> None:
         """
         Run anyconfig.cli.main and check if the exit code was expected one.
         """
+        expected: datatypes.Expected = tdata.exp
+
         with self.assertRaises(expected.exception) as ctx:
             with contextlib.redirect_stdout(io.StringIO()) as stdout:
                 with contextlib.redirect_stderr(io.StringIO()) as stderr:
-                    _run(*args)
+                    self._run_main(tdata)
 
         exc = ctx.exception
         self.assertTrue(isinstance(exc, expected.exception))
@@ -58,7 +82,20 @@ class NoOutputDataTestCase(
             self.assertTrue(expected.words_in_stderr in msg, msg)
 
     def test_runs_for_datasets(self) -> None:
-        for tdata in self.each_data():
-            self.run_main(tdata.args, tdata.exp)
+        if self.collector and self.collector.initialized:
+            if self.collector.kind == base.TDataCollector.kind:
+                return
+
+            for tdata in self.collector.each_data():
+                self.run_main(tdata)
+
+
+class NoInputTestCase(BaseTestCase):
+    """Test cases which does not require inputs.
+    """
+    def make_args(self, tdata):  # pylint: disable=no-self-use
+        """Make arguments to run cli.main.
+        """
+        return ['anyconfig_cli'] + tdata.opts
 
 # vim:sw=4:ts=4:et:

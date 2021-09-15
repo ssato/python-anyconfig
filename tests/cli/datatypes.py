@@ -21,22 +21,16 @@ class Expected(typing.NamedTuple):
     exception: BaseException = SystemExit
 
 
-class NoOutputData(typing.NamedTuple):
+class TData(typing.NamedTuple):
     """A namedtuple object keeps test data to test cases with no file outputs.
-    """
-    datadir: pathlib.Path
-    inp_path: pathlib.Path
-    args: typing.List[str] = []
-    exp: Expected = Expected()
-
-
-class SingleInputData(typing.NamedTuple):
-    """A namedtuple object keeps test data to test cases with file outputs.
     """
     datadir: pathlib.Path
     inp_path: pathlib.Path
     opts: typing.List[str] = []
     exp: Expected = Expected()
-    ref: DictT = {}
+
+    # Optional extra data.
+    outname: str = ''
+    ref: typing.Optional[DictT] = None
 
 # vim:sw=4:ts=4:et:

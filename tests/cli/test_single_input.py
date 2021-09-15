@@ -5,7 +5,6 @@
 # pylint: disable=missing-docstring
 """test cases of anyconfig.cli.main without arguments and cause errors.
 """
-from .. import base
 from . import collectors, test_base
 
 

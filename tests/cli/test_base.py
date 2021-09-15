@@ -11,6 +11,7 @@ import pathlib
 import tempfile
 import unittest
 
+import anyconfig.api
 import anyconfig.cli as TT
 
 from .. import base
@@ -51,7 +52,7 @@ class BaseTestCase(unittest.TestCase):
                 if tdata.exp.exit_code_matches and tdata.exp.exit_code == 0:
                     self.assertTrue(opath.exists(), str(opath))
 
-                    odata = base.load_data(opath, should_exist=True)
+                    odata = anyconfig.api.load(opath)
                     self.assertEqual(odata, tdata.ref, repr(tdata))
         else:
             # Likewise but without -o <output_path> option.

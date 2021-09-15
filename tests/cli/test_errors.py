@@ -6,11 +6,15 @@
 """test cases of anyconfig.cli.main without arguments and cause errors.
 """
 from .. import base
-from . import test_base
+from . import collectors, test_base
+
+
+class Collector(collectors.Collector):
+    kind = 'errors'
 
 
 class TestCase(test_base.BaseTestCase):
-    kind = 'errors'
+    collector = Collector()
 
     def make_args(self, tdata):  # pylint: disable=no-self-use
         """Make arguments to run cli.main.

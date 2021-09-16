@@ -27,6 +27,7 @@ class Collector(base.TDataCollector):
         outname = base.maybe_data_path(datadir / 'on', name, self.should_exist)
         ref = base.maybe_data_path(datadir / 'r', name, self.should_exist)
         oo_opts = base.maybe_data_path(datadir / 'oo', name, self.should_exist)
+        scm = base.maybe_data_path(datadir / 's', name, self.should_exist)
 
         return datatypes.TData(
             datadir,
@@ -36,6 +37,7 @@ class Collector(base.TDataCollector):
             base.load_data(outname, default=''),
             base.load_data(ref),
             base.load_data(oo_opts, default={}),
+            scm or None
         )
 
 # vim:sw=4:ts=4:et:

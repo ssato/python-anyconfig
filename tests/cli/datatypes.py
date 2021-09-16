@@ -33,5 +33,6 @@ class TData(typing.NamedTuple):
     outname: str = ''
     ref: typing.Optional[DictT] = None
     oo_opts: DictT = {}
+    scm: typing.Optional[pathlib.Path] = None
 
 # vim:sw=4:ts=4:et:

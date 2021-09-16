@@ -63,30 +63,6 @@ class Test_20_Base(RunTestBase):
 
 class Test_30_single_input(Test_20_Base):
 
-    def test_32_w_set_option(self):
-        d = dict(name="a", a=dict(b=dict(c=[1, 2], d="C")))
-
-        infile = self.workdir / "a.json"
-        output = self.workdir / "b.json"
-
-        anyconfig.api.dump(d, infile)
-        self.assertTrue(infile.exists())
-
-        _run("-o", output, "--set", "a.b.d=E", infile)
-        self.assertTrue(output.exists())
-
-        ref = d.copy()
-        ref['a']['b']['d'] = 'E'
-
-        x = anyconfig.api.load(output)
-        self.assertEqual(x, ref)
-
-    def test_40_ignore_missing(self):
-        infile = pathlib.Path(os.curdir) / "conf_file_should_not_exist.json"
-        assert not infile.exists()
-
-        self.assertFalse(_run("-O", "json", "--ignore-missing", infile))
-
     @unittest.skipIf(not anyconfig.schema.SUPPORTED,
                      "json schema lib is not available")
     def test_50_w_schema(self):

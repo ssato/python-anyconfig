@@ -53,13 +53,10 @@ class BaseTestCase(unittest.TestCase):
                 if tdata.exp.exit_code_matches and tdata.exp.exit_code == 0:
                     self.assertTrue(opath.exists(), str(opath))
 
-                    # .. todo::
-                    #    odata = anyconfig.api.load(opath, **tdata.oo_opts)
-                    #
-                    # .. note::
-                    #    Load it as JSON data explicitly because it's enough
-                    #    for almost all data and should be available always.
-                    odata = anyconfig.api.load(opath, ac_parser='json')
+                    try:
+                        odata = anyconfig.api.load(opath, **tdata.oo_opts)
+                    except anyconfig.api.UnknownFileTypeError:
+                        odata = anyconfig.api.load(opath, ac_parser='json')
                     self.assertEqual(odata, tdata.ref, repr(tdata))
         else:
             # Likewise but without -o <output_path> option.

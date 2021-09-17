@@ -35,6 +35,11 @@ class BaseTestCase(unittest.TestCase):
         if self.collector:
             self.collector.init()
 
+    def post_checks(self, tdata, *args, **kwargs):
+        """Placeholder to do more post checks.
+        """
+        pass
+
     def _run_main(self, tdata):
         """Wrapper for cli.main."""
         args = self.make_args(tdata)
@@ -58,9 +63,12 @@ class BaseTestCase(unittest.TestCase):
                     except anyconfig.api.UnknownFileTypeError:
                         odata = anyconfig.api.load(opath, ac_parser='json')
                     self.assertEqual(odata, tdata.ref, repr(tdata))
+
+                    self.post_checks(tdata, opath)
         else:
             # Likewise but without -o <output_path> option.
             TT.main(args)
+            self.post_checks(tdata)
 
         sys.exit(0)
 

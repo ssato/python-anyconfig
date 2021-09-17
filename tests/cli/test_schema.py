@@ -13,12 +13,14 @@ import anyconfig.schema
 from . import collectors, test_base
 
 
+ERR = 'Library for JSON schema validation is not available'
+
+
 class Collector(collectors.Collector):
     kind = 'schema'
 
 
-@unittest.skipIf(not anyconfig.schema.SUPPORTED,
-                 'Library for JSON schema validation is not available')
+@unittest.skipIf(not anyconfig.schema.SUPPORTED, ERR)
 class TestCase(test_base.BaseTestCase):
     collector = Collector()
 
@@ -36,5 +38,14 @@ class TestCase(test_base.BaseTestCase):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             super()._run_main(tdata)
+
+
+class SchemaErrorsCollector(collectors.Collector):
+    kind = 'schema_errors'
+
+
+@unittest.skipIf(not anyconfig.schema.SUPPORTED, ERR)
+class SchemaErrorsTestCase(test_base.BaseTestCase):
+    collector = SchemaErrorsCollector()
 
 # vim:sw=4:ts=4:et:

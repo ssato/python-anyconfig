@@ -4,7 +4,6 @@
 #
 # pylint: disable=missing-docstring, invalid-name, too-many-public-methods
 
-import os
 import pathlib
 import shutil
 import tempfile
@@ -17,8 +16,6 @@ import anyconfig.schema
 import anyconfig.template
 import tests.common
 import tests.api
-
-from tests.common import CNF_0
 
 
 CNF_0_PATH = tests.common.respath('00-cnf.yml')

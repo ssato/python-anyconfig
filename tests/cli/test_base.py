@@ -85,11 +85,11 @@ class BaseTestCase(unittest.TestCase):
 
         if expected.words_in_stdout:
             msg = stdout.getvalue()
-            self.assertTrue(expected.words_in_stdout in msg, msg)
+            self.assertTrue(expected.words_in_stdout in msg, f'tdata: {tdata!r}, msg: {msg}')
 
         if expected.words_in_stderr:
-            msg = stderr.getvalue()
-            self.assertTrue(expected.words_in_stderr in msg, msg)
+            err = stderr.getvalue()
+            self.assertTrue(expected.words_in_stderr in err, err)
 
     def test_runs_for_datasets(self) -> None:
         if self.collector and self.collector.initialized:

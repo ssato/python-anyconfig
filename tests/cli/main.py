@@ -58,34 +58,6 @@ class Test_20_Base(RunTestBase):
         self.assertRaises(SystemExit, _run, *args)
 
 
-class Test_30_single_input(Test_20_Base):
-
-    def test_52_wo_schema(self):
-        self.run_and_check_exit_code(["--validate", CNF_0_PATH], 1)
-
-    def test_70_no_template(self):
-        a = dict(name="a", a=1, b=dict(b=[1, 2], c="C"))
-
-        infile = self.workdir / "a.json"
-        output = self.workdir / "b.json"
-
-        anyconfig.api.dump(a, infile)
-        self.assertTrue(infile.exists())
-
-        _run("-o", output, infile)
-        self.assertTrue(output.exists())
-
-    def test_80_w_extra_opts(self):
-        infile = tests.common.respath('00-00-cnf.json')
-        output = self.workdir / "out.json"
-        ref = tests.common.respath('00-00-cnf_indented.json')
-
-        _run("-o", output, "--extra-opts", "indent:2", infile)
-        self.assertTrue(output.exists())
-        self.assertEqual(output.read_text().strip().rstrip(),
-                         open(ref).read().strip().rstrip())
-
-
 class Test_40_multi_inputs(Test_20_Base):
 
     def test_10(self):

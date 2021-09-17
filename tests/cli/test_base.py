@@ -93,7 +93,7 @@ class BaseTestCase(unittest.TestCase):
 
         if expected.words_in_stdout:
             msg = stdout.getvalue()
-            self.assertTrue(expected.words_in_stdout in msg, f'tdata: {tdata!r}, msg: {msg}')
+            self.assertTrue(expected.words_in_stdout in msg, msg)
 
         if expected.words_in_stderr:
             err = stderr.getvalue()

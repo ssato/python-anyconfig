@@ -16,14 +16,15 @@ except ImportError:
 
 import anyconfig.parsers.parsers as TT
 import anyconfig.ioinfo
-import tests.common as TC
 
 from anyconfig.common import (
     UnknownProcessorTypeError, UnknownFileTypeError
 )
 
+from .. import base
 
-CNF_PATH = TC.respath('00-cnf.json')
+
+CNF_PATH = base.RES_DIR / 'base/basics/10/10.json'
 
 
 class Test(unittest.TestCase):

@@ -14,8 +14,11 @@ import typing
 import warnings
 
 from .datatypes import (
-    DictT, MaybePathT, TDataPaths
+    DictT, MaybePathT, TData
 )
+
+
+DICT_0 = {}
 
 
 def target_by_parent(self: str = __file__):
@@ -106,9 +109,10 @@ def load_data(path: MaybePathT,
     raise ValueError(f'Not exist or an invalid data: {path!s}')
 
 
-def each_data_from_dir(datadir: pathlib.Path, pattern: str = '*.json',
-                       should_exist: typing.Iterable[str] = ()
-                       ) -> typing.Iterator[TDataPaths]:
+def each_data_from_dir(datadir: pathlib.Path,
+                       data_factory: typing.Callable,
+                       pattern: str = '*.json',
+                       ) -> typing.Iterator[TData]:
     """
     Yield a collection of paths of data files under given dir.
     """
@@ -124,16 +128,18 @@ def each_data_from_dir(datadir: pathlib.Path, pattern: str = '*.json',
             warnings.warn(f'Not looks a file: {inp!s}')
             continue
 
-        name = inp.stem
+        yield data_factory(datadir, inp)
 
-        yield TDataPaths(
-            datadir,
-            inp,
-            maybe_data_path(datadir / 'e', name, should_exist),
-            maybe_data_path(datadir / 'o', name, should_exist),
-            maybe_data_path(datadir / 's', name, should_exist),
-            maybe_data_path(datadir / 'q', name, should_exist),
-            maybe_data_path(datadir / 'c', name, should_exist)
-        )
+
+def load_datasets_from_dir(datadir: pathlib.Path,
+                           data_factory: typing.Callable,
+                           **kwargs
+                           ) -> typing.List[TData]:
+    """
+    Load a collection of datasets from given dir ``datadir``.
+    """
+    return list(
+        each_data_from_dir(datadir, data_factory, **kwargs)
+    )
 
 # vim:sw=4:ts=4:et:

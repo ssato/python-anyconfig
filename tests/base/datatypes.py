@@ -14,19 +14,17 @@ DictT = typing.Dict[str, typing.Any]
 MaybePathT = typing.Optional[pathlib.Path]
 
 
-class TDataPaths(typing.NamedTuple):
-    """A namedtuple object keeps test data paths."""
-    datadir: pathlib.Path
-    inp: pathlib.Path
-    exp: MaybePathT
-    opts: MaybePathT
-    scm: MaybePathT
-    query: MaybePathT
-    ctx: MaybePathT
-
-
 class TData(typing.NamedTuple):
     """A namedtuple object keeps test data.
+
+    - datadir: A dir wheere data files exist
+    - inp_path: A input file path
+    - inp: An input data loaded from ``inp_path``
+    - exp: Data gives an expected result
+    - opts: Data gives options
+    - scm: Data gives a path to schema file
+    - query: A query string
+    - ctx: Data gives a context object
     """
     datadir: pathlib.Path
     inp_path: pathlib.Path

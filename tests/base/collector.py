@@ -52,24 +52,37 @@ class TDataCollector:
         self.datasets = self.load_datasets()
         self.initialized = True
 
+    def load_dataset(self, datadir: pathlib.Path, inp: pathlib.Path
+                     ) -> datatypes.TData:
+        """Load dataset.
+        """
+        name = inp.stem
+
+        exp = utils.maybe_data_path(datadir / 'e', name, self.should_exist)
+        opts = utils.maybe_data_path(datadir / 'o', name, self.should_exist)
+        scm = utils.maybe_data_path(datadir / 's', name, self.should_exist)
+        query = utils.maybe_data_path(datadir / 'q', name, self.should_exist)
+        ctx = utils.maybe_data_path(datadir / 'c', name, self.should_exist)
+
+        return datatypes.TData(
+            datadir,
+            inp,
+            utils.load_data(inp, ordered=self.ordered),
+            utils.load_data(exp, ordered=self.ordered),
+            utils.load_data(opts, default=DICT_0),
+            scm,
+            utils.load_data(query, default=DICT_0),
+            utils.load_data(ctx, default=DICT_0, ordered=self.ordered)
+        )
+
     def load_datasets(self) -> typing.List[datatypes.TData]:
         """Load test data from files.
         """
         _datasets = [
             (datadir,
-             [datatypes.TData(
-                data.datadir, data.inp,
-                utils.load_data(data.inp, ordered=self.ordered),
-                utils.load_data(data.exp, ordered=self.ordered),
-                utils.load_data(data.opts, default=DICT_0),
-                data.scm,
-                utils.load_data(data.query, default=''),
-                utils.load_data(data.ctx, default=DICT_0, ordered=self.ordered)
-              )
-              for data in utils.each_data_from_dir(
-                  datadir, self.pattern, self.should_exist
-              )]
-             )
+             utils.load_datasets_from_dir(
+                datadir, self.load_dataset, pattern=self.pattern
+             ))
             for datadir in sorted(self.root.glob('*'))
         ]
         if not _datasets:

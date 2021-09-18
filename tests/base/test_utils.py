@@ -92,19 +92,21 @@ class TestCase(unittest.TestCase):
             with self.assertRaises(ValueError):
                 TT.load_data(*args)
 
-    def test_each_data_from_dir(self):
+    def test_load_datasets_from_dir(self):
         aes = [
-            ((RES_DIR / 'basics' / '10', '*.json', ('c', 'e', 'o', 's')), 3),
+            ((RES_DIR / 'basics' / '10', '*.json'), 3),
             ((RES_DIR / 'basics' / '20', '*.py'), 1),
-            ((RES_DIR / 'basics' / '30', '*.txt', ('c', 'e', 'o', 's')), 3),
+            ((RES_DIR / 'basics' / '30', '*.txt'), 3),
         ]
         for args, exp in aes:
-            res = list(TT.each_data_from_dir(*args))
+            res = TT.load_datasets_from_dir(
+                args[0], lambda *xs: xs[1], pattern=args[1]
+            )
             self.assertTrue(bool(res))
             self.assertEqual(len(res), exp)
 
-    def test_each_data_from_dir_failures(self):
+    def test_load_datasets_from_dir_failures(self):
         with self.assertRaises(ValueError):
-            _ = list(TT.each_data_from_dir(SELF))
+            _ = TT.load_datasets_from_dir(SELF, list)
 
 # vim:sw=4:ts=4:et:

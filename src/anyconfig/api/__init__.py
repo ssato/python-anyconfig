@@ -103,7 +103,9 @@ from ..dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
     merge, get, set_,
 )
-from ..ioinfo import IOInfo
+from ..ioinfo import (
+    IOInfo, make as ioinfo_make, makes as ioinfo_makes,
+)
 from ..parsers import (
     load_plugins, list_types, list_by_cid, list_by_type, list_by_extension,
     findall, find, MaybeParserT
@@ -144,7 +146,7 @@ __all__ = [
     'merge', 'get', 'set_',
 
     # anyconfig.ioinfo
-    'IOInfo',
+    'IOInfo', 'ioinfo_make', 'ioinfo_makes',
 
     # anyconfig.parsers
     'load_plugins', 'list_types', 'list_by_cid', 'list_by_type',

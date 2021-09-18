@@ -3,10 +3,15 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring, invalid-name
-
+"""test cases for anyconfig.query.query.
+"""
 import os
 import unittest
-import anyconfig.query.query as TT
+
+try:
+    import anyconfig.query.query as TT
+except ImportError:
+    raise unittest.SkipTest('Needed library to query was not found')
 
 
 class Test_00_Functions(unittest.TestCase):

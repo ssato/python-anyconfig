@@ -1,6 +1,13 @@
 * Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.12.0-1
+- fix: re-enable output type detection reported in pr#132
+- fix/change: switch from regexp to pathlib based code to expand paths,
+  reported in pr#133
 - [api] remove the code to keep backward compatibility of the 'ignore_missing'
   argument passed to loading APIs, load, single_load and multi_load.
+- [cli] split, refactor and cleanup the cli code and switch its test cases to
+  file based ones
+- [ci] add windows test targets
+- [ci] switch to pytest from nose
 - seealso: `git log RELEASE_0.10.1.. --reverse` for more details
 
 * Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.11.0-1

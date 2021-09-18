@@ -35,4 +35,19 @@ class TData(typing.NamedTuple):
     oo_opts: DictT = {}
     scm: typing.Optional[pathlib.Path] = None
 
+
+class TDataSet(typing.NamedTuple):
+    """A namedtuple object keeps test data to test cases with no file outputs.
+    """
+    datadir: pathlib.Path
+    inputs: typing.List[pathlib.Path]
+    opts: typing.List[str] = []
+    exp: Expected = Expected()
+
+    # Likewise.
+    outname: str = ''
+    ref: typing.Optional[DictT] = None
+    oo_opts: DictT = {}
+    scm: typing.Optional[pathlib.Path] = None
+
 # vim:sw=4:ts=4:et:

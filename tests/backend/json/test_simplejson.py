@@ -11,7 +11,7 @@ except ImportError:
     import unittest
     raise unittest.SkipTest
 
-from .default import TBC, CNF_0_S, CNF_0
+from .test_default import TBC, CNF_0_S, CNF_0
 
 
 class HasParserTrait(TBC.HasParserTrait):

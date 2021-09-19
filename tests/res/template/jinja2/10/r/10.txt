@@ -1,0 +1,3 @@
+A char is 'a'.
+A char is 'b'.
+A char is 'c'.

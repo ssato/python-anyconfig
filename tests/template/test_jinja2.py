@@ -5,6 +5,7 @@
 # pylint: disable=missing-docstring, unused-variable, invalid-name
 import os
 import pathlib
+import tempfile
 import unittest
 import unittest.mock
 
@@ -13,26 +14,29 @@ try:
 except ImportError:
     raise unittest.SkipTest('jinja2 does not look available.')
 
-import tests.common
+from .. import base
 
 
-C_1 = """A char is 'a'.
-A char is 'b'.
-A char is 'c'.
-"""
+TDATA_DIR = base.RES_DIR / 'template/jinja2/'
 
-TMPLS = [('00.j2', "{% include '10.j2' -%}", C_1),
-         ('10.j2', """{% for c in ['a', 'b', 'c'] -%}
-A char is '{{ c }}'.
-{% endfor -%}
-""", C_1)]
+TEMPLATES = [
+    (path, (TDATA_DIR / '10/r/10.txt').read_text())
+    for path in (TDATA_DIR / '10').glob('*.j2')
+]
+TEMPLATES_WITH_FILTERS = [
+    (path, (TDATA_DIR / f'20/r/{path.stem}.txt').read_text())
+    for path in (TDATA_DIR / '20').glob('*.j2')
+]
 
-C_2 = "-1"
-TMPL_WITH_FILTER = ('11.j2', "{{ 1|negate }}", C_2)
+
+def normalize(txt: str):
+    """Strip white spaces and line break at the end of the content ``txt``.
+    """
+    return txt.strip().rstrip()
 
 
 def negate(value):
-    return -value
+    return - value
 
 
 class FunctionsTestCase(unittest.TestCase):
@@ -50,6 +54,8 @@ class FunctionsTestCase(unittest.TestCase):
                 TT.make_template_paths(*inp), exp
             )
 
+    def test_make_template_paths_after_chdir(self):
+        tmp0 = pathlib.Path('/tmp').resolve()
         saved = pathlib.Path().cwd().resolve()
         try:
             os.chdir(str(tmp0))
@@ -70,91 +76,54 @@ class FunctionsTestCase(unittest.TestCase):
             os.chdir(str(saved))
 
 
-class TestCase(tests.common.TestCaseWithWorkdir):
+class TestCase(unittest.TestCase):
 
-    templates = TMPLS
-    curdir = str(pathlib.Path('..').resolve())
+    def assertAlmostEqual(self, inp, exp, **_kwargs):
+        """Override to allow to compare texts.
+        """
+        self.assertEqual(normalize(inp), normalize(exp))
 
-    def setUp(self):
-        super().setUp()
-        for fname, tmpl_s, _ctx in self.templates + [TMPL_WITH_FILTER]:
-            (pathlib.Path(self.workdir) / fname).write_text(tmpl_s)
+    def test_render_impl_without_paths(self):
+        for inp, exp in TEMPLATES:
+            self.assertAlmostEqual(TT.render_impl(inp), exp)
 
-    def test_10_render_impl__wo_paths(self):
-        for fname, _str, ctx in self.templates:
-            fpath = pathlib.Path(self.workdir) / fname
-            c_r = TT.render_impl(fpath)
-            self.assertEqual(c_r, ctx)
+    def test_render_impl_with_paths(self):
+        for inp, exp in TEMPLATES:
+            self.assertAlmostEqual(
+                TT.render_impl(inp, paths=[inp.parent]), exp
+            )
 
-    def test_12_render_impl__w_paths(self):
-        for fname, _str, ctx in self.templates:
-            fpath = pathlib.Path(self.workdir) / fname
-            c_r = TT.render_impl(fpath, paths=[self.workdir])
-            self.assertEqual(c_r, ctx)
+    def test_render_without_paths(self):
+        for inp, exp in TEMPLATES:
+            self.assertAlmostEqual(TT.render(inp), exp)
 
-    def test_20_render__wo_paths(self):
-        for fname, _str, ctx in self.templates:
-            fpath = pathlib.Path(self.workdir) / fname
-            c_r = TT.render(str(fpath))
-            self.assertEqual(c_r, ctx)
+    def test_render_with_wrong_path(self):
+        with tempfile.TemporaryDirectory() as tdir:
+            workdir = pathlib.Path(tdir)
 
-    def test_22_render__w_wrong_tpath(self):
-        ng_t = pathlib.Path(self.workdir) / "ng.j2"
-        ok_t = pathlib.Path(self.workdir) / "ok.j2"
-        ok_t_content = "a: {{ a }}"
-        ok_content = "a: aaa"
-        ctx = dict(a="aaa", )
+            ng_t = workdir / 'ng.j2'
+            ok_t = workdir / 'ok.j2'
+            ok_t_content = 'a: {{ a }}'
+            ok_content = 'a: aaa'
+            ctx = dict(a='aaa', )
 
-        ok_t.write_text(ok_t_content)
+            ok_t.write_text(ok_t_content)
 
-        with unittest.mock.patch("builtins.input") as mock_input:
-            mock_input.return_value = str(ok_t)
-            c_r = TT.render(str(ng_t), ctx, ask=True)
-            self.assertEqual(c_r, ok_content)
-        try:
-            TT.render(str(ng_t), ctx, ask=False)
-            assert False  # force raising an exception.
-        except TT.jinja2.TemplateNotFound:
-            pass
+            with unittest.mock.patch('builtins.input') as mock_input:
+                mock_input.return_value = str(ok_t)
+                c_r = TT.render(str(ng_t), ctx, ask=True)
+                self.assertEqual(c_r, ok_content)
 
-    def test_24_render__wo_paths(self):
-        fname = self.templates[0][0]
-        workdir = pathlib.Path(self.workdir)
+            with self.assertRaises(TT.jinja2.TemplateNotFound):
+                TT.render(str(ng_t), ctx, ask=False)
 
-        assert workdir / fname
-
-        subdir = workdir / "a/b/c"
-        subdir.mkdir(parents=True)
-
-        tmpl = subdir / fname
-        tmpl.write_text("{{ a|default('aaa') }}")
-
-        c_r = TT.render(str(tmpl))
-        self.assertEqual(c_r, "aaa")
-
-    def test_25_render__w_prefer_paths(self):
-        workdir = pathlib.Path(self.workdir / 'a' / 'b' / 'c')
-        workdir.mkdir(parents=True)
-
-        assert workdir.exists()
-
-        tmpl_ref = pathlib.Path(self.workdir / 'ref_25_0.j2')
-        tmpl_ref.write_text("{{ a | d('A') }}\n")
-
-        tmpl = pathlib.Path(workdir / 'd.j2')
-        tmpl.write_text("{{ a | d('xyz') }}\n")
-
-        c_r = TT.render(tmpl, paths=[self.workdir])
-        self.assertNotEqual(c_r, 'A')
-        self.assertEqual(c_r, 'xyz')
-
-    def test_30_try_render_with_empty_filepath_and_content(self):
+    def test_try_render_with_empty_filepath_and_content(self):
         self.assertRaises(ValueError, TT.try_render)
 
-    def test_40_render__w_filter(self):
-        fname, _, ctx = TMPL_WITH_FILTER
-        fpath = pathlib.Path(self.workdir) / fname
-        c_r = TT.render(str(fpath), filters={"negate": negate})
-        self.assertEqual(c_r, ctx)
+    def test_render_with_filter(self):
+        for inp, exp in TEMPLATES_WITH_FILTERS:
+            self.assertAlmostEqual(
+                TT.render(inp, filters={'negate': negate}), exp
+            )
 
 # vim:sw=4:ts=4:et:

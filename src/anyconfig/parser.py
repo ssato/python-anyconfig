@@ -20,27 +20,7 @@ PrimitivesT = typing.List[PrimitiveT]
 
 
 def parse_single(str_: typing.Optional[str]) -> PrimitiveT:
-    """
-    Very simple parser to parse an expression represents a primitive value.
-
-    >>> parse_single(None)
-    ''
-    >>> parse_single('0')
-    0
-    >>> parse_single('123')
-    123
-    >>> parse_single('True')
-    True
-    >>> parse_single('a string')
-    'a string'
-    >>> parse_single('"a string"')
-    'a string'
-    >>> parse_single("'a string'")
-    'a string'
-    >>> parse_single('0.1')
-    0.1
-    >>> parse_single('    a string contains extra whitespaces     ')
-    'a string contains extra whitespaces'
+    """Very simple parser to parse an expression represents a primitive value.
     """
     if str_ is None:
         return ''

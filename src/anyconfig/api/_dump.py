@@ -4,7 +4,7 @@
 #
 """Provides the API to dump (serialize) objects."""
 from .. import common, ioinfo, parsers
-from .datatypes import ParserT
+from . import datatypes
 
 
 def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
@@ -25,7 +25,7 @@ def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     ioi = ioinfo.make(out)
-    psr: ParserT = parsers.find(ioi, forced_type=ac_parser)
+    psr: datatypes.ParserT = parsers.find(ioi, forced_type=ac_parser)
     psr.dump(data, ioi, **options)
 
 
@@ -41,7 +41,7 @@ def dumps(data: common.InDataExT,
     :return: Backend-specific string representation for the given data
     :raises: ValueError, UnknownProcessorTypeError
     """
-    psr: ParserT = parsers.find(None, forced_type=ac_parser)
+    psr: datatypes.ParserT = parsers.find(None, forced_type=ac_parser)
     return psr.dumps(data, **options)
 
 # vim:sw=4:ts=4:et:

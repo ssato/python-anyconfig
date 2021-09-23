@@ -4,7 +4,9 @@
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports
-import copy
+"""Common test cases and data.
+"""
+import collections
 import pathlib
 import unittest
 
@@ -13,29 +15,7 @@ from os import linesep as lsep
 import tests.common
 import anyconfig.ioinfo
 
-from collections import OrderedDict
-
-
-CNF_0 = OrderedDict((("DEFAULT", OrderedDict((("a", "0"), ("b", "bbb"),
-                                              ("c", "5")))),
-                     ("sect0", OrderedDict((("a", "0"), ("b", "bbb"),
-                                            ("c", "5"),
-                                            ("d", "x,y,z"))))))
-CNF_1 = copy.deepcopy(CNF_0)
-CNF_1["sect0"]["d"] = CNF_1["sect0"]["d"].split()
-
-
-def to_bytes(astr):
-    """Convert a string to bytes.
-    """
-    return bytes(astr, 'utf-8')
-
-
-CNF_2 = OrderedDict((("a", 0.1),
-                     ("b", to_bytes("bbb")),
-                     ("sect0",
-                      OrderedDict((("c", [to_bytes("x"), to_bytes("y"),
-                                          to_bytes("z")]), )))))
+from .constants import CNF_0, CNF_1
 
 
 def read_from_res(filename):
@@ -72,7 +52,7 @@ class TestBase(unittest.TestCase, HasParserTrait):
         #    given because parsers may not allow customize dict class to used
         #    for making results.
         if cls is None or not self.psr.dict_options():
-            cls = OrderedDict if ordered else dict
+            cls = collections.OrderedDict if ordered else dict
         self.assertTrue(isinstance(cnf, cls),
                         "cnf=%r [type: %r], cls=%r" % (cnf, type(cnf), cls))
 

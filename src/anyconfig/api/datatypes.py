@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
-r"""Public APIs to dump configurations data.
-"""
+"""Common data types for anyconfig.api."""
 import typing
 
 from ..backend import base

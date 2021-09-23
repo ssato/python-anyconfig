@@ -2,8 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Utility funtions for anyconfig.api.
-"""
+"""Utility funtions for anyconfig.api."""
 import typing
 
 if typing.TYPE_CHECKING:
@@ -11,9 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 def are_same_file_types(objs: typing.List['ioinfo.IOInfo']) -> bool:
-    """
-    Are given objects, pathlib.Path or io, same type (have same extension)?
-    """
+    """Test if given objects have same types (extensions)."""
     if not objs:
         return False
 

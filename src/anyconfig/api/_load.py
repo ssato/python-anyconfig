@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
-r"""Public APIs of anyconfig module to load configuration files.
-"""
+"""Provides the API to load objects from given files."""
 import typing
 import warnings
 
@@ -32,7 +31,8 @@ MaybeParserOrIdOrTypeT = typing.Optional[typing.Union[str, ParserT]]
 
 
 def _maybe_schema(**options) -> typing.Optional[InDataT]:
-    """
+    """Try to load a schema object for validation.
+
     :param options: Optional keyword arguments such as
 
         - ac_template: Assume configuration file may be a template file and try
@@ -58,7 +58,8 @@ def _single_load(ioi: ioinfo.IOInfo,
                  ac_template: bool = False,
                  ac_context: typing.Optional[MappingT] = None,
                  **options) -> InDataExT:
-    """
+    """Load data from a given ``ioi``.
+
     :param input_:
         File path or file or file-like object or pathlib.Path object represents
         the file or a namedtuple 'anyconfig.ioinfo.IOInfo' object represents
@@ -91,8 +92,7 @@ def single_load(input_: ioinfo.PathOrIOInfoT,
                 ac_template: bool = False,
                 ac_context: typing.Optional[MappingT] = None,
                 **options) -> InDataExT:
-    r"""
-    Load single configuration file.
+    r"""Load from single input ``input\_``.
 
     .. note::
 
@@ -159,8 +159,7 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
                ac_template: bool = False,
                ac_context: typing.Optional[MappingT] = None,
                **options) -> InDataExT:
-    r"""
-    Load multiple config files.
+    r"""Load data from multiple inputs ``inputs``.
 
     .. note::
 
@@ -259,7 +258,8 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
 
 def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
          ac_context=None, **options):
-    r"""
+    r"""Load from a file or files specified as ``path_specs``.
+
     Load single or multiple config files or multiple config files specified in
     given paths pattern or pathlib.Path object represents config files or a
     namedtuple 'anyconfig.ioinfo.IOInfo' object represents some inputs.
@@ -303,7 +303,8 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
 
 def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
           ac_context=None, **options):
-    """
+    """Load data from a str, ``content``.
+
     :param content: Configuration file's content (a string)
     :param ac_parser: Forced parser type or ID or parser object
     :param ac_dict:

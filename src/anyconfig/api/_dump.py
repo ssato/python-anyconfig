@@ -2,8 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Public APIs to dump configurations data.
-"""
+"""Provides the API to dump (serialize) objects."""
 from .. import common, ioinfo, parsers
 from .datatypes import ParserT
 
@@ -11,8 +10,7 @@ from .datatypes import ParserT
 def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
          ac_parser: parsers.MaybeParserT = None, **options
          ) -> None:
-    """
-    Save 'data' to 'out'.
+    """Save ``data`` to ``out`` in specified or detected format.
 
     :param data: A mapping object may have configurations data to dump
     :param out:
@@ -34,8 +32,7 @@ def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
 def dumps(data: common.InDataExT,
           ac_parser: parsers.MaybeParserT = None,
           **options) -> str:
-    """
-    Return string representation of 'data' in forced type format.
+    """Return a str representation of ``data`` in specified format.
 
     :param data: Config data object to dump
     :param ac_parser: Forced parser type or ID or parser object

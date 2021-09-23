@@ -12,8 +12,6 @@ import unittest
 import anyconfig.backend.xml as TT
 import tests.backend.common as TBC
 
-from tests.backend.common import to_bytes
-
 
 CNF_0 = {'config': {'@attrs': {'val:name': 'foo',
                                'xmlns': 'http://example.com/ns/cnf',
@@ -26,6 +24,12 @@ CNF_0 = {'config': {'@attrs': {'val:name': 'foo',
                     'list2': {'@attrs': {'id': 'list2'},
                               '@children': [{'item': 'i'},
                                             {'item': 'j'}]}}}
+
+
+def to_bytes(astr):
+    """Convert a string to bytes.
+    """
+    return bytes(astr, 'utf-8')
 
 
 class Test_00(unittest.TestCase):

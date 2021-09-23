@@ -30,7 +30,7 @@ MappingT = typing.Dict[str, typing.Any]
 MaybeParserOrIdOrTypeT = typing.Optional[typing.Union[str, ParserT]]
 
 
-def _maybe_schema(**options) -> typing.Optional[InDataT]:
+def try_to_load_schema(**options) -> typing.Optional[InDataT]:
     """Try to load a schema object for validation.
 
     :param options: Optional keyword arguments such as
@@ -145,8 +145,9 @@ def single_load(input_: ioinfo.PathOrIOInfoT,
     ioi = ioinfo.make(input_)
     cnf = _single_load(ioi, ac_parser=ac_parser, ac_template=ac_template,
                        ac_context=ac_context, **options)
-    schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
-                           **options)
+    schema = try_to_load_schema(
+        ac_template=ac_template, ac_context=ac_context, **options
+    )
     if schema and not is_valid(cnf, schema, **options):
         return None
 
@@ -211,8 +212,9 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
     :return: Mapping object or any query result might be primitive objects
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
-    schema = _maybe_schema(ac_template=ac_template, ac_context=ac_context,
-                           **options)
+    schema = try_to_load_schema(
+        ac_template=ac_template, ac_context=ac_context, **options
+    )
     options['ac_schema'] = None  # Avoid to load schema more than twice.
 
     iois = ioinfo.makes(inputs)

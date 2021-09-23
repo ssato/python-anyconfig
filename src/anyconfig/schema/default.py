@@ -34,7 +34,7 @@ def gen_schema(data: InDataExT, **options) -> InDataT:
     """
     Dummy function generates an empty dict in actual.
     """
-    return dict()
+    return {}
 
 
 # vim:sw=4:ts=4:et:

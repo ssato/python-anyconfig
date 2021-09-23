@@ -16,7 +16,7 @@ from .datatypes import (
 from .utils import not_implemented
 
 
-DATA_DEFAULT: InDataExT = dict()
+DATA_DEFAULT: InDataExT = {}
 
 
 class LoaderMixin:

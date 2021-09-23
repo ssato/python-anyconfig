@@ -76,7 +76,7 @@ def mk_nested_dic(path: str, val: typing.Any,
     :param val: Value to set
     :param seps: Separator char candidates
     """
-    ret: DictT = dict()
+    ret: DictT = {}
     for key in reversed(_split_path(path, seps)):
         ret = {key: val if not ret else ret.copy()}
 

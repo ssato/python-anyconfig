@@ -39,35 +39,22 @@ DictT = typing.Dict[str, typing.Any]
 
 
 def _jsnp_unescape(jsn_s: str) -> str:
-    """
-    Parse and decode given encoded JSON Pointer expression, convert ~1 to
-    / and ~0 to ~.
+    """Parse and decode given encoded JSON Pointer expression.
 
-    .. note:: JSON Pointer: http://tools.ietf.org/html/rfc6901
+    It will convert ~1 to / and ~0 to ~ by following RFC 6901.
 
-    >>> _jsnp_unescape('/a~1b')
-    '/a/b'
-    >>> _jsnp_unescape('~1aaa~1~0bbb')
-    '/aaa/~bbb'
+    .. seealso:: JSON Pointer: http://tools.ietf.org/html/rfc6901
     """
     return jsn_s.replace('~1', '/').replace('~0', '~')
 
 
 def _split_path(path: str, seps: typing.Tuple[str, ...] = PATH_SEPS
                 ) -> typing.List[str]:
-    """
-    Parse path expression and return list of path items.
+    """Parse a path expression and return a list of path items.
 
     :param path: Path expression may contain separator chars.
     :param seps: Separator char candidates.
     :return: A list of keys to fetch object[s] later.
-
-    >>> assert _split_path('') == []
-    >>> assert _split_path('/') == ['']  # JSON Pointer spec expects this.
-    >>> for p in ('/a', '.a', 'a', 'a.'):
-    ...     assert _split_path(p) == ['a'], p
-    >>> assert _split_path('/a/b/c') == _split_path('a.b.c') == ['a', 'b', 'c']
-    >>> assert _split_path('abc') == ['abc']
     """
     if not path:
         return []
@@ -83,17 +70,11 @@ def _split_path(path: str, seps: typing.Tuple[str, ...] = PATH_SEPS
 
 def mk_nested_dic(path: str, val: typing.Any,
                   seps: typing.Tuple[str, ...] = PATH_SEPS) -> DictT:
-    """
-    Make a nested dict iteratively.
+    """Make a nested dict iteratively.
 
     :param path: Path expression to make a nested dict
     :param val: Value to set
     :param seps: Separator char candidates
-
-    >>> mk_nested_dic('a.b.c', 1)
-    {'a': {'b': {'c': 1}}}
-    >>> mk_nested_dic('/a/b/c', 1)
-    {'a': {'b': {'c': 1}}}
     """
     ret: DictT = dict()
     for key in reversed(_split_path(path, seps)):
@@ -111,20 +92,6 @@ def get(dic: DictT, path: str, seps: typing.Tuple[str, ...] = PATH_SEPS,
     :param path: Path expression to point object wanted
     :param seps: Separator char candidates
     :return: A tuple of (result_object, error_message)
-
-    >>> d = {'a': {'b': {'c': 0, 'd': [1, 2]}}, '': 3}
-    >>> assert get(d, '/') == (3, '')  # key becomes '' (empty string).
-    >>> assert get(d, '/a/b/c') == (0, '')
-    >>> sorted(get(d, 'a.b')[0].items())
-    [('c', 0), ('d', [1, 2])]
-    >>> (get(d, 'a.b.d'), get(d, '/a/b/d/1'))
-    (([1, 2], ''), (2, ''))
-    >>> get(d, "a.b.key_not_exist")  # doctest: +ELLIPSIS
-    (None, "'...'")
-    >>> get(d, '/a/b/d/2')
-    (None, 'list index out of range')
-    >>> get(d, '/a/b/d/-')  # doctest: +ELLIPSIS
-    (None, 'list indices must be integers...')
     """
     items = [_jsnp_unescape(s) for s in _split_path(path, seps)]  # : [str]
     if not items:
@@ -150,23 +117,12 @@ def set_(dic: DictT, path: str, val: typing.Any,
     :param dic: a dict[-like] object support recursive merge operations
     :param path: Path expression to point object wanted
     :param seps: Separator char candidates
-
-    >>> d = dict(a=1, b=dict(c=2, ))
-    >>> set_(d, 'a.b.d', 3)
-    >>> d['a']['b']['d']
-    3
     """
     merge(dic, mk_nested_dic(path, val, seps), ac_merge=MS_DICTS)
 
 
 def _are_list_like(*objs: typing.Any) -> bool:
-    """
-    >>> _are_list_like([], (), [x for x in range(10)], (x for x in range(4)))
-    True
-    >>> _are_list_like([], {})
-    False
-    >>> _are_list_like([], 'aaa')
-    False
+    """Test if given objects are list like ones or not.
     """
     return all(utils.is_list_like(obj) for obj in objs)
 

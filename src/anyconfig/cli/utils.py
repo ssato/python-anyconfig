@@ -74,14 +74,16 @@ def load_diff(args, extra_opts):
                         ac_schema=args.schema,
                         **extra_opts)
     except api.UnknownProcessorTypeError:
-        exit_with_output("Wrong input type '%s'" % args.itype, 1)
+        exit_with_output(f"Wrong input type '{args.itype}'", 1)
     except api.UnknownFileTypeError:
-        exit_with_output("No appropriate backend was found for given file "
-                         "type='%s', inputs=%s" % (args.itype,
-                                                   ", ".join(args.inputs)),
-                         1)
-    exit_if_load_failure(diff,
-                         "Failed to load: args=%s" % ", ".join(args.inputs))
+        exit_with_output(
+            'No appropriate backend was found for given file '
+            f"type='{args.itype}', inputs={', '.join(args.inputs)}",
+            1
+        )
+    exit_if_load_failure(
+        diff, f'Failed to load: args={", ".join(args.inputs)}'
+    )
 
     return diff
 

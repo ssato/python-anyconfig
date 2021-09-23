@@ -4,10 +4,11 @@
 #
 # For 'anyconfig.open':
 # pylint: disable=redefined-builtin
-r"""
+r"""anyconfig provides generic interface for config files in various formats.
+
 .. module:: anyconfig
    :platform: Unix, Windows
-   :synopsis: Generic interface to loaders for various config file formats.
+   :synopsis: Generic interface to load config file in various formats.
 
 python-anyconfig is a `MIT licensed <http://opensource.org/licenses/MIT>`_
 python library provides common APIs to access to configuration files in various

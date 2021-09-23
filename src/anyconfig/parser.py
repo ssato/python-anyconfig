@@ -2,8 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Misc parsers
-"""
+"""Misc simple parsers."""
 import re
 import typing
 import warnings
@@ -13,7 +12,6 @@ INT_PATTERN: typing.Pattern = re.compile(r"^(\d|([1-9]\d+))$")
 FLOAT_PATTERN: typing.Pattern = re.compile(r"^\d+[\.]\d+$")
 BOOL_PATTERN: typing.Pattern = re.compile(r"^(true|false)$", re.I)
 STR_PATTERN: typing.Pattern = re.compile(r"^['\"](.*)['\"]$")
-
 
 PrimitiveT = typing.Union[str, int, float, bool]
 PrimitivesT = typing.List[PrimitiveT]

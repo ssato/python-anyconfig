@@ -85,6 +85,18 @@ def test_escape(inp, exp):
     assert TT.escape(inp) == exp
 
 
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     (':', '\\:'),
+     ('=', '\\='),
+     ('a', 'a'),
+     ),
+)
+def test_escape_char(inp, exp):
+    assert TT._escape_char(inp) == exp
+
+
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
 
     load_options = dict(comment_markers=("//", "#", "!"))

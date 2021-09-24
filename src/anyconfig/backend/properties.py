@@ -82,19 +82,8 @@ def unescape(in_s: str) -> str:
     return re.sub(r'\\(.)', r'\1', in_s)
 
 
-def _escape_char(in_c):
-    """
-    Escape some special characters in java .properties files.
-
-    :param in_c: Input character
-
-    >>> "\\:" == _escape_char(':')
-    True
-    >>> "\\=" == _escape_char('=')
-    True
-    >>> _escape_char('a')
-    'a'
-    """
+def _escape_char(in_c: str) -> str:
+    """Escape some special characters in java .properties files."""
     return '\\' + in_c if in_c in (':', '=', '\\') else in_c
 
 

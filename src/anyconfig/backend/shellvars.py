@@ -2,12 +2,12 @@
 # Copyright (C) 2016 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Simple Shell vars' definitions backend:
+"""A simple backend module to load and dump files contain shell variables.
 
 - Format to support: Simple shell variables' definitions w/o any shell variable
   expansions nor complex shell statements such as conditionals, etc.
 - Requirements: None (built-in)
-- Development Status :: 3 - Alpha
+- Development Status :: 4 - Beta
 - Limitations: Currently, it only supports a varialbe defined in a line.
 - Special options: None
 
@@ -27,28 +27,17 @@ from . import base
 
 
 def _parseline(line):
-    """
-    Parse a line contains shell variable definition.
+    """Parse a line contains shell variable definition.
 
     :param line: A string to parse, must not start with '#' (comment)
     :return: A tuple of (key, value), both key and value may be None
-
-    >>> _parseline("aaa=")
-    ('aaa', '')
-    >>> _parseline("aaa=bbb")
-    ('aaa', 'bbb')
-    >>> _parseline("aaa='bb b'")
-    ('aaa', 'bb b')
-    >>> _parseline('aaa="bb#b"')
-    ('aaa', 'bb#b')
-    >>> _parseline('aaa="bb\\"b"')
-    ('aaa', 'bb"b')
-    >>> _parseline("aaa=bbb   # ccc")
-    ('aaa', 'bbb')
     """
-    match = re.match(r"^\s*(export)?\s*(\S+)=(?:(?:"
-                     r"(?:\"(.*[^\\])\")|(?:'(.*[^\\])')|"
-                     r"(?:([^\"'#\s]+)))?)\s*#*", line)
+    match = re.match(
+        r'^\s*(export)?\s*(\S+)=(?:(?:'
+        r"(?:\"(.*[^\\])\")|(?:'(.*[^\\])')|"
+        r"(?:([^\"'#\s]+)))?)\s*#*",
+        line
+    )
     if not match:
         warnings.warn(f'Invalid line found: {line}', SyntaxWarning)
         return (None, None)
@@ -59,26 +48,12 @@ def _parseline(line):
 
 
 def load(stream, container=dict):
-    """
-    Load and parse a file or file-like object 'stream' provides simple shell
-    variables' definitions.
+    """Load shell variable definitions data from ``stream``.
 
     :param stream: A file or file like object
     :param container:
         Factory function to create a dict-like object to store properties
     :return: Dict-like object holding shell variables' definitions
-
-    >>> from io import StringIO as to_strm
-    >>> load(to_strm(''))
-    {}
-    >>> load(to_strm("# "))
-    {}
-    >>> load(to_strm("aaa="))
-    {'aaa': ''}
-    >>> load(to_strm("aaa=bbb"))
-    {'aaa': 'bbb'}
-    >>> load(to_strm("aaa=bbb # ..."))
-    {'aaa': 'bbb'}
     """
     ret = container()
 
@@ -98,9 +73,8 @@ def load(stream, container=dict):
 
 
 class Parser(base.StreamParser):
-    """
-    Parser for Shell variable definition files.
-    """
+    """Parser for Shell variable definition files."""
+
     _cid = 'shellvars'
     _type = 'shellvars'
     _extensions = ['sh']
@@ -108,8 +82,7 @@ class Parser(base.StreamParser):
     _dict_opts = ['ac_dict']
 
     def load_from_stream(self, stream, container, **kwargs):
-        """
-        Load config from given file like object 'stream'.
+        """Load config from given file like object ``stream``.
 
         :param stream:
             A file or file like object of shell scripts define shell variables
@@ -121,8 +94,7 @@ class Parser(base.StreamParser):
         return load(stream, container=container)
 
     def dump_to_stream(self, cnf, stream, **kwargs):
-        """
-        Dump config 'cnf' to a file or file-like object 'stream'.
+        """Dump config dat ``cnf`` to a file or file-like object ``stream``.
 
         :param cnf: Shell variables data to dump
         :param stream: Shell script file or file like object

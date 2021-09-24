@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # pylint:disable=invalid-name
+"""conf.py for sphinx."""
 import sys
 import pathlib
 

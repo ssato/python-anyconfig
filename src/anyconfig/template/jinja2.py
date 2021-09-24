@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=wrong-import-position,wrong-import-order
-"""anyconfig.template.jinja2_ module
+"""anyconfig.template.jinja2_ module.
 
 Template rendering module for jinja2-based template config files.
 """
@@ -31,7 +31,8 @@ RENDER_OPTS = RENDER_S_OPTS + ['ask']
 
 
 def tmpl_env(paths: MaybePathsT = None) -> jinja2.Environment:
-    """
+    """Get the template environment object from given ``paths``.
+
     :param paths: A list of template search paths
     """
     if paths is None:
@@ -45,7 +46,8 @@ def tmpl_env(paths: MaybePathsT = None) -> jinja2.Environment:
 def make_template_paths(template_file: pathlib.Path,
                         paths: MaybePathsT = None
                         ) -> typing.List[pathlib.Path]:
-    """
+    """Make a tempalte paths.
+
     Make up a list of template search paths from given ``template_file`` path
     (absolute or relative path to the template file) and/or ``paths``, a list
     of template search paths given by user or None.
@@ -65,7 +67,8 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
              paths: MaybePathsT = None,
              filters: MaybeFiltersT = None
              ) -> str:
-    """
+    """Render a template as a str.
+
     Compile and render given template string 'tmpl_s' with context 'context'.
 
     :param tmpl_s: Template string
@@ -104,7 +107,8 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
 def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
                 paths: MaybePathsT = None, filters: MaybeFiltersT = None
                 ) -> str:
-    """
+    """Render implementation.
+
     :param template_file: Absolute or relative path to the template file
     :param ctx: Context dict needed to instantiate templates
     :param filters: Custom filters to add into template engine
@@ -128,8 +132,7 @@ def render(filepath: str, ctx: MaybeContextT = None,
            paths: MaybePathsT = None,
            ask: bool = False,
            filters: MaybeFiltersT = None) -> str:
-    """
-    Compile and render template and return the result as a string.
+    """Compile and render template and return the result as a string.
 
     :param template_file: Absolute or relative path to the template file
     :param ctx: Context dict needed to instantiate templates
@@ -158,8 +161,7 @@ def render(filepath: str, ctx: MaybeContextT = None,
 def try_render(filepath: typing.Optional[str] = None,
                content: typing.Optional[str] = None,
                **options) -> typing.Optional[str]:
-    """
-    Compile and render template and return the result as a string.
+    """Compile and render template and return the result as a string.
 
     :param filepath: Absolute or relative path to the template file
     :param content: Template content (str)

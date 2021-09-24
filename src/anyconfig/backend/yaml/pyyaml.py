@@ -4,7 +4,7 @@
 #
 # type() is used to exactly match check instead of isinstance here.
 # pylint: disable=unidiomatic-typecheck
-r"""YAML backend:
+"""A backend module to load and dump YAML data files using yaml lib.
 
 - Format to support: YAML, http://yaml.org
 - Requirements: PyYAML (yaml), http://pyyaml.org
@@ -52,7 +52,8 @@ _MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
 
 def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
-    """
+    """Get the customized loader.
+
     Create or update loader with making given callble 'container' to make
     mapping objects such as dict and OrderedDict, used to construct python
     object from yaml mapping node internally.
@@ -60,8 +61,10 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
     :param container: Set container used internally
     """
     def construct_mapping(loader, node, deep=False):
-        """Construct python object from yaml mapping node, based on
-        :meth:`yaml.BaseConstructor.construct_mapping` in PyYAML (MIT).
+        """Construct python object from yaml mapping node.
+
+        It is based on :meth:`yaml.BaseConstructor.construct_mapping` in PyYAML
+        (MIT).
         """
         loader.flatten_mapping(node)
         if not isinstance(node, yaml.MappingNode):
@@ -88,7 +91,7 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
     tag = 'tag:yaml.org,2002:python/unicode'
 
     def construct_ustr(loader, node):
-        """Unicode string constructor"""
+        """Unicode string constructor."""
         return loader.construct_scalar(node)
 
     try:
@@ -102,16 +105,13 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
 
 
 def _customized_dumper(container, dumper=Dumper):
-    """
-    Counterpart of :func:`_customized_loader` for dumpers.
-    """
+    """Counterpart of :func:`_customized_loader` for dumpers."""
     def container_representer(dumper, data, mapping_tag=_MAPPING_TAG):
-        """Container representer.
-        """
+        """Container representer."""
         return dumper.represent_mapping(mapping_tag, data.items())
 
     def ustr_representer(dumper, data):
-        """Unicode string representer"""
+        """Unicode string representer."""
         tag = 'tag:yaml.org,2002:python/unicode'
         return dumper.represent_scalar(tag, data)
 
@@ -126,7 +126,7 @@ def _customized_dumper(container, dumper=Dumper):
 
 
 def yml_fnc_by_name(fname, **options):
-    """Utility functo to get yaml loading/dumping function by name.
+    """Get yaml loading/dumping function by name.
 
     :param fname:
         "load" or "dump", not checked but it should be OK.
@@ -137,7 +137,7 @@ def yml_fnc_by_name(fname, **options):
 
 
 def yml_fnc_(fname, *args, **options):
-    """An wrapper of yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
+    """Call yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
 
     :param fname:
         "load" or "dump", not checked but it should be OK.
@@ -150,7 +150,7 @@ def yml_fnc_(fname, *args, **options):
 
 
 def yml_load(stream, container, yml_fnc=yml_fnc_, **options):
-    """An wrapper of yaml.safe_load and yaml.load.
+    """Call yaml.safe_load and yaml.load.
 
     :param stream: a file or file-like object to load YAML content
     :param container: callble to make a container object
@@ -177,7 +177,7 @@ def yml_load(stream, container, yml_fnc=yml_fnc_, **options):
 
 
 def yml_dump(data, stream, yml_fnc=yml_fnc_, **options):
-    """An wrapper of yaml.safe_dump and yaml.dump.
+    """Call yaml.safe_dump and yaml.dump.
 
     :param data: Some data to dump
     :param stream: a file or file-like object to dump YAML data
@@ -201,9 +201,8 @@ def yml_dump(data, stream, yml_fnc=yml_fnc_, **options):
 
 
 class Parser(common.Parser):
-    """
-    Parser for YAML files.
-    """
+    """Parser for YAML files."""
+
     _cid = 'pyyaml'
     _priority = 30  # Higher priority than ruamel.yaml.
     _load_opts = ['Loader', 'ac_safe', 'ac_dict']

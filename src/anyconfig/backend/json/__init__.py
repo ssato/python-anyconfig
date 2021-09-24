@@ -2,7 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""JSON backends:
+"""Backend modules to load and dump JSON data.
 
 - std.json: python standard JSON support library [default]
 - simplejson: https://github.com/simplejson/simplejson

@@ -2,8 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Argument parser.
-"""
+"""Argument parser."""
 import argparse
 import typing
 
@@ -19,8 +18,7 @@ DEFAULTS = dict(
 
 
 def gen_type_help_txt(types: str, target: str = 'Input') -> str:
-    """Generate a type help txt.
-    """
+    """Generate a type help txt."""
     return (f'Select type of {target} files from {types}'
             '[Automatically detected by those extension]')
 
@@ -28,8 +26,7 @@ def gen_type_help_txt(types: str, target: str = 'Input') -> str:
 def make_parser(defaults: typing.Optional[typing.Dict] = None,
                 prog: typing.Optional[str] = None
                 ) -> argparse.ArgumentParser:
-    """Make an instance of argparse.ArgumentParser to parse arguments.
-    """
+    """Make an instance of argparse.ArgumentParser to parse arguments."""
     if defaults is None:
         defaults = DEFAULTS
 
@@ -102,9 +99,7 @@ def make_parser(defaults: typing.Optional[typing.Dict] = None,
 def parse(argv: typing.List[str],
           prog: typing.Optional[str] = None
           ) -> typing.Tuple[argparse.ArgumentParser, argparse.Namespace]:
-    """
-    Parse given arguments ``argv`` and return it with the parser.
-    """
+    """Parse given arguments ``argv`` and return it with the parser."""
     psr = make_parser(prog=prog)
     return (psr, psr.parse_args(argv))
 

@@ -2,8 +2,7 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Public API to query data with JMESPath expression.
-"""
+"""Public API to query data with JMESPath expression."""
 try:
     from .query import try_query
     SUPPORTED = True

@@ -2,8 +2,7 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Utility functions to list and find appropriate parser class objects and
-instances.
+"""Internal utility functions for anyconfig modules.
 
 .. versionchanged:: 0.10.2
 

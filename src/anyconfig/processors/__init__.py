@@ -2,8 +2,7 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Abstract class provides a list of :class:`anyconfig.models.processor` class
-objects, related utility functions and data types.
+"""Provide a list of a  :class:`anyconfig.models.processor` and so on.
 
 .. versionchanged:: 0.10.2
 

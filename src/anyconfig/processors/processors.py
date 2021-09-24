@@ -2,9 +2,7 @@
 # Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""A class collect anyconfig.models.processor.Processor and inherited class
-objects inherited from it.
-"""
+"""A collection of models.processor.Processor and children classes."""
 import operator
 import typing
 
@@ -18,18 +16,19 @@ if typing.TYPE_CHECKING:
 
 
 class Processors:
-    """An abstract class of which instance holding processors.
-    """
+    """An abstract class of which instance holding processors."""
+
     _pgroup: str = ''  # processor group name to load plugins
 
     def __init__(self, processors: typing.Optional[ProcClssT] = None) -> None:
-        """
+        """Initialize with ``processors``.
+
         :param processors:
             A list of :class:`anyconfig.models.processor.Processor` or its
             children class objects to initialize this, or None
         """
         # {<processor_class_id>: <processor_instance>}
-        self._processors: typing.Dict[str, ProcT] = dict()  # type: ignore
+        self._processors: typing.Dict[str, ProcT] = {}  # type: ignore
         if processors is not None:
             for pcls in processors:
                 self.register(pcls)
@@ -37,21 +36,19 @@ class Processors:
         self.load_plugins()
 
     def register(self, pcls: ProcClsT) -> None:
-        """
-        :param pclss: :class:`Processor` or its children class objects
-        """
+        """Register processor or its children class objects."""
         if pcls.cid() not in self._processors:
             self._processors[pcls.cid()] = pcls()
 
     def load_plugins(self) -> None:
-        """Load and register pluggable processor classes internally.
-        """
+        """Load and register pluggable processor classes internally."""
         if self._pgroup:
             for pcls in utils.load_plugins(self._pgroup):
                 self.register(pcls)
 
     def list(self, sort: bool = False) -> ProcClssT:
-        """
+        """List processors.
+
         :param sort: Result will be sorted if it's True
         :return: A list of :class:`Processor` or its children classes
         """
@@ -62,7 +59,8 @@ class Processors:
         return list(prs)
 
     def list_by_cid(self) -> typing.List[typing.Tuple[str, ProcsT]]:
-        """
+        """List processors by those IDs.
+
         :return:
             A list of :class:`Processor` or its children classes grouped by
             each cid, [(cid, [:class:`Processor`)]]
@@ -72,7 +70,8 @@ class Processors:
                       key=operator.itemgetter(0))
 
     def list_by_type(self) -> typing.List[typing.Tuple[str, ProcsT]]:
-        """
+        """List processors by those types.
+
         :return:
             A list of :class:`Processor` or its children classes grouped by
             each type, [(type, [:class:`Processor`)]]
@@ -81,7 +80,8 @@ class Processors:
 
     def list_by_x(self, item: typing.Optional[str] = None
                   ) -> typing.List[typing.Tuple[str, ProcsT]]:
-        """
+        """List processors by those factor 'x'.
+
         :param item: Grouping key, one of 'cid', 'type' and 'extensions'
         :return:
             A list of :class:`Processor` or its children classes grouped by
@@ -101,7 +101,8 @@ class Processors:
         return res
 
     def list_x(self, key: typing.Optional[str] = None) -> typing.List[str]:
-        """
+        """List the factor 'x' of processors.
+
         :param key: Which of key to return from 'cid', 'type', and 'extention'
         :return: A list of x 'key'
         """
@@ -118,7 +119,8 @@ class Processors:
     def findall(self, obj: typing.Optional['ioinfo.PathOrIOInfoT'],
                 forced_type: typing.Optional[str] = None
                 ) -> typing.List[ProcT]:
-        """
+        """Find all of the processors match with tthe given conditions.
+
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an
             'anyconfig.ioinfo.IOInfo' (namedtuple) object
@@ -131,7 +133,8 @@ class Processors:
 
     def find(self, obj: typing.Optional['ioinfo.PathOrIOInfoT'],
              forced_type: MaybeProcT = None) -> ProcT:
-        """
+        """Find the processor best match with tthe given conditions.
+
         :param obj:
             a file path, file, file-like object, pathlib.Path object or an
             'anyconfig.ioinfo.IOInfo' (namedtuple) object

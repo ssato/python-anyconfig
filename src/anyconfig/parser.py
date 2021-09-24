@@ -2,8 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Misc parsers
-"""
+"""Misc simple parsers."""
 import re
 import typing
 import warnings
@@ -14,34 +13,12 @@ FLOAT_PATTERN: typing.Pattern = re.compile(r"^\d+[\.]\d+$")
 BOOL_PATTERN: typing.Pattern = re.compile(r"^(true|false)$", re.I)
 STR_PATTERN: typing.Pattern = re.compile(r"^['\"](.*)['\"]$")
 
-
 PrimitiveT = typing.Union[str, int, float, bool]
 PrimitivesT = typing.List[PrimitiveT]
 
 
 def parse_single(str_: typing.Optional[str]) -> PrimitiveT:
-    """
-    Very simple parser to parse an expression represents a primitive value.
-
-    >>> parse_single(None)
-    ''
-    >>> parse_single('0')
-    0
-    >>> parse_single('123')
-    123
-    >>> parse_single('True')
-    True
-    >>> parse_single('a string')
-    'a string'
-    >>> parse_single('"a string"')
-    'a string'
-    >>> parse_single("'a string'")
-    'a string'
-    >>> parse_single('0.1')
-    0.1
-    >>> parse_single('    a string contains extra whitespaces     ')
-    'a string contains extra whitespaces'
-    """
+    """Parse an expression gives a primitive value."""
     if str_ is None:
         return ''
 
@@ -66,20 +43,10 @@ def parse_single(str_: typing.Optional[str]) -> PrimitiveT:
 
 
 def parse_list(str_: str, sep: str = ',') -> PrimitivesT:
-    """
-    Simple parser to parse an expression ``str_`` contains a list of str-es
-    separated with ``sep``, represents a list of primitive values.
+    """Parse an expression gives a list of values.
 
-    >>> parse_list('')
-    []
-    >>> parse_list('1')
-    [1]
-    >>> parse_list('a,b')
-    ['a', 'b']
-    >>> parse_list('1,2')
-    [1, 2]
-    >>> parse_list('a,b,')
-    ['a', 'b']
+    An expression ``str_`` might contain a list of str-es separated with
+    ``sep``, represents a list of primitive values.
     """
     return [parse_single(x) for x in str_.split(sep) if x]
 
@@ -89,8 +56,9 @@ AttrValsT = typing.Tuple[str, typing.Union[PrimitivesT, PrimitiveT]]
 
 def attr_val_itr(str_: str, avs_sep: str = ':', vs_sep: str = ',',
                  as_sep: str = ';') -> typing.Iterator[AttrValsT]:
-    """
-    Atrribute and value pair parser.
+    """Parse a list of atrribute and value pairs.
+
+    This is a helper function for parse_attrlist_0.
 
     :param str_: String represents a list of pairs of attribute and value
     :param avs_sep: char to separate attribute and values
@@ -118,8 +86,11 @@ def attr_val_itr(str_: str, avs_sep: str = ':', vs_sep: str = ',',
 
 def parse_attrlist_0(str_: str, avs_sep: str = ':', vs_sep: str = ',',
                      as_sep: str = ';') -> typing.List[AttrValsT]:
-    """
-    Simple parser to parse expressions in the form of
+    """Parse a list of atrribute and value pairs.
+
+    This is a helper function for parse_attrlist.
+
+    The expressions to parse should be in the form of
     [ATTR1:VAL0,VAL1,...;ATTR2:VAL0,VAL2,..].
 
     :param str_: input string
@@ -131,15 +102,6 @@ def parse_attrlist_0(str_: str, avs_sep: str = ':', vs_sep: str = ',',
         a list of tuples of (key, value | [value])
             where key = (Int | String | ...),
             value = (Int | Bool | String | ...) | [Int | Bool | String | ...]
-
-    >>> parse_attrlist_0('a:1')
-    [('a', 1)]
-    >>> parse_attrlist_0('a:1;b:xyz')
-    [('a', 1), ('b', 'xyz')]
-    >>> parse_attrlist_0('requires:bash,zsh')
-    [('requires', ['bash', 'zsh'])]
-    >>> parse_attrlist_0('obsoletes:sysdata;conflicts:sysdata-old')
-    [('obsoletes', 'sysdata'), ('conflicts', 'sysdata-old')]
     """
     return list(attr_val_itr(str_, avs_sep, vs_sep, as_sep))
 
@@ -149,17 +111,15 @@ AttrValsDictT = typing.Dict[str, typing.Union[PrimitivesT, PrimitiveT]]
 
 def parse_attrlist(str_: str, avs_sep: str = ':', vs_sep: str = ',',
                    as_sep: str = ';') -> AttrValsDictT:
-    """
-    Simple parser to parse expressions in the form of
+    """Parse a list of atrribute and value pairs.
+
+    The expressions to parse should be in the form of
     [ATTR1:VAL0,VAL1,...;ATTR2:VAL0,VAL2,..].
 
     :param str_: input string
     :param avs_sep:  char to separate attribute and values
     :param vs_sep:  char to separate values
     :param as_sep:  char to separate attributes
-
-    >>> parse_attrlist('requires:bash,zsh')
-    {'requires': ['bash', 'zsh']}
     """
     return dict(parse_attrlist_0(str_, avs_sep, vs_sep, as_sep))
 
@@ -174,7 +134,7 @@ ResultsT = typing.Union[
 def parse(str_: typing.Optional[str],
           lsep: str = ',', avsep: str = ':', vssep: str = ',',
           avssep: str = ';') -> ResultsT:
-    """Generic parser"""
+    """Very simple generic parser."""
     if str_ is None or not str_:
         return parse_single(str_)
 

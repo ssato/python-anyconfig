@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Abstract implementation of backend modules:
+r"""Abstract implementation of backend modules.
 
 Backend module must implement a parser class inherits :class:`Parser` or its
 children classes of this module and override all or some of the methods as
@@ -31,9 +31,7 @@ from .loaders import (
 
 
 class Parser(LoaderMixin, DumperMixin, processor.Processor):
-    """
-    Abstract parser to provide basic implementation of some methods, interfaces
-    and members.
+    """Abstract parser to provide basic implementation of some methods as below.
 
     - _type: Parser type indicate which format it supports
     - _priority: Priority to select it if there are other parsers of same type
@@ -42,22 +40,25 @@ class Parser(LoaderMixin, DumperMixin, processor.Processor):
 
     .. seealso:: the doc of :class:`anyconfig.models.processor.Processor`
     """
+
     _cid: str = 'base'
 
 
 class StringParser(Parser, FromStringLoaderMixin, ToStringDumperMixin):
-    """
-    Abstract parser based on :meth:`load_from_string` and
-    :meth:`dump_to_string`.
+    """Abstract parser based on the following methods.
+
+    - :meth:`load_from_string`
+    - :meth:`dump_to_string`.
 
     Parser classes inherit this class must define these methods.
     """
 
 
 class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
-    """
-    Abstract parser based on :meth:`load_from_stream` and
-    :meth:`dump_to_stream`.
+    """Abstract parser based on the following methods.
+
+    - :meth:`load_from_stream`
+    - :meth:`dump_to_stream`.
 
     Parser classes inherit this class must define these methods.
     """
@@ -72,8 +73,7 @@ def load_with_fn(load_fn: typing.Optional[LoadFnT],
                  container: GenContainerT,
                  allow_primitives: bool = False,
                  **options) -> InDataExT:
-    """
-    Load data from given string or stream 'content_or_strm'.
+    """Load data from given string or stream 'content_or_strm'.
 
     :param load_fn: Callable to load data
     :param content_or_strm: data content or stream provides it
@@ -98,9 +98,9 @@ def load_with_fn(load_fn: typing.Optional[LoadFnT],
 def dump_with_fn(dump_fn: typing.Optional[DumpFnT],
                  data: InDataExT, stream: typing.Optional[typing.IO],
                  **options) -> typing.Optional[str]:
-    """
-    Dump 'data' to a string if 'stream' is None, or dump 'data' to a file or
-    file-like object 'stream'.
+    """Dump 'data' to a string.
+
+    If 'stream' is None, or dump 'data' to a file or file-like object 'stream'.
 
     :param dump_fn: Callable to dump data
     :param data: Data to dump
@@ -119,9 +119,10 @@ def dump_with_fn(dump_fn: typing.Optional[DumpFnT],
 
 
 class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
-    """
-    Abstract parser utilizes load and dump functions each backend module
-    provides such like json.load{,s} and json.dump{,s} in JSON backend.
+    """Abstract parser utilizes load and dump functions.
+
+    Each backend module should provide functions like json.load{,s} and
+    json.dump{,s} in JSON backend.
 
     Parser classes inherit this class must define the followings.
 
@@ -136,6 +137,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
     :seealso: :class:`anyconfig.backend.json.Parser`
     """
+
     _load_from_string_fn: typing.Optional[LoadFnT] = None
     _load_from_stream_fn: typing.Optional[LoadFnT] = None
     _dump_to_string_fn: typing.Optional[DumpFnT] = None
@@ -143,8 +145,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
     def load_from_string(self, content: str, container: GenContainerT,
                          **options) -> InDataExT:
-        """
-        Load configuration data from given string 'content'.
+        """Load configuration data from given string 'content'.
 
         :param content: Configuration string
         :param container: callble to make a container object
@@ -158,8 +159,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
     def load_from_stream(self, stream: typing.IO, container: GenContainerT,
                          **options) -> InDataExT:
-        """
-        Load data from given stream 'stream'.
+        """Load data from given stream 'stream'.
 
         :param stream: Stream provides configuration data
         :param container: callble to make a container object
@@ -172,8 +172,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
                             **options)
 
     def dump_to_string(self, cnf: InDataExT, **kwargs) -> str:
-        """
-        Dump config 'cnf' to a string.
+        """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
@@ -185,8 +184,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
     def dump_to_stream(self, cnf: InDataExT, stream: typing.IO,
                        **kwargs) -> None:
-        """
-        Dump config 'cnf' to a file-like object 'stream'.
+        """Dump config 'cnf' to a file-like object 'stream'.
 
         TODO: How to process socket objects same as file objects ?
 

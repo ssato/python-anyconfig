@@ -2,8 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""A Public API to open configuration files by detecting type automatically.
-"""
+"""A API to open files by detecting those type automatically."""
 import typing
 import warnings
 
@@ -16,8 +15,7 @@ def open(path: ioinfo.PathOrIOInfoT,
          mode: typing.Optional[str] = None,
          ac_parser: parsers.MaybeParserT = None,
          **options) -> typing.IO:
-    """
-    Open given configuration file with appropriate open flag.
+    """Open given file ``path`` with appropriate open flag.
 
     :param path: Configuration file path
     :param mode:

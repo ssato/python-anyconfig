@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unidiomatic-typecheck
-r"""Utility functions for anyconfig.processors.
-"""
+"""Utility functions for anyconfig.processors."""
 import operator
 import typing
 import warnings
@@ -18,8 +17,7 @@ from .datatypes import (
 
 
 def sort_by_prio(prs: typing.Iterable[ProcT]) -> ProcsT:
-    """
-    Sort an iterable of processor classes by each priority.
+    """Sort an iterable of processor classes by each priority.
 
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: Sambe as above but sorted by priority
@@ -32,7 +30,8 @@ def select_by_key(items: typing.Iterable[
                   ],
                   sort_fn: typing.Callable[..., typing.Any] = sorted
                   ) -> typing.List[typing.Tuple[str, typing.List[typing.Any]]]:
-    """
+    """Select items from ``items`` by key.
+
     :param items: A list of tuples of keys and values, [([key], val)]
     :return: A list of tuples of key and values, [(key, [val])]
 
@@ -46,7 +45,8 @@ def select_by_key(items: typing.Iterable[
 
 def list_by_x(prs: typing.Iterable[ProcT], key: str
               ) -> typing.List[typing.Tuple[str, ProcsT]]:
-    """
+    """List items by the factor 'x'.
+
     :param key: Grouping key, 'type' or 'extensions'
     :return:
         A list of :class:`Processor` or its children classes grouped by
@@ -73,7 +73,8 @@ def list_by_x(prs: typing.Iterable[ProcT], key: str
 
 def findall_with_pred(predicate: typing.Callable[..., bool],
                       prs: ProcsT) -> ProcsT:
-    """
+    """Find all of the items match with given predicates.
+
     :param predicate: any callable to filter results
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: A list of appropriate processor classes or []
@@ -85,7 +86,8 @@ def findall_with_pred(predicate: typing.Callable[..., bool],
 def maybe_processor(type_or_id: typing.Union[ProcT, ProcClsT],
                     cls: ProcClsT = models.processor.Processor
                     ) -> typing.Optional[ProcT]:
-    """
+    """Try to get the processor.
+
     :param type_or_id:
         Type of the data to process or ID of the processor class or
         :class:`anyconfig.models.processor.Processor` class object or its
@@ -106,7 +108,8 @@ def maybe_processor(type_or_id: typing.Union[ProcT, ProcClsT],
 
 
 def find_by_type_or_id(type_or_id: str, prs: ProcsT) -> ProcsT:
-    """
+    """Find the processor by types or IDs.
+
     :param type_or_id: Type of the data to process or ID of the processor class
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return:
@@ -115,7 +118,7 @@ def find_by_type_or_id(type_or_id: str, prs: ProcsT) -> ProcsT:
     :raises: anyconfig.common.UnknownProcessorTypeError
     """
     def pred(pcls):
-        """Predicate"""
+        """Provide a predicate."""
         return pcls.cid() == type_or_id or pcls.type() == type_or_id
 
     pclss = findall_with_pred(pred, prs)
@@ -126,14 +129,15 @@ def find_by_type_or_id(type_or_id: str, prs: ProcsT) -> ProcsT:
 
 
 def find_by_fileext(fileext: str, prs: ProcsT) -> ProcsT:
-    """
+    """Find the processor by file extensions.
+
     :param fileext: File extension
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: A list of processor class to processor files with given extension
     :raises: common.UnknownFileTypeError
     """
     def pred(pcls):
-        """Predicate"""
+        """Provide a predicate."""
         return fileext in pcls.extensions()
 
     pclss = findall_with_pred(pred, prs)
@@ -144,7 +148,8 @@ def find_by_fileext(fileext: str, prs: ProcsT) -> ProcsT:
 
 
 def find_by_maybe_file(obj: ioinfo.PathOrIOInfoT, prs: ProcsT) -> ProcsT:
-    """
+    """Find the processor appropariate for the given file ``obj``.
+
     :param obj:
         a file path, file or file-like object, pathlib.Path object or an
         'anyconfig.ioinfo.IOInfo' (namedtuple) object
@@ -159,7 +164,8 @@ def find_by_maybe_file(obj: ioinfo.PathOrIOInfoT, prs: ProcsT) -> ProcsT:
 def findall(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
             forced_type: typing.Optional[str] = None,
             ) -> ProcsT:
-    """
+    """Find all of the processors match with the conditions.
+
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
         'anyconfig.ioinfo.IOInfo` (namedtuple) object
@@ -191,7 +197,8 @@ def findall(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
 def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
          forced_type: MaybeProcT = None,
          ) -> ProcT:
-    """
+    """Find the processors best match with the conditions.
+
     :param obj:
         a file path, file, file-like object, pathlib.Path object or an
         'anyconfig.ioinfo.IOInfo' (namedtuple) object
@@ -222,7 +229,8 @@ def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
 
 
 def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
-    """
+    """Load processor plugins.
+
     A generator function to yield a class object of
     :class:`anyconfig.models.processor.Processor`.
 

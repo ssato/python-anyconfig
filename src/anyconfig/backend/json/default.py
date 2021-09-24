@@ -5,7 +5,7 @@
 # Ref. python -c "import json; help(json)"
 #
 # pylint: disable=import-error
-r"""JSON backend:
+"""A backend module using the standard json lib to load and dump JSON data.
 
 - Format to support: JSON, http://www.json.org
 - Requirements: json in python standard library
@@ -39,9 +39,8 @@ from .common import Parser as BaseParser
 
 
 class Parser(BaseParser):
-    """
-    Parser for JSON files.
-    """
+    """Parser for JSON files."""
+
     _cid = 'std.json'
     _priority = 30  # Higher priority than others.
 

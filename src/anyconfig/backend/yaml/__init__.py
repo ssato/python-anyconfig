@@ -2,7 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""YAML backends:
+"""Backend modules to load and dump YAML data files.
 
 - pyyaml: PyYAML, http://pyyaml.org [default]
 - ruamel.yaml: ruamel.yaml, https://bitbucket.org/ruamel/yaml

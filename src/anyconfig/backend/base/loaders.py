@@ -2,8 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Abstract and basic loaders.
-"""
+"""Abstract and basic loaders."""
 import collections
 import io
 import pathlib
@@ -16,12 +15,11 @@ from .datatypes import (
 from .utils import not_implemented
 
 
-DATA_DEFAULT: InDataExT = dict()
+DATA_DEFAULT: InDataExT = {}
 
 
 class LoaderMixin:
-    """
-    Mixin class to load data.
+    """Mixin class to load data.
 
     Inherited classes must implement the following methods.
 
@@ -38,6 +36,7 @@ class LoaderMixin:
     - _dict_opts: Backend options to customize dict class to make results
     - _open_read_mode: Backend option to specify read mode passed to open()
     """
+
     _load_opts: typing.List[str] = []
     _ordered: bool = False
     _allow_primitives: bool = False
@@ -46,14 +45,13 @@ class LoaderMixin:
 
     @classmethod
     def ordered(cls) -> bool:
-        """
-        :return: True if parser can keep the order of keys else False.
-        """
+        """Test if the parser keeps the order of the data."""
         return cls._ordered
 
     @classmethod
     def allow_primitives(cls) -> bool:
-        """
+        """Test if the paresr allows to hold primitive data.
+
         :return:
             True if the parser.load* may return objects of primitive data types
             other than mapping types such like JSON parser
@@ -62,21 +60,18 @@ class LoaderMixin:
 
     @classmethod
     def dict_options(cls) -> typing.List[str]:
-        """
-        :return: List of dict factory options
-        """
+        """Get the list of dict factory options."""
         return cls._dict_opts
 
     def ropen(self, filepath, **kwargs):
-        """
-        :param filepath: Path to file to open to read data
-        """
+        """Open files with read only mode."""
         return open(  # pylint: disable=consider-using-with
             filepath, self._open_read_mode, **kwargs
         )
 
     def _container_factory(self, **options) -> GenContainerT:
-        """
+        """Get the factory to make container objects.
+
         The order of prirorities are ac_dict, backend specific dict class
         option, ac_ordered.
 
@@ -97,9 +92,7 @@ class LoaderMixin:
         return dict
 
     def _load_options(self, container: GenContainerT, **options) -> OptionsT:
-        """
-        Select backend specific loading options.
-        """
+        """Select backend specific loading options."""
         # Force set dict option if available in backend. For example,
         # options["object_hook"] will be OrderedDict if 'container' was
         # OrderedDict in JSON backend.
@@ -110,8 +103,7 @@ class LoaderMixin:
 
     def load_from_string(self, content: str, container: GenContainerT,
                          **kwargs) -> InDataExT:
-        """
-        Load config from given string 'content'.
+        """Load config from given string 'content'.
 
         :param content: Config content string
         :param container: callble to make a container object later
@@ -124,8 +116,7 @@ class LoaderMixin:
 
     def load_from_path(self, filepath: str, container: GenContainerT,
                        **kwargs) -> InDataExT:
-        """
-        Load config from given file path 'filepath`.
+        """Load config from given file path 'filepath`.
 
         :param filepath: Config file path
         :param container: callble to make a container object later
@@ -138,8 +129,7 @@ class LoaderMixin:
 
     def load_from_stream(self, stream: typing.IO, container: GenContainerT,
                          **kwargs) -> InDataExT:
-        """
-        Load config from given file like object 'stream`.
+        """Load config from given file like object 'stream`.
 
         :param stream:  Config file or file like object
         :param container: callble to make a container object later
@@ -151,8 +141,7 @@ class LoaderMixin:
         return DATA_DEFAULT
 
     def loads(self, content: str, **options) -> InDataExT:
-        """
-        Load config from given string 'content' after some checks.
+        """Load config from given string 'content' after some checks.
 
         :param content:  Config file content
         :param options:
@@ -172,9 +161,7 @@ class LoaderMixin:
 
     def load(self, ioi: IoiT, ac_ignore_missing: bool = False,
              **options) -> InDataExT:
-        """
-        Load config from a file path or a file / file-like object which 'ioi'
-        referring after some checks.
+        """Load config from ``ioi``.
 
         :param ioi:
             'anyconfig.ioinfo.IOInfo' namedtuple object provides various info
@@ -211,24 +198,24 @@ class LoaderMixin:
 
 
 class BinaryLoaderMixin(LoaderMixin):
-    """
-    Mixin class to load binary (byte string) configuration files.
-    """
+    """Mixin class to load binary (byte string) configuration files."""
+
     _open_read_mode: str = 'rb'
 
 
 class FromStringLoaderMixin(LoaderMixin):
-    """
-    Abstract config parser provides a method to load configuration from string
-    content to help implement parser of which backend lacks of such function.
+    """Abstract parser provides a method below.
+
+    - amethod to load configuration from string content to help implement
+      parser of which backend lacks of such function.
 
     Parser classes inherit this class have to override the method
     :meth:`load_from_string` at least.
     """
+
     def load_from_stream(self, stream: typing.IO, container: GenContainerT,
                          **kwargs) -> InDataExT:
-        """
-        Load config from given stream 'stream'.
+        """Load config from given stream 'stream'.
 
         :param stream: Config file or file-like object
         :param container: callble to make a container object later
@@ -240,8 +227,7 @@ class FromStringLoaderMixin(LoaderMixin):
 
     def load_from_path(self, filepath: str, container: GenContainerT,
                        **kwargs) -> InDataExT:
-        """
-        Load config from given file path 'filepath'.
+        """Load config from given file path 'filepath'.
 
         :param filepath: Config file path
         :param container: callble to make a container object later
@@ -254,17 +240,18 @@ class FromStringLoaderMixin(LoaderMixin):
 
 
 class FromStreamLoaderMixin(LoaderMixin):
-    """
-    Abstract config parser provides a method to load configuration from string
-    content to help implement parser of which backend lacks of such function.
+    """Abstract parser provides a method below.
+
+    - A method to load configuration from string content to help implement
+      parser of which backend lacks of such function.
 
     Parser classes inherit this class have to override the method
     :meth:`load_from_stream` at least.
     """
+
     def load_from_string(self, content: str, container: GenContainerT,
                          **kwargs) -> InDataExT:
-        """
-        Load config from given string 'cnf_content'.
+        """Load config from given string 'cnf_content'.
 
         :param content: Config content string
         :param container: callble to make a container object later
@@ -277,8 +264,7 @@ class FromStreamLoaderMixin(LoaderMixin):
 
     def load_from_path(self, filepath: str, container: GenContainerT,
                        **kwargs) -> InDataExT:
-        """
-        Load config from given file path 'filepath'.
+        """Load config from given file path 'filepath'.
 
         :param filepath: Config file path
         :param container: callble to make a container object later

@@ -3,9 +3,35 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=protected-access
+"""Test cases for .backend.ini."""
+import pytest
 
 import anyconfig.backend.ini as TT
 import tests.backend.common as TBC
+
+
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     (r'"foo string"', 'foo string'),
+     ('a, b, c', ['a', 'b', 'c']),
+     ('aaa', 'aaa'),
+     ),
+)
+def test_parse(inp, exp):
+    assert TT._parse(inp) == exp
+
+
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     ([1, 2, 3], '1, 2, 3'),
+     ('aaa', 'aaa'),
+     ),
+)
+def test_to_s(inp, exp):
+    assert TT._to_s(inp) == exp
 
 
 class HasParserTrait(TBC.HasParserTrait):

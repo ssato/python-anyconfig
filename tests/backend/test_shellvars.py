@@ -4,22 +4,22 @@
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports
-
-from collections import OrderedDict
+import collections
 
 import anyconfig.backend.shellvars as TT
 import tests.backend.common as TBC
 
 
-CNF = OrderedDict((("a", "0"), ("b", "bbb"), ("c", "ccc"), ("d", "ddd"),
-                   ("e", "eee")))
+CNF = collections.OrderedDict(
+    (('a', '0'), ('b', 'bbb'), ('c', 'ccc'), ('d', 'ddd'), ('e', 'eee'))
+)
 
 
 class HasParserTrait(TBC.HasParserTrait):
 
     psr = TT.Parser()
     cnf = CNF
-    cnf_s = TBC.read_from_res("20-00-cnf.sh")
+    cnf_s = TBC.read_from_res('20-00-cnf.sh')
 
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):

@@ -73,9 +73,8 @@ def load(stream, container=dict):
 
 
 class Parser(base.StreamParser):
-    """
-    Parser for Shell variable definition files.
-    """
+    """Parser for Shell variable definition files."""
+
     _cid = 'shellvars'
     _type = 'shellvars'
     _extensions = ['sh']
@@ -83,8 +82,7 @@ class Parser(base.StreamParser):
     _dict_opts = ['ac_dict']
 
     def load_from_stream(self, stream, container, **kwargs):
-        """
-        Load config from given file like object 'stream'.
+        """Load config from given file like object ``stream``.
 
         :param stream:
             A file or file like object of shell scripts define shell variables
@@ -96,8 +94,7 @@ class Parser(base.StreamParser):
         return load(stream, container=container)
 
     def dump_to_stream(self, cnf, stream, **kwargs):
-        """
-        Dump config 'cnf' to a file or file-like object 'stream'.
+        """Dump config dat ``cnf`` to a file or file-like object ``stream``.
 
         :param cnf: Shell variables data to dump
         :param stream: Shell script file or file like object

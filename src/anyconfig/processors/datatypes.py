@@ -2,8 +2,7 @@
 # Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Common functions and variables.
-"""
+"""Common functions and variables."""
 import typing
 
 from ..models import processor

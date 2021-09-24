@@ -2,8 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""CLI frontend module for anyconfig.
-"""
+"""CLI frontend module for anyconfig."""
 import sys
 
 from ._main import main

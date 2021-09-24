@@ -4,8 +4,7 @@
 #
 # Suppress import positions after some global variables are defined
 # pylint: disable=wrong-import-position
-"""A collection of default backend modules.
-"""
+"""A collection of backend modules available by default."""
 import warnings
 
 from . import (

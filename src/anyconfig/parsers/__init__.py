@@ -2,8 +2,7 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Utility functions to list and find appropriate parser class objects and
-instances.
+"""Utilities to list and find appropriate parser class objects and instances.
 
 .. versionchanged:: 0.10.2
 

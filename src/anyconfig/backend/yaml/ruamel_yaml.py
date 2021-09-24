@@ -2,7 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""YAML backend by ruamel.yaml:
+"""A backend module to load and dump YAML data files using rumael.yaml.
 
 - Format to support: YAML, http://yaml.org
 - Requirement: ruamel.yaml, https://bitbucket.org/ruamel/yaml
@@ -68,7 +68,8 @@ _YAML_OPTS = _YAML_INIT_KWARGS + _YAML_INSTANCE_MEMBERS
 
 
 def yml_fnc(fname, *args, **options):
-    """
+    """Call loading functions for yaml data.
+
     :param fname:
         "load" or "dump", not checked but it should be OK.
         see also :func:`yml_load` and :func:`yml_dump`
@@ -91,8 +92,7 @@ def yml_fnc(fname, *args, **options):
 
 
 def yml_load(stream, container, **options):
-    """.. seealso:: :func:`anyconfig.backend.yaml.pyyaml.yml_load`
-    """
+    """See :func:`anyconfig.backend.yaml.pyyaml.yml_load`."""
     ret = yml_fnc('load', stream, **options)
     if ret is None:
         return container()
@@ -101,8 +101,7 @@ def yml_load(stream, container, **options):
 
 
 def yml_dump(data, stream, **options):
-    """.. seealso:: :func:`anyconfig.backend.yaml.pyyaml.yml_dump`
-    """
+    """See :func:`anyconfig.backend.yaml.pyyaml.yml_dump`."""
     # .. todo:: Needed?
     # if anyconfig.utils.is_dict_like(data):
     #     if options.get("ac_ordered"):
@@ -114,8 +113,8 @@ def yml_dump(data, stream, **options):
 
 
 class Parser(common.Parser):
-    """Parser for YAML files.
-    """
+    """Parser for YAML files."""
+
     _cid = 'ruamel.yaml'
     _load_opts = _YAML_OPTS
     _dump_opts = _YAML_OPTS

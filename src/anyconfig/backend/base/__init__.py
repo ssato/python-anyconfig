@@ -2,8 +2,7 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Backend basic classes, functions and constants.
-"""
+"""Backend basic classes, functions and constants."""
 import typing
 
 from .compat import BinaryFilesMixin

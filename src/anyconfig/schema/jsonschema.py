@@ -2,7 +2,7 @@
 # Copyright (C) 2015 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Implementation using jsonschema provides the following functions.
+"""Implementation using jsonschema provides the following functions.
 
 - validate(data: typing.Dict[str, typing.Any],
            schema: typing.Dict[str, typing.Any],
@@ -29,7 +29,8 @@ from .datatypes import ResultT
 
 
 def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:
-    """
+    """Do all of the validation checks.
+
     See the description of :func:`validate` for more details of parameters and
     return value.
 
@@ -44,7 +45,8 @@ def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:
 
 def _validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
               **options: typing.Any) -> ResultT:
-    """
+    """Validate ``data`` with ``schema``.
+
     See the description of :func:`validate` for more details of parameters and
     return value.
 
@@ -67,8 +69,7 @@ def _validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
 def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options: typing.Any
              ) -> ResultT:
-    """
-    Validate target object with given schema object, loaded from JSON schema.
+    """Validate target object with given schema object.
 
     See also: https://python-jsonschema.readthedocs.org/en/latest/validate/
 
@@ -96,9 +97,7 @@ def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
 
 def is_valid(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options) -> bool:
-    """
-    Raise ValidationError if data `data` was invalidated by schema `schema`.
-    """
+    """Raise ValidationError if ``data`` was invalidated by schema `schema`."""
     if schema is None or not schema:
         return True
 
@@ -124,8 +123,7 @@ _SIMPLETYPE_MAP: typing.Dict[typing.Any, str] = {
 
 
 def _process_options(**options):
-    """
-    Helper function to process keyword arguments passed to gen_schema.
+    """Help to process keyword arguments passed to gen_schema.
 
     :return: A tuple of (typemap :: dict, strict :: bool)
     """
@@ -135,8 +133,7 @@ def _process_options(**options):
 
 def array_to_schema(iarr: typing.Iterable[InDataT], **options
                     ) -> typing.Dict[str, typing.Any]:
-    """
-    Generate a JSON schema object with type annotation added for given object.
+    """Generate a JSON schema object with type annotation added for ``iaa```.
 
     :param arr: Array of mapping objects like dicts
     :param options: Other keyword options such as:
@@ -162,9 +159,9 @@ def array_to_schema(iarr: typing.Iterable[InDataT], **options
 
 
 def object_to_schema(obj: InDataT, **options) -> InDataT:
-    """
-    Generate a node represents JSON schema object with type annotation added
-    for given object node.
+    """Generate a node represents JSON schema object for ``obj``.
+
+    Type annotation will be added for given object node at the same time.
 
     :param obj: mapping object such like a dict
     :param options: Other keyword options such as:
@@ -188,9 +185,7 @@ _SIMPLE_TYPES = (bool, int, float, str)
 
 
 def gen_schema(data: InDataExT, **options) -> InDataT:
-    """
-    Generate a node represents JSON schema object with type annotation added
-    for given object node.
+    """Generate a JSON schema object validates ``data``.
 
     :param data: Configuration data object (dict[-like] or namedtuple)
     :param options: Other keyword options such as:

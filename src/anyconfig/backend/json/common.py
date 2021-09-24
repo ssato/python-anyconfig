@@ -2,7 +2,7 @@
 # Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Globals, functions common in some JSON backends:
+"""Globals, functions common in some JSON backend modules.
 
 Changelog:
 
@@ -21,9 +21,8 @@ JSON_DICT_OPTS = ['object_pairs_hook', 'object_hook']
 
 
 class Parser(base.StringStreamFnParser):
-    """
-    Parser for JSON files.
-    """
+    """Parser for JSON files."""
+
     _cid = 'std.json'
     _type = 'json'
     _extensions = ['json', 'jsn', 'js']

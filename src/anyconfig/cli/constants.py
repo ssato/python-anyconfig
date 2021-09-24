@@ -2,8 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Provides constants for anyconfig.cli.
-"""
+"""Provides constants for anyconfig.cli."""
 STD_IN_OR_OUT = '-'
 
 USAGE = """\

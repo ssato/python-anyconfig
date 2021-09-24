@@ -2,21 +2,18 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Utility funtions to process file and file paths.
-"""
+"""Utility funtions to process file and file paths."""
 import pathlib
 import typing
 
 
 def is_io_stream(obj: typing.Any) -> bool:
-    """Is given object ``obj`` an IO stream, file or file-like object?
-    """
+    """Test if given object ``obj`` is an IO stream, file or -like object."""
     return callable(getattr(obj, 'read', False))
 
 
 def get_path_from_stream(strm: typing.IO, safe: bool = False) -> str:
-    """
-    Try to get file path from given file or file-like object 'strm'.
+    """Try to get file path from given file or file-like object 'strm'.
 
     :param strm: A file or file-like object might have its file path info
     :return: file path or None

@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=inherit-non-class,too-few-public-methods
-"""anyconfig basic data types.
-"""
+"""anyconfig basic data types."""
 import typing
 
 

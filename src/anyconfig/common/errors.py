@@ -3,21 +3,23 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=too-few-public-methods
-"""anyconfig basic data types.
-"""
+"""Basic data types for anyconfig."""
 import typing
 
 
 class BaseError(RuntimeError):
     """Base Error exception."""
+
     _msg_fmt: str = 'forced_type: {!s}'
 
     def __init__(self, arg: typing.Optional[typing.Any] = None):
+        """Initialize the format."""
         super().__init__(self._msg_fmt.format(str(arg)))
 
 
 class UnknownParserTypeError(BaseError):
     """Raise if no parsers were found for given type."""
+
     _msg_fmt: str = 'No parser found for type: {!s}'
 
 
@@ -27,11 +29,13 @@ class UnknownProcessorTypeError(UnknownParserTypeError):
 
 class UnknownFileTypeError(BaseError):
     """Raise if not parsers were found for given file path."""
+
     _msg_fmt: str = 'No parser found for file: {!s}'
 
 
 class ValidationError(BaseError):
     """Raise if validation failed."""
+
     _msg_fmt: str = 'Validation failed: {!s}'
 
 # vim:sw=4:ts=4:et:

@@ -2,14 +2,14 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Common parts for YAML backends:
-"""
+"""Common library for YAML backend modules."""
 from ...utils import filter_options
 from .. import base
 
 
 def filter_from_options(key, options):
-    """
+    """Filter a key ``key`` in ``options.
+
     :param key: Key str in options
     :param options: Mapping object
     :return:
@@ -22,9 +22,8 @@ def filter_from_options(key, options):
 
 
 class Parser(base.StreamParser):
-    """
-    Parser for YAML files.
-    """
+    """Parser for YAML files."""
+
     _type = 'yaml'
     _extensions = ['yaml', 'yml']
     _ordered = True

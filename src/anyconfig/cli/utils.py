@@ -2,8 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Utilities for anyconfig.cli.*.
-"""
+"""Utilities for anyconfig.cli.*."""
 import functools
 import os
 import sys
@@ -14,14 +13,12 @@ from .. import api
 
 @functools.lru_cache(None)
 def list_parser_types() -> typing.List[str]:
-    """An wrapper to api.list_types() to memoize its result.
-    """
+    """Provide an wrapper of api.list_types() to memoize its result."""
     return api.list_types()
 
 
 def make_parsers_txt() -> str:
-    """Make up a text shows list and info of parsers available.
-    """
+    """Make up a text shows list and info of parsers available."""
     sep = os.linesep
     indent = '  '
 
@@ -42,8 +39,7 @@ def make_parsers_txt() -> str:
 
 
 def exit_with_output(content, exit_code=0):
-    """
-    Exit the program with printing out messages.
+    """Exit the program with printing out messages.
 
     :param content: content to print out
     :param exit_code: Exit code
@@ -53,7 +49,8 @@ def exit_with_output(content, exit_code=0):
 
 
 def exit_if_load_failure(cnf, msg):
-    """
+    """Exit the program with errors if loading data was failed.
+
     :param cnf: Loaded configuration object or None indicates load failure
     :param msg: Message to print out if failure
     """
@@ -62,7 +59,8 @@ def exit_if_load_failure(cnf, msg):
 
 
 def load_diff(args, extra_opts):
-    """
+    """Load update data.
+
     :param args: :class:`argparse.Namespace` object
     :param extra_opts: Map object given to api.load as extra options
     """

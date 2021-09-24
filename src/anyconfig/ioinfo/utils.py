@@ -2,8 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Utility funtions for anyconfig.ionfo.
-"""
+"""Utility funtions for anyconfig.ionfo."""
 import itertools
 import pathlib
 import typing
@@ -12,8 +11,7 @@ from .constants import GLOB_MARKER, PATH_SEP
 
 
 def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
-    """Normaliez path objects and retunr it with file extension.
-    """
+    """Normaliez path objects and retunr it with file extension."""
     abs_path = path.expanduser().resolve()
     file_ext = abs_path.suffix
     return (
@@ -25,10 +23,7 @@ def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
 def expand_from_path(path: pathlib.Path,
                      marker: str = GLOB_MARKER
                      ) -> typing.Iterator[pathlib.Path]:
-    """
-    Expand given path ``path`` contains '*' in its path str and yield
-    :class:`pathlib.Path` objects.
-    """
+    """Expand ``path`` contains '*' in its path str."""
     if not path.is_absolute():
         path = path.resolve()
 

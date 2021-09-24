@@ -2,7 +2,7 @@
 # Copyright (C) 2017 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Pickle backend:
+r"""A backend module to load and dump pickle files.
 
 - Format to support: Pickle
 - Requirements: It should be available always.
@@ -38,9 +38,8 @@ DUMP_OPTS = ['protocol', 'fix_imports']
 
 class Parser(base.StringStreamFnParser,
              base.BinaryLoaderMixin, base.BinaryDumperMixin):
-    """
-    Parser for Pickle files.
-    """
+    """Parser for Pickle files."""
+
     _cid = 'pickle'
     _type = 'pickle'
     _extensions = ['pkl', 'pickle']

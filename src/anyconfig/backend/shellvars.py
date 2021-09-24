@@ -48,26 +48,12 @@ def _parseline(line):
 
 
 def load(stream, container=dict):
-    """
-    Load and parse a file or file-like object 'stream' provides simple shell
-    variables' definitions.
+    """Load shell variable definitions data from ``stream``.
 
     :param stream: A file or file like object
     :param container:
         Factory function to create a dict-like object to store properties
     :return: Dict-like object holding shell variables' definitions
-
-    >>> from io import StringIO as to_strm
-    >>> load(to_strm(''))
-    {}
-    >>> load(to_strm("# "))
-    {}
-    >>> load(to_strm("aaa="))
-    {'aaa': ''}
-    >>> load(to_strm("aaa=bbb"))
-    {'aaa': 'bbb'}
-    >>> load(to_strm("aaa=bbb # ..."))
-    {'aaa': 'bbb'}
     """
     ret = container()
 

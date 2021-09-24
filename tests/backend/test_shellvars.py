@@ -6,6 +6,7 @@
 # pylint: disable=ungrouped-imports,protected-access
 """Test cases for .backend.shellvars."""
 import collections
+import io
 
 import pytest
 
@@ -30,6 +31,20 @@ CNF = collections.OrderedDict(
 )
 def test_parseline(inp, exp):
     assert TT._parseline(inp) == exp
+
+
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     ('', {}),
+     ('# ', {}),
+     ('aaa=', {'aaa': ''}),
+     ('aaa=bbb', {'aaa': 'bbb'}),
+     ('aaa=bbb # ...',  {'aaa': 'bbb'}),
+     ),
+)
+def test_load(inp, exp):
+    assert TT.load(io.StringIO(inp)) == exp
 
 
 class HasParserTrait(TBC.HasParserTrait):

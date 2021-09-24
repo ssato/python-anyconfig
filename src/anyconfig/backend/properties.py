@@ -45,19 +45,6 @@ def parseline(line: str) -> typing.Tuple[str, str]:
     :param line:
         A string to parse, must not start with ' ', '#' or '!' (comment)
     :return: A tuple of (key, value), both key and value may be None
-
-    >>> parseline(" ")
-    (None, '')
-    >>> parseline("aaa:")
-    ('aaa', '')
-    >>> parseline(" aaa:")
-    ('aaa', '')
-    >>> parseline("aaa")
-    ('aaa', '')
-    >>> parseline("url = http://localhost")
-    ('url', 'http://localhost')
-    >>> parseline("calendar.japanese.type: LocalGregorianCalendar")
-    ('calendar.japanese.type', 'LocalGregorianCalendar')
     """
     pair = re.split(r"(?:\s+)?(?:(?<!\\)[=:])", line.strip(), 1)
     key = pair[0].rstrip()

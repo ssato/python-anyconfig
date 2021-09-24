@@ -36,7 +36,7 @@ import warnings
 from . import base
 
 
-_COMMENT_MARKERS = ('#', '!')
+_COMMENT_MARKERS: typing.Tuple[str, ...] = ('#', '!')
 
 
 def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
@@ -56,24 +56,16 @@ def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
     return (key, pair[1].strip())
 
 
-def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):
-    """
-    Preprocess a line in properties; strip comments, etc.
+def _pre_process_line(
+    line: str,
+    comment_markers: typing.Tuple[str, ...] = _COMMENT_MARKERS
+):
+    """Preprocess a line in properties; strip comments, etc.
 
     :param line:
         A string not starting w/ any white spaces and ending w/ line breaks.
         It may be empty. see also: :func:`load`.
     :param comment_markers: Comment markers, e.g. '#' (hash)
-
-    >>> _pre_process_line('') is None
-    True
-    >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
-    >>> _pre_process_line("# " + s0) is None
-    True
-    >>> _pre_process_line("! " + s0) is None
-    True
-    >>> _pre_process_line(s0 + "# comment")
-    'calendar.japanese.type: LocalGregorianCalendar# comment'
     """
     if not line:
         return None

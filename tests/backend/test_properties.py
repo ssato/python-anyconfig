@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
-# pylint: disable=ungrouped-imports
+# pylint: disable=ungrouped-imports,protected-access
 import unittest
 
 import pytest
@@ -50,6 +50,20 @@ def test_parseline_warnings(inp, exp):
 )
 def test_parseline(inp, exp):
     assert TT.parseline(inp) == exp
+
+
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     ('', None),
+     ('a: A', 'a: A'),
+     ('# a: A', None),
+     ('! a: A', None),
+     ('a: A # comment', 'a: A # comment'),
+     ),
+)
+def test_pre_process_line(inp, exp):
+    assert TT._pre_process_line(inp) == exp
 
 
 class Test_00(unittest.TestCase):

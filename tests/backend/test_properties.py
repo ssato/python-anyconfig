@@ -5,6 +5,9 @@
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports
 import unittest
+
+import pytest
+
 import anyconfig.backend.properties as TT
 import tests.backend.common as TBC
 
@@ -21,6 +24,32 @@ class HasParserTrait(TBC.HasParserTrait):
     psr = TT.Parser()
     cnf = CNF
     cnf_s = TBC.read_from_res("20-00-cnf.properties")
+
+
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     (' ', (None, '')),
+     ('aaa', ('aaa', '')),
+     ),
+)
+def test_parseline_warnings(inp, exp):
+    with pytest.warns(SyntaxWarning):
+        assert TT.parseline(inp) == exp
+
+
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     ('aaa:', ('aaa', '')),
+     (' aaa:', ('aaa', '')),
+     ('url = http://localhost', ('url', 'http://localhost')),
+     ('calendar.japanese.type: LocalGregorianCalendar',
+      ('calendar.japanese.type', 'LocalGregorianCalendar')),
+     ),
+)
+def test_parseline(inp, exp):
+    assert TT.parseline(inp) == exp
 
 
 class Test_00(unittest.TestCase):

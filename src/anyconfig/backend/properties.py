@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Java properties backend:
+r"""A backend module to load and dump (Java) properties files.
 
 - Format to support: Java Properties file, e.g.
   http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html
@@ -30,6 +30,7 @@ Changelog:
 """
 import os
 import re
+import typing
 import warnings
 
 from . import base
@@ -38,25 +39,24 @@ from . import base
 _COMMENT_MARKERS = ('#', '!')
 
 
-def _parseline(line):
-    """
-    Parse a line of Java properties file.
+def parseline(line: str) -> typing.Tuple[str, str]:
+    """Parse a line of Java properties file.
 
     :param line:
         A string to parse, must not start with ' ', '#' or '!' (comment)
     :return: A tuple of (key, value), both key and value may be None
 
-    >>> _parseline(" ")
+    >>> parseline(" ")
     (None, '')
-    >>> _parseline("aaa:")
+    >>> parseline("aaa:")
     ('aaa', '')
-    >>> _parseline(" aaa:")
+    >>> parseline(" aaa:")
     ('aaa', '')
-    >>> _parseline("aaa")
+    >>> parseline("aaa")
     ('aaa', '')
-    >>> _parseline("url = http://localhost")
+    >>> parseline("url = http://localhost")
     ('url', 'http://localhost')
-    >>> _parseline("calendar.japanese.type: LocalGregorianCalendar")
+    >>> parseline("calendar.japanese.type: LocalGregorianCalendar")
     ('calendar.japanese.type', 'LocalGregorianCalendar')
     """
     pair = re.split(r"(?:\s+)?(?:(?<!\\)[=:])", line.strip(), 1)
@@ -179,7 +179,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
             prev += line.rstrip(" \\")
             continue
 
-        (key, val) = _parseline(line)
+        (key, val) = parseline(line)
         if key is None:
             warnings.warn(f'Failed to parse the line: {line}')
             continue

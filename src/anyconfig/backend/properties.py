@@ -77,11 +77,9 @@ def _pre_process_line(
     return line
 
 
-def unescape(in_s):
-    """
-    :param in_s: Input string
-    """
-    return re.sub(r"\\(.)", r"\1", in_s)
+def unescape(in_s: str) -> str:
+    """Un-escape and take out the content from given str ``in_s``."""
+    return re.sub(r'\\(.)', r'\1', in_s)
 
 
 def _escape_char(in_c):

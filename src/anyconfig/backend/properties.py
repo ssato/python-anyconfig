@@ -39,7 +39,7 @@ from . import base
 _COMMENT_MARKERS = ('#', '!')
 
 
-def parseline(line: str) -> typing.Tuple[str, str]:
+def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
     """Parse a line of Java properties file.
 
     :param line:

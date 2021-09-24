@@ -4,6 +4,8 @@
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports,protected-access
+import io
+
 import pytest
 
 import anyconfig.backend.properties as TT
@@ -95,6 +97,31 @@ def test_escape(inp, exp):
 )
 def test_escape_char(inp, exp):
     assert TT._escape_char(inp) == exp
+
+
+KEY_0 = 'calendar.japanese.type'
+VAL_0 = 'LocalGregorianCalendar'
+KV_0 = f'{KEY_0}: {VAL_0}'
+KV_1 = """application/postscript: \\
+x=Postscript File;y=.eps,.ps
+"""
+
+
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     ('', {}),
+     (f'# {KV_0}', {}),
+     (f'! {KV_0}', {}),
+     (f'{KEY_0}:', {KEY_0: ''}),
+     (KV_0, {KEY_0: VAL_0}),
+     (f'{KV_0}# ...', {KEY_0: f'{VAL_0}# ...'}),
+     ('key=a\\:b', {'key': 'a:b'}),
+     (KV_1, {'application/postscript': 'x=Postscript File;y=.eps,.ps'}),
+     ),
+)
+def test_load(inp, exp):
+    assert TT.load(io.StringIO(inp)) == exp
 
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):

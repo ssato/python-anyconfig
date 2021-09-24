@@ -87,47 +87,19 @@ def _escape_char(in_c: str) -> str:
     return '\\' + in_c if in_c in (':', '=', '\\') else in_c
 
 
-def escape(in_s):
-    """
-    :param in_s: Input string
-    """
+def escape(in_s: str) -> str:
+    """Escape special characters in given str."""
     return ''.join(_escape_char(c) for c in in_s)
 
 
 def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
-    """
-    Load and parse Java properties file given as a fiel or file-like object
-    'stream'.
+    """Load data from a java properties files given as ``stream``.
 
     :param stream: A file or file like object of Java properties files
     :param container:
         Factory function to create a dict-like object to store properties
     :param comment_markers: Comment markers, e.g. '#' (hash)
     :return: Dict-like object holding properties
-
-    >>> import io
-    >>> to_strm = io.StringIO
-    >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
-    >>> load(to_strm(''))
-    {}
-    >>> load(to_strm("# " + s0))
-    {}
-    >>> load(to_strm("! " + s0))
-    {}
-    >>> load(to_strm("calendar.japanese.type:"))
-    {'calendar.japanese.type': ''}
-    >>> load(to_strm(s0))
-    {'calendar.japanese.type': 'LocalGregorianCalendar'}
-    >>> load(to_strm(s0 + "# ..."))
-    {'calendar.japanese.type': 'LocalGregorianCalendar# ...'}
-    >>> s1 = r"key=a\\:b"
-    >>> load(to_strm(s1))
-    {'key': 'a:b'}
-    >>> s2 = '''application/postscript: \\
-    ...         x=Postscript File;y=.eps,.ps
-    ... '''
-    >>> load(to_strm(s2))
-    {'application/postscript': 'x=Postscript File;y=.eps,.ps'}
     """
     ret = container()
     prev = ""

@@ -4,8 +4,6 @@
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports,protected-access
-import unittest
-
 import pytest
 
 import anyconfig.backend.properties as TT
@@ -66,22 +64,25 @@ def test_pre_process_line(inp, exp):
     assert TT._pre_process_line(inp) == exp
 
 
-class Test_00(unittest.TestCase):
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     (r'aaa\:bbb', 'aaa:bbb'),
+     (r'\\a', r'\a'),
+     ),
+)
+def test_10_unescape(inp, exp):
+    assert TT.unescape(inp) == exp
 
-    def test_10_unescape(self):
-        exp = "aaa:bbb"
-        res = TT.unescape(r"aaa\:bbb")
-        self.assertEqual(res, exp, res)
 
-    def test_12_unescape(self):
-        exp = r"\a"
-        res = TT.unescape(r"\\a")
-        self.assertEqual(res, exp, res)
-
-    def test_20_escape(self):
-        exp = r"\:\=\\ "
-        res = TT.escape(r":=\ ")
-        self.assertEqual(res, exp, res)
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     (r':=\ ', r'\:\=\\ '),
+     ),
+)
+def test_escape(inp, exp):
+    assert TT.escape(inp) == exp
 
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):

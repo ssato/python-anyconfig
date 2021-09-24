@@ -3,8 +3,11 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
-# pylint: disable=ungrouped-imports
+# pylint: disable=ungrouped-imports,protected-access
+"""Test cases for .backend.shellvars."""
 import collections
+
+import pytest
 
 import anyconfig.backend.shellvars as TT
 import tests.backend.common as TBC
@@ -13,6 +16,20 @@ import tests.backend.common as TBC
 CNF = collections.OrderedDict(
     (('a', '0'), ('b', 'bbb'), ('c', 'ccc'), ('d', 'ddd'), ('e', 'eee'))
 )
+
+
+@pytest.mark.parametrize(
+    'inp,exp',
+    (
+     ('aaa=', ('aaa', '')),
+     ('aaa=bbb', ('aaa', 'bbb')),
+     ('aaa="bb b"', ('aaa', 'bb b')),
+     # (r"aaa=bb\"b", ('aaa', 'bb"b')),  # todo?
+     ('aaa=bbb   # ccc', ('aaa', 'bbb')),
+     ),
+)
+def test_parseline(inp, exp):
+    assert TT._parseline(inp) == exp
 
 
 class HasParserTrait(TBC.HasParserTrait):

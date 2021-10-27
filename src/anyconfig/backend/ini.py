@@ -32,6 +32,7 @@ Changelog:
 """
 import configparser
 import os
+import re
 import typing
 
 from .. import parser, utils
@@ -45,7 +46,17 @@ except AttributeError:
     DEFAULTSECT: str = 'DEFAULT'  # type: ignore
 
 
-def parse(val_s: str, sep: str = _SEP):
+_QUOTED_RE: typing.Pattern = re.compile(
+    r'^('
+    r'".*"'
+    r'|'
+    r"'.*'"
+    r')$'
+)
+
+
+def parse(val_s: str, sep: str = _SEP,
+          quoted_re: typing.Pattern = _QUOTED_RE) -> typing.Any:
     """Parse expression.
 
     FIXME: May be too naive implementation.
@@ -53,9 +64,9 @@ def parse(val_s: str, sep: str = _SEP):
     :param val_s: A string represents some value to parse
     :param sep: separator between values
     """
-    if (val_s.startswith('"') and val_s.endswith('"')) or \
-            (val_s.startswith("'") and val_s.endswith("'")):
+    if quoted_re.match(val_s):
         return val_s[1:-1]
+
     if sep in val_s:
         return [
             parser.parse(typing.cast(str, x)) for x in parser.parse_list(val_s)

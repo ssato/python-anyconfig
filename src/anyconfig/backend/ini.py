@@ -21,7 +21,7 @@ r"""A backend module to load and dump INI files.
 - Special options:
 
   - Use 'ac_parse_value' boolean keyword option if you want to parse values by
-    custom parser, anyconfig.backend.ini._parse.
+    custom parser, anyconfig.backend.ini.parse.
 
 Changelog:
 
@@ -45,7 +45,7 @@ except AttributeError:
     DEFAULTSECT: str = 'DEFAULT'  # type: ignore
 
 
-def _parse(val_s: str, sep: str = _SEP):
+def parse(val_s: str, sep: str = _SEP):
     """Parse expression.
 
     FIXME: May be too naive implementation.
@@ -76,16 +76,16 @@ def _to_s(val: typing.Any, sep: str = ', ') -> str:
     return str(val)
 
 
-def _parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
-                  sep: str = _SEP, **options
-                  ) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
+def parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
+                 sep: str = _SEP, **options
+                 ) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
     """Parse an iterable of items.
 
     :param items: List of pairs, [(key, value)], or generator yields pairs
     :param sep: Seprator string
     :return: Generator to yield (key, value) pair of 'dic'
     """
-    __parse = _parse if options.get('ac_parse_value') else utils.noop
+    __parse = parse if options.get('ac_parse_value') else utils.noop
     for key, val in items:
         yield (key, __parse(val, sep))  # type: ignore
 
@@ -130,10 +130,10 @@ def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
 
     defaults = psr.defaults()
     if defaults:
-        cnf[dkey] = container(_parsed_items(defaults.items(), **kwargs))
+        cnf[dkey] = container(parsed_items(defaults.items(), **kwargs))
 
     for sect in psr.sections():
-        cnf[sect] = container(_parsed_items(psr.items(sect), **kwargs))
+        cnf[sect] = container(parsed_items(psr.items(sect), **kwargs))
 
     return cnf
 

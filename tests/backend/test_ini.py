@@ -12,7 +12,7 @@ import tests.backend.common as TBC
 
 
 @pytest.mark.parametrize(
-    'inp,exp',
+    ('inp', 'exp'),
     (
      (r'"foo string"', 'foo string'),
      ('a, b, c', ['a', 'b', 'c']),
@@ -20,7 +20,7 @@ import tests.backend.common as TBC
      ),
 )
 def test_parse(inp, exp):
-    assert TT._parse(inp) == exp
+    assert TT.parse(inp) == exp
 
 
 @pytest.mark.parametrize(

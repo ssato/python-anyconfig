@@ -6,14 +6,21 @@
 import itertools
 import pathlib
 import typing
+import warnings
 
 from .constants import GLOB_MARKER, PATH_SEP
 
 
 def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
     """Normaliez path objects and retunr it with file extension."""
-    abs_path = path.expanduser().resolve()
-    file_ext = abs_path.suffix
+    try:
+        abs_path = path.expanduser().resolve()
+    except (RuntimeError, OSError) as exc:
+        warnings.warn(f'Failed to resolve {path!s}, exc={exc!r}')
+        abs_path = path
+
+    file_ext = path.suffix
+
     return (
         abs_path,
         file_ext[1:] if file_ext.startswith('.') else ''

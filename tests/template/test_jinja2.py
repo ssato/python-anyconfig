@@ -45,8 +45,7 @@ class FunctionsTestCase(unittest.TestCase):
         tpath0 = pathlib.Path('/path/to/a/').resolve()
         path0 = tpath0 / 'tmpl.j2'
         tmp0 = pathlib.Path('/tmp').resolve()
-        ies = (
-               ((path0, ), [tpath0]),
+        ies = (((path0, ), [tpath0]),
                ((path0, [tmp0]), [tpath0, tmp0]),
                )
         for inp, exp in ies:
@@ -61,8 +60,7 @@ class FunctionsTestCase(unittest.TestCase):
             os.chdir(str(tmp0))
             tpath1 = pathlib.Path('.')
             path1 = tpath1 / 'tmpl.j2'
-            ies = (
-                   ((path1, ), [tmp0]),
+            ies = (((path1, ), [tmp0]),
                    ((path1, [tmp0]), [tmp0]),
                    )
 

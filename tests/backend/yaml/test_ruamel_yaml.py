@@ -24,7 +24,7 @@ class HasParserTrait(TBC.HasParserTrait):
                 preserve_quotes=True,
                 indent=dict(mapping=4, sequence=4, offset=2))
 
-    setattr(psr, "_dict_opts", opts)
+    setattr(psr, "_dict_opts", opts)  # noqa: B010
 
 
 class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):  # noqa: N801

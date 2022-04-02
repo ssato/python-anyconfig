@@ -26,8 +26,7 @@ class TestCase(unittest.TestCase):
     def test_is_path_str(self):
         self._run(
             TT.is_path_str,
-            (
-             (None, False),
+            ((None, False),
              ('/tmp/t.xt', True),
              (0, False),
              (pathlib.Path(__file__), False),
@@ -39,8 +38,7 @@ class TestCase(unittest.TestCase):
     def test_is_path_obj(self):
         self._run(
             TT.is_path_obj,
-            (
-             (None, False),
+            ((None, False),
              (__file__, False),
              (pathlib.Path(__file__), True),
              (str(pathlib.Path(__file__).resolve()), False),
@@ -52,8 +50,7 @@ class TestCase(unittest.TestCase):
     def test_is_io_stream(self):
         self._run(
             TT.is_io_stream,
-            (
-             (None, False),
+            ((None, False),
              (__file__, False),
              (pathlib.Path(__file__), False),
              (str(pathlib.Path(__file__).resolve()), False),
@@ -65,8 +62,7 @@ class TestCase(unittest.TestCase):
     def test_is_ioinfo(self):
         self._run(
             TT.is_ioinfo,
-            (
-             (None, False),
+            ((None, False),
              (__file__, False),
              (pathlib.Path(__file__), False),
              (str(pathlib.Path(__file__).resolve()), False),
@@ -79,8 +75,7 @@ class TestCase(unittest.TestCase):
     def test_is_stream(self):
         self._run(
             TT.is_stream,
-            (
-             (None, False),
+            ((None, False),
              (__file__, False),
              (pathlib.Path(__file__), False),
              (str(pathlib.Path(__file__).resolve()), False),

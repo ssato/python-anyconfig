@@ -10,9 +10,9 @@ import typing
 
 def is_iterable(obj: typing.Any) -> bool:
     """Test if given object is an iterable object."""
-    return isinstance(obj, (list, tuple, types.GeneratorType)) or \
-        (not isinstance(obj, (int, str, dict)) and
-         bool(getattr(obj, 'next', False)))
+    return (isinstance(obj, (list, tuple, types.GeneratorType))
+            or (not isinstance(obj, (int, str, dict))
+                and bool(getattr(obj, 'next', False))))
 
 
 def is_dict_like(obj: typing.Any) -> bool:

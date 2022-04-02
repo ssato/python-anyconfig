@@ -43,8 +43,7 @@ def test_split_path(args, exp):
 # FIXME: Add some more test cases
 @pytest.mark.parametrize(
     'args,exp',
-    (
-     ((dict(a=1, b=dict(c=2, )), 'a.b.d', 3),
+    (((dict(a=1, b=dict(c=2, )), 'a.b.d', 3),
       dict(a=dict(b=dict(d=3)), b=dict(c=2))),
      ),
 )
@@ -59,8 +58,7 @@ OD = collections.OrderedDict
 # FIXME: Likewise.
 @pytest.mark.parametrize(
     'args,exp',
-    (
-     ((OD((('a', 1), )), False, dict), dict(a=1)),
+    (((OD((('a', 1), )), False, dict), dict(a=1)),
      ((OD((('a', OD((('b', OD((('c', 1), ))), ))), )), False, dict),
       dict(a=dict(b=dict(c=1)))),
      ),
@@ -71,8 +69,7 @@ def test_convert_to(args, exp):
 
 @pytest.mark.parametrize(
     'objs,exp',
-    (
-     (([], (), [x for x in range(10)], (x for x in range(4))), True),
+    ((([], (), [x for x in range(10)], (x for x in range(4))), True),
      (([], {}), False),
      (([], 'aaa'), False),
      ),

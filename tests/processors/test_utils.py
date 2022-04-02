@@ -160,8 +160,7 @@ class TestCase(unittest.TestCase):
                 TT.find_by_maybe_file(*inp)
 
     def test_findall_ng_cases(self):
-        ies = (
-               ((None, PRS, None), ValueError),  # w/o path nor type
+        ies = (((None, PRS, None), ValueError),  # w/o path nor type
                (('/tmp/x.xyz', PRS, None), UnknownFileTypeError),
                (('/dev/null', PRS, None), UnknownFileTypeError),
                ((None, PRS, 'xyz'), UnknownProcessorTypeError),

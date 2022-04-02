@@ -13,8 +13,7 @@ import tests.backend.common as TBC
 
 @pytest.mark.parametrize(
     ('inp', 'exp'),
-    (
-     (r'"foo string"', 'foo string'),
+    ((r'"foo string"', 'foo string'),
      ('a, b, c', ['a', 'b', 'c']),
      ('aaa', 'aaa'),
      ),
@@ -25,8 +24,7 @@ def test_parse(inp, exp):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     ([1, 2, 3], '1, 2, 3'),
+    (([1, 2, 3], '1, 2, 3'),
      ('aaa', 'aaa'),
      ),
 )

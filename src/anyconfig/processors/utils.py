@@ -25,11 +25,13 @@ def sort_by_prio(prs: typing.Iterable[ProcT]) -> ProcsT:
     return sorted(prs, key=operator.methodcaller('priority'), reverse=True)
 
 
-def select_by_key(items: typing.Iterable[
-                    typing.Tuple[typing.List[str], typing.Any]
-                  ],
-                  sort_fn: typing.Callable[..., typing.Any] = sorted
-                  ) -> typing.List[typing.Tuple[str, typing.List[typing.Any]]]:
+def select_by_key(
+    items: typing.Iterable[
+        typing.Tuple[typing.List[str], typing.Any]],
+        sort_fn: typing.Callable[..., typing.Any] = sorted
+) -> typing.List[
+        typing.Tuple[str, typing.List[typing.Any]]
+]:
     """Select items from ``items`` by key.
 
     :param items: A list of tuples of keys and values, [([key], val)]

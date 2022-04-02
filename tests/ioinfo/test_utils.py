@@ -17,8 +17,7 @@ SELF: pathlib.Path = pathlib.Path(__file__)
 
 @pytest.mark.parametrize(
     ('inp', 'exp'),
-    (
-     (SELF, (SELF.resolve(), 'py')),
+    ((SELF, (SELF.resolve(), 'py')),
      )
 )
 def test_get_path_and_ext(inp, exp):
@@ -28,9 +27,7 @@ def test_get_path_and_ext(inp, exp):
 
 try:
     PATH_RESOLVE_SHOULD_WORK: bool = bool(
-        pathlib.Path(
-            '<stdout>'
-        ).expanduser().resolve()
+        pathlib.Path('<stdout>').expanduser().resolve()
     )
 except (RuntimeError, OSError):
     PATH_RESOLVE_SHOULD_WORK: bool = False

@@ -2,8 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Internal APIs to load, list and find parser class objects.
-"""
+"""Internal APIs to load, list and find parser class objects."""
 import typing
 
 from ..backend import ParserT, ParsersT
@@ -19,45 +18,37 @@ MaybeParserT = typing.Optional[
 
 
 def load_plugins() -> None:
-    """[Re-]Load pluggable processors.
-    """
+    """[Re-]Load pluggable processors."""
     Parsers().load_plugins()
 
 
 def list_types() -> typing.List[str]:
-    """List supported processor types.
-    """
+    """List supported processor types."""
     return sorted(Parsers().list_x('type'))
 
 
 def list_by_cid() -> typing.List[typing.Tuple[str, ParsersT]]:
-    """
-    List processors by each cid.
-    """
+    """List processors by each cid."""
     return Parsers().list_by_x('cid')
 
 
 def list_by_type() -> typing.List[typing.Tuple[str, ParsersT]]:
-    """
-    List processor by eacch type.
-    """
+    """List processor by eacch type."""
     return Parsers().list_by_x('type')
 
 
 def list_by_extension() -> typing.List[typing.Tuple[str, ParsersT]]:
-    """
-    List processor by file extension supported.
-    """
+    """List processor by file extension supported."""
     return Parsers().list_by_x('extensions')
 
 
 def findall(obj: typing.Optional['ioinfo.PathOrIOInfoT'] = None,
             forced_type: typing.Optional[str] = None
             ) -> typing.List[ParserT]:
-    """
-    Find out processor objects can process data from given 'obj' which may be a
-    file path, file or file-like object, pathlib.Path object or an
-    'anyconfig.ioinfo.IOInfo' (namedtuple) object.
+    """Find out processor objects can process data from given ``obj``.
+
+    ``obj`` may be a file path, file or file-like object, pathlib.Path object
+    or an 'anyconfig.ioinfo.IOInfo' (namedtuple) object.
 
     :param obj:
         a file path, file or file-like object, pathlib.Path object, an
@@ -72,9 +63,10 @@ def findall(obj: typing.Optional['ioinfo.PathOrIOInfoT'] = None,
 
 def find(obj: typing.Optional['ioinfo.PathOrIOInfoT'] = None,
          forced_type: MaybeParserT = None) -> ParserT:
-    """
-    This function is very similar to the above :func:`findall` but returns
-    *a processor object* instead of a list of processor objects.
+    """Very similar to the above :func:`findall`.
+
+    However it returns *a processor object* instead of a list of processor
+    objects.
 
     :param obj:
         a file path, file or file-like object, pathlib.Path object, an

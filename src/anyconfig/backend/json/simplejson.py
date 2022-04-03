@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=import-error
-r"""JSON backend by simplejson:
+"""A backend module using simplejson to load and dump JSON data files.
 
 - Format to support: JSON, http://www.json.org
 - Requirements: simplejson
@@ -38,9 +38,8 @@ JSON_DUMP_OPTS.extend(['use_decimal', 'namedtuple_as_object', 'tuple_as_array',
 
 
 class Parser(BaseParser):
-    """
-    Parser for JSON files.
-    """
+    """Parser for JSON files using simplejson."""
+
     _cid = 'simplejson'
     _load_opts = JSON_LOAD_OPTS
     _dump_opts = JSON_DUMP_OPTS

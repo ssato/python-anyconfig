@@ -2,8 +2,7 @@
 # Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh @ gmmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""ioinfo.constants to provide global constant variables.
-"""
+"""Provide global constant variables."""
 import os.path
 
 

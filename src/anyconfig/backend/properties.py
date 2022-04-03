@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Java properties backend:
+r"""A backend module to load and dump (Java) properties files.
 
 - Format to support: Java Properties file, e.g.
   http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html
@@ -30,34 +30,21 @@ Changelog:
 """
 import os
 import re
+import typing
 import warnings
 
 from . import base
 
 
-_COMMENT_MARKERS = ('#', '!')
+_COMMENT_MARKERS: typing.Tuple[str, ...] = ('#', '!')
 
 
-def _parseline(line):
-    """
-    Parse a line of Java properties file.
+def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
+    """Parse a line of Java properties file.
 
     :param line:
         A string to parse, must not start with ' ', '#' or '!' (comment)
     :return: A tuple of (key, value), both key and value may be None
-
-    >>> _parseline(" ")
-    (None, '')
-    >>> _parseline("aaa:")
-    ('aaa', '')
-    >>> _parseline(" aaa:")
-    ('aaa', '')
-    >>> _parseline("aaa")
-    ('aaa', '')
-    >>> _parseline("url = http://localhost")
-    ('url', 'http://localhost')
-    >>> _parseline("calendar.japanese.type: LocalGregorianCalendar")
-    ('calendar.japanese.type', 'LocalGregorianCalendar')
     """
     pair = re.split(r"(?:\s+)?(?:(?<!\\)[=:])", line.strip(), 1)
     key = pair[0].rstrip()
@@ -69,24 +56,16 @@ def _parseline(line):
     return (key, pair[1].strip())
 
 
-def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):
-    """
-    Preprocess a line in properties; strip comments, etc.
+def _pre_process_line(
+    line: str,
+    comment_markers: typing.Tuple[str, ...] = _COMMENT_MARKERS
+):
+    """Preprocess a line in properties; strip comments, etc.
 
     :param line:
         A string not starting w/ any white spaces and ending w/ line breaks.
         It may be empty. see also: :func:`load`.
     :param comment_markers: Comment markers, e.g. '#' (hash)
-
-    >>> _pre_process_line('') is None
-    True
-    >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
-    >>> _pre_process_line("# " + s0) is None
-    True
-    >>> _pre_process_line("! " + s0) is None
-    True
-    >>> _pre_process_line(s0 + "# comment")
-    'calendar.japanese.type: LocalGregorianCalendar# comment'
     """
     if not line:
         return None
@@ -98,70 +77,29 @@ def _pre_process_line(line, comment_markers=_COMMENT_MARKERS):
     return line
 
 
-def unescape(in_s):
-    """
-    :param in_s: Input string
-    """
-    return re.sub(r"\\(.)", r"\1", in_s)
+def unescape(in_s: str) -> str:
+    """Un-escape and take out the content from given str ``in_s``."""
+    return re.sub(r'\\(.)', r'\1', in_s)
 
 
-def _escape_char(in_c):
-    """
-    Escape some special characters in java .properties files.
-
-    :param in_c: Input character
-
-    >>> "\\:" == _escape_char(':')
-    True
-    >>> "\\=" == _escape_char('=')
-    True
-    >>> _escape_char('a')
-    'a'
-    """
+def _escape_char(in_c: str) -> str:
+    """Escape some special characters in java .properties files."""
     return '\\' + in_c if in_c in (':', '=', '\\') else in_c
 
 
-def escape(in_s):
-    """
-    :param in_s: Input string
-    """
+def escape(in_s: str) -> str:
+    """Escape special characters in given str."""
     return ''.join(_escape_char(c) for c in in_s)
 
 
 def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
-    """
-    Load and parse Java properties file given as a fiel or file-like object
-    'stream'.
+    """Load data from a java properties files given as ``stream``.
 
     :param stream: A file or file like object of Java properties files
     :param container:
         Factory function to create a dict-like object to store properties
     :param comment_markers: Comment markers, e.g. '#' (hash)
     :return: Dict-like object holding properties
-
-    >>> import io
-    >>> to_strm = io.StringIO
-    >>> s0 = "calendar.japanese.type: LocalGregorianCalendar"
-    >>> load(to_strm(''))
-    {}
-    >>> load(to_strm("# " + s0))
-    {}
-    >>> load(to_strm("! " + s0))
-    {}
-    >>> load(to_strm("calendar.japanese.type:"))
-    {'calendar.japanese.type': ''}
-    >>> load(to_strm(s0))
-    {'calendar.japanese.type': 'LocalGregorianCalendar'}
-    >>> load(to_strm(s0 + "# ..."))
-    {'calendar.japanese.type': 'LocalGregorianCalendar# ...'}
-    >>> s1 = r"key=a\\:b"
-    >>> load(to_strm(s1))
-    {'key': 'a:b'}
-    >>> s2 = '''application/postscript: \\
-    ...         x=Postscript File;y=.eps,.ps
-    ... '''
-    >>> load(to_strm(s2))
-    {'application/postscript': 'x=Postscript File;y=.eps,.ps'}
     """
     ret = container()
     prev = ""
@@ -179,7 +117,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
             prev += line.rstrip(" \\")
             continue
 
-        (key, val) = _parseline(line)
+        (key, val) = parseline(line)
         if key is None:
             warnings.warn(f'Failed to parse the line: {line}')
             continue
@@ -190,9 +128,8 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
 
 class Parser(base.StreamParser):
-    """
-    Parser for Java properties files.
-    """
+    """Parser for Java properties files."""
+
     _cid = 'properties'
     _type = 'properties'
     _extensions = ['properties']
@@ -200,8 +137,7 @@ class Parser(base.StreamParser):
     _dict_opts = ['ac_dict']
 
     def load_from_stream(self, stream, container, **kwargs):
-        """
-        Load config from given file like object 'stream'.
+        """Load config from given file like object 'stream'.
 
         :param stream: A file or file like object of Java properties files
         :param container: callble to make a container object
@@ -212,8 +148,7 @@ class Parser(base.StreamParser):
         return load(stream, container=container)
 
     def dump_to_stream(self, cnf, stream, **kwargs):
-        """
-        Dump config 'cnf' to a file or file-like object 'stream'.
+        """Dump config 'cnf' to a file or file-like object 'stream'.
 
         :param cnf: Java properties config data to dump
         :param stream: Java properties file or file like object

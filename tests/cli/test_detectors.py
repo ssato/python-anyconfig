@@ -17,8 +17,7 @@ import anyconfig.cli.parse_args
 class TestCase(unittest.TestCase):
 
     def test_are_same_file_types(self):
-        ies = (
-               ([], False),
+        ies = (([], False),
                (['/tmp/a/b/c.conf'], True),
                (['/tmp/a/b/c.yml', '/tmp/a/b/d.yml'], True),
                )
@@ -28,8 +27,7 @@ class TestCase(unittest.TestCase):
             )
 
     def test_find_by_the_type(self):
-        ies = (
-               ('', None),
+        ies = (('', None),
                (None, None),
                ('json', 'json'),
                ('type_not_exit', None),
@@ -42,8 +40,7 @@ class TestCase(unittest.TestCase):
                 )
 
     def test_find_by_the_paths(self):
-        ies = (
-               ([], None),
+        ies = (([], None),
                (['/tmp/a/b/c.yml', '/tmp/a/b/d.json'], None),
                (['-'], None),
                (['-', '/tmp/a/b/d.json'], None),
@@ -55,8 +52,7 @@ class TestCase(unittest.TestCase):
             )
 
     def test_try_detecting_input_type(self):
-        ies = (
-               ([], None),
+        ies = (([], None),
                (['-'], None),
                (['a.conf'], None),
                (['-I', 'json', 'a.conf'], 'json'),
@@ -71,8 +67,7 @@ class TestCase(unittest.TestCase):
             )
 
     def test_try_detecting_output_type(self):
-        ies = (
-               (['-I', 'json', 'a.conf'], 'json'),
+        ies = ((['-I', 'json', 'a.conf'], 'json'),
                (['a.json'], 'json'),
                (['-I', 'json', 'a.conf', '-o', 'b.conf'], 'json'),
                (['a.json', '-o', 'b.conf'], 'json'),
@@ -87,8 +82,7 @@ class TestCase(unittest.TestCase):
             )
 
     def test_try_detecting_output_type__failures(self):
-        ies = (
-               ['-'],
+        ies = (['-'],
                ['a.conf'],
                ['a.conf', '-o', 'b.conf'],
                )

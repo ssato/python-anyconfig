@@ -2,8 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Abstract and basic dumpes.
-"""
+"""Abstract and basic dumpes."""
 import io
 import typing
 
@@ -17,8 +16,7 @@ from .utils import (
 
 
 class DumperMixin:
-    """
-    Mixin class to dump data.
+    """Mixin class to dump data.
 
     Inherited classes must implement the following methods.
 
@@ -31,20 +29,18 @@ class DumperMixin:
     - _dump_opts: Backend specific options on dump
     - _open_write_mode: Backend option to specify write mode passed to open()
     """
+
     _dump_opts: typing.List[str] = []
     _open_write_mode = 'w'
 
     def wopen(self, filepath: str, **kwargs):
-        """
-        Open file ``filepath`` with the write mode ``_open_write_mode``.
-        """
+        """Open file ``filepath`` with the write mode ``_open_write_mode``."""
         return open(  # pylint: disable=consider-using-with
             filepath, self._open_write_mode, **kwargs
         )
 
     def dump_to_string(self, cnf: InDataExT, **kwargs) -> str:
-        """
-        Dump config 'cnf' to a string.
+        """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
@@ -55,8 +51,7 @@ class DumperMixin:
         return ''
 
     def dump_to_path(self, cnf: InDataExT, filepath: str, **kwargs) -> None:
-        """
-        Dump config 'cnf' to a file 'filepath'.
+        """Dump config 'cnf' to a file 'filepath'.
 
         :param cnf: Configuration data to dump
         :param filepath: Config file path
@@ -66,8 +61,7 @@ class DumperMixin:
 
     def dump_to_stream(self, cnf: InDataExT, stream: typing.IO, **kwargs
                        ) -> None:
-        """
-        Dump config 'cnf' to a file-like object 'stream'.
+        """Dump config 'cnf' to a file-like object 'stream'.
 
         TODO: How to process socket objects same as file objects ?
 
@@ -78,8 +72,7 @@ class DumperMixin:
         not_implemented(self, cnf, stream, **kwargs)
 
     def dumps(self, cnf: InDataExT, **kwargs) -> str:
-        """
-        Dump config 'cnf' to a string.
+        """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
@@ -90,8 +83,7 @@ class DumperMixin:
         return self.dump_to_string(cnf, **kwargs)
 
     def dump(self, cnf: InDataExT, ioi: IoiT, **kwargs):
-        """
-        Dump config 'cnf' to output object of which 'ioi' referring.
+        """Dump config 'cnf' to output object of which 'ioi' referring.
 
         :param cnf: Configuration data to dump
         :param ioi:
@@ -111,24 +103,24 @@ class DumperMixin:
 
 
 class BinaryDumperMixin(DumperMixin):
-    """
-    Mixin class to dump binary (byte string) configuration data.
-    """
+    """Mixin class to dump binary (byte string) configuration data."""
+
     _open_write_mode: str = 'wb'
 
 
 class ToStringDumperMixin(DumperMixin):
-    """
-    Abstract config parser provides a method to dump configuration to a file or
-    file-like object (stream) and a file of given path to help implement parser
-    of which backend lacks of such functions.
+    """Abstract config parser provides the followings.
+
+    - a method to dump configuration to a file or file-like object (stream) and
+      a file of given path to help implement parser of which backend lacks of
+      such functions.
 
     Parser classes inherit this class have to override the method
     :meth:`dump_to_string` at least.
     """
+
     def dump_to_path(self, cnf: InDataExT, filepath: str, **kwargs) -> None:
-        """
-        Dump config 'cnf' to a file 'filepath'.
+        """Dump config 'cnf' to a file 'filepath'.
 
         :param cnf: Configuration data to dump
         :param filepath: Config file path
@@ -139,8 +131,7 @@ class ToStringDumperMixin(DumperMixin):
 
     def dump_to_stream(self, cnf: InDataExT, stream: typing.IO, **kwargs
                        ) -> None:
-        """
-        Dump config 'cnf' to a file-like object 'stream'.
+        """Dump config 'cnf' to a file-like object 'stream'.
 
         TODO: How to process socket objects same as file objects ?
 
@@ -152,17 +143,17 @@ class ToStringDumperMixin(DumperMixin):
 
 
 class ToStreamDumperMixin(DumperMixin):
-    """
-    Abstract config parser provides methods to dump configuration to a string
-    content or a file of given path to help implement parser of which backend
-    lacks of such functions.
+    """Abstract config parser provides the following methods.
+
+    - to dump configuration to a string content or a file of given path to help
+      implement parser of which backend lacks of such functions.
 
     Parser classes inherit this class have to override the method
     :meth:`dump_to_stream` at least.
     """
+
     def dump_to_string(self, cnf: InDataExT, **kwargs) -> str:
-        """
-        Dump config 'cnf' to a string.
+        """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
         :param kwargs: optional keyword parameters to be sanitized :: dict
@@ -174,8 +165,7 @@ class ToStreamDumperMixin(DumperMixin):
         return stream.getvalue()
 
     def dump_to_path(self, cnf: InDataExT, filepath: str, **kwargs) -> None:
-        """
-        Dump config 'cnf' to a file 'filepath`.
+        """Dump config 'cnf' to a file 'filepath`.
 
         :param cnf: Configuration data to dump
         :param filepath: Config file path

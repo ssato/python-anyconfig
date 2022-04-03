@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=too-few-public-methods
-r"""Singleton class
+r"""Singleton class.
 
 .. versionadded:: 0.9.8
 
@@ -17,10 +17,12 @@ class Singleton:
 
     .. note:: Inherited classes are equated with base class inherit this.
     """
+
     __instance = None
     __lock = threading.RLock()
 
     def __new__(cls):
+        """Override class constructor to cache class objects."""
         if cls.__instance is None:
             with cls.__lock:
                 if cls.__instance is None:

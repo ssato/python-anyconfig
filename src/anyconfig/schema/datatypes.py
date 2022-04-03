@@ -2,8 +2,7 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Some common constants, utility functions and so on.
-"""
+"""Some common constants, utility functions and so on."""
 import typing
 
 

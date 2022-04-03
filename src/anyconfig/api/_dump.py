@@ -2,17 +2,15 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""Public APIs to dump configurations data.
-"""
+"""Provides the API to dump (serialize) objects."""
 from .. import common, ioinfo, parsers
-from .datatypes import ParserT
+from . import datatypes
 
 
 def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
          ac_parser: parsers.MaybeParserT = None, **options
          ) -> None:
-    """
-    Save 'data' to 'out'.
+    """Save ``data`` to ``out`` in specified or detected format.
 
     :param data: A mapping object may have configurations data to dump
     :param out:
@@ -27,15 +25,14 @@ def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     ioi = ioinfo.make(out)
-    psr: ParserT = parsers.find(ioi, forced_type=ac_parser)
+    psr: datatypes.ParserT = parsers.find(ioi, forced_type=ac_parser)
     psr.dump(data, ioi, **options)
 
 
 def dumps(data: common.InDataExT,
           ac_parser: parsers.MaybeParserT = None,
           **options) -> str:
-    """
-    Return string representation of 'data' in forced type format.
+    """Return a str representation of ``data`` in specified format.
 
     :param data: Config data object to dump
     :param ac_parser: Forced parser type or ID or parser object
@@ -44,7 +41,7 @@ def dumps(data: common.InDataExT,
     :return: Backend-specific string representation for the given data
     :raises: ValueError, UnknownProcessorTypeError
     """
-    psr: ParserT = parsers.find(None, forced_type=ac_parser)
+    psr: datatypes.ParserT = parsers.find(None, forced_type=ac_parser)
     return psr.dumps(data, **options)
 
 # vim:sw=4:ts=4:et:

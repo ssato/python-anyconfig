@@ -2,8 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Detect file type and parser from inputs and/or output.
-"""
+"""Detect file type and parser from inputs and/or output."""
 import os
 import pathlib
 import typing
@@ -17,8 +16,7 @@ if typing.TYPE_CHECKING:
 
 
 def are_same_file_types(paths: typing.List[str]) -> bool:
-    """Return True if all of the types for given file paths ``paths`` are same.
-    """
+    """Test if all of the types for given file paths ``paths`` are same."""
     if not paths:
         return False
 
@@ -30,9 +28,7 @@ def are_same_file_types(paths: typing.List[str]) -> bool:
 
 
 def find_by_the_type(io_type: str) -> typing.Optional[str]:
-    """
-    Check the type given by users.
-    """
+    """Check the type given by users."""
     default = None
 
     if not io_type:
@@ -55,9 +51,7 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
 def find_by_the_paths(paths: typing.List[str],
                       ignore_errors: bool = True
                       ) -> typing.Optional[str]:
-    """
-    Try to detect file (parser) type from given file paths ``paths``.
-    """
+    """Try to detect file (parser) type from given file paths ``paths``."""
     default = None
     msg = (
         '*** You have to specify file type[s] with '
@@ -94,9 +88,7 @@ def find_by_the_paths(paths: typing.List[str],
 def try_detecting_input_type(args: 'argparse.Namespace',
                              ignore_errors: bool = True
                              ) -> typing.Optional[str]:
-    """
-    Try to resolve a file type and parser of inputs.
-    """
+    """Try to resolve a file type and parser of inputs."""
     # First, try the type given by users.
     if args.itype:
         # TBD:
@@ -118,9 +110,7 @@ def try_detecting_input_type(args: 'argparse.Namespace',
 
 def try_detecting_output_type(args: 'argparse.Namespace'
                               ) -> typing.Optional[str]:
-    """
-    Try to resolve a file type and parser of outputs (``args.output``).
-    """
+    """Try to resolve a file type and parser of outputs (``args.output``)."""
     # First, try the type given by users.
     if args.otype:
         otype = find_by_the_type(args.otype)

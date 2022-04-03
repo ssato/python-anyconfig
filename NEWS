@@ -1,3 +1,21 @@
+* Sun Apr  3 2022 Satoru SATOH <satoru.satoh@gmail.com> - 0.13.0-1
+- fix/issue 139: process cases that pathlib.Path.resolve fails on errors in
+  .ioinfo.utils.get_path_and_ext
+- fix: pytest-ed and add test cases for windows/colorama issues
+- fix: use qualified imports
+- fix: [doc] various fixes and enhancements may close #135
+- fix: [doc] bulk corrections for pydocstyle errors and warnings
+- fix: replace doctest cases with test cases
+- fix: pylint errors, consider-using-f-string, use-dict-literal
+- fix: add a packaging config to distribute type hints data, may close #141
+- fix: remove devel sub package not used actually
+- change/fix: apply some more strict flake8 rules with its extensions and fixes
+  for ones found by them
+- enhancement: add python 3.10 support
+- enhancement: [doc] add pydocstyle checks and enabled it by default
+- change: use re.match instead of naive chars matching in .backend.ini.parse
+- seealso: `git log RELEASE_0.13.1.. --reverse` for more details
+
 * Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.12.0-1
 - fix: re-enable output type detection reported in pr#132
 - fix/change: switch from regexp to pathlib based code to expand paths,
@@ -8,7 +26,7 @@
   file based ones
 - [ci] add windows test targets
 - [ci] switch to pytest from nose
-- seealso: `git log RELEASE_0.10.1.. --reverse` for more details
+- seealso: `git log RELEASE_0.12.1.. --reverse` for more details
 
 * Mon May 17 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.11.0-1
 - fix: don't sort files on load; may close #124
@@ -20,7 +38,7 @@
 - change: disable and remove Travis-CI configurations
 - refactor: use relative imports
 - enhancement: add type hints, mypy configuration file and mypy target
-- seealso: `git log RELEASE_0.10.1.. --reverse` for more details
+- seealso: `git log RELEASE_0.11.1.. --reverse` for more details
 
 * Thu Apr 22 2021 Satoru SATOH <satoru.satoh@gmail.com> - 0.10.1-1
 - change: migrate os.path, etc. to pathlib

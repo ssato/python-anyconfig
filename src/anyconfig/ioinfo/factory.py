@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=invalid-name
-r"""ioinfo.main to provide internal APIs used from other modules.
-"""
+"""ioinfo.main to provide internal APIs used from other modules."""
 import pathlib
 import typing
 
@@ -12,9 +11,7 @@ from . import constants, datatypes, detectors, utils
 
 
 def from_path_object(path: pathlib.Path) -> datatypes.IOInfo:
-    """
-    Return an IOInfo object made from :class:`pathlib.Path` object ``path``.
-    """
+    """Get an IOInfo object made from :class:`pathlib.Path` object ``path``."""
     (abs_path, file_ext) = utils.get_path_and_ext(path)
 
     return datatypes.IOInfo(
@@ -23,29 +20,26 @@ def from_path_object(path: pathlib.Path) -> datatypes.IOInfo:
 
 
 def from_path_str(path: str) -> datatypes.IOInfo:
-    """Return an IOInfo object made from a str ``path``.
-    """
+    """Get an IOInfo object made from a str ``path``."""
     return from_path_object(pathlib.Path(path).resolve())
 
 
 def from_io_stream(strm: typing.IO) -> datatypes.IOInfo:
-    """
-    Return an IOInfo object made from IO stream object ``strm``.
-    """
-    path = getattr(strm, 'name', '')
+    """Get an IOInfo object made from IO stream object ``strm``."""
+    path: str = getattr(strm, 'name', '')
     if path:
-        (abs_path, file_ext) = utils.get_path_and_ext(pathlib.Path(path))
+        (_path, file_ext) = utils.get_path_and_ext(pathlib.Path(path))
+        abs_path: str = str(_path)
     else:
         (abs_path, file_ext) = (path, '')
 
     return datatypes.IOInfo(
-        strm, datatypes.IOI_STREAM, str(abs_path), file_ext
+        strm, datatypes.IOI_STREAM, abs_path, file_ext
     )
 
 
 def make(obj: typing.Any) -> datatypes.IOInfo:
-    """Make and return a :class:`datatypes.IOInfo` object from object ``obj``.
-    """
+    """Make and return a :class:`datatypes.IOInfo` object from ``obj``."""
     if isinstance(obj, datatypes.IOInfo):
         return obj
 
@@ -64,8 +58,7 @@ def make(obj: typing.Any) -> datatypes.IOInfo:
 
 def make_itr(obj: typing.Any, marker: str = constants.GLOB_MARKER
              ) -> typing.Iterator[datatypes.IOInfo]:
-    """Make and yield a series of :class:`datatypes.IOInfo` objects.
-    """
+    """Make and yield a series of :class:`datatypes.IOInfo` objects."""
     if isinstance(obj, datatypes.IOInfo):
         yield obj
 
@@ -88,8 +81,7 @@ def make_itr(obj: typing.Any, marker: str = constants.GLOB_MARKER
 
 def makes(obj: typing.Any, marker: str = constants.GLOB_MARKER
           ) -> typing.List[datatypes.IOInfo]:
-    """Make and return a list of :class:`datatypes.IOInfo` objects.
-    """
+    """Make and return a list of :class:`datatypes.IOInfo` objects."""
     return list(make_itr(obj, marker=marker))
 
 # vim:sw=4:ts=4:et:

@@ -83,6 +83,8 @@ r"""Public APIs of anyconfig module.
 
    - Export factory method (create) of anyconfig.mergeabledict.MergeableDict
 """
+import typing
+
 from .datatypes import MaybeDataT
 from ._dump import (
     dump, dumps
@@ -116,12 +118,13 @@ from ..schema import (
 )
 
 
-__version__ = '0.12.0'
+__version__ = '0.13.0'
 
 
-def version():
-    """
-    :return: A tuple of version info, (major, minor, release), e.g. (0, 8, 2)
+def version() -> typing.List[str]:
+    """Version info.
+
+    :return: A list of version info, [major, minor, release[, e.g. [0, 8, 2]
     """
     return __version__.split('.')
 

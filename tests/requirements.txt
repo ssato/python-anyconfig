@@ -1,5 +1,24 @@
+bandit
+# cohesion
 coveralls
 flake8
+flake8-bandit
+flake8-bugbear
+# flake8-builtins
+# flake8-comprehensions
+flake8-deprecated
+flake8-docstrings
+# flake8-eradicate
+# flake8-expression-complexity
+# flake8-functions
+flake8-implicit-str-concat
+flake8-isort
+flake8-length
+flake8-pytest-style
+# flake8-spellcheck
+# flake8-use-fstring
+mccabe
+pep8-naming
 pycodestyle
 pylint
 pytest

@@ -2,8 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""Functions to detect str, pathlib.Path, I/O stream and IOInfo objects.
-"""
+"""Provide functions to detect str, pathlib.Path, stream and IOInfo objects."""
 import pathlib
 import typing
 
@@ -14,26 +13,22 @@ IOI_KEYS_LIST: typing.List[str] = sorted(datatypes.IOI_KEYS)
 
 
 def is_path_str(obj: typing.Any) -> bool:
-    """Is given object ``obj`` a str represents a file path?
-    """
+    """Test if given object ``obj`` is a str represents a file path."""
     return isinstance(obj, str)
 
 
 def is_path_obj(obj: typing.Any) -> bool:
-    """Is given object ``obj`` a pathlib.Path object?
-    """
+    """Test if given object ``obj`` is a pathlib.Path object."""
     return isinstance(obj, pathlib.Path)
 
 
 def is_io_stream(obj: typing.Any) -> bool:
-    """Is given object ``obj`` a file stream, file/file-like object?
-    """
+    """Test if given object ``obj`` is a file stream, file/file-like object."""
     return callable(getattr(obj, 'read', False))
 
 
 def is_ioinfo(obj: typing.Any) -> bool:
-    """Is given object ``obj`` an IOInfo namedtuple objejct?
-    """
+    """Test if given object ``obj`` is an IOInfo namedtuple objejct."""
     if isinstance(obj, tuple):
         to_dict = getattr(obj, '_asdict', False)
         if to_dict and callable(to_dict):
@@ -44,8 +39,7 @@ def is_ioinfo(obj: typing.Any) -> bool:
 
 
 def is_stream(obj: typing.Any) -> bool:
-    """Is given object ``obj`` an IOInfo object with stream type?
-    """
+    """Test if given object ``obj`` is an IOInfo object with stream type."""
     return getattr(obj, 'type', None) == datatypes.IOI_STREAM
 
 # vim:sw=4:ts=4:et:

@@ -6,45 +6,64 @@
 r"""Test cases for anyconfig.utils.files.
 """
 import pathlib
-import tempfile
-import unittest
+
+import pytest
 
 import anyconfig.ioinfo.utils as TT
 
 
-class TestCase(unittest.TestCase):
+SELF: pathlib.Path = pathlib.Path(__file__)
 
-    def test_get_path_and_ext(self):
-        this = pathlib.Path(__file__)
-        ies = (
-            (this, (this.resolve(), 'py')),
-        )
-        for inp, exp in ies:
-            res = TT.get_path_and_ext(inp)
-            self.assertEqual(res, exp)
 
-    def test_expand_from_path(self):
-        with tempfile.TemporaryDirectory() as workdir:
-            tdir = pathlib.Path(str(workdir)) / 'a' / 'b' / 'c'
-            tdir.mkdir(parents=True)
+@pytest.mark.parametrize(
+    ('inp', 'exp'),
+    ((SELF, (SELF.resolve(), 'py')),
+     )
+)
+def test_get_path_and_ext(inp, exp):
+    res = TT.get_path_and_ext(inp)
+    assert res == exp
 
-            pathlib.Path(tdir / 'd.txt').touch()
-            pathlib.Path(tdir / 'e.txt').touch()
-            pathlib.Path(tdir / 'f.json').write_text("{'a': 1}\n")
 
-            path = tdir / 'd.txt'
+try:
+    PATH_RESOLVE_SHOULD_WORK: bool = bool(
+        pathlib.Path('<stdout>').expanduser().resolve()
+    )
+except (RuntimeError, OSError):
+    PATH_RESOLVE_SHOULD_WORK: bool = False
 
-            for inp, exp in ((path, [path]),
-                             (tdir / '*.txt',
-                              [tdir / 'd.txt', tdir / 'e.txt']),
-                             (tdir.parent / '**' / '*.txt',
-                              [tdir / 'd.txt', tdir / 'e.txt']),
-                             (tdir.parent / '**' / '*.*',
-                              [tdir / 'd.txt',
-                               tdir / 'e.txt',
-                               tdir / 'f.json']),
-                             ):
-                res = sorted(TT.expand_from_path(inp))
-                self.assertEqual(res, sorted(exp), f'{inp!r} vs. {exp!r}')
+
+@pytest.mark.skipif(
+    PATH_RESOLVE_SHOULD_WORK,
+    reason='pathlib.Path.resolve() should work'
+)
+def test_get_path_and_ext_failures():
+    path = pathlib.Path('<stdout>')
+    res = TT.get_path_and_ext(path)
+    assert res == (path, '')
+
+
+def test_expand_from_path(tmp_path):
+    tdir = tmp_path / 'a' / 'b' / 'c'
+    tdir.mkdir(parents=True)
+
+    pathlib.Path(tdir / 'd.txt').touch()
+    pathlib.Path(tdir / 'e.txt').touch()
+    pathlib.Path(tdir / 'f.json').write_text("{'a': 1}\n")
+
+    path = tdir / 'd.txt'
+
+    for inp, exp in ((path, [path]),
+                     (tdir / '*.txt',
+                      [tdir / 'd.txt', tdir / 'e.txt']),
+                     (tdir.parent / '**' / '*.txt',
+                      [tdir / 'd.txt', tdir / 'e.txt']),
+                     (tdir.parent / '**' / '*.*',
+                      [tdir / 'd.txt',
+                       tdir / 'e.txt',
+                       tdir / 'f.json']),
+                     ):
+        res = sorted(TT.expand_from_path(inp))
+        assert res == sorted(exp), f'{inp!r} vs. {exp!r}'
 
 # vim:sw=4:ts=4:et:

@@ -1,5 +1,4 @@
-"""setup.py to build package.
-"""
+"""setup.py to build package."""
 import os
 import pathlib
 import re
@@ -27,7 +26,7 @@ if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
 
 
 def _replace(line):
-    """Replace some strings in the RPM SPEC template"""
+    """Replace some strings in the RPM SPEC template."""
     if "@VERSION@" in line:
         return line.replace("@VERSION@", VERSION)
 
@@ -41,11 +40,12 @@ def _replace(line):
 
 
 class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
-    """Override the default content of the RPM SPEC.
-    """
+    """Override the default content of the RPM SPEC."""
+
     spec_tmpl = pathlib.Path('pkg/package.spec.in').resolve()
 
     def _make_spec_file(self):
+        """Generate the RPM SPEC file."""
         return [_replace(line.rstrip()) for line in self.spec_tmpl.open()]
 
 

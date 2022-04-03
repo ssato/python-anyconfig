@@ -2,8 +2,7 @@
 # Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-"""CLI frontend module for anyconfig.
-"""
+"""CLI frontend module for anyconfig."""
 import os
 import sys
 import typing
@@ -24,9 +23,7 @@ if OUT_ERR:
 
 
 def try_special_command_if_no_inputs(args: 'argparse.Namespace') -> None:
-    """
-    Run one of some special commands do not require inputs argument.
-    """
+    """Run one of some special commands do not require inputs argument."""
     assert not args.inputs
 
     if not args.list and not args.env:
@@ -46,15 +43,16 @@ def try_special_command_if_no_inputs(args: 'argparse.Namespace') -> None:
 
 def process_args_or_run_command(args: 'argparse.Namespace'
                                 ) -> 'argparse.Namespace':
-    """
+    """Process ``args`` and/or run commands.
+
     Process ``args``, that is, validate and update it, and raise SystemExit if
     something goes wrong at once.
     """
     # Validate args:
     if args.inputs:
         if not args.itype:
-            if (len(args.inputs) == 1 and
-                    args.inputs[0] == constants.STD_IN_OR_OUT):
+            if (len(args.inputs) == 1
+                    and args.inputs[0] == constants.STD_IN_OR_OUT):
                 utils.exit_with_output(
                     'No input type was given but required for the input "-"',
                     1
@@ -87,9 +85,7 @@ def process_args_or_run_command(args: 'argparse.Namespace'
 
 
 def try_validate(cnf, args: 'argparse.Namespace') -> None:
-    """
-    Try validate ``cnf`` with the schema loaded from ``args.schema``.
-    """
+    """Try validate ``cnf`` with the schema loaded from ``args.schema``."""
     scm = api.load(args.schema)
     (res, errors) = api.validate(cnf, scm, ac_schema_errors=True)
 
@@ -106,7 +102,8 @@ def try_validate(cnf, args: 'argparse.Namespace') -> None:
 
 
 def main(argv=None):
-    """
+    """Provide the entrypoint to run the CLI.
+
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
     (_psr, args) = parse_args.parse((argv if argv else sys.argv)[1:])

@@ -2,8 +2,9 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""ioinfo module to provide functions to create IOInfo objects wrap
-pathlib.Path and io objects.
+r"""ioinfo module to provide functions to create IOInfo objects.
+
+IOInfo objects wrap pathlib.Path and io objects.
 
 .. versionchanged:: 0.12.0
 

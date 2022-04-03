@@ -2,8 +2,7 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""misc global constants, variables, classes and so on.
-"""
+"""Misc global constants, variables, classes and so on."""
 try:
     from .jinja2 import try_render
     SUPPORTED: bool = True
@@ -11,8 +10,7 @@ except ImportError:  # jinja2 may not be available.
     SUPPORTED = False  # type: ignore
 
     def try_render(*_args, **_kwargs) -> None:  # type: ignore
-        """Dummy function does nothing but returns None.
-        """
+        """Provide a dummy function does nothing but returns None."""
         return None
 
 

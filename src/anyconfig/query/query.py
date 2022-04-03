@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=bare-except
-#
-r"""anyconfig.query module to support query data with JMESPath expressions.
+"""anyconfig.query module to support query data with JMESPath expressions.
 
 Changelog:
 
@@ -25,9 +24,7 @@ from .datatypes import MaybeJexp
 
 
 def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
-    """
-    Try to query data with JMESPath expression `jexp`.
-    """
+    """Try to query data with JMESPath expression `jexp`."""
     if jexp is None or not jexp:
         return data
 
@@ -48,8 +45,7 @@ def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
 def query(data: InDataT, jexp: str, **_options
           ) -> typing.Tuple[typing.Optional[InDataT],
                             typing.Optional[Exception]]:
-    """
-    Filter data with given JMESPath expression.
+    """Filter data with given JMESPath expression.
 
     See also: https://github.com/jmespath/jmespath.py and http://jmespath.org.
 
@@ -67,7 +63,7 @@ def query(data: InDataT, jexp: str, **_options
     except ValueError as exc:  # jmespath.exceptions.*Error inherit from it.
         return (data, exc)
 
-    except:  # noqa: E722
+    except BaseException:  # noqa: E722
         return (None, exc)
 
 # vim:sw=4:ts=4:et:

@@ -7,7 +7,7 @@
 # pylint: disable=import-error, duplicate-except
 # len(elem) is necessary to check that ET.Element object has children.
 # pylint: disable=len-as-condition
-r"""XML backend:
+r"""A backend module to load and dump XML files.
 
 - Format to support: XML, e.g. http://www.w3.org/TR/xml11/
 - Requirements: one of the followings
@@ -76,8 +76,9 @@ _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
 
 def _iterparse(xmlfile):
-    """
-    Avoid bug in python 3.{2,3}. See http://bugs.python.org/issue9257.
+    """Override ET.iterparse to avoid bug in python 3.{2,3}.
+
+    .. seealso:: http://bugs.python.org/issue9257.
 
     :param xmlfile: XML file or file-like object
     """
@@ -88,7 +89,8 @@ def _iterparse(xmlfile):
 
 
 def flip(tpl):
-    """
+    """Flip arguments.
+
     >>> flip((1, 2))
     (2, 1)
     """
@@ -96,7 +98,8 @@ def flip(tpl):
 
 
 def _namespaces_from_file(xmlfile):
-    """
+    """Get the namespace str from file.
+
     :param xmlfile: XML file or file-like object
     :return: {namespace_uri: namespace_prefix} or {}
     """
@@ -104,7 +107,8 @@ def _namespaces_from_file(xmlfile):
 
 
 def _tweak_ns(tag, **options):
-    """
+    """Tweak the namespace.
+
     :param tag: XML tag element
     :param nspaces: A namespaces dict, {uri: prefix}
     :param options: Extra keyword options may contain 'nspaces' keyword option
@@ -131,7 +135,8 @@ def _tweak_ns(tag, **options):
 
 
 def _dicts_have_unique_keys(dics):
-    """
+    """Test if given dicts don't have same keys.
+
     :param dics: [<dict or dict-like object>], must not be [] or [{...}]
     :return: True if all keys of each dict of 'dics' are unique
 
@@ -154,7 +159,8 @@ def _dicts_have_unique_keys(dics):
 
 
 def _merge_dicts(dics, container=dict):
-    """
+    """Merge given dicts.
+
     :param dics: [<dict/-like object must not have same keys each other>]
     :param container: callble to make a container object
     :return: <container> object
@@ -171,7 +177,8 @@ def _merge_dicts(dics, container=dict):
 
 
 def _parse_text(val, **options):
-    """
+    """Parse ``val`` and interpret its data to some value.
+
     :return: Parsed value or value itself depends on 'ac_parse_value'
     """
     if val and options.get('ac_parse_value', False):
@@ -181,7 +188,8 @@ def _parse_text(val, **options):
 
 
 def _process_elem_text(elem, dic, subdic, text='@text', **options):
-    """
+    """Process the text in the element ``elem``.
+
     :param elem: ET Element object which has elem.text
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
@@ -201,7 +209,8 @@ def _process_elem_text(elem, dic, subdic, text='@text', **options):
 
 
 def _parse_attrs(elem, container=dict, **options):
-    """
+    """Parse the attributes of the element ``elem``.
+
     :param elem: ET Element object has attributes (elem.attrib)
     :param container: callble to make a container object
     :return: Parsed value or value itself depends on 'ac_parse_value'
@@ -216,7 +225,8 @@ def _parse_attrs(elem, container=dict, **options):
 
 def _process_elem_attrs(elem, dic, subdic, container=dict, attrs='@attrs',
                         **options):
-    """
+    """Process attributes in the element ``elem``.
+
     :param elem: ET Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
@@ -235,7 +245,8 @@ def _process_elem_attrs(elem, dic, subdic, container=dict, attrs='@attrs',
 
 def _process_children_elems(elem, dic, subdic, container=dict,
                             children='@children', **options):
-    """
+    """Process children of the element ``elem``.
+
     :param elem: ET Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
@@ -261,8 +272,7 @@ def _process_children_elems(elem, dic, subdic, container=dict,
 
 
 def elem_to_container(elem, container=dict, **options):
-    """
-    Convert XML ElementTree Element to a collection of container objects.
+    """Convert XML ElementTree Element to a collection of container objects.
 
     Elements are transformed to a node under special tagged nodes, attrs, text
     and children, to store the type of these elements basically, however, in
@@ -304,7 +314,8 @@ def elem_to_container(elem, container=dict, **options):
 
 
 def _complement_tag_options(options):
-    """
+    """Complement tag options.
+
     :param options: Keyword options :: dict
 
     >>> ref = _TAGS.copy()
@@ -323,8 +334,7 @@ def _complement_tag_options(options):
 
 
 def root_to_container(root, container=dict, nspaces=None, **options):
-    """
-    Convert XML ElementTree Root Element to a collection of container objects.
+    """Convert XML ElementTree Root Element to container objects.
 
     :param root: etree root object or None
     :param container: callble to make a container object
@@ -347,7 +357,8 @@ def root_to_container(root, container=dict, nspaces=None, **options):
 
 
 def _to_str_fn(**options):
-    """
+    """Convert any objects to a str.
+
     :param options: Keyword options might have 'ac_parse_value' key
     :param to_str: Callable to convert value to string
     """
@@ -355,7 +366,8 @@ def _to_str_fn(**options):
 
 
 def _elem_set_attrs(obj, parent, to_str):
-    """
+    """Set attributes of the element ``parent``.
+
     :param obj: Container instance gives attributes of XML Element
     :param parent: XML ElementTree parent node object
     :param to_str: Callable to convert value to string or None
@@ -368,7 +380,8 @@ def _elem_set_attrs(obj, parent, to_str):
 
 
 def _elem_from_descendants(children_nodes, **options):
-    """
+    """Get the elements from the descendants ``children_nodes``.
+
     :param children_nodes: A list of child dict objects
     :param options: Keyword options, see :func:`container_to_etree`
     """
@@ -380,7 +393,8 @@ def _elem_from_descendants(children_nodes, **options):
 
 
 def _get_or_update_parent(key, val, to_str, parent=None, **options):
-    """
+    """Get or update the parent element ``parent``.
+
     :param key: Key of current child (dict{,-like} object)
     :param val: Value of current child (dict{,-like} object or [dict{,...}])
     :param to_str: Callable to convert value to string
@@ -404,8 +418,7 @@ _ATC = ('attrs', 'text', 'children')
 
 
 def container_to_etree(obj, parent=None, to_str=None, **options):
-    """
-    Convert a dict-like object to XML ElementTree.
+    """Convert a dict-like object to XML ElementTree.
 
     :param obj: Container instance to convert to
     :param parent: XML ElementTree parent node object or None
@@ -442,8 +455,7 @@ def container_to_etree(obj, parent=None, to_str=None, **options):
 
 
 def etree_write(tree, stream):
-    """
-    Write XML ElementTree 'root' content into 'stream'.
+    """Write XML ElementTree 'root' content into 'stream'.
 
     :param tree: XML ElementTree object
     :param stream: File or file-like object can write to
@@ -456,9 +468,8 @@ def etree_write(tree, stream):
 
 class Parser(base.Parser, base.ToStreamDumperMixin,
              base.BinaryDumperMixin, base.BinaryLoaderMixin):
-    """
-    Parser for XML files.
-    """
+    """Parser for XML files."""
+
     _cid = 'xml'
     _type = 'xml'
     _extensions = ['xml']
@@ -467,8 +478,7 @@ class Parser(base.Parser, base.ToStreamDumperMixin,
     _dict_opts = ['ac_dict']
 
     def load_from_string(self, content, container, **opts):
-        """
-        Load config from XML snippet (a string 'content').
+        """Load config from XML snippet (a string 'content').
 
         :param content:
             XML snippet string of str (python 2) or bytes (python 3) type
@@ -484,7 +494,8 @@ class Parser(base.Parser, base.ToStreamDumperMixin,
                                  nspaces=nspaces, **opts)
 
     def load_from_path(self, filepath, container, **opts):
-        """
+        """Load data from path ``filepath``.
+
         :param filepath: XML file path
         :param container: callble to make a container object
         :param opts: optional keyword parameters to be sanitized
@@ -497,7 +508,8 @@ class Parser(base.Parser, base.ToStreamDumperMixin,
                                  nspaces=nspaces, **opts)
 
     def load_from_stream(self, stream, container, **opts):
-        """
+        """Load data from IO stream ``stream``.
+
         :param stream: XML file or file-like object
         :param container: callble to make a container object
         :param opts: optional keyword parameters to be sanitized
@@ -511,7 +523,8 @@ class Parser(base.Parser, base.ToStreamDumperMixin,
                                  nspaces=nspaces, **opts)
 
     def dump_to_string(self, cnf, **opts):
-        """
+        """Dump data ``cnf`` as a str.
+
         :param cnf: Configuration data to dump
         :param opts: optional keyword parameters
 
@@ -523,7 +536,8 @@ class Parser(base.Parser, base.ToStreamDumperMixin,
         return buf.getvalue()
 
     def dump_to_stream(self, cnf, stream, **opts):
-        """
+        """Dump data ``cnf`` to the IO stream ``stream``.
+
         :param cnf: Configuration data to dump
         :param stream: Config file or file like object write to
         :param opts: optional keyword parameters

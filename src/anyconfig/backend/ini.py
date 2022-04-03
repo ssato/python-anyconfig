@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 #  pylint: disable=deprecated-method
-r"""INI backend:
+r"""A backend module to load and dump INI files.
 
 - Format to support: INI or INI like ones
 - Requirements: The following standard module which should be available always.
@@ -21,7 +21,7 @@ r"""INI backend:
 - Special options:
 
   - Use 'ac_parse_value' boolean keyword option if you want to parse values by
-    custom parser, anyconfig.backend.ini._parse.
+    custom parser, anyconfig.backend.ini.parse.
 
 Changelog:
 
@@ -32,12 +32,10 @@ Changelog:
 """
 import configparser
 import os
+import re
 import typing
 
-from ..parser import parse, parse_list
-from ..utils import (
-    filter_options, is_iterable, noop
-)
+from .. import parser, utils
 from . import base
 
 
@@ -48,68 +46,70 @@ except AttributeError:
     DEFAULTSECT: str = 'DEFAULT'  # type: ignore
 
 
-def _parse(val_s: str, sep: str = _SEP):
-    """
+_QUOTED_RE: typing.Pattern = re.compile(
+    r'^('
+    r'".*"'
+    r'|'
+    r"'.*'"
+    r')$'
+)
+
+
+def parse(val_s: str, sep: str = _SEP,
+          quoted_re: typing.Pattern = _QUOTED_RE) -> typing.Any:
+    """Parse expression.
+
     FIXME: May be too naive implementation.
 
     :param val_s: A string represents some value to parse
     :param sep: separator between values
-
-    >>> _parse(r'"foo string"')
-    'foo string'
-    >>> _parse("a, b, c")
-    ['a', 'b', 'c']
-    >>> _parse("aaa")
-    'aaa'
     """
-    if (val_s.startswith('"') and val_s.endswith('"')) or \
-            (val_s.startswith("'") and val_s.endswith("'")):
+    if quoted_re.match(val_s):
         return val_s[1:-1]
-    if sep in val_s:
-        return [parse(typing.cast(str, x)) for x in parse_list(val_s)]
 
-    return parse(val_s)
+    if sep in val_s:
+        return [
+            parser.parse(typing.cast(str, x)) for x in parser.parse_list(val_s)
+        ]
+
+    return parser.parse(val_s)
 
 
 def _to_s(val: typing.Any, sep: str = ', ') -> str:
-    """Convert any to string.
+    """Convert any object to string.
 
     :param val: An object
     :param sep: separator between values
-
-    >>> _to_s([1, 2, 3])
-    '1, 2, 3'
-    >>> _to_s("aaa")
-    'aaa'
     """
-    if is_iterable(val):
+    if utils.is_iterable(val):
         return sep.join(str(x) for x in val)
 
     return str(val)
 
 
-def _parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
-                  sep: str = _SEP, **options
-                  ) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
-    """
+def parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
+                 sep: str = _SEP, **options
+                 ) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
+    """Parse an iterable of items.
+
     :param items: List of pairs, [(key, value)], or generator yields pairs
     :param sep: Seprator string
     :return: Generator to yield (key, value) pair of 'dic'
     """
-    __parse = _parse if options.get('ac_parse_value') else noop
+    __parse = parse if options.get('ac_parse_value') else utils.noop
     for key, val in items:
         yield (key, __parse(val, sep))  # type: ignore
 
 
-def _make_parser(**kwargs):
-    """
-    :return: (keyword args to be used, parser object)
-    """
+def _make_parser(**kwargs
+                 ) -> typing.Tuple[typing.Dict[str, typing.Any],
+                                   configparser.ConfigParser]:
+    """Make an instance of configparser.ConfigParser."""
     # Optional arguments for configparser.ConfigParser{,readfp}
-    kwargs_0 = filter_options(
+    kwargs_0 = utils.filter_options(
         ('defaults', 'dict_type', 'allow_no_value'), kwargs
     )
-    kwargs_1 = filter_options(('filename', ), kwargs)
+    kwargs_1 = utils.filter_options(('filename', ), kwargs)
 
     try:
         psr = configparser.ConfigParser(**kwargs_0)
@@ -117,14 +117,15 @@ def _make_parser(**kwargs):
         # .. note::
         #    It seems ConfigParser.*ConfigParser in python 2.6 does not support
         #    'allow_no_value' option parameter, and TypeError will be thrown.
-        kwargs_0 = filter_options(('defaults', 'dict_type'), kwargs)
+        kwargs_0 = utils.filter_options(('defaults', 'dict_type'), kwargs)
         psr = configparser.ConfigParser(**kwargs_0)
 
     return (kwargs_1, psr)
 
 
 def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
-    """
+    """Load data from ``stream`` of which file should be in INI format.
+
     :param stream: File or file-like object provides ini-style conf
     :param container: any callable to make container
     :param sep: Seprator string
@@ -140,17 +141,18 @@ def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
 
     defaults = psr.defaults()
     if defaults:
-        cnf[dkey] = container(_parsed_items(defaults.items(), **kwargs))
+        cnf[dkey] = container(parsed_items(defaults.items(), **kwargs))
 
     for sect in psr.sections():
-        cnf[sect] = container(_parsed_items(psr.items(sect), **kwargs))
+        cnf[sect] = container(parsed_items(psr.items(sect), **kwargs))
 
     return cnf
 
 
 def _dumps_itr(cnf: typing.Dict[str, typing.Any],
                dkey: str = DEFAULTSECT):
-    """
+    """Dump data iterably.
+
     :param cnf: Configuration data to dump
     """
     for sect, params in cnf.items():
@@ -166,7 +168,8 @@ def _dumps_itr(cnf: typing.Dict[str, typing.Any],
 
 
 def _dumps(cnf: typing.Dict[str, typing.Any], **_kwargs) -> str:
-    """
+    """Dump data as a str.
+
     :param cnf: Configuration data to dump
     :param _kwargs: optional keyword parameters to be sanitized :: dict
 
@@ -177,9 +180,8 @@ def _dumps(cnf: typing.Dict[str, typing.Any], **_kwargs) -> str:
 
 class Parser(base.Parser, base.FromStreamLoaderMixin,
              base.ToStringDumperMixin):
-    """
-    Ini config files parser.
-    """
+    """Ini config files parser."""
+
     _cid: str = 'ini'
     _type: str = 'ini'
     _extensions: typing.List[str] = ['ini']

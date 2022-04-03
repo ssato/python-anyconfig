@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=broad-except
-"""Utilities for anyconfig.cli.*.
-"""
+"""Filter functions for anyconfig.cli.*."""
 import typing
 
 from .. import api, parser
@@ -15,12 +14,11 @@ if typing.TYPE_CHECKING:
 
 
 def do_filter(cnf: typing.Dict[str, typing.Any], args: 'argparse.Namespace'):
-    """Filter ``cnf`` by query/get/set and return filtered result.
-    """
+    """Filter ``cnf`` by query/get/set and return filtered result."""
     if args.query:
         try:
             return api.try_query(cnf, args.query)
-        except (Exception, ) as exc:
+        except Exception as exc:
             utils.exit_with_output(f'Failed to query: exc={exc!s}', 1)
 
     if args.get:

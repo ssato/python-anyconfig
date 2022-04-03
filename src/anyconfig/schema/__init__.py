@@ -2,8 +2,7 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-r"""misc global constants, variables, classes and so on.
-"""
+"""Misc global constants, variables, classes and so on."""
 try:
     from .jsonschema import validate, is_valid, gen_schema
     SUPPORTED: bool = True

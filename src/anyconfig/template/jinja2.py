@@ -46,7 +46,7 @@ def tmpl_env(paths: MaybePathsT = None) -> jinja2.Environment:
 def make_template_paths(template_file: pathlib.Path,
                         paths: MaybePathsT = None
                         ) -> typing.List[pathlib.Path]:
-    """Make a tempalte paths.
+    """Make a template paths.
 
     Make up a list of template search paths from given ``template_file`` path
     (absolute or relative path to the template file) and/or ``paths``, a list

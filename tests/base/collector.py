@@ -80,9 +80,8 @@ class TDataCollector:
         """
         _datasets = [
             (datadir,
-             utils.load_datasets_from_dir(
-                datadir, self.load_dataset, pattern=self.pattern
-             ))
+             utils.load_datasets_from_dir(datadir, self.load_dataset,
+                                          pattern=self.pattern))
             for datadir in sorted(self.root.glob('*'))
         ]
         if not _datasets:

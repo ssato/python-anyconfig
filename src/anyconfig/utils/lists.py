@@ -7,11 +7,12 @@ import itertools
 import typing
 
 
-def groupby(itr: typing.Iterable[typing.Any],
-            key_fn: typing.Optional[typing.Callable[..., typing.Any]] = None
-            ) -> typing.Iterable[
-                typing.Tuple[typing.Any, typing.Iterable[typing.Any]]
-            ]:
+def groupby(
+    itr: typing.Iterable[typing.Any],
+    key_fn: typing.Optional[typing.Callable[..., typing.Any]] = None
+) -> typing.Iterable[
+        typing.Tuple[typing.Any, typing.Iterable[typing.Any]]
+]:
     """Provide an wrapper function of itertools.groupby to sort each results.
 
     :param itr: Iterable object, a list/tuple/genrator, etc.

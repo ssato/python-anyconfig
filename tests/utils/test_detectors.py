@@ -13,8 +13,7 @@ import anyconfig.utils.detectors as TT
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     (None, False),
+    ((None, False),
      ([], True), ((), True),
      ((str(x) for x in range(10)), True),
      ([str(x) for x in range(10)], True),
@@ -27,8 +26,7 @@ def test_is_iterable(inp, exp):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     (None, False),
+    ((None, False),
      (0, False),
      ('aaa', False),
      ({}, False),
@@ -43,8 +41,7 @@ def test_is_list_like(inp, exp):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     (None, False),
+    ((None, False),
      (0, False),
      ('aaa', False),
      ([], False),

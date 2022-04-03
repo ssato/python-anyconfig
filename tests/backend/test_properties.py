@@ -28,8 +28,7 @@ class HasParserTrait(TBC.HasParserTrait):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     (' ', (None, '')),
+    ((' ', (None, '')),
      ('aaa', ('aaa', '')),
      ),
 )
@@ -40,8 +39,7 @@ def test_parseline_warnings(inp, exp):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     ('aaa:', ('aaa', '')),
+    (('aaa:', ('aaa', '')),
      (' aaa:', ('aaa', '')),
      ('url = http://localhost', ('url', 'http://localhost')),
      ('calendar.japanese.type: LocalGregorianCalendar',
@@ -54,8 +52,7 @@ def test_parseline(inp, exp):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     ('', None),
+    (('', None),
      ('a: A', 'a: A'),
      ('# a: A', None),
      ('! a: A', None),
@@ -68,8 +65,7 @@ def test_pre_process_line(inp, exp):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     (r'aaa\:bbb', 'aaa:bbb'),
+    ((r'aaa\:bbb', 'aaa:bbb'),
      (r'\\a', r'\a'),
      ),
 )
@@ -79,8 +75,7 @@ def test_10_unescape(inp, exp):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     (r':=\ ', r'\:\=\\ '),
+    ((r':=\ ', r'\:\=\\ '),
      ),
 )
 def test_escape(inp, exp):
@@ -89,8 +84,7 @@ def test_escape(inp, exp):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     (':', '\\:'),
+    ((':', '\\:'),
      ('=', '\\='),
      ('a', 'a'),
      ),
@@ -109,8 +103,7 @@ x=Postscript File;y=.eps,.ps
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     ('', {}),
+    (('', {}),
      (f'# {KV_0}', {}),
      (f'! {KV_0}', {}),
      (f'{KEY_0}:', {KEY_0: ''}),

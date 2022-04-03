@@ -51,8 +51,8 @@ def process_args_or_run_command(args: 'argparse.Namespace'
     # Validate args:
     if args.inputs:
         if not args.itype:
-            if (len(args.inputs) == 1 and
-                    args.inputs[0] == constants.STD_IN_OR_OUT):
+            if (len(args.inputs) == 1
+                    and args.inputs[0] == constants.STD_IN_OR_OUT):
                 utils.exit_with_output(
                     'No input type was given but required for the input "-"',
                     1

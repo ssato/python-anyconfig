@@ -21,8 +21,7 @@ CNF = collections.OrderedDict(
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     ('aaa=', ('aaa', '')),
+    (('aaa=', ('aaa', '')),
      ('aaa=bbb', ('aaa', 'bbb')),
      ('aaa="bb b"', ('aaa', 'bb b')),
      # (r"aaa=bb\"b", ('aaa', 'bb"b')),  # todo?
@@ -35,12 +34,11 @@ def test_parseline(inp, exp):
 
 @pytest.mark.parametrize(
     'inp,exp',
-    (
-     ('', {}),
+    (('', {}),
      ('# ', {}),
      ('aaa=', {'aaa': ''}),
      ('aaa=bbb', {'aaa': 'bbb'}),
-     ('aaa=bbb # ...',  {'aaa': 'bbb'}),
+     ('aaa=bbb # ...', {'aaa': 'bbb'}),
      ),
 )
 def test_load(inp, exp):

@@ -24,3 +24,5 @@ pylint
 pytest
 pytest-cov
 pytest-randomly
+# see: https://notes.crmarsh.com/python-tooling-could-be-much-much-faster
+ruff

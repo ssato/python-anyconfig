@@ -15,7 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies
-        run: pip3 install tox tox-gh-actions
+        run: |
+          dnf install -y python3-pip
+          pip3 install tox tox-gh-actions
       - name: Test with tox
         run: tox
 

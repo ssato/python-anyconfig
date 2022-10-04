@@ -26,4 +26,5 @@ pytest-cov
 pytest-randomly
 # Disable until 'pip install' failures happen in CI env.
 # see: https://notes.crmarsh.com/python-tooling-could-be-much-much-faster
-ruff; python_version > '3.6'
+# ruff; python_version > '3.6'
+ruff

@@ -8,9 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: pycontribs/centos:8
+    container: quay.io/centos/centos:stream9
     env:
-      TOXENV: py36
+      TOXENV: py39
 
     steps:
       - uses: actions/checkout@v1

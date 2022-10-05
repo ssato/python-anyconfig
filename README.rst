@@ -22,6 +22,10 @@ python-anyconfig
    :target: https://coveralls.io/r/ssato/python-anyconfig
    :alt: [Coverage Status]
 
+.. image:: https://codecov.io/gh/ssato/python-anyconfig/branch/next/graph/badge.svg?token=CEHaIGm60z 
+   :target: https://codecov.io/gh/ssato/python-anyconfig
+   :alt: [Codecov Status]
+
 .. .. image:: https://landscape.io/github/ssato/python-anyconfig/master/landscape.svg?style=flat
    :target: https://landscape.io/github/ssato/python-anyconfig/master
    :alt: [Code Health]

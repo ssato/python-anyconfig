@@ -107,7 +107,7 @@ def _make_parser(**kwargs
     """Make an instance of configparser.ConfigParser."""
     # Optional arguments for configparser.ConfigParser{,readfp}
     kwargs_0 = utils.filter_options(
-        ('defaults', 'dict_type', 'allow_no_value'), kwargs
+        ('defaults', 'dict_type', 'allow_no_value', 'strict'), kwargs
     )
     kwargs_1 = utils.filter_options(('filename', ), kwargs)
 
@@ -186,7 +186,7 @@ class Parser(base.Parser, base.FromStreamLoaderMixin,
     _type: str = 'ini'
     _extensions: typing.List[str] = ['ini']
     _load_opts: typing.List[str] = [
-        'defaults', 'dict_type', 'allow_no_value', 'filename', 'ac_parse_value'
+        'defaults', 'dict_type', 'allow_no_value', 'filename', 'ac_parse_value', 'strict'
     ]
     _dict_opts: typing.List[str] = ['dict_type']
 

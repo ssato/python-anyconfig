@@ -186,7 +186,7 @@ class Parser(base.Parser, base.FromStreamLoaderMixin,
     _type: str = 'ini'
     _extensions: typing.List[str] = ['ini']
     _load_opts: typing.List[str] = [
-        'defaults', 'dict_type', 'allow_no_value', 'filename', 
+        'defaults', 'dict_type', 'allow_no_value', 'filename',
         'ac_parse_value', 'strict'
     ]
     _dict_opts: typing.List[str] = ['dict_type']

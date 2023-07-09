@@ -42,7 +42,7 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
         warnings.warn(
             'Ignored the given type because it looks wrong or '
             'is not supported by installed parser backends: '
-            f'{io_type}'
+            f'{io_type}', stacklevel=2
         )
 
     return default

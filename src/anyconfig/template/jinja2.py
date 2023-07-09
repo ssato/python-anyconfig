@@ -90,7 +90,8 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
         env = tmpl_env(paths)
     except AssertionError as exc:
         warnings.warn(
-            f'Something went wrong with: paths={paths!r}, exc={exc!s}'
+            f'Something went wrong with: paths={paths!r}, exc={exc!s}',
+            stacklevel=2
         )
         return tmpl_s
 
@@ -188,7 +189,8 @@ def try_render(filepath: typing.Optional[str] = None,
         warnings.warn(
             f"Failed to compile '{tmpl_s!r}'. It may not be "
             f'a template.{os.linesep}, exc={exc!s}, '
-            f'filepath={filepath}, options={options!r}'
+            f'filepath={filepath}, options={options!r}',
+            stacklevel=2
         )
         return None
 

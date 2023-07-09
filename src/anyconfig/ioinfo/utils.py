@@ -16,7 +16,7 @@ def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
     try:
         abs_path = path.expanduser().resolve()
     except (RuntimeError, OSError) as exc:
-        warnings.warn(f'Failed to resolve {path!s}, exc={exc!r}')
+        warnings.warn(f'Failed to resolve {path!s}, exc={exc!r}', stacklevel=2)
         abs_path = path
 
     file_ext = path.suffix

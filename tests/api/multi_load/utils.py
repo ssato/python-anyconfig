@@ -50,11 +50,11 @@ def each_data_from_dir(datadir: pathlib.Path,
 
     for subdir in sorted(datadir.glob('*')):
         if not subdir.is_dir():
-            warnings.warn(f'Not looks a dir: {subdir!s}')
+            warnings.warn(f'Not looks a dir: {subdir!s}', stacklevel=2)
             continue
 
         if not bool(list(subdir.glob('*.*'))):
-            warnings.warn(f'No data in subdir: {subdir!s}')
+            warnings.warn(f'No data in subdir: {subdir!s}', stacklevel=2)
             continue
 
         yield TData(

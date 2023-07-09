@@ -36,7 +36,7 @@ def open(path: ioinfo.PathOrIOInfoT,
 
     ioi = ioinfo.make(path)
     if ioinfo.is_stream(ioi):
-        warnings.warn(f'Looks already opened stream: {ioi!r}')
+        warnings.warn(f'Looks already opened stream: {ioi!r}', stacklevel=2)
         return typing.cast(typing.IO, ioi.src)
 
     psr: ParserT = parsers.find(ioi, forced_type=ac_parser)

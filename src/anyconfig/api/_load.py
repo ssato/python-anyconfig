@@ -327,7 +327,8 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
     """
     if ac_parser is None:
         warnings.warn("ac_parser was not given but it's must to find correct "
-                      "parser to load configurations from string.")
+                      "parser to load configurations from string.",
+                      stacklevel=2)
         return None
 
     psr = parsers_find(None, forced_type=ac_parser)

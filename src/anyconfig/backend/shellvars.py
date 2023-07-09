@@ -39,7 +39,9 @@ def _parseline(line):
         line
     )
     if not match:
-        warnings.warn(f'Invalid line found: {line}', SyntaxWarning)
+        warnings.warn(
+            f'Invalid line found: {line}', category=SyntaxWarning, stacklevel=2
+        )
         return (None, None)
 
     tpl = match.groups()
@@ -64,7 +66,10 @@ def load(stream, container=dict):
 
         (key, val) = _parseline(line)
         if key is None:
-            warnings.warn(f'Empty val in the line: {line}', SyntaxWarning)
+            warnings.warn(
+                f'Empty val in the line: {line}',
+                category=SyntaxWarning, stacklevel=2
+            )
             continue
 
         ret[key] = val

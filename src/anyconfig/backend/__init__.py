@@ -25,19 +25,25 @@ PARSERS: ParserClssT = [
     ini.Parser, pickle.Parser, properties.Parser, shellvars.Parser, xml.Parser
 ] + json.PARSERS
 
-_NA_MSG = "'{}' module is not available. Disabled {} support."
-_NA_WARGS = {"category": ImportWarning, "stacklevel": 2}
+
+def warn(name: str, feature: str):
+    """An wraper for warnings.warn."""
+    warnings.warn(
+        f"'{name}' module is not available. Disabled {feature} support.",
+        category=ImportWarning, stacklevel=2
+    )
+
 
 if yaml.PARSERS:
     PARSERS.extend(yaml.PARSERS)
 else:
-    warnings.warn(_NA_MSG.format('yaml', 'YAML'), **_NA_WARGS)  # noqa: B028
+    warn('yaml', 'YAML')
 
 try:
     from . import toml
     PARSERS.append(toml.Parser)
 except ImportError:
-    warnings.warn(_NA_MSG.format('toml', 'TOML'), **_NA_WARGS)  # noqa: B028
+    warn('toml', 'TOML')
 
 
 __all__ = [

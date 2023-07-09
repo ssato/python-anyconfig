@@ -50,7 +50,9 @@ def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
     key = pair[0].rstrip()
 
     if len(pair) < 2:
-        warnings.warn(f'Invalid line found: {line}', SyntaxWarning)
+        warnings.warn(
+            f'Invalid line found: {line}', category=SyntaxWarning, stacklevel=2
+        )
         return (key or None, '')
 
     return (key, pair[1].strip())
@@ -119,7 +121,10 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 
         (key, val) = parseline(line)
         if key is None:
-            warnings.warn(f'Failed to parse the line: {line}')
+            warnings.warn(
+                f'Failed to parse the line: {line}',
+                category=SyntaxWarning, stacklevel=2
+            )
             continue
 
         ret[key] = unescape(val)

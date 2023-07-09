@@ -108,7 +108,7 @@ def is_valid(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
     if error_or_errors:
         msg = f'scm={schema!s}, err={error_or_errors!s}'
         if ac_schema_safe:
-            warnings.warn(msg)
+            warnings.warn(msg, stacklevel=2)
             return False
 
         raise ValidationError(msg)

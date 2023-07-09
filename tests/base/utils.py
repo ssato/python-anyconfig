@@ -121,11 +121,11 @@ def each_data_from_dir(datadir: pathlib.Path,
 
     for inp in sorted(datadir.glob(pattern)):
         if not inp.exists():
-            warnings.warn(f'Not exists: {inp!s}')
+            warnings.warn(f'Not exists: {inp!s}', stacklevel=2)
             continue
 
         if not inp.is_file():
-            warnings.warn(f'Not looks a file: {inp!s}')
+            warnings.warn(f'Not looks a file: {inp!s}', stacklevel=2)
             continue
 
         yield data_factory(datadir, inp)

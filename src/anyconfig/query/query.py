@@ -29,8 +29,11 @@ def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
         return data
 
     if not is_dict_like(data):  # Some primitive types like int, str.
-        warnings.warn('Could not query because given data is not '
-                      f'a mapping object (type? {type(data)}')
+        warnings.warn(
+            'Could not query because given data is not '
+            f'a mapping object (type? {type(data)}',
+            stacklevel=2
+        )
         return data
 
     (odata, exc) = query(

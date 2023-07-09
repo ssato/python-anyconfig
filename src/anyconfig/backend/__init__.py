@@ -26,17 +26,18 @@ PARSERS: ParserClssT = [
 ] + json.PARSERS
 
 _NA_MSG = "'{}' module is not available. Disabled {} support."
+_NA_WARGS = {"category": ImportWarning, "stacklevel": 2}
 
 if yaml.PARSERS:
     PARSERS.extend(yaml.PARSERS)
 else:
-    warnings.warn(_NA_MSG.format('yaml', 'YAML'), ImportWarning)
+    warnings.warn(_NA_MSG.format('yaml', 'YAML'), **_NA_WARGS)  # noqa: B028
 
 try:
     from . import toml
     PARSERS.append(toml.Parser)
 except ImportError:
-    warnings.warn(_NA_MSG.format('toml', 'TOML'), ImportWarning)
+    warnings.warn(_NA_MSG.format('toml', 'TOML'), **_NA_WARGS)  # noqa: B028
 
 
 __all__ = [

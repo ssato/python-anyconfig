@@ -73,8 +73,11 @@ def attr_val_itr(str_: str, avs_sep: str = ':', vs_sep: str = ',',
         (_attr, _values, *_rest) = parse_list(rel, avs_sep)
 
         if _rest:
-            warnings.warn(f'Extra strings {_rest!s} in {rel!s}'
-                          f'It should be in the form of attr{avs_sep}value.')
+            warnings.warn(
+                f'Extra strings {_rest!s} in {rel!s}'
+                f'It should be in the form of attr{avs_sep}value.',
+                stacklevel=2
+            )
 
         _attr = typing.cast(str, _attr)
 

@@ -1,7 +1,8 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
+# pylint: disable=consider-using-with, unspecified-encoding
 """Abstract and basic loaders."""
 import collections
 import io
@@ -16,6 +17,8 @@ from .utils import not_implemented
 
 
 DATA_DEFAULT: InDataExT = {}
+
+_ENCODING: str = ioinfo.get_encoding()
 
 
 class LoaderMixin:
@@ -65,7 +68,10 @@ class LoaderMixin:
 
     def ropen(self, filepath, **kwargs):
         """Open files with read only mode."""
-        return open(  # pylint: disable=consider-using-with
+        if 'encoding' not in kwargs and 'b' not in self._open_read_mode:
+            kwargs["encoding"] = _ENCODING
+
+        return open(
             filepath, self._open_read_mode, **kwargs
         )
 

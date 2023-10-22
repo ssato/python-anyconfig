@@ -10,11 +10,12 @@ from .. import api
 from . import constants, utils
 
 
-DEFAULTS = dict(
-    loglevel=0, list=False, output=None, itype=None, otype=None, atype=None,
-    merge=api.MS_DICTS, ignore_missing=False, template=False, env=False,
-    schema=None, validate=False, gen_schema=False, extra_opts=None
-)
+DEFAULTS = {
+    "loglevel": 0, "list": False, "output": None, "itype": None, "otype": None,
+    "atype": None, "merge": api.MS_DICTS, "ignore_missing": False,
+    "template": False, "env": False, "schema": None, "validate": False,
+    "gen_schema": False, "extra_opts": None
+}
 
 
 def gen_type_help_txt(types: str, target: str = 'Input') -> str:

@@ -1,7 +1,9 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
+# FIXME:
+# mypy: disable-error-code=type-var
 """Internal APIs to load, list and find parser class objects."""
 import typing
 

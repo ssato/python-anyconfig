@@ -71,7 +71,7 @@ from ..utils import (
 )
 
 
-_TAGS = dict(attrs='@attrs', text='@text', children='@children')
+_TAGS = {"attrs": '@attrs', "text": '@text', "children": '@children'}
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
 

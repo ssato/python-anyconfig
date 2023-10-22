@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2023 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # type() is used to exactly match check instead of isinstance here.
@@ -99,7 +99,7 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
     except NameError:
         pass
 
-    if type(container) != dict:
+    if not isinstance(container(), dict):
         loader.add_constructor(mapping_tag, construct_mapping)
     return loader
 
@@ -120,7 +120,7 @@ def _customized_dumper(container, dumper=Dumper):
     except NameError:
         pass
 
-    if type(container) != dict:
+    if not isinstance(container(), dict):
         dumper.add_representer(container, container_representer)
     return dumper
 

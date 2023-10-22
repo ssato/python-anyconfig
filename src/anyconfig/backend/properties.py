@@ -46,7 +46,7 @@ def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
         A string to parse, must not start with ' ', '#' or '!' (comment)
     :return: A tuple of (key, value), both key and value may be None
     """
-    pair = re.split(r"(?:\s+)?(?:(?<!\\)[=:])", line.strip(), 1)
+    pair = re.split(r"(?:\s+)?(?:(?<!\\)[=:])", line.strip(), maxsplit=1)
     key = pair[0].rstrip()
 
     if len(pair) < 2:

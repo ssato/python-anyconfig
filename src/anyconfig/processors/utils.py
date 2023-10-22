@@ -14,7 +14,6 @@ import warnings
 import pkg_resources
 
 from .. import common, ioinfo, models, utils
-from ..models import processor
 from .datatypes import (
     ProcT, ProcsT, ProcClsT, MaybeProcT
 )

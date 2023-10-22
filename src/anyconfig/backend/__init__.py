@@ -13,6 +13,7 @@ from . import (
     pickle,
     properties,
     shellvars,
+    toml,
     yaml,
     xml
 )
@@ -39,10 +40,9 @@ if yaml.PARSERS:
 else:
     warn('yaml', 'YAML')
 
-try:
-    from . import toml
-    PARSERS.append(toml.Parser)
-except ImportError:
+if toml.PARSERS:
+    PARSERS.extend(toml.PARSERS)
+else:
     warn('toml', 'TOML')
 
 

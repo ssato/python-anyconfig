@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2015 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Ref. python -c "import toml; help(toml); ..."
@@ -21,13 +21,13 @@ Changelog:
 """
 import toml
 
-from . import base
+from .. import base
 
 
 class Parser(base.StringStreamFnParser):
     """TOML parser."""
 
-    _cid = 'toml'
+    _cid = 'toml.toml'
     _type = 'toml'
     _extensions = ['toml']
     _ordered = True

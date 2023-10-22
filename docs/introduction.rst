@@ -279,12 +279,17 @@ enable the features.
    :widths: 20, 10, 25
 
    YAML load/dump, ruamel.yaml or PyYAML, ruamel.yaml will be used instead of PyYAML if it's available to support the YAML 1.2 specification.
-   TOML load/dump, toml, none
+   TOML load/dump, toml [#]_ or tomllib [#]_ and tomli-w [#]_ or tomli [#]_ and tomli-w or tomlkit [#]_ , tomllib is in the standard lib since python 3.11.0
    BSON load/dump, bson, bson from pymongo package may work and bson [#]_ does not
    Template config, Jinja2 [#]_ , none
    Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
    Query with JMESPath expression, jmespath [#]_ , none
 
+.. [#] https://pypi.python.org/pypi/toml/
+.. [#] https://docs.python.org/3/library/tomllib.html
+.. [#] https://pypi.python.org/pypi/tomli-w/
+.. [#] https://pypi.python.org/pypi/tomli/
+.. [#] https://pypi.python.org/pypi/tomlkit/
 .. [#] https://pypi.python.org/pypi/bson/
 .. [#] https://pypi.python.org/pypi/Jinja2/
 .. [#] https://pypi.python.org/pypi/jsonschema/

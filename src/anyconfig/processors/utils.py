@@ -11,7 +11,7 @@ import operator
 import typing
 import warnings
 
-import pkg_resources
+import importlib.metadata
 
 from .. import common, ioinfo, models, utils
 from .datatypes import (
@@ -241,7 +241,9 @@ def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
 
     :param pgroup: A string represents plugin type, e.g. anyconfig_backends
     """
-    for res in pkg_resources.iter_entry_points(pgroup):
+    eps = importlib.metadata.entry_points()
+    for res in (eps.get(pgroup, []) if isinstance(eps, dict)
+                else eps.select(group=pgroup)):
         try:
             yield res.load()
         except ImportError as exc:

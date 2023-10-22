@@ -99,7 +99,7 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
     except NameError:
         pass
 
-    if not isinstance(container(), dict):
+    if container is not dict:
         loader.add_constructor(mapping_tag, construct_mapping)
     return loader
 
@@ -120,7 +120,7 @@ def _customized_dumper(container, dumper=Dumper):
     except NameError:
         pass
 
-    if not isinstance(container(), dict):
+    if container is not dict:
         dumper.add_representer(container, container_representer)
     return dumper
 
@@ -159,7 +159,7 @@ def yml_load(stream, container, yml_fnc=yml_fnc_, **options):
     """
     if options.get('ac_safe', False):
         # .. note:: yaml.safe_load does not support any keyword options.
-        options = dict(ac_safe=True)
+        options = {"ac_safe": True}
 
     elif not options.get('Loader', False):
         maybe_container = options.get('ac_dict', False)
@@ -185,7 +185,7 @@ def yml_dump(data, stream, yml_fnc=yml_fnc_, **options):
     _is_dict = is_dict_like(data)
 
     if options.get('ac_safe', False):
-        options = dict(ac_safe=True)  # Same as yml_load.
+        options = {"ac_safe": True}  # Same as yml_load.
 
     elif not options.get('Dumper', False) and _is_dict:
         # TODO: Any other way to get its constructor?

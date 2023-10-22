@@ -2,6 +2,7 @@
 # Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
+# pylint: disable=consider-using-with, unspecified-encoding
 """Abstract and basic dumpes."""
 import io
 import typing
@@ -13,6 +14,9 @@ from .datatypes import (
 from .utils import (
     ensure_outdir_exists, not_implemented
 )
+
+
+_ENCODING = ioinfo.get_encoding()
 
 
 class DumperMixin:
@@ -35,7 +39,10 @@ class DumperMixin:
 
     def wopen(self, filepath: str, **kwargs):
         """Open file ``filepath`` with the write mode ``_open_write_mode``."""
-        return open(  # pylint: disable=consider-using-with
+        if 'b' not in self._open_write_mode and 'encoding' not in kwargs:
+            kwargs["encoding"] = _ENCODING
+
+        return open(
             filepath, self._open_write_mode, **kwargs
         )
 

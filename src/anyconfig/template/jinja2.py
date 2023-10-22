@@ -1,7 +1,7 @@
 #
 # Jinja2 (http://jinja.pocoo.org) based template renderer.
 #
-# Copyright (C) Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=wrong-import-position,wrong-import-order
@@ -9,6 +9,7 @@
 
 Template rendering module for jinja2-based template config files.
 """
+import locale
 import pathlib
 import os
 import typing
@@ -105,6 +106,9 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
                        ).from_string(tmpl_s).render(**ctx)
 
 
+_ENCODING: str = (locale.getpreferredencoding() or 'utf-8').lower()
+
+
 def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
                 paths: MaybePathsT = None, filters: MaybeFiltersT = None
                 ) -> str:
@@ -118,7 +122,7 @@ def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
     env = tmpl_env(make_template_paths(template_file, paths))  # type: ignore
 
     if env is None:
-        return open(template_file).read()
+        return open(template_file, encoding=_ENCODING).read()
 
     if filters is not None:
         env.filters.update(filters)

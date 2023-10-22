@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2023 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""ioinfo module to provide functions to create IOInfo objects.
@@ -24,11 +24,13 @@ IOInfo objects wrap pathlib.Path and io objects.
 from .datatypes import IOInfo, PathOrIOInfoT
 from .detectors import is_stream
 from .factory import make, makes
+from .utils import get_encoding
 
 __all__ = [
     'IOInfo', 'PathOrIOInfoT',
     'is_stream',
     'make', 'makes',
+    'get_encoding',
 ]
 
 # vim:sw=4:ts=4:et:

@@ -1,14 +1,21 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Utility funtions for anyconfig.ionfo."""
 import itertools
+import locale
 import pathlib
 import typing
 import warnings
 
 from .constants import GLOB_MARKER, PATH_SEP
+
+
+def get_encoding() -> str:
+    """Get the (prefered) encoding or 'utf-8'.
+    """
+    return (locale.getpreferredencoding() or 'UTF-8').lower()
 
 
 def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:

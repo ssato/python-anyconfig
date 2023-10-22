@@ -1,7 +1,9 @@
 #
-# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2018 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
+# FIXME:
+# mypy: disable-error-code=type-var
 """A collection of models.processor.Processor and children classes."""
 import operator
 import typing

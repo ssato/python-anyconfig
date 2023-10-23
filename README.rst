@@ -262,7 +262,7 @@ and backends in charge are enabled and ready to use:
 
 - Supported formats of which backends are enabled automatically if requirements are satisfied:
 
-.. csv-table:: Supported formarts if requirements are satisfied
+.. csv-table:: Supported format if requirements are satisfied
    :header: "Format", "Type", "Requirement"
    :widths: 15, 10, 40
 

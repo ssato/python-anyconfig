@@ -406,7 +406,7 @@ with using anyconfig.validate() since 0.0.10.
 .. code-block:: python
 
   # Validate a JSON config file (conf.json) with JSON schema (schema.json).
-  # If validatation succeeds, `rc` -> True, `err` -> ''.
+  # If validation succeeds, `rc` -> True, `err` -> ''.
   conf1 = anyconfig.load("/path/to/conf.json")
   schema1 = anyconfig.load("/path/to/schema.json")
   (rc, err) = anyconfig.validate(conf1, schema1)

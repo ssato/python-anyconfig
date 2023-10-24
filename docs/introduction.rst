@@ -147,7 +147,7 @@ with using JSON schema like the followings:
 .. code-block:: python
 
   # Validate a JSON config file (conf.json) with JSON schema (schema.yaml).
-  # If validatation succeeds, `rc` -> True, `err` -> ''.
+  # If validation succeeds, `rc` -> True, `err` -> ''.
   conf1 = anyconfig.load("/path/to/conf.json")
   schema1 = anyconfig.load("/path/to/schema.yaml")
   (rc, err) = anyconfig.validate(conf1, schema1)  # err is empty if success, rc == 0

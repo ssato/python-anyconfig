@@ -1,3 +1,5 @@
+.. This file was converted from sources (**/*.rst).  DO NOT EDIT THIS MANUALLY.
+
 =================
 python-anyconfig
 =================

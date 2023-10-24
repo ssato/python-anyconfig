@@ -380,7 +380,7 @@ Here are some examples of these usage:
   In [9]:
 
 Like this example, it's not always possible to dump data to any formats because
-of limitations of formarts and/or backends.
+of limitations of formats and/or backends.
 
 Keep the order of configuration items
 ----------------------------------------

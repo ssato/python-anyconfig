@@ -23,7 +23,7 @@ Changelog:
 try:
     import tomllib
 except ModuleNotFoundError:
-    import tomli as tomllib
+    import tomli as tomllib  # type: ignore
 
 import tomli_w
 

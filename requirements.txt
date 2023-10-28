@@ -6,3 +6,5 @@ jsonschema
 ruamel.yaml
 simplejson
 toml
+tomli; python_version < "3.11"
+tomli-w

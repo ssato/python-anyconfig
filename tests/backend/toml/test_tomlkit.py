@@ -16,6 +16,7 @@ from .common import CNF
 
 CNF["owner"]["dob"] = TT.tomlkit.loads("dob = 1979-05-27T07:32:00Z")['dob']
 
+
 class HasParserTrait(TBC.HasParserTrait):
     psr = TT.Parser()
     cnf = CNF

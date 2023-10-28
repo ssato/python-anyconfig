@@ -23,7 +23,7 @@ PARSERS: ParserClssT = []  # type: ignore
 
 try:
     from . import tomllib
-    PARSERS: ParserClssT = [tomllib.Parser]
+    PARSERS.append(tomllib.Parser)
 except ImportError:
     pass
 

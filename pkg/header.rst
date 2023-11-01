@@ -32,7 +32,7 @@ python-anyconfig
    :target: https://scrutinizer-ci.com/g/ssato/python-anyconfig
    :alt: [Code Quality by Scrutinizer]
 
-.. image:: https://img.shields.io/lgtm/grade/python/g/ssato/python-anyconfig.svg
+.. .. image:: https://img.shields.io/lgtm/grade/python/g/ssato/python-anyconfig.svg
    :target: https://lgtm.com/projects/g/ssato/python-anyconfig/context:python
    :alt: [Code Quality by LGTM]
 

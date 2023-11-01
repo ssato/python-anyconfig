@@ -28,7 +28,7 @@ PARSERS: ParserClssT = [
 
 
 def warn(name: str, feature: str):
-    """An wraper for warnings.warn."""
+    """Wraper for warnings.warn."""
     warnings.warn(
         f"'{name}' module is not available. Disabled {feature} support.",
         category=ImportWarning, stacklevel=2

@@ -13,8 +13,7 @@ from .constants import GLOB_MARKER, PATH_SEP
 
 
 def get_encoding() -> str:
-    """Get the (prefered) encoding or 'utf-8'.
-    """
+    """Get the (prefered) encoding or 'utf-8'."""
     return (locale.getpreferredencoding() or 'UTF-8').lower()
 
 

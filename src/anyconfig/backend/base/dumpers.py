@@ -39,7 +39,7 @@ class DumperMixin:
 
     def wopen(self, filepath: str, **kwargs):
         """Open file ``filepath`` with the write mode ``_open_write_mode``."""
-        if 'b' not in self._open_write_mode and 'encoding' not in kwargs:
+        if 'encoding' not in kwargs and self._open_write_mode == 'w':
             kwargs["encoding"] = _ENCODING
 
         return open(

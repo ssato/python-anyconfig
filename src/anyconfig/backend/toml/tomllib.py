@@ -30,7 +30,10 @@ import tomli_w
 from .. import base
 
 
-class Parser(base.StringStreamFnParser):
+class Parser(
+    base.StringStreamFnParser,
+    base.BinaryLoaderMixin, base.BinaryDumperMixin
+):
     """TOML parser using tomlib and tomli-w."""
 
     _cid = 'toml.tomllib'

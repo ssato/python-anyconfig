@@ -68,7 +68,7 @@ class LoaderMixin:
 
     def ropen(self, filepath, **kwargs):
         """Open files with read only mode."""
-        if 'encoding' not in kwargs and 'b' not in self._open_read_mode:
+        if 'encoding' not in kwargs and self._open_read_mode == 'r':
             kwargs["encoding"] = _ENCODING
 
         return open(

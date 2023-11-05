@@ -5,30 +5,25 @@
 # pylint: disable=missing-docstring
 r"""Compute paths.
 """
-import functools
 import pathlib
 
 
-TEST_TOPDIR: pathlib.Path = pathlib.Path(__file__).parent.parent.resolve()
+TEST_DATA_MAJOR_VERSION: int = 1
+
+TESTDIR: pathlib.Path = pathlib.Path(__file__).parent.parent.resolve()
+RESOURCE_DIR: pathlib.Path = TESTDIR / "res" / str(TEST_DATA_MAJOR_VERSION)
 
 
-@functools.lru_cache(maxsize=None)
-def resdir(major_version: int = 1) -> pathlib.Path:
-    """Top dir to provide test resource data.
-    """
-    return TEST_TOPDIR / "res" / str(major_version)
-
-
-def loader_resdir(loader: str, major_version: int = 1) -> pathlib.Path:
+def loader_resdir(loader: str) -> pathlib.Path:
     """Top dir to provide test resource data for the loader ``loader``.
     """
-    return resdir(major_version=major_version) / "loaders" / loader
+    return RESOURCE_DIR / "loaders" / loader
 
 
-def dumper_resdir(dumper: str, major_version: int = 1) -> pathlib.Path:
+def dumper_resdir(dumper: str) -> pathlib.Path:
     """Top dir to provide test resource data for the dumper ``dumper``.
     """
-    return resdir(major_version=major_version) / "dumpers" / dumper
+    return RESOURCE_DIR / "dumpers" / dumper
 
 
 def get_expected_data_path(

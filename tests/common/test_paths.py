@@ -5,6 +5,7 @@
 # pylint: disable=missing-docstring
 r"""Test cases for tests.common.paths.
 """
+import os.path
 import pathlib
 
 import pytest
@@ -12,34 +13,35 @@ import pytest
 from . import paths
 
 
-@pytest.mark.parametrize(
-    ("mver", "exp"),
-    ((1, paths.TEST_TOPDIR / "res" / "1"),
-     (200, paths.TEST_TOPDIR / "res" / "200"),
-     )
-)
-def test_resdir(mver: int, exp: pathlib.Path):
-    assert paths.resdir(mver) == exp
+def test_module_globals():
+    assert str(paths.TESTDIR) == os.path.abspath(
+        f"{os.path.dirname(__file__)}/.."
+    )
+    assert str(paths.RESOURCE_DIR) == os.path.abspath(
+        f"{os.path.dirname(__file__)}/../res/{paths.TEST_DATA_MAJOR_VERSION!s}"
+    )
 
 
 @pytest.mark.parametrize(
-    ("loader", "mver", "exp"),
-    (("json.json", 1, paths.TEST_TOPDIR / "res" / "1" / "loaders" / "json.json"),
-     ("toml.tomllib", 20, paths.TEST_TOPDIR / "res" / "20" / "loaders" / "toml.tomllib"),
+    ("loader", "exp"),
+    (("json.json", paths.TESTDIR / "res" / "1" / "loaders" / "json.json"),
+     ("toml.tomllib",
+      paths.TESTDIR / "res" / "1" / "loaders" / "toml.tomllib"),
      )
 )
-def test_loader(loader: str, mver: int, exp: pathlib.Path):
-    assert paths.loader_resdir(loader, mver) == exp
+def test_loader(loader: str, exp: pathlib.Path):
+    assert paths.loader_resdir(loader) == exp
 
 
 @pytest.mark.parametrize(
-    ("dumper", "mver", "exp"),
-    (("json.json", 1, paths.TEST_TOPDIR / "res" / "1" / "dumpers" / "json.json"),
-     ("toml.tomllib", 20, paths.TEST_TOPDIR / "res" / "20" / "dumpers" / "toml.tomllib"),
+    ("dumper", "exp"),
+    (("json.json", paths.TESTDIR / "res" / "1" / "dumpers" / "json.json"),
+     ("toml.tomllib",
+      paths.TESTDIR / "res" / "1" / "dumpers" / "toml.tomllib"),
      )
 )
-def test_dumper(dumper: str, mver: int, exp: pathlib.Path):
-    assert paths.dumper_resdir(dumper, mver) == exp
+def test_dumper(dumper: str, exp: pathlib.Path):
+    assert paths.dumper_resdir(dumper) == exp
 
 
 @pytest.mark.parametrize(

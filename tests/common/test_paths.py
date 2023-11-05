@@ -39,3 +39,13 @@ def test_resdir(mver: int, exp: pathlib.Path):
 )
 def test_loader(loader: str, mver: int, exp: pathlib.Path):
     assert paths.loader_resdir(loader, mver) == exp
+
+
+@pytest.mark.parametrize(
+    ("dumper", "mver", "exp"),
+    (("json.json", 1, TESTDIR / "res" / "1" / "dumpers" / "json.json"),
+     ("toml.tomllib", 20, TESTDIR / "res" / "20" / "dumpers" / "toml.tomllib"),
+     )
+)
+def test_dumper(dumper: str, mver: int, exp: pathlib.Path):
+    assert paths.dumper_resdir(dumper, mver) == exp

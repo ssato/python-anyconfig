@@ -7,7 +7,6 @@ r"""Compute paths.
 """
 import functools
 import pathlib
-import sys
 
 
 def test_topdir() -> pathlib.Path:
@@ -27,3 +26,9 @@ def loader_resdir(loader: str, major_version: int = 1) -> pathlib.Path:
     """Top dir to provide test resource data for the loader ``loader``.
     """
     return resdir(major_version=major_version) / "loaders" / loader
+
+
+def dumper_resdir(dumper: str, major_version: int = 1) -> pathlib.Path:
+    """Top dir to provide test resource data for the dumper ``dumper``.
+    """
+    return resdir(major_version=major_version) / "dumpers" / dumper

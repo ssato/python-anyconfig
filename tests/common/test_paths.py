@@ -49,3 +49,15 @@ def test_loader(loader: str, mver: int, exp: pathlib.Path):
 )
 def test_dumper(dumper: str, mver: int, exp: pathlib.Path):
     assert paths.dumper_resdir(dumper, mver) == exp
+
+
+@pytest.mark.parametrize(
+    ("ipath", "exp"),
+    (("/tmp/a/tests/res/1/loaders/toml.tomllib/10/100_null.toml",
+      "/tmp/a/tests/res/1/loaders/toml.tomllib/10/e/100_null.toml.json"),
+     )
+)
+def test_get_expected_data_path(ipath, exp):
+    assert paths.get_expected_data_path(
+        pathlib.Path(ipath)
+    ) == pathlib.Path(exp)

@@ -32,3 +32,11 @@ def dumper_resdir(dumper: str, major_version: int = 1) -> pathlib.Path:
     """Top dir to provide test resource data for the dumper ``dumper``.
     """
     return resdir(major_version=major_version) / "dumpers" / dumper
+
+
+def get_expected_data_path(
+    ipath: pathlib.Path, file_ext: str = "json"
+) -> pathlib.Path:
+    """Get a path to expected data for input, `ipath`.
+    """
+    return ipath.parent / "e" / f"{ipath.name}.{file_ext}"

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-r"""Testcases for tests.common.load_py.
+r"""Testcases for tests.common.load_data.
 """
 import pathlib
 import typing
@@ -13,12 +13,8 @@ import pytest
 from . import (
     globals_,
     load_data as TT,
-    load_py,
     paths
 )
-
-
-JSON_DATA_DIR: pathlib.Path = paths.loader_resdir("json.json") / "10"
 
 
 @pytest.mark.parametrize(
@@ -35,36 +31,45 @@ def test_load_data__py(
 
 
 @pytest.mark.parametrize(
-    ("path", "exp"),
-    [(p, TT.load_data(p.parent / "e" / f"{p.name}.py", file_ext="py"))
-     for p in JSON_DATA_DIR.glob("*.json")]
+    ("loader_or_dumper", "is_loader"),
+    (
+        ("json.json", True),
+    ),
 )
-def test_load_data__json(path: pathlib.Path, exp: typing.Any):
-    assert TT.load_data(path, file_ext="json") == exp
-    assert TT.load_data(path) == exp
-
-    # python > 3.7.0 keeps insertion order of items in dicts.
-    #
-    # .. seealso::
-    #    https://docs.python.org/3.7/whatsnew/3.7.html
-    #    https://mail.python.org/pipermail/python-dev/2017-December/151283.html
-    assert TT.load_data(path, keep_order=True) == exp
-
-
-@pytest.mark.parametrize(
-    ("loader", "file_ext", "exp_ext"),
-    (("json.json", "json", "py"),
-     ("toml.tomllib", "toml", "json"),
-     )
-)
-def test_load_test_data_for_loader(
-    loader: str, file_ext: TT.FILE_EXT, exp_ext: TT.FILE_EXT
+def test_load_test_data(
+    loader_or_dumper: str, is_loader: bool,
+    tmp_path: pathlib.Path
 ):
-    res = TT.load_test_data_for_loader(
-        loader, file_ext=file_ext, exp_ext=exp_ext
+    resdir = paths.get_resource_dir(
+        loader_or_dumper, is_loader=is_loader, topdir=tmp_path
     )
-    assert res
+    pss = [
+        (resdir / "00" / "00_10.json",
+         resdir / "00" / "e" / "00_10.json.py"),
+        (resdir / "10" / "10_10.json",
+         resdir / "10" / "e" / "10_10.json.py"),
+    ]
+    kwargs = {
+        "topdir": tmp_path
+    }
 
-    # implicit cases.
-    res = TT.load_test_data_for_loader(loader, exp_ext=exp_ext)
-    assert res
+    res = TT.load_test_data(loader_or_dumper, is_loader=is_loader, **kwargs)
+    assert res == [], res
+
+    for ipath, epath in pss:
+        if not epath.parent.is_dir():
+            epath.parent.mkdir(parents=True)
+        ipath.touch()
+        epath.touch()
+
+    (resdir / "00" / "e" / "00_10.json.py").write_text("{}")
+    (resdir / "10" / "e" / "10_10.json.py").write_text("[1, 42]")
+
+    exp = [
+        (pss[0][0], {}),
+        (pss[1][0], [1, 42]),
+    ]
+
+    assert TT.load_test_data(
+        loader_or_dumper, is_loader=is_loader, **kwargs
+    ) == exp

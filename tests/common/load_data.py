@@ -39,41 +39,17 @@ def load_data(
     return None
 
 
-def load_test_data_for_loader(
-    loader: str, file_ext: FILE_EXT = "*",
-    exp_ext: FILE_EXT = "json",
-    keep_order: bool = False
+def load_test_data(
+    loader_or_dumper: str, is_loader: bool = True,
+    keep_order: bool = False, **kwargs
 ) -> typing.List[
     typing.Tuple[pathlib.Path, typing.Any]
 ]:
-    """Make a list of tples of test resource data pairs for loaders.
+    """Make a list of tuples of test data pairs for loader or dumper.
     """
     return [
-        (f, load_data(
-            paths.get_expected_data_path(f, exp_ext),
-            file_ext=exp_ext, keep_order=keep_order
-        ))
-        for f in paths.loader_resdir(loader).glob(f"*/*.{file_ext}")
-        if f.is_file()
-    ]
-
-
-def load_test_data_for_dumper(
-    dumper: str, file_ext: FILE_EXT = "*",
-    exp_ext: FILE_EXT = "json",
-    keep_order: bool = False
-) -> typing.List[
-    typing.Tuple[pathlib.Path, pathlib.Path, typing.Any]
-]:
-    """Make a list of tples of test resource data pairs for loaders.
-    """
-    path_pairs = [  # [(input_filepath, expected_filepath)]
-        (f, paths.get_expected_data_path(f, exp_ext))
-        for f in paths.dumper_resdir(dumper).glob(f"*/*.{file_ext}")
-        if f.is_file()
-    ]
-
-    return [
-        (f, e, load_data(e, file_ext=exp_ext, keep_order=keep_order))
-        for f, e in path_pairs
+        (ipath, load_data(epath, keep_order=keep_order))
+        for ipath, epath in paths.get_data_path_pairs(
+            loader_or_dumper, is_loader=is_loader, **kwargs
+        )
     ]

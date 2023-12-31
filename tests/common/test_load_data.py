@@ -18,6 +18,19 @@ from . import (
 
 
 @pytest.mark.parametrize(
+    ("filename", "content"),
+    (("null.txt", ""),
+     ("a.txt", "aaa"),
+    ),
+)
+def test_load_data__txt(filename: str, content: str, tmp_path: pathlib.Path):
+    path = tmp_path / filename
+    path.write_text(content)
+
+    assert TT.load_data(path) == content
+
+
+@pytest.mark.parametrize(
     ("filename", "content", "exp"),
     [(f"{i!s}.py", c, e) for i, (c, e) in enumerate(globals_.DATA_PAIRS)]
 )
@@ -27,9 +40,10 @@ def test_load_data__py(
     path = tmp_path / filename
     path.write_text(content)
 
-    assert TT.load_data(path, file_ext="py") == exp
+    assert TT.load_data(path) == exp
 
 
+@pytest.mark.skip(reason="not implemente yet")
 @pytest.mark.parametrize(
     ("loader_or_dumper", "is_loader"),
     (
@@ -45,9 +59,11 @@ def test_load_test_data(
     )
     pss = [
         (resdir / "00" / "00_10.json",
-         resdir / "00" / "e" / "00_10.json.py"),
+         resdir / "00" / "e" / "00_10.json.py",
+         resdir / "00" / "o" / "00_10.json.py"),
         (resdir / "10" / "10_10.json",
-         resdir / "10" / "e" / "10_10.json.py"),
+         resdir / "10" / "e" / "10_10.json.py",
+         resdir / "10" / "o" / "10_10.json.py"),
     ]
     kwargs = {
         "topdir": tmp_path

@@ -32,45 +32,44 @@ def get_resource_dir(
     ) / loader_or_dumper
 
 
-def get_expected_data_path(
-    ipath: pathlib.Path,
+def get_aux_data_path(
+    ipath: pathlib.Path, subdir: str = "e",
     file_ext: typing.Union[str, bool] = False,
     exts_to_try: typing.Tuple[str, ...] = EXTS_TO_TRY,
-    **_kwargs
+    **_kwargs,
 ) -> typing.Optional[pathlib.Path]:
-    """Get a path to expected data for input, `ipath`.
-    """
+    """Get a path to auxiliary data for input, `ipath`."""
     if file_ext:
-        candidate = ipath.parent / "e" / f"{ipath.name}.{file_ext}"
+        candidate = ipath.parent / subdir / f"{ipath.name}.{file_ext}"
         if candidate.exists():
             return candidate
 
     for ext in exts_to_try:
-        candidate = ipath.parent / "e" / f"{ipath.name}.{ext}"
+        candidate = ipath.parent / subdir / f"{ipath.name}.{ext}"
         if candidate.exists():
             return candidate
 
     return None
 
 
-def get_data_path_pairs(
+def get_data_paths(
     loader_or_dumper: str, is_loader: bool = True,
-    file_ext: typing.Union[str, bool] = False,
-    exts_to_try: typing.Tuple[str, ...] = EXTS_TO_TRY,
     topdir: typing.Optional[pathlib.Path] = None,
-    **_kwargs
-) -> typing.List[typing.Tuple[pathlib.Path, pathlib.Path]]:
-    """Get a path to expected data for input, `ipath`.
-    """
+    **kwargs
+) -> typing.List[
+    typing.Tuple[pathlib.Path, typing.Dict[str, pathlib.Path]]
+]:
+    """Get a set of data paths."""
     resdir = get_resource_dir(
         loader_or_dumper, is_loader=is_loader, topdir=topdir
     )
     return sorted(
         (
             ipath,
-            get_expected_data_path(
-                ipath, file_ext=file_ext, exts_to_try=exts_to_try
-            )
+            {
+                d.name: get_aux_data_path(ipath, d.name, *kwargs)
+                for d in ipath.parent.glob("*") if d.is_dir()
+            },
         )
         for ipath in resdir.glob("*/*.*") if ipath.is_file()
     )

@@ -11,23 +11,23 @@ import typing
 
 import pytest
 
-from . import paths
+from . import paths as TT
 
 
 def test_module_globals():
-    assert str(paths.TESTDIR) == os.path.abspath(
+    assert str(TT.TESTDIR) == os.path.abspath(
         f"{os.path.dirname(__file__)}/.."
     )
 
 
 @pytest.mark.parametrize(
     ("loader_or_dumper", "is_loader", "topdir", "exp"),
-    (("json.json", True, None, paths.RESOURCE_DIR / "loaders" / "json.json"),
+    (("json.json", True, None, TT.RESOURCE_DIR / "loaders" / "json.json"),
      ("toml.tomllib", True, None,
-      paths.RESOURCE_DIR / "loaders" / "toml.tomllib"),
-     ("json.json", False, None, paths.RESOURCE_DIR / "dumpers" / "json.json"),
+      TT.RESOURCE_DIR / "loaders" / "toml.tomllib"),
+     ("json.json", False, None, TT.RESOURCE_DIR / "dumpers" / "json.json"),
      ("toml.tomllib", False, None,
-      paths.RESOURCE_DIR / "dumpers" / "toml.tomllib"),
+      TT.RESOURCE_DIR / "dumpers" / "toml.tomllib"),
      ("yaml.yaml", True, pathlib.Path("/tmp"),
       pathlib.Path("/tmp") / "loaders" / "yaml.yaml"),
      )
@@ -36,67 +36,79 @@ def test_get_resource_dir(
     loader_or_dumper: str, is_loader: bool,
     topdir: typing.Optional[pathlib.Path], exp: pathlib.Path
 ):
-    assert paths.get_resource_dir(
+    assert TT.get_resource_dir(
         loader_or_dumper, is_loader=is_loader, topdir=topdir
     ) == exp
 
 
 @pytest.mark.parametrize(
-    ("ipath", "file_ext", "exts_to_try", "exp"),
-    ((paths.RESOURCE_DIR / "loaders/json.json/10/100_null.json",
-      False, paths.EXTS_TO_TRY,
-      paths.RESOURCE_DIR / "loaders/json.json/10/e/100_null.json.py"),
-     (paths.RESOURCE_DIR / "loaders/json.json/10/100_null.json",
-      "ext_not_exists", paths.EXTS_TO_TRY,
-      paths.RESOURCE_DIR / "loaders/json.json/10/e/100_null.json.py"),
+    ("ipath", "subdir", "file_ext", "exts_to_try", "exp"),
+    ((TT.RESOURCE_DIR / "loaders/json.json/10/100_null.json",
+      "e", False, TT.EXTS_TO_TRY,
+      TT.RESOURCE_DIR / "loaders/json.json/10/e/100_null.json.py"),
+     (TT.RESOURCE_DIR / "loaders/json.json/10/100_null.json",
+      "e", "ext_not_exists", TT.EXTS_TO_TRY,
+      TT.RESOURCE_DIR / "loaders/json.json/10/e/100_null.json.py"),
      (pathlib.Path("not/exist/dir/data.json"),
-      False, paths.EXTS_TO_TRY, None),
-     (paths.RESOURCE_DIR / "loaders/json.json/10/100_null.json",
-      False, (), None),
-     (paths.RESOURCE_DIR / "999_file_does_not_exist.json",
-      False, (), None),
+      "e", False, TT.EXTS_TO_TRY, None),
+     (TT.RESOURCE_DIR / "loaders/json.json/10/100_null.json",
+      "e", False, (), None),
+     (TT.RESOURCE_DIR / "999_file_does_not_exist.json",
+      "e", False, (), None),
      )
 )
-def test_get_expected_data_path(
-    ipath: pathlib.Path, file_ext: typing.Union[str, bool],
+def test_get_aux_data_path(
+    ipath: pathlib.Path,
+    subdir: str,
+    file_ext: typing.Union[str, bool],
     exts_to_try: typing.Tuple[str, ...],
     exp: typing.Optional[pathlib.Path]
 ):
-    assert paths.get_expected_data_path(
-        ipath, file_ext=file_ext, exts_to_try=exts_to_try
+    assert TT.get_aux_data_path(
+        ipath, subdir=subdir, file_ext=file_ext, exts_to_try=exts_to_try
     ) == exp
 
 
 @pytest.mark.parametrize(
-    ("loader_or_dumper", "is_loader"),
+    ("loader_or_dumper", "is_loader", "rel_epaths"),
     (
-        ("json.json", True),
+        ("json.json", True, [("00/00_10.json", {})]),
+        ("json.json", True, [("00/00_10.json", {}), ("00/00_20.json", {})]),
+        ("json.json", True, [("00/00_10.json", {"e": "00/e/00_10.json.py"})]),
+        ("json.json", True,
+         [("00/00_10.json", {"e": "00/e/00_10.json.py"}),
+          ("00/00_20.json", {"e": "00/e/00_20.json.py"})]),
     ),
 )
-def test_get_data_path_pairs(
+def test_get_data_paths(
     loader_or_dumper: str, is_loader: bool,
+    rel_epaths: typing.List[
+        typing.Tuple[str, typing.Dict[str, pathlib.Path]]
+    ],
     tmp_path: pathlib.Path
 ):
-    resdir = paths.get_resource_dir(
+    resdir = TT.get_resource_dir(
         loader_or_dumper, is_loader=is_loader, topdir=tmp_path
     )
     exp = [
-        (resdir / "00" / "00_10.json",
-         resdir / "00" / "e" / "00_10.json.py"),
-        (resdir / "10" / "10_10.xyz",
-         resdir / "10" / "e" / "10_10.xyz.json"),
+        (resdir / ipath, {d: resdir / a for d, a in d_apaths.items()})
+        for ipath, d_apaths in rel_epaths
     ]
-    assert paths.get_data_path_pairs(
+
+    assert TT.get_data_paths(
         loader_or_dumper, is_loader=is_loader, topdir=tmp_path
     ) == []
 
-    for ipath, epath in exp:
-        if not epath.parent.is_dir():
-            epath.parent.mkdir(parents=True)
-
+    for ipath, apaths in exp:
+        ipath.parent.mkdir(parents=True, exist_ok=True)
         ipath.touch()
-        epath.touch()
 
-    assert paths.get_data_path_pairs(
+        for apath in apaths.values():
+            adir = apath.parent
+            if not adir.exists():
+                adir.mkdir()
+            apath.touch()
+
+    assert TT.get_data_paths(
         loader_or_dumper, is_loader=is_loader, topdir=tmp_path
     ) == exp

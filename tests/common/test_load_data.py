@@ -21,11 +21,20 @@ from . import (
     ("filename", "content"),
     (("null.txt", ""),
      ("a.txt", "aaa"),
-    ),
+     ("b_null.dat", b""),
+     ("display.dat", b"\xe8\xa1\xa8\xe7\xa4\xba"),
+     ),
 )
-def test_load_data__txt(filename: str, content: str, tmp_path: pathlib.Path):
+def test_load_data__txt_or_bytes(
+    filename: str, content: typing.Union[str, bytes],
+    tmp_path: pathlib.Path
+):
     path = tmp_path / filename
-    path.write_text(content)
+
+    if isinstance(content, str):
+        path.write_text(content)
+    else:
+        path.write_bytes(content)
 
     assert TT.load_data(path) == content
 

@@ -15,8 +15,10 @@ TESTDIR: pathlib.Path = pathlib.Path(__file__).parent.parent.resolve()
 RESOURCE_DIR: pathlib.Path = TESTDIR / "res" / str(TEST_DATA_MAJOR_VERSION)
 
 EXTS_TO_TRY: typing.Tuple[str, ...] = (
-    "json",
+    "txt",
+    "dat",
     "py",
+    "json",
     "pickle",
 )
 

@@ -8,10 +8,9 @@ r"""Functions to load test data.
 import collections
 import json
 import pathlib
-import typing
 
 from . import (
-    load_py, paths,
+    load_py,
 )
 
 
@@ -38,29 +37,4 @@ def load_data(
 
         return json.load(path.open(), **kwargs)
 
-    return None
-
-
-def load_test_data(
-    loader_or_dumper: str, is_loader: bool = True,
-    keep_order: bool = False, **kwargs
-) -> typing.List[
-    typing.Tuple[pathlib.Path, typing.Any, typing.Any]
-]:
-    """Make a list of tuples of test data pairs for loader or dumper.
-
-    :return:
-        A list of tuples of (input_file_path, {subdir: loaded_data})
-    """
-    return [
-        (
-            ipath,
-            {
-                subdir: load_data(apath, keep_order=keep_order)
-                for subdir, apath in apaths.items()
-            }
-        )
-        for ipath, apaths in paths.get_data_paths(
-            loader_or_dumper, is_loader=is_loader, **kwargs
-        )
-    ]
+    raise ValueError(f"Unknown type of file was gigven: {path!r}")

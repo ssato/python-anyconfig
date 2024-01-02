@@ -73,6 +73,18 @@ def get_aux_data_paths(
     return {p.parent.name: p for p in paths_g}
 
 
+def get_data(
+    topdir: typing.Optional[pathlib.Path],
+    file_extensions: typing.Tuple[str, ...] = (),
+) -> typing.List[
+    typing.Tuple[pathlib.Path, typing.Dict[str, pathlib.Path]]
+]:
+    return sorted(
+        (ipath, get_aux_data_paths(ipath, file_extensions))
+        for ipath in topdir.glob("*.*") if ipath.is_file()
+    )
+
+
 def get_data_paths(
     loader_or_dumper: str, is_loader: bool = True,
     topdir: typing.Optional[pathlib.Path] = None,

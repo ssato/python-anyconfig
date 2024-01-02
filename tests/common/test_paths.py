@@ -105,6 +105,46 @@ def test_get_aux_data_paths(
 
 
 @pytest.mark.parametrize(
+    ("ipaths", "aux_paths", "file_extensions"),
+    ((("no_aux_data.json", ), (), ()),
+     (("10_no_aux_data.json", "20_no_aux_data.json"), (), ()),
+     (("an_aux_data.yml", ), ("e/an_aux_data.json", ), ()),
+     (("10_an_aux_data.yml", "50_an_aux_data.yml"),
+      ("e/10_an_aux_data.json", "e/50_an_aux_data.json"), ()),
+     (("10_some_aux_data.yml", "99_some_aux_data.yml"),
+      ("e/10_some_aux_data.json", "o/10_some_aux_data.yml",
+       "e/99_some_aux_data.json", "o/99_some_aux_data.yml",),
+      ()),
+     )
+)
+def test_get_data(
+    ipaths: typing.Tuple[str], aux_paths: typing.Tuple[str, ...],
+    file_extensions: typing.Tuple[str, ...],
+    tmp_path: pathlib.Path
+):
+    for ipath in ipaths:
+        (tmp_path / ipath).touch()
+
+    paths = [tmp_path / a for a in aux_paths]
+    for apath in paths:
+        adir = apath.parent
+
+        if not adir.exists():
+            adir.mkdir(parents=True)
+            apath.touch()
+
+            (adir / "file_to_be_ignored_012.json").touch()
+
+    expected = sorted(
+        (tmp_path / ipath, TT.get_aux_data_paths(tmp_path / ipath))
+        for ipath in ipaths
+    )
+
+    res = TT.get_data(tmp_path, file_extensions)
+    assert res == expected
+
+
+@pytest.mark.parametrize(
     ("loader_or_dumper", "is_loader", "rel_epaths"),
     (
         ("json.json", True, [("00/00_10.json", {})]),

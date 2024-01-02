@@ -70,6 +70,39 @@ def test_get_aux_data_path(
 
 
 @pytest.mark.parametrize(
+    ("ipath", "aux_paths", "file_extensions"),
+    (("no_aux_data.json", (), ()),
+     ("an_aux_data.yml", ("e/an_aux_data.json", ), ()),
+     ("some_aux_data.yml",
+      ("e/some_aux_data.json", "o/some_aux_data.yml"),
+      ()),
+     )
+)
+def test_get_aux_data_paths(
+    ipath: str, aux_paths: typing.Tuple[str, ...],
+    file_extensions: typing.Tuple[str, ...],
+    tmp_path: pathlib.Path
+):
+    (tmp_path / ipath).touch()
+    expected = [tmp_path / a for a in aux_paths]
+    for apath in expected:
+        adir = apath.parent
+
+        if not adir.exists():
+            adir.mkdir(parents=True)
+            apath.touch()
+
+            (adir / "file_to_be_ignored_012.json").touch()
+
+    if file_extensions:
+        suffixes = [f".{x}" for x in file_extensions]
+        expected = [e for e in expected if e.suffix in suffixes]
+
+    res = TT.get_aux_data_paths(tmp_path / ipath, file_extensions)
+    assert res == expected
+
+
+@pytest.mark.parametrize(
     ("loader_or_dumper", "is_loader", "rel_epaths"),
     (
         ("json.json", True, [("00/00_10.json", {})]),

@@ -54,6 +54,25 @@ def get_aux_data_path(
     return None
 
 
+def get_aux_data_paths(
+    ipath: pathlib.Path,
+    file_extensions: typing.Tuple[str, ...] = (),
+    **_kwargs,
+) -> typing.List[pathlib.Path]:
+    """Get a list of paths to auxiliary data for input, `ipath`.
+
+    It expects that aux data is in `ipath.parent`/*/.
+    """
+    name = ipath.name[:-len(ipath.suffix)]  # /a/b/c.json -> c
+    paths_g = ipath.parent.glob(f"*/{name}.*")
+
+    if file_extensions:
+        suffixes = [f".{x}" for x in file_extensions]
+        return sorted(p for p in paths_g if p.suffix in suffixes)
+
+    return sorted(paths_g)
+
+
 def get_data_paths(
     loader_or_dumper: str, is_loader: bool = True,
     topdir: typing.Optional[pathlib.Path] = None,

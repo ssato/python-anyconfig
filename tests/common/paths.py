@@ -58,8 +58,8 @@ def get_aux_data_paths(
     ipath: pathlib.Path,
     file_extensions: typing.Tuple[str, ...] = (),
     **_kwargs,
-) -> typing.List[pathlib.Path]:
-    """Get a list of paths to auxiliary data for input, `ipath`.
+) -> typing.Dict[str, pathlib.Path]:
+    """Get a map of subdirs and paths to auxiliary data for input, `ipath`.
 
     It expects that aux data is in `ipath.parent`/*/.
     """
@@ -68,9 +68,9 @@ def get_aux_data_paths(
 
     if file_extensions:
         suffixes = [f".{x}" for x in file_extensions]
-        return sorted(p for p in paths_g if p.suffix in suffixes)
+        paths_g = (p for p in paths_g if p.suffix in suffixes)
 
-    return sorted(paths_g)
+    return {p.parent.name: p for p in paths_g}
 
 
 def get_data_paths(

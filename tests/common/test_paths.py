@@ -84,8 +84,8 @@ def test_get_aux_data_paths(
     tmp_path: pathlib.Path
 ):
     (tmp_path / ipath).touch()
-    expected = [tmp_path / a for a in aux_paths]
-    for apath in expected:
+    paths = [tmp_path / a for a in aux_paths]
+    for apath in paths:
         adir = apath.parent
 
         if not adir.exists():
@@ -96,7 +96,9 @@ def test_get_aux_data_paths(
 
     if file_extensions:
         suffixes = [f".{x}" for x in file_extensions]
-        expected = [e for e in expected if e.suffix in suffixes]
+        paths = [p for p in paths if p.suffix in suffixes]
+
+    expected = {p.parent.name: p for p in paths}
 
     res = TT.get_aux_data_paths(tmp_path / ipath, file_extensions)
     assert res == expected

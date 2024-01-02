@@ -5,6 +5,7 @@
 # pylint: disable=missing-docstring
 r"""Test cases for tests.common.paths.
 """
+import json
 import os.path
 import pathlib
 import typing
@@ -105,4 +106,53 @@ def test_get_data(
     )
 
     res = TT.get_data(tmp_path)
+    assert res == expected
+
+
+@pytest.mark.parametrize(
+    ("ipaths", "aux_data"),
+    ((("no_aux_data.json", ), ()),
+     (("10_no_aux_data.json", "20_no_aux_data.json"), ()),
+     (("an_aux_data.yml", ), (("e/an_aux_data.json", 1), )),
+     (("10_an_aux_data.yml", "50_an_aux_data.yml"),
+      (("e/10_an_aux_data.json", "aaa"), ("e/50_an_aux_data.json", [1, 2]))),
+     (("10_some_aux_data.yml", "99_some_aux_data.yml"),
+      (("e/10_some_aux_data.json", 1),
+       ("o/10_some_aux_data.json", {"a": 2}),
+       ("e/99_some_aux_data.json", [2, 3]),
+       ("o/99_some_aux_data.json", {"a": "a"}))),
+     )
+)
+def test_load_data(
+    ipaths: typing.Tuple[str],
+    aux_data: typing.Tuple[typing.Tuple[str, typing.Any], ...],
+    tmp_path: pathlib.Path
+):
+    for ipath in ipaths:
+        (tmp_path / ipath).touch()
+
+    for apath, adata in aux_data:
+        apath = tmp_path / apath
+        adir = apath.parent
+
+        if not adir.exists():
+            adir.mkdir(parents=True)
+            json.dump(adata, apath.open(mode='w'))
+
+            (adir / "file_to_be_ignored_012.json").touch()
+
+    amap = {tmp_path / p: d for p, d in aux_data}
+    expected = sorted(
+        (
+            tmp_path / ipath,
+            {
+                s: amap[p] for s, p
+                in TT.get_aux_data_paths(tmp_path / ipath).items()
+            }
+        )
+        for ipath in ipaths
+    )
+
+    res = TT.load_data(tmp_path)
+    assert res
     assert res == expected

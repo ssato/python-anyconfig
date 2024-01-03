@@ -75,12 +75,16 @@ def test_get_aux_data_paths(
     ("ipaths", "aux_paths"),
     ((("no_aux_data.json", ), ()),
      (("10_no_aux_data.json", "20_no_aux_data.json"), ()),
+     (("10/10_no_aux_data.json", "20/20_no_aux_data.json"), ()),
      (("an_aux_data.yml", ), ("e/an_aux_data.json", )),
      (("10_an_aux_data.yml", "50_an_aux_data.yml"),
       ("e/10_an_aux_data.json", "e/50_an_aux_data.json")),
      (("10_some_aux_data.yml", "99_some_aux_data.yml"),
       ("e/10_some_aux_data.json", "o/10_some_aux_data.yml",
        "e/99_some_aux_data.json", "o/99_some_aux_data.yml",)),
+     (("10/10_some_aux_data.yml", "20/99_some_aux_data.yml"),
+      ("10/e/10_some_aux_data.json", "10/o/10_some_aux_data.yml",
+       "20/e/99_some_aux_data.json", "20/o/99_some_aux_data.yml",)),
      )
 )
 def test_get_data(
@@ -88,7 +92,13 @@ def test_get_data(
     tmp_path: pathlib.Path
 ):
     for ipath in ipaths:
-        (tmp_path / ipath).touch()
+        ifpath = tmp_path / ipath
+        idir = ifpath.parent
+
+        if not idir.exists():
+            idir.mkdir(parents=True)
+
+        ifpath.touch()
 
     paths = [tmp_path / a for a in aux_paths]
     for apath in paths:
@@ -114,6 +124,7 @@ def test_get_data(
     ((("no_aux_data.json", ), ()),
      (("10_no_aux_data.json", "20_no_aux_data.json"), ()),
      (("an_aux_data.yml", ), (("e/an_aux_data.json", 1), )),
+     (("10/an_aux_data.yml", ), (("10/e/an_aux_data.json", 1), )),
      (("10_an_aux_data.yml", "50_an_aux_data.yml"),
       (("e/10_an_aux_data.json", "aaa"), ("e/50_an_aux_data.json", [1, 2]))),
      (("10_some_aux_data.yml", "99_some_aux_data.yml"),
@@ -121,6 +132,9 @@ def test_get_data(
        ("o/10_some_aux_data.json", {"a": 2}),
        ("e/99_some_aux_data.json", [2, 3]),
        ("o/99_some_aux_data.json", {"a": "a"}))),
+     (("10/10_an_aux_data.yml", "20/50_an_aux_data.yml"),
+      (("10/e/10_an_aux_data.json", "aaa"),
+       ("20/e/50_an_aux_data.json", [1, 2]))),
      )
 )
 def test_load_data(
@@ -129,6 +143,9 @@ def test_load_data(
     tmp_path: pathlib.Path
 ):
     for ipath in ipaths:
+        if not (tmp_path / ipath).parent.exists():
+            (tmp_path / ipath).parent.mkdir(parents=True)
+
         (tmp_path / ipath).touch()
 
     for apath, adata in aux_data:

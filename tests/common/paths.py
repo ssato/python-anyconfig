@@ -45,9 +45,14 @@ def get_data(
 ) -> typing.List[
     typing.Tuple[pathlib.Path, typing.Dict[str, pathlib.Path]]
 ]:
+    # find the dir holding input data files.
+    pattern = "*.*"
+    if not any(x for x in topdir.iterdir() if x.is_file()):
+        pattern = "*/" + pattern
+
     return sorted(
         (ipath, get_aux_data_paths(ipath))
-        for ipath in topdir.glob("*.*") if ipath.is_file()
+        for ipath in topdir.glob(pattern) if ipath.is_file()
     )
 
 

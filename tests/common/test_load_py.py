@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
@@ -48,14 +48,22 @@ def test_load_literal_data_from_path(
     assert TT.load_literal_data_from_path(filepath) == exp
 
 
+def test_load_data_from_py_errors(tmp_path: pathlib.Path):
+    filepath = tmp_path / TEST_DATA_FILENAME
+    filepath.touch()  # empty.
+
+    with pytest.raises(ValueError) as exc:
+        TT.load_data_from_py(filepath)
+
+
 @pytest.mark.parametrize(
     ('inp', 'exp'),
     DATA_PAIRS
 )
-def test_load_data_from_py(
+def test_load_data_from_py_safely(
     inp: str, exp: typing.Any, tmp_path: pathlib.Path
 ):
     filepath = tmp_path / TEST_DATA_FILENAME
     filepath.write_text(f"{TT.DATA_VAR_NAME} = {inp}")
 
-    assert TT.load_data_from_py(filepath) == exp
+    assert TT.load_data_from_py(filepath, safe=True) == exp

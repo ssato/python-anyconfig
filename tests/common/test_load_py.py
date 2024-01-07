@@ -54,7 +54,8 @@ def test_load_data_from_py_errors(tmp_path: pathlib.Path):
     filepath.touch()  # empty.
 
     with pytest.raises(ValueError):
-        TT.load_data_from_py(filepath)
+        with pytest.warns(UserWarning):
+            TT.load_data_from_py(filepath)
 
 
 @pytest.mark.parametrize(

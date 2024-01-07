@@ -52,7 +52,7 @@ def test_load_data_from_py_errors(tmp_path: pathlib.Path):
     filepath = tmp_path / TEST_DATA_FILENAME
     filepath.touch()  # empty.
 
-    with pytest.raises(ValueError) as exc:
+    with pytest.raises(ValueError):
         TT.load_data_from_py(filepath)
 
 

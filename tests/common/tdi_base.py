@@ -5,11 +5,27 @@
 # pylint: disable=missing-docstring
 r"""Classes to load data sets.
 """
+import inspect
+import re
+
 from . import paths
+
+
+def name_from_path(path: str):
+    """Compute a name from given path `path`."""
+    match = re.match(r".+/test_([^_]+)_([^_]+).py", path)
+    if not match:
+        raise NameError(f"Filename does not match expected pattern: {path}")
+
+    return ".".join(match.groups())
 
 
 class TDI:
     """A base class to `inject` datasets for loaders and dumpers to test."""
+    _path: str = ""
+
+    # Override it in children:
+    # _cid: str = name_from_path(__file__)
     _cid: str = ""
     _is_loader: bool = True
 

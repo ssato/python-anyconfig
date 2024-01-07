@@ -5,7 +5,6 @@
 # pylint: disable=missing-docstring
 r"""Classes to load data sets.
 """
-import inspect
 import re
 
 from . import paths

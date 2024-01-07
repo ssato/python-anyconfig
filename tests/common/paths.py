@@ -58,7 +58,6 @@ def get_data(
 
 def load_data(
     topdir: typing.Optional[pathlib.Path],
-    keep_order: bool = False,
     **kwargs
 ) -> typing.List[
     typing.Tuple[pathlib.Path, typing.Dict[str, typing.Any]]
@@ -67,7 +66,7 @@ def load_data(
         (
             ipath,
             {
-                subdir: load.load_data(a, keep_order, **kwargs)
+                subdir: load.load_data(a, **kwargs)
                 for subdir, a in adata.items()
             }
         )

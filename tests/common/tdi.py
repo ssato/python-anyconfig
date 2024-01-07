@@ -13,7 +13,6 @@ class TDI:
     _cid: str = ""
     _is_loader: bool = True
 
-    keep_order: bool = False
     _data = None
 
     @classmethod
@@ -24,13 +23,12 @@ class TDI:
     def is_loader(cls) -> bool:
         return cls._is_loader
 
-    def __init__(self, keep_order: bool = False):
+    def __init__(self):
         """Initialize members."""
         self.topdir = paths.get_resource_dir(self.cid(), self.is_loader())
-        self.keep_order = keep_order
 
     def load(self):
-        self._data = paths.load_data(self.topdir, keep_order=self.keep_order)
+        self._data = paths.load_data(self.topdir)
 
     def get(self):
         if self._data is None:

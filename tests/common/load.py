@@ -5,7 +5,6 @@
 # pylint: disable=missing-docstring,invalid-name
 r"""Functions to load test data.
 """
-import collections
 import json
 import pathlib
 
@@ -15,7 +14,7 @@ from . import (
 
 
 def load_data(
-    path: pathlib.Path, keep_order: bool = False, **kwargs
+    path: pathlib.Path, bool = False, **kwargs
 ):
     """Load data."""
     file_ext = path.suffix[1:]
@@ -32,9 +31,6 @@ def load_data(
         return load_py.load_from_path(path, **kwargs)
 
     if file_ext == "json":
-        if keep_order:
-            kwargs["object_pairs_hook"] = collections.OrderedDict
-
         return json.load(path.open(), **kwargs)
 
     raise ValueError(f"Unknown type of file was gigven: {path!r}")

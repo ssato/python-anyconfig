@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Globals, functions common in some JSON backend modules.
@@ -23,7 +23,7 @@ JSON_DICT_OPTS = ['object_pairs_hook', 'object_hook']
 class Parser(base.StringStreamFnParser):
     """Parser for JSON files."""
 
-    _cid = 'std.json'
+    _cid = 'json.stdlib'
     _type = 'json'
     _extensions = ['json', 'jsn', 'js']
     _ordered = True

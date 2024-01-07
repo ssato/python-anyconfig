@@ -44,7 +44,7 @@ def test_tdi_base():
 
 
 class FakeStdJsonLoaderTDI(TT.TDI):
-    _cid: str = "std.json"  # override.
+    _cid: str = "json.stdlib"  # override.
 
 
 def test_tdi_base_children():
@@ -52,4 +52,8 @@ def test_tdi_base_children():
     assert tdi.cid() == FakeStdJsonLoaderTDI.cid()
 
     tdi.load()
-    assert tdi.get()
+    (mod, data, data_ids) = tdi.get_all()
+
+    assert data
+    assert data_ids
+    assert mod.Parser.cid() == tdi.cid()

@@ -5,6 +5,7 @@
 # pylint: disable=missing-docstring,too-few-public-methods
 r"""Classes to load data sets.
 """
+import importlib
 import pathlib
 import re
 import typing
@@ -32,7 +33,8 @@ class TDI:
     _cid: str = ""
     _is_loader: bool = True
 
-    _data = None
+    _data = []
+    _mod = None
 
     @classmethod
     def cid(cls) -> str:
@@ -49,17 +51,30 @@ class TDI:
     def load(self):
         self._data = paths.load_data(self.topdir)
 
-    def get(self):
-        if self._data is None:
-            self.load()
+    def get_data(self):
+        if not self._data:
+            try:
+                self.load()
+            except FileNotFoundError:
+                pass
 
         return self._data
 
-    def gets(self):
-        data = self.get()
-        data_ids = [f"{i.parent.name}/{i.name}" for i, _aux in data]
+    def get_data_ids(self):
+        return [f"{i.parent.name}/{i.name}" for i, _aux in self.get_data()]
 
-        return (data, data_ids)
+    def get_mod(self):
+        if self._mod is None:
+            mname = f"anyconfig.backend.{self.cid()}"
+            try:
+                self._mod = importlib.import_module(mname)
+            except ModuleNotFoundError:
+                pass
+
+        return self._mod
+
+    def get_all(self):
+        return (self.get_mod(), self.get_data(), self.get_data_ids())
 
 
 class Base:

@@ -6,11 +6,7 @@
 r"""Classes to load data sets.
 """
 import importlib
-import pathlib
 import re
-import typing
-
-import anyconfig.ioinfo
 
 from . import paths
 
@@ -75,29 +71,3 @@ class TDI:
 
     def get_all(self):
         return (self.get_mod(), self.get_data(), self.get_data_ids())
-
-
-class Base:
-    """Base class for backend test cases.
-    """
-    psr_cls = None
-
-    def assert_loads_and_load_impl(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
-        debug: bool = False,
-    ):
-        exp = aux["e"]  # It should NOT fail.
-        opt = aux.get("o", {})
-        ioi = anyconfig.ioinfo.make(ipath)
-
-        if self.psr_cls is None:
-            return
-
-        psr = self.psr_cls()
-
-        if debug:
-            assert not exp, exp
-            assert not opt, opt
-
-        assert psr.loads(ipath.read_text(), **opt) == exp
-        assert psr.load(ioi, **opt) == exp

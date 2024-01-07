@@ -12,6 +12,7 @@ import typing
 import pytest
 
 import tests.common.tdi_base
+import tests.common.loader
 
 
 class TDI(tests.common.tdi_base.TDI):
@@ -29,7 +30,7 @@ if TT is None:
 assert DATA
 
 
-class TestCase(tests.common.tdi_base.Base):
+class TestCase(tests.common.loader.TestCase):
     psr_cls = TT.Parser
 
     @pytest.mark.parametrize(

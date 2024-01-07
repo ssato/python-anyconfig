@@ -71,7 +71,7 @@ def test_load_data_from_py_safely(
     assert TT.load_data_from_py(filepath, safe=True) == exp
 
 
-PY_DATA_0 = {"a": 1, "b": "B", "c": [1,2,3], "d": {"d": {"d2": True}}}
+PY_DATA_0 = {"a": 1, "b": "B", "c": [1, 2, 3], "d": {"d": {"d2": True}}}
 PY_SCRIPT_0: str = f"""
 import collections
 

@@ -11,7 +11,6 @@ import typing
 
 import pytest
 
-import anyconfig.backend.json.default as TT
 import tests.common.tdi_base
 
 
@@ -19,16 +18,22 @@ class TDI(tests.common.tdi_base.TDI):
     _cid = tests.common.tdi_base.name_from_path(__file__)
 
 
-DATA_AND_IDS_0 = TDI().gets()
+(TT, DATA, DATA_IDS) = TDI().get_all()
+
+if TT is None:
+    pytest.skip(
+        f"skipping tests: {TDI().cid()} as it's not available.",
+        allow_module_level=True
+    )
+
+assert DATA
 
 
 class TestCase(tests.common.tdi_base.Base):
-    psr_cls = getattr(TT, "Parser")
+    psr_cls = TT.Parser
 
     @pytest.mark.parametrize(
-        ("ipath", "aux"),
-        DATA_AND_IDS_0[0],
-        ids=DATA_AND_IDS_0[1],
+        ("ipath", "aux"), DATA, ids=DATA_IDS,
     )
     def test_loads_and_load(
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],

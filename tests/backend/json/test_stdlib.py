@@ -1,10 +1,10 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports
-import anyconfig.backend.json.default as TT
+import anyconfig.backend.json.stdlib as TT
 import tests.backend.common as TBC
 
 from collections import OrderedDict

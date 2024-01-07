@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2018 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh@gmail.com>
 # License: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
@@ -11,7 +11,7 @@ except ImportError:
     import unittest
     raise unittest.SkipTest
 
-from .test_default import TBC, CNF_0_S, CNF_0
+from .test_stdlib import TBC, CNF_0_S, CNF_0
 
 
 class HasParserTrait(TBC.HasParserTrait):

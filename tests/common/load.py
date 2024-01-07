@@ -29,7 +29,7 @@ def load_data(
         return path.read_bytes()
 
     if file_ext == "py":
-        return load_py.load_literal_data_from_path(path)
+        return load_py.load_from_path(path, **kwargs)
 
     if file_ext == "json":
         if keep_order:

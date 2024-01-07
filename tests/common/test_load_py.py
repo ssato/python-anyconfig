@@ -67,3 +67,19 @@ def test_load_data_from_py_safely(
     filepath.write_text(f"{TT.DATA_VAR_NAME} = {inp}")
 
     assert TT.load_data_from_py(filepath, safe=True) == exp
+
+
+@pytest.mark.parametrize(
+    ('inp', 'exp'),
+    DATA_PAIRS
+)
+def test_load_from_path(
+    inp: str, exp: typing.Any, tmp_path: pathlib.Path
+):
+    filepath = tmp_path / TEST_DATA_FILENAME
+
+    filepath.write_text(inp)
+    assert TT.load_from_path(filepath) == exp
+
+    filepath.write_text(f"{TT.DATA_VAR_NAME} = {inp}")
+    assert TT.load_from_path(filepath, safe=True) == exp

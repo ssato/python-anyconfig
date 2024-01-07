@@ -58,12 +58,13 @@ def load_data_from_py(
 
 def load_from_path(
     path: pathlib.Path,
-    from_literal: bool = True,
     data_name: typing.Optional[str] = None,
     safe: bool = False
 ) -> typing.Any:
-    """Load data from given path `path`."""
-    if from_literal:
-        return load_literal_data_from_path(path)
+    """Load data from given path `path`. It will choose the appropriate
+    function by the keyword, `data_name`, in the content of the file.
+    """
+    if (data_name or DATA_VAR_NAME) in path.read_text():
+        return load_data_from_py(path, data_name=data_name, safe=safe)
 
-    return load_data_from_py(path, data_name=data_name, safe=safe)
+    return load_literal_data_from_path(path)

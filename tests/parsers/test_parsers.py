@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring, invalid-name
@@ -8,7 +8,7 @@ import pathlib
 import unittest
 
 import anyconfig.backend.json
-import anyconfig.backend.json.default as JSON
+import anyconfig.backend.json.stdlib as JSON
 try:
     import anyconfig.backend.yaml.pyyaml as PYYAML
 except ImportError:

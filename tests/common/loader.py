@@ -39,7 +39,10 @@ class TestCase:
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
     ):
         (exp, opts, psr, _ioi) = self._get_all(ipath, aux)
-        assert psr.loads(ipath.read_text(), **opts) == exp
+        if 'b' in psr._open_read_mode:  # pylint: disable=protected-access
+            assert psr.loads(ipath.read_bytes(), **opts) == exp
+        else:
+            assert psr.loads(ipath.read_text(), **opts) == exp
 
     def _assert_load(
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]

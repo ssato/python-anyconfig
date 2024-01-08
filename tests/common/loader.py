@@ -7,6 +7,7 @@ r"""Loader test cases.
 """
 import pathlib
 import typing
+import warnings
 
 import anyconfig.ioinfo
 
@@ -16,22 +17,32 @@ class TestCase:
     """
     psr_cls = None
 
-    def assert_loads_and_load_impl(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
-        debug: bool = False,
+    def _get_all(
+        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
     ):
-        exp = aux["e"]  # It should NOT fail.
-        opts = aux.get("o", {})
+        if self.psr_cls is None:
+            warnings.warn(f"Failed to ini test target: {__file__}")
+            psr = None
+        else:
+            psr = self.psr_cls()  # pylint: disable=not-callable
+
         ioi = anyconfig.ioinfo.make(ipath)
 
-        if self.psr_cls is None:
-            return
+        return (
+            aux["e"],  # It should NOT fail.
+            aux.get("o", {}),
+            psr,
+            ioi
+        )
 
-        psr = self.psr_cls()  # pylint: disable=not-callable
-
-        if debug:
-            assert not exp, exp
-            assert not opts, opts
-
+    def _assert_loads(
+        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
+    ):
+        (exp, opts, psr, _ioi) = self._get_all(ipath, aux)
         assert psr.loads(ipath.read_text(), **opts) == exp
+
+    def _assert_load(
+        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
+    ):
+        (exp, opts, psr, ioi) = self._get_all(ipath, aux)
         assert psr.load(ioi, **opts) == exp

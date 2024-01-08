@@ -39,7 +39,10 @@ class TestCase:
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
     ):
         (exp, opts, psr, idata) = self._get_all(ipath, aux)
-        assert psr.loads(psr.dumps(idata, **opts), **opts) == exp
+        out_s: str = psr.dumps(idata, **opts)
+
+        assert psr.loads(out_s, **opts) == idata
+        assert out_s == exp, f"'{out_s}' vs. '{exp}'"
 
     def _assert_dump(
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
@@ -49,6 +52,9 @@ class TestCase:
 
         opath = tmp_path / f"{ipath.name}.{psr.extensions()[0]}"
         ioi = anyconfig.ioinfo.make(opath)
-        psr.dump(idata, ioi)
+        psr.dump(idata, ioi, **opts)
 
-        assert psr.load(ioi, **opts) == exp
+        out_s: str = psr.ropen(str(opath)).read()
+
+        assert psr.load(ioi, **opts) == idata
+        assert out_s == exp, f"'{out_s}' vs. '{exp}'"

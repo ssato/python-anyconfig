@@ -22,8 +22,8 @@ from .base import (
 )
 
 
-PARSERS: ParserClssT = [
-    ini.Parser, pickle.Parser, properties.Parser, shellvars.Parser, xml.Parser
+PARSERS: ParserClssT = ini.PARSERS + [
+    pickle.Parser, properties.Parser, shellvars.Parser, xml.Parser
 ] + json.PARSERS
 
 

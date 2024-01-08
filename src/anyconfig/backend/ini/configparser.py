@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 #  pylint: disable=deprecated-method
@@ -25,6 +25,8 @@ r"""A backend module to load and dump INI files.
 
 Changelog:
 
+.. versionchanged:: 0.14.0 Re-organized to allow supporting other parser
+
 .. versionchanged:: 0.3
 
    - Introduce 'ac_parse_value' keyword option to switch behaviors, same as
@@ -35,8 +37,8 @@ import os
 import re
 import typing
 
-from .. import parser, utils
-from . import base
+from ... import parser, utils
+from .. import base
 
 
 _SEP = ','
@@ -182,7 +184,7 @@ class Parser(base.Parser, base.FromStreamLoaderMixin,
              base.ToStringDumperMixin):
     """Ini config files parser."""
 
-    _cid: str = 'ini'
+    _cid: str = 'ini.configparser'
     _type: str = 'ini'
     _extensions: typing.List[str] = ['ini']
     _load_opts: typing.List[str] = [

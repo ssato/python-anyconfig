@@ -36,8 +36,15 @@ class TestCase(tests.common.loader.TestCase):
     @pytest.mark.parametrize(
         ("ipath", "aux"), DATA, ids=DATA_IDS,
     )
-    def test_loads_and_load(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
-        debug: bool = False,
+    def test_loads(
+        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
     ):
-        self.assert_loads_and_load_impl(ipath, aux, debug)
+        self._assert_loads(ipath, aux)
+
+    @pytest.mark.parametrize(
+        ("ipath", "aux"), DATA, ids=DATA_IDS,
+    )
+    def test_load(
+        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
+    ):
+        self._assert_load(ipath, aux)

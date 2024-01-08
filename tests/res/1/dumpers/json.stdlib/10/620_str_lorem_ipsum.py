@@ -1,1 +1,1 @@
-../../../loaders/json.json/10/e/620_str_lorem_ipsum.json.py
+../../../loaders/json.stdlib/10/e/620_str_lorem_ipsum.json.py

@@ -1,1 +1,1 @@
-../../../loaders/json.json/10/e/610_str_a.json.py
+../../../loaders/json.stdlib/10/e/610_str_a.json.py

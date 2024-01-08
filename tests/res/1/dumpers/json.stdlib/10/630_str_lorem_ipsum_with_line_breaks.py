@@ -1,1 +1,1 @@
-../../../loaders/json.json/10/e/630_str_lorem_ipsum_with_line_breaks.json.py
+../../../loaders/json.stdlib/10/e/630_str_lorem_ipsum_with_line_breaks.json.py

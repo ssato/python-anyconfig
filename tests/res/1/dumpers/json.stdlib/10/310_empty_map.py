@@ -1,1 +1,1 @@
-../../../loaders/json.json/10/e/310_empty_map.json.py
+../../../loaders/json.stdlib/10/e/310_empty_map.json.py

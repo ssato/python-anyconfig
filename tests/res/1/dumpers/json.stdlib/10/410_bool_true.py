@@ -1,1 +1,1 @@
-../../../loaders/json.json/10/e/410_bool_true.json.py
+../../../loaders/json.stdlib/10/e/410_bool_true.json.py

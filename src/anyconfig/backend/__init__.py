@@ -22,9 +22,11 @@ from .base import (
 )
 
 
-PARSERS: ParserClssT = ini.PARSERS + [
-    pickle.Parser, properties.Parser, shellvars.Parser, xml.Parser
-] + json.PARSERS
+PARSERS: ParserClssT = [
+    *ini.PARSERS, *pickle.PARSERS,
+    properties.Parser, shellvars.Parser, xml.Parser,
+    *json.PARSERS
+]
 
 
 def warn(name: str, feature: str):

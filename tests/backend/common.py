@@ -12,14 +12,14 @@ import unittest
 
 from os import linesep as lsep
 
-import tests.common
+import tests.old_common
 import anyconfig.ioinfo
 
 from .constants import CNF_0, CNF_1
 
 
 def read_from_res(filename):
-    return open(tests.common.respath(filename)).read()
+    return open(tests.old_common.respath(filename)).read()
 
 
 class MyDict(dict):
@@ -130,7 +130,7 @@ class TestBaseWithIO(TestBase):
     def setUp(self):
         super(TestBaseWithIO, self).setUp()
         if self.is_ready():
-            self.workdir = tests.common.setup_workdir()
+            self.workdir = tests.old_common.setup_workdir()
 
             exts = self.psr.extensions()
             ext = exts[0] if exts else "conf"
@@ -144,7 +144,7 @@ class TestBaseWithIO(TestBase):
 
     def tearDown(self):
         if self.is_ready():
-            tests.common.cleanup_workdir(self.workdir)
+            tests.old_common.cleanup_workdir(self.workdir)
 
 
 class Test_20_dump_and_load(TestBaseWithIO):

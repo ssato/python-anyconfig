@@ -1,0 +1,44 @@
+DATA = """\
+[x]
+integers = [
+    1,
+    2,
+    3,
+]
+integers2 = [
+    1,
+    2,
+    3,
+]
+integers3 = [
+    1,
+    2,
+]
+colors = [
+    "red",
+    "yellow",
+    "green",
+]
+nested_arrays_of_ints = [
+    [
+        1,
+        2,
+    ],
+    [
+        3,
+        4,
+        5,
+    ],
+]
+nested_mixed_array = [
+    [
+        1,
+        2,
+    ],
+    [
+        "a",
+        "b",
+        "c",
+    ],
+]
+"""

@@ -29,7 +29,9 @@ def get_resource_dir(
 
 
 def get_aux_data_paths(
-    ipath: pathlib.Path, **_kwargs
+    ipath: pathlib.Path,
+    skip_file_exts: typing.Tuple[str, ...] = (".pyc", ),
+    **_kwargs
 ) -> typing.Dict[str, pathlib.Path]:
     """Get a map of subdirs and paths to auxiliary data for input, `ipath`.
 
@@ -37,7 +39,10 @@ def get_aux_data_paths(
     """
     name = ipath.name[:-len(ipath.suffix)]  # /a/b/c.json -> c
 
-    return {p.parent.name: p for p in ipath.parent.glob(f"*/{name}.*")}
+    return {
+        p.parent.name: p for p in ipath.parent.glob(f"*/{name}.*")
+        if p.suffix not in skip_file_exts
+    }
 
 
 def get_data(

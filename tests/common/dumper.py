@@ -17,6 +17,8 @@ class TestCase:
     """Base class for dumper test cases."""
     psr_cls = None
 
+    exact_match: bool = True
+
     def _get_all(
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
     ):
@@ -42,7 +44,8 @@ class TestCase:
         out_s: str = psr.dumps(idata, **opts)
 
         assert psr.loads(out_s, **opts) == idata
-        assert out_s == exp, f"'{out_s}' vs. '{exp}'"
+        if self.exact_match:
+            assert out_s == exp, f"'{out_s}' vs. '{exp}'"
 
     def _assert_dump(
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
@@ -57,4 +60,5 @@ class TestCase:
         out_s: str = psr.ropen(str(opath)).read()
 
         assert psr.load(ioi, **opts) == idata
-        assert out_s == exp, f"'{out_s}' vs. '{exp}'"
+        if self.exact_match:
+            assert out_s == exp, f"'{out_s}' vs. '{exp}'"

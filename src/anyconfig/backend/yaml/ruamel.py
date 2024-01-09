@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A backend module to load and dump YAML data files using rumael.yaml.
@@ -115,7 +115,7 @@ def yml_dump(data, stream, **options):
 class Parser(common.Parser):
     """Parser for YAML files."""
 
-    _cid = 'ruamel.yaml'
+    _cid = 'yaml.ruamel'
     _load_opts = _YAML_OPTS
     _dump_opts = _YAML_OPTS
 

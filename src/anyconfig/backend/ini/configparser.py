@@ -177,7 +177,8 @@ def _dumps(cnf: typing.Dict[str, typing.Any], **_kwargs) -> str:
 
     :return: String representation of 'cnf' object in INI format
     """
-    return os.linesep.join(line for line in _dumps_itr(cnf))
+    # python looks converting \n to \r\n so use \n instead of os.linesep.
+    return "\n".join(line for line in _dumps_itr(cnf))
 
 
 class Parser(base.Parser, base.FromStreamLoaderMixin,

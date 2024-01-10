@@ -21,7 +21,9 @@ class TestCase:
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
     ):
         if self.psr_cls is None:
-            warnings.warn(f"Failed to ini test target: {__file__}")
+            warnings.warn(  # noqa
+                f"Failed to ini test target: {__file__}"
+            )
             psr = None
         else:
             psr = self.psr_cls()  # pylint: disable=not-callable

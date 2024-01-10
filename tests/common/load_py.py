@@ -48,7 +48,9 @@ def load_data_from_py(
         try:
             return getattr(mod, data_name)
         except (TypeError, ValueError, AttributeError):
-            warnings.warn(f'No valid data "{data_name}" was found in {mod!r}.')
+            warnings.warn(  # noqa
+                f'No valid data "{data_name}" was found in {mod!r}.'
+            )
 
     if safe:
         return None

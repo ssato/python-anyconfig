@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
@@ -9,9 +9,15 @@
 import io
 import unittest
 
-import anyconfig.backend.xml as TT
-import tests.backend.common as TBC
+import anyconfig.backend.xml.etree as TT
 
+
+XML_WITH_NS_0 = """<a xmlns="http://example.com/ns/config"
+   xmlns:val="http://example.com/ns/config/val">
+   <b>1</b>
+   <val:c>C</val:c>
+</a>
+"""
 
 CNF_0 = {'config': {'@attrs': {'val:name': 'foo',
                                'xmlns': 'http://example.com/ns/cnf',
@@ -37,7 +43,7 @@ class Test_00(unittest.TestCase):
     def test_10__namespaces_from_file(self):
         ref = {"http://example.com/ns/config": '',
                "http://example.com/ns/config/val": "val"}
-        xmlfile = io.StringIO(TBC.read_from_res("20-00-cnf.xml"))
+        xmlfile = io.StringIO(XML_WITH_NS_0)
         self.assertEqual(TT._namespaces_from_file(xmlfile), ref)
 
     def test_20__process_elem_text__whitespaces(self):
@@ -224,30 +230,3 @@ class Test_00_2(unittest.TestCase):
         obj = {'a': {'@children': [{'b': 'b'}, {'c': 'c'}]}}
         res = TT.container_to_etree(obj)
         self.assertEqual(tree_to_string(res), ref)
-
-
-class HasParserTrait(TBC.HasParserTrait):
-
-    psr = TT.Parser()
-    cnf = CNF_0
-    cnf_s = to_bytes(TBC.read_from_res("20-10-cnf.xml"))
-
-
-class Test_10(TBC.Test_10_dumps_and_loads, HasParserTrait):
-
-    load_options = dump_options = dict(ac_parse_value=False)
-
-
-class Test_20(TBC.Test_20_dump_and_load, HasParserTrait):
-
-    def test_40_load_w_options(self):
-        cnf = self.psr.load(self.ioi, ac_parse_value=False)
-        self._assert_dicts_equal(cnf)
-
-    def test_42_dump_with_special_option(self):
-        ioi = self._to_ioinfo(self.cnf_path)
-        self.psr.dump(self.cnf, ioi, ac_parse_value=False)
-        cnf = self.psr.load(self.ioi)
-        self._assert_dicts_equal(cnf)
-
-# vim:sw=4:ts=4:et:

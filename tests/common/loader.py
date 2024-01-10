@@ -44,11 +44,11 @@ class TestCase:
         else:
             res = psr.loads(ipath.read_text(), **opts)
 
-        assert res == exp, f"{res!r} vs. {exp!r}"
+        assert res == exp, f"'{res!r}' vs. '{exp!r}'"
 
     def _assert_load(
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
     ):
         (exp, opts, psr, ioi) = self._get_all(ipath, aux)
         res = psr.load(ioi, **opts)
-        assert res == exp, f"{res!r} vs. {exp!r}"
+        assert res == exp, f"'{res!r}' vs. '{exp!r}'"

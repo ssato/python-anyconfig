@@ -19,7 +19,6 @@ Changelog:
      variable expansions nor complex shell statements like conditionals.
 """
 import itertools
-import os
 import re
 import warnings
 
@@ -106,6 +105,6 @@ class Parser(base.StreamParser):
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in cnf.items():
-            stream.write(f"{key}='{val}'{os.linesep}")
+            stream.write(f"{key}='{val}'\n")
 
 # vim:sw=4:ts=4:et:

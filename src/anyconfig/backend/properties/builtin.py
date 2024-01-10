@@ -28,7 +28,6 @@ Changelog:
    - Added native Java properties parser instead of a plugin utilizes
      pyjavaproperties module.
 """
-import os
 import re
 import typing
 import warnings
@@ -160,6 +159,6 @@ class Parser(base.StreamParser):
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in cnf.items():
-            stream.write(f'{key} = {escape(val)}{os.linesep}')
+            stream.write(f'{key} = {escape(val)}\n')
 
 # vim:sw=4:ts=4:et:

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2016 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A simple backend module to load and dump files contain shell variables.
@@ -23,7 +23,7 @@ import os
 import re
 import warnings
 
-from . import base
+from .. import base
 
 
 def _parseline(line):
@@ -80,7 +80,7 @@ def load(stream, container=dict):
 class Parser(base.StreamParser):
     """Parser for Shell variable definition files."""
 
-    _cid = 'shellvars'
+    _cid = 'sh.variables'
     _type = 'shellvars'
     _extensions = ['sh']
     _ordered = True

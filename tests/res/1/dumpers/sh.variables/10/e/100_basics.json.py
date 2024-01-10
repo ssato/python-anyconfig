@@ -1,0 +1,7 @@
+DATA = """\
+a='0'
+b='bbb'
+c='ccc'
+d='ddd'
+e='eee'
+"""

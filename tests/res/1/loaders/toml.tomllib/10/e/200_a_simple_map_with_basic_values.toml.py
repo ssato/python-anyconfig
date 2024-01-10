@@ -1,3 +1,4 @@
+# flake8: noqa: E122
 """A simple map with values."""
 import datetime
 import math

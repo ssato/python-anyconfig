@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to load and dump (Java) properties files.
@@ -33,7 +33,7 @@ import re
 import typing
 import warnings
 
-from . import base
+from .. import base
 
 
 _COMMENT_MARKERS: typing.Tuple[str, ...] = ('#', '!')
@@ -135,7 +135,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 class Parser(base.StreamParser):
     """Parser for Java properties files."""
 
-    _cid = 'properties'
+    _cid = 'properties.builtin'
     _type = 'properties'
     _extensions = ['properties']
     _ordered = True

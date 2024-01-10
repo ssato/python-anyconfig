@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not
@@ -64,9 +64,9 @@ import operator
 import re
 import xml.etree.ElementTree as ET
 
-from . import base
-from ..parser import parse_single
-from ..utils import (
+from .. import base
+from ...parser import parse_single
+from ...utils import (
     get_path_from_stream, is_dict_like, is_iterable, noop
 )
 
@@ -470,7 +470,7 @@ class Parser(base.Parser, base.ToStreamDumperMixin,
              base.BinaryDumperMixin, base.BinaryLoaderMixin):
     """Parser for XML files."""
 
-    _cid = 'xml'
+    _cid = 'xml.etree'
     _type = 'xml'
     _extensions = ['xml']
     _load_opts = _dump_opts = ['tags', 'merge_attrs', 'ac_parse_value']

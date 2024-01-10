@@ -24,7 +24,7 @@ from .base import (
 
 PARSERS: ParserClssT = [
     *ini.PARSERS, *pickle.PARSERS, *properties.PARSERS,
-    *sh.PARSERS, xml.Parser, *json.PARSERS
+    *sh.PARSERS, *xml.PARSERS, *json.PARSERS
 ]
 
 

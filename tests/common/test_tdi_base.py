@@ -5,6 +5,7 @@
 # pylint: disable=missing-docstring,invalid-name
 r"""Test cases for tests.common.tdi.
 """
+import os.path
 import typing
 
 import pytest
@@ -16,6 +17,10 @@ from . import tdi_base as TT
 @pytest.mark.parametrize(
     ("path", "exp", "exc"),
     (("/0/1/2/a/b/c/test_foo_bar.py", "foo.bar", None),
+     (
+        os.path.sep.join("/0/1/2/a/b/c/test_foo_bar.py".split("/")),
+        "foo.bar", None
+     ),
      ("/0/1/2/foo.py", None, NameError),
      ),
 )

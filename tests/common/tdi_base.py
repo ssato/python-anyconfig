@@ -6,6 +6,7 @@
 r"""Classes to load data sets.
 """
 import importlib
+import os
 import re
 
 from . import paths
@@ -13,7 +14,12 @@ from . import paths
 
 def name_from_path(path: str):
     """Compute a name from given path `path`."""
-    match = re.match(r".+/test_([^_]+)_([^_]+).py", path)
+    match = re.match(
+        r".+"
+        f"{os.path.sep}"
+        r"test_([^_]+)_([^_]+).py",
+        path
+    )
     if not match:
         raise NameError(f"Filename does not match expected pattern: {path}")
 

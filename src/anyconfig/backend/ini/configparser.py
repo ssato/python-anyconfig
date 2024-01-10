@@ -33,7 +33,6 @@ Changelog:
      original configparser and rich backend parsing each parameter values.
 """
 import configparser
-import os
 import re
 import typing
 

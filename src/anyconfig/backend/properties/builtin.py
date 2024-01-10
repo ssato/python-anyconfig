@@ -159,6 +159,6 @@ class Parser(base.StreamParser):
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         for key, val in cnf.items():
-            stream.write(f'{key} = {escape(val)}\n')
+            stream.write(f"{key} = {escape(val)}\n")
 
 # vim:sw=4:ts=4:et:

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Backend modules to load and dump JSON data.
@@ -13,11 +13,11 @@ Changelog:
 
    - Started to split JSON support modules
 """
-from . import default
+from . import stdlib
 from ..base import ParserClssT
 
 
-Parser = default.Parser  # To keep backward compatibility.
+Parser = stdlib.Parser  # To keep backward compatibility.
 PARSERS: ParserClssT = [Parser]
 
 try:

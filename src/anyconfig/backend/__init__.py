@@ -12,7 +12,7 @@ from . import (
     json,
     pickle,
     properties,
-    shellvars,
+    sh,
     toml,
     yaml,
     xml
@@ -23,8 +23,9 @@ from .base import (
 
 
 PARSERS: ParserClssT = [
-    ini.Parser, pickle.Parser, properties.Parser, shellvars.Parser, xml.Parser
-] + json.PARSERS
+    *ini.PARSERS, *pickle.PARSERS, *properties.PARSERS,
+    *sh.PARSERS, *xml.PARSERS, *json.PARSERS
+]
 
 
 def warn(name: str, feature: str):

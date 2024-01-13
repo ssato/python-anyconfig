@@ -1,0 +1,35 @@
+# .. seealso:: https://toml.io/
+#
+# .. note:: toml.load{s,} cannot parse this, so I commented all.
+#
+# [x]
+# # integers
+# a0 = 0
+# a1 = 1
+# a2 = +42
+# a3 = -17
+# 
+# # strings
+# b0 = "foo"
+# b1 = "Hello,\nworld\n"
+# b2 = """
+# "Lorem ipsum dolor sit amet,
+# consectetur adipiscing elit
+# """
+# b3 = 'Tom "Dubs" Preston-Werner'
+# b4 = '''I [dw]on't need \d{2} apples'''
+# 
+# # hex, octal, binary and others
+# c0 = 0xdead_beef
+# c1 = 0o755
+# c2 = 0b11010110
+# c3 = +3.14159265
+# c4 = 1e06
+# c5 = -inf
+# 
+# # .. seealso:: a note in e/200_a_simple_map_with_basic_values.toml.py
+# # c6 = +nan
+# 
+# # dates and times
+# d0 = 1979-05-27T00:32:00+09:00
+# d1 = 2024-01-08

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Backend modules to load and dump YAML data files.
@@ -24,8 +24,8 @@ except ImportError:
     PARSERS: ParserClssT = []  # type: ignore
 
 try:
-    from . import ruamel_yaml as ryaml
-    PARSERS.append(ryaml.Parser)
+    from . import ruamel
+    PARSERS.append(ruamel.Parser)
 except ImportError:
     pass
 

@@ -1,0 +1,7 @@
+# .. seealso:: https://toml.io/
+[x]
+# integers
+a0 = 0
+a1 = 1
+a2 = +42
+a3 = -17

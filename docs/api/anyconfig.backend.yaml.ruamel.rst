@@ -1,7 +1,7 @@
-:mod:`anyconfig.backend.yaml.ruamel_yaml`
+:mod:`anyconfig.backend.yaml.ruamel`
 ==========================================
 
-.. automodule:: anyconfig.backend.yaml.ruamel_yaml
+.. automodule:: anyconfig.backend.yaml.ruamel
     :members:
     :special-members:
     :private-members:

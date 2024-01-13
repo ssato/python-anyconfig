@@ -1,7 +1,7 @@
-:mod:`anyconfig.backend.json.default`
+:mod:`anyconfig.backend.toml.tomllib`
 ========================================
 
-.. automodule:: anyconfig.backend.json.default
+.. automodule:: anyconfig.backend.toml.tomllib
     :members:
     :special-members:
     :private-members:

@@ -1,9 +1,13 @@
-:mod:`anyconfig.backend.shellvars`
+:mod:`anyconfig.backend.sh`
 ===================================
 
-.. automodule:: anyconfig.backend.shellvars
+.. automodule:: anyconfig.backend.sh
     :members:
     :special-members:
     :private-members:
     :undoc-members:
     :show-inheritance:
+
+.. toctree::
+
+   anyconfig.backend.sh.variables

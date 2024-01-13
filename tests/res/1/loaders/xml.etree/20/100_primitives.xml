@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x>
+   <i>1</i>
+   <f>3.141592</f>
+   <s>"foo"</s>
+   <b0>true</b0>
+   <b1>false</b1>
+</x>

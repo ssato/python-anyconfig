@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=import-error
@@ -40,7 +40,7 @@ JSON_DUMP_OPTS.extend(['use_decimal', 'namedtuple_as_object', 'tuple_as_array',
 class Parser(BaseParser):
     """Parser for JSON files using simplejson."""
 
-    _cid = 'simplejson'
+    _cid = 'json.simplejson'
     _load_opts = JSON_LOAD_OPTS
     _dump_opts = JSON_DUMP_OPTS
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2023 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # type() is used to exactly match check instead of isinstance here.
@@ -12,6 +12,7 @@
 - Limitations:
 
   - Resuls is not ordered even if 'ac_ordered' or 'ac_dict' was given.
+  - This parser (loader) cannot return None for empty inputs.
 
 - Special options:
 
@@ -26,6 +27,10 @@
   - See also: http://pyyaml.org/wiki/PyYAMLDocumentation
 
 Changelog:
+
+.. versionchanged:: 0.14.0
+
+   - change CID.
 
 .. versionchanged:: 0.9.6
 
@@ -203,7 +208,7 @@ def yml_dump(data, stream, yml_fnc=yml_fnc_, **options):
 class Parser(common.Parser):
     """Parser for YAML files."""
 
-    _cid = 'pyyaml'
+    _cid = 'yaml.pyyaml'
     _priority = 30  # Higher priority than ruamel.yaml.
     _load_opts = ['Loader', 'ac_safe', 'ac_dict']
     _dump_opts = ['stream', 'ac_safe', 'Dumper', 'default_style',

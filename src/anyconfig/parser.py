@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Misc simple parsers."""
@@ -10,7 +10,8 @@ import warnings
 
 INT_PATTERN: typing.Pattern = re.compile(r"^(\d|([1-9]\d+))$")
 FLOAT_PATTERN: typing.Pattern = re.compile(r"^\d+[\.]\d+$")
-BOOL_PATTERN: typing.Pattern = re.compile(r"^(true|false)$", re.I)
+BOOL_TRUE_PATTERN: typing.Pattern = re.compile(r"^true$", re.I)
+BOOL_FALSE_PATTERN: typing.Pattern = re.compile(r"^false$", re.I)
 STR_PATTERN: typing.Pattern = re.compile(r"^['\"](.*)['\"]$")
 
 PrimitiveT = typing.Union[str, int, float, bool]
@@ -27,8 +28,11 @@ def parse_single(str_: typing.Optional[str]) -> PrimitiveT:
     if not str_:
         return ''
 
-    if BOOL_PATTERN.match(str_) is not None:
-        return bool(str_)
+    if BOOL_TRUE_PATTERN.match(str_) is not None:
+        return True
+
+    if BOOL_FALSE_PATTERN.match(str_) is not None:
+        return False
 
     if INT_PATTERN.match(str_) is not None:
         return int(str_)

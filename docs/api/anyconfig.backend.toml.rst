@@ -7,3 +7,9 @@
     :private-members:
     :undoc-members:
     :show-inheritance:
+
+.. toctree::
+
+   anyconfig.backend.toml.toml
+   anyconfig.backend.toml.tomllib
+   anyconfig.backend.toml.tomlkit

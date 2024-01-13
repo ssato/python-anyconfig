@@ -6,4 +6,8 @@
     :special-members:
     :private-members:
     :undoc-members:
-    :show-inheritance:
+    :show-inherita
+
+.. toctree::
+
+   anyconfig.backend.pickle.stdlib

@@ -8,7 +8,7 @@
    anyconfig.backend.json
    anyconfig.backend.pickle
    anyconfig.backend.properties
-   anyconfig.backend.shellvars
+   anyconfig.backend.sh
    anyconfig.backend.toml
    anyconfig.backend.yaml
    anyconfig.backend.xml

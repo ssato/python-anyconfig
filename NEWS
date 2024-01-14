@@ -1,3 +1,39 @@
+* Sun Jan 14 2024 Satoru SATOH <satoru.satoh@gmail.com> - 0.14.0-1
+- change: drop the support py37 and add py311
+- change: drop python 3.6.x support
+- enhancement/fix/change: re-organization/normalization of builtin back-ends
+  with switch of new file based test data for them (#159)
+- change: switch to importlib.metadata from pkg_resources in setuptools (#156)
+- change: export data types to represent in/out data
+- change: make coverage report out in xml
+- fix: tomllib requires fp to open with 'rb' or 'wb' flag
+- fix: [doc] remove the lgtm badge because its service is no longer available
+- fix: correct errors, D401 and D200, pointed out by pydocstyle
+- fix: update runtime dependency to tomli* instead of toml
+- fix: [lint] E302
+- fix: [doc] correct typo, s/formarts/formats/g
+- fix: correct typo, s/validatation/validation/g originally suggested in the PR
+  #155 by @mishrasamiksha.
+- fix: remove unused import line
+- fix: workaround for E721 (flake8)
+- fix: [lint] replace dict() calls with dict literals
+- fix: [lint] improve 'dict' type checks
+- fix: [lint] pass encoding= keyword arguement explicitely as needed
+- fix: simplify by add an wrapper function for warnings.warn
+- fix: [flake8] add stacklevel=2 to warnings.warn calles (bugbear:B028)
+- fix: add workarouds to remove extra lr-es and *-by: ... in AUTHORS.txt
+- fix: make ruff only required for lint test env
+- fix: [lint] E501 line too long
+- enhancement: add support of multiple toml load and dump libraries (#157)
+- enhancement: add new backend to load and dump python code as data
+- enhancement: [doc] add api docs for new backend module (toml and python) to
+  load/dump python code
+- enhancement: [doc] add descriptions show how to arrange test data and code
+  for loaders and dumpers
+- enhancement: use ruff to check code styles (#147)
+- nhancement: enable codecov action
+- enhancement: add a codecov badge
+
 * Sun Apr  3 2022 Satoru SATOH <satoru.satoh@gmail.com> - 0.13.0-1
 - fix/issue 139: process cases that pathlib.Path.resolve fails on errors in
   .ioinfo.utils.get_path_and_ext

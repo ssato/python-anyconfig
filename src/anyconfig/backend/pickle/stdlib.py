@@ -40,7 +40,7 @@ class Parser(base.StringStreamFnParser,
              base.BinaryLoaderMixin, base.BinaryDumperMixin):
     """Parser for Pickle files."""
 
-    _cid = 'pickle'
+    _cid = 'pickle.stdlib'
     _type = 'pickle'
     _extensions = ['pkl', 'pickle']
     _load_opts = LOAD_OPTS

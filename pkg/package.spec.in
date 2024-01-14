@@ -90,6 +90,10 @@ tox -e py$(python -c "import sys; sys.stdout.write(sys.version[:3].replace('.', 
 %endif
 
 %changelog
+* Mon Jan 15 2018 Satoru SATOH <ssato@redhat.com> - 0.14.0-1
+- new upstream release
+- see NEWS fore more details
+
 * Tue Feb 13 2018 Satoru SATOH <ssato@redhat.com> - 0.9.4-1
 - move most changelog entries to NEWS to keep RPM SPEC simple
 

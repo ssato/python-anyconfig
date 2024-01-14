@@ -41,7 +41,7 @@ from . import utils
 
 
 def load_from_temp_file(
-    content: str, **opts: typing.Dict[str, typing.Any]
+    content: str, **opts
 ) -> InDataExT:
     """Dump `content` to tempoary file and load from it.
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Backend basic classes, functions and constants."""
@@ -7,7 +7,7 @@ import typing
 
 from .compat import BinaryFilesMixin
 from .datatypes import (
-    GenContainerT, OptionsT,
+    GenContainerT, OptionsT, InDataExT, OutDataExT, IoiT
 )
 from .dumpers import (
     ToStringDumperMixin, ToStreamDumperMixin, BinaryDumperMixin
@@ -32,7 +32,7 @@ ParserClssT = typing.List[typing.Type[ParserT]]
 
 __all__ = [
     'BinaryFilesMixin',
-    'GenContainerT', 'OptionsT',
+    'GenContainerT', 'OptionsT', 'InDataExT', 'OutDataExT', 'IoiT',
     'ToStringDumperMixin', 'ToStreamDumperMixin', 'BinaryDumperMixin',
     'LoaderMixin',
     'FromStringLoaderMixin', 'FromStreamLoaderMixin', 'BinaryLoaderMixin',

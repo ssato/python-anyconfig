@@ -6,7 +6,7 @@
     :special-members:
     :private-members:
     :undoc-members:
-    :show-inherita
+    :show-inheritance:
 
 .. toctree::
 

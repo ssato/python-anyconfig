@@ -12,6 +12,7 @@ from . import (
     json,
     pickle,
     properties,
+    python,
     sh,
     toml,
     yaml,
@@ -23,8 +24,8 @@ from .base import (
 
 
 PARSERS: ParserClssT = [
-    *ini.PARSERS, *pickle.PARSERS, *properties.PARSERS,
-    *sh.PARSERS, *xml.PARSERS, *json.PARSERS
+    *ini.PARSERS, *json.PARSERS, *pickle.PARSERS, *properties.PARSERS,
+    *python.PARSERS, *sh.PARSERS, *xml.PARSERS,
 ]
 
 

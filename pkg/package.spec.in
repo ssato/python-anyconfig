@@ -90,7 +90,7 @@ tox -e py$(python -c "import sys; sys.stdout.write(sys.version[:3].replace('.', 
 %endif
 
 %changelog
-* Mon Jan 15 2018 Satoru SATOH <ssato@redhat.com> - 0.14.0-1
+* Mon Jan 15 2024 Satoru SATOH <ssato@redhat.com> - 0.14.0-1
 - new upstream release
 - see NEWS fore more details
 

@@ -1,11 +1,14 @@
 # .. seealso:: https://docs.readthedocs.io/en/stable/config-file/v2.html
+# .. seealso:: https://github.com/readthedocs-examples/example-sphinx-basic/blob/main/.readthedocs.yaml
 version: 2
 build:
   os: ubuntu-22.04
   tools:
-    python:
-      version: "3.12"
-      install:
-        - requirements: docs/requirements.txt
+    python: "3.12"
 sphinx:
   configuration: docs/conf.py
+python:
+   install:
+   - requirements: docs/requirements.txt
+   - method: pip
+     path: .

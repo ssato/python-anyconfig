@@ -5,4 +5,4 @@ build:
   tools:
     python: "3.12"
 sphinx:
-  confguration: docs/conf.py
+  configuration: docs/conf.py

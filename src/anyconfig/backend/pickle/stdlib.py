@@ -36,13 +36,14 @@ LOAD_OPTS = ['fix_imports', 'encoding', 'errors']
 DUMP_OPTS = ['protocol', 'fix_imports']
 
 
-class Parser(base.StringStreamFnParser,
-             base.BinaryLoaderMixin, base.BinaryDumperMixin):
+class Parser(base.StringStreamFnParser):
     """Parser for Pickle files."""
-
     _cid = 'pickle.stdlib'
     _type = 'pickle'
     _extensions = ['pkl', 'pickle']
+    _open_read_mode: str = 'rb'
+    _open_write_mode: str = 'wb'
+
     _load_opts = LOAD_OPTS
     _dump_opts = DUMP_OPTS
     _allow_primitives = True
@@ -51,5 +52,3 @@ class Parser(base.StringStreamFnParser,
     _load_from_stream_fn = base.to_method(pickle.load)
     _dump_to_string_fn = base.to_method(pickle.dumps)
     _dump_to_stream_fn = base.to_method(pickle.dump)
-
-# vim:sw=4:ts=4:et:

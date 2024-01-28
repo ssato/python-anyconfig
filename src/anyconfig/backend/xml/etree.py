@@ -466,8 +466,7 @@ def etree_write(tree, stream):
         tree.write(stream, encoding='unicode', xml_declaration=True)
 
 
-class Parser(base.Parser, base.ToStreamDumperMixin,
-             base.BinaryDumperMixin, base.BinaryLoaderMixin):
+class Parser(base.Parser, base.ToStreamDumperMixin):
     """Parser for XML files."""
 
     _cid = 'xml.etree'
@@ -476,6 +475,8 @@ class Parser(base.Parser, base.ToStreamDumperMixin,
     _load_opts = _dump_opts = ['tags', 'merge_attrs', 'ac_parse_value']
     _ordered = True
     _dict_opts = ['ac_dict']
+    _open_read_mode: str = 'rb'
+    _open_write_mode: str = 'wb'
 
     def load_from_string(self, content, container, **opts):
         """Load config from XML snippet (a string 'content').

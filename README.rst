@@ -109,8 +109,8 @@ files in various formats and related functions:
 - Schema validation and generation of configuration files:
 
   **anyconfig.validate** (data, schema, ac_schema_safe=True, ac_schema_errors=False, \*\*options)
-    validates configuration data loaded with anyconfig.load() with JSON schema
-    [#]_ object also loaded with anyconfig.load(). anyconfig.load() may help
+    validates configuration data loaded with anyconfig.load() with `JSON schema`_
+    object also loaded with anyconfig.load(). anyconfig.load() may help
     loading JSON schema file[s] in any formats anyconfig supports.
 
   **anyconfig.gen_schema** (data, \*\*options)
@@ -216,7 +216,7 @@ with using JSON schema like the followings:
   scm4 = anyconfig.gen_schema(conf4)
   scm4_s = anyconfig.dumps(scm4, "json")
 
-And you can query loaded data with JMESPath [#]_ expressions:
+And you can query loaded data with JMESPath_ expressions:
 
 .. code-block:: python
 
@@ -236,8 +236,8 @@ anyconfig_cli to process configuration files and:
 - Validate configuration file[s] with JSON schema
 - Generate minimum JSON schema file to validate given configuration file[s]
 
-.. [#] http://json-schema.org
-.. [#] http://jmespath.org
+.. _JSON schema: http://json-schema.org
+.. _JMESPath: https://jmespath.org/
 
 Supported configuration formats
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -251,11 +251,11 @@ and backends in charge are enabled and ready to use:
    :header: "Format", "Type", "Requirement"
    :widths: 15, 10, 40
 
-   JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_
+   JSON, json, ``json`` (standard lib) or |simplejson|_
    Ini-like, ini, ``configparser`` (standard lib)
    Pickle, pickle, ``pickle`` (standard lib)
    XML, xml, ``ElementTree`` (standard lib)
-   Java properties [#]_ , properties, None (native implementation with standard lib)
+   `Java properties`_ , properties, None (native implementation with standard lib)
    B-sh, shellvars, None (native implementation with standard lib)
    Python, python, None (native implementation)
 
@@ -265,20 +265,20 @@ and backends in charge are enabled and ready to use:
    :header: "Format", "Type", "Requirement"
    :widths: 15, 10, 40
 
-   YAML, yaml, ``ruamel.yaml`` [#]_ or ``PyYAML`` [#]_
-   TOML, toml, ``toml`` [#]_
+   YAML, yaml, |ruamel.yaml|_ or |PyYAML|_
+   TOML, toml, |tomli-w|_ (and |tomli|_ on older Python versions)
 
-- Supported formats of which backends are enabled automatically if required plugin modules are installed: python-anyconfig utilizes plugin mechanism provided by setuptools [#]_ and may support other formats if corresponding plugin backend modules are installed along with python-anyconfig:
+- Supported formats of which backends are enabled automatically if required plugin modules are installed: python-anyconfig utilizes `plugin mechanism provided by setuptools`_ and may support other formats if corresponding plugin backend modules are installed along with python-anyconfig:
 
 .. csv-table:: Supported formats by pluggable backend modules
    :header: "Format", "Type", "Required backend"
    :widths: 15, 10, 40
 
-   Amazon Ion, ion, ``anyconfig-ion-backend`` [#]_
-   BSON, bson, ``anyconfig-bson-backend`` [#]_
-   CBOR, cbor, ``anyconfig-cbor-backend`` [#]_ or ``anyconfig-cbor2-backend`` [#]_
-   ConifgObj, configobj, ``anyconfig-configobj-backend`` [#]_
-   MessagePack, msgpack, ``anyconfig-msgpack-backend`` [#]_
+   Amazon Ion, ion, |anyconfig-ion-backend|_
+   BSON, bson, |anyconfig-bson-backend|_
+   CBOR, cbor, |anyconfig-cbor-backend|_ or |anyconfig-cbor2-backend|_
+   ConifgObj, configobj, |anyconfig-configobj-backend|_
+   MessagePack, msgpack, |anyconfig-msgpack-backend|_
 
 The supported formats of python-anyconfig on your system are able to be listed
 by 'anyconfig_cli -L' like this:
@@ -298,18 +298,31 @@ or with the API 'anyconfig.list_types()' will show them:
 
    In [9]:
 
-.. [#] https://pypi.python.org/pypi/simplejson
-.. [#] ex. https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
-.. [#] https://pypi.python.org/pypi/ruamel.yaml
-.. [#] https://pypi.python.org/pypi/PyYAML
-.. [#] https://pypi.python.org/pypi/toml
-.. [#] http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
-.. [#] https://pypi.python.org/pypi/anyconfig-ion-backend
-.. [#] https://pypi.python.org/pypi/anyconfig-bson-backend
-.. [#] https://pypi.python.org/pypi/anyconfig-cbor-backend
-.. [#] https://pypi.python.org/pypi/anyconfig-cbor2-backend
-.. [#] https://pypi.python.org/pypi/anyconfig-configobj-backend
-.. [#] https://pypi.python.org/pypi/anyconfig-msgpack-backend
+.. |simplejson| replace:: ``simplejson``
+.. _simplejson: https://pypi.python.org/pypi/simplejson
+.. _Java Properties: https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html
+.. _plugin mechanism provided by setuptools: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
+.. |ruamel.yaml| replace:: ``ruamel.yaml``
+.. _ruamel.yaml: https://pypi.python.org/pypi/ruamel.yaml
+.. |PyYAML| replace:: ``PyYAML``
+.. _PyYAML: https://pypi.python.org/pypi/PyYAML
+.. |tomli-w| replace:: ``tomli-w``
+.. _tomli-w: https://pypi.python.org/pypi/tomli-w
+.. |tomli| replace:: ``tomli``
+.. _tomli: https://pypi.python.org/pypi/tomli
+
+.. |anyconfig-ion-backend| replace:: ``anyconfig-ion-backend``
+.. _anyconfig-ion-backend: https://pypi.python.org/pypi/anyconfig-ion-backend
+.. |anyconfig-bson-backend| replace:: ``anyconfig-bson-backend``
+.. _anyconfig-bson-backend: https://pypi.python.org/pypi/anyconfig-bson-backend
+.. |anyconfig-cbor-backend| replace:: ``anyconfig-cbor-backend``
+.. _anyconfig-cbor-backend: https://pypi.python.org/pypi/anyconfig-cbor-backend
+.. |anyconfig-cbor2-backend| replace:: ``anyconfig-cbor2-backend``
+.. _anyconfig-cbor2-backend: https://pypi.python.org/pypi/anyconfig-cbor2-backend
+.. |anyconfig-configobj-backend| replace:: ``anyconfig-configobj-backend``
+.. _anyconfig-configobj-backend: https://pypi.python.org/pypi/anyconfig-configobj-backend
+.. |anyconfig-msgpack-backend| replace:: ``anyconfig-msgpack-backend``
+.. _anyconfig-msgpack-backend: https://pypi.python.org/pypi/anyconfig-msgpack-backend
 
 Installation
 -------------
@@ -330,21 +343,26 @@ enable the features.
    :widths: 20, 10, 25
 
    YAML load/dump, ruamel.yaml or PyYAML, ruamel.yaml will be used instead of PyYAML if it's available to support the YAML 1.2 specification.
-   TOML load/dump, toml [#]_ or tomllib [#]_ and tomli-w [#]_ or tomli [#]_ and tomli-w or tomlkit [#]_ , tomllib is in the standard lib since python 3.11.0
-   BSON load/dump, bson, bson from pymongo package may work and bson [#]_ does not
-   Template config, Jinja2 [#]_ , none
-   Validation with JSON schema, jsonschema [#]_ , Not required to generate JSON schema.
-   Query with JMESPath expression, jmespath [#]_ , none
+   TOML load/dump, |toml|_ or |tomllib|_ and |tomli-w|_ or |tomli|_ and |tomli-w| or |tomlkit|_ , |tomllib| is in the standard lib since python 3.11.0
+   BSON load/dump, bson, bson from pymongo package may work and |bson|_ does not
+   Template config, |Jinja2|_ , none
+   Validation with JSON schema, |jsonschema|_ , Not required to generate JSON schema.
+   Query with JMESPath expression, |jmespath|_ , none
 
-.. [#] https://pypi.python.org/pypi/toml/
-.. [#] https://docs.python.org/3/library/tomllib.html
-.. [#] https://pypi.python.org/pypi/tomli-w/
-.. [#] https://pypi.python.org/pypi/tomli/
-.. [#] https://pypi.python.org/pypi/tomlkit/
-.. [#] https://pypi.python.org/pypi/bson/
-.. [#] https://pypi.python.org/pypi/Jinja2/
-.. [#] https://pypi.python.org/pypi/jsonschema/
-.. [#] https://pypi.python.org/pypi/jmespath/
+.. |toml| replace:: ``toml``
+.. _toml: https://pypi.python.org/pypi/toml/
+.. |tomllib| replace:: ``tomllib``
+.. _tomllib: https://docs.python.org/3/library/tomllib.html
+.. |tomlkit| replace:: ``tomlkit``
+.. _tomlkit: https://pypi.python.org/pypi/tomlkit/
+.. |bson| replace:: ``bson``
+.. _bson: https://pypi.python.org/pypi/bson/
+.. |Jinja2| replace:: ``Jinja2``
+.. _Jinja2: https://pypi.python.org/pypi/Jinja2/
+.. |jsonschema| replace:: ``jsonschema``
+.. _jsonschema: https://pypi.python.org/pypi/jsonschema/
+.. |jmespath| replace:: ``jmespath``
+.. _jmespath: https://pypi.python.org/pypi/jmespath/
 
 How to install
 ^^^^^^^^^^^^^^^^

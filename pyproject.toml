@@ -34,6 +34,9 @@ classifiers = [
 #dependencies = [
 #]
 
+[tool.setuptools.dynamic.version]
+attr = "anyconfig.api.__version__"
+
 [project.urls]
 Homepage = "https://github.com/ssato/python-anyconfig"
 Documentation = "http://python-anyconfig.readthedocs.org"

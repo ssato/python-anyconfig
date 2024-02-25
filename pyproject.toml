@@ -1,0 +1,133 @@
+# .. seealso:: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+[project]
+name = "anyconfig"
+dynamic = [
+    "version",
+]
+description = "Library provides common APIs to load and dump configuration files in various formats"
+readme = "README.rst"
+authors = [
+    {"name" = "Satoru SATOH", email = "satoru.satoh@gmail.com"},
+]
+maintainers = [
+    {"name" = "Satoru SATOH", email = "satoru.satoh@gmail.com"},
+]
+license = { text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Environment :: Console",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Utilities",
+    "License :: OSI Approved :: MIT License",
+]
+# .. note:: It requires nothing at minimum.
+#dependencies = [
+#]
+
+[project.urls]
+Homepage = "https://github.com/ssato/python-anyconfig"
+Documentation = "http://python-anyconfig.readthedocs.org"
+Repository = "https://github.com/ssato/python-anyconfig"
+Issues = "https://github.com/ssato/python-anyconfig/issues"
+Changelog = "https://github.com/ssato/python-anyconfig/blob/next/NEWS"
+Download = "https://pypi.python.org/pypi/anyconfig"
+"Download RPMs" = "https://copr.fedoraproject.org/coprs/ssato/python-anyconfig/"
+CI = "https://github.com/ssato/python-anyconfig/actions"
+
+[build-system]
+requires = [
+    "setuptools >= 61.0",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.package-data]
+anyconfig = [
+    "py.typed",
+]
+
+[tool.setuptools.packages.find]
+where = [
+    "src"
+]
+
+[project.optional-dependencies]
+yaml = [
+    "pyyaml",
+]
+toml = [
+    "tomli; python_version < '3.11'",
+    "tomli-w",
+]
+query = [
+    "jmespath",
+]
+schema = [
+    "jsonschema",
+]
+template = [
+    "Jinja2",
+]
+
+[project.scripts]
+anyconfig_cli = "anyconfig.cli:main"
+
+# .. seealso:: https://docs.pytest.org/en/stable/reference/customize.html#pyproject-toml
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+addopts = "--cov=src -vv -rxXs --cov --cov-report xml"
+
+# .. note::
+# 
+#    The following options are not supported by pyproject.toml or I don't know
+#    how to port from setup.cfg.
+#
+#
+# [meta]
+# long_description =
+#     python-anyconfig is a python library provides common APIs to load and dump
+#     configuration files in various formats with some useful features such as
+#     contents merge, templates, query, schema validation and generation support.
+# 
+#     - Home: https://github.com/ssato/python-anyconfig
+#     - Author: Satoru SATOH <satoru.satoh@gmail.com>
+#     - License: MIT
+
+#[aliases]
+# dists = clean --all sdist bdist_wheel
+
+# .. note:: It's not well supported.
+# .. seealso:: https://github.com/pypa/packaging-problems/issues/72
+#
+# Disabled because it does not work in CentOS 8.
+# [options.data_files]
+# share/man/man1 =
+#         docs/anyconfig_cli.1
+
+# .. seealso:: https://stackoverflow.com/a/64487610
+#
+# flake8]
+# per-file-ignores =
+#     tests/res/*/*/*/*.py: W605, B018
+#     tests/res/*/*/*/*/*.py: W605, B018
+# 
+# max-complexity = 10
+# select = C,E,F,W,B
+# 
+# # .. seealso:: https://www.flake8rules.com/rules/W504.html
+# ignore = W503

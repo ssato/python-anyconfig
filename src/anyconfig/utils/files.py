@@ -9,7 +9,7 @@ import typing
 
 def is_io_stream(obj: typing.Any) -> bool:
     """Test if given object ``obj`` is an IO stream, file or -like object."""
-    return callable(getattr(obj, 'read', False))
+    return callable(getattr(obj, "read", False))
 
 
 def get_path_from_stream(strm: typing.IO, safe: bool = False) -> str:
@@ -20,15 +20,15 @@ def get_path_from_stream(strm: typing.IO, safe: bool = False) -> str:
     :raises: ValueError
     """
     if not is_io_stream(strm) and not safe:
-        raise ValueError(f'It does not look a file[-like] object: {strm!r}')
+        raise ValueError(f"It does not look a file[-like] object: {strm!r}")
 
-    path = getattr(strm, 'name', None)
+    path = getattr(strm, "name", None)
     if path is not None:
         try:
             return str(pathlib.Path(path).resolve())
         except (TypeError, ValueError):
             pass
 
-    return ''
+    return ""
 
 # vim:sw=4:ts=4:et:

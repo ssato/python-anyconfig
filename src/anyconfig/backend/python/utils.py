@@ -52,7 +52,7 @@ def load_data_from_py(
     if data_name is None:
         data_name = DATA_VAR_NAME
 
-    spec = importlib.util.spec_from_file_location('testmod', str(path))
+    spec = importlib.util.spec_from_file_location("testmod", str(path))
     if spec and isinstance(spec.loader, importlib.abc.Loader):
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
@@ -60,7 +60,7 @@ def load_data_from_py(
             return getattr(mod, data_name)
         except (TypeError, ValueError, AttributeError):
             warnings.warn(  # noqa
-                f'No valid data "{data_name}" was found in {mod!r}.'
+                f"No valid data '{data_name}' was found in {mod!r}."
             )
 
     if fallback:

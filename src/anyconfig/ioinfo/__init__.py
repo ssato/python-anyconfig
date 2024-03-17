@@ -27,10 +27,10 @@ from .factory import make, makes
 from .utils import get_encoding
 
 __all__ = [
-    'IOInfo', 'PathOrIOInfoT',
-    'is_stream',
-    'make', 'makes',
-    'get_encoding',
+    "IOInfo", "PathOrIOInfoT",
+    "is_stream",
+    "make", "makes",
+    "get_encoding",
 ]
 
 # vim:sw=4:ts=4:et:

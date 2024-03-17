@@ -26,25 +26,25 @@ def load_plugins() -> None:
 
 def list_types() -> typing.List[str]:
     """List supported processor types."""
-    return sorted(Parsers().list_x('type'))
+    return sorted(Parsers().list_x("type"))
 
 
 def list_by_cid() -> typing.List[typing.Tuple[str, ParsersT]]:
     """List processors by each cid."""
-    return Parsers().list_by_x('cid')
+    return Parsers().list_by_x("cid")
 
 
 def list_by_type() -> typing.List[typing.Tuple[str, ParsersT]]:
     """List processor by eacch type."""
-    return Parsers().list_by_x('type')
+    return Parsers().list_by_x("type")
 
 
 def list_by_extension() -> typing.List[typing.Tuple[str, ParsersT]]:
     """List processor by file extension supported."""
-    return Parsers().list_by_x('extensions')
+    return Parsers().list_by_x("extensions")
 
 
-def findall(obj: typing.Optional['ioinfo.PathOrIOInfoT'] = None,
+def findall(obj: typing.Optional["ioinfo.PathOrIOInfoT"] = None,
             forced_type: typing.Optional[str] = None
             ) -> typing.List[ParserT]:
     """Find out processor objects can process data from given ``obj``.
@@ -63,7 +63,7 @@ def findall(obj: typing.Optional['ioinfo.PathOrIOInfoT'] = None,
     return Parsers().findall(obj, forced_type=forced_type)
 
 
-def find(obj: typing.Optional['ioinfo.PathOrIOInfoT'] = None,
+def find(obj: typing.Optional["ioinfo.PathOrIOInfoT"] = None,
          forced_type: MaybeParserT = None) -> ParserT:
     """Very similar to the above :func:`findall`.
 

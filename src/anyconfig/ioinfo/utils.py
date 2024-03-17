@@ -14,7 +14,7 @@ from .constants import GLOB_MARKER, PATH_SEP
 
 def get_encoding() -> str:
     """Get the (prefered) encoding or 'utf-8'."""
-    return (locale.getpreferredencoding() or 'UTF-8').lower()
+    return (locale.getpreferredencoding() or "UTF-8").lower()
 
 
 def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
@@ -22,14 +22,14 @@ def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
     try:
         abs_path = path.expanduser().resolve()
     except (RuntimeError, OSError) as exc:
-        warnings.warn(f'Failed to resolve {path!s}, exc={exc!r}', stacklevel=2)
+        warnings.warn(f"Failed to resolve {path!s}, exc={exc!r}", stacklevel=2)
         abs_path = path
 
     file_ext = path.suffix
 
     return (
         abs_path,
-        file_ext[1:] if file_ext.startswith('.') else ''
+        file_ext[1:] if file_ext.startswith(".") else ""
     )
 
 
@@ -45,7 +45,7 @@ def expand_from_path(path: pathlib.Path,
     )[-1]
 
     if not idx_part:
-        raise ValueError(f'It should not happen: {path!r}')
+        raise ValueError(f"It should not happen: {path!r}")
 
     idx = idx_part[0] + 1
     if len(path.parts) > idx:

@@ -36,27 +36,27 @@ from .api import (
 
 
 __all__ = [
-    'dump', 'dumps',
-    'single_load', 'multi_load', 'load', 'loads',
-    'open', 'version',
+    "dump", "dumps",
+    "single_load", "multi_load", "load", "loads",
+    "open", "version",
 
     # anyconfig.common
-    'UnknownParserTypeError', 'UnknownProcessorTypeError',
-    'UnknownFileTypeError', 'ValidationError',
+    "UnknownParserTypeError", "UnknownProcessorTypeError",
+    "UnknownFileTypeError", "ValidationError",
 
     # anyconfig.dicsts
-    'MS_REPLACE', 'MS_NO_REPLACE', 'MS_DICTS', 'MS_DICTS_AND_LISTS',
-    'MERGE_STRATEGIES', 'merge', 'get', 'set_',
+    "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
+    "MERGE_STRATEGIES", "merge", "get", "set_",
 
     # anyconfig.parsers
-    'load_plugins', 'list_types', 'list_by_cid', 'list_by_type',
-    'list_by_extension', 'findall', 'find',
+    "load_plugins", "list_types", "list_by_cid", "list_by_type",
+    "list_by_extension", "findall", "find",
 
     # anyconfig.query
-    'try_query',
+    "try_query",
 
     # anyconfig.validate
-    'validate', 'is_valid', 'gen_schema'
+    "validate", "is_valid", "gen_schema"
 ]
 
 # vim:sw=4:ts=4:et:

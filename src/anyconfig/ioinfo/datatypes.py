@@ -8,8 +8,8 @@ import pathlib
 import typing
 
 
-IOI_PATH_OBJ: str = 'pathlib.Path'
-IOI_STREAM: str = 'stream'
+IOI_PATH_OBJ: str = "pathlib.Path"
+IOI_STREAM: str = "stream"
 
 
 class IOInfo(typing.NamedTuple):

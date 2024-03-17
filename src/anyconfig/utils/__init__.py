@@ -25,10 +25,10 @@ from .utils import (
 
 
 __all__ = [
-    'is_iterable', 'is_dict_like', 'is_list_like',
-    'get_path_from_stream',
-    'groupby', 'concat',
-    'filter_options', 'noop',
+    "is_iterable", "is_dict_like", "is_list_like",
+    "get_path_from_stream",
+    "groupby", "concat",
+    "filter_options", "noop",
 ]
 
 # vim:sw=4:ts=4:et:

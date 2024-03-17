@@ -24,13 +24,13 @@ def is_path_obj(obj: typing.Any) -> bool:
 
 def is_io_stream(obj: typing.Any) -> bool:
     """Test if given object ``obj`` is a file stream, file/file-like object."""
-    return callable(getattr(obj, 'read', False))
+    return callable(getattr(obj, "read", False))
 
 
 def is_ioinfo(obj: typing.Any) -> bool:
     """Test if given object ``obj`` is an IOInfo namedtuple objejct."""
     if isinstance(obj, tuple):
-        to_dict = getattr(obj, '_asdict', False)
+        to_dict = getattr(obj, "_asdict", False)
         if to_dict and callable(to_dict):
             keys = sorted(to_dict().keys())
             return keys == IOI_KEYS_LIST
@@ -40,6 +40,6 @@ def is_ioinfo(obj: typing.Any) -> bool:
 
 def is_stream(obj: typing.Any) -> bool:
     """Test if given object ``obj`` is an IOInfo object with stream type."""
-    return getattr(obj, 'type', None) == datatypes.IOI_STREAM
+    return getattr(obj, "type", None) == datatypes.IOI_STREAM
 
 # vim:sw=4:ts=4:et:

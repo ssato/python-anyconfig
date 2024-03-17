@@ -35,7 +35,7 @@ import warnings
 from .. import base
 
 
-_COMMENT_MARKERS: typing.Tuple[str, ...] = ('#', '!')
+_COMMENT_MARKERS: typing.Tuple[str, ...] = ("#", "!")
 
 
 def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
@@ -50,9 +50,9 @@ def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
 
     if len(pair) < 2:
         warnings.warn(
-            f'Invalid line found: {line}', category=SyntaxWarning, stacklevel=2
+            f"Invalid line found: {line}", category=SyntaxWarning, stacklevel=2
         )
-        return (key or None, '')
+        return (key or None, "")
 
     return (key, pair[1].strip())
 
@@ -80,17 +80,17 @@ def _pre_process_line(
 
 def unescape(in_s: str) -> str:
     """Un-escape and take out the content from given str ``in_s``."""
-    return re.sub(r'\\(.)', r'\1', in_s)
+    return re.sub(r"\\(.)", r"\1", in_s)
 
 
 def _escape_char(in_c: str) -> str:
     """Escape some special characters in java .properties files."""
-    return '\\' + in_c if in_c in (':', '=', '\\') else in_c
+    return "\\" + in_c if in_c in (":", "=", "\\") else in_c
 
 
 def escape(in_s: str) -> str:
     """Escape special characters in given str."""
-    return ''.join(_escape_char(c) for c in in_s)
+    return "".join(_escape_char(c) for c in in_s)
 
 
 def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
@@ -121,7 +121,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
         (key, val) = parseline(line)
         if key is None:
             warnings.warn(
-                f'Failed to parse the line: {line}',
+                f"Failed to parse the line: {line}",
                 category=SyntaxWarning, stacklevel=2
             )
             continue
@@ -134,11 +134,11 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 class Parser(base.StreamParser):
     """Parser for Java properties files."""
 
-    _cid = 'properties.builtin'
-    _type = 'properties'
-    _extensions = ['properties']
+    _cid = "properties.builtin"
+    _type = "properties"
+    _extensions = ["properties"]
     _ordered = True
-    _dict_opts = ['ac_dict']
+    _dict_opts = ["ac_dict"]
 
     def load_from_stream(self, stream, container, **kwargs):
         """Load config from given file like object 'stream'.

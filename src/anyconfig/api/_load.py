@@ -151,7 +151,7 @@ def single_load(input_: ioinfo.PathOrIOInfoT,
     if schema and not is_valid(cnf, schema, **options):
         return None
 
-    return try_query(cnf, options.get('ac_query', False), **options)
+    return try_query(cnf, options.get("ac_query", False), **options)
 
 
 def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
@@ -215,7 +215,7 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
     schema = try_to_load_schema(
         ac_template=ac_template, ac_context=ac_context, **options
     )
-    options['ac_schema'] = None  # Avoid to load schema more than twice.
+    options["ac_schema"] = None  # Avoid to load schema more than twice.
 
     iois = ioinfo.makes(inputs)
     if are_same_file_types(iois):
@@ -244,9 +244,9 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
                 dicts_merge(ctx, typing.cast(MappingT, cups), **options)
             elif len(iois) > 1:
                 raise ValueError(
-                    f'Object loaded from {ioi!r} is not a mapping object and '
-                    'cannot be merged with later ones will be loaded from '
-                    'other inputs.'
+                    f"Object loaded from {ioi!r} is not a mapping object and "
+                    "cannot be merged with later ones will be loaded from "
+                    "other inputs."
                 )
 
     if cnf is None:
@@ -255,7 +255,7 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
     if schema and not is_valid(cnf, schema, **options):
         return None
 
-    return try_query(cnf, options.get('ac_query', False), **options)
+    return try_query(cnf, options.get("ac_query", False), **options)
 
 
 def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
@@ -291,7 +291,7 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
     """
     iois = ioinfo.makes(path_specs)
     if not iois:
-        raise ValueError(f'Maybe invalid input: {path_specs!r}')
+        raise ValueError(f"Maybe invalid input: {path_specs!r}")
 
     if len(iois) == 1:
         return single_load(iois[0], ac_parser=ac_parser, ac_dict=ac_dict,
@@ -333,9 +333,9 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
 
     psr = parsers_find(None, forced_type=ac_parser)
     schema = None
-    ac_schema = options.get('ac_schema', None)
+    ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:
-        options['ac_schema'] = None
+        options["ac_schema"] = None
         schema = loads(ac_schema, ac_parser=psr, ac_dict=ac_dict,
                        ac_template=ac_template, ac_context=ac_context,
                        **options)
@@ -349,6 +349,6 @@ def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
     if not is_valid(cnf, schema, **options):
         return None
 
-    return try_query(cnf, options.get('ac_query', False), **options)
+    return try_query(cnf, options.get("ac_query", False), **options)
 
 # vim:sw=4:ts=4:et:

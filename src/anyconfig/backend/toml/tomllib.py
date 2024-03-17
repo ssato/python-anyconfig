@@ -33,13 +33,13 @@ from .. import base
 class Parser(base.StringStreamFnParser):
     """TOML parser using tomlib and tomli-w."""
 
-    _cid = 'toml.tomllib'
-    _type = 'toml'
-    _extensions = ['toml']
+    _cid = "toml.tomllib"
+    _type = "toml"
+    _extensions = ["toml"]
     _ordered = True
-    _load_opts = ['parse_float']
-    _open_read_mode: str = 'rb'
-    _open_write_mode: str = 'wb'
+    _load_opts = ["parse_float"]
+    _open_read_mode: str = "rb"
+    _open_write_mode: str = "wb"
 
     _load_from_string_fn = base.to_method(tomllib.loads)
     _load_from_stream_fn = base.to_method(tomllib.load)

@@ -12,7 +12,7 @@ except ImportError:
 
 
 __all__ = [
-    'try_query',
+    "try_query",
 ]
 
 # vim:sw=4:ts=4:et:

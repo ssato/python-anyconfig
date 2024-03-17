@@ -20,20 +20,20 @@ def list_parser_types() -> typing.List[str]:
 def make_parsers_txt() -> str:
     """Make up a text shows list and info of parsers available."""
     sep = os.linesep
-    indent = '  '
+    indent = "  "
 
-    parser_types = ', '.join(list_parser_types())
+    parser_types = ", ".join(list_parser_types())
     file_ext_vs_parsers = sep.join(
-        f'{indent}{x}: ' + ', '.join(p.cid() for p in ps)
+        f"{indent}{x}: " + ", ".join(p.cid() for p in ps)
         for x, ps in api.list_by_extension()
     )
 
     return sep.join(
         [
-            'Supported file types:',
-            f'{indent}{parser_types}',
-            'Supported file extensions [extension: parsers]:',
-            f'{file_ext_vs_parsers}',
+            "Supported file types:",
+            f"{indent}{parser_types}",
+            "Supported file extensions [extension: parsers]:",
+            f"{file_ext_vs_parsers}",
         ]
     )
 
@@ -75,12 +75,12 @@ def load_diff(args, extra_opts):
         exit_with_output(f"Wrong input type '{args.itype}'", 1)
     except api.UnknownFileTypeError:
         exit_with_output(
-            'No appropriate backend was found for given file '
-            f"type='{args.itype}', inputs={', '.join(args.inputs)}",
+            "No appropriate backend was found for given file "
+            f"type=n{args.itype}', inputs={', '.join(args.inputs)}",
             1
         )
     exit_if_load_failure(
-        diff, f'Failed to load: args={", ".join(args.inputs)}'
+        diff, f"Failed to load: args={', '.join(args.inputs)}"
     )
 
     return diff

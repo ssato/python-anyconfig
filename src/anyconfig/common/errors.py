@@ -10,7 +10,7 @@ import typing
 class BaseError(RuntimeError):
     """Base Error exception."""
 
-    _msg_fmt: str = 'forced_type: {!s}'
+    _msg_fmt: str = "forced_type: {!s}"
 
     def __init__(self, arg: typing.Optional[typing.Any] = None):
         """Initialize the format."""
@@ -20,7 +20,7 @@ class BaseError(RuntimeError):
 class UnknownParserTypeError(BaseError):
     """Raise if no parsers were found for given type."""
 
-    _msg_fmt: str = 'No parser found for type: {!s}'
+    _msg_fmt: str = "No parser found for type: {!s}"
 
 
 class UnknownProcessorTypeError(UnknownParserTypeError):
@@ -30,12 +30,12 @@ class UnknownProcessorTypeError(UnknownParserTypeError):
 class UnknownFileTypeError(BaseError):
     """Raise if not parsers were found for given file path."""
 
-    _msg_fmt: str = 'No parser found for file: {!s}'
+    _msg_fmt: str = "No parser found for file: {!s}"
 
 
 class ValidationError(BaseError):
     """Raise if validation failed."""
 
-    _msg_fmt: str = 'Validation failed: {!s}'
+    _msg_fmt: str = "Validation failed: {!s}"
 
 # vim:sw=4:ts=4:et:

@@ -25,7 +25,7 @@ def sort_by_prio(prs: typing.Iterable[ProcT]) -> ProcsT:
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
     :return: Sambe as above but sorted by priority
     """
-    return sorted(prs, key=operator.methodcaller('priority'), reverse=True)
+    return sorted(prs, key=operator.methodcaller("priority"), reverse=True)
 
 
 def select_by_key(
@@ -40,7 +40,7 @@ def select_by_key(
     :param items: A list of tuples of keys and values, [([key], val)]
     :return: A list of tuples of key and values, [(key, [val])]
 
-    >>> select_by_key([(['a', 'aaa'], 1), (['b', 'bb'], 2), (['a'], 3)])
+    >>> select_by_key([(["a", "aaa"], 1), (["b", "bb"], 2), (["a"], 3)])
     [('a', [1, 3]), ('aaa', [1]), ('b', [2]), ('bb', [2])]
     """
     itr = utils.concat(((k, v) for k in ks) for ks, v in items)
@@ -57,13 +57,13 @@ def list_by_x(prs: typing.Iterable[ProcT], key: str
         A list of :class:`Processor` or its children classes grouped by
         given 'item', [(cid, [:class:`Processor`)]] by default
     """
-    if key == 'type':
+    if key == "type":
         kfn = operator.methodcaller(key)
         res = sorted(((k, sort_by_prio(g)) for k, g
                       in utils.groupby(prs, kfn)),
                      key=operator.itemgetter(0))
 
-    elif key == 'extensions':
+    elif key == "extensions":
         res: typing.List[  # type: ignore
             typing.Tuple[str, ProcsT]
         ] = select_by_key(((p.extensions(), p) for p in prs),
@@ -85,7 +85,7 @@ def findall_with_pred(predicate: typing.Callable[..., bool],
     :return: A list of appropriate processor classes or []
     """
     return sorted((p for p in prs if predicate(p)),
-                  key=operator.methodcaller('priority'), reverse=True)
+                  key=operator.methodcaller("priority"), reverse=True)
 
 
 def maybe_processor(type_or_id: typing.Union[ProcT, ProcClsT],
@@ -147,7 +147,7 @@ def find_by_fileext(fileext: str, prs: ProcsT) -> ProcsT:
 
     pclss = findall_with_pred(pred, prs)
     if not pclss:
-        raise common.UnknownFileTypeError(f'file extension={fileext}')
+        raise common.UnknownFileTypeError(f"file extension={fileext}")
 
     return pclss  # :: [Processor], never []
 
@@ -224,8 +224,8 @@ def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
             typing.cast(typing.Union[ProcT, ProcClsT], forced_type)
         )
         if proc is None:
-            raise ValueError('Wrong processor class or instance '
-                             f'was given: {forced_type!r}')
+            raise ValueError("Wrong processor class or instance "
+                             f"was given: {forced_type!r}")
 
         return proc
 
@@ -247,6 +247,6 @@ def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
         try:
             yield res.load()
         except ImportError as exc:
-            warnings.warn(f'Failed to load plugin, exc={exc!s}', stacklevel=2)
+            warnings.warn(f"Failed to load plugin, exc={exc!s}", stacklevel=2)
 
 # vim:sw=4:ts=4:et:

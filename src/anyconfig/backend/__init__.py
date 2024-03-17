@@ -40,17 +40,17 @@ def warn(name: str, feature: str):
 if yaml.PARSERS:
     PARSERS.extend(yaml.PARSERS)
 else:
-    warn('yaml', 'YAML')
+    warn("yaml", "YAML")
 
 if toml.PARSERS:
     PARSERS.extend(toml.PARSERS)
 else:
-    warn('toml', 'TOML')
+    warn("toml", "TOML")
 
 
 __all__ = [
-    'ParserT', 'ParsersT', 'ParserClssT',
-    'PARSERS',
+    "ParserT", "ParsersT", "ParserClssT",
+    "PARSERS",
 ]
 
 # vim:sw=4:ts=4:et:

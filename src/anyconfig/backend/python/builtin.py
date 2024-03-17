@@ -38,6 +38,6 @@ from . import (
 class Parser(base.Parser, loader.Loader, dumper.Dumper):
     """Parser for python code files."""
 
-    _cid = 'python.builtin'
-    _type = 'python'
-    _extensions = ['py']
+    _cid = "python.builtin"
+    _type = "python"
+    _extensions = ["py"]

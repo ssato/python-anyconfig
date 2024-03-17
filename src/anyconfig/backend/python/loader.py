@@ -49,7 +49,7 @@ def load_from_temp_file(
     """
     with tempfile.TemporaryDirectory() as tmpdir:
         path = pathlib.Path(tmpdir) / "mod.py"
-        path.write_text(content, encoding='utf-8')
+        path.write_text(content, encoding="utf-8")
 
         return utils.load_from_path(
             path, allow_exec=opts.get("allow_exec", False)

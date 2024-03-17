@@ -13,9 +13,9 @@ from .errors import (
 
 
 __all__ = [
-    'InDataT', 'InDataExT', 'PrimitiveT',
-    'UnknownParserTypeError', 'UnknownProcessorTypeError',
-    'UnknownFileTypeError', 'ValidationError',
+    "InDataT", "InDataExT", "PrimitiveT",
+    "UnknownParserTypeError", "UnknownProcessorTypeError",
+    "UnknownFileTypeError", "ValidationError",
 ]
 
 # vim:sw=4:ts=4:et:

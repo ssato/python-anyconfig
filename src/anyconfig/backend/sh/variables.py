@@ -32,20 +32,20 @@ def _parseline(line):
     :return: A tuple of (key, value), both key and value may be None
     """
     match = re.match(
-        r'^\s*(export)?\s*(\S+)=(?:(?:'
+        r"^\s*(export)?\s*(\S+)=(?:(?:"
         r"(?:\"(.*[^\\])\")|(?:'(.*[^\\])')|"
         r"(?:([^\"'#\s]+)))?)\s*#*",
         line
     )
     if not match:
         warnings.warn(
-            f'Invalid line found: {line}', category=SyntaxWarning, stacklevel=2
+            f"Invalid line found: {line}", category=SyntaxWarning, stacklevel=2
         )
         return (None, None)
 
     tpl = match.groups()
     vals = list(itertools.dropwhile(lambda x: x is None, tpl[2:]))
-    return (tpl[1], vals[0] if vals else '')
+    return (tpl[1], vals[0] if vals else "")
 
 
 def load(stream, container=dict):
@@ -66,7 +66,7 @@ def load(stream, container=dict):
         (key, val) = _parseline(line)
         if key is None:
             warnings.warn(
-                f'Empty val in the line: {line}',
+                f"Empty val in the line: {line}",
                 category=SyntaxWarning, stacklevel=2
             )
             continue
@@ -79,11 +79,11 @@ def load(stream, container=dict):
 class Parser(base.StreamParser):
     """Parser for Shell variable definition files."""
 
-    _cid = 'sh.variables'
-    _type = 'shellvars'
-    _extensions = ['sh']
+    _cid = "sh.variables"
+    _type = "shellvars"
+    _extensions = ["sh"]
     _ordered = True
-    _dict_opts = ['ac_dict']
+    _dict_opts = ["ac_dict"]
 
     def load_from_stream(self, stream, container, **kwargs):
         """Load config from given file like object ``stream``.

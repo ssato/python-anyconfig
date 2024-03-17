@@ -23,8 +23,8 @@ class Processor:
        in most cases, I think.
     """
 
-    _cid: str = ''
-    _type: str = ''
+    _cid: str = ""
+    _type: str = ""
     _priority: int = 0   # 0 (lowest priority) .. 99  (highest priority)
     _extensions: typing.List[str] = []
 
@@ -56,8 +56,8 @@ class Processor:
     def __str__(self) -> str:
         """Provide a string representation."""
         return (
-            f'<Processor cid={self.cid()}, type={self.type()}, '
-            f'prio={self.priority()}, extensions={self.extensions()!r}'
+            f"<Processor cid={self.cid()}, type={self.type()}, "
+            f"prio={self.priority()}, extensions={self.extensions()!r}"
         )
 
 # vim:sw=4:ts=4:et:

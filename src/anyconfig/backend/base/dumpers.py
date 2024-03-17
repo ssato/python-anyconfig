@@ -35,11 +35,11 @@ class DumperMixin:
     """
 
     _dump_opts: typing.List[str] = []
-    _open_write_mode = 'w'
+    _open_write_mode = "w"
 
     def wopen(self, filepath: str, **kwargs):
         """Open file ``filepath`` with the write mode ``_open_write_mode``."""
-        if 'encoding' not in kwargs and self._open_write_mode == 'w':
+        if "encoding" not in kwargs and self._open_write_mode == "w":
             kwargs["encoding"] = _ENCODING
 
         return open(
@@ -55,7 +55,7 @@ class DumperMixin:
         :return: string represents the configuration
         """
         not_implemented(self, cnf, **kwargs)
-        return ''
+        return ""
 
     def dump_to_path(self, cnf: InDataExT, filepath: str, **kwargs) -> None:
         """Dump config 'cnf' to a file 'filepath'.
@@ -112,7 +112,7 @@ class DumperMixin:
 class BinaryDumperMixin(DumperMixin):
     """Mixin class to dump binary (byte string) configuration data."""
 
-    _open_write_mode: str = 'wb'
+    _open_write_mode: str = "wb"
 
 
 class ToStringDumperMixin(DumperMixin):

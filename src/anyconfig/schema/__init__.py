@@ -12,7 +12,7 @@ except ImportError:
 
 
 __all__ = [
-    'validate', 'is_valid', 'gen_schema', 'SUPPORTED'
+    "validate", "is_valid", "gen_schema", "SUPPORTED"
 ]
 
 # vim:sw=4:ts=4:et:

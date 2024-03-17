@@ -21,12 +21,12 @@ PrimitivesT = typing.List[PrimitiveT]
 def parse_single(str_: typing.Optional[str]) -> PrimitiveT:
     """Parse an expression gives a primitive value."""
     if str_ is None:
-        return ''
+        return ""
 
     str_ = str_.strip()
 
     if not str_:
-        return ''
+        return ""
 
     if BOOL_TRUE_PATTERN.match(str_) is not None:
         return True
@@ -46,7 +46,7 @@ def parse_single(str_: typing.Optional[str]) -> PrimitiveT:
     return str_
 
 
-def parse_list(str_: str, sep: str = ',') -> PrimitivesT:
+def parse_list(str_: str, sep: str = ",") -> PrimitivesT:
     """Parse an expression gives a list of values.
 
     An expression ``str_`` might contain a list of str-es separated with
@@ -58,8 +58,8 @@ def parse_list(str_: str, sep: str = ',') -> PrimitivesT:
 AttrValsT = typing.Tuple[str, typing.Union[PrimitivesT, PrimitiveT]]
 
 
-def attr_val_itr(str_: str, avs_sep: str = ':', vs_sep: str = ',',
-                 as_sep: str = ';') -> typing.Iterator[AttrValsT]:
+def attr_val_itr(str_: str, avs_sep: str = ":", vs_sep: str = ",",
+                 as_sep: str = ";") -> typing.Iterator[AttrValsT]:
     """Parse a list of atrribute and value pairs.
 
     This is a helper function for parse_attrlist_0.
@@ -78,8 +78,8 @@ def attr_val_itr(str_: str, avs_sep: str = ':', vs_sep: str = ',',
 
         if _rest:
             warnings.warn(
-                f'Extra strings {_rest!s} in {rel!s}'
-                f'It should be in the form of attr{avs_sep}value.',
+                f"Extra strings {_rest!s} in {rel!s}"
+                f"It should be in the form of attr{avs_sep}value.",
                 stacklevel=2
             )
 
@@ -91,8 +91,8 @@ def attr_val_itr(str_: str, avs_sep: str = ':', vs_sep: str = ',',
             yield (_attr, typing.cast(PrimitiveT, _values))
 
 
-def parse_attrlist_0(str_: str, avs_sep: str = ':', vs_sep: str = ',',
-                     as_sep: str = ';') -> typing.List[AttrValsT]:
+def parse_attrlist_0(str_: str, avs_sep: str = ":", vs_sep: str = ",",
+                     as_sep: str = ";") -> typing.List[AttrValsT]:
     """Parse a list of atrribute and value pairs.
 
     This is a helper function for parse_attrlist.
@@ -116,8 +116,8 @@ def parse_attrlist_0(str_: str, avs_sep: str = ':', vs_sep: str = ',',
 AttrValsDictT = typing.Dict[str, typing.Union[PrimitivesT, PrimitiveT]]
 
 
-def parse_attrlist(str_: str, avs_sep: str = ':', vs_sep: str = ',',
-                   as_sep: str = ';') -> AttrValsDictT:
+def parse_attrlist(str_: str, avs_sep: str = ":", vs_sep: str = ",",
+                   as_sep: str = ";") -> AttrValsDictT:
     """Parse a list of atrribute and value pairs.
 
     The expressions to parse should be in the form of
@@ -139,8 +139,8 @@ ResultsT = typing.Union[
 
 
 def parse(str_: typing.Optional[str],
-          lsep: str = ',', avsep: str = ':', vssep: str = ',',
-          avssep: str = ';') -> ResultsT:
+          lsep: str = ",", avsep: str = ":", vssep: str = ",",
+          avssep: str = ";") -> ResultsT:
     """Very simple generic parser."""
     if str_ is None or not str_:
         return parse_single(str_)

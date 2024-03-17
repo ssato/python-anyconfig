@@ -40,9 +40,9 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
     except api.UnknownProcessorTypeError:
         # Just ignore it should be wrong type.
         warnings.warn(
-            'Ignored the given type because it looks wrong or '
-            'is not supported by installed parser backends: '
-            f'{io_type}', stacklevel=2
+            "Ignored the given type because it looks wrong or "
+            "is not supported by installed parser backends: "
+            f"{io_type}", stacklevel=2
         )
 
     return default
@@ -54,19 +54,19 @@ def find_by_the_paths(paths: typing.List[str],
     """Try to detect file (parser) type from given file paths ``paths``."""
     default = None
     msg = (
-        '*** You have to specify file type[s] with '
-        '-I/--itype or -O/--otype options explicitly. ***'
+        "*** You have to specify file type[s] with "
+        "-I/--itype or -O/--otype options explicitly. ***"
     )
-    paths_s = ', '.join(paths)
+    paths_s = ", ".join(paths)
 
     if not are_same_file_types(paths):
         if ignore_errors:
             return default
 
         utils.exit_with_output(
-            'Failed to detect a file type because given file paths '
-            'may contain files with multiple types: '
-            f'{paths_s}{os.linesep}{msg}',
+            "Failed to detect a file type because given file paths "
+            "may contain files with multiple types: "
+            f"{paths_s}{os.linesep}{msg}",
             1
         )
 
@@ -77,15 +77,15 @@ def find_by_the_paths(paths: typing.List[str],
         except api.UnknownFileTypeError:
             if not ignore_errors:
                 utils.exit_with_output(
-                    'Failed to detect the file type because it is/those are '
-                    f'unknown file type[s]: {paths_s}{os.linesep}{msg}',
+                    "Failed to detect the file type because it is/those are "
+                    f"unknown file type[s]: {paths_s}{os.linesep}{msg}",
                     1
                 )
 
     return default
 
 
-def try_detecting_input_type(args: 'argparse.Namespace',
+def try_detecting_input_type(args: "argparse.Namespace",
                              ignore_errors: bool = True
                              ) -> typing.Optional[str]:
     """Try to resolve a file type and parser of inputs."""
@@ -108,7 +108,7 @@ def try_detecting_input_type(args: 'argparse.Namespace',
     return None
 
 
-def try_detecting_output_type(args: 'argparse.Namespace'
+def try_detecting_output_type(args: "argparse.Namespace"
                               ) -> typing.Optional[str]:
     """Try to resolve a file type and parser of outputs (``args.output``)."""
     # First, try the type given by users.
@@ -127,9 +127,9 @@ def try_detecting_output_type(args: 'argparse.Namespace'
     itype = try_detecting_input_type(args)
     if not itype:
         utils.exit_with_output(
-            'Failed to find or detect the file type: '
-            f'itype={args.itype}, otype={args.otype}, '
-            f'output={args.output}, inputs={", ".join(args.inputs)}',
+            "Failed to find or detect the file type: "
+            f"itype={args.itype}, otype={args.otype}, "
+            f"output={args.output}, inputs={', '.join(args.inputs)}",
             1
         )
 

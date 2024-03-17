@@ -11,21 +11,21 @@ Changelog:
 from .. import base
 
 
-JSON_LOAD_OPTS = ['cls', 'object_hook', 'parse_float', 'parse_int',
-                  'parse_constant', 'object_pairs_hook']
+JSON_LOAD_OPTS = ["cls", "object_hook", "parse_float", "parse_int",
+                  "parse_constant", "object_pairs_hook"]
 
-JSON_DUMP_OPTS = ['skipkeys', 'ensure_ascii', 'check_circular', 'allow_nan',
-                  'cls', 'indent', 'separators', 'default', 'sort_keys']
+JSON_DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
+                  "cls", "indent", "separators", "default", "sort_keys"]
 
-JSON_DICT_OPTS = ['object_pairs_hook', 'object_hook']
+JSON_DICT_OPTS = ["object_pairs_hook", "object_hook"]
 
 
 class Parser(base.StringStreamFnParser):
     """Parser for JSON files."""
 
-    _cid = 'json.stdlib'
-    _type = 'json'
-    _extensions = ['json', 'jsn', 'js']
+    _cid = "json.stdlib"
+    _type = "json"
+    _extensions = ["json", "jsn", "js"]
     _ordered = True
     _allow_primitives = True
 

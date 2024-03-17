@@ -32,16 +32,16 @@ def open(path: ioinfo.PathOrIOInfoT,
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     if not path:
-        raise ValueError(f'Invalid argument, path: {path!r}')
+        raise ValueError(f"Invalid argument, path: {path!r}")
 
     ioi = ioinfo.make(path)
     if ioinfo.is_stream(ioi):
-        warnings.warn(f'Looks already opened stream: {ioi!r}', stacklevel=2)
+        warnings.warn(f"Looks already opened stream: {ioi!r}", stacklevel=2)
         return typing.cast(typing.IO, ioi.src)
 
     psr: ParserT = parsers.find(ioi, forced_type=ac_parser)
 
-    if mode is not None and mode.startswith('w'):
+    if mode is not None and mode.startswith("w"):
         return psr.wopen(ioi.path, **options)
 
     return psr.ropen(ioi.path, **options)

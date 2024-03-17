@@ -63,7 +63,7 @@ def _validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
             return (False, str(exc))  # Validation was failed.
         raise
 
-    return (True, '')
+    return (True, "")
 
 
 def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
@@ -88,7 +88,7 @@ def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
 
     :return: (True if validation succeeded else False, error message[s])
     """
-    options = filter_options(('cls', ), options)
+    options = filter_options(("cls", ), options)
     if ac_schema_errors:
         return _validate_all(data, schema, **options)
 
@@ -106,7 +106,7 @@ def is_valid(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
         ac_schema_errors=ac_schema_errors, **options
     )
     if error_or_errors:
-        msg = f'scm={schema!s}, err={error_or_errors!s}'
+        msg = f"scm={schema!s}, err={error_or_errors!s}"
         if ac_schema_safe:
             warnings.warn(msg, stacklevel=2)
             return False
@@ -117,8 +117,8 @@ def is_valid(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
 
 
 _SIMPLETYPE_MAP: typing.Dict[typing.Any, str] = {
-    list: 'array', tuple: 'array', bool: 'boolean', int: 'integer', float:
-    'number', dict: 'object', str: 'string'
+    list: "array", tuple: "array", bool: "boolean", int: "integer", float:
+    "number", dict: "object", str: "string"
 }
 
 
@@ -127,8 +127,8 @@ def _process_options(**options):
 
     :return: A tuple of (typemap :: dict, strict :: bool)
     """
-    return (options.get('ac_schema_typemap', _SIMPLETYPE_MAP),
-            bool(options.get('ac_schema_strict', False)))
+    return (options.get("ac_schema_typemap", _SIMPLETYPE_MAP),
+            bool(options.get("ac_schema_strict", False)))
 
 
 def array_to_schema(iarr: typing.Iterable[InDataT], **options
@@ -147,13 +147,13 @@ def array_to_schema(iarr: typing.Iterable[InDataT], **options
 
     arr: typing.List[InDataT] = list(iarr)
     scm = {
-        'type': typemap[list],
-        'items': gen_schema(arr[0] if arr else 'str', **options)
+        "type": typemap[list],
+        "items": gen_schema(arr[0] if arr else "str", **options)
     }
     if strict:
         nitems = len(arr)
-        scm['minItems'] = nitems
-        scm['uniqueItems'] = len(set(arr)) == nitems
+        scm["minItems"] = nitems
+        scm["uniqueItems"] = len(set(arr)) == nitems
 
     return scm
 
@@ -174,9 +174,9 @@ def object_to_schema(obj: InDataT, **options) -> InDataT:
     (typemap, strict) = _process_options(**options)
 
     props = dict((k, gen_schema(v, **options)) for k, v in obj.items())
-    scm = {'type': typemap[dict], 'properties': props}
+    scm = {"type": typemap[dict], "properties": props}
     if strict:
-        scm['required'] = sorted(props.keys())
+        scm["required"] = sorted(props.keys())
 
     return scm
 
@@ -196,13 +196,13 @@ def gen_schema(data: InDataExT, **options) -> InDataT:
     :return: A dict represents JSON schema of this node
     """
     if data is None:
-        return {'type': 'null'}
+        return {"type": "null"}
 
     _type = type(data)
 
     if _type in _SIMPLE_TYPES:
-        typemap = options.get('ac_schema_typemap', _SIMPLETYPE_MAP)
-        scm = {'type': typemap[_type]}
+        typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
+        scm = {"type": typemap[_type]}
 
     elif is_dict_like(data):
         scm = object_to_schema(data, **options)  # type: ignore

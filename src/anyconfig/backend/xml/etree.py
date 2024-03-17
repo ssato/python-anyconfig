@@ -78,35 +78,16 @@ _TAGS = {"attrs": "@attrs", "text": "@text", "children": "@children"}
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
 
-def _iterparse(xmlfile):
-    """Override ElementTree.iterparse to avoid bug in python 3.{2,3}.
-
-    .. seealso:: http://bugs.python.org/issue9257.
-
-    :param xmlfile: XML file or file-like object
-    """
-    try:
-        return ElementTree.iterparse(xmlfile, events=("start-ns", ))
-    except TypeError:
-        return ElementTree.iterparse(xmlfile, events=(b"start-ns", ))
-
-
-def flip(tpl):
-    """Flip arguments.
-
-    >>> flip((1, 2))
-    (2, 1)
-    """
-    return (tpl[1], tpl[0])
-
-
 def _namespaces_from_file(xmlfile):
     """Get the namespace str from file.
 
     :param xmlfile: XML file or file-like object
     :return: {namespace_uri: namespace_prefix} or {}
     """
-    return dict(flip(t) for _, t in _iterparse(xmlfile))
+    return {
+        url: prefix for _, (prefix, url)
+        in ElementTree.iterparse(xmlfile, events=("start-ns", ))
+    }
 
 
 def _tweak_ns(tag, **options):

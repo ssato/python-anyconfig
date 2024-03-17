@@ -66,7 +66,7 @@ def query(data: InDataT, jexp: str, **_options
     except ValueError as exc:  # jmespath.exceptions.*Error inherit from it.
         return (data, exc)
 
-    except BaseException:  # noqa: E722
+    except BaseException:  # noqa: E722, B036
         return (None, exc)
 
 # vim:sw=4:ts=4:et:

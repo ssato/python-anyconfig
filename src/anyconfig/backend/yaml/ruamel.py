@@ -103,13 +103,9 @@ def yml_load(stream, container, **options):
 
 def yml_dump(data, stream, **options):
     """See :func:`anyconfig.backend.yaml.pyyaml.yml_dump`."""
-    # .. todo:: Needed?
-    # if anyconfig.utils.is_dict_like(data):
-    #     if options.get("ac_ordered"):
-    #         factory = collections.OrderedDict
-    #     else:
-    #         factory = dict
-    #     data = anyconfig.dicts.convert_to(data, ac_dict=factory)
+    # .. todo::
+    #    Maybe it should take care to keep keys' order using
+    #    collections.OrderedDict if ac_ordered is True in ``options``.
     return yml_fnc("dump", data, stream, **options)
 
 

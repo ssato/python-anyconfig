@@ -44,8 +44,10 @@ def select_by_key(
     [('a', [1, 3]), ('aaa', [1]), ('b', [2]), ('bb', [2])]
     """
     itr = utils.concat(((k, v) for k in ks) for ks, v in items)
-    return list((k, sort_fn(t[1] for t in g))
-                for k, g in utils.groupby(itr, operator.itemgetter(0)))
+    return [
+        (k, sort_fn(t[1] for t in g))
+        for k, g in utils.groupby(itr, operator.itemgetter(0))
+    ]
 
 
 def list_by_x(prs: typing.Iterable[ProcT], key: str

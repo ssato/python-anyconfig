@@ -87,7 +87,8 @@ def load_with_fn(load_fn: typing.Optional[LoadFnT],
     :return: container object holding data
     """
     if load_fn is None:
-        raise TypeError("The first argument 'load_fn' must be a callable!")
+        msg = "The first argument 'load_fn' must be a callable!"
+        raise TypeError(msg)
 
     ret = load_fn(content_or_strm, **options)
     if is_dict_like(ret):
@@ -111,7 +112,8 @@ def dump_with_fn(dump_fn: typing.Optional[DumpFnT],
     :return: String represents data if stream is None or None
     """
     if dump_fn is None:
-        raise TypeError("The first argument 'dump_fn' must be a callable!")
+        msg = "The first argument 'dump_fn' must be a callable!"
+        raise TypeError(msg)
 
     if stream is None:
         return dump_fn(data, **options)

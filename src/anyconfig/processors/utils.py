@@ -69,9 +69,8 @@ def list_by_x(prs: typing.Iterable[ProcT], key: str
         ] = select_by_key(((p.extensions(), p) for p in prs),
                           sort_fn=sort_by_prio)
     else:
-        raise ValueError(
-            f"Argument 'key' must be 'type' or 'extensions' but it was '{key}'"
-        )
+        msg = f"Argument 'key' must be 'type' or 'extensions' [{key}]"
+        raise ValueError(msg)
 
     return res
 

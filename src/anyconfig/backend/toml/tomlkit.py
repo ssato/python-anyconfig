@@ -26,11 +26,11 @@ from .. import base
 class Parser(base.StringStreamFnParser):
     """TOML parser."""
 
-    _cid = 'toml.tomlkit'
-    _type = 'toml'
-    _extensions = ['toml']
+    _cid = "toml.tomlkit"
+    _type = "toml"
+    _extensions = ["toml"]
     _ordered = True
-    _dump_opts = ['sort_keys']
+    _dump_opts = ["sort_keys"]
 
     _load_from_string_fn = base.to_method(tomlkit.loads)
     _load_from_stream_fn = base.to_method(tomlkit.load)

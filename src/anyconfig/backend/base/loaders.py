@@ -44,7 +44,7 @@ class LoaderMixin:
     _ordered: bool = False
     _allow_primitives: bool = False
     _dict_opts: typing.List[str] = []
-    _open_read_mode: str = 'r'
+    _open_read_mode: str = "r"
 
     @classmethod
     def ordered(cls) -> bool:
@@ -68,7 +68,7 @@ class LoaderMixin:
 
     def ropen(self, filepath, **kwargs):
         """Open files with read only mode."""
-        if 'encoding' not in kwargs and self._open_read_mode == 'r':
+        if "encoding" not in kwargs and self._open_read_mode == "r":
             kwargs["encoding"] = _ENCODING
 
         return open(
@@ -206,7 +206,7 @@ class LoaderMixin:
 class BinaryLoaderMixin(LoaderMixin):
     """Mixin class to load binary (byte string) configuration files."""
 
-    _open_read_mode: str = 'rb'
+    _open_read_mode: str = "rb"
 
 
 class FromStringLoaderMixin(LoaderMixin):

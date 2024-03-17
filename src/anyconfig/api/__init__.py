@@ -118,7 +118,7 @@ from ..schema import (
 )
 
 
-__version__ = '0.14.0'
+__version__ = "0.14.0"
 
 
 def version() -> typing.List[str]:
@@ -126,41 +126,41 @@ def version() -> typing.List[str]:
 
     :return: A list of version info, [major, minor, release[, e.g. [0, 8, 2]
     """
-    return __version__.split('.')
+    return __version__.split(".")
 
 
 __all__ = [
-    'MaybeDataT',
-    'dump', 'dumps',
-    'single_load', 'multi_load', 'load', 'loads',
-    'open', 'version',
+    "MaybeDataT",
+    "dump", "dumps",
+    "single_load", "multi_load", "load", "loads",
+    "open", "version",
 
     # anyconfig.backend
-    'ParserT',
+    "ParserT",
 
     # anyconfig.common
-    'InDataT', 'InDataExT',
-    'UnknownFileTypeError', 'UnknownParserTypeError',
-    'UnknownProcessorTypeError', 'ValidationError',
+    "InDataT", "InDataExT",
+    "UnknownFileTypeError", "UnknownParserTypeError",
+    "UnknownProcessorTypeError", "ValidationError",
 
     # anyconfig.dicsts
-    'MS_REPLACE', 'MS_NO_REPLACE', 'MS_DICTS', 'MS_DICTS_AND_LISTS',
-    'MERGE_STRATEGIES',
-    'merge', 'get', 'set_',
+    "MS_REPLACE", "MS_NO_REPLACE", "MS_DICTS", "MS_DICTS_AND_LISTS",
+    "MERGE_STRATEGIES",
+    "merge", "get", "set_",
 
     # anyconfig.ioinfo
-    'IOInfo', 'ioinfo_make', 'ioinfo_makes',
+    "IOInfo", "ioinfo_make", "ioinfo_makes",
 
     # anyconfig.parsers
-    'load_plugins', 'list_types', 'list_by_cid', 'list_by_type',
-    'list_by_extension', 'findall', 'find',
-    'MaybeParserT',
+    "load_plugins", "list_types", "list_by_cid", "list_by_type",
+    "list_by_extension", "findall", "find",
+    "MaybeParserT",
 
     # anyconfig.query
-    'try_query',
+    "try_query",
 
     # anyconfig.validate
-    'validate', 'is_valid', 'gen_schema'
+    "validate", "is_valid", "gen_schema"
 ]
 
 # vim:sw=4:ts=4:et:

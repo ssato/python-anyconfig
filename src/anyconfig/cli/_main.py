@@ -22,12 +22,12 @@ if OUT_ERR:
     (sys.stdout, sys.stderr) = OUT_ERR
 
 
-def try_special_command_if_no_inputs(args: 'argparse.Namespace') -> None:
+def try_special_command_if_no_inputs(args: "argparse.Namespace") -> None:
     """Run one of some special commands do not require inputs argument."""
     assert not args.inputs
 
     if not args.list and not args.env:
-        utils.exit_with_output('No inputs were given!', 1)
+        utils.exit_with_output("No inputs were given!", 1)
 
     if not args.output:
         args.output = sys.stdout
@@ -41,8 +41,8 @@ def try_special_command_if_no_inputs(args: 'argparse.Namespace') -> None:
         sys.exit(0)
 
 
-def process_args_or_run_command(args: 'argparse.Namespace'
-                                ) -> 'argparse.Namespace':
+def process_args_or_run_command(args: "argparse.Namespace"
+                                ) -> "argparse.Namespace":
     """Process ``args`` and/or run commands.
 
     Process ``args``, that is, validate and update it, and raise SystemExit if
@@ -54,7 +54,7 @@ def process_args_or_run_command(args: 'argparse.Namespace'
             if (len(args.inputs) == 1
                     and args.inputs[0] == constants.STD_IN_OR_OUT):
                 utils.exit_with_output(
-                    'No input type was given but required for the input "-"',
+                    "No input type was given but required for the input '-'",
                     1
                 )
     else:
@@ -62,13 +62,13 @@ def process_args_or_run_command(args: 'argparse.Namespace'
 
     if args.validate and not args.schema:
         utils.exit_with_output(
-            '--validate and --schema options must be used together',
+            "--validate and --schema options must be used together",
             1
         )
 
     # Update args:
     if args.loglevel:
-        warnings.simplefilter('always')
+        warnings.simplefilter("always")
 
     args.otype = detectors.try_detecting_output_type(args)
 
@@ -84,17 +84,17 @@ def process_args_or_run_command(args: 'argparse.Namespace'
     return args
 
 
-def try_validate(cnf, args: 'argparse.Namespace') -> None:
+def try_validate(cnf, args: "argparse.Namespace") -> None:
     """Try validate ``cnf`` with the schema loaded from ``args.schema``."""
     scm = api.load(args.schema)
     (res, errors) = api.validate(cnf, scm, ac_schema_errors=True)
 
     if res:
-        msg_code = ('Validation succeeded', 0)
+        msg_code = ("Validation succeeded", 0)
     else:
         msg_code = (
-            'Validation failed:'
-            f'{(os.linesep + "  ").join(errors)}',
+            "Validation failed:"
+            f"{(os.linesep + '  ').join(errors)}",
             1
         )
 

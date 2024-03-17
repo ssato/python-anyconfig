@@ -42,7 +42,7 @@ class Parser(LoaderMixin, DumperMixin, processor.Processor):
     .. seealso:: the doc of :class:`anyconfig.models.processor.Processor`
     """
 
-    _cid: str = 'base'
+    _cid: str = "base"
 
 
 class StringParser(Parser, FromStringLoaderMixin, ToStringDumperMixin):
@@ -87,7 +87,7 @@ def load_with_fn(load_fn: typing.Optional[LoadFnT],
     :return: container object holding data
     """
     if load_fn is None:
-        raise TypeError('The first argument "load_fn" must be a callable!')
+        raise TypeError("The first argument 'load_fn' must be a callable!")
 
     ret = load_fn(content_or_strm, **options)
     if is_dict_like(ret):
@@ -111,7 +111,7 @@ def dump_with_fn(dump_fn: typing.Optional[DumpFnT],
     :return: String represents data if stream is None or None
     """
     if dump_fn is None:
-        raise TypeError('The first argument "dump_fn" must be a callable!')
+        raise TypeError("The first argument 'dump_fn' must be a callable!")
 
     if stream is None:
         return dump_fn(data, **options)

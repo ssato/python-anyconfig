@@ -9,7 +9,7 @@ if typing.TYPE_CHECKING:
     from .. import ioinfo
 
 
-def are_same_file_types(objs: typing.List['ioinfo.IOInfo']) -> bool:
+def are_same_file_types(objs: typing.List["ioinfo.IOInfo"]) -> bool:
     """Test if given objects have same types (extensions)."""
     if not objs:
         return False

@@ -20,7 +20,7 @@ if typing.TYPE_CHECKING:
 class Processors:
     """An abstract class of which instance holding processors."""
 
-    _pgroup: str = ''  # processor group name to load plugins
+    _pgroup: str = ""  # processor group name to load plugins
 
     def __init__(self, processors: typing.Optional[ProcClssT] = None) -> None:
         """Initialize with ``processors``.
@@ -56,7 +56,7 @@ class Processors:
         """
         prs = self._processors.values()
         if sort:
-            return sorted(prs, key=operator.methodcaller('cid'))
+            return sorted(prs, key=operator.methodcaller("cid"))
 
         return list(prs)
 
@@ -78,7 +78,7 @@ class Processors:
             A list of :class:`Processor` or its children classes grouped by
             each type, [(type, [:class:`Processor`)]]
         """
-        return utils.list_by_x(self.list(), 'type')  # type: ignore
+        return utils.list_by_x(self.list(), "type")  # type: ignore
 
     def list_by_x(self, item: typing.Optional[str] = None
                   ) -> typing.List[typing.Tuple[str, ProcsT]]:
@@ -91,10 +91,10 @@ class Processors:
         """
         prs = self._processors
 
-        if item is None or item == 'cid':  # Default.
+        if item is None or item == "cid":  # Default.
             res = [(cid, [prs[cid]]) for cid in sorted(prs.keys())]
 
-        elif item in ('type', 'extensions'):
+        elif item in ("type", "extensions"):
             res = utils.list_by_x(prs.values(), typing.cast(str, item))
         else:
             raise ValueError("keyword argument 'item' must be one of "
@@ -108,17 +108,17 @@ class Processors:
         :param key: Which of key to return from 'cid', 'type', and 'extention'
         :return: A list of x 'key'
         """
-        if key in ('cid', 'type'):
+        if key in ("cid", "type"):
             return sorted(set(operator.methodcaller(key)(p)
                               for p in self._processors.values()))
-        if key == 'extension':
-            return sorted(k for k, _v in self.list_by_x('extensions'))
+        if key == "extension":
+            return sorted(k for k, _v in self.list_by_x("extensions"))
 
         raise ValueError("keyword argument 'key' must be one of "
                          "None, 'cid', 'type' and 'extension' "
                          f"but it was '{key}'")
 
-    def findall(self, obj: typing.Optional['ioinfo.PathOrIOInfoT'],
+    def findall(self, obj: typing.Optional["ioinfo.PathOrIOInfoT"],
                 forced_type: typing.Optional[str] = None
                 ) -> typing.List[ProcT]:
         """Find all of the processors match with tthe given conditions.
@@ -133,7 +133,7 @@ class Processors:
         """
         return utils.findall(obj, self.list(), forced_type=forced_type)
 
-    def find(self, obj: typing.Optional['ioinfo.PathOrIOInfoT'],
+    def find(self, obj: typing.Optional["ioinfo.PathOrIOInfoT"],
              forced_type: MaybeProcT = None) -> ProcT:
         """Find the processor best match with tthe given conditions.
 

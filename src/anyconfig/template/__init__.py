@@ -15,7 +15,7 @@ except ImportError:  # jinja2 may not be available.
 
 
 __all__ = [
-    'try_render',
+    "try_render",
 ]
 
 # vim:sw=4:ts=4:et:

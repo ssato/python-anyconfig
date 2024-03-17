@@ -22,17 +22,17 @@ from . import utils
 
 
 # Merge strategies:
-MS_REPLACE: str = 'replace'
-MS_NO_REPLACE: str = 'noreplace'
-MS_DICTS: str = 'merge_dicts'
-MS_DICTS_AND_LISTS: str = 'merge_dicts_and_lists'
+MS_REPLACE: str = "replace"
+MS_NO_REPLACE: str = "noreplace"
+MS_DICTS: str = "merge_dicts"
+MS_DICTS_AND_LISTS: str = "merge_dicts_and_lists"
 MERGE_STRATEGIES: typing.Tuple[str, ...] = (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS
 )
 
-PATH_SEPS: typing.Tuple[str, ...] = ('/', '.')
+PATH_SEPS: typing.Tuple[str, ...] = ("/", ".")
 
-_JSNP_GET_ARRAY_IDX_REG: typing.Pattern = re.compile(r'(?:0|[1-9][0-9]*)')
+_JSNP_GET_ARRAY_IDX_REG: typing.Pattern = re.compile(r"(?:0|[1-9][0-9]*)")
 
 
 DictT = typing.Dict[str, typing.Any]
@@ -45,7 +45,7 @@ def _jsnp_unescape(jsn_s: str) -> str:
 
     .. seealso:: JSON Pointer: http://tools.ietf.org/html/rfc6901
     """
-    return jsn_s.replace('~1', '/').replace('~0', '~')
+    return jsn_s.replace("~1", "/").replace("~0", "~")
 
 
 def _split_path(path: str, seps: typing.Tuple[str, ...] = PATH_SEPS
@@ -61,8 +61,8 @@ def _split_path(path: str, seps: typing.Tuple[str, ...] = PATH_SEPS
 
     for sep in seps:
         if sep in path:
-            if path == sep:  # Special case, '/' or '.' only.
-                return ['']
+            if path == sep:  # Special case, "/" or "." only.
+                return [""]
             return [x for x in path.split(sep) if x]
 
     return [path]
@@ -95,16 +95,16 @@ def get(dic: DictT, path: str, seps: typing.Tuple[str, ...] = PATH_SEPS,
     """
     items = [_jsnp_unescape(s) for s in _split_path(path, seps)]  # : [str]
     if not items:
-        return (dic, '')
+        return (dic, "")
     try:
         if len(items) == 1:
-            return (dic[items[0]], '')
+            return (dic[items[0]], "")
 
         prnt: typing.Any = functools.reduce(operator.getitem, items[:-1], dic)
         arr = (idx_reg.match(items[-1])
                if utils.is_list_like(prnt) else False)  # type: ignore
 
-        return (prnt[int(items[-1])], '') if arr else (prnt[items[-1]], '')
+        return (prnt[int(items[-1])], "") if arr else (prnt[items[-1]], "")
 
     except (TypeError, KeyError, IndexError) as exc:
         return (None, str(exc))
@@ -255,7 +255,7 @@ def _get_update_fn(strategy: str) -> typing.Callable[..., None]:
         if callable(strategy):
             return strategy
 
-        raise ValueError(f'Wrong merge strategy: {strategy!r}') from exc
+        raise ValueError(f"Wrong merge strategy: {strategy!r}") from exc
 
 
 UpdatesT = typing.Union[
@@ -289,7 +289,7 @@ def merge(self: DictT, other: UpdatesT, ac_merge: str = MS_DICTS,
             for key, val in iother:
                 _update_fn(self, dict(other), key, val=val, **options)
         except (ValueError, TypeError) as exc:  # Re-raise w/ info.
-            raise type(exc)(f'{exc!s} other={other!r}')
+            raise type(exc)(f"{exc!s} other={other!r}")
 
 
 def _make_recur(obj: typing.Any, make_fn: typing.Callable,

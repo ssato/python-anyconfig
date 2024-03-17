@@ -32,17 +32,17 @@ import pickle
 from .. import base
 
 
-LOAD_OPTS = ['fix_imports', 'encoding', 'errors']
-DUMP_OPTS = ['protocol', 'fix_imports']
+LOAD_OPTS = ["fix_imports", "encoding", "errors"]
+DUMP_OPTS = ["protocol", "fix_imports"]
 
 
 class Parser(base.StringStreamFnParser):
     """Parser for Pickle files."""
-    _cid = 'pickle.stdlib'
-    _type = 'pickle'
-    _extensions = ['pkl', 'pickle']
-    _open_read_mode: str = 'rb'
-    _open_write_mode: str = 'wb'
+    _cid = "pickle.stdlib"
+    _type = "pickle"
+    _extensions = ["pkl", "pickle"]
+    _open_read_mode: str = "rb"
+    _open_write_mode: str = "wb"
 
     _load_opts = LOAD_OPTS
     _dump_opts = DUMP_OPTS

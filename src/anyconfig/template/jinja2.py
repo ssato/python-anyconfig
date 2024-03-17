@@ -27,8 +27,8 @@ MaybePathsT = typing.Optional[PathsT]
 MaybeContextT = typing.Optional[typing.Dict[str, typing.Any]]
 MaybeFiltersT = typing.Optional[typing.Iterable[typing.Callable]]
 
-RENDER_S_OPTS: typing.List[str] = ['ctx', 'paths', 'filters']
-RENDER_OPTS = RENDER_S_OPTS + ['ask']
+RENDER_S_OPTS: typing.List[str] = ["ctx", "paths", "filters"]
+RENDER_OPTS = RENDER_S_OPTS + ["ask"]
 
 
 def tmpl_env(paths: MaybePathsT = None) -> jinja2.Environment:
@@ -78,9 +78,9 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
     :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
 
-    >>> render_s('aaa') == 'aaa'
+    >>> render_s("aaa") == "aaa"
     True
-    >>> s = render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
+    >>> s = render_s("a = {{ a }}, b = '{{ b }}'", {"a": 1, "b": "bbb"})
     >>> assert s == 'a = 1, b = "bbb"'
     """
     if paths is None:
@@ -91,7 +91,7 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
         env = tmpl_env(paths)
     except AssertionError as exc:
         warnings.warn(
-            f'Something went wrong with: paths={paths!r}, exc={exc!s}',
+            f"Something went wrong with: paths={paths!r}, exc={exc!s}",
             stacklevel=2
         )
         return tmpl_s
@@ -106,7 +106,7 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
                        ).from_string(tmpl_s).render(**ctx)
 
 
-_ENCODING: str = (locale.getpreferredencoding() or 'utf-8').lower()
+_ENCODING: str = (locale.getpreferredencoding() or "utf-8").lower()
 
 
 def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
@@ -188,12 +188,12 @@ def try_render(filepath: typing.Optional[str] = None,
         if filepath:
             tmpl_s = filepath
         else:
-            tmpl_s = typing.cast(str, content)[:10] + ' ...'
+            tmpl_s = typing.cast(str, content)[:10] + " ..."
 
         warnings.warn(
             f"Failed to compile '{tmpl_s!r}'. It may not be "
-            f'a template.{os.linesep}, exc={exc!s}, '
-            f'filepath={filepath}, options={options!r}',
+            f"a template.{os.linesep}, exc={exc!s}, "
+            f"filepath={filepath}, options={options!r}",
             stacklevel=2
         )
         return None

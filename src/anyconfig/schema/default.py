@@ -16,7 +16,7 @@ def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options: typing.Any
              ) -> ResultT:
     """Provide a dummy function does not validate at all in actual."""
-    return (True, 'Validation module (jsonschema) is not available')
+    return (True, "Validation module (jsonschema) is not available")
 
 
 def is_valid(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 """Provides constants for anyconfig.cli."""
-STD_IN_OR_OUT = '-'
+STD_IN_OR_OUT = "-"
 
 USAGE = """\
 %(prog)s [Options...] CONF_PATH_OR_PATTERN_0 [CONF_PATH_OR_PATTERN_1 ..]

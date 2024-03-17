@@ -41,7 +41,7 @@ from .common import Parser as BaseParser
 class Parser(BaseParser):
     """Parser for JSON files."""
 
-    _cid = 'json.stdlib'
+    _cid = "json.stdlib"
     _priority = 30  # Higher priority than others.
 
     _load_from_string_fn = base.to_method(json.loads)

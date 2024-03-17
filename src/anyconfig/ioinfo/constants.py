@@ -6,7 +6,7 @@
 import os.path
 
 
-GLOB_MARKER: str = '*'
+GLOB_MARKER: str = "*"
 PATH_SEP: str = os.path.sep
 
 # vim:sw=4:ts=4:et:

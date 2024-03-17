@@ -26,12 +26,12 @@ def from_path_str(path: str) -> datatypes.IOInfo:
 
 def from_io_stream(strm: typing.IO) -> datatypes.IOInfo:
     """Get an IOInfo object made from IO stream object ``strm``."""
-    path: str = getattr(strm, 'name', '')
+    path: str = getattr(strm, "name", "")
     if path:
         (_path, file_ext) = utils.get_path_and_ext(pathlib.Path(path))
         abs_path: str = str(_path)
     else:
-        (abs_path, file_ext) = (path, '')
+        (abs_path, file_ext) = (path, "")
 
     return datatypes.IOInfo(
         strm, datatypes.IOI_STREAM, abs_path, file_ext
@@ -50,7 +50,7 @@ def make(obj: typing.Any) -> datatypes.IOInfo:
         return from_path_object(obj)
 
     # Which is better? isinstance(obj, io.IOBase):
-    if getattr(obj, 'read', False):
+    if getattr(obj, "read", False):
         return from_io_stream(obj)
 
     raise ValueError(repr(obj))

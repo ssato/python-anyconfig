@@ -40,19 +40,19 @@ from ... import parser, utils
 from .. import base
 
 
-_SEP = ','
+_SEP = ","
 try:
     DEFAULTSECT: str = configparser.DEFAULTSECT
 except AttributeError:
-    DEFAULTSECT: str = 'DEFAULT'  # type: ignore
+    DEFAULTSECT: str = "DEFAULT"  # type: ignore
 
 
 _QUOTED_RE: typing.Pattern = re.compile(
-    r'^('
+    r"^("
     r'".*"'
-    r'|'
+    r"|"
     r"'.*'"
-    r')$'
+    r")$"
 )
 
 
@@ -76,7 +76,7 @@ def parse(val_s: str, sep: str = _SEP,
     return parser.parse(val_s)
 
 
-def _to_s(val: typing.Any, sep: str = ', ') -> str:
+def _to_s(val: typing.Any, sep: str = ", ") -> str:
     """Convert any object to string.
 
     :param val: An object
@@ -97,7 +97,7 @@ def parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
     :param sep: Seprator string
     :return: Generator to yield (key, value) pair of 'dic'
     """
-    __parse = parse if options.get('ac_parse_value') else utils.noop
+    __parse = parse if options.get("ac_parse_value") else utils.noop
     for key, val in items:
         yield (key, __parse(val, sep))  # type: ignore
 
@@ -108,9 +108,9 @@ def _make_parser(**kwargs
     """Make an instance of configparser.ConfigParser."""
     # Optional arguments for configparser.ConfigParser{,readfp}
     kwargs_0 = utils.filter_options(
-        ('defaults', 'dict_type', 'allow_no_value', 'strict'), kwargs
+        ("defaults", "dict_type", "allow_no_value", "strict"), kwargs
     )
-    kwargs_1 = utils.filter_options(('filename', ), kwargs)
+    kwargs_1 = utils.filter_options(("filename", ), kwargs)
 
     try:
         psr = configparser.ConfigParser(**kwargs_0)
@@ -118,7 +118,7 @@ def _make_parser(**kwargs
         # .. note::
         #    It seems ConfigParser.*ConfigParser in python 2.6 does not support
         #    'allow_no_value' option parameter, and TypeError will be thrown.
-        kwargs_0 = utils.filter_options(('defaults', 'dict_type'), kwargs)
+        kwargs_0 = utils.filter_options(("defaults", "dict_type"), kwargs)
         psr = configparser.ConfigParser(**kwargs_0)
 
     return (kwargs_1, psr)
@@ -138,7 +138,7 @@ def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
     psr.read_file(stream, **kwargs_1)
 
     cnf = container()
-    kwargs['sep'] = sep
+    kwargs["sep"] = sep
 
     defaults = psr.defaults()
     if defaults:
@@ -157,15 +157,15 @@ def _dumps_itr(cnf: typing.Dict[str, typing.Any],
     :param cnf: Configuration data to dump
     """
     for sect, params in cnf.items():
-        yield f'[{sect}]'
+        yield f"[{sect}]"
 
         for key, val in params.items():
             if sect != dkey and dkey in cnf and cnf[dkey].get(key) == val:
                 continue  # It should be in [DEFAULT] section.
 
-            yield f'{key!s} = {_to_s(val)}'
+            yield f"{key!s} = {_to_s(val)}"
 
-        yield ''  # it will be a separator between each sections.
+        yield ""  # it will be a separator between each sections.
 
 
 def _dumps(cnf: typing.Dict[str, typing.Any], **_kwargs) -> str:
@@ -184,14 +184,14 @@ class Parser(base.Parser, base.FromStreamLoaderMixin,
              base.ToStringDumperMixin):
     """Ini config files parser."""
 
-    _cid: str = 'ini.configparser'
-    _type: str = 'ini'
-    _extensions: typing.List[str] = ['ini']
+    _cid: str = "ini.configparser"
+    _type: str = "ini"
+    _extensions: typing.List[str] = ["ini"]
     _load_opts: typing.List[str] = [
-        'defaults', 'dict_type', 'allow_no_value', 'filename',
-        'ac_parse_value', 'strict'
+        "defaults", "dict_type", "allow_no_value", "filename",
+        "ac_parse_value", "strict"
     ]
-    _dict_opts: typing.List[str] = ['dict_type']
+    _dict_opts: typing.List[str] = ["dict_type"]
 
     dump_to_string = base.to_method(_dumps)
     load_from_stream = base.to_method(_load)

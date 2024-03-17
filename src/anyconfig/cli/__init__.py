@@ -9,10 +9,10 @@ from ._main import main
 
 
 __all__ = [
-    'main',
+    "main",
 ]
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(sys.argv)
 
 # vim:sw=4:ts=4:et:

@@ -21,9 +21,9 @@ from .utils import (
 )
 
 __all__ = [
-    'ProcT', 'ProcClsT', 'ProcClssT', 'MaybeProcT',
-    'Processors',
-    'list_by_x', 'load_plugins',
+    "ProcT", "ProcClsT", "ProcClssT", "MaybeProcT",
+    "Processors",
+    "list_by_x", "load_plugins",
 ]
 
 # vim:sw=4:ts=4:et:

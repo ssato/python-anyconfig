@@ -18,8 +18,8 @@ from .utils import (
 )
 
 __all__ = [
-    'load_plugins', 'list_types', 'list_by_cid', 'list_by_type',
-    'list_by_extension', 'findall', 'find', 'MaybeParserT'
+    "load_plugins", "list_types", "list_by_cid", "list_by_type",
+    "list_by_extension", "findall", "find", "MaybeParserT"
 ]
 
 # vim:sw=4:ts=4:et:

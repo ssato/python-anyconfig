@@ -43,7 +43,7 @@ from . import common
 
 
 try:
-    ryaml.YAML  # flake8: noqa
+    ryaml.YAML  # noqa: B018
 except AttributeError as exc:
     raise ImportError("ruamel.yaml may be too old to use!") from exc
 

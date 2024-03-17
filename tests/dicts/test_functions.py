@@ -57,14 +57,17 @@ OD = collections.OrderedDict
 
 # FIXME: Likewise.
 @pytest.mark.parametrize(
-    'args,exp',
-    (((OD((('a', 1), )), False, dict), dict(a=1)),
-     ((OD((('a', OD((('b', OD((('c', 1), ))), ))), )), False, dict),
+    ("obj", "opts", "exp"),
+    ((OD((('a', 1), )),
+      {"ac_ordered": False, "ac_dict": dict},
+      dict(a=1)),
+     (OD((('a', OD((('b', OD((('c', 1), ))), ))), )),
+      {"ac_ordered": False, "ac_dict": dict},
       dict(a=dict(b=dict(c=1)))),
      ),
 )
-def test_convert_to(args, exp):
-    assert TT.convert_to(*args) == exp
+def test_convert_to(obj, opts, exp):
+    assert TT.convert_to(obj, **opts) == exp
 
 
 @pytest.mark.parametrize(

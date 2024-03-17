@@ -18,7 +18,7 @@ from anyconfig.parsers.parsers import Parsers
 PSRS = Parsers().list()
 JSON_PSRS = sorted(
     (p() for p in JSON_PSR_CLSS),
-    key=operator.methodcaller('priority'), reverse=True
+    key=operator.methodcaller("priority"), reverse=True
 )
 
 
@@ -31,7 +31,7 @@ class TestCase(unittest.TestCase):
     def test_list_types(self):
         res = TT.list_types()
         self.assertTrue(bool(res))
-        self.assertTrue(any(x in res for x in ('json', 'ini', 'xml')))
+        self.assertTrue(any(x in res for x in ("json", "ini", "xml")))
 
     def test_list_by_x(self):
         for lfn in (TT.list_by_cid, TT.list_by_type, TT.list_by_extension):
@@ -40,17 +40,17 @@ class TestCase(unittest.TestCase):
 
     def test_findall_ng_cases(self):
         ies = (((None, None), ValueError),  # w/o path nor type
-               (('/tmp/x.xyz', None), UnknownFileTypeError),
-               (('/dev/null', None), UnknownFileTypeError),
-               ((None, 'xyz'), UnknownProcessorTypeError),
+               (("/tmp/x.xyz", None), UnknownFileTypeError),
+               (("/dev/null", None), UnknownFileTypeError),
+               ((None, "xyz"), UnknownProcessorTypeError),
                )
         for inp, exc in ies:
             with self.assertRaises(exc):
                 TT.findall(*inp)
 
     def test_findall(self):
-        argss = (('foo.json', None),
-                 (None, 'json'),
+        argss = (("foo.json", None),
+                 (None, "json"),
                  )
         for args in argss:
             psrs = TT.findall(*args)
@@ -59,8 +59,8 @@ class TestCase(unittest.TestCase):
             self.assertEqual(psrs, JSON_PSRS)
 
     def test_find(self):
-        argss = (('foo.json', None),
-                 (None, 'json'),
+        argss = (("foo.json", None),
+                 (None, "json"),
                  (None, JSON_PSR_CLSS[0]),
                  (None, JSON_PSRS[0]),
                  )

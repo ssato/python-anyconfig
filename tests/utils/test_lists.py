@@ -14,11 +14,11 @@ import anyconfig.utils.lists as TT
 class TestCase(unittest.TestCase):
 
     def test_groupby(self):
-        items = (('a', 1), ('b', -1), ('c', 1))
+        items = (("a", 1), ("b", -1), ("c", 1))
         res = TT.groupby(items, operator.itemgetter(1))
         self.assertEqual(
             [(key, tuple(grp)) for key, grp in res],
-            [(-1, (('b', -1),)), (1, (('a', 1), ('c', 1)))]
+            [(-1, (("b", -1),)), (1, (("a", 1), ("c", 1)))]
         )
 
     def test_concat(self):

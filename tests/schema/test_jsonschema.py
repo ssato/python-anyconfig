@@ -15,19 +15,19 @@ except ImportError:
 
 class Test_00_Base(unittest.TestCase):
 
-    obj = {'a': 1}
+    obj = {"a": 1}
     schema = {"type": "object",
               "properties": {"a": {"type": "integer"}}}
 
     obj2 = dict(a=1, b=[1, 2], c=dict(d="aaa", e=0.1))
-    ref_scm = {'properties': {'a': {'type': 'integer'},
-                              'b': {'items': {'type': 'integer'},
-                                    'type': 'array'},
-                              'c': {'properties': {'d': {'type': 'string'},
-                                                   'e': {'type':
-                                                         'number'}},
-                                    'type': 'object'}},
-               'type': 'object'}
+    ref_scm = {"properties": {"a": {"type": "integer"},
+                              "b": {"items": {"type": "integer"},
+                                    "type": "array"},
+                              "c": {"properties": {"d": {"type": "string"},
+                                                   "e": {"type":
+                                                         "number"}},
+                                    "type": "object"}},
+               "type": "object"}
 
     opts = dict(ac_schema_typemap=SUPPORTED)
 
@@ -45,14 +45,14 @@ class Test_00_Functions(Test_00_Base):
         self.assertEqual(scm, ref, scm)
 
     def test_30_object_to_schema_nodes_iter(self):
-        scm = TT.object_to_schema({'a': 1})
+        scm = TT.object_to_schema({"a": 1})
         ref = dict(type="object", properties=dict(a=dict(type="integer")))
         self.assertEqual(scm, ref, scm)
 
 
 @unittest.skipIf(not SUPPORTED, "json schema lib is not available")
 class Test_10_Validation(Test_00_Base):
-    obj_ng = dict(a='aaa')
+    obj_ng = {"a": "aaa"}
 
     def test_10_validate(self):
         (ret, msg) = TT.validate(self.obj, self.schema)
@@ -97,16 +97,16 @@ class Test_12_Validation_Errors(Test_00_Base):
 class Test_20_GenSchema(Test_00_Base):
 
     def test_40_gen_schema__primitive_types(self):
-        self.assertEqual(TT.gen_schema(None), {'type': 'null'})
-        self.assertEqual(TT.gen_schema(0), {'type': 'integer'})
-        self.assertEqual(TT.gen_schema("aaa"), {'type': 'string'})
+        self.assertEqual(TT.gen_schema(None), {"type": "null"})
+        self.assertEqual(TT.gen_schema(0), {"type": "integer"})
+        self.assertEqual(TT.gen_schema("aaa"), {"type": "string"})
 
         scm = TT.gen_schema([1])
-        ref_scm = {'items': {'type': 'integer'}, 'type': 'array'}
+        ref_scm = {"items": {"type": "integer"}, "type": "array"}
         self.assertEqual(scm, ref_scm)
 
-        scm = TT.gen_schema({'a': 1})
-        ref_scm = {'properties': {'a': {'type': 'integer'}}, 'type': 'object'}
+        scm = TT.gen_schema({"a": 1})
+        ref_scm = {"properties": {"a": {"type": "integer"}}, "type": "object"}
         self.assertEqual(scm, ref_scm)
 
     def test_42_gen_schema_and_validate(self):
@@ -132,36 +132,36 @@ class Test_30_GenStrictSchema(Test_00_Base):
               "properties": {"a": {"type": "integer"}},
               "required": ["a"]}
 
-    ref_scm = {'properties': {'a': {'type': 'integer'},
-                              'b': {'items': {'type': 'integer'},
-                                    'type': 'array',
-                                    'minItems': 2, 'uniqueItems': True},
-                              'c': {'properties': {'d': {'type': 'string'},
-                                                   'e': {'type':
-                                                         'number'}},
-                                    'type': 'object',
-                                    'required': ['d', 'e']}},
-               'type': 'object',
-               'required': ['a', 'b', 'c']}
+    ref_scm = {"properties": {"a": {"type": "integer"},
+                              "b": {"items": {"type": "integer"},
+                                    "type": "array",
+                                    "minItems": 2, "uniqueItems": True},
+                              "c": {"properties": {"d": {"type": "string"},
+                                                   "e": {"type":
+                                                         "number"}},
+                                    "type": "object",
+                                    "required": ["d", "e"]}},
+               "type": "object",
+               "required": ["a", "b", "c"]}
 
     def test_40_gen_schema__primitive_types(self):
-        self.assertEqual(_gen_scm(None), {'type': 'null'})
-        self.assertEqual(_gen_scm(0), {'type': 'integer'})
-        self.assertEqual(_gen_scm("aaa"), {'type': 'string'})
+        self.assertEqual(_gen_scm(None), {"type": "null"})
+        self.assertEqual(_gen_scm(0), {"type": "integer"})
+        self.assertEqual(_gen_scm("aaa"), {"type": "string"})
 
         scm = _gen_scm([1])
-        ref_scm = {'items': {'type': 'integer'}, 'type': 'array',
-                   'minItems': 1, 'uniqueItems': True}
+        ref_scm = {"items": {"type": "integer"}, "type": "array",
+                   "minItems": 1, "uniqueItems": True}
         self.assertEqual(scm, ref_scm)
 
         scm = _gen_scm(["aaa", "bbb", "aaa"])
-        ref_scm = {'items': {'type': 'string'}, 'type': 'array',
-                   'minItems': 3, 'uniqueItems': False}
+        ref_scm = {"items": {"type": "string"}, "type": "array",
+                   "minItems": 3, "uniqueItems": False}
         self.assertEqual(scm, ref_scm)
 
-        scm = _gen_scm({'a': 1})
-        ref_scm = {'properties': {'a': {'type': 'integer'}},
-                   'type': 'object', 'required': ['a']}
+        scm = _gen_scm({"a": 1})
+        ref_scm = {"properties": {"a": {"type": "integer"}},
+                   "type": "object", "required": ["a"]}
         self.assertEqual(scm, ref_scm)
 
     def test_42_gen_schema_and_validate(self):

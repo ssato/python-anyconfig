@@ -1,1 +1,0 @@
-../../../loaders/toml.tomllib/10/e/200_a_simple_map_with_basic_values.toml.py

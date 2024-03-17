@@ -5,7 +5,7 @@
 # Some XML modules may be missing and Base.{load,dumps}_impl are not
 # overridden:
 # pylint: disable=import-error, duplicate-except
-# len(elem) is necessary to check that ET.Element object has children.
+# len(elem) is necessary to check that ElementTree.Element object has children.
 # pylint: disable=len-as-condition
 r"""A backend module to load and dump XML files.
 
@@ -62,7 +62,8 @@ import io
 import itertools
 import operator
 import re
-import xml.etree.ElementTree as ET
+
+from xml.etree import ElementTree
 
 from .. import base
 from ...parser import parse_single
@@ -76,16 +77,16 @@ _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
 
 def _iterparse(xmlfile):
-    """Override ET.iterparse to avoid bug in python 3.{2,3}.
+    """Override ElementTree.iterparse to avoid bug in python 3.{2,3}.
 
     .. seealso:: http://bugs.python.org/issue9257.
 
     :param xmlfile: XML file or file-like object
     """
     try:
-        return ET.iterparse(xmlfile, events=("start-ns", ))
+        return ElementTree.iterparse(xmlfile, events=("start-ns", ))
     except TypeError:
-        return ET.iterparse(xmlfile, events=(b"start-ns", ))
+        return ElementTree.iterparse(xmlfile, events=(b"start-ns", ))
 
 
 def flip(tpl):
@@ -190,7 +191,7 @@ def _parse_text(val, **options):
 def _process_elem_text(elem, dic, subdic, text="@text", **options):
     """Process the text in the element ``elem``.
 
-    :param elem: ET Element object which has elem.text
+    :param elem: ElementTree.Element object which has elem.text
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
     :param options:
@@ -211,7 +212,7 @@ def _process_elem_text(elem, dic, subdic, text="@text", **options):
 def _parse_attrs(elem, container=dict, **options):
     """Parse the attributes of the element ``elem``.
 
-    :param elem: ET Element object has attributes (elem.attrib)
+    :param elem: ElementTree.Element object has attributes (elem.attrib)
     :param container: callble to make a container object
     :return: Parsed value or value itself depends on 'ac_parse_value'
     """
@@ -226,7 +227,7 @@ def _process_elem_attrs(elem, dic, subdic, container=dict, attrs="@attrs",
                         **options):
     """Process attributes in the element ``elem``.
 
-    :param elem: ET Element object or None
+    :param elem: ElementTree.Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
     :param options:
@@ -246,7 +247,7 @@ def _process_children_elems(elem, dic, subdic, container=dict,
                             children="@children", **options):
     """Process children of the element ``elem``.
 
-    :param elem: ET Element object or None
+    :param elem: ElementTree.Element object or None
     :param dic: <container> (dict[-like]) object converted from elem
     :param subdic: Sub <container> object converted from elem
     :param container: callble to make a container object
@@ -281,7 +282,7 @@ def elem_to_container(elem, container=dict, **options):
     - There is only text element
     - There are only children elements each has unique keys among all
 
-    :param elem: ET Element object or None
+    :param elem: ElementTree.Element object or None
     :param container: callble to make a container object
     :param options: Keyword options
 
@@ -386,7 +387,7 @@ def _elem_from_descendants(children_nodes, **options):
     """
     for child in children_nodes:  # child should be a dict-like object.
         for ckey, cval in child.items():
-            celem = ET.Element(ckey)
+            celem = ElementTree.Element(ckey)
             container_to_etree(cval, parent=celem, **options)
             yield celem
 
@@ -400,7 +401,7 @@ def _get_or_update_parent(key, val, to_str, parent=None, **options):
     :param parent: XML ElementTree parent node object or None
     :param options: Keyword options, see :func:`container_to_etree`
     """
-    elem = ET.Element(key)
+    elem = ElementTree.Element(key)
 
     vals = val if is_iterable(val) else [val]
     for val_ in vals:
@@ -450,7 +451,7 @@ def container_to_etree(obj, parent=None, to_str=None, **options):
             parent = _get_or_update_parent(key, val, to_str, parent=parent,
                                            **options)
 
-    return ET.ElementTree(parent)
+    return ElementTree.ElementTree(parent)
 
 
 def etree_write(tree, stream):
@@ -487,7 +488,7 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
 
         :return: Dict-like object holding config parameters
         """
-        root = ET.fromstring(content)
+        root = ElementTree.fromstring(content)
         stream = io.BytesIO(content)
         nspaces = _namespaces_from_file(stream)
         return root_to_container(root, container=container,
@@ -502,7 +503,7 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
 
         :return: Dict-like object holding config parameters
         """
-        root = ET.parse(filepath).getroot()
+        root = ElementTree.parse(filepath).getroot()
         nspaces = _namespaces_from_file(filepath)
         return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)
@@ -516,7 +517,7 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
 
         :return: Dict-like object holding config parameters
         """
-        root = ET.parse(stream).getroot()
+        root = ElementTree.parse(stream).getroot()
         path = get_path_from_stream(stream)
         nspaces = _namespaces_from_file(path)
         return root_to_container(root, container=container,

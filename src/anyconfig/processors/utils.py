@@ -247,7 +247,7 @@ def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
                 else eps.select(group=pgroup)):
         try:
             yield res.load()
-        except ImportError as exc:
+        except ImportError as exc:  # noqa: PERF203
             warnings.warn(f"Failed to load plugin, exc={exc!s}", stacklevel=2)
 
 # vim:sw=4:ts=4:et:

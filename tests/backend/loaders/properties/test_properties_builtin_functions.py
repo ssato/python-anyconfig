@@ -19,9 +19,9 @@ CNF = OrderedDict((("a", "0"), ("b", "bbb"), ("c", ""),
 
 
 @pytest.mark.parametrize(
-    'inp,exp',
-    ((' ', (None, '')),
-     ('aaa', ('aaa', '')),
+    "inp,exp",
+    ((" ", (None, "")),
+     ("aaa", ("aaa", "")),
      ),
 )
 def test_parseline_warnings(inp, exp):
@@ -30,12 +30,12 @@ def test_parseline_warnings(inp, exp):
 
 
 @pytest.mark.parametrize(
-    'inp,exp',
-    (('aaa:', ('aaa', '')),
-     (' aaa:', ('aaa', '')),
-     ('url = http://localhost', ('url', 'http://localhost')),
-     ('calendar.japanese.type: LocalGregorianCalendar',
-      ('calendar.japanese.type', 'LocalGregorianCalendar')),
+    "inp,exp",
+    (("aaa:", ("aaa", "")),
+     (" aaa:", ("aaa", "")),
+     ("url = http://localhost", ("url", "http://localhost")),
+     ("calendar.japanese.type: LocalGregorianCalendar",
+      ("calendar.japanese.type", "LocalGregorianCalendar")),
      ),
 )
 def test_parseline(inp, exp):
@@ -43,12 +43,12 @@ def test_parseline(inp, exp):
 
 
 @pytest.mark.parametrize(
-    'inp,exp',
-    (('', None),
-     ('a: A', 'a: A'),
-     ('# a: A', None),
-     ('! a: A', None),
-     ('a: A # comment', 'a: A # comment'),
+    "inp,exp",
+    (("", None),
+     ("a: A", "a: A"),
+     ("# a: A", None),
+     ("! a: A", None),
+     ("a: A # comment", "a: A # comment"),
      ),
 )
 def test_pre_process_line(inp, exp):
@@ -56,9 +56,9 @@ def test_pre_process_line(inp, exp):
 
 
 @pytest.mark.parametrize(
-    'inp,exp',
-    ((r'aaa\:bbb', 'aaa:bbb'),
-     (r'\\a', r'\a'),
+    "inp,exp",
+    ((r"aaa\:bbb", "aaa:bbb"),
+     (r"\\a", r"\a"),
      ),
 )
 def test_10_unescape(inp, exp):
@@ -66,8 +66,8 @@ def test_10_unescape(inp, exp):
 
 
 @pytest.mark.parametrize(
-    'inp,exp',
-    ((r':=\ ', r'\:\=\\ '),
+    "inp,exp",
+    ((r":=\ ", r"\:\=\\ "),
      ),
 )
 def test_escape(inp, exp):
@@ -75,34 +75,34 @@ def test_escape(inp, exp):
 
 
 @pytest.mark.parametrize(
-    'inp,exp',
-    ((':', '\\:'),
-     ('=', '\\='),
-     ('a', 'a'),
+    "inp,exp",
+    ((":", "\\:"),
+     ("=", "\\="),
+     ("a", "a"),
      ),
 )
 def test_escape_char(inp, exp):
     assert TT._escape_char(inp) == exp
 
 
-KEY_0 = 'calendar.japanese.type'
-VAL_0 = 'LocalGregorianCalendar'
-KV_0 = f'{KEY_0}: {VAL_0}'
+KEY_0 = "calendar.japanese.type"
+VAL_0 = "LocalGregorianCalendar"
+KV_0 = f"{KEY_0}: {VAL_0}"
 KV_1 = """application/postscript: \\
 x=Postscript File;y=.eps,.ps
 """
 
 
 @pytest.mark.parametrize(
-    'inp,exp',
-    (('', {}),
-     (f'# {KV_0}', {}),
-     (f'! {KV_0}', {}),
-     (f'{KEY_0}:', {KEY_0: ''}),
+    "inp,exp",
+    (("", {}),
+     (f"# {KV_0}", {}),
+     (f"! {KV_0}", {}),
+     (f"{KEY_0}:", {KEY_0: ""}),
      (KV_0, {KEY_0: VAL_0}),
-     (f'{KV_0}# ...', {KEY_0: f'{VAL_0}# ...'}),
-     ('key=a\\:b', {'key': 'a:b'}),
-     (KV_1, {'application/postscript': 'x=Postscript File;y=.eps,.ps'}),
+     (f"{KV_0}# ...", {KEY_0: f"{VAL_0}# ..."}),
+     ("key=a\\:b", {"key": "a:b"}),
+     (KV_1, {"application/postscript": "x=Postscript File;y=.eps,.ps"}),
      ),
 )
 def test_load(inp, exp):

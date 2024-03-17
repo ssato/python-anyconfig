@@ -13,9 +13,9 @@ import anyconfig.dicts as TT
 
 
 @pytest.mark.parametrize(
-    'inp,exp',
-    (('/a~1b', '/a/b'),
-     ('~1aaa~1~0bbb', '/aaa/~bbb'),
+    ("inp", "exp"),
+    (("/a~1b", "/a/b"),
+     ("~1aaa~1~0bbb", "/aaa/~bbb"),
      ),
 )
 def test_jsnp_unescape(inp, exp):
@@ -23,17 +23,17 @@ def test_jsnp_unescape(inp, exp):
 
 
 @pytest.mark.parametrize(
-    'args,exp',
-    ((('', ), []),
-     (('/', ), ['']),
-     (('/a', ), ['a']),
-     (('.a', ), ['a']),
-     (('a', ), ['a']),
-     (('a.', ), ['a']),
-     (('/a/b/c', ), ['a', 'b', 'c']),
-     (('a.b.c', ), ['a', 'b', 'c']),
-     (('abc', ), ['abc']),
-     (('/a/b/c', ), ['a', 'b', 'c']),
+    ("args", "exp"),
+    ((("", ), []),
+     (("/", ), [""]),
+     (("/a", ), ["a"]),
+     ((".a", ), ["a"]),
+     (("a", ), ["a"]),
+     (("a.", ), ["a"]),
+     (("/a/b/c", ), ["a", "b", "c"]),
+     (("a.b.c", ), ["a", "b", "c"]),
+     (("abc", ), ["abc"]),
+     (("/a/b/c", ), ["a", "b", "c"]),
      ),
 )
 def test_split_path(args, exp):
@@ -42,8 +42,8 @@ def test_split_path(args, exp):
 
 # FIXME: Add some more test cases
 @pytest.mark.parametrize(
-    'args,exp',
-    (((dict(a=1, b=dict(c=2, )), 'a.b.d', 3),
+    ("args", "exp"),
+    (((dict(a=1, b=dict(c=2, )), "a.b.d", 3),
       dict(a=dict(b=dict(d=3)), b=dict(c=2))),
      ),
 )
@@ -58,10 +58,10 @@ OD = collections.OrderedDict
 # FIXME: Likewise.
 @pytest.mark.parametrize(
     ("obj", "opts", "exp"),
-    ((OD((('a', 1), )),
+    ((OD((("a", 1), )),
       {"ac_ordered": False, "ac_dict": dict},
       dict(a=1)),
-     (OD((('a', OD((('b', OD((('c', 1), ))), ))), )),
+     (OD((("a", OD((("b", OD((("c", 1), ))), ))), )),
       {"ac_ordered": False, "ac_dict": dict},
       dict(a=dict(b=dict(c=1)))),
      ),
@@ -71,10 +71,10 @@ def test_convert_to(obj, opts, exp):
 
 
 @pytest.mark.parametrize(
-    'objs,exp',
+    ("objs", "exp"),
     ((([], (), [x for x in range(10)], (x for x in range(4))), True),
      (([], {}), False),
-     (([], 'aaa'), False),
+     (([], "aaa"), False),
      ),
 )
 def test_are_list_like(objs, exp):

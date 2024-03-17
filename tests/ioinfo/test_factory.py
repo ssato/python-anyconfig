@@ -17,10 +17,10 @@ from .constants import TEST_PY
 
 
 TEST_IOI_PATH_OBJ = IOInfo(
-    src=TEST_PY, type=IOI_PATH_OBJ, path=str(TEST_PY), extension='py'
+    src=TEST_PY, type=IOI_PATH_OBJ, path=str(TEST_PY), extension="py"
 )
 TEST_IOI_STREAM = IOInfo(
-    src=TEST_PY.open(), type=IOI_STREAM, path=str(TEST_PY), extension='py'
+    src=TEST_PY.open(), type=IOI_STREAM, path=str(TEST_PY), extension="py"
 )
 
 

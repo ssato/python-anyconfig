@@ -184,7 +184,7 @@ def _merge_other(self: DictT, key: str, val: typing.Any) -> None:
     self[key] = val  # Just overwrite it by default implementation.
 
 
-def _update_with_merge(self: DictT, other: DictT, key: str,
+def _update_with_merge(self: DictT, other: DictT, key: str, *,
                        val: typing.Any = None,
                        merge_lists: bool = False, **options) -> None:
     """Update a dict ``self`` using ``other`` and optional arguments.
@@ -292,7 +292,7 @@ def merge(self: DictT, other: UpdatesT, ac_merge: str = MS_DICTS,
             raise type(exc)(f"{exc!s} other={other!r}")
 
 
-def _make_recur(obj: typing.Any, make_fn: typing.Callable,
+def _make_recur(obj: typing.Any, make_fn: typing.Callable, *,
                 ac_ordered: bool = False,
                 ac_dict: typing.Optional[typing.Callable] = None,
                 **options) -> DictT:
@@ -326,7 +326,8 @@ def _make_iter(obj: typing.Any, make_fn: typing.Callable, **options
     return type(obj)(make_fn(v, **options) for v in obj)
 
 
-def convert_to(obj: typing.Any, ac_ordered: bool = False,
+def convert_to(obj: typing.Any, *,
+               ac_ordered: bool = False,
                ac_dict: typing.Optional[typing.Callable] = None,
                **options) -> DictT:
     """Convert a mapping objects to a dict or object of 'to_type' recursively.

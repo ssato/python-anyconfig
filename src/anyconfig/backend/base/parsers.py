@@ -71,7 +71,7 @@ DumpFnT = typing.Callable[..., typing.Optional[str]]
 
 def load_with_fn(load_fn: typing.Optional[LoadFnT],
                  content_or_strm: typing.Union[str, typing.IO],
-                 container: GenContainerT,
+                 container: GenContainerT, *,
                  allow_primitives: bool = False,
                  **options) -> InDataExT:
     """Load data from given string or stream 'content_or_strm'.

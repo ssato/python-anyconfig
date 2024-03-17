@@ -48,7 +48,7 @@ class Processors:
             for pcls in utils.load_plugins(self._pgroup):
                 self.register(pcls)
 
-    def list(self, sort: bool = False) -> ProcClssT:
+    def list(self, *, sort: bool = False) -> ProcClssT:
         """List processors.
 
         :param sort: Result will be sorted if it's True

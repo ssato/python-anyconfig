@@ -43,7 +43,8 @@ def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:
     return (not errors, [err.message for err in errors])
 
 
-def _validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
+def _validate(data: InDataExT, schema: InDataT, *,
+              ac_schema_safe: bool = True,
               **options: typing.Any) -> ResultT:
     """Validate ``data`` with ``schema``.
 
@@ -66,7 +67,8 @@ def _validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
     return (True, "")
 
 
-def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
+def validate(data: InDataExT, schema: InDataT, *,
+             ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options: typing.Any
              ) -> ResultT:
     """Validate target object with given schema object.
@@ -92,10 +94,11 @@ def validate(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
     if ac_schema_errors:
         return _validate_all(data, schema, **options)
 
-    return _validate(data, schema, ac_schema_safe, **options)
+    return _validate(data, schema, ac_schema_safe=ac_schema_safe, **options)
 
 
-def is_valid(data: InDataExT, schema: InDataT, ac_schema_safe: bool = True,
+def is_valid(data: InDataExT, schema: InDataT, *,
+             ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options) -> bool:
     """Raise ValidationError if ``data`` was invalidated by schema `schema`."""
     if schema is None or not schema:

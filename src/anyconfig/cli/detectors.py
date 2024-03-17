@@ -48,7 +48,7 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
     return default
 
 
-def find_by_the_paths(paths: typing.List[str],
+def find_by_the_paths(paths: typing.List[str], *,
                       ignore_errors: bool = True
                       ) -> typing.Optional[str]:
     """Try to detect file (parser) type from given file paths ``paths``."""
@@ -85,7 +85,7 @@ def find_by_the_paths(paths: typing.List[str],
     return default
 
 
-def try_detecting_input_type(args: "argparse.Namespace",
+def try_detecting_input_type(args: "argparse.Namespace", *,
                              ignore_errors: bool = True
                              ) -> typing.Optional[str]:
     """Try to resolve a file type and parser of inputs."""

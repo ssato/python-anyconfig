@@ -215,10 +215,9 @@ def _parse_attrs(elem, container=dict, **options):
     :param container: callble to make a container object
     :return: Parsed value or value itself depends on 'ac_parse_value'
     """
-    adic = dict((_tweak_ns(a, **options), v) for a, v in elem.attrib.items())
+    adic = {_tweak_ns(a, **options): v for a, v in elem.attrib.items()}
     if options.get("ac_parse_value", False):
-        return container(dict((k, parse_single(v))
-                              for k, v in adic.items()))
+        return container({k: parse_single(v) for k, v in adic.items()})
 
     return container(adic)
 

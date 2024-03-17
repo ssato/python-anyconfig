@@ -9,6 +9,8 @@ r"""Singleton class.
 
    - Add to make a kind of manager instancne later to manage plugins.
 """
+from __future__ import annotations
+
 import threading
 
 

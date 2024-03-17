@@ -14,6 +14,8 @@
              **options) -> typing.Dict[str, typing.Any]:
   Generate an object represents a schema
 """
+from __future__ import annotations
+
 import typing
 import warnings
 

@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """Utility funtions to process file and file paths."""
+from __future__ import annotations
+
 import pathlib
 import typing
 

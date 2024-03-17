@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """Functions to detect something."""
+from __future__ import annotations
+
 import collections.abc
 import types
 import typing

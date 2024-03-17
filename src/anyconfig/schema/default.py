@@ -4,6 +4,8 @@
 #
 # pylint: disable=unused-argument
 """Default (dummy) implementation."""
+from __future__ import annotations
+
 import typing
 
 from ..common import (

@@ -38,6 +38,7 @@ DUMP_OPTS = ["protocol", "fix_imports"]
 
 class Parser(base.StringStreamFnParser):
     """Parser for Pickle files."""
+
     _cid = "pickle.stdlib"
     _type = "pickle"
     _extensions = ["pkl", "pickle"]

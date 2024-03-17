@@ -91,12 +91,6 @@ def try_detecting_input_type(args: "argparse.Namespace", *,
     """Try to resolve a file type and parser of inputs."""
     # First, try the type given by users.
     if args.itype:
-        # TBD:
-        #
-        # if are_same_file_types(args.inputs):
-        #    ... the code blocks below ...
-        # else:
-        #    (ignore args.itype?)
         itype = find_by_the_type(args.itype)
         if itype:
             return itype

@@ -123,14 +123,19 @@ class Test_00(unittest.TestCase):
         self.assertEqual(subdic, {"@attrs": {"id": True}})
 
     def test_40__process_children_elems__root(self):
-        (elem, dic, subdic) = (to_xml_elem("<list><i>A</i><i>B</i></list>"), {},
-                               {})
+        (elem, dic, subdic) = (
+            to_xml_elem("<list><i>A</i><i>B</i></list>"), {},
+            {}
+        )
         TT._process_children_elems(elem, dic, subdic)
         self.assertEqual(dic, {"list": [{"i": "A"}, {"i": "B"}]})
         self.assertTrue(not subdic)
 
     def test_42__process_children_elems__w_attr(self):
-        (elem, dic) = (to_xml_elem("<list id='xyz'><i>A</i><i>B</i></list>"), {})
+        (elem, dic) = (
+            to_xml_elem("<list id='xyz'><i>A</i><i>B</i></list>"),
+            {}
+        )
         subdic = {"id": "xyz"}
         ref = subdic.copy()
         ref.update({"#children": [{"i": "A"}, {"i": "B"}]})
@@ -156,7 +161,10 @@ class Test_00(unittest.TestCase):
 class Test_00_1(unittest.TestCase):
 
     def _assert_eq_dic_from_snippet(self, snippet, ref, **opts):
-        self.assertEqual(TT.elem_to_container(to_xml_elem(snippet), **opts), ref)
+        self.assertEqual(
+            TT.elem_to_container(to_xml_elem(snippet), **opts),
+            ref
+        )
 
     def test_10_elem_to_container__None(self):
         self.assertEqual(TT.elem_to_container(None), {})

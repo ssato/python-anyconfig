@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """Misc utility routines for anyconfig module."""
+from __future__ import annotations
+
 import itertools
 import typing
 

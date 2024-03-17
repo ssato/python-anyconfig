@@ -15,6 +15,8 @@ needed:
   - :meth:`dump_to_stream`: Dump config to a file or file-like object
   - :meth:`dump_to_path`: Dump config to a file of given path
 """
+from __future__ import annotations
+
 import typing
 
 from ...models import processor

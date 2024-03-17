@@ -15,6 +15,8 @@ r"""Load data from .py.
    - load_data_from_py has vulnerabilities because it execute the code. You
      must avoid to load .py data from unknown sources with this.
 """
+from __future__ import annotations
+
 import ast
 import importlib
 import importlib.util

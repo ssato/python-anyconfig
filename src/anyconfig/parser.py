@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """Misc simple parsers."""
+from __future__ import annotations
+
 import re
 import typing
 import warnings

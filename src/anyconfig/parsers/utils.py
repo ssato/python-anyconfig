@@ -5,6 +5,8 @@
 # FIXME:
 # mypy: disable-error-code=type-var
 """Internal APIs to load, list and find parser class objects."""
+from __future__ import annotations
+
 import typing
 
 from ..backend import ParserT, ParsersT

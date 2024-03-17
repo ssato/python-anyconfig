@@ -57,6 +57,8 @@ Changelog:
 
    - Added XML dump support.
 """
+from __future__ import annotations
+
 import collections
 import io
 import itertools

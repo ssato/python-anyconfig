@@ -176,7 +176,7 @@ def object_to_schema(obj: InDataT, **options) -> InDataT:
     """
     (typemap, strict) = _process_options(**options)
 
-    props = dict((k, gen_schema(v, **options)) for k, v in obj.items())
+    props = {k: gen_schema(v, **options) for k, v in obj.items()}
     scm = {"type": typemap[dict], "properties": props}
     if strict:
         scm["required"] = sorted(props.keys())

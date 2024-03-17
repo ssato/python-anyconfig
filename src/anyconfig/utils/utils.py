@@ -23,11 +23,11 @@ def filter_options(keys: typing.Iterable[str],
     :param keys: key names of optional keyword arguments
     :param options: optional keyword arguments to filter with 'keys'
 
-    >>> filter_options(("aaa", ), dict(aaa=1, bbb=2))
+    >>> filter_options(("aaa", ), {"aaa": 1, "bbb": 2})
     {'aaa': 1}
-    >>> filter_options(("aaa", ), dict(bbb=2))
+    >>> filter_options(("aaa", ), {"bbb": 2})
     {}
     """
-    return dict((k, options[k]) for k in keys if k in options)
+    return {k: options[k] for k in keys if k in options}
 
 # vim:sw=4:ts=4:et:

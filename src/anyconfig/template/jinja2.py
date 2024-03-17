@@ -174,7 +174,8 @@ def try_render(filepath: typing.Optional[str] = None,
     :return: Compiled result (str) or None
     """
     if filepath is None and content is None:
-        raise ValueError("Either 'path' or 'content' must be some value!")
+        msg = "Either 'path' or 'content' must be some value!"
+        raise ValueError(msg)
 
     try:
         if content is None:

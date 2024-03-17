@@ -45,7 +45,8 @@ from . import common
 try:
     ryaml.YAML  # noqa: B018
 except AttributeError as exc:
-    raise ImportError("ruamel.yaml may be too old to use!") from exc
+    msg = "ruamel.yaml may be too old to use!"
+    raise ImportError(msg) from exc
 
 _YAML_INIT_KWARGS = ["typ", "pure", "plug_ins"]  # kwargs for ruamel.yaml.YAML
 _YAML_INSTANCE_MEMBERS = ["allow_duplicate_keys", "allow_unicode",

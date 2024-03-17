@@ -12,6 +12,8 @@ r"""Utility functions to operate on mapping objects such as get, set and merge.
    :mod:`m9dicts.dicts`
 
 """
+from __future__ import annotations
+
 import collections
 import functools
 import operator

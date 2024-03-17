@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """Provides utility functions in anyconfig.backend.base."""
+from __future__ import annotations
+
 import functools
 import pathlib
 import typing

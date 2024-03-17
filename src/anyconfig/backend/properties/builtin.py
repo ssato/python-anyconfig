@@ -28,6 +28,8 @@ Changelog:
    - Added native Java properties parser instead of a plugin utilizes
      pyjavaproperties module.
 """
+from __future__ import annotations
+
 import re
 import typing
 import warnings

@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """A API to open files by detecting those type automatically."""
+from __future__ import annotations
+
 import typing
 import warnings
 

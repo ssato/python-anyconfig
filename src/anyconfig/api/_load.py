@@ -4,6 +4,8 @@
 #
 # pylint: disable=unused-import,import-error,invalid-name
 """Provides the API to load objects from given files."""
+from __future__ import annotations
+
 import typing
 import warnings
 

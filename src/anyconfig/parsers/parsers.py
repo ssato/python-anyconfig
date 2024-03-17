@@ -5,6 +5,8 @@
 # Suppress import positions after some global variables are defined
 # pylint: disable=wrong-import-position
 """Provide config parser objects aggregated."""
+from __future__ import annotations
+
 import typing
 
 from ..backend import ParserClssT, PARSERS

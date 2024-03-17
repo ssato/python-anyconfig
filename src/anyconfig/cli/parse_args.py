@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """Argument parser."""
+from __future__ import annotations
+
 import argparse
 import typing
 

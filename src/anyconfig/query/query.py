@@ -11,6 +11,8 @@ Changelog:
 
    - Added to query config data with JMESPath expression, http://jmespath.org
 """
+from __future__ import annotations
+
 import typing
 import warnings
 

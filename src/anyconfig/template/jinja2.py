@@ -9,6 +9,8 @@
 
 Template rendering module for jinja2-based template config files.
 """
+from __future__ import annotations
+
 import locale
 import pathlib
 import os

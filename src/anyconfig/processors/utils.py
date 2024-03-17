@@ -7,6 +7,8 @@
 # FIXME:
 # mypy: disable-error-code=type-var
 """Utility functions for anyconfig.processors."""
+from __future__ import annotations
+
 import operator
 import typing
 import warnings

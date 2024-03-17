@@ -4,6 +4,8 @@
 #
 # pylint: disable=too-few-public-methods
 """Basic data types for anyconfig."""
+from __future__ import annotations
+
 import typing
 
 

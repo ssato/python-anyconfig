@@ -4,6 +4,8 @@
 #
 # pylint: disable=inherit-non-class,too-few-public-methods
 """anyconfig basic data types."""
+from __future__ import annotations
+
 import pathlib
 import typing
 

@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """Detect file type and parser from inputs and/or output."""
+from __future__ import annotations
+
 import os
 import pathlib
 import typing

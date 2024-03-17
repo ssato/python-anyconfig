@@ -83,6 +83,8 @@ r"""Public APIs of anyconfig module.
 
    - Export factory method (create) of anyconfig.mergeabledict.MergeableDict
 """
+from __future__ import annotations
+
 import typing
 
 from .datatypes import MaybeDataT

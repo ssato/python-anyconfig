@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """Misc global constants, variables, classes and so on."""
+from __future__ import annotations
+
 try:
     from .jinja2 import try_render
     SUPPORTED: bool = True

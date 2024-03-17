@@ -109,8 +109,10 @@ class Processors:
         :return: A list of x 'key'
         """
         if key in ("cid", "type"):
-            return sorted(set(operator.methodcaller(key)(p)
-                              for p in self._processors.values()))
+            return sorted(
+                {operator.methodcaller(key)(p)
+                 for p in self._processors.values()}
+            )
         if key == "extension":
             return sorted(k for k, _v in self.list_by_x("extensions"))
 

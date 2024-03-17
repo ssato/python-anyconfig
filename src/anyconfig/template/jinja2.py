@@ -134,7 +134,7 @@ def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
 
 
 def render(filepath: str, ctx: MaybeContextT = None,
-           paths: MaybePathsT = None,
+           paths: MaybePathsT = None, *,
            ask: bool = False,
            filters: MaybeFiltersT = None) -> str:
     """Compile and render template and return the result as a string.

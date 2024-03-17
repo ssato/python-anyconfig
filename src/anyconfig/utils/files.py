@@ -12,7 +12,7 @@ def is_io_stream(obj: typing.Any) -> bool:
     return callable(getattr(obj, "read", False))
 
 
-def get_path_from_stream(strm: typing.IO, safe: bool = False) -> str:
+def get_path_from_stream(strm: typing.IO, *, safe: bool = False) -> str:
     """Try to get file path from given file or file-like object 'strm'.
 
     :param strm: A file or file-like object might have its file path info

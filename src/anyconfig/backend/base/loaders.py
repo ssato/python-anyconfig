@@ -165,7 +165,7 @@ class LoaderMixin:
         options = self._load_options(container, **options)
         return self.load_from_string(content, container, **options)
 
-    def load(self, ioi: IoiT, ac_ignore_missing: bool = False,
+    def load(self, ioi: IoiT, *, ac_ignore_missing: bool = False,
              **options) -> InDataExT:
         """Load config from ``ioi``.
 

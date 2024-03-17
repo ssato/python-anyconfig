@@ -65,7 +65,7 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
 
     :param container: Set container used internally
     """
-    def construct_mapping(loader, node, deep=False):
+    def construct_mapping(loader, node, *, deep=False):
         """Construct python object from yaml mapping node.
 
         It is based on :meth:`yaml.BaseConstructor.construct_mapping` in PyYAML

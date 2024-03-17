@@ -41,7 +41,7 @@ def load_literal_data_from_path(path: pathlib.Path) -> typing.Any:
 
 
 def load_data_from_py(
-    path: pathlib.Path,
+    path: pathlib.Path, *,
     data_name: typing.Optional[str] = None,
     fallback: bool = False
 ) -> typing.Any:
@@ -70,7 +70,7 @@ def load_data_from_py(
 
 
 def load_from_path(
-    path: pathlib.Path,
+    path: pathlib.Path, *,
     allow_exec: bool = False,
     data_name: typing.Optional[str] = None,
     fallback: bool = False

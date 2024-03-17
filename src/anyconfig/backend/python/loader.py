@@ -80,7 +80,7 @@ class Loader(LoaderMixin):
 
         return utils.load_literal_data_from_string(content)
 
-    def load(self, ioi: IoiT, ac_ignore_missing: bool = False,
+    def load(self, ioi: IoiT, *, ac_ignore_missing: bool = False,
              **options) -> InDataExT:
         """Load config from ``ioi``.
 

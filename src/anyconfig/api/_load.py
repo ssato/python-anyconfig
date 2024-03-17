@@ -258,8 +258,11 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
     return try_query(cnf, options.get("ac_query", False), **options)
 
 
-def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
-         ac_context=None, **options):
+def load(
+    path_specs, ac_parser=None, *,
+    ac_dict=None, ac_template=False, ac_context=None,
+    **options
+):
     r"""Load from a file or files specified as ``path_specs``.
 
     Load single or multiple config files or multiple config files specified in
@@ -303,8 +306,11 @@ def load(path_specs, ac_parser=None, ac_dict=None, ac_template=False,
                       **options)
 
 
-def loads(content, ac_parser=None, ac_dict=None, ac_template=False,
-          ac_context=None, **options):
+def loads(
+    content, ac_parser=None, *,
+    ac_dict=None, ac_template=False, ac_context=None,
+    **options
+):
     """Load data from a str, ``content``.
 
     :param content: Configuration file's content (a string)

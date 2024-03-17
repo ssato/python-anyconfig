@@ -38,6 +38,11 @@ def to_bytes(astr):
     return bytes(astr, 'utf-8')
 
 
+def to_xml_elem(astr):
+    """Convert a string to XML element object."""
+    return TT.ElementTree.XML(astr)
+
+
 class Test_00(unittest.TestCase):
 
     def test_10__namespaces_from_file(self):
@@ -47,85 +52,85 @@ class Test_00(unittest.TestCase):
         self.assertEqual(TT._namespaces_from_file(xmlfile), ref)
 
     def test_20__process_elem_text__whitespaces(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a> </a>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a> </a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic)
         self.assertTrue(not dic)
         self.assertTrue(not subdic)
 
     def test_22__process_elem_text__wo_attrs_and_children(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")
         self.assertEqual(dic, {"a": 'A'})
         self.assertTrue(not subdic)
 
     def test_22__process_elem_text__wo_attrs_and_children_parse(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a>A</a>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text",
                               ac_parse_value=True)
         self.assertEqual(dic, {"a": 'A'})
         self.assertTrue(not subdic)
 
-        (elem, dic, subdic) = (TT.ET.XML("<a>1</a>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a>1</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text",
                               ac_parse_value=True)
         self.assertEqual(dic, {"a": 1})
         self.assertTrue(not subdic)
 
     def test_24__process_elem_text__w_attrs(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a id='1'>A</a>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a id='1'>A</a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")
         self.assertTrue(not dic)
         self.assertEqual(subdic, {"#text": 'A'})
 
     def test_24__process_elem_text__w_children(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a>A<b/></a>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a>A<b/></a>"), {}, {})
         TT._process_elem_text(elem, dic, subdic, text="#text")
         self.assertTrue(not dic)
         self.assertEqual(subdic, {"#text": 'A'})
 
     def test_30__process_elem_attrs__wo_text_and_children(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a id='A'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic)
         self.assertTrue(not dic)
         self.assertEqual(subdic, {"@attrs": {"id": 'A'}})
 
     def test_32__process_elem_attrs__w_text(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a id='A'>AAA</a>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a id='A'>AAA</a>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic)
         self.assertTrue(not dic)
         self.assertEqual(subdic, {"@attrs": {"id": 'A'}})
 
     def test_34__process_elem_attrs__merge_attrs(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a id='A'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic, merge_attrs=True)
         self.assertEqual(dic, {"a": {"id": 'A'}})
         self.assertTrue(not subdic)
 
     def test_36__process_elem_attrs__wo_text_and_children_parse(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a id='1'/>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a id='1'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic, ac_parse_value=True)
         self.assertTrue(not dic)
         self.assertEqual(subdic, {"@attrs": {"id": 1}})
 
-        (elem, dic, subdic) = (TT.ET.XML("<a id='A'/>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a id='A'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic, ac_parse_value=True)
         self.assertTrue(not dic)
         self.assertEqual(subdic, {"@attrs": {"id": 'A'}})
 
-        (elem, dic, subdic) = (TT.ET.XML("<a id='true'/>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a id='true'/>"), {}, {})
         TT._process_elem_attrs(elem, dic, subdic, ac_parse_value=True)
         self.assertTrue(not dic)
         self.assertEqual(subdic, {"@attrs": {"id": True}})
 
     def test_40__process_children_elems__root(self):
-        (elem, dic, subdic) = (TT.ET.XML("<list><i>A</i><i>B</i></list>"), {},
+        (elem, dic, subdic) = (to_xml_elem("<list><i>A</i><i>B</i></list>"), {},
                                {})
         TT._process_children_elems(elem, dic, subdic)
         self.assertEqual(dic, {"list": [{"i": "A"}, {"i": "B"}]})
         self.assertTrue(not subdic)
 
     def test_42__process_children_elems__w_attr(self):
-        (elem, dic) = (TT.ET.XML("<list id='xyz'><i>A</i><i>B</i></list>"), {})
+        (elem, dic) = (to_xml_elem("<list id='xyz'><i>A</i><i>B</i></list>"), {})
         subdic = {"id": "xyz"}
         ref = subdic.copy()
         ref.update({"#children": [{"i": "A"}, {"i": "B"}]})
@@ -135,13 +140,13 @@ class Test_00(unittest.TestCase):
         self.assertEqual(subdic, ref, subdic)
 
     def test_44__process_children_elems__w_children_have_unique_keys(self):
-        (elem, dic, subdic) = (TT.ET.XML("<a><x>X</x><y>Y</y></a>"), {}, {})
+        (elem, dic, subdic) = (to_xml_elem("<a><x>X</x><y>Y</y></a>"), {}, {})
         TT._process_children_elems(elem, dic, subdic)
         self.assertEqual(dic, {"a": {"x": "X", "y": "Y"}})
         self.assertTrue(not subdic)
 
     def test_46__process_children_elems__w_merge_attrs(self):
-        elem = TT.ET.XML("<a z='Z'><x>X</x><y>Y</y></a>")
+        elem = to_xml_elem("<a z='Z'><x>X</x><y>Y</y></a>")
         dic = {"a": {"@attrs": {"z": "Z"}}}
         subdic = dic["a"]["@attrs"]
         TT._process_children_elems(elem, dic, subdic, merge_attrs=True)
@@ -151,13 +156,13 @@ class Test_00(unittest.TestCase):
 class Test_00_1(unittest.TestCase):
 
     def _assert_eq_dic_from_snippet(self, snippet, ref, **opts):
-        self.assertEqual(TT.elem_to_container(TT.ET.XML(snippet), **opts), ref)
+        self.assertEqual(TT.elem_to_container(to_xml_elem(snippet), **opts), ref)
 
     def test_10_elem_to_container__None(self):
-        self.assertEqual(TT.elem_to_container(None), dict())
+        self.assertEqual(TT.elem_to_container(None), {})
 
     def test_10_root_to_container__None(self):
-        self.assertEqual(TT.root_to_container(None), dict())
+        self.assertEqual(TT.root_to_container(None), {})
 
     def test_12_elem_to_container__empty(self):
         self._assert_eq_dic_from_snippet("<a/>", dict(a=None))
@@ -192,13 +197,16 @@ class Test_00_1(unittest.TestCase):
     def test_50_root_to_container__text_attrs_tags(self):
         ref = dict(a={"_attrs": {'x': 'X'}, "_text": "A"})
         tags = dict(attrs="_attrs", text="_text")
-        self.assertEqual(TT.root_to_container(TT.ET.XML("<a x='X'>A</a>"),
-                                              dict, {}, tags=tags),
-                         ref)
+        self.assertEqual(
+            TT.root_to_container(
+                to_xml_elem("<a x='X'>A</a>"), dict, {}, tags=tags
+            ),
+            ref
+        )
 
 
 def tree_to_string(tree):
-    return TT.ET.tostring(tree.getroot())
+    return TT.ElementTree.tostring(tree.getroot())
 
 
 class Test_00_2(unittest.TestCase):

@@ -53,7 +53,7 @@ def try_to_load_schema(**options) -> typing.Optional[InDataT]:
     return None
 
 
-def _single_load(ioi: ioinfo.IOInfo,
+def _single_load(ioi: ioinfo.IOInfo, *,
                  ac_parser: MaybeParserOrIdOrTypeT = None,
                  ac_template: bool = False,
                  ac_context: typing.Optional[MappingT] = None,
@@ -89,6 +89,7 @@ def _single_load(ioi: ioinfo.IOInfo,
 
 def single_load(input_: ioinfo.PathOrIOInfoT,
                 ac_parser: MaybeParserOrIdOrTypeT = None,
+                *,
                 ac_template: bool = False,
                 ac_context: typing.Optional[MappingT] = None,
                 **options) -> InDataExT:
@@ -157,6 +158,7 @@ def single_load(input_: ioinfo.PathOrIOInfoT,
 def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
                                     ioinfo.PathOrIOInfoT],
                ac_parser: MaybeParserOrIdOrTypeT = None,
+               *,
                ac_template: bool = False,
                ac_context: typing.Optional[MappingT] = None,
                **options) -> InDataExT:

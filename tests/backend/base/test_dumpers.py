@@ -10,8 +10,7 @@ import anyconfig.backend.base.dumpers as TT
 
 @pytest.mark.parametrize(
     ("cls", "mode"),
-    (
-     (TT.DumperMixin, "w"),
+    ((TT.DumperMixin, "w"),
      (TT.BinaryDumperMixin, "wb"),
      ),
 )

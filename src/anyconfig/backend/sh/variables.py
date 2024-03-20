@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2016 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A simple backend module to load and dump files contain shell variables.
@@ -51,7 +51,7 @@ def _parseline(line):
     return (tpl[1], vals[0] if vals else "")
 
 
-def load(stream, container=dict):
+def load(stream, container=dict, **_kwargs):
     """Load shell variable definitions data from ``stream``.
 
     :param stream: A file or file like object
@@ -98,9 +98,9 @@ class Parser(base.StreamParser):
 
         :return: Dict-like object holding config parameters
         """
-        return load(stream, container=container)
+        return load(stream, container=container, **kwargs)
 
-    def dump_to_stream(self, cnf, stream, **kwargs):
+    def dump_to_stream(self, cnf, stream, **_kwargs):
         """Dump config dat ``cnf`` to a file or file-like object ``stream``.
 
         :param cnf: Shell variables data to dump
@@ -109,5 +109,3 @@ class Parser(base.StreamParser):
         """
         for key, val in cnf.items():
             stream.write(f"{key}='{val}'\n")
-
-# vim:sw=4:ts=4:et:

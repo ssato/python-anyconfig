@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to load and dump (Java) properties files.
@@ -95,7 +95,9 @@ def escape(in_s: str) -> str:
     return "".join(_escape_char(c) for c in in_s)
 
 
-def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
+def load(
+    stream, container=dict, **kwargs
+):
     """Load data from a java properties files given as ``stream``.
 
     :param stream: A file or file like object of Java properties files
@@ -106,6 +108,7 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     """
     ret = container()
     prev = ""
+    comment_markers = kwargs.get("comment_markers", _COMMENT_MARKERS)
 
     for line_ in stream:
         line = _pre_process_line(
@@ -152,9 +155,9 @@ class Parser(base.StreamParser):
 
         :return: Dict-like object holding config parameters
         """
-        return load(stream, container=container)
+        return load(stream, container=container, **kwargs)
 
-    def dump_to_stream(self, cnf, stream, **kwargs):
+    def dump_to_stream(self, cnf, stream, **_kwargs):
         """Dump config 'cnf' to a file or file-like object 'stream'.
 
         :param cnf: Java properties config data to dump
@@ -163,5 +166,3 @@ class Parser(base.StreamParser):
         """
         for key, val in cnf.items():
             stream.write(f"{key} = {escape(val)}\n")
-
-# vim:sw=4:ts=4:et:

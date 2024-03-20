@@ -20,6 +20,8 @@ Changelog:
 
    - Added builtin data dumper from python code
 """
+from __future__ import annotations
+
 from ..base import (
     InDataExT, ToStringDumperMixin
 )
@@ -28,7 +30,7 @@ from ..base import (
 class Dumper(ToStringDumperMixin):
     """Dumper for objects as python code."""
 
-    def dump_to_string(self, cnf: InDataExT, **kwargs) -> str:
+    def dump_to_string(self, cnf: InDataExT, **_kwargs) -> str:
         """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump

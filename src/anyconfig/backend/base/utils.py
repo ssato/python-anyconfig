@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Provides utility functions in anyconfig.backend.base."""
@@ -12,7 +12,7 @@ import typing
 
 def not_implemented(*_args, **_kwargs) -> None:
     """Raise NotImplementedError."""
-    raise NotImplementedError()
+    raise NotImplementedError
 
 
 def ensure_outdir_exists(filepath: typing.Union[str, pathlib.Path]) -> None:
@@ -37,5 +37,3 @@ def to_method(func: typing.Callable[..., typing.Any]
         return func(*args[1:], **kwargs)
 
     return wrapper
-
-# vim:sw=4:ts=4:et:

@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2018 Satoru SATOH <satoru.satoh@gmail.com>
-# License: MIT
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, too-few-public-methods
 import unittest

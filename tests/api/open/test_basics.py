@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2012 - 2019 Satoru SATOH <satoru.satoh@gmail.com>
-# License: MIT
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, no-member
 import pathlib

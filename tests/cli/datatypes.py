@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
-# License: MIT
+# SPDX-License-Identifier: MIT
 #
 """Basic data types for file based test data collectors.
 """

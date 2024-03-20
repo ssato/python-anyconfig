@@ -33,8 +33,9 @@ from .loaders import (
 
 
 class Parser(LoaderMixin, DumperMixin, processor.Processor):
-    """Abstract parser to provide basic implementation of some methods as
-    below.
+    """Abstract parser to provide basic implementation.
+
+    The following members will be expected to be overridden.
 
     - _type: Parser type indicate which format it supports
     - _priority: Priority to select it if there are other parsers of same type

@@ -188,10 +188,11 @@ def findall(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
         common.UnknownFileTypeError
     """
     if (obj is None or not obj) and forced_type is None:
-        raise ValueError(
+        msg = (
             "The first argument 'obj' or the second argument 'forced_type' "
             "must be something other than None or False."
         )
+        raise ValueError(msg)
 
     if forced_type is None:
         pclss = find_by_maybe_file(typing.cast(ioinfo.PathOrIOInfoT, obj),

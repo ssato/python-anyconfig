@@ -44,7 +44,7 @@ class DumperMixin:
         if "encoding" not in kwargs and self._open_write_mode == "w":
             kwargs["encoding"] = _ENCODING
 
-        return open(
+        return open(  # noqa: SIM115
             filepath, self._open_write_mode, **kwargs
         )
 

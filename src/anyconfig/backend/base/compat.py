@@ -18,7 +18,7 @@ class BinaryFilesMixin:
 
         :param filepath: Path to file to open to read data
         """
-        return open(filepath, cls._open_flags[0], **kwargs)
+        return open(filepath, cls._open_flags[0], **kwargs)  # noqa: SIM115
 
     @classmethod
     def wopen(cls, filepath, **kwargs):
@@ -26,6 +26,6 @@ class BinaryFilesMixin:
 
         :param filepath: Path to file to open to write data to
         """
-        return open(filepath, cls._open_flags[1], **kwargs)
+        return open(filepath, cls._open_flags[1], **kwargs)  # noqa: SIM115
 
 # vim:sw=4:ts=4:et:

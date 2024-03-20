@@ -73,7 +73,7 @@ class LoaderMixin:
         if "encoding" not in kwargs and self._open_read_mode == "r":
             kwargs["encoding"] = _ENCODING
 
-        return open(
+        return open(  # noqa: SIM115
             filepath, self._open_read_mode, **kwargs
         )
 

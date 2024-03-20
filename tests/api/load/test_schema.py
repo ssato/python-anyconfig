@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
-# License: MIT
+# SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring, relative-beyond-top-level
 from ..multi_load import test_schema as multi

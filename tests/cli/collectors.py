@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
-# License: MIT
+# SPDX-License-Identifier: MIT
 #
 """Provides base class to collect test data for cli test cases.
 """

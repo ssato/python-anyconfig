@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Utility funtions for anyconfig.ionfo."""
@@ -45,7 +45,8 @@ def expand_from_path(path: pathlib.Path,
     )[-1]
 
     if not idx_part:
-        raise ValueError(f"It should not happen: {path!r}")
+        msg = f"It should not happen: {path!r}"
+        raise ValueError(msg)
 
     idx = idx_part[0] + 1
     if len(path.parts) > idx:
@@ -56,5 +57,3 @@ def expand_from_path(path: pathlib.Path,
 
     else:  # No marker was found.
         yield path
-
-# vim:sw=4:ts=4:et:

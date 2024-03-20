@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # mypy: disable-error-code=type-var
@@ -99,9 +99,13 @@ class Processors:
         elif item in ("type", "extensions"):
             res = utils.list_by_x(prs.values(), typing.cast(str, item))
         else:
-            raise ValueError("keyword argument 'item' must be one of "
-                             "None, 'cid', 'type' and 'extensions' "
-                             f"but it was '{item}'")
+            msg = (
+                "keyword argument 'item' must be one of "
+                "None, 'cid', 'type' and 'extensions' "
+                f"but it was '{item}'"
+            )
+            raise ValueError(msg)
+
         return res
 
     def list_x(self, key: typing.Optional[str] = None) -> typing.List[str]:
@@ -118,9 +122,12 @@ class Processors:
         if key == "extension":
             return sorted(k for k, _v in self.list_by_x("extensions"))
 
-        raise ValueError("keyword argument 'key' must be one of "
-                         "None, 'cid', 'type' and 'extension' "
-                         f"but it was '{key}'")
+        msg = (
+            "keyword argument 'key' must be one of "
+            "None, 'cid', 'type' and 'extension' "
+            f"but it was '{key}'"
+        )
+        raise ValueError(msg)
 
     def findall(self, obj: typing.Optional["ioinfo.PathOrIOInfoT"],
                 forced_type: typing.Optional[str] = None
@@ -152,5 +159,3 @@ class Processors:
         :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
         """
         return utils.find(obj, self.list(), forced_type=forced_type)
-
-# vim:sw=4:ts=4:et:

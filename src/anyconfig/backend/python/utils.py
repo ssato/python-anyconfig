@@ -71,7 +71,8 @@ def load_data_from_py(
     if fallback:
         return None
 
-    raise ValueError(f"Faied to load data from: {path!r}")
+    msg = f"Faied to load data from: {path!r}"
+    raise ValueError(msg)
 
 
 def load_from_path(

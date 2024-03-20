@@ -35,7 +35,8 @@ def open(path: ioinfo.PathOrIOInfoT,  # noqa: A001
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     if not path:
-        raise ValueError(f"Invalid argument, path: {path!r}")
+        msg = f"Invalid argument, path: {path!r}"
+        raise ValueError(msg)
 
     ioi = ioinfo.make(path)
     if ioinfo.is_stream(ioi):

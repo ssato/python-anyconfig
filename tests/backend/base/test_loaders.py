@@ -10,8 +10,7 @@ import anyconfig.backend.base.loaders as TT
 
 @pytest.mark.parametrize(
     ("cls", "mode"),
-    (
-     (TT.LoaderMixin, "r"),
+    ((TT.LoaderMixin, "r"),
      (TT.BinaryLoaderMixin, "rb"),
      ),
 )

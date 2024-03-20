@@ -29,8 +29,8 @@ MaybePathsT = typing.Optional[PathsT]
 MaybeContextT = typing.Optional[typing.Dict[str, typing.Any]]
 MaybeFiltersT = typing.Optional[typing.Iterable[typing.Callable]]
 
-RENDER_S_OPTS: typing.List[str] = ["ctx", "paths", "filters"]
-RENDER_OPTS = RENDER_S_OPTS + ["ask"]
+RENDER_S_OPTS: typing.Tuple[str, ...] = ("ctx", "paths", "filters")
+RENDER_OPTS = (*RENDER_S_OPTS, "ask")
 
 
 def tmpl_env(paths: MaybePathsT = None) -> jinja2.Environment:

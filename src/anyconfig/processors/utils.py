@@ -33,7 +33,7 @@ def sort_by_prio(prs: typing.Iterable[ProcT]) -> ProcsT:
 
 def select_by_key(
     items: typing.Iterable[
-        typing.Tuple[typing.List[str], typing.Any]],
+        typing.Tuple[typing.Tuple[str, ...], typing.Any]],
         sort_fn: typing.Callable[..., typing.Any] = sorted
 ) -> typing.List[
         typing.Tuple[str, typing.List[typing.Any]]
@@ -249,7 +249,8 @@ def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
     :param pgroup: A string represents plugin type, e.g. anyconfig_backends
     """
     eps = importlib.metadata.entry_points()
-    for res in (eps.get(pgroup, []) if isinstance(eps, dict)
+    for res in (eps.get(pgroup, [])  # type: ignore[attr-defined]
+                if isinstance(eps, dict)
                 else eps.select(group=pgroup)):
         try:
             yield res.load()

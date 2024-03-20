@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2017 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to load and dump pickle files.
@@ -35,8 +35,8 @@ import typing
 from .. import base
 
 
-LOAD_OPTS = ["fix_imports", "encoding", "errors"]
-DUMP_OPTS = ["protocol", "fix_imports"]
+LOAD_OPTS: typing.Tuple[str, ...] = ("fix_imports", "encoding", "errors")
+DUMP_OPTS: typing.Tuple[str, ...] = ("protocol", "fix_imports")
 
 
 class Parser(base.StringStreamFnParser):

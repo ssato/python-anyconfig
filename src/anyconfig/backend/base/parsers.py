@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Abstract implementation of backend modules.
@@ -44,7 +44,7 @@ class Parser(LoaderMixin, DumperMixin, processor.Processor):
     .. seealso:: the doc of :class:`anyconfig.models.processor.Processor`
     """
 
-    _cid: str = "base"
+    _cid = "base"
 
 
 class StringParser(Parser, FromStringLoaderMixin, ToStringDumperMixin):
@@ -199,5 +199,3 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         """
         dump_with_fn(self._dump_to_stream_fn, cnf, stream,
                      **kwargs)
-
-# vim:sw=4:ts=4:et:

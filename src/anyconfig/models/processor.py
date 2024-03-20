@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Abstract processor module.
@@ -48,7 +48,7 @@ class Processor:
         return cls._priority
 
     @classmethod
-    def extensions(cls) -> typing.List[str]:
+    def extensions(cls) -> typing.Tuple[str, ...]:
         """Get the list of file extensions of files it can process."""
         return cls._extensions
 
@@ -63,5 +63,3 @@ class Processor:
             f"<Processor cid={self.cid()}, type={self.type()}, "
             f"prio={self.priority()}, extensions={self.extensions()!r}"
         )
-
-# vim:sw=4:ts=4:et:

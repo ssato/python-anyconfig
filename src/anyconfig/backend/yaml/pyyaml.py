@@ -41,6 +41,9 @@ Changelog:
    - Changed special keyword option 'ac_safe' from 'safe' to avoid
      possibility of option conflicts in the future.
 """
+from __future__ import annotations
+
+import typing
 import yaml
 try:
     from yaml import CSafeLoader as Loader, CDumper as Dumper
@@ -208,13 +211,15 @@ def yml_dump(data, stream, yml_fnc=yml_fnc_, **options):
 class Parser(common.Parser):
     """Parser for YAML files."""
 
-    _cid = "yaml.pyyaml"
-    _priority = 30  # Higher priority than ruamel.yaml.
-    _load_opts = ["Loader", "ac_safe", "ac_dict"]
-    _dump_opts = ["stream", "ac_safe", "Dumper", "default_style",
-                  "default_flow_style", "canonical", "indent", "width",
-                  "allow_unicode", "line_break", "encoding", "explicit_start",
-                  "explicit_end", "version", "tags"]
+    _cid: typing.ClassVar[str] = "yaml.pyyaml"
+    _priority: typing.ClassVar[int] = 30  # Higher priority than ruamel.yaml.
+    _load_opts: typing.Tuple[str, ...] = ("Loader", "ac_safe", "ac_dict")
+    _dump_opts: typing.Tuple[str, ...] = (
+        "stream", "ac_safe", "Dumper", "default_style",
+        "default_flow_style", "canonical", "indent", "width",
+        "allow_unicode", "line_break", "encoding", "explicit_start",
+        "explicit_end", "version", "tags"
+    )
 
     load_from_stream = base.to_method(yml_load)
     dump_to_stream = base.to_method(yml_dump)

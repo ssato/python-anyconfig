@@ -32,6 +32,8 @@ Changelog:
    - Introduce 'ac_parse_value' keyword option to switch behaviors, same as
      original configparser and rich backend parsing each parameter values.
 """
+from __future__ import annotations
+
 import configparser
 import re
 import typing
@@ -184,14 +186,14 @@ class Parser(base.Parser, base.FromStreamLoaderMixin,
              base.ToStringDumperMixin):
     """Ini config files parser."""
 
-    _cid: str = "ini.configparser"
-    _type: str = "ini"
-    _extensions: typing.List[str] = ["ini"]
-    _load_opts: typing.List[str] = [
+    _cid: typing.ClassVar[str] = "ini.configparser"
+    _type: typing.ClassVar[str] = "ini"
+    _extensions: typing.Tuple[str, ...] = ("ini", )
+    _load_opts: typing.Tuple[str, ...] = (
         "defaults", "dict_type", "allow_no_value", "filename",
         "ac_parse_value", "strict"
-    ]
-    _dict_opts: typing.List[str] = ["dict_type"]
+    )
+    _dict_opts: typing.Tuple[str, ...] = ("dict_type", )
 
     dump_to_string = base.to_method(_dumps)
     load_from_stream = base.to_method(_load)

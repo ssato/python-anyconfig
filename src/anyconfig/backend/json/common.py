@@ -8,26 +8,34 @@ Changelog:
 
 .. versionadded:: 0.9.8
 """
+from __future__ import annotations
+
+import typing
+
 from .. import base
 
 
-JSON_LOAD_OPTS = ["cls", "object_hook", "parse_float", "parse_int",
-                  "parse_constant", "object_pairs_hook"]
-
-JSON_DUMP_OPTS = ["skipkeys", "ensure_ascii", "check_circular", "allow_nan",
-                  "cls", "indent", "separators", "default", "sort_keys"]
-
-JSON_DICT_OPTS = ["object_pairs_hook", "object_hook"]
+JSON_LOAD_OPTS: typing.Tuple[str, ...] = (
+    "cls", "object_hook", "parse_float", "parse_int",
+    "parse_constant", "object_pairs_hook"
+)
+JSON_DUMP_OPTS: typing.Tuple[str, ...] = (
+    "skipkeys", "ensure_ascii", "check_circular", "allow_nan",
+    "cls", "indent", "separators", "default", "sort_keys"
+)
+JSON_DICT_OPTS: typing.Tuple[str, ...] = (
+    "object_pairs_hook", "object_hook"
+)
 
 
 class Parser(base.StringStreamFnParser):
     """Parser for JSON files."""
 
-    _cid = "json.stdlib"
-    _type = "json"
-    _extensions = ["json", "jsn", "js"]
-    _ordered = True
-    _allow_primitives = True
+    _cid: typing.ClassVar[str] = "json.stdlib"
+    _type: typing.ClassVar[str] = "json"
+    _extensions: typing.Tuple[str, ...] = ("json", "jsn", "js")
+    _ordered: typing.ClassVar[bool] = True
+    _allow_primitives: typing.ClassVar[bool] = True
 
     # .. note:: These may be overwritten.
     _load_opts = JSON_LOAD_OPTS

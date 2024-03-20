@@ -136,11 +136,11 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
 class Parser(base.StreamParser):
     """Parser for Java properties files."""
 
-    _cid = "properties.builtin"
-    _type = "properties"
-    _extensions = ["properties"]
-    _ordered = True
-    _dict_opts = ["ac_dict"]
+    _cid: typing.ClassVar[str] = "properties.builtin"
+    _type: typing.ClassVar[str] = "properties"
+    _extensions: typing.Tuple[str, ...] = ("properties", )
+    _ordered: typing.ClassVar[bool] = True
+    _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
 
     def load_from_stream(self, stream, container, **kwargs):
         """Load config from given file like object 'stream'.

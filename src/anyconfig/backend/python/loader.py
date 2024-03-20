@@ -28,6 +28,8 @@ Changelog:
 
    - Added builtin data loader from python code
 """
+from __future__ import annotations
+
 import pathlib
 import tempfile
 import typing
@@ -59,8 +61,8 @@ def load_from_temp_file(
 class Loader(LoaderMixin):
     """Loader for python code files."""
 
-    _allow_primitives: bool = True
-    _load_opts = ["allow_exec"]
+    _allow_primitives: typing.ClassVar[bool] = True
+    _load_opts: typing.Tuple[str, ...] = ("allow_exec", )
 
     def loads(self, content: str, **options) -> InDataExT:
         """Load config from given string 'content' after some checks.

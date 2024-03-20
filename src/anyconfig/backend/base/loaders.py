@@ -4,6 +4,8 @@
 #
 # pylint: disable=consider-using-with, unspecified-encoding
 """Abstract and basic loaders."""
+from __future__ import annotations
+
 import collections
 import io
 import pathlib
@@ -40,11 +42,11 @@ class LoaderMixin:
     - _open_read_mode: Backend option to specify read mode passed to open()
     """
 
-    _load_opts: typing.List[str] = []
-    _ordered: bool = False
-    _allow_primitives: bool = False
-    _dict_opts: typing.List[str] = []
-    _open_read_mode: str = "r"
+    _load_opts: typing.Tuple[str, ...] = ()
+    _ordered: typing.ClassVar[bool] = False
+    _allow_primitives: typing.ClassVar[bool] = False
+    _dict_opts: typing.Tuple[str, ...] = ()
+    _open_read_mode: typing.ClassVar[str] = "r"
 
     @classmethod
     def ordered(cls) -> bool:

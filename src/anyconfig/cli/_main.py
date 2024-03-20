@@ -126,7 +126,7 @@ def main(argv=None):
 
     cnf = (
         api.gen_schema(cnf) if args.gen_schema
-                            else filters.do_filter(cnf, args)
+        else filters.do_filter(cnf, args)
     )
 
     if args.validate:

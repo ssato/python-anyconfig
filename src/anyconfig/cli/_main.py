@@ -24,8 +24,6 @@ if OUT_ERR:
 
 def try_special_command_if_no_inputs(args: "argparse.Namespace") -> None:
     """Run one of some special commands do not require inputs argument."""
-    assert not args.inputs
-
     if not args.list and not args.env:
         utils.exit_with_output("No inputs were given!", 1)
 
@@ -49,8 +47,8 @@ def process_args_or_run_command(args: "argparse.Namespace"
     something goes wrong at once.
     """
     # Validate args:
-    if args.inputs and not args.itype:
-        if (len(args.inputs) == 1
+    if args.inputs:
+        if (not args.itype and len(args.inputs) == 1
                 and args.inputs[0] == constants.STD_IN_OR_OUT):
             utils.exit_with_output(
                 "No input type was given but required for the input '-'",

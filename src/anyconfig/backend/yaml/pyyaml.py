@@ -117,14 +117,6 @@ def _customized_dumper(container, dumper=Dumper):
         """Container representer."""
         return dumper.represent_mapping(mapping_tag, data.items())
 
-    def ustr_representer(dumper, data):
-        """Unicode string representer."""
-        tag = "tag:yaml.org,2002:python/unicode"
-        return dumper.represent_scalar(tag, data)
-
-    with contextlib.suppress(NameError):
-        dumper.add_representer(unicode, ustr_representer)
-
     if container is not dict:
         dumper.add_representer(container, container_representer)
     return dumper

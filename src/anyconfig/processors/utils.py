@@ -9,6 +9,7 @@
 """Utility functions for anyconfig.processors."""
 from __future__ import annotations
 
+import contextlib
 import operator
 import typing
 import warnings
@@ -105,12 +106,10 @@ def maybe_processor(type_or_id: typing.Union[ProcT, ProcClsT],
     if isinstance(type_or_id, cls):
         return type_or_id
 
-    try:
+    with contextlib.suppress(TypeError):
         maybe_cls = typing.cast(ProcClsT, type_or_id)
         if issubclass(maybe_cls, cls):
             return maybe_cls()
-    except TypeError:
-        pass
 
     return None
 

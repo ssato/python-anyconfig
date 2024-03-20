@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A API to open files by detecting those type automatically."""
@@ -9,7 +9,8 @@ import typing
 import warnings
 
 from .. import ioinfo, parsers
-from .datatypes import ParserT
+if typing.TYPE_CHECKING:
+    from .datatypes import ParserT
 
 
 # pylint: disable=redefined-builtin

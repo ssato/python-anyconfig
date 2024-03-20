@@ -12,9 +12,10 @@ import pathlib
 import typing
 
 from ... import ioinfo, utils
-from .datatypes import (
-    InDataExT, IoiT, GenContainerT, OptionsT
-)
+if typing.TYPE_CHECKING:
+    from .datatypes import (
+        InDataExT, IoiT, GenContainerT, OptionsT
+    )
 from .utils import not_implemented
 
 

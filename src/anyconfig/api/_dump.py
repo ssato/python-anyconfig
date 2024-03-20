@@ -3,8 +3,13 @@
 # SPDX-License-Identifier: MIT
 #
 """Provides the API to dump (serialize) objects."""
+from __future__ import annotations
+
+import typing
+
 from .. import common, ioinfo, parsers
-from . import datatypes
+if typing.TYPE_CHECKING:
+    from . import datatypes
 
 
 def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,

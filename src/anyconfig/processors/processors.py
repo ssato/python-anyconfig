@@ -2,7 +2,6 @@
 # Copyright (C) 2018 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# FIXME:
 # mypy: disable-error-code=type-var
 """A collection of models.processor.Processor and children classes."""
 from __future__ import annotations
@@ -11,11 +10,10 @@ import operator
 import typing
 
 from . import utils
-from .datatypes import (
-    ProcT, ProcsT, ProcClsT, ProcClssT, MaybeProcT
-)
-
 if typing.TYPE_CHECKING:
+    from .datatypes import (
+        ProcT, ProcsT, ProcClsT, ProcClssT, MaybeProcT
+    )
     from .. import ioinfo
 
 

@@ -10,9 +10,10 @@ import io
 import typing
 
 from ... import ioinfo, utils
-from .datatypes import (
-    InDataExT, IoiT
-)
+if typing.TYPE_CHECKING:
+    from .datatypes import (
+        InDataExT, IoiT
+    )
 from .utils import (
     ensure_outdir_exists, not_implemented
 )

@@ -124,7 +124,7 @@ def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
     env = tmpl_env(make_template_paths(template_file, paths))
 
     if env is None:
-        with open(template_file, encoding=_ENCODING) as fio:
+        with pathlib.Path(template_file).open(encoding=_ENCODING) as fio:
             return fio.read()
 
     if filters is not None:

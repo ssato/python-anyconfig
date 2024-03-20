@@ -74,8 +74,8 @@ class LoaderMixin:
         if "encoding" not in kwargs and self._open_read_mode == "r":
             kwargs["encoding"] = _ENCODING
 
-        return open(  # noqa: SIM115
-            filepath, self._open_read_mode, **kwargs
+        return pathlib.Path(filepath).open(  # noqa: SIM115
+            self._open_read_mode, **kwargs
         )
 
     def _container_factory(self, **options) -> GenContainerT:

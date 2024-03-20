@@ -49,14 +49,13 @@ def process_args_or_run_command(args: "argparse.Namespace"
     something goes wrong at once.
     """
     # Validate args:
-    if args.inputs:
-        if not args.itype:
-            if (len(args.inputs) == 1
-                    and args.inputs[0] == constants.STD_IN_OR_OUT):
-                utils.exit_with_output(
-                    "No input type was given but required for the input '-'",
-                    1
-                )
+    if args.inputs and not args.itype:
+        if (len(args.inputs) == 1
+                and args.inputs[0] == constants.STD_IN_OR_OUT):
+            utils.exit_with_output(
+                "No input type was given but required for the input '-'",
+                1
+            )
     else:
         try_special_command_if_no_inputs(args)
 
@@ -125,10 +124,10 @@ def main(argv=None):
         diff = parser.parse(args.args)
         api.merge(cnf, diff)
 
-    if args.gen_schema:
-        cnf = api.gen_schema(cnf)
-    else:
-        cnf = filters.do_filter(cnf, args)
+    cnf = (
+        api.gen_schema(cnf) if args.gen_schema
+                            else filters.do_filter(cnf, args)
+    )
 
     if args.validate:
         try_validate(cnf, args)

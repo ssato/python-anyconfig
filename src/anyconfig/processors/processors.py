@@ -30,7 +30,7 @@ class Processors:
             children class objects to initialize this, or None
         """
         # {<processor_class_id>: <processor_instance>}
-        self._processors: typing.Dict[
+        self._processors: typing.Dict[  # type: ignore[valid-type]
             str, ProcT
         ] = {}  # type: ignore[valid-type]
         if processors is not None:

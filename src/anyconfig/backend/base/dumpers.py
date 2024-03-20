@@ -116,7 +116,7 @@ class DumperMixin:
 class BinaryDumperMixin(DumperMixin):
     """Mixin class to dump binary (byte string) configuration data."""
 
-    _open_write_mode: str = "wb"
+    _open_write_mode: typing.ClassVar[str] = "wb"
 
 
 class ToStringDumperMixin(DumperMixin):

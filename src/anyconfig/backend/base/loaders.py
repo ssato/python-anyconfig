@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=consider-using-with, unspecified-encoding
@@ -65,7 +65,7 @@ class LoaderMixin:
         return cls._allow_primitives
 
     @classmethod
-    def dict_options(cls) -> typing.List[str]:
+    def dict_options(cls) -> typing.Tuple[str, ...]:
         """Get the list of dict factory options."""
         return cls._dict_opts
 
@@ -209,7 +209,7 @@ class LoaderMixin:
 class BinaryLoaderMixin(LoaderMixin):
     """Mixin class to load binary (byte string) configuration files."""
 
-    _open_read_mode: str = "rb"
+    _open_read_mode = "rb"
 
 
 class FromStringLoaderMixin(LoaderMixin):

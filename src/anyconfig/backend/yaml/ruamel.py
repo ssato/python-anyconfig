@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A backend module to load and dump YAML data files using rumael.yaml.
@@ -35,6 +35,10 @@ Changelog:
    - Split from the common yaml backend and start to support ruamel.yaml
      specific features.
 """
+from __future__ import annotations
+
+import typing
+
 import ruamel.yaml as ryaml
 
 from ...utils import filter_options
@@ -48,24 +52,27 @@ except AttributeError as exc:
     msg = "ruamel.yaml may be too old to use!"
     raise ImportError(msg) from exc
 
-_YAML_INIT_KWARGS = ["typ", "pure", "plug_ins"]  # kwargs for ruamel.yaml.YAML
-_YAML_INSTANCE_MEMBERS = ["allow_duplicate_keys", "allow_unicode",
-                          "block_seq_indent", "canonical", "composer",
-                          "constructor", "default_flow_style", "default_style",
-                          "dump", "dump_all", "emitter", "encoding",
-                          "explicit_end", "explicit_start",
-                          "get_constructor_parser",
-                          "get_serializer_representer_emitter", "indent",
-                          "line_break", "load", "load_all", "map",
-                          "map_indent", "official_plug_ins", "old_indent",
-                          "parser", "prefix_colon", "preserve_quotes",
-                          "reader", "register_class", "representer",
-                          "resolver", "scanner", "seq", "sequence_dash_offset",
-                          "sequence_indent", "serializer", "stream", "tags",
-                          "top_level_block_style_scalar_no_indent_error_1_1",
-                          "top_level_colon_align", "version", "width"]
-
-_YAML_OPTS = _YAML_INIT_KWARGS + _YAML_INSTANCE_MEMBERS
+_YAML_INIT_KWARGS: typing.Tuple[str, ...] = (  # kwargs for ruamel.yaml.YAML
+    "typ", "pure", "plug_ins"
+)
+_YAML_INSTANCE_MEMBERS: typing.Tuple[str, ...] = (
+    "allow_duplicate_keys", "allow_unicode",
+    "block_seq_indent", "canonical", "composer",
+    "constructor", "default_flow_style", "default_style",
+    "dump", "dump_all", "emitter", "encoding",
+    "explicit_end", "explicit_start",
+    "get_constructor_parser",
+    "get_serializer_representer_emitter", "indent",
+    "line_break", "load", "load_all", "map",
+    "map_indent", "official_plug_ins", "old_indent",
+    "parser", "prefix_colon", "preserve_quotes",
+    "reader", "register_class", "representer",
+    "resolver", "scanner", "seq", "sequence_dash_offset",
+    "sequence_indent", "serializer", "stream", "tags",
+    "top_level_block_style_scalar_no_indent_error_1_1",
+    "top_level_colon_align", "version", "width"
+)
+_YAML_OPTS = (*_YAML_INIT_KWARGS, *_YAML_INSTANCE_MEMBERS)
 
 
 def yml_fnc(fname, *args, **options):
@@ -112,11 +119,9 @@ def yml_dump(data, stream, **options):
 class Parser(common.Parser):
     """Parser for YAML files."""
 
-    _cid = "yaml.ruamel"
+    _cid: typing.ClassVar[str] = "yaml.ruamel"
     _load_opts = _YAML_OPTS
     _dump_opts = _YAML_OPTS
 
     load_from_stream = base.to_method(yml_load)
     dump_to_stream = base.to_method(yml_dump)
-
-# vim:sw=4:ts=4:et:

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not
@@ -462,7 +462,7 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
     _dump_opts = _load_opts
 
     _ordered: typing.ClassVar[bool] = True
-    _dict_opts: typing.Tuple[str, ...] = ["ac_dict"]
+    _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
     _open_read_mode: typing.ClassVar[str] = "rb"
     _open_write_mode: typing.ClassVar[str] = "wb"
 
@@ -533,5 +533,3 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
         """
         tree = container_to_etree(cnf, **opts)
         etree_write(tree, stream)
-
-# vim:sw=4:ts=4:et:

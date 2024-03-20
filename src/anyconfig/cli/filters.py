@@ -1,9 +1,11 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=broad-except
 """Filter functions for anyconfig.cli.*."""
+from __future__ import annotations
+
 import typing
 
 from .. import api, parser
@@ -13,7 +15,7 @@ if typing.TYPE_CHECKING:
     import argparse
 
 
-def do_filter(cnf: typing.Dict[str, typing.Any], args: "argparse.Namespace"):
+def do_filter(cnf: typing.Dict[str, typing.Any], args: argparse.Namespace):
     """Filter ``cnf`` by query/get/set and return filtered result."""
     if args.query:
         try:
@@ -33,5 +35,3 @@ def do_filter(cnf: typing.Dict[str, typing.Any], args: "argparse.Namespace"):
         api.set_(cnf, key, parser.parse(val))
 
     return cnf
-
-# vim:sw=4:ts=4:et:

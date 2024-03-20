@@ -1,8 +1,10 @@
 #
-# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Utility funtions for anyconfig.ionfo."""
+from __future__ import annotations
+
 import itertools
 import locale
 import pathlib

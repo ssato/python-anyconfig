@@ -1,8 +1,10 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Provide functions to detect str, pathlib.Path, stream and IOInfo objects."""
+from __future__ import annotations
+
 import pathlib
 import typing
 
@@ -41,5 +43,3 @@ def is_ioinfo(obj: typing.Any) -> bool:
 def is_stream(obj: typing.Any) -> bool:
     """Test if given object ``obj`` is an IOInfo object with stream type."""
     return getattr(obj, "type", None) == datatypes.IOI_STREAM
-
-# vim:sw=4:ts=4:et:

@@ -1,9 +1,11 @@
 #
-# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh @ gmmail.com>
+# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=invalid-name
 """ioinfo.main to provide internal APIs used from other modules."""
+from __future__ import annotations
+
 import pathlib
 import typing
 
@@ -83,5 +85,3 @@ def makes(obj: typing.Any, marker: str = constants.GLOB_MARKER
           ) -> typing.List[datatypes.IOInfo]:
     """Make and return a list of :class:`datatypes.IOInfo` objects."""
     return list(make_itr(obj, marker=marker))
-
-# vim:sw=4:ts=4:et:

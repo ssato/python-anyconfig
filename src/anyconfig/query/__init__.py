@@ -8,7 +8,7 @@ try:
     SUPPORTED = True
 except ImportError:
     from .default import try_query
-    SUPPORTED = False  # type: ignore
+    SUPPORTED = False
 
 
 __all__ = [

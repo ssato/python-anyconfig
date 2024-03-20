@@ -24,7 +24,7 @@ from .. import utils
 
 
 # .. seealso:: jinja2.loaders.FileSystemLoader.__init__
-PathsT = typing.List[typing.Union[str, pathlib.Path]]
+PathsT = typing.Sequence[typing.Union[str, pathlib.Path]]
 MaybePathsT = typing.Optional[PathsT]
 MaybeContextT = typing.Optional[typing.Dict[str, typing.Any]]
 MaybeFiltersT = typing.Optional[typing.Iterable[typing.Callable]]
@@ -121,7 +121,7 @@ def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
     :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
     """
-    env = tmpl_env(make_template_paths(template_file, paths))  # type: ignore
+    env = tmpl_env(make_template_paths(template_file, paths))
 
     if env is None:
         return open(template_file, encoding=_ENCODING).read()
@@ -162,7 +162,7 @@ def render(filepath: str, ctx: MaybeContextT = None,
         usr_tmpl_2 = pathlib.Path(usr_tmpl.strip()).resolve()
         paths_2 = make_template_paths(usr_tmpl_2, paths)
 
-        return render_impl(usr_tmpl_2, ctx, paths_2, filters)  # type: ignore
+        return render_impl(usr_tmpl_2, ctx, paths_2, filters)
 
 
 def try_render(filepath: typing.Optional[str] = None,

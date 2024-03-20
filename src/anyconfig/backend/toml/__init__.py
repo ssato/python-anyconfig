@@ -19,7 +19,7 @@ Changelog:
 """
 from ..base import ParserClssT
 
-PARSERS: ParserClssT = []  # type: ignore
+PARSERS: ParserClssT = []
 
 try:
     from . import tomllib

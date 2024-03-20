@@ -21,7 +21,7 @@ try:
     from . import pyyaml
     PARSERS: ParserClssT = [pyyaml.Parser]
 except ImportError:
-    PARSERS: ParserClssT = []  # type: ignore
+    PARSERS: ParserClssT = []  # type: ignore[no-redef]
 
 try:
     from . import ruamel

@@ -8,7 +8,7 @@ try:
     SUPPORTED: bool = True
 except ImportError:
     from .default import validate, is_valid, gen_schema
-    SUPPORTED = False  # type: ignore
+    SUPPORTED = False
 
 
 __all__ = [

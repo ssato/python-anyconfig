@@ -134,6 +134,9 @@ def single_load(input_: ioinfo.PathOrIOInfoT,
           - ac_schema: JSON schema file path to validate given config file
           - ac_query: JMESPath expression to query data
 
+          - ac_parse_value: Parse given string as a value in some loaders if
+            True
+
         - Common backend options:
 
           - ac_ignore_missing:
@@ -237,7 +240,7 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
         )
         if cups:
             if cnf is None:
-                cnf = cups  # type: ignore
+                cnf = cups
 
             if is_dict_like(cups):
                 dicts_merge(

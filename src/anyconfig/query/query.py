@@ -44,7 +44,7 @@ def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
     if exc:
         raise exc
 
-    return odata  # type: ignore
+    return odata
 
 
 def query(data: InDataT, jexp: str, **_options

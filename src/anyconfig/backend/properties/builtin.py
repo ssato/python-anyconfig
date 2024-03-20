@@ -73,9 +73,9 @@ def _pre_process_line(
     if not line:
         return None
 
-    if any(c in line for c in comment_markers):
-        if line.startswith(comment_markers):
-            return None
+    if (any(c in line for c in comment_markers) and
+        line.startswith(comment_markers)):
+        return None
 
     return line
 

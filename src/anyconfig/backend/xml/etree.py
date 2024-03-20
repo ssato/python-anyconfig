@@ -245,7 +245,7 @@ def _process_children_elems(elem, dic, subdic, container=dict,
     cdics = [elem_to_container(c, container=container, **options)
              for c in elem]
     merge_attrs = options.get("merge_attrs", False)
-    sdics = [container(elem.attrib) if merge_attrs else subdic] + cdics
+    sdics = [container(elem.attrib) if merge_attrs else subdic, *cdics]
 
     if _dicts_have_unique_keys(sdics):  # ex. <a><b>1</b><c>c</c></a>
         dic[elem.tag] = _merge_dicts(sdics, container)

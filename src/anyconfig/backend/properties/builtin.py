@@ -107,9 +107,10 @@ def load(stream, container=dict, comment_markers=_COMMENT_MARKERS):
     ret = container()
     prev = ""
 
-    for line in stream:
-        line = _pre_process_line(prev + line.strip().rstrip(),
-                                 comment_markers)
+    for line_ in stream:
+        line = _pre_process_line(
+            prev + line_.strip().rstrip(), comment_markers
+        )
         # I don't think later case may happen but just in case.
         if line is None or not line:
             continue

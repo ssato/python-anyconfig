@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import io
+import pathlib
 import typing
 
 from ... import ioinfo, utils
@@ -45,8 +46,8 @@ class DumperMixin:
         if "encoding" not in kwargs and self._open_write_mode == "w":
             kwargs["encoding"] = _ENCODING
 
-        return open(  # noqa: SIM115
-            filepath, self._open_write_mode, **kwargs
+        return pathlib.Path(filepath).open(  # noqa: SIM115
+            self._open_write_mode, **kwargs
         )
 
     def dump_to_string(self, cnf: InDataExT, **kwargs) -> str:

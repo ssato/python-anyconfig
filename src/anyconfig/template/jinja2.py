@@ -189,11 +189,7 @@ def try_render(filepath: typing.Optional[str] = None,
         return render_s(content, **render_s_opts)
 
     except Exception as exc:  # pylint: disable=broad-except
-        if filepath:
-            tmpl_s = filepath
-        else:
-            tmpl_s = typing.cast(str, content)[:10] + " ..."
-
+        tmpl_s = filepath or typing.cast(str, content)[:10] + " ..."
         warnings.warn(
             f"Failed to compile '{tmpl_s!r}'. It may not be "
             f"a template.{os.linesep}, exc={exc!s}, "

@@ -22,7 +22,7 @@ def filter_from_options(key, options):
     >>> filter_from_options("a", dict(a=1, b=2))
     {'b': 2}
     """
-    return filter_options([k for k in options.keys() if k != key], options)
+    return filter_options([k for k in options if k != key], options)
 
 
 class Parser(base.StreamParser):

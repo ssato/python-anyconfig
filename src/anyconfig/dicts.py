@@ -2,7 +2,7 @@
 # Forked from m9dicts.{api,dicts}.
 #
 # Copyright (C) 2011 - 2021 Red Hat, Inc.
-# Copyright (C) 2018 - 2021 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""Utility functions to operate on mapping objects such as get, set and merge.
@@ -280,7 +280,7 @@ def merge(self: DictT, other: UpdatesT, ac_merge: str = MS_DICTS,
     _update_fn = _get_update_fn(ac_merge)
 
     if isinstance(other, dict):
-        for key in other.keys():
+        for key in other:
             _update_fn(self, other, key, **options)
     else:
         try:

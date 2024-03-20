@@ -63,8 +63,9 @@ def load_data_from_py(
         try:
             return getattr(mod, data_name)
         except (TypeError, ValueError, AttributeError):
-            warnings.warn(  # noqa
-                f"No valid data '{data_name}' was found in {mod!r}."
+            warnings.warn(
+                f"No valid data '{data_name}' was found in {mod!r}.",
+                stacklevel=2
             )
 
     if fallback:

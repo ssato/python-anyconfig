@@ -43,6 +43,7 @@ Changelog:
 """
 from __future__ import annotations
 
+import contextlib
 import typing
 import yaml
 try:
@@ -102,10 +103,8 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
         """Unicode string constructor."""
         return loader.construct_scalar(node)
 
-    try:
+    with contextlib.suppress(NameError):
         loader.add_constructor(tag, construct_ustr)
-    except NameError:
-        pass
 
     if container is not dict:
         loader.add_constructor(mapping_tag, construct_mapping)
@@ -123,10 +122,8 @@ def _customized_dumper(container, dumper=Dumper):
         tag = "tag:yaml.org,2002:python/unicode"
         return dumper.represent_scalar(tag, data)
 
-    try:
+    with contextlib.suppress(NameError):
         dumper.add_representer(unicode, ustr_representer)
-    except NameError:
-        pass
 
     if container is not dict:
         dumper.add_representer(container, container_representer)

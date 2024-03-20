@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # FIXME:
@@ -46,7 +46,7 @@ def list_by_extension() -> typing.List[typing.Tuple[str, ParsersT]]:
     return Parsers().list_by_x("extensions")
 
 
-def findall(obj: typing.Optional["ioinfo.PathOrIOInfoT"] = None,
+def findall(obj: typing.Optional[ioinfo.PathOrIOInfoT] = None,
             forced_type: typing.Optional[str] = None
             ) -> typing.List[ParserT]:
     """Find out processor objects can process data from given ``obj``.
@@ -65,7 +65,7 @@ def findall(obj: typing.Optional["ioinfo.PathOrIOInfoT"] = None,
     return Parsers().findall(obj, forced_type=forced_type)
 
 
-def find(obj: typing.Optional["ioinfo.PathOrIOInfoT"] = None,
+def find(obj: typing.Optional[ioinfo.PathOrIOInfoT] = None,
          forced_type: MaybeParserT = None) -> ParserT:
     """Very similar to the above :func:`findall`.
 
@@ -82,5 +82,3 @@ def find(obj: typing.Optional["ioinfo.PathOrIOInfoT"] = None,
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     return Parsers().find(obj, forced_type=forced_type)
-
-# vim:sw=4:ts=4:et:

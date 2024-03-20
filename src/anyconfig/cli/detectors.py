@@ -87,7 +87,7 @@ def find_by_the_paths(paths: typing.List[str], *,
     return default
 
 
-def try_detecting_input_type(args: "argparse.Namespace", *,
+def try_detecting_input_type(args: argparse.Namespace, *,
                              ignore_errors: bool = True
                              ) -> typing.Optional[str]:
     """Try to resolve a file type and parser of inputs."""
@@ -104,7 +104,7 @@ def try_detecting_input_type(args: "argparse.Namespace", *,
     return None
 
 
-def try_detecting_output_type(args: "argparse.Namespace"
+def try_detecting_output_type(args: argparse.Namespace
                               ) -> typing.Optional[str]:
     """Try to resolve a file type and parser of outputs (``args.output``)."""
     # First, try the type given by users.

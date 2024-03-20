@@ -129,7 +129,7 @@ class Processors:
         )
         raise ValueError(msg)
 
-    def findall(self, obj: typing.Optional["ioinfo.PathOrIOInfoT"],
+    def findall(self, obj: typing.Optional[ioinfo.PathOrIOInfoT],
                 forced_type: typing.Optional[str] = None
                 ) -> typing.List[ProcT]:
         """Find all of the processors match with tthe given conditions.
@@ -144,7 +144,7 @@ class Processors:
         """
         return utils.findall(obj, self.list(), forced_type=forced_type)
 
-    def find(self, obj: typing.Optional["ioinfo.PathOrIOInfoT"],
+    def find(self, obj: typing.Optional[ioinfo.PathOrIOInfoT],
              forced_type: MaybeProcT = None) -> ProcT:
         """Find the processor best match with tthe given conditions.
 

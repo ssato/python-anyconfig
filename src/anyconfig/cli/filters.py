@@ -15,12 +15,14 @@ if typing.TYPE_CHECKING:
     import argparse
 
 
-def do_filter(cnf: typing.Dict[str, typing.Any], args: argparse.Namespace):
+def do_filter(
+    cnf: typing.Dict[str, typing.Any], args: argparse.Namespace
+) -> typing.Dict[str, typing.Any]:
     """Filter ``cnf`` by query/get/set and return filtered result."""
     if args.query:
         try:
             return api.try_query(cnf, args.query)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             utils.exit_with_output(f"Failed to query: exc={exc!s}", 1)
 
     if args.get:

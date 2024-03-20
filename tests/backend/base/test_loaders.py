@@ -1,27 +1,20 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring, invalid-name
-import unittest
+import pytest
 
 import anyconfig.backend.base.loaders as TT
 
 
-FILE_PATH = __file__
-
-
-class LoaderMixinTestCase(unittest.TestCase):
-
-    def test_ropen(self):
-        with TT.LoaderMixin().ropen(FILE_PATH) as fio:
-            self.assertEqual(fio.mode, 'r')
-
-
-class BinaryLoaderMixinTestCase(unittest.TestCase):
-
-    def test_ropen(self):
-        with TT.BinaryLoaderMixin().ropen(FILE_PATH) as fio:
-            self.assertEqual(fio.mode, 'rb')
-
-# vim:sw=4:ts=4:et:
+@pytest.mark.parametrize(
+    ("cls", "mode"),
+    (
+     (TT.LoaderMixin, "r"),
+     (TT.BinaryLoaderMixin, "rb"),
+     ),
+)
+def test_loader_mixin_ropen(cls, mode):
+    with cls().ropen(__file__) as fio:
+        assert fio.mode == mode

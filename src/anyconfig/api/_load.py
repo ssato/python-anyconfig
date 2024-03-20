@@ -10,9 +10,10 @@ import typing
 import warnings
 
 from .. import ioinfo
-from ..common import (
-    InDataT, InDataExT
-)
+if typing.TYPE_CHECKING:
+    from ..common import (
+        InDataT, InDataExT
+    )
 from ..dicts import (
     convert_to as dicts_convert_to,
     merge as dicts_merge

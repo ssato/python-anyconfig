@@ -21,9 +21,11 @@ import ast
 import importlib
 import importlib.util
 import importlib.abc
-import pathlib
 import typing
 import warnings
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
 DATA_VAR_NAME: str = "DATA"

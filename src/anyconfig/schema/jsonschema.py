@@ -27,7 +27,8 @@ from ..common import (
 from ..utils import (
     filter_options, is_dict_like, is_list_like
 )
-from .datatypes import ResultT
+if typing.TYPE_CHECKING:
+    from .datatypes import ResultT
 
 
 def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:

@@ -22,7 +22,8 @@ from ..common import (
     InDataExT, InDataT
 )
 from ..utils import is_dict_like
-from .datatypes import MaybeJexp
+if typing.TYPE_CHECKING:
+    from .datatypes import MaybeJexp
 
 
 def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:

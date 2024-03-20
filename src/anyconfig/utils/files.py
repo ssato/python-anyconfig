@@ -22,7 +22,8 @@ def get_path_from_stream(strm: typing.IO, *, safe: bool = False) -> str:
     :raises: ValueError
     """
     if not is_io_stream(strm) and not safe:
-        raise ValueError(f"It does not look a file[-like] object: {strm!r}")
+        msg = f"It does not look a file[-like] object: {strm!r}"
+        raise ValueError(msg)
 
     path = getattr(strm, "name", None)
     if path is not None:

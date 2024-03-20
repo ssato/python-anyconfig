@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unidiomatic-typecheck
@@ -149,7 +149,8 @@ def find_by_fileext(fileext: str, prs: ProcsT) -> ProcsT:
 
     pclss = findall_with_pred(pred, prs)
     if not pclss:
-        raise common.UnknownFileTypeError(f"file extension={fileext}")
+        msg = f"file extension={fileext}"
+        raise common.UnknownFileTypeError(msg)
 
     return pclss  # :: [Processor], never []
 
@@ -227,8 +228,11 @@ def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
             typing.cast(typing.Union[ProcT, ProcClsT], forced_type)
         )
         if proc is None:
-            raise ValueError("Wrong processor class or instance "
-                             f"was given: {forced_type!r}")
+            msg = (
+                "Wrong processor class or instance "
+                f"was given: {forced_type!r}"
+            )
+            raise ValueError(msg)
 
         return proc
 
@@ -251,5 +255,3 @@ def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
             yield res.load()
         except ImportError as exc:  # noqa: PERF203
             warnings.warn(f"Failed to load plugin, exc={exc!s}", stacklevel=2)
-
-# vim:sw=4:ts=4:et:

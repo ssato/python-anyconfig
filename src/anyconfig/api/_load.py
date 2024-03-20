@@ -251,11 +251,12 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
                 )
                 dicts_merge(ctx, typing.cast(MappingT, cups), **options)
             elif len(iois) > 1:
-                raise ValueError(
+                msg = (
                     f"Object loaded from {ioi!r} is not a mapping object and "
                     "cannot be merged with later ones will be loaded from "
                     "other inputs."
                 )
+                raise ValueError(msg)
 
     if cnf is None:
         return dicts_convert_to({}, **options)
@@ -302,7 +303,8 @@ def load(
     """
     iois = ioinfo.makes(path_specs)
     if not iois:
-        raise ValueError(f"Maybe invalid input: {path_specs!r}")
+        msg = f"Maybe invalid input: {path_specs!r}"
+        raise ValueError(msg)
 
     if len(iois) == 1:
         return single_load(iois[0], ac_parser=ac_parser, ac_dict=ac_dict,

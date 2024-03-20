@@ -257,7 +257,8 @@ def _get_update_fn(strategy: str) -> typing.Callable[..., None]:
         if callable(strategy):
             return strategy
 
-        raise ValueError(f"Wrong merge strategy: {strategy!r}") from exc
+        msg = f"Wrong merge strategy: {strategy!r}"
+        raise ValueError(msg) from exc
 
 
 UpdatesT = typing.Union[
@@ -291,7 +292,8 @@ def merge(self: DictT, other: UpdatesT, ac_merge: str = MS_DICTS,
             for key, val in iother:
                 _update_fn(self, dict(other), key, val=val, **options)
         except (ValueError, TypeError) as exc:  # Re-raise w/ info.
-            raise type(exc)(f"{exc!s} other={other!r}")
+            msg = f"{exc!s} other={other!r}"
+            raise type(exc)(msg)
 
 
 def _make_recur(obj: typing.Any, make_fn: typing.Callable, *,

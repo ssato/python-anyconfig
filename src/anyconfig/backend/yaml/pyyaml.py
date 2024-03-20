@@ -91,7 +91,7 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
                          node.start_mark,
                          f"found unacceptable key ({exc!s})",
                          key_node.start_mark)
-                raise yaml.constructor.ConstructorError(*eargs)
+                raise yaml.constructor.ConstructorError(*eargs) from exc
             value = loader.construct_object(value_node, deep=deep)
             mapping[key] = value
 

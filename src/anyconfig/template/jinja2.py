@@ -1,7 +1,7 @@
 #
 # Jinja2 (http://jinja.pocoo.org) based template renderer.
 #
-# Copyright (C) 2012 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=wrong-import-position,wrong-import-order
@@ -29,11 +29,16 @@ MaybePathsT = typing.Optional[PathsT]
 MaybeContextT = typing.Optional[typing.Dict[str, typing.Any]]
 MaybeFiltersT = typing.Optional[typing.Iterable[typing.Callable]]
 
-RENDER_S_OPTS: typing.Tuple[str, ...] = ("ctx", "paths", "filters")
+RENDER_S_OPTS: typing.Tuple[str, ...] = (
+    "ctx", "paths", "filters",
+    "autoescape"
+)
 RENDER_OPTS = (*RENDER_S_OPTS, "ask")
 
 
-def tmpl_env(paths: MaybePathsT = None) -> jinja2.Environment:
+def tmpl_env(
+    paths: MaybePathsT = None, *, autoescape: bool = True
+) -> jinja2.Environment:
     """Get the template environment object from given ``paths``.
 
     :param paths: A list of template search paths
@@ -42,7 +47,8 @@ def tmpl_env(paths: MaybePathsT = None) -> jinja2.Environment:
         paths = []
 
     return jinja2.Environment(
-        loader=jinja2.FileSystemLoader([str(p) for p in paths])
+        loader=jinja2.FileSystemLoader([str(p) for p in paths]),
+        autoescape=autoescape  # noqa: S701
     )
 
 
@@ -68,7 +74,8 @@ def make_template_paths(template_file: pathlib.Path,
 
 def render_s(tmpl_s: str, ctx: MaybeContextT = None,
              paths: MaybePathsT = None,
-             filters: MaybeFiltersT = None
+             filters: MaybeFiltersT = None, *,
+             autoescape: bool = True
              ) -> str:
     """Render a template as a str.
 
@@ -90,7 +97,7 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
 
     # .. seealso:: jinja2.environment._environment_sanity_check
     try:
-        env = tmpl_env(paths)
+        env = tmpl_env(paths, autoescape=autoescape)
     except AssertionError as exc:
         warnings.warn(
             f"Something went wrong with: paths={paths!r}, exc={exc!s}",
@@ -104,16 +111,21 @@ def render_s(tmpl_s: str, ctx: MaybeContextT = None,
     if ctx is None:
         ctx = {}
 
-    return typing.cast(jinja2.Environment, tmpl_env(paths)
-                       ).from_string(tmpl_s).render(**ctx)
+    return typing.cast(
+        jinja2.Environment,
+        tmpl_env(paths, autoescape=autoescape)
+    ).from_string(tmpl_s).render(**ctx)
 
 
 _ENCODING: str = (locale.getpreferredencoding() or "utf-8").lower()
 
 
-def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
-                paths: MaybePathsT = None, filters: MaybeFiltersT = None
-                ) -> str:
+def render_impl(
+    template_file: pathlib.Path, ctx: MaybeContextT = None,
+    paths: MaybePathsT = None, filters: MaybeFiltersT = None,
+    *,
+    autoescape: bool = True
+) -> str:
     """Render implementation.
 
     :param template_file: Absolute or relative path to the template file
@@ -121,7 +133,10 @@ def render_impl(template_file: pathlib.Path, ctx: MaybeContextT = None,
     :param filters: Custom filters to add into template engine
     :return: Compiled result (str)
     """
-    env = tmpl_env(make_template_paths(template_file, paths))
+    env = tmpl_env(
+        make_template_paths(template_file, paths),
+        autoescape=autoescape
+    )
 
     if env is None:
         with pathlib.Path(template_file).open(encoding=_ENCODING) as fio:
@@ -197,5 +212,3 @@ def try_render(filepath: typing.Optional[str] = None,
             stacklevel=2
         )
         return None
-
-# vim:sw=4:ts=4:et:

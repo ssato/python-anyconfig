@@ -293,7 +293,7 @@ def merge(self: DictT, other: UpdatesT, ac_merge: str = MS_DICTS,
                 _update_fn(self, dict(other), key, val=val, **options)
         except (ValueError, TypeError) as exc:  # Re-raise w/ info.
             msg = f"{exc!s} other={other!r}"
-            raise type(exc)(msg)
+            raise type(exc)(msg) from exc
 
 
 def _make_recur(obj: typing.Any, make_fn: typing.Callable, *,

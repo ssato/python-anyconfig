@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2015 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-argument

@@ -68,7 +68,7 @@ class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
 
 LoadFnT = typing.Callable[..., InDataExT]
-DumpFnT = typing.Callable[..., typing.Optional[str]]
+DumpFnT = typing.Callable[..., str]
 
 
 def load_with_fn(load_fn: typing.Optional[LoadFnT],
@@ -101,7 +101,7 @@ def load_with_fn(load_fn: typing.Optional[LoadFnT],
 
 def dump_with_fn(dump_fn: typing.Optional[DumpFnT],
                  data: InDataExT, stream: typing.Optional[typing.IO],
-                 **options) -> typing.Optional[str]:
+                 **options) -> str:
     """Dump 'data' to a string.
 
     If 'stream' is None, or dump 'data' to a file or file-like object 'stream'.
@@ -185,7 +185,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         :return: string represents the configuration
         """
         return dump_with_fn(self._dump_to_string_fn, cnf, None,
-                            **kwargs)  # type: ignore
+                            **kwargs)
 
     def dump_to_stream(self, cnf: InDataExT, stream: typing.IO,
                        **kwargs) -> None:
@@ -198,6 +198,6 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         :param kwargs: optional keyword parameters to be sanitized :: dict
         """
         dump_with_fn(self._dump_to_stream_fn, cnf, stream,
-                     **kwargs)  # type: ignore
+                     **kwargs)
 
 # vim:sw=4:ts=4:et:

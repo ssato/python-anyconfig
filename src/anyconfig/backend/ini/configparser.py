@@ -44,7 +44,7 @@ _SEP = ","
 try:
     DEFAULTSECT: str = configparser.DEFAULTSECT
 except AttributeError:
-    DEFAULTSECT: str = "DEFAULT"  # type: ignore
+    DEFAULTSECT: str = "DEFAULT"  # type: ignore[no-redef]
 
 
 _QUOTED_RE: typing.Pattern = re.compile(
@@ -99,7 +99,7 @@ def parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
     """
     __parse = parse if options.get("ac_parse_value") else utils.noop
     for key, val in items:
-        yield (key, __parse(val, sep))  # type: ignore
+        yield (key, __parse(val, sep))  # type: ignore[operator]
 
 
 def _make_parser(**kwargs

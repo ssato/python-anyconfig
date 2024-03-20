@@ -5,13 +5,19 @@
 """Misc global constants, variables, classes and so on."""
 from __future__ import annotations
 
+import typing
+
 try:
     from .jinja2 import try_render
     SUPPORTED: bool = True
 except ImportError:  # jinja2 may not be available.
-    SUPPORTED = False  # type: ignore
+    SUPPORTED = False
 
-    def try_render(*_args, **_kwargs) -> None:  # type: ignore
+    def try_render(
+        filepath: typing.Optional[str] = None,
+        content: typing.Optional[str] = None,
+        **options
+    ) -> typing.Optional[str]:
         """Provide a dummy function does nothing but returns None."""
         return None
 

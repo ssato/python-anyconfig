@@ -209,8 +209,8 @@ def gen_schema(data: InDataExT, **options) -> InDataT:
         typemap = options.get("ac_schema_typemap", _SIMPLETYPE_MAP)
         scm = {"type": typemap[_type]}
 
-    elif is_dict_like(data):
-        scm = object_to_schema(data, **options)  # type: ignore
+    elif is_dict_like(data):  # dict | collections.abc.Mapping
+        scm = object_to_schema(typing.cast(InDataT, data), **options)
 
     elif is_list_like(data):
         scm = array_to_schema(

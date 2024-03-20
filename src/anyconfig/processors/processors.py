@@ -32,7 +32,9 @@ class Processors:
             children class objects to initialize this, or None
         """
         # {<processor_class_id>: <processor_instance>}
-        self._processors: typing.Dict[str, ProcT] = {}  # type: ignore
+        self._processors: typing.Dict[
+            str, ProcT
+        ] = {}  # type: ignore[valid-type]
         if processors is not None:
             for pcls in processors:
                 self.register(pcls)
@@ -80,7 +82,7 @@ class Processors:
             A list of :class:`Processor` or its children classes grouped by
             each type, [(type, [:class:`Processor`)]]
         """
-        return utils.list_by_x(self.list(), "type")  # type: ignore
+        return utils.list_by_x(self.list(), "type")
 
     def list_by_x(self, item: typing.Optional[str] = None
                   ) -> typing.List[typing.Tuple[str, ProcsT]]:

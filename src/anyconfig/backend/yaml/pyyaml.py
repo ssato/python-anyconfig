@@ -45,7 +45,7 @@ import yaml
 try:
     from yaml import CSafeLoader as Loader, CDumper as Dumper
 except ImportError:
-    from yaml import SafeLoader as Loader, Dumper  # type: ignore
+    from yaml import SafeLoader as Loader, Dumper  # type: ignore[assignment]
 
 from ...dicts import convert_to
 from ...utils import is_dict_like

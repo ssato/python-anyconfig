@@ -68,10 +68,9 @@ def list_by_x(prs: typing.Iterable[ProcT], key: str
                      key=operator.itemgetter(0))
 
     elif key == "extensions":
-        res: typing.List[  # type: ignore
-            typing.Tuple[str, ProcsT]
-        ] = select_by_key(((p.extensions(), p) for p in prs),
-                          sort_fn=sort_by_prio)
+        res = select_by_key(
+            ((p.extensions(), p) for p in prs), sort_fn=sort_by_prio
+        )
     else:
         msg = f"Argument 'key' must be 'type' or 'extensions' [{key}]"
         raise ValueError(msg)
@@ -107,8 +106,9 @@ def maybe_processor(type_or_id: typing.Union[ProcT, ProcClsT],
         return type_or_id
 
     try:
-        if issubclass(typing.cast(ProcClsT, type_or_id), cls):
-            return type_or_id()  # type: ignore
+        maybe_cls = typing.cast(ProcClsT, type_or_id)
+        if issubclass(maybe_cls, cls):
+            return maybe_cls()
     except TypeError:
         pass
 

@@ -37,7 +37,7 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
         return default
 
     try:
-        return api.find(None, io_type).type()  # type: ignore
+        return api.find(None, io_type).type()  # type: ignore[attr-defined]
 
     except api.UnknownProcessorTypeError:
         # Just ignore it should be wrong type.
@@ -74,7 +74,7 @@ def find_by_the_paths(paths: typing.List[str], *,
 
     if constants.STD_IN_OR_OUT not in paths:
         try:
-            return api.find(paths[0]).type()  # type: ignore
+            return api.find(paths[0]).type()  # type: ignore[attr-defined]
 
         except api.UnknownFileTypeError:
             if not ignore_errors:

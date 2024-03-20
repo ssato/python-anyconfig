@@ -104,7 +104,7 @@ def get(dic: DictT, path: str, seps: typing.Tuple[str, ...] = PATH_SEPS,
 
         prnt: typing.Any = functools.reduce(operator.getitem, items[:-1], dic)
         arr = (idx_reg.match(items[-1])
-               if utils.is_list_like(prnt) else False)  # type: ignore
+               if utils.is_list_like(prnt) else False)
 
         return (prnt[int(items[-1])], "") if arr else (prnt[items[-1]], "")
 

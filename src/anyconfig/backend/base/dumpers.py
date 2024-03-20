@@ -4,6 +4,8 @@
 #
 # pylint: disable=consider-using-with, unspecified-encoding
 """Abstract and basic dumpes."""
+from __future__ import annotations
+
 import io
 import typing
 
@@ -34,8 +36,8 @@ class DumperMixin:
     - _open_write_mode: Backend option to specify write mode passed to open()
     """
 
-    _dump_opts: typing.List[str] = []
-    _open_write_mode = "w"
+    _dump_opts: typing.Tuple[str, ...] = ()
+    _open_write_mode: typing.ClassVar[str] = "w"
 
     def wopen(self, filepath: str, **kwargs):
         """Open file ``filepath`` with the write mode ``_open_write_mode``."""

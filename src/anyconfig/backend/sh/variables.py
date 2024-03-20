@@ -18,8 +18,11 @@ Changelog:
    - Added an experimental parser for simple shelll vars' definitions w/o shell
      variable expansions nor complex shell statements like conditionals.
 """
+from __future__ import annotations
+
 import itertools
 import re
+import typing
 import warnings
 
 from .. import base
@@ -79,11 +82,11 @@ def load(stream, container=dict):
 class Parser(base.StreamParser):
     """Parser for Shell variable definition files."""
 
-    _cid = "sh.variables"
-    _type = "shellvars"
-    _extensions = ["sh"]
-    _ordered = True
-    _dict_opts = ["ac_dict"]
+    _cid: typing.ClassVar[str] = "sh.variables"
+    _type: typing.ClassVar[str] = "shellvars"
+    _extensions: typing.Tuple[str, ...] = ("sh", )
+    _ordered: typing.ClassVar[bool] = True
+    _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
 
     def load_from_stream(self, stream, container, **kwargs):
         """Load config from given file like object ``stream``.

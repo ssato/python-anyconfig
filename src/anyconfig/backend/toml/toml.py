@@ -19,6 +19,10 @@ Changelog:
 
     .. versionadded:: 0.1.0
 """
+from __future__ import annotations
+
+import typing
+
 import toml
 
 from .. import base
@@ -27,11 +31,12 @@ from .. import base
 class Parser(base.StringStreamFnParser):
     """TOML parser."""
 
-    _cid = "toml.toml"
-    _type = "toml"
-    _extensions = ["toml"]
-    _ordered = True
-    _load_opts = _dump_opts = _dict_opts = ["_dict"]
+    _cid: typing.ClassVar[str] = "toml.toml"
+    _type: typing.ClassVar[str] = "toml"
+    _extensions: typing.Tuple[str, ...] = ("toml", )
+    _ordered: typing.ClassVar[bool] = True
+    _load_opts: typing.Tuple[str] = ("_dict", )
+    _dump_opts = _dict_opts = _load_opts
 
     _load_from_string_fn = base.to_method(toml.loads)
     _load_from_stream_fn = base.to_method(toml.load)

@@ -22,6 +22,10 @@ Changelog:
 
    - Exported from ..json.py
 """
+from __future__ import annotations
+
+import typing
+
 import simplejson as json
 
 from .. import base
@@ -30,17 +34,20 @@ from .common import (
 )
 
 
-JSON_LOAD_OPTS.append("use_decimal")
-JSON_DUMP_OPTS.extend(["use_decimal", "namedtuple_as_object", "tuple_as_array",
-                       "bigint_as_string", "item_sort_key", "for_json",
-                       "ignore_nan", "int_as_string_bitcount",
-                       "iterable_as_array"])
+JSON_LOAD_OPTS = (*JSON_LOAD_OPTS, "use_decimal")
+JSON_DUMP_OPTS = (
+    *JSON_DUMP_OPTS,
+    "use_decimal", "namedtuple_as_object", "tuple_as_array",
+    "bigint_as_string", "item_sort_key", "for_json",
+    "ignore_nan", "int_as_string_bitcount",
+    "iterable_as_array"
+)
 
 
 class Parser(BaseParser):
     """Parser for JSON files using simplejson."""
 
-    _cid = "json.simplejson"
+    _cid: typing.ClassVar[str] = "json.simplejson"
     _load_opts = JSON_LOAD_OPTS
     _dump_opts = JSON_DUMP_OPTS
 

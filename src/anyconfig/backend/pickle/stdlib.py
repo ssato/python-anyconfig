@@ -27,7 +27,10 @@ Changelog:
 
 .. versionadded:: 0.8.3
 """
+from __future__ import annotations
+
 import pickle
+import typing
 
 from .. import base
 
@@ -39,15 +42,15 @@ DUMP_OPTS = ["protocol", "fix_imports"]
 class Parser(base.StringStreamFnParser):
     """Parser for Pickle files."""
 
-    _cid = "pickle.stdlib"
-    _type = "pickle"
-    _extensions = ["pkl", "pickle"]
-    _open_read_mode: str = "rb"
-    _open_write_mode: str = "wb"
+    _cid: typing.ClassVar[str] = "pickle.stdlib"
+    _type: typing.ClassVar[str] = "pickle"
+    _extensions: typing.Tuple[str, ...] = ("pkl", "pickle")
+    _open_read_mode: typing.ClassVar[str] = "rb"
+    _open_write_mode: typing.ClassVar[str] = "wb"
 
     _load_opts = LOAD_OPTS
     _dump_opts = DUMP_OPTS
-    _allow_primitives = True
+    _allow_primitives: typing.ClassVar[bool] = True
 
     _load_from_string_fn = base.to_method(pickle.loads)
     _load_from_stream_fn = base.to_method(pickle.load)

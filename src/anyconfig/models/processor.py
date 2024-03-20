@@ -8,6 +8,8 @@
 
    - Add to abstract processors such like Parsers (loaders and dumpers).
 """
+from __future__ import annotations
+
 import typing
 
 
@@ -15,7 +17,9 @@ class Processor:
     """Abstract processor class to provide basic implementation.
 
     - _type: type indicates data types it can process
-    - _priority: Priority to select it if there are others of same type
+    - _priority:
+        Priority to select it if there are others of same type from 0 (lowest)
+        to 99 (highest)
     - _extensions: File extensions of data type it can process
 
     .. note::
@@ -23,10 +27,10 @@ class Processor:
        in most cases, I think.
     """
 
-    _cid: str = ""
-    _type: str = ""
-    _priority: int = 0   # 0 (lowest priority) .. 99  (highest priority)
-    _extensions: typing.List[str] = []
+    _cid: typing.ClassVar[str] = ""
+    _type: typing.ClassVar[str] = ""
+    _priority: typing.ClassVar[int] = 0
+    _extensions: typing.Tuple[str, ...] = ()
 
     @classmethod
     def cid(cls) -> str:

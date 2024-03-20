@@ -20,6 +20,10 @@ Changelog:
 
     .. versionadded:: 0.13.1
 """
+from __future__ import annotations
+
+import typing
+
 try:
     import tomllib
 except ModuleNotFoundError:
@@ -33,13 +37,13 @@ from .. import base
 class Parser(base.StringStreamFnParser):
     """TOML parser using tomlib and tomli-w."""
 
-    _cid = "toml.tomllib"
-    _type = "toml"
-    _extensions = ["toml"]
-    _ordered = True
-    _load_opts = ["parse_float"]
-    _open_read_mode: str = "rb"
-    _open_write_mode: str = "wb"
+    _cid: typing.ClassVar[str] = "toml.tomllib"
+    _type: typing.ClassVar[str] = "toml"
+    _extensions: typing.Tuple[str, ...] = ("toml", )
+    _ordered: typing.ClassVar[bool] = True
+    _load_opts: typing.Tuple[str, ...] = ("parse_float", )
+    _open_read_mode: typing.ClassVar[str] = "rb"
+    _open_write_mode: typing.ClassVar[str] = "wb"
 
     _load_from_string_fn = base.to_method(tomllib.loads)
     _load_from_stream_fn = base.to_method(tomllib.load)

@@ -64,6 +64,7 @@ import io
 import itertools
 import operator
 import re
+import typing
 
 from xml.etree import ElementTree
 
@@ -452,14 +453,18 @@ def etree_write(tree, stream):
 class Parser(base.Parser, base.ToStreamDumperMixin):
     """Parser for XML files."""
 
-    _cid = "xml.etree"
-    _type = "xml"
-    _extensions = ["xml"]
-    _load_opts = _dump_opts = ["tags", "merge_attrs", "ac_parse_value"]
-    _ordered = True
-    _dict_opts = ["ac_dict"]
-    _open_read_mode: str = "rb"
-    _open_write_mode: str = "wb"
+    _cid: typing.ClassVar[str] = "xml.etree"
+    _type: typing.ClassVar[str] = "xml"
+    _extensions: typing.Tuple[str, ...] = ("xml", )
+    _load_opts: typing.Tuple[str, ...] = (
+        "tags", "merge_attrs", "ac_parse_value"
+    )
+    _dump_opts = _load_opts
+
+    _ordered: typing.ClassVar[bool] = True
+    _dict_opts: typing.Tuple[str, ...] = ["ac_dict"]
+    _open_read_mode: typing.ClassVar[str] = "rb"
+    _open_write_mode: typing.ClassVar[str] = "wb"
 
     def load_from_string(self, content, container, **opts):
         """Load config from XML snippet (a string 'content').

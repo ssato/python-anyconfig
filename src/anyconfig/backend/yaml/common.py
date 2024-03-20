@@ -3,6 +3,10 @@
 # SPDX-License-Identifier: MIT
 #
 """Common library for YAML backend modules."""
+from __future__ import annotations
+
+import typing
+
 from ...utils import filter_options
 from .. import base
 
@@ -24,10 +28,10 @@ def filter_from_options(key, options):
 class Parser(base.StreamParser):
     """Parser for YAML files."""
 
-    _type = "yaml"
-    _extensions = ["yaml", "yml"]
-    _ordered = True
-    _allow_primitives = True
-    _dict_opts = ["ac_dict"]
+    _type: typing.ClassVar[str] = "yaml"
+    _extensions: typing.Tuple[str, ...] = ("yaml", "yml")
+    _ordered: typing.ClassVar[bool] = True
+    _allow_primitives: typing.ClassVar[bool] = True
+    _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
 
 # vim:sw=4:ts=4:et:

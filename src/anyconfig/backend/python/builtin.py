@@ -29,6 +29,10 @@ Changelog:
 
    - Added builtin data loader from python code
 """
+from __future__ import annotations
+
+import typing
+
 from .. import base
 from . import (
     loader, dumper
@@ -38,6 +42,6 @@ from . import (
 class Parser(base.Parser, loader.Loader, dumper.Dumper):
     """Parser for python code files."""
 
-    _cid = "python.builtin"
-    _type = "python"
-    _extensions = ["py"]
+    _cid: typing.ClassVar[str] = "python.builtin"
+    _type: typing.ClassVar[str] = "python"
+    _extensions: typing.Tuple[str, ...] = ("py", )

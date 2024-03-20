@@ -13,11 +13,12 @@ from . import utils
 
 if typing.TYPE_CHECKING:
     import argparse
+    from ..common import InDataExT
 
 
 def do_filter(
     cnf: typing.Dict[str, typing.Any], args: argparse.Namespace
-) -> typing.Dict[str, typing.Any]:
+) -> InDataExT:
     """Filter ``cnf`` by query/get/set and return filtered result."""
     if args.query:
         try:

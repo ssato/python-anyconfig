@@ -54,8 +54,7 @@ def expand_from_path(path: pathlib.Path,
     if len(path.parts) > idx:
         base = pathlib.Path(path.parts[0]).joinpath(*path.parts[:idx])
         pattern = PATH_SEP.join(path.parts[idx:])
-        for epath in sorted(base.glob(pattern)):
-            yield epath
+        yield from sorted(base.glob(pattern))
 
     else:  # No marker was found.
         yield path

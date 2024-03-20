@@ -77,8 +77,7 @@ def make_itr(obj: typing.Any, marker: str = constants.GLOB_MARKER
 
     else:
         for item in obj:
-            for ioi in make_itr(item, marker=marker):
-                yield ioi
+            yield from make_itr(item, marker=marker)
 
 
 def makes(obj: typing.Any, marker: str = constants.GLOB_MARKER

@@ -22,8 +22,10 @@ DEFAULTS = {
 
 def gen_type_help_txt(types: str, target: str = "Input") -> str:
     """Generate a type help txt."""
-    return (f"Select type of {target} files from {types}"
-            "[Automatically detected by those extension]")
+    return (
+        f"Select type of {target} files from {types}"  # noqa: S608
+        "[Automatically detected by those extension]"
+    )
 
 
 def make_parser(defaults: typing.Optional[typing.Dict] = None,
@@ -53,8 +55,10 @@ def make_parser(defaults: typing.Optional[typing.Dict] = None,
 
     mss = api.MERGE_STRATEGIES
     mss_s = ", ".join(mss)
-    mt_help = ("Select strategy to merge multiple configs from "
-               f"{mss_s} {defaults['merge']}")
+    mt_help = (
+        "Select strategy to merge multiple configs from "  # noqa: S608
+        f"{mss_s} {defaults['merge']}"
+    )
     apsr.add_argument("-M", "--merge", choices=mss, metavar="MERGE",
                       help=mt_help)
 

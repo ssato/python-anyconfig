@@ -245,7 +245,7 @@ def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
     :param pgroup: A string represents plugin type, e.g. anyconfig_backends
     """
     eps = importlib.metadata.entry_points()
-    for res in (eps.get(pgroup, []) if isinstance(eps, dict)  # type: ignore
+    for res in (eps.get(pgroup, []) if isinstance(eps, dict)
                 else eps.select(group=pgroup)):
         try:
             yield res.load()

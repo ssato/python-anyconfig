@@ -38,6 +38,7 @@ from .. import base
 
 
 _COMMENT_MARKERS: typing.Tuple[str, ...] = ("#", "!")
+_MIN_LEN_PAIR: int = 2
 
 
 def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
@@ -50,7 +51,7 @@ def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
     pair = re.split(r"(?:\s+)?(?:(?<!\\)[=:])", line.strip(), maxsplit=1)
     key = pair[0].rstrip()
 
-    if len(pair) < 2:
+    if len(pair) < _MIN_LEN_PAIR:
         warnings.warn(
             f"Invalid line found: {line}", category=SyntaxWarning, stacklevel=2
         )
@@ -61,20 +62,19 @@ def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
 
 def _pre_process_line(
     line: str,
-    comment_markers: typing.Tuple[str, ...] = _COMMENT_MARKERS
+    cmarkers: typing.Tuple[str, ...] = _COMMENT_MARKERS
 ):
     """Preprocess a line in properties; strip comments, etc.
 
     :param line:
         A string not starting w/ any white spaces and ending w/ line breaks.
         It may be empty. see also: :func:`load`.
-    :param comment_markers: Comment markers, e.g. '#' (hash)
+    :param cmarkers: Comment markers, e.g. '#' (hash)
     """
     if not line:
         return None
 
-    if (any(c in line for c in comment_markers) and
-        line.startswith(comment_markers)):
+    if any(c in line for c in cmarkers) and line.startswith(cmarkers):
         return None
 
     return line

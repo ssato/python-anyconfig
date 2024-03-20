@@ -20,7 +20,9 @@ PrimitiveT = typing.Union[str, int, float, bool]
 PrimitivesT = typing.List[PrimitiveT]
 
 
-def parse_single(str_: typing.Optional[str]) -> PrimitiveT:
+def parse_single(  # noqa: PLR0911
+    str_: typing.Optional[str]
+) -> PrimitiveT:
     """Parse an expression gives a primitive value."""
     if str_ is None:
         return ""

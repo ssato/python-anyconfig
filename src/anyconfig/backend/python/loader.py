@@ -82,17 +82,13 @@ class Loader(LoaderMixin):
 
         return utils.load_literal_data_from_string(content)
 
-    def load(self, ioi: IoiT, *, ac_ignore_missing: bool = False,
-             **options) -> InDataExT:
+    def load(self, ioi: IoiT, **options) -> InDataExT:
         """Load config from ``ioi``.
 
         :param ioi:
             'anyconfig.ioinfo.IOInfo' namedtuple object provides various info
             of input object to load data from
 
-        :param ac_ignore_missing:
-            Ignore and just return empty result if given `ioi` object does not
-            exist in actual.
         :param options:
             options will be passed to backend specific loading functions.
             please note that options have to be sanitized w/

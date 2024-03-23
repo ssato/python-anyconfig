@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Provides the API to dump (serialize) objects."""
@@ -48,5 +48,3 @@ def dumps(data: common.InDataExT,
     """
     psr: datatypes.ParserT = parsers.find(None, forced_type=ac_parser)
     return psr.dumps(data, **options)
-
-# vim:sw=4:ts=4:et:

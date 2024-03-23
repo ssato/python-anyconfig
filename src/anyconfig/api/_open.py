@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A API to open files by detecting those type automatically."""
@@ -49,5 +49,3 @@ def open(path: ioinfo.PathOrIOInfoT,  # noqa: A001
         return psr.wopen(ioi.path, **options)
 
     return psr.ropen(ioi.path, **options)
-
-# vim:sw=4:ts=4:et:

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
@@ -366,5 +366,3 @@ def loads(
         return None
 
     return try_query(cnf, options.get("ac_query", False), **options)
-
-# vim:sw=4:ts=4:et:

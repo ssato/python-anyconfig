@@ -75,7 +75,7 @@ _YAML_INSTANCE_MEMBERS: typing.Tuple[str, ...] = (
 _YAML_OPTS = (*_YAML_INIT_KWARGS, *_YAML_INSTANCE_MEMBERS)
 
 
-def yml_fnc(fname, *args, **options):
+def yml_fnc(fname, *args, **options):  # noqa: ANN002
     """Call loading functions for yaml data.
 
     :param fname:

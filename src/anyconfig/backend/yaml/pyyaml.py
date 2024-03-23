@@ -133,7 +133,7 @@ def yml_fnc_by_name(fname, **options):
     return getattr(yaml, f"safe_{fname}" if options.get("ac_safe") else fname)
 
 
-def yml_fnc_(fname, *args, **options):
+def yml_fnc_(fname, *args, **options):  # noqa: ANN002
     """Call yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
 
     :param fname:

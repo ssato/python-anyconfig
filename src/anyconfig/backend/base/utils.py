@@ -10,7 +10,7 @@ import pathlib
 import typing
 
 
-def not_implemented(*_args, **_kwargs) -> None:
+def not_implemented(*_args, **_kwargs) -> None:  # noqa: ANN002
     """Raise NotImplementedError."""
     raise NotImplementedError
 
@@ -32,7 +32,7 @@ def to_method(func: typing.Callable[..., typing.Any]
     :param func: Any callable object
     """
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):  # noqa: ANN002
         """Original function decorated."""
         return func(*args[1:], **kwargs)
 

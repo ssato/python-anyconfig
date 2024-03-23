@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Misc utility functions."""
@@ -8,7 +8,9 @@ from __future__ import annotations
 import typing
 
 
-def noop(val: typing.Any, *_args, **_kwargs) -> typing.Any:
+def noop(
+    val: typing.Any, *_args, **_kwargs  # noqa: ANN002
+) -> typing.Any:
     """Do nothing.
 
     >>> noop(1)
@@ -31,5 +33,3 @@ def filter_options(keys: typing.Iterable[str],
     {}
     """
     return {k: options[k] for k in keys if k in options}
-
-# vim:sw=4:ts=4:et:

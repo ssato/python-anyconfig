@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=consider-using-with, unspecified-encoding
@@ -184,5 +184,3 @@ class ToStreamDumperMixin(DumperMixin):
         """
         with self.wopen(filepath) as out:
             self.dump_to_stream(cnf, out, **kwargs)
-
-# vim:sw=4:ts=4:et:

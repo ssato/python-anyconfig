@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
@@ -164,5 +164,3 @@ __all__ = [
     # anyconfig.validate
     "validate", "is_valid", "gen_schema"
 ]
-
-# vim:sw=4:ts=4:et:

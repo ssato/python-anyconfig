@@ -7,7 +7,7 @@ import typing
 
 from .compat import BinaryFilesMixin
 from .datatypes import (
-    GenContainerT, OptionsT, InDataExT, OutDataExT, IoiT
+    GenContainerT, OptionsT, InDataT, InDataExT, OutDataExT, IoiT
 )
 from .dumpers import (
     ToStringDumperMixin, ToStreamDumperMixin, BinaryDumperMixin
@@ -32,7 +32,7 @@ ParserClssT = typing.List[typing.Type[ParserT]]
 
 __all__ = [
     "BinaryFilesMixin",
-    "GenContainerT", "OptionsT", "InDataExT", "OutDataExT", "IoiT",
+    "GenContainerT", "OptionsT", "InDataT", "InDataExT", "OutDataExT", "IoiT",
     "ToStringDumperMixin", "ToStreamDumperMixin", "BinaryDumperMixin",
     "LoaderMixin",
     "FromStringLoaderMixin", "FromStreamLoaderMixin", "BinaryLoaderMixin",
@@ -41,5 +41,3 @@ __all__ = [
     "StringParser", "StreamParser", "StringStreamFnParser",
     "ParserT", "ParsersT", "ParserClssT",
 ]
-
-# vim:sw=4:ts=4:et:

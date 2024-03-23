@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Suppress import positions after some global variables are defined
@@ -52,5 +52,3 @@ __all__ = [
     "ParserT", "ParsersT", "ParserClssT",
     "PARSERS",
 ]
-
-# vim:sw=4:ts=4:et:

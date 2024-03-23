@@ -28,7 +28,9 @@ import warnings
 from .. import base
 
 
-def _parseline(line):
+def _parseline(
+    line: str
+) -> typing.Tuple[typing.Optional[str], typing.Optional[str]]:
     """Parse a line contains shell variable definition.
 
     :param line: A string to parse, must not start with '#' (comment)
@@ -51,7 +53,7 @@ def _parseline(line):
     return (tpl[1], vals[0] if vals else "")
 
 
-def load(stream, container=dict, **_kwargs):
+def load(stream, container=dict, **_kwargs) -> base.InDataT:
     """Load shell variable definitions data from ``stream``.
 
     :param stream: A file or file like object
@@ -88,7 +90,7 @@ class Parser(base.StreamParser):
     _ordered: typing.ClassVar[bool] = True
     _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
 
-    def load_from_stream(self, stream, container, **kwargs):
+    def load_from_stream(self, stream, container, **kwargs) -> base.InDataT:
         """Load config from given file like object ``stream``.
 
         :param stream:
@@ -100,7 +102,7 @@ class Parser(base.StreamParser):
         """
         return load(stream, container=container, **kwargs)
 
-    def dump_to_stream(self, cnf, stream, **_kwargs):
+    def dump_to_stream(self, cnf, stream, **_kwargs) -> None:
         """Dump config dat ``cnf`` to a file or file-like object ``stream``.
 
         :param cnf: Shell variables data to dump

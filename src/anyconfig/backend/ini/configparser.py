@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 #  pylint: disable=deprecated-method
@@ -197,5 +197,3 @@ class Parser(base.Parser, base.FromStreamLoaderMixin,
 
     dump_to_string = base.to_method(_dumps)
     load_from_stream = base.to_method(_load)
-
-# vim:sw=4:ts=4:et:

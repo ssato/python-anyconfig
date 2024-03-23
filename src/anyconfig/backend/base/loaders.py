@@ -283,5 +283,3 @@ class FromStreamLoaderMixin(LoaderMixin):
         """
         with self.ropen(filepath) as inp:
             return self.load_from_stream(inp, container, **kwargs)
-
-# vim:sw=4:ts=4:et:

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # type() is used to exactly match check instead of isinstance here.
@@ -60,7 +60,11 @@ from . import common
 _MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
 
-def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
+def _customized_loader(
+    container: typing.Callable[..., typing.Dict[str, typing.Any]],
+    loader: typing.Type[Loader] = Loader,
+    mapping_tag: str = _MAPPING_TAG
+) -> typing.Type[Loader]:
     """Get the customized loader.
 
     Create or update loader with making given callble 'container' to make
@@ -69,7 +73,9 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
 
     :param container: Set container used internally
     """
-    def construct_mapping(loader, node, *, deep=False):
+    def construct_mapping(
+        loader: Loader, node: typing.Any, *, deep: bool = False
+    ) -> typing.Dict[str, typing.Any]:
         """Construct python object from yaml mapping node.
 
         It is based on :meth:`yaml.BaseConstructor.construct_mapping` in PyYAML
@@ -99,7 +105,9 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
 
     tag = "tag:yaml.org,2002:python/unicode"
 
-    def construct_ustr(loader, node):
+    def construct_ustr(
+        loader: Loader, node: typing.Any
+    ) -> typing.Union[str, int, float, None]:
         """Unicode string constructor."""
         return loader.construct_scalar(node)
 
@@ -111,9 +119,13 @@ def _customized_loader(container, loader=Loader, mapping_tag=_MAPPING_TAG):
     return loader
 
 
-def _customized_dumper(container, dumper=Dumper):
+def _customized_dumper(
+    container: typing.Any, dumper: typing.Type[Dumper] = Dumper
+) -> typing.Type[Dumper]:
     """Counterpart of :func:`_customized_loader` for dumpers."""
-    def container_representer(dumper, data, mapping_tag=_MAPPING_TAG):
+    def container_representer(
+        dumper: Dumper, data: typing.Any, mapping_tag: str = _MAPPING_TAG
+    ) -> typing.Any:
         """Container representer."""
         return dumper.represent_mapping(mapping_tag, data.items())
 
@@ -122,7 +134,7 @@ def _customized_dumper(container, dumper=Dumper):
     return dumper
 
 
-def yml_fnc_by_name(fname, **options):
+def yml_fnc_by_name(fname: str, **options) -> typing.Callable[..., typing.Any]:
     """Get yaml loading/dumping function by name.
 
     :param fname:
@@ -133,7 +145,9 @@ def yml_fnc_by_name(fname, **options):
     return getattr(yaml, f"safe_{fname}" if options.get("ac_safe") else fname)
 
 
-def yml_fnc_(fname, *args, **options):  # noqa: ANN002
+def yml_fnc_(
+    fname: str, *args, **options  # noqa: ANN002
+) -> typing.Any:
     """Call yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
 
     :param fname:
@@ -146,7 +160,11 @@ def yml_fnc_(fname, *args, **options):  # noqa: ANN002
     return fnc(*args, **common.filter_from_options("ac_safe", options))
 
 
-def yml_load(stream, container, yml_fnc=yml_fnc_, **options):
+def yml_load(
+    stream: typing.IO, container,
+    yml_fnc: typing.Callable[..., typing.Any] = yml_fnc_,
+    **options
+) -> typing.Dict[str, typing.Any]:
     """Call yaml.safe_load and yaml.load.
 
     :param stream: a file or file-like object to load YAML content
@@ -163,7 +181,7 @@ def yml_load(stream, container, yml_fnc=yml_fnc_, **options):
         if maybe_container and callable(maybe_container):
             container = maybe_container
 
-        options["Loader"] = _customized_loader(container)
+        options["Loader"] = _customized_loader(container, Loader)
 
     ret = yml_fnc("load", stream,
                   **common.filter_from_options("ac_dict", options))
@@ -173,7 +191,11 @@ def yml_load(stream, container, yml_fnc=yml_fnc_, **options):
     return ret
 
 
-def yml_dump(data, stream, yml_fnc=yml_fnc_, **options):
+def yml_dump(
+    data: typing.Any, stream: typing.IO,
+    yml_fnc: typing.Callable[..., typing.Any] = yml_fnc_,
+    **options
+) -> None:
     """Call yaml.safe_dump and yaml.dump.
 
     :param data: Some data to dump
@@ -212,5 +234,3 @@ class Parser(common.Parser):
 
     load_from_stream = base.to_method(yml_load)
     dump_to_stream = base.to_method(yml_dump)
-
-# vim:sw=4:ts=4:et:

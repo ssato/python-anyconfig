@@ -271,7 +271,7 @@ def load(
     path_specs, ac_parser=None, *,
     ac_dict=None, ac_template=False, ac_context=None,
     **options
-):
+) -> InDataExT:
     r"""Load from a file or files specified as ``path_specs``.
 
     Load single or multiple config files or multiple config files specified in
@@ -320,7 +320,7 @@ def loads(
     content, ac_parser=None, *,
     ac_dict=None, ac_template=False, ac_context=None,
     **options
-):
+) -> InDataExT:
     """Load data from a str, ``content``.
 
     :param content: Configuration file's content (a string)
@@ -347,7 +347,7 @@ def loads(
                       stacklevel=2)
         return None
 
-    psr = parsers_find(None, forced_type=ac_parser)
+    psr: ParserT = parsers_find(None, forced_type=ac_parser)
     schema = None
     ac_schema = options.get("ac_schema", None)
     if ac_schema is not None:

@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 """CLI frontend module for anyconfig."""
+from __future__ import annotations
+
 import os
 import sys
 import typing

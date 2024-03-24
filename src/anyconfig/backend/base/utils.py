@@ -32,7 +32,9 @@ def to_method(func: typing.Callable[..., typing.Any]
     :param func: Any callable object
     """
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):  # noqa: ANN002
+    def wrapper(
+        *args, **kwargs  # noqa: ANN002
+    ) -> typing.Callable[..., typing.Any]:
         """Original function decorated."""
         return func(*args[1:], **kwargs)
 

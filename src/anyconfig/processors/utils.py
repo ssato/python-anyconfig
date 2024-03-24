@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unidiomatic-typecheck
@@ -124,7 +124,7 @@ def find_by_type_or_id(type_or_id: str, prs: ProcsT) -> ProcsT:
         processor 'type_or_id' found by its ID
     :raises: anyconfig.common.UnknownProcessorTypeError
     """
-    def pred(pcls):
+    def pred(pcls: ProcT) -> bool:
         """Provide a predicate."""
         return pcls.cid() == type_or_id or pcls.type() == type_or_id
 
@@ -143,7 +143,7 @@ def find_by_fileext(fileext: str, prs: ProcsT) -> ProcsT:
     :return: A list of processor class to processor files with given extension
     :raises: common.UnknownFileTypeError
     """
-    def pred(pcls):
+    def pred(pcls: ProcT) -> bool:
         """Provide a predicate."""
         return fileext in pcls.extensions()
 

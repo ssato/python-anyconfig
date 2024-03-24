@@ -51,7 +51,11 @@ def try_to_load_schema(**options) -> typing.Optional[InDataT]:
         # may be different from the original config file's format, perhaps.
         options["ac_parser"] = None
         options["ac_schema"] = None  # Avoid infinite loop.
-        return load(ac_schema, **options)
+        res = load(ac_schema, **options)
+        if not res or not is_dict_like(res):
+            return None
+
+        return res
 
     return None
 

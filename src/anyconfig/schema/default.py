@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 
 
 def validate(
-    data: InDataExT, schema: InDataT, *,
+    data: InDataExT, schema: InDataExT, *,
     ac_schema_safe: bool = True, ac_schema_errors: bool = False,
     **options: typing.Any
 ) -> ResultT:
@@ -25,7 +25,7 @@ def validate(
 
 
 def is_valid(
-    data: InDataExT, schema: InDataT, *,
+    data: InDataExT, schema: InDataExT, *,
     ac_schema_safe: bool = True, ac_schema_errors: bool = False,
     **options
 ) -> bool:

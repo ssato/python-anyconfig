@@ -24,7 +24,7 @@ if OUT_ERR:
     (sys.stdout, sys.stderr) = OUT_ERR
 
 
-def try_special_command_if_no_inputs(args: "argparse.Namespace") -> None:
+def try_special_command_if_no_inputs(args: argparse.Namespace) -> None:
     """Run one of some special commands do not require inputs argument."""
     if not args.list and not args.env:
         utils.exit_with_output("No inputs were given!", 1)
@@ -41,8 +41,8 @@ def try_special_command_if_no_inputs(args: "argparse.Namespace") -> None:
         sys.exit(0)
 
 
-def process_args_or_run_command(args: "argparse.Namespace"
-                                ) -> "argparse.Namespace":
+def process_args_or_run_command(args: argparse.Namespace
+                                ) -> argparse.Namespace:
     """Process ``args`` and/or run commands.
 
     Process ``args``, that is, validate and update it, and raise SystemExit if
@@ -83,7 +83,7 @@ def process_args_or_run_command(args: "argparse.Namespace"
     return args
 
 
-def try_validate(cnf, args: "argparse.Namespace") -> None:
+def try_validate(cnf, args: argparse.Namespace) -> None:
     """Try validate ``cnf`` with the schema loaded from ``args.schema``."""
     scm = api.load(args.schema)
     (res, errors) = api.validate(cnf, scm, ac_schema_errors=True)

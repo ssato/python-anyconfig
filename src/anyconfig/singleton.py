@@ -12,6 +12,13 @@ r"""Singleton class.
 from __future__ import annotations
 
 import threading
+import typing
+
+if typing.TYPE_CHECKING:
+    try:
+        from typing import Self
+    except ImportError:
+        from typing_extensions import Self
 
 
 class Singleton:
@@ -23,7 +30,7 @@ class Singleton:
     __instance = None
     __lock = threading.RLock()
 
-    def __new__(cls) -> Singleton:
+    def __new__(cls) -> Self:
         """Override class constructor to cache class objects."""
         if cls.__instance is None:
             with cls.__lock:

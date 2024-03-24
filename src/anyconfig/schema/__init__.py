@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Misc global constants, variables, classes and so on."""
@@ -14,5 +14,3 @@ except ImportError:
 __all__ = [
     "validate", "is_valid", "gen_schema", "SUPPORTED"
 ]
-
-# vim:sw=4:ts=4:et:

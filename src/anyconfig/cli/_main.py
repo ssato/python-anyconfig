@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """CLI frontend module for anyconfig."""
@@ -98,7 +98,7 @@ def try_validate(cnf, args: "argparse.Namespace") -> None:
     utils.exit_with_output(*msg_code)
 
 
-def main(argv=None):
+def main(argv: typing.Optional[typing.List[str]] = None) -> None:
     """Provide the entrypoint to run the CLI.
 
     :param argv: Argument list to parse or None (sys.argv will be set).
@@ -131,5 +131,3 @@ def main(argv=None):
         try_validate(cnf, args)
 
     actions.try_output_result(cnf, args)
-
-# vim:sw=4:ts=4:et:

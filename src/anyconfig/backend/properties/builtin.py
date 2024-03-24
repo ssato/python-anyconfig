@@ -63,7 +63,7 @@ def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
 def _pre_process_line(
     line: str,
     cmarkers: typing.Tuple[str, ...] = _COMMENT_MARKERS
-):
+) -> typing.Optional[str]:
     """Preprocess a line in properties; strip comments, etc.
 
     :param line:

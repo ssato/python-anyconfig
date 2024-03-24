@@ -29,7 +29,7 @@ PARSERS: ParserClssT = [
 ]
 
 
-def warn(name: str, feature: str):
+def warn(name: str, feature: str) -> None:
     """Wraper for warnings.warn."""
     warnings.warn(
         f"'{name}' module is not available. Disabled {feature} support.",

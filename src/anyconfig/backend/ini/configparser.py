@@ -126,7 +126,9 @@ def _make_parser(**kwargs
     return (kwargs_1, psr)
 
 
-def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
+def _load(
+    stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs
+) -> base.InDataT:
     """Load data from ``stream`` of which file should be in INI format.
 
     :param stream: File or file-like object provides ini-style conf
@@ -153,7 +155,7 @@ def _load(stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs):
 
 
 def _dumps_itr(cnf: typing.Dict[str, typing.Any],
-               dkey: str = DEFAULTSECT):
+               dkey: str = DEFAULTSECT) -> typing.Iterator[str]:
     """Dump data iterably.
 
     :param cnf: Configuration data to dump

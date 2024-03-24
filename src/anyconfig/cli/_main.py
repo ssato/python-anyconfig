@@ -83,7 +83,7 @@ def process_args_or_run_command(args: argparse.Namespace
     return args
 
 
-def try_validate(cnf, args: argparse.Namespace) -> None:
+def try_validate(cnf: api.InDataExT, args: argparse.Namespace) -> None:
     """Try validate ``cnf`` with the schema loaded from ``args.schema``."""
     scm = api.load(args.schema)
     (res, errors) = api.validate(cnf, scm, ac_schema_errors=True)
@@ -125,7 +125,8 @@ def main(argv: typing.Optional[typing.List[str]] = None) -> None:
         api.merge(cnf, diff)
 
     cnf = (
-        api.gen_schema(cnf) if args.gen_schema
+        # fixme.
+        api.gen_schema(cnf) if args.gen_schema  # type: ignore[assignment]
         else filters.do_filter(cnf, args)
     )
 

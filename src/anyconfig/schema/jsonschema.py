@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2015 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Implementation using jsonschema provides the following functions.
@@ -28,7 +28,20 @@ from ..utils import (
     filter_options, is_dict_like, is_list_like
 )
 if typing.TYPE_CHECKING:
+    try:
+        from typing import TypeGuard
+    except ImportError:
+        from typing_extensions import TypeGuard
+
     from .datatypes import ResultT
+
+
+def is_valid_schema_object(maybe_scm: InDataExT) -> TypeGuard[InDataT]:
+    """Determine given object ``maybe_scm`` is an expected schema object."""
+    if maybe_scm is None or not maybe_scm or not is_dict_like(maybe_scm):
+        return False
+
+    return True
 
 
 def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:
@@ -70,7 +83,7 @@ def _validate(data: InDataExT, schema: InDataT, *,
     return (True, "")
 
 
-def validate(data: InDataExT, schema: InDataT, *,
+def validate(data: InDataExT, schema: InDataExT, *,
              ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options: typing.Any
              ) -> ResultT:
@@ -93,18 +106,21 @@ def validate(data: InDataExT, schema: InDataT, *,
 
     :return: (True if validation succeeded else False, error message[s])
     """
+    if not is_valid_schema_object(schema):
+        return (False, f"Invalid schema object: {schema!r}")
+
     options = filter_options(("cls", ), options)
     if ac_schema_errors:
-        return _validate_all(data, schema, **options)
+        return _validate_all(data, typing.cast(InDataT, schema), **options)
 
     return _validate(data, schema, ac_schema_safe=ac_schema_safe, **options)
 
 
-def is_valid(data: InDataExT, schema: InDataT, *,
+def is_valid(data: InDataExT, schema: InDataExT, *,
              ac_schema_safe: bool = True,
              ac_schema_errors: bool = False, **options) -> bool:
     """Raise ValidationError if ``data`` was invalidated by schema `schema`."""
-    if schema is None or not schema:
+    if not is_valid_schema_object(schema):
         return True
 
     (_success, error_or_errors) = validate(
@@ -123,12 +139,14 @@ def is_valid(data: InDataExT, schema: InDataT, *,
 
 
 _SIMPLETYPE_MAP: typing.Dict[typing.Any, str] = {
-    list: "array", tuple: "array", bool: "boolean", int: "integer", float:
-    "number", dict: "object", str: "string"
+    list: "array", tuple: "array", bool: "boolean", int: "integer",
+    float: "number", dict: "object", str: "string"
 }
 
 
-def _process_options(**options):
+def _process_options(
+    **options
+) -> typing.Tuple[typing.Dict[typing.Any, typing.Any], bool]:
     """Help to process keyword arguments passed to gen_schema.
 
     :return: A tuple of (typemap :: dict, strict :: bool)
@@ -137,8 +155,7 @@ def _process_options(**options):
             bool(options.get("ac_schema_strict", False)))
 
 
-def array_to_schema(iarr: typing.Iterable[InDataT], **options
-                    ) -> typing.Dict[str, typing.Any]:
+def array_to_schema(iarr: typing.Iterable[InDataT], **options) -> InDataT:
     """Generate a JSON schema object with type annotation added for ``iaa```.
 
     :param arr: Array of mapping objects like dicts
@@ -219,5 +236,3 @@ def gen_schema(data: InDataExT, **options) -> InDataT:
         )
 
     return scm
-
-# vim:sw=4:ts=4:et:

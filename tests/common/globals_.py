@@ -5,6 +5,9 @@
 # pylint: disable=missing-docstring
 r"""Some global variables for test cases.
 """
+import pathlib
+
+
 DATA_PAIRS = (
     ('None', None),
     ('1', 1),
@@ -17,3 +20,8 @@ DATA_PAIRS = (
 )
 
 TEST_DATA_FILENAME: str = "test_data.py"
+
+TEST_DATA_MAJOR_VERSION: int = 1
+
+TESTDIR: pathlib.Path = pathlib.Path(__file__).parent.parent.resolve()
+RESOURCE_DIR: pathlib.Path = TESTDIR / "res" / str(TEST_DATA_MAJOR_VERSION)

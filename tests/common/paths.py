@@ -9,12 +9,7 @@ import pathlib
 import typing
 
 from . import load
-
-
-TEST_DATA_MAJOR_VERSION: int = 1
-
-TESTDIR: pathlib.Path = pathlib.Path(__file__).parent.parent.resolve()
-RESOURCE_DIR: pathlib.Path = TESTDIR / "res" / str(TEST_DATA_MAJOR_VERSION)
+from .globals_ import RESOURCE_DIR
 
 
 def get_resource_dir(

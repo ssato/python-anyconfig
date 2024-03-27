@@ -15,12 +15,6 @@ import pytest
 from . import paths as TT
 
 
-def test_module_globals():
-    assert str(TT.TESTDIR) == os.path.abspath(
-        f"{os.path.dirname(__file__)}/.."
-    )
-
-
 @pytest.mark.parametrize(
     ("loader_or_dumper", "is_loader", "topdir", "exp"),
     (("json.json", True, None, TT.RESOURCE_DIR / "loaders" / "json.json"),

@@ -16,7 +16,7 @@ class BinaryFilesMixin:
     _open_flags: typing.Tuple[str, str] = ("rb", "wb")
 
     @classmethod
-    def ropen(cls, filepath, **kwargs):
+    def ropen(cls, filepath, **kwargs) -> typing.IO:
         """Open ``filepath`` with read only mode.
 
         :param filepath: Path to file to open to read data
@@ -26,7 +26,7 @@ class BinaryFilesMixin:
         )
 
     @classmethod
-    def wopen(cls, filepath, **kwargs):
+    def wopen(cls, filepath, **kwargs) -> typing.IO:
         """Open ``filepath`` with write mode.
 
         :param filepath: Path to file to open to write data to

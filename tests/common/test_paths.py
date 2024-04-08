@@ -6,7 +6,6 @@
 r"""Test cases for tests.common.paths.
 """
 import json
-import os.path
 import pathlib
 import typing
 

@@ -59,7 +59,6 @@ Changelog:
 """
 from __future__ import annotations
 
-import collections
 import io
 import itertools
 import operator
@@ -69,6 +68,7 @@ import typing
 from xml.etree import ElementTree
 
 from .. import base
+from ... import dicts
 from ...parser import parse_single
 from ...utils import (
     get_path_from_stream, is_dict_like, is_iterable, noop
@@ -79,7 +79,9 @@ _TAGS = {"attrs": "@attrs", "text": "@text", "children": "@children"}
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
 
-def _namespaces_from_file(xmlfile):
+def _namespaces_from_file(
+    xmlfile: io.BytesIO
+) -> typing.Dict[str, typing.Tuple[str, str]]:
     """Get the namespace str from file.
 
     :param xmlfile: XML file or file-like object
@@ -91,7 +93,7 @@ def _namespaces_from_file(xmlfile):
     }
 
 
-def _tweak_ns(tag, **options):
+def _tweak_ns(tag: str, **options: typing.Dict[str, str]) -> str:
     """Tweak the namespace.
 
     :param tag: XML tag element
@@ -119,7 +121,12 @@ def _tweak_ns(tag, **options):
     return tag
 
 
-def _dicts_have_unique_keys(dics):
+DicType = typing.Dict[str, typing.Any]
+DicsType = typing.Iterable[DicType]
+GenDicType = typing.Callable[..., DicType]
+
+
+def _dicts_have_unique_keys(dics: DicsType) -> bool:
     """Test if given dicts don't have same keys.
 
     :param dics: [<dict or dict-like object>], must not be [] or [{...}]
@@ -143,25 +150,7 @@ def _dicts_have_unique_keys(dics):
     return len(set(key_itr)) == sum(len(d) for d in dics)
 
 
-def _merge_dicts(dics, container=dict):
-    """Merge given dicts.
-
-    :param dics: [<dict/-like object must not have same keys each other>]
-    :param container: callble to make a container object
-    :return: <container> object
-
-    >>> _merge_dicts(({}, ))
-    {}
-    >>> _merge_dicts(({"a": 1}, ))
-    {'a': 1}
-    >>> sorted(kv for kv in _merge_dicts(({"a": 1}, {"b": 2})).items())
-    [('a', 1), ('b', 2)]
-    """
-    dic_itr = itertools.chain.from_iterable(d.items() for d in dics)
-    return container(collections.OrderedDict(dic_itr))
-
-
-def _parse_text(val, **options):
+def _parse_text(val: str, **options: typing.Any) -> typing.Any:
     """Parse ``val`` and interpret its data to some value.
 
     :return: Parsed value or value itself depends on 'ac_parse_value'
@@ -172,7 +161,10 @@ def _parse_text(val, **options):
     return val
 
 
-def _process_elem_text(elem, dic, subdic, text="@text", **options):
+def _process_elem_text(
+    elem: ElementTree.Element, dic: DicType, subdic: DicType,
+    text: str = "@text", **options: typing.Any
+) -> None:
     """Process the text in the element ``elem``.
 
     :param elem: ElementTree.Element object which has elem.text
@@ -184,7 +176,9 @@ def _process_elem_text(elem, dic, subdic, text="@text", **options):
 
     :return: None but updating elem.text, dic and subdic as side effects
     """
-    elem.text = elem.text.strip()
+    if elem.text:
+        elem.text = elem.text.strip()
+
     if elem.text:
         etext = _parse_text(elem.text, **options)
         if len(elem) or elem.attrib:
@@ -193,7 +187,10 @@ def _process_elem_text(elem, dic, subdic, text="@text", **options):
             dic[elem.tag] = etext  # Only text, e.g. <a>text</a>
 
 
-def _parse_attrs(elem, container=dict, **options):
+def _parse_attrs(
+    elem: ElementTree.Element, container: GenDicType = dict,
+    **options: typing.Any
+) -> DicType:
     """Parse the attributes of the element ``elem``.
 
     :param elem: ElementTree.Element object has attributes (elem.attrib)
@@ -207,8 +204,11 @@ def _parse_attrs(elem, container=dict, **options):
     return container(adic)
 
 
-def _process_elem_attrs(elem, dic, subdic, container=dict, attrs="@attrs",
-                        **options):
+def _process_elem_attrs(
+    elem: ElementTree.Element, dic: DicType, subdic: DicType,
+    container: GenDicType = dict, attrs: str = "@attrs",
+    **options: typing.Any
+) -> None:
     """Process attributes in the element ``elem``.
 
     :param elem: ElementTree.Element object or None
@@ -227,8 +227,11 @@ def _process_elem_attrs(elem, dic, subdic, container=dict, attrs="@attrs",
         subdic[attrs] = adic
 
 
-def _process_children_elems(elem, dic, subdic, container=dict,
-                            children="@children", **options):
+def _process_children_elems(
+    elem: ElementTree.Element, dic: DicType, subdic: DicType,
+    container: GenDicType = dict, children: str = "@children",
+    **options: typing.Any
+) -> None:
     """Process children of the element ``elem``.
 
     :param elem: ElementTree.Element object or None
@@ -248,14 +251,19 @@ def _process_children_elems(elem, dic, subdic, container=dict,
     sdics = [container(elem.attrib) if merge_attrs else subdic, *cdics]
 
     if _dicts_have_unique_keys(sdics):  # ex. <a><b>1</b><c>c</c></a>
-        dic[elem.tag] = _merge_dicts(sdics, container)
+        dic[elem.tag] = dicts.convert_to(
+            dicts.merge(*sdics, **options), ac_dict=container
+        )
     elif not subdic:  # There are no attrs nor text and only these children.
         dic[elem.tag] = cdics
     else:
         subdic[children] = cdics
 
 
-def elem_to_container(elem, container=dict, **options):
+def elem_to_container(
+    elem: typing.Optional[ElementTree.Element], container: GenDicType = dict,
+    **options: typing.Any
+) -> DicType:
     """Convert XML ElementTree Element to a collection of container objects.
 
     Elements are transformed to a node under special tagged nodes, attrs, text
@@ -297,7 +305,7 @@ def elem_to_container(elem, container=dict, **options):
     return dic
 
 
-def _complement_tag_options(options):
+def _complement_tag_options(options: DicType) -> DicType:
     """Complement tag options.
 
     :param options: Keyword options :: dict
@@ -317,7 +325,11 @@ def _complement_tag_options(options):
     return options
 
 
-def root_to_container(root, container=dict, nspaces=None, **options):
+def root_to_container(
+    root: ElementTree.Element, container: GenDicType = dict,
+    nspaces: typing.Optional[DicType] = None,
+    **options: typing.Any
+):
     """Convert XML ElementTree Root Element to container objects.
 
     :param root: etree root object or None
@@ -340,16 +352,20 @@ def root_to_container(root, container=dict, nspaces=None, **options):
                              **_complement_tag_options(options))
 
 
-def _to_str_fn(**options):
+def _to_str_fn(**options: DicType) -> typing.Callable[..., str]:
     """Convert any objects to a str.
 
     :param options: Keyword options might have 'ac_parse_value' key
     :param to_str: Callable to convert value to string
     """
-    return str if options.get("ac_parse_value") else noop
+    res = str if options.get("ac_parse_value") else noop
+    return res  # type: ignore[return-value]
 
 
-def _elem_set_attrs(obj, parent, to_str):
+def _elem_set_attrs(
+    obj: DicType, parent: ElementTree.Element,
+    to_str: typing.Callable[..., str]
+) -> None:
     """Set attributes of the element ``parent``.
 
     :param obj: Container instance gives attributes of XML Element
@@ -363,7 +379,10 @@ def _elem_set_attrs(obj, parent, to_str):
         parent.set(attr, to_str(val))
 
 
-def _elem_from_descendants(children_nodes, **options):
+def _elem_from_descendants(
+    children_nodes: typing.Iterable[DicType],
+    **options: typing.Any
+) -> typing.Iterator[ElementTree.Element]:
     """Get the elements from the descendants ``children_nodes``.
 
     :param children_nodes: A list of child dict objects
@@ -376,7 +395,11 @@ def _elem_from_descendants(children_nodes, **options):
             yield celem
 
 
-def _get_or_update_parent(key, val, to_str, parent=None, **options):
+def _get_or_update_parent(
+    key: str, val: typing.Any, to_str: typing.Callable[..., str],
+    parent: typing.Optional[ElementTree.Element] = None,
+    **options: typing.Any
+) -> ElementTree.Element:
     """Get or update the parent element ``parent``.
 
     :param key: Key of current child (dict{,-like} object)
@@ -401,7 +424,22 @@ def _get_or_update_parent(key, val, to_str, parent=None, **options):
 _ATC = ("attrs", "text", "children")
 
 
-def container_to_etree(obj, parent=None, to_str=None, **options):
+def _assert_if_invalid_node(
+    obj: typing.Any,
+    parent: typing.Optional[ElementTree.Element] = None,
+):
+    """Make sure the ``obj`` or ``parent`` is not invalid.
+    """
+    if obj is None or (parent is not None
+                       and not isinstance(parent, ElementTree.Element)):
+        raise ValueError
+
+
+def container_to_etree(
+    obj: typing.Any, parent: typing.Optional[ElementTree.Element] = None,
+    to_str: typing.Optional[typing.Callable[..., str]] = None,
+    **options: typing.Any
+) -> ElementTree.Element:
     """Convert a dict-like object to XML ElementTree.
 
     :param obj: Container instance to convert to
@@ -412,18 +450,27 @@ def container_to_etree(obj, parent=None, to_str=None, **options):
         - tags: Dict of tags for special nodes to keep XML info, attributes,
           text and children nodes, e.g. {"attrs": "@attrs", "text": "#text"}
     """
+    _assert_if_invalid_node(obj, parent=parent)
+
     if to_str is None:
         to_str = _to_str_fn(**options)
 
     if not is_dict_like(obj):
         if parent is not None and obj:
             parent.text = to_str(obj)  # Parent is a leaf text node.
-        return parent  # All attributes and text should be set already.
+        # All attributes and text should be set already.
+        return parent  # type: ignore[return-value]
 
     options = _complement_tag_options(options)
     (attrs, text, children) = operator.itemgetter(*_ATC)(options)
 
     for key, val in obj.items():
+        if parent is None:
+            parent = _get_or_update_parent(
+                key, val, to_str, parent=parent, **options
+            )
+            continue
+
         if key == attrs:
             _elem_set_attrs(val, parent, to_str)
         elif key == text:
@@ -432,13 +479,16 @@ def container_to_etree(obj, parent=None, to_str=None, **options):
             for celem in _elem_from_descendants(val, **options):
                 parent.append(celem)
         else:
-            parent = _get_or_update_parent(key, val, to_str, parent=parent,
-                                           **options)
+            parent = _get_or_update_parent(
+                key, val, to_str, parent=parent, **options
+            )
 
-    return ElementTree.ElementTree(parent)
+    return parent  # type: ignore[return-value]
 
 
-def etree_write(tree, stream):
+def etree_write(
+    tree: ElementTree.ElementTree, stream: typing.IO
+) -> None:
     """Write XML ElementTree 'root' content into 'stream'.
 
     :param tree: XML ElementTree object
@@ -519,7 +569,10 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
 
         :return: string represents the configuration
         """
-        tree = container_to_etree(cnf, **opts)
+        if cnf is None or not cnf or not is_dict_like(cnf):
+            return ""
+
+        tree = ElementTree.ElementTree(container_to_etree(cnf, **opts))
         buf = io.BytesIO()
         etree_write(tree, buf)
         return buf.getvalue()
@@ -531,5 +584,8 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
         :param stream: Config file or file like object write to
         :param opts: optional keyword parameters
         """
-        tree = container_to_etree(cnf, **opts)
+        if cnf is None or not cnf or not is_dict_like(cnf):
+            return
+
+        tree = ElementTree.ElementTree(container_to_etree(cnf, **opts))
         etree_write(tree, stream)

@@ -251,9 +251,12 @@ def _process_children_elems(
     sdics = [container(elem.attrib) if merge_attrs else subdic, *cdics]
 
     if _dicts_have_unique_keys(sdics):  # ex. <a><b>1</b><c>c</c></a>
-        dic[elem.tag] = dicts.convert_to(
-            dicts.merge(*sdics, **options), ac_dict=container
-        )
+        (sdic, udicts) = (sdics[0], sdics[1:])
+        for udic in udicts:
+            dicts.merge(sdic, udic, **options)
+
+        dic[elem.tag] = dicts.convert_to(sdic, ac_dict=container)
+
     elif not subdic:  # There are no attrs nor text and only these children.
         dic[elem.tag] = cdics
     else:

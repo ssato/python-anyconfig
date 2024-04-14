@@ -12,11 +12,12 @@ import pathlib
 import typing
 
 from ... import ioinfo, utils
+from .utils import not_implemented
+
 if typing.TYPE_CHECKING:
     from .datatypes import (
-        InDataExT, IoiT, GenContainerT, OptionsT
+        InDataExT, IoiT, GenContainerT, OptionsT, PathOrStrT
     )
-from .utils import not_implemented
 
 
 DATA_DEFAULT: InDataExT = {}
@@ -69,16 +70,16 @@ class LoaderMixin:
         """Get the list of dict factory options."""
         return cls._dict_opts
 
-    def ropen(self, filepath, **kwargs):
+    def ropen(self, filepath: PathOrStrT, **options: str) -> typing.IO:
         """Open files with read only mode."""
-        if "encoding" not in kwargs and self._open_read_mode == "r":
-            kwargs["encoding"] = _ENCODING
+        if "encoding" not in options and self._open_read_mode == "r":
+            options["encoding"] = _ENCODING
 
         return pathlib.Path(filepath).open(  # noqa: SIM115
-            self._open_read_mode, **kwargs
+            self._open_read_mode, **options
         )
 
-    def _container_factory(self, **options) -> GenContainerT:
+    def _container_factory(self, **options: str) -> GenContainerT:
         """Get the factory to make container objects.
 
         The order of prirorities are ac_dict, backend specific dict class
@@ -100,7 +101,9 @@ class LoaderMixin:
 
         return dict
 
-    def _load_options(self, container: GenContainerT, **options) -> OptionsT:
+    def _load_options(
+        self, container: GenContainerT, **options: str
+    ) -> OptionsT:
         """Select backend specific loading options."""
         # Force set dict option if available in backend. For example,
         # options["object_hook"] will be OrderedDict if 'container' was
@@ -110,46 +113,49 @@ class LoaderMixin:
 
         return utils.filter_options(self._load_opts, options)
 
-    def load_from_string(self, content: str, container: GenContainerT,
-                         **kwargs) -> InDataExT:
+    def load_from_string(
+        self, content: str, container: GenContainerT, **options: str
+    ) -> InDataExT:
         """Load config from given string 'content'.
 
         :param content: Config content string
         :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        not_implemented(self, content, container, **kwargs)
+        not_implemented(self, content, container, **options)
         return DATA_DEFAULT
 
-    def load_from_path(self, filepath: str, container: GenContainerT,
-                       **kwargs) -> InDataExT:
+    def load_from_path(
+        self, filepath: str, container: GenContainerT, **options: str
+    ) -> InDataExT:
         """Load config from given file path 'filepath`.
 
         :param filepath: Config file path
         :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        not_implemented(self, filepath, container, **kwargs)
+        not_implemented(self, filepath, container, **options)
         return DATA_DEFAULT
 
-    def load_from_stream(self, stream: typing.IO, container: GenContainerT,
-                         **kwargs) -> InDataExT:
+    def load_from_stream(
+        self, stream: typing.IO, container: GenContainerT, **options: str
+    ) -> InDataExT:
         """Load config from given file like object 'stream`.
 
         :param stream:  Config file or file like object
         :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        not_implemented(self, stream, container, **kwargs)
+        not_implemented(self, stream, container, **options)
         return DATA_DEFAULT
 
-    def loads(self, content: str, **options) -> InDataExT:
+    def loads(self, content: str, **options: str) -> InDataExT:
         """Load config from given string 'content' after some checks.
 
         :param content:  Config file content
@@ -168,8 +174,9 @@ class LoaderMixin:
         options = self._load_options(container, **options)
         return self.load_from_string(content, container, **options)
 
-    def load(self, ioi: IoiT, *, ac_ignore_missing: bool = False,
-             **options) -> InDataExT:
+    def load(
+        self, ioi: IoiT, *, ac_ignore_missing: bool = False, **options: str
+    ) -> InDataExT:
         """Load config from ``ioi``.
 
         :param ioi:
@@ -222,30 +229,32 @@ class FromStringLoaderMixin(LoaderMixin):
     :meth:`load_from_string` at least.
     """
 
-    def load_from_stream(self, stream: typing.IO, container: GenContainerT,
-                         **kwargs) -> InDataExT:
+    def load_from_stream(
+        self, stream: typing.IO, container: GenContainerT, **options: str
+    ) -> InDataExT:
         """Load config from given stream 'stream'.
 
         :param stream: Config file or file-like object
         :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
-        return self.load_from_string(stream.read(), container, **kwargs)
+        return self.load_from_string(stream.read(), container, **options)
 
-    def load_from_path(self, filepath: str, container: GenContainerT,
-                       **kwargs) -> InDataExT:
+    def load_from_path(
+        self, filepath: str, container: GenContainerT, **options: str
+    ) -> InDataExT:
         """Load config from given file path 'filepath'.
 
         :param filepath: Config file path
         :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
         with self.ropen(filepath) as inp:
-            return self.load_from_stream(inp, container, **kwargs)
+            return self.load_from_stream(inp, container, **options)
 
 
 class FromStreamLoaderMixin(LoaderMixin):
@@ -258,28 +267,30 @@ class FromStreamLoaderMixin(LoaderMixin):
     :meth:`load_from_stream` at least.
     """
 
-    def load_from_string(self, content: str, container: GenContainerT,
-                         **kwargs) -> InDataExT:
+    def load_from_string(
+        self, content: str, container: GenContainerT, **options: str
+    ) -> InDataExT:
         """Load config from given string 'cnf_content'.
 
         :param content: Config content string
         :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
         return self.load_from_stream(io.StringIO(content),
-                                     container, **kwargs)
+                                     container, **options)
 
-    def load_from_path(self, filepath: str, container: GenContainerT,
-                       **kwargs) -> InDataExT:
+    def load_from_path(
+        self, filepath: str, container: GenContainerT, **options: str
+    ) -> InDataExT:
         """Load config from given file path 'filepath'.
 
         :param filepath: Config file path
         :param container: callble to make a container object later
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options: optional keyword parameters to be sanitized :: dict
 
         :return: Dict-like object holding config parameters
         """
         with self.ropen(filepath) as inp:
-            return self.load_from_stream(inp, container, **kwargs)
+            return self.load_from_stream(inp, container, **options)

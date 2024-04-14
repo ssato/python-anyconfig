@@ -42,7 +42,7 @@ class DumperMixin:
     _dump_opts: typing.Tuple[str, ...] = ()
     _open_write_mode: typing.ClassVar[str] = "w"
 
-    def wopen(self, filepath: PathOrStrT, **options: str) -> typing.IO:
+    def wopen(self, filepath: PathOrStrT, **options) -> typing.IO:
         """Open file ``filepath`` with the write mode ``_open_write_mode``."""
         if "encoding" not in options and self._open_write_mode == "w":
             options["encoding"] = _ENCODING
@@ -51,7 +51,7 @@ class DumperMixin:
             self._open_write_mode, **options
         )
 
-    def dump_to_string(self, cnf: InDataExT, **options: str) -> str:
+    def dump_to_string(self, cnf: InDataExT, **options) -> str:
         """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
@@ -63,7 +63,7 @@ class DumperMixin:
         return ""
 
     def dump_to_path(
-        self, cnf: InDataExT, filepath: PathOrStrT, **options: str
+        self, cnf: InDataExT, filepath: PathOrStrT, **options
     ) -> None:
         """Dump config 'cnf' to a file 'filepath'.
 
@@ -74,7 +74,7 @@ class DumperMixin:
         not_implemented(self, cnf, filepath, **options)
 
     def dump_to_stream(
-            self, cnf: InDataExT, stream: typing.IO, **options: str
+            self, cnf: InDataExT, stream: typing.IO, **options
     ) -> None:
         """Dump config 'cnf' to a file-like object 'stream'.
 
@@ -86,7 +86,7 @@ class DumperMixin:
         """
         not_implemented(self, cnf, stream, **options)
 
-    def dumps(self, cnf: InDataExT, **options: str) -> str:
+    def dumps(self, cnf: InDataExT, **options) -> str:
         """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
@@ -97,7 +97,7 @@ class DumperMixin:
         options = utils.filter_options(self._dump_opts, options)
         return self.dump_to_string(cnf, **options)
 
-    def dump(self, cnf: InDataExT, ioi: IoiT, **options: str) -> None:
+    def dump(self, cnf: InDataExT, ioi: IoiT, **options) -> None:
         """Dump config 'cnf' to output object of which 'ioi' referring.
 
         :param cnf: Configuration data to dump
@@ -137,7 +137,7 @@ class ToStringDumperMixin(DumperMixin):
     """
 
     def dump_to_path(
-        self, cnf: InDataExT, filepath: str, **options: str
+        self, cnf: InDataExT, filepath: PathOrStrT, **options
     ) -> None:
         """Dump config 'cnf' to a file 'filepath'.
 
@@ -149,7 +149,7 @@ class ToStringDumperMixin(DumperMixin):
             out.write(self.dump_to_string(cnf, **options))
 
     def dump_to_stream(
-        self, cnf: InDataExT, stream: typing.IO, **options: str
+        self, cnf: InDataExT, stream: typing.IO, **options
     ) -> None:
         """Dump config 'cnf' to a file-like object 'stream'.
 
@@ -172,7 +172,7 @@ class ToStreamDumperMixin(DumperMixin):
     :meth:`dump_to_stream` at least.
     """
 
-    def dump_to_string(self, cnf: InDataExT, **options: str) -> str:
+    def dump_to_string(self, cnf: InDataExT, **options) -> str:
         """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
@@ -185,7 +185,7 @@ class ToStreamDumperMixin(DumperMixin):
         return stream.getvalue()
 
     def dump_to_path(
-        self, cnf: InDataExT, filepath: str, **options: str
+        self, cnf: InDataExT, filepath: PathOrStrT, **options
     ) -> None:
         """Dump config 'cnf' to a file 'filepath`.
 

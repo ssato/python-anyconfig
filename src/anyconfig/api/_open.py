@@ -14,10 +14,12 @@ if typing.TYPE_CHECKING:
 
 
 # pylint: disable=redefined-builtin
-def open(path: ioinfo.PathOrIOInfoT,  # noqa: A001
-         mode: typing.Optional[str] = None,
-         ac_parser: parsers.MaybeParserT = None,
-         **options) -> typing.IO:
+def open(  # noqa: A001
+    path: ioinfo.PathOrIOInfoT,
+    mode: typing.Optional[str] = None,
+    ac_parser: parsers.MaybeParserT = None,
+    **options: str
+) -> typing.IO:
     """Open given file ``path`` with appropriate open flag.
 
     :param path: Configuration file path

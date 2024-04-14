@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Common library for YAML backend modules."""
@@ -11,7 +11,9 @@ from ...utils import filter_options
 from .. import base
 
 
-def filter_from_options(key, options):
+def filter_from_options(
+    key: str, options: typing.Dict[str, typing.Any]
+) -> typing.Dict[str, typing.Any]:
     """Filter a key ``key`` in ``options.
 
     :param key: Key str in options
@@ -33,5 +35,3 @@ class Parser(base.StreamParser):
     _ordered: typing.ClassVar[bool] = True
     _allow_primitives: typing.ClassVar[bool] = True
     _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
-
-# vim:sw=4:ts=4:et:

@@ -58,8 +58,9 @@ _QUOTED_RE: typing.Pattern = re.compile(
 )
 
 
-def parse(val_s: str, sep: str = _SEP,
-          quoted_re: typing.Pattern = _QUOTED_RE) -> typing.Any:
+def parse(
+    val_s: str, sep: str = _SEP, quoted_re: typing.Pattern = _QUOTED_RE
+) -> typing.Any:
     """Parse expression.
 
     FIXME: May be too naive implementation.
@@ -127,7 +128,8 @@ def _make_parser(**kwargs
 
 
 def _load(
-    stream, container, sep=_SEP, dkey=DEFAULTSECT, **kwargs
+    stream: typing.IO, container: base.GenContainerT, sep: str = _SEP,
+    dkey: str = DEFAULTSECT, **kwargs
 ) -> base.InDataT:
     """Load data from ``stream`` of which file should be in INI format.
 
@@ -154,8 +156,9 @@ def _load(
     return cnf
 
 
-def _dumps_itr(cnf: typing.Dict[str, typing.Any],
-               dkey: str = DEFAULTSECT) -> typing.Iterator[str]:
+def _dumps_itr(
+    cnf: typing.Dict[str, typing.Any], dkey: str = DEFAULTSECT
+) -> typing.Iterator[str]:
     """Dump data iterably.
 
     :param cnf: Configuration data to dump

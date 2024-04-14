@@ -96,8 +96,8 @@ def escape(in_s: str) -> str:
 
 
 def load(
-    stream, container=dict, **kwargs
-):
+    stream: typing.IO, container: base.GenContainerT = dict, **kwargs
+) -> base.InDataT:
     """Load data from a java properties files given as ``stream``.
 
     :param stream: A file or file like object of Java properties files
@@ -146,7 +146,9 @@ class Parser(base.StreamParser):
     _ordered: typing.ClassVar[bool] = True
     _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
 
-    def load_from_stream(self, stream, container, **kwargs):
+    def load_from_stream(
+        self, stream: typing.IO, container: base.GenContainerT, **kwargs
+    ) -> base.InDataT:
         """Load config from given file like object 'stream'.
 
         :param stream: A file or file like object of Java properties files
@@ -157,7 +159,9 @@ class Parser(base.StreamParser):
         """
         return load(stream, container=container, **kwargs)
 
-    def dump_to_stream(self, cnf, stream, **_kwargs):
+    def dump_to_stream(
+        self, cnf: base.InDataT, stream: typing.IO, **_kwargs
+    ) -> None:
         """Dump config 'cnf' to a file or file-like object 'stream'.
 
         :param cnf: Java properties config data to dump

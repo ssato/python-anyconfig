@@ -145,9 +145,7 @@ def yml_fnc_by_name(fname: str, **options) -> typing.Callable[..., typing.Any]:
     return getattr(yaml, f"safe_{fname}" if options.get("ac_safe") else fname)
 
 
-def yml_fnc_(
-    fname: str, *args, **options  # noqa: ANN002
-) -> typing.Any:
+def yml_fnc_(fname: str, *args, **options) -> typing.Any:
     """Call yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
 
     :param fname:
@@ -161,7 +159,7 @@ def yml_fnc_(
 
 
 def yml_load(
-    stream: typing.IO, container,
+    stream: typing.IO, container: base.GenContainerT,
     yml_fnc: typing.Callable[..., typing.Any] = yml_fnc_,
     **options
 ) -> typing.Dict[str, typing.Any]:

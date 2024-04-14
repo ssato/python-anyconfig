@@ -1,15 +1,18 @@
 #
-# Copyright (C) 2011 - 2023 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Initialize sys.std{out,err}."""
+from __future__ import annotations
+
 import io
 import sys
+import typing
 
 from .. import ioinfo
 
 
-def make():
+def make() -> typing.Optional[typing.Tuple[typing.IO, typing.IO]]:
     """Initialize sys.std{out,err} and returns them."""
     encoding = ioinfo.get_encoding()
 
@@ -24,5 +27,3 @@ def make():
         pass
 
     return None
-
-# vim:sw=4:ts=4:et:

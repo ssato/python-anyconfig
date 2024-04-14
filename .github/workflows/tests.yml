@@ -37,10 +37,10 @@ jobs:
         run: tox
         env:
           PLATFORM: ${{ matrix.platform }}
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         # .. seealso:: https://github.com/marketplace/actions/codecov#usage
         with:
-          # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          token: ${{ secrets.CODECOV_TOKEN }} # Required for all repos
           # files: ./coverage1.xml,./coverage2.xml # optional
           # flags: unittests # optional
           # name: codecov-umbrella # optional

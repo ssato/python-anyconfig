@@ -248,7 +248,10 @@ def _process_children_elems(
     cdics = [elem_to_container(c, container=container, **options)
              for c in elem]
     merge_attrs = options.get("merge_attrs", False)
-    sdics = [container(elem.attrib) if merge_attrs else subdic, *cdics]
+    if merge_attrs or subdic:
+        sdics = [container(elem.attrib) if merge_attrs else subdic, *cdics]
+    else:
+        sdics = cdics
 
     if _dicts_have_unique_keys(sdics):  # ex. <a><b>1</b><c>c</c></a>
         (sdic, udicts) = (sdics[0], sdics[1:])
@@ -433,8 +436,10 @@ def _assert_if_invalid_node(
 ):
     """Make sure the ``obj`` or ``parent`` is not invalid.
     """
-    if obj is None or (parent is not None
-                       and not isinstance(parent, ElementTree.Element)):
+    if parent is None and (obj is None or not obj):
+        raise ValueError
+
+    if parent is not None and not isinstance(parent, ElementTree.Element):
         raise ValueError
 
 

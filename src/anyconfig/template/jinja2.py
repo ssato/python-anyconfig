@@ -181,9 +181,11 @@ def render(filepath: str, ctx: MaybeContextT = None,
         return render_impl(usr_tmpl_2, ctx, paths_2, filters)
 
 
-def try_render(filepath: typing.Optional[str] = None,
-               content: typing.Optional[str] = None,
-               **options) -> typing.Optional[str]:
+def try_render(
+    filepath: typing.Optional[str] = None,
+    content: typing.Optional[str] = None,
+    **options
+) -> typing.Optional[str]:
     """Compile and render template and return the result as a string.
 
     :param filepath: Absolute or relative path to the template file

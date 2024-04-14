@@ -14,11 +14,14 @@ except ImportError:  # jinja2 may not be available.
     SUPPORTED = False
 
     def try_render(
-        filepath: typing.Optional[str] = None,  # noqa: ARG001
-        content: typing.Optional[str] = None,  # noqa: ARG001
-        **options  # noqa: ARG001
+        filepath: typing.Optional[str] = None,
+        content: typing.Optional[str] = None,
+        **_options
     ) -> typing.Optional[str]:
         """Provide a dummy function does nothing but returns None."""
+        if filepath and content:
+            return None
+
         return None
 
 

@@ -8,9 +8,7 @@ from __future__ import annotations
 import typing
 
 
-def noop(
-    val: typing.Any, *_args, **_kwargs  # noqa: ANN002
-) -> typing.Any:
+def noop(val: typing.Any, *_args, **_kwargs) -> typing.Any:
     """Do nothing.
 
     >>> noop(1)
@@ -19,9 +17,9 @@ def noop(
     return val
 
 
-def filter_options(keys: typing.Iterable[str],
-                   options: typing.Mapping[str, typing.Any]
-                   ) -> typing.Dict[str, typing.Any]:
+def filter_options(
+    keys: typing.Iterable[str], options: typing.Mapping[str, typing.Any]
+) -> typing.Dict[str, typing.Any]:
     """Filter 'options' with given 'keys'.
 
     :param keys: key names of optional keyword arguments

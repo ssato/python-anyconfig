@@ -53,7 +53,7 @@ class Processor:
         return cls._extensions
 
     @classmethod
-    def __eq__(cls, other) -> bool:
+    def __eq__(cls, other: Processor) -> bool:
         """Test equality."""
         return cls.cid() == other.cid()
 

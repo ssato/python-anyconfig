@@ -39,8 +39,9 @@ jobs:
           PLATFORM: ${{ matrix.platform }}
       - uses: codecov/codecov-action@v4
         # .. seealso:: https://github.com/marketplace/actions/codecov#usage
+        # .. seealso:: https://docs.codecov.com/reference/overview
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # Required for all repos
+          token: ${{ secrets.CODECOV_TOKEN }}
           # files: ./coverage1.xml,./coverage2.xml # optional
           # flags: unittests # optional
           # name: codecov-umbrella # optional

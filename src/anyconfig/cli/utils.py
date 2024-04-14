@@ -12,6 +12,9 @@ import typing
 
 from .. import api
 
+if typing.TYPE_CHECKING:
+    import argparse
+
 
 @functools.lru_cache(None)
 def list_parser_types() -> typing.List[str]:
@@ -40,7 +43,7 @@ def make_parsers_txt() -> str:
     )
 
 
-def exit_with_output(content, exit_code=0):
+def exit_with_output(content: str, exit_code: int = 0) -> None:
     """Exit the program with printing out messages.
 
     :param content: content to print out
@@ -50,7 +53,7 @@ def exit_with_output(content, exit_code=0):
     sys.exit(exit_code)
 
 
-def exit_if_load_failure(cnf, msg):
+def exit_if_load_failure(cnf: api.InDataExT, msg: str) -> None:
     """Exit the program with errors if loading data was failed.
 
     :param cnf: Loaded configuration object or None indicates load failure
@@ -60,7 +63,9 @@ def exit_if_load_failure(cnf, msg):
         exit_with_output(msg, 1)
 
 
-def load_diff(args, extra_opts):
+def load_diff(
+    args: argparse.Namespace, extra_opts: typing.Dict[str, typing.Any]
+) -> None:
     """Load update data.
 
     :param args: :class:`argparse.Namespace` object

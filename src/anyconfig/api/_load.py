@@ -10,10 +10,6 @@ import typing
 import warnings
 
 from .. import ioinfo
-if typing.TYPE_CHECKING:
-    from ..common import (
-        InDataT, InDataExT
-    )
 from ..dicts import (
     convert_to as dicts_convert_to,
     merge as dicts_merge
@@ -28,12 +24,17 @@ from .datatypes import (
 )
 from .utils import are_same_file_types
 
+if typing.TYPE_CHECKING:
+    from ..common import (
+        InDataT, InDataExT
+    )
+
 
 MappingT = typing.Dict[str, typing.Any]
 MaybeParserOrIdOrTypeT = typing.Optional[typing.Union[str, ParserT]]
 
 
-def try_to_load_schema(**options) -> typing.Optional[InDataT]:
+def try_to_load_schema(**options: str) -> typing.Optional[InDataT]:
     """Try to load a schema object for validation.
 
     :param options: Optional keyword arguments such as
@@ -60,11 +61,11 @@ def try_to_load_schema(**options) -> typing.Optional[InDataT]:
     return None
 
 
-def _single_load(ioi: ioinfo.IOInfo, *,
-                 ac_parser: MaybeParserOrIdOrTypeT = None,
-                 ac_template: bool = False,
-                 ac_context: typing.Optional[MappingT] = None,
-                 **options) -> InDataExT:
+def _single_load(
+    ioi: ioinfo.IOInfo, *, ac_parser: MaybeParserOrIdOrTypeT = None,
+    ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
+    **options: str
+) -> InDataExT:
     """Load data from a given ``ioi``.
 
     :param input_:
@@ -94,12 +95,12 @@ def _single_load(ioi: ioinfo.IOInfo, *,
     return psr.load(ioi, **options)
 
 
-def single_load(input_: ioinfo.PathOrIOInfoT,
-                ac_parser: MaybeParserOrIdOrTypeT = None,
-                *,
-                ac_template: bool = False,
-                ac_context: typing.Optional[MappingT] = None,
-                **options) -> InDataExT:
+def single_load(
+    input_: ioinfo.PathOrIOInfoT, ac_parser: MaybeParserOrIdOrTypeT = None,
+    *,
+    ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
+    **options: str
+) -> InDataExT:
     r"""Load from single input ``input\_``.
 
     .. note::
@@ -165,13 +166,14 @@ def single_load(input_: ioinfo.PathOrIOInfoT,
     return try_query(cnf, options.get("ac_query", False), **options)
 
 
-def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
-                                    ioinfo.PathOrIOInfoT],
-               ac_parser: MaybeParserOrIdOrTypeT = None,
-               *,
-               ac_template: bool = False,
-               ac_context: typing.Optional[MappingT] = None,
-               **options) -> InDataExT:
+def multi_load(
+    inputs: typing.Union[
+        typing.Iterable[ioinfo.PathOrIOInfoT], ioinfo.PathOrIOInfoT
+    ], ac_parser: MaybeParserOrIdOrTypeT = None,
+    *,
+    ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
+    **options: str
+) -> InDataExT:
     r"""Load data from multiple inputs ``inputs``.
 
     .. note::
@@ -272,9 +274,13 @@ def multi_load(inputs: typing.Union[typing.Iterable[ioinfo.PathOrIOInfoT],
 
 
 def load(
-    path_specs, ac_parser=None, *,
-    ac_dict=None, ac_template=False, ac_context=None,
-    **options
+    path_specs: typing.Union[
+        typing.Iterable[ioinfo.PathOrIOInfoT], ioinfo.PathOrIOInfoT
+    ],
+    ac_parser: typing.Optional[str] = None, *,
+    ac_dict: typing.Optional[typing.Callable] = None,
+    ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
+    **options: str
 ) -> InDataExT:
     r"""Load from a file or files specified as ``path_specs``.
 
@@ -321,9 +327,11 @@ def load(
 
 
 def loads(
-    content, ac_parser=None, *,
-    ac_dict=None, ac_template=False, ac_context=None,
-    **options
+    content: str, ac_parser: typing.Optional[str] = None, *,
+    ac_dict: typing.Optional[typing.Callable] = None,
+    ac_template: typing.Union[str, False] = False,
+    ac_context: typing.Optional[MappingT] = None,
+    **options: str
 ) -> InDataExT:
     """Load data from a str, ``content``.
 

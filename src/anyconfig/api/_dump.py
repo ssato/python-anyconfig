@@ -12,9 +12,10 @@ if typing.TYPE_CHECKING:
     from . import datatypes
 
 
-def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
-         ac_parser: parsers.MaybeParserT = None, **options
-         ) -> None:
+def dump(
+    data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
+    ac_parser: parsers.MaybeParserT = None, **options: str
+) -> None:
     """Save ``data`` to ``out`` in specified or detected format.
 
     :param data: A mapping object may have configurations data to dump
@@ -34,9 +35,10 @@ def dump(data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
     psr.dump(data, ioi, **options)
 
 
-def dumps(data: common.InDataExT,
-          ac_parser: parsers.MaybeParserT = None,
-          **options) -> str:
+def dumps(
+    data: common.InDataExT, ac_parser: parsers.MaybeParserT = None,
+    **options: str
+) -> str:
     """Return a str representation of ``data`` in specified format.
 
     :param data: Config data object to dump

@@ -364,7 +364,9 @@ def _to_str_fn(**options: DicType) -> typing.Callable[..., str]:
     :param options: Keyword options might have 'ac_parse_value' key
     :param to_str: Callable to convert value to string
     """
-    return str if options.get("ac_parse_value") else noop
+    return (  # type: ignore[return-value]
+        str if options.get("ac_parse_value") else noop
+    )
 
 
 def _elem_set_attrs(

@@ -75,7 +75,7 @@ _YAML_INSTANCE_MEMBERS: typing.Tuple[str, ...] = (
 _YAML_OPTS = (*_YAML_INIT_KWARGS, *_YAML_INSTANCE_MEMBERS)
 
 
-def yml_fnc(fname, *args, **options):  # noqa: ANN002
+def yml_fnc(fname: str, *args, **options) -> typing.Callable:
     """Call loading functions for yaml data.
 
     :param fname:
@@ -99,7 +99,9 @@ def yml_fnc(fname, *args, **options):  # noqa: ANN002
     return getattr(yml, fname)(*args)
 
 
-def yml_load(stream, container, **options):
+def yml_load(
+    stream: typing.IO, container: base.GenContainerT, **options
+) -> base.InDataExT:
     """See :func:`anyconfig.backend.yaml.pyyaml.yml_load`."""
     ret = yml_fnc("load", stream, **options)
     if ret is None:
@@ -108,7 +110,9 @@ def yml_load(stream, container, **options):
     return ret
 
 
-def yml_dump(data, stream, **options):
+def yml_dump(
+    data: base.InDataExT, stream: typing.IO, **options
+) -> None:
     """See :func:`anyconfig.backend.yaml.pyyaml.yml_dump`."""
     # .. todo::
     #    Maybe it should take care to keep keys' order using

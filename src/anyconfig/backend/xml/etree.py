@@ -78,6 +78,11 @@ from ...utils import (
 _TAGS = {"attrs": "@attrs", "text": "@text", "children": "@children"}
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
 
+if typing.TYPE_CHECKING:
+    DicType = typing.Dict[str, typing.Any]
+    DicsType = typing.Iterable[DicType]
+    GenDicType = typing.Callable[..., DicType]
+
 
 def _namespaces_from_file(
     xmlfile: io.BytesIO
@@ -121,11 +126,6 @@ def _tweak_ns(tag: str, **options: typing.Dict[str, str]) -> str:
     return tag
 
 
-DicType = typing.Dict[str, typing.Any]
-DicsType = typing.Iterable[DicType]
-GenDicType = typing.Callable[..., DicType]
-
-
 def _dicts_have_unique_keys(dics: DicsType) -> bool:
     """Test if given dicts don't have same keys.
 
@@ -150,7 +150,7 @@ def _dicts_have_unique_keys(dics: DicsType) -> bool:
     return len(set(key_itr)) == sum(len(d) for d in dics)
 
 
-def _parse_text(val: str, **options: typing.Any) -> typing.Any:
+def _parse_text(val: str, **options) -> typing.Any:
     """Parse ``val`` and interpret its data to some value.
 
     :return: Parsed value or value itself depends on 'ac_parse_value'
@@ -163,7 +163,7 @@ def _parse_text(val: str, **options: typing.Any) -> typing.Any:
 
 def _process_elem_text(
     elem: ElementTree.Element, dic: DicType, subdic: DicType,
-    text: str = "@text", **options: typing.Any
+    text: str = "@text", **options
 ) -> None:
     """Process the text in the element ``elem``.
 
@@ -189,7 +189,7 @@ def _process_elem_text(
 
 def _parse_attrs(
     elem: ElementTree.Element, container: GenDicType = dict,
-    **options: typing.Any
+    **options
 ) -> DicType:
     """Parse the attributes of the element ``elem``.
 
@@ -207,7 +207,7 @@ def _parse_attrs(
 def _process_elem_attrs(
     elem: ElementTree.Element, dic: DicType, subdic: DicType,
     container: GenDicType = dict, attrs: str = "@attrs",
-    **options: typing.Any
+    **options
 ) -> None:
     """Process attributes in the element ``elem``.
 
@@ -230,7 +230,7 @@ def _process_elem_attrs(
 def _process_children_elems(
     elem: ElementTree.Element, dic: DicType, subdic: DicType,
     container: GenDicType = dict, children: str = "@children",
-    **options: typing.Any
+    **options
 ) -> None:
     """Process children of the element ``elem``.
 
@@ -268,7 +268,7 @@ def _process_children_elems(
 
 def elem_to_container(
     elem: typing.Optional[ElementTree.Element], container: GenDicType = dict,
-    **options: typing.Any
+    **options
 ) -> DicType:
     """Convert XML ElementTree Element to a collection of container objects.
 
@@ -334,8 +334,8 @@ def _complement_tag_options(options: DicType) -> DicType:
 def root_to_container(
     root: ElementTree.Element, container: GenDicType = dict,
     nspaces: typing.Optional[DicType] = None,
-    **options: typing.Any
-):
+    **options
+) -> DicType:
     """Convert XML ElementTree Root Element to container objects.
 
     :param root: etree root object or None
@@ -364,8 +364,7 @@ def _to_str_fn(**options: DicType) -> typing.Callable[..., str]:
     :param options: Keyword options might have 'ac_parse_value' key
     :param to_str: Callable to convert value to string
     """
-    res = str if options.get("ac_parse_value") else noop
-    return res  # type: ignore[return-value]
+    return str if options.get("ac_parse_value") else noop
 
 
 def _elem_set_attrs(
@@ -386,8 +385,7 @@ def _elem_set_attrs(
 
 
 def _elem_from_descendants(
-    children_nodes: typing.Iterable[DicType],
-    **options: typing.Any
+    children_nodes: typing.Iterable[DicType], **options
 ) -> typing.Iterator[ElementTree.Element]:
     """Get the elements from the descendants ``children_nodes``.
 
@@ -404,7 +402,7 @@ def _elem_from_descendants(
 def _get_or_update_parent(
     key: str, val: typing.Any, to_str: typing.Callable[..., str],
     parent: typing.Optional[ElementTree.Element] = None,
-    **options: typing.Any
+    **options
 ) -> ElementTree.Element:
     """Get or update the parent element ``parent``.
 
@@ -433,9 +431,8 @@ _ATC = ("attrs", "text", "children")
 def _assert_if_invalid_node(
     obj: typing.Any,
     parent: typing.Optional[ElementTree.Element] = None,
-):
-    """Make sure the ``obj`` or ``parent`` is not invalid.
-    """
+) -> None:
+    """Make sure the ``obj`` or ``parent`` is not invalid."""
     if parent is None and (obj is None or not obj):
         raise ValueError
 
@@ -446,7 +443,7 @@ def _assert_if_invalid_node(
 def container_to_etree(
     obj: typing.Any, parent: typing.Optional[ElementTree.Element] = None,
     to_str: typing.Optional[typing.Callable[..., str]] = None,
-    **options: typing.Any
+    **options
 ) -> ElementTree.Element:
     """Convert a dict-like object to XML ElementTree.
 
@@ -524,7 +521,9 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
     _open_read_mode: typing.ClassVar[str] = "rb"
     _open_write_mode: typing.ClassVar[str] = "wb"
 
-    def load_from_string(self, content, container, **opts):
+    def load_from_string(
+        self, content: str, container: GenDicType, **opts
+    ) -> DicType:
         """Load config from XML snippet (a string 'content').
 
         :param content:
@@ -540,7 +539,10 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
         return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)
 
-    def load_from_path(self, filepath, container, **opts):
+    def load_from_path(
+        self, filepath: base.PathOrStrT, container: GenDicType,
+        **opts
+    ) -> DicType:
         """Load data from path ``filepath``.
 
         :param filepath: XML file path
@@ -554,7 +556,10 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
         return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)
 
-    def load_from_stream(self, stream, container, **opts):
+    def load_from_stream(
+        self, stream: typing.IO, container: GenDicType,
+        **opts
+    ) -> DicType:
         """Load data from IO stream ``stream``.
 
         :param stream: XML file or file-like object
@@ -569,7 +574,7 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
         return root_to_container(root, container=container,
                                  nspaces=nspaces, **opts)
 
-    def dump_to_string(self, cnf, **opts):
+    def dump_to_string(self, cnf: DicType, **opts) -> str:
         """Dump data ``cnf`` as a str.
 
         :param cnf: Configuration data to dump
@@ -585,7 +590,9 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
         etree_write(tree, buf)
         return buf.getvalue()
 
-    def dump_to_stream(self, cnf, stream, **opts):
+    def dump_to_stream(
+        self, cnf: DicType, stream: typing.IO, **opts
+    ) -> None:
         """Dump data ``cnf`` to the IO stream ``stream``.
 
         :param cnf: Configuration data to dump

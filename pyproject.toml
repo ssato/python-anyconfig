@@ -1,6 +1,7 @@
 # .. seealso:: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 [project]
 name = "anyconfig"
+requires-python = ">=3.8"
 dynamic = [
     "version",
 ]
@@ -67,6 +68,11 @@ where = [
     "src"
 ]
 
+# [tool.setuptools.data_files]
+# share/man/man1 = [
+#     "docs/anyconfig_cli.1",
+# ]
+
 [project.optional-dependencies]
 yaml = [
     "pyyaml",
@@ -94,6 +100,100 @@ testpaths = [
     "tests",
 ]
 addopts = "--cov=src -vv -rxXs --cov --cov-report xml"
+
+# .. seealso:: https://docs.astral.sh/ruff/settings/#top-level
+[tool.ruff]
+exclude = [
+    "tests/res/**/*.py",
+]
+src = [
+    "src",
+    "tests",
+]
+
+[tool.ruff.lint]
+ignore = [
+    "ANN002",  # https://docs.astral.sh/ruff/rules/missing-type-args/
+    "ANN003",  # https://docs.astral.sh/ruff/rules/missing-type-kwargs/
+
+    "ANN101",  # https://docs.astral.sh/ruff/rules/missing-type-self/
+    "ANN102",  # I can't see any meaning in it as the first 'cls' argument
+               # should be the class itself as usual.
+               # https://docs.astral.sh/ruff/rules/missing-type-cls/
+    "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
+    "I001",  # https://docs.astral.sh/ruff/rules/unsorted-imports/
+             # https://github.com/PyCQA/isort/issues/2146
+    "TID252",  # https://docs.astral.sh/ruff/rules/relative-imports/
+
+    # .. note:: These are disabled until py38 support is dropped.
+    "UP006",  # https://docs.astral.sh/ruff/rules/non-pep585-annotation/
+    "UP007",  # https://docs.astral.sh/ruff/rules/non-pep604-annotation/
+]
+select = [
+  "A",   # flake8-builtins
+  "ANN", # flake8-annotations
+  "ARG", # flake8-unused-arguments
+  "B",   # flake8-bugbear
+  "BLE", # flake8-blind-except
+  "C4",  # flake8-comprehensions
+  "C90", # mccabe
+  "D",   # pydocstyle
+  "DTZ", # flake8-datetimez
+  "E",   # pycodestyle
+  "EM",  # flake8-errmsg
+  "ERA", # flake8-eradicate
+  "EXE", # flake8-executable
+  "F",   # pyflakes
+  "FA",   # flake8-future-annotations
+  "FBT", # flake8-boolean-trap
+  "G",   # flake8-logging-format
+  "I",   # isort
+  "ICN", # flake8-import-conventions
+  "INP", # flake8-no-pep420
+  "ISC", # flake8-implicit-str-concat
+  "N",   # pep8-naming
+  "PD",  # flake8-vet
+  "PERF",  # Perflint
+  "PGH", # pygrep-hooks
+  "PIE", # flake8-pie
+  "PLC", # Pylint - Convention
+  "PLE", # Pylint - Error
+  "PLR", # Pylint - Refactor
+  "PLW", # Pylint - Warning
+  "PTH", # flake8-use-pathlib
+  "PYI", # flake8-pyi
+  "Q",   # flake8-quotes
+  "RET", # flake8-return
+  "RUF", # Ruff-specific rules
+  "RSE", # flake8-raise
+  "S",   # flake8-bandit
+  "SLF", # flake8-self
+  "SLOT", # flake8-slots
+  "SIM", # flake8-simplify
+  "T20", # flake8-print
+  "TCH", # flake8-type-checking
+  "TID", # flake8-tidy-imports
+  "TRY", # tryceratops
+  "UP",  # pyupgrade
+  "W",   # pycodestyle
+  "YTT", # flake8-2020
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"src/anyconfig/query/default.py" = ["ARG001"]
+"src/anyconfig/schema/default.py" = ["ARG001"]
+# "src/anyconfig/template/__init__.py" = ["ARG001"]
+"src/anyconfig/template/jinja2.py" = ["BLE001"]
+
+# .. todo:: security hardening
+# https://docs.astral.sh/ruff/rules/suspicious-xml-element-tree-usage/
+"src/anyconfig/backend/xml/etree.py" = ["S314"]
+
+#[tool.ruff.lint.flake8-annotations]
+#[tool.ruff.lint.flake8-bandit]
+#[tool.ruff.lint.flake8-bugbear]
+#[tool.ruff.lint.flake8-builtins]
+
 
 # .. note::
 # 
@@ -124,7 +224,7 @@ addopts = "--cov=src -vv -rxXs --cov --cov-report xml"
 
 # .. seealso:: https://stackoverflow.com/a/64487610
 #
-# flake8]
+# [flake8]
 # per-file-ignores =
 #     tests/res/*/*/*/*.py: W605, B018
 #     tests/res/*/*/*/*/*.py: W605, B018

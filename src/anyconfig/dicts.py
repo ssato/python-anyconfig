@@ -70,8 +70,10 @@ def _split_path(path: str, seps: typing.Tuple[str, ...] = PATH_SEPS
     return [path]
 
 
-def mk_nested_dic(path: str, val: typing.Any,
-                  seps: typing.Tuple[str, ...] = PATH_SEPS) -> DictT:
+def mk_nested_dic(
+    path: str, val: typing.Any,
+    seps: typing.Tuple[str, ...] = PATH_SEPS
+) -> DictT:
     """Make a nested dict iteratively.
 
     :param path: Path expression to make a nested dict

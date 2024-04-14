@@ -9,6 +9,9 @@ from __future__ import annotations
 import pathlib
 import typing
 
+if typing.TYPE_CHECKING:
+    from .datatypes import PathOrStrT
+
 
 class BinaryFilesMixin:
     """Mixin class to open configuration files as a binary data."""
@@ -16,10 +19,7 @@ class BinaryFilesMixin:
     _open_flags: typing.Tuple[str, str] = ("rb", "wb")
 
     @classmethod
-    def ropen(
-        cls, filepath: typing.Union[str, pathlib.Path],
-        **options: str
-    ) -> typing.IO:
+    def ropen(cls, filepath: PathOrStrT, **options) -> typing.IO:
         """Open ``filepath`` with read only mode.
 
         :param filepath: Path to file to open to read data
@@ -29,10 +29,7 @@ class BinaryFilesMixin:
         )
 
     @classmethod
-    def wopen(
-        cls, filepath: typing.Union[str, pathlib.Path],
-        **options: str
-    ) -> typing.IO:
+    def wopen(cls, filepath: PathOrStrT, **options) -> typing.IO:
         """Open ``filepath`` with write mode.
 
         :param filepath: Path to file to open to write data to

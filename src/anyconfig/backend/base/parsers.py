@@ -72,11 +72,13 @@ LoadFnT = typing.Callable[..., InDataExT]
 DumpFnT = typing.Callable[..., str]
 
 
-def load_with_fn(load_fn: typing.Optional[LoadFnT],
-                 content_or_strm: typing.Union[str, typing.IO],
-                 container: GenContainerT, *,
-                 allow_primitives: bool = False,
-                 **options: str) -> InDataExT:
+def load_with_fn(
+    load_fn: typing.Optional[LoadFnT],
+    content_or_strm: typing.Union[str, typing.IO],
+    container: GenContainerT, *,
+    allow_primitives: bool = False,
+    **options
+) -> InDataExT:
     """Load data from given string or stream 'content_or_strm'.
 
     :param load_fn: Callable to load data
@@ -149,8 +151,9 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     _dump_to_string_fn: typing.Optional[DumpFnT] = None
     _dump_to_stream_fn: typing.Optional[DumpFnT] = None
 
-    def load_from_string(self, content: str, container: GenContainerT,
-                         **options: str) -> InDataExT:
+    def load_from_string(
+        self, content: typing.AnyStr, container: GenContainerT, **options
+    ) -> InDataExT:
         """Load configuration data from given string 'content'.
 
         :param content: Configuration string
@@ -163,8 +166,9 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
                             allow_primitives=self.allow_primitives(),
                             **options)
 
-    def load_from_stream(self, stream: typing.IO, container: GenContainerT,
-                         **options: str) -> InDataExT:
+    def load_from_stream(
+        self, stream: typing.IO, container: GenContainerT, **options
+    ) -> InDataExT:
         """Load data from given stream 'stream'.
 
         :param stream: Stream provides configuration data

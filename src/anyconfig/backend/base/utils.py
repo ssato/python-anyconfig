@@ -10,7 +10,9 @@ import pathlib
 import typing
 
 
-def not_implemented(*_args, **_kwargs) -> None:  # noqa: ANN002
+def not_implemented(
+    *_args, **_options
+) -> None:
     """Raise NotImplementedError."""
     raise NotImplementedError
 
@@ -23,8 +25,9 @@ def ensure_outdir_exists(filepath: typing.Union[str, pathlib.Path]) -> None:
     pathlib.Path(filepath).parent.mkdir(parents=True, exist_ok=True)
 
 
-def to_method(func: typing.Callable[..., typing.Any]
-              ) -> typing.Callable[..., typing.Any]:
+def to_method(
+    func: typing.Callable[..., typing.Any]
+) -> typing.Callable[..., typing.Any]:
     """Lift :func:`func` to a method.
 
     It will be called with the first argument 'self' ignored.
@@ -33,7 +36,7 @@ def to_method(func: typing.Callable[..., typing.Any]
     """
     @functools.wraps(func)
     def wrapper(
-        *args, **kwargs  # noqa: ANN002
+        *args, **kwargs
     ) -> typing.Callable[..., typing.Any]:
         """Original function decorated."""
         return func(*args[1:], **kwargs)

@@ -16,21 +16,27 @@ class BinaryFilesMixin:
     _open_flags: typing.Tuple[str, str] = ("rb", "wb")
 
     @classmethod
-    def ropen(cls, filepath, **kwargs) -> typing.IO:
+    def ropen(
+        cls, filepath: typing.Union[str, pathlib.Path],
+        **options: str
+    ) -> typing.IO:
         """Open ``filepath`` with read only mode.
 
         :param filepath: Path to file to open to read data
         """
         return pathlib.Path(filepath).open(  # noqa: SIM115
-            cls._open_flags[0], **kwargs
+            cls._open_flags[0], **options
         )
 
     @classmethod
-    def wopen(cls, filepath, **kwargs) -> typing.IO:
+    def wopen(
+        cls, filepath: typing.Union[str, pathlib.Path],
+        **options: str
+    ) -> typing.IO:
         """Open ``filepath`` with write mode.
 
         :param filepath: Path to file to open to write data to
         """
         return pathlib.Path(filepath).open(  # noqa: SIM115
-            cls._open_flags[1], **kwargs
+            cls._open_flags[1], **options
         )

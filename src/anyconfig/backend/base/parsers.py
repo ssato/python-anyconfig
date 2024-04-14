@@ -76,7 +76,7 @@ def load_with_fn(load_fn: typing.Optional[LoadFnT],
                  content_or_strm: typing.Union[str, typing.IO],
                  container: GenContainerT, *,
                  allow_primitives: bool = False,
-                 **options) -> InDataExT:
+                 **options: str) -> InDataExT:
     """Load data from given string or stream 'content_or_strm'.
 
     :param load_fn: Callable to load data
@@ -102,7 +102,7 @@ def load_with_fn(load_fn: typing.Optional[LoadFnT],
 
 def dump_with_fn(dump_fn: typing.Optional[DumpFnT],
                  data: InDataExT, stream: typing.Optional[typing.IO],
-                 **options) -> str:
+                 **options: str) -> str:
     """Dump 'data' to a string.
 
     If 'stream' is None, or dump 'data' to a file or file-like object 'stream'.
@@ -150,7 +150,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     _dump_to_stream_fn: typing.Optional[DumpFnT] = None
 
     def load_from_string(self, content: str, container: GenContainerT,
-                         **options) -> InDataExT:
+                         **options: str) -> InDataExT:
         """Load configuration data from given string 'content'.
 
         :param content: Configuration string
@@ -164,7 +164,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
                             **options)
 
     def load_from_stream(self, stream: typing.IO, container: GenContainerT,
-                         **options) -> InDataExT:
+                         **options: str) -> InDataExT:
         """Load data from given stream 'stream'.
 
         :param stream: Stream provides configuration data
@@ -177,26 +177,26 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
                             allow_primitives=self.allow_primitives(),
                             **options)
 
-    def dump_to_string(self, cnf: InDataExT, **kwargs) -> str:
+    def dump_to_string(self, cnf: InDataExT, **options: str) -> str:
         """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options: optional keyword parameters to be sanitized :: dict
 
         :return: string represents the configuration
         """
         return dump_with_fn(self._dump_to_string_fn, cnf, None,
-                            **kwargs)
+                            **options)
 
     def dump_to_stream(self, cnf: InDataExT, stream: typing.IO,
-                       **kwargs) -> None:
+                       **options: str) -> None:
         """Dump config 'cnf' to a file-like object 'stream'.
 
         TODO: How to process socket objects same as file objects ?
 
         :param cnf: Configuration data to dump
         :param stream:  Config file or file like object
-        :param kwargs: optional keyword parameters to be sanitized :: dict
+        :param options: optional keyword parameters to be sanitized :: dict
         """
         dump_with_fn(self._dump_to_stream_fn, cnf, stream,
-                     **kwargs)
+                     **options)

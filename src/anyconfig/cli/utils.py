@@ -65,7 +65,7 @@ def exit_if_load_failure(cnf: api.InDataExT, msg: str) -> None:
 
 def load_diff(
     args: argparse.Namespace, extra_opts: typing.Dict[str, typing.Any]
-) -> None:
+) -> api.InDataExT:
     """Load update data.
 
     :param args: :class:`argparse.Namespace` object
@@ -86,8 +86,10 @@ def load_diff(
             f"type=n{args.itype}', inputs={', '.join(args.inputs)}",
             1
         )
-    exit_if_load_failure(
-        diff, f"Failed to load: args={', '.join(args.inputs)}"
-    )
+
+    if diff is None:
+        exit_with_output(
+            f"Failed to load: args={', '.join(args.inputs)}", 1
+        )
 
     return diff

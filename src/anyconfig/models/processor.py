@@ -53,7 +53,9 @@ class Processor:
         return cls._extensions
 
     @classmethod
-    def __eq__(cls, other: typing.Type[Processor]) -> bool:
+    def __eq__(
+        cls, other: typing.Type[Processor]  # type: ignore[override]
+    ) -> bool:
         """Test equality."""
         return cls.cid() == other.cid()
 

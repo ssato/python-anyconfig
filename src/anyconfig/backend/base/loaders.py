@@ -114,7 +114,7 @@ class LoaderMixin:
         return utils.filter_options(self._load_opts, options)
 
     def load_from_string(
-        self, content: typing.AnyStr, container: GenContainerT, **options
+        self, content: str, container: GenContainerT, **options
     ) -> InDataExT:
         """Load config from given string 'content'.
 
@@ -155,7 +155,7 @@ class LoaderMixin:
         not_implemented(self, stream, container, **options)
         return DATA_DEFAULT
 
-    def loads(self, content: typing.AnyStr, **options) -> InDataExT:
+    def loads(self, content: str, **options) -> InDataExT:
         """Load config from given string 'content' after some checks.
 
         :param content:  Config file content
@@ -268,7 +268,7 @@ class FromStreamLoaderMixin(LoaderMixin):
     """
 
     def load_from_string(
-        self, content: typing.AnyStr, container: GenContainerT, **options
+        self, content: str, container: GenContainerT, **options
     ) -> InDataExT:
         """Load config from given string 'cnf_content'.
 

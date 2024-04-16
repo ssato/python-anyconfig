@@ -205,9 +205,9 @@ def test_root_to_container(root_s: str, exp):
      ({}, None),
      ),
 )
-def test_container_to_etree__errors(obj, parent):
+def test_container_to_elem__errors(obj, parent):
     with pytest.raises(ValueError):
-        assert TT.container_to_etree(obj, parent=parent)
+        assert TT.container_to_elem(obj, parent=parent)
 
 
 @pytest.mark.parametrize(
@@ -220,9 +220,9 @@ def test_container_to_etree__errors(obj, parent):
       "<a><b>b</b><c>c</c></a>"),
      ),
 )
-def test_container_to_etree(obj, exp_s):
+def test_container_to_elem(obj, exp_s):
     assert TT.ElementTree.tostring(
-        TT.container_to_etree(obj)
+        TT.container_to_elem(obj)
     ) == to_bytes(exp_s)
 
 
@@ -233,7 +233,7 @@ def test_container_to_etree(obj, exp_s):
       '<a x="X" y="Y">A</a>'),
      ),
 )
-def test_container_to_etree_with_tags(obj, tags, exp_s):
+def test_container_to_elem_with_tags(obj, tags, exp_s):
     assert TT.ElementTree.tostring(
-        TT.container_to_etree(obj, tags=tags)
+        TT.container_to_elem(obj, tags=tags)
     ) == to_bytes(exp_s)

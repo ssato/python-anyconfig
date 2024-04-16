@@ -139,5 +139,5 @@ def try_detecting_output_type(args: argparse.Namespace
 
 
 def is_dict_like(obj: typing.Any) -> TypeGuard[typing.Dict]:
-    """True if ``obj` is a dict."""
+    """Return True if `obj` is a dict."""
     return isinstance(obj, (dict, collections.abc.Mapping))

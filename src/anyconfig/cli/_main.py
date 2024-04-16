@@ -78,6 +78,13 @@ def process_args_or_run_command(args: argparse.Namespace
     return args
 
 
+def exit_if_not_mergeable(diff: api.InDataExT) -> None:
+    """Check if ``diff`` is a dict like object can be merged."""
+    if not detectors.is_dict_like(diff):
+        msg_code = (f"Cannot be merged: {diff!r}", 1)
+        utils.exit_with_output(*msg_code)
+
+
 def try_validate(cnf: api.InDataExT, args: argparse.Namespace) -> None:
     """Try validate ``cnf`` with the schema loaded from ``args.schema``."""
     scm = api.load(args.schema)
@@ -111,13 +118,15 @@ def main(argv: typing.Optional[typing.List[str]] = None) -> None:
     diff = utils.load_diff(args, args.extra_opts or {})
 
     if cnf:
-        api.merge(cnf, diff)
+        exit_if_not_mergeable(diff)
+        api.merge(cnf, diff)  # type: ignore[arg-type]
     else:
-        cnf = diff
+        cnf = diff  # type: ignore[assignment]
 
     if args.args:
-        diff = parser.parse(args.args)
-        api.merge(cnf, diff)
+        diff = parser.parse(args.args)  # type: ignore[assignment]
+        exit_if_not_mergeable(diff)
+        api.merge(cnf, diff)  # type: ignore[arg-type]
 
     cnf = (
         # fixme.

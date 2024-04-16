@@ -34,7 +34,7 @@ MappingT = typing.Dict[str, typing.Any]
 MaybeParserOrIdOrTypeT = typing.Optional[typing.Union[str, ParserT]]
 
 
-def try_to_load_schema(**options: str) -> typing.Optional[InDataT]:
+def try_to_load_schema(**options) -> typing.Optional[InDataT]:
     """Try to load a schema object for validation.
 
     :param options: Optional keyword arguments such as
@@ -64,7 +64,7 @@ def try_to_load_schema(**options: str) -> typing.Optional[InDataT]:
 def _single_load(
     ioi: ioinfo.IOInfo, *, ac_parser: MaybeParserOrIdOrTypeT = None,
     ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options: str
+    **options
 ) -> InDataExT:
     """Load data from a given ``ioi``.
 
@@ -99,7 +99,7 @@ def single_load(
     input_: ioinfo.PathOrIOInfoT, ac_parser: MaybeParserOrIdOrTypeT = None,
     *,
     ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options: str
+    **options
 ) -> InDataExT:
     r"""Load from single input ``input\_``.
 
@@ -172,7 +172,7 @@ def multi_load(
     ], ac_parser: MaybeParserOrIdOrTypeT = None,
     *,
     ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options: str
+    **options
 ) -> InDataExT:
     r"""Load data from multiple inputs ``inputs``.
 
@@ -280,7 +280,7 @@ def load(
     ac_parser: typing.Optional[str] = None, *,
     ac_dict: typing.Optional[typing.Callable] = None,
     ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options: str
+    **options
 ) -> InDataExT:
     r"""Load from a file or files specified as ``path_specs``.
 
@@ -327,11 +327,11 @@ def load(
 
 
 def loads(
-    content: str, ac_parser: typing.Optional[str] = None, *,
+    content: str, ac_parser: MaybeParserOrIdOrTypeT = None, *,
     ac_dict: typing.Optional[typing.Callable] = None,
-    ac_template: typing.Union[str, False] = False,
+    ac_template: typing.Union[str, bool] = False,
     ac_context: typing.Optional[MappingT] = None,
-    **options: str
+    **options
 ) -> InDataExT:
     """Load data from a str, ``content``.
 

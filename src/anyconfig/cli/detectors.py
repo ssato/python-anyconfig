@@ -1,10 +1,11 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Detect file type and parser from inputs and/or output."""
 from __future__ import annotations
 
+import collections
 import os
 import pathlib
 import typing
@@ -15,6 +16,11 @@ from . import constants, utils
 
 if typing.TYPE_CHECKING:
     import argparse
+
+    try:
+        from typing import TypeGuard
+    except ImportError:
+        from typing_extensions import TypeGuard
 
 
 def are_same_file_types(paths: typing.List[str]) -> bool:
@@ -131,4 +137,7 @@ def try_detecting_output_type(args: argparse.Namespace
 
     return itype
 
-# vim:sw=4:ts=4:et:
+
+def is_dict_like(obj: typing.Any) -> TypeGuard[typing.Dict]:
+    """True if ``obj` is a dict."""
+    return isinstance(obj, (dict, collections.abc.Mapping))

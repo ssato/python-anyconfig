@@ -74,7 +74,7 @@ DumpFnT = typing.Callable[..., str]
 
 def load_with_fn(
     load_fn: typing.Optional[LoadFnT],
-    content_or_strm: typing.Union[str, typing.IO],
+    content_or_strm: typing.Union[typing.AnyStr, typing.IO],
     container: GenContainerT, *,
     allow_primitives: bool = False,
     **options
@@ -102,9 +102,11 @@ def load_with_fn(
     return ret if allow_primitives else container(ret)
 
 
-def dump_with_fn(dump_fn: typing.Optional[DumpFnT],
-                 data: InDataExT, stream: typing.Optional[typing.IO],
-                 **options: str) -> str:
+def dump_with_fn(
+    dump_fn: typing.Optional[DumpFnT],
+    data: InDataExT, stream: typing.Optional[typing.IO],
+    **options
+) -> str:
     """Dump 'data' to a string.
 
     If 'stream' is None, or dump 'data' to a file or file-like object 'stream'.
@@ -181,7 +183,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
                             allow_primitives=self.allow_primitives(),
                             **options)
 
-    def dump_to_string(self, cnf: InDataExT, **options: str) -> str:
+    def dump_to_string(self, cnf: InDataExT, **options) -> str:
         """Dump config 'cnf' to a string.
 
         :param cnf: Configuration data to dump
@@ -192,8 +194,9 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         return dump_with_fn(self._dump_to_string_fn, cnf, None,
                             **options)
 
-    def dump_to_stream(self, cnf: InDataExT, stream: typing.IO,
-                       **options: str) -> None:
+    def dump_to_stream(
+        self, cnf: InDataExT, stream: typing.IO, **options
+    ) -> None:
         """Dump config 'cnf' to a file-like object 'stream'.
 
         TODO: How to process socket objects same as file objects ?

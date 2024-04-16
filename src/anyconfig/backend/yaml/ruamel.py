@@ -75,7 +75,9 @@ _YAML_INSTANCE_MEMBERS: typing.Tuple[str, ...] = (
 _YAML_OPTS = (*_YAML_INIT_KWARGS, *_YAML_INSTANCE_MEMBERS)
 
 
-def yml_fnc(fname: str, *args, **options) -> typing.Callable:
+def yml_fnc(
+    fname: str, *args, **options
+) -> typing.Optional[base.InDataExT]:
     """Call loading functions for yaml data.
 
     :param fname:
@@ -117,7 +119,7 @@ def yml_dump(
     # .. todo::
     #    Maybe it should take care to keep keys' order using
     #    collections.OrderedDict if ac_ordered is True in ``options``.
-    return yml_fnc("dump", data, stream, **options)
+    yml_fnc("dump", data, stream, **options)
 
 
 class Parser(common.Parser):

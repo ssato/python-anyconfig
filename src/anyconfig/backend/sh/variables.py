@@ -26,6 +26,7 @@ import typing
 import warnings
 
 from .. import base
+from ... import utils
 
 
 def _parseline(
@@ -107,7 +108,7 @@ class Parser(base.StreamParser):
         return load(stream, container=container, **kwargs)
 
     def dump_to_stream(
-        self, cnf: base.InDataT, stream: typing.IO, **_kwargs
+        self, cnf: base.InDataExT, stream: typing.IO, **_kwargs
     ) -> None:
         """Dump config dat ``cnf`` to a file or file-like object ``stream``.
 
@@ -115,5 +116,6 @@ class Parser(base.StreamParser):
         :param stream: Shell script file or file like object
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
-        for key, val in cnf.items():
-            stream.write(f"{key}='{val}'\n")
+        if utils.is_dict_like(cnf):
+            for key, val in cnf.items():
+                stream.write(f"{key}='{val}'\n")

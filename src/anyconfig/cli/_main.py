@@ -12,16 +12,11 @@ import warnings
 
 from .. import api, parser
 from . import (
-    actions, constants, detectors, filters, io, parse_args, utils
+    actions, constants, detectors, filters, parse_args, utils
 )
 
 if typing.TYPE_CHECKING:
     import argparse
-
-
-OUT_ERR = io.make()
-if OUT_ERR:
-    (sys.stdout, sys.stderr) = OUT_ERR
 
 
 def try_special_command_if_no_inputs(args: argparse.Namespace) -> None:

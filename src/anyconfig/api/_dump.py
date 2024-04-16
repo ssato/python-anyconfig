@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
 
 def dump(
     data: common.InDataExT, out: ioinfo.PathOrIOInfoT,
-    ac_parser: parsers.MaybeParserT = None, **options: str
+    ac_parser: parsers.MaybeParserT = None, **options
 ) -> None:
     """Save ``data`` to ``out`` in specified or detected format.
 
@@ -37,7 +37,7 @@ def dump(
 
 def dumps(
     data: common.InDataExT, ac_parser: parsers.MaybeParserT = None,
-    **options: str
+    **options
 ) -> str:
     """Return a str representation of ``data`` in specified format.
 

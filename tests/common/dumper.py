@@ -47,7 +47,7 @@ class TestCase:
 
         assert psr.loads(out_s, **opts) == idata
         if self.exact_match:
-            assert out_s == exp, f"'{out_s}' vs. '{exp}'"
+            assert out_s == exp, f"'{out_s}' vs. '{exp}', opts={opts!r}"
 
     def _assert_dump(
         self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
@@ -63,4 +63,4 @@ class TestCase:
 
         assert psr.load(ioi, **opts) == idata
         if self.exact_match:
-            assert out_s == exp, f"'{out_s}' vs. '{exp}'"
+            assert out_s == exp, f"'{out_s}' vs. '{exp}', opts={opts!r}"

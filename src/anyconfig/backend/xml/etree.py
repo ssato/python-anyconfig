@@ -515,8 +515,8 @@ def etree_write(
         )
     )
     content: bytes = ElementTree.tostring(  # type: ignore[call-overload]
-        elem, **opts).encode("utf-8"
-    )
+        elem, **opts
+    ).encode("utf-8")
     stream.write(content)
 
 

@@ -1,36 +1,48 @@
-# Python package
-# Create and test a Python package on multiple Python versions.
-# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+---
+# yamllint disable-line rule:line-length
+# Based on https://github.com/Azure-Samples/azure-pipelines-python/blob/master/.azure-pipelines/simple_package.1-multi-target.yml
+# another ref. https://github.com/tox-dev/azure-pipelines-template
+variables:
+  package: pre_commit_hooks_for_ansible
+  srcDirectory: src/
+  testsDirectory: tests/$(package)
 
 trigger:
-- next
+  branches:
+    include:
+      - '*'
 
-pool:
-  vmImage: ubuntu-latest
-strategy:
-  matrix:
-    Python27:
-      python.version: '2.7'
-    Python35:
-      python.version: '3.5'
-    Python36:
-      python.version: '3.6'
-    Python37:
-      python.version: '3.7'
+jobs:
+  - job: Build
+    strategy:
+      matrix:
+        python39:
+          pythonVersion: 3.9
+        python310:
+          pythonVersion: 3.10
+        python311:
+          pythonVersion: 3.11
+        python312:
+          pythonVersion: 3.12
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
+    pool:
+      vmImage: 'ubuntu-latest'
 
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
+    variables:
+      TOXENV: py${{ replace(variables['pythonVersion'], '.', '') }}
 
-- script: |
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: Use Python $(pythonVersion)
+        inputs:
+          versionSpec: $(pythonVersion)
+
+      - script: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+          python -m pip install --upgrade pip
+          pip install tox tox-gh-actions
+        displayName: Install some more test time dependencies
+
+      - bash: tox
+        displayName: Run tests

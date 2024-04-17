@@ -1,0 +1,48 @@
+---
+# yamllint disable-line rule:line-length
+# Based on https://github.com/Azure-Samples/azure-pipelines-python/blob/master/.azure-pipelines/simple_package.1-multi-target.yml
+# another ref. https://github.com/tox-dev/azure-pipelines-template
+variables:
+  package: pre_commit_hooks_for_ansible
+  srcDirectory: src/
+  testsDirectory: tests/$(package)
+
+trigger:
+  branches:
+    include:
+      - '*'
+
+jobs:
+  - job: Build
+    strategy:
+      matrix:
+        python39:
+          pythonVersion: 3.9
+        python310:
+          pythonVersion: 3.10
+        python311:
+          pythonVersion: 3.11
+        python312:
+          pythonVersion: 3.12
+
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    variables:
+      TOXENV: py${{ replace(variables['pythonVersion'], '.', '') }}
+
+    steps:
+      - task: UsePythonVersion@0
+        displayName: Use Python $(pythonVersion)
+        inputs:
+          versionSpec: $(pythonVersion)
+
+      - script: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+          python -m pip install --upgrade pip
+          pip install tox tox-gh-actions
+        displayName: Install some more test time dependencies
+
+      - bash: tox
+        displayName: Run tests

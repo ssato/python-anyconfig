@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: MIT
 #
 """Utility functions in anyconfig.backend.base."""
+from __future__ import annotations
+
+import collections.abc
 import pathlib
 import typing
 
@@ -19,7 +22,7 @@ OutDataExT = InDataExT
 IoiT = IOInfo
 MaybeFilePathT = typing.Optional[PathOrIOInfoT]
 
-GenContainerT = typing.Callable[..., InDataT]
-OptionsT = typing.Dict[str, typing.Any]
+GenContainerT = collections.abc.Callable[..., InDataT]
+OptionsT = dict[str, typing.Any]
 
 PathOrStrT = typing.Union[str, pathlib.Path]

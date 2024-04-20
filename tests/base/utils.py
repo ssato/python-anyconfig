@@ -1,9 +1,11 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """File based test data collector.
 """
+from __future__ import annotations
+
 import ast
 import collections
 import importlib.abc
@@ -54,10 +56,11 @@ def load_literal_data_from_py(py_path: typing.Union[str, pathlib.Path]
     return ast.literal_eval(pathlib.Path(py_path).read_text().strip())
 
 
-def maybe_data_path(datadir: pathlib.Path, name: str,
-                    should_exist: typing.Iterable[str] = (),
-                    file_ext: str = '*'
-                    ) -> typing.Optional[pathlib.Path]:
+def maybe_data_path(
+    datadir: pathlib.Path, name: str,
+    should_exist: collections.abc.Iterable[str] = (),
+    file_ext: str = '*'
+) -> typing.Optional[pathlib.Path]:
     """
     Get and return the file path of extra data file. Its filename will be
     computed from the filename of the base data file given.
@@ -74,12 +77,11 @@ def maybe_data_path(datadir: pathlib.Path, name: str,
     return None
 
 
-def load_data(path: MaybePathT,
-              default: typing.Optional[typing.Any] = None,
-              should_exist: bool = False,
-              exec_py: bool = False,
-              ordered: bool = False
-              ) -> typing.Union[DictT, str]:
+def load_data(
+    path: MaybePathT, default: typing.Optional[typing.Any] = None,
+    should_exist: bool = False, exec_py: bool = False,
+    ordered: bool = False
+) -> typing.Union[DictT, str]:
     """
     Return data loaded from given path or the default value.
     """
@@ -109,10 +111,10 @@ def load_data(path: MaybePathT,
     raise ValueError(f'Not exist or an invalid data: {path!s}')
 
 
-def each_data_from_dir(datadir: pathlib.Path,
-                       data_factory: typing.Callable,
-                       pattern: str = '*.json',
-                       ) -> typing.Iterator[TData]:
+def each_data_from_dir(
+    datadir: pathlib.Path, data_factory: collections.abc.Callable,
+    pattern: str = '*.json',
+) -> collections.abc.Iterator[TData]:
     """
     Yield a collection of paths of data files under given dir.
     """
@@ -131,15 +133,13 @@ def each_data_from_dir(datadir: pathlib.Path,
         yield data_factory(datadir, inp)
 
 
-def load_datasets_from_dir(datadir: pathlib.Path,
-                           data_factory: typing.Callable,
-                           **kwargs
-                           ) -> typing.List[TData]:
+def load_datasets_from_dir(
+    datadir: pathlib.Path, data_factory: collections.abc.Callable,
+    **kwargs
+) -> list[TData]:
     """
     Load a collection of datasets from given dir ``datadir``.
     """
     return list(
         each_data_from_dir(datadir, data_factory, **kwargs)
     )
-
-# vim:sw=4:ts=4:et:

@@ -12,8 +12,8 @@ from .. import base
 
 
 def filter_from_options(
-    key: str, options: typing.Dict[str, typing.Any]
-) -> typing.Dict[str, typing.Any]:
+    key: str, options: dict[str, typing.Any]
+) -> dict[str, typing.Any]:
     """Filter a key ``key`` in ``options.
 
     :param key: Key str in options
@@ -31,7 +31,7 @@ class Parser(base.StreamParser):
     """Parser for YAML files."""
 
     _type: typing.ClassVar[str] = "yaml"
-    _extensions: typing.Tuple[str, ...] = ("yaml", "yml")
+    _extensions: tuple[str, ...] = ("yaml", "yml")
     _ordered: typing.ClassVar[bool] = True
     _allow_primitives: typing.ClassVar[bool] = True
-    _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
+    _dict_opts: tuple[str, ...] = ("ac_dict", )

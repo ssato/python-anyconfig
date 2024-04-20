@@ -39,7 +39,7 @@ class DumperMixin:
     - _open_write_mode: Backend option to specify write mode passed to open()
     """
 
-    _dump_opts: typing.Tuple[str, ...] = ()
+    _dump_opts: tuple[str, ...] = ()
     _open_write_mode: typing.ClassVar[str] = "w"
 
     def wopen(self, filepath: PathOrStrT, **options) -> typing.IO:

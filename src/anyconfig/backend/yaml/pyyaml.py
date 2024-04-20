@@ -56,15 +56,17 @@ from ...utils import is_dict_like
 from .. import base
 from . import common
 
+if typing.TYPE_CHECKING:
+    import collections.abc
+
 
 _MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
 
 def _customized_loader(
-    container: typing.Callable[..., typing.Dict[str, typing.Any]],
-    loader: typing.Type[Loader] = Loader,
-    mapping_tag: str = _MAPPING_TAG
-) -> typing.Type[Loader]:
+    container: collections.abc.Callable[..., dict[str, typing.Any]],
+    loader: type[Loader] = Loader, mapping_tag: str = _MAPPING_TAG
+) -> type[Loader]:
     """Get the customized loader.
 
     Create or update loader with making given callble 'container' to make
@@ -75,7 +77,7 @@ def _customized_loader(
     """
     def construct_mapping(
         loader: Loader, node: typing.Any, *, deep: bool = False
-    ) -> typing.Dict[str, typing.Any]:
+    ) -> dict[str, typing.Any]:
         """Construct python object from yaml mapping node.
 
         It is based on :meth:`yaml.BaseConstructor.construct_mapping` in PyYAML
@@ -120,8 +122,8 @@ def _customized_loader(
 
 
 def _customized_dumper(
-    container: typing.Any, dumper: typing.Type[Dumper] = Dumper
-) -> typing.Type[Dumper]:
+    container: typing.Any, dumper: type[Dumper] = Dumper
+) -> type[Dumper]:
     """Counterpart of :func:`_customized_loader` for dumpers."""
     def container_representer(
         dumper: Dumper, data: typing.Any, mapping_tag: str = _MAPPING_TAG
@@ -134,7 +136,9 @@ def _customized_dumper(
     return dumper
 
 
-def yml_fnc_by_name(fname: str, **options) -> typing.Callable[..., typing.Any]:
+def yml_fnc_by_name(
+    fname: str, **options
+) -> collections.abc.Callable[..., typing.Any]:
     """Get yaml loading/dumping function by name.
 
     :param fname:
@@ -160,9 +164,9 @@ def yml_fnc_(fname: str, *args, **options) -> typing.Any:
 
 def yml_load(
     stream: typing.IO, container: base.GenContainerT,
-    yml_fnc: typing.Callable[..., typing.Any] = yml_fnc_,
+    yml_fnc: collections.abc.Callable[..., typing.Any] = yml_fnc_,
     **options
-) -> typing.Dict[str, typing.Any]:
+) -> dict[str, typing.Any]:
     """Call yaml.safe_load and yaml.load.
 
     :param stream: a file or file-like object to load YAML content
@@ -191,7 +195,7 @@ def yml_load(
 
 def yml_dump(
     data: typing.Any, stream: typing.IO,
-    yml_fnc: typing.Callable[..., typing.Any] = yml_fnc_,
+    yml_fnc: collections.abc.Callable[..., typing.Any] = yml_fnc_,
     **options
 ) -> None:
     """Call yaml.safe_dump and yaml.dump.
@@ -222,8 +226,8 @@ class Parser(common.Parser):
 
     _cid: typing.ClassVar[str] = "yaml.pyyaml"
     _priority: typing.ClassVar[int] = 30  # Higher priority than ruamel.yaml.
-    _load_opts: typing.Tuple[str, ...] = ("Loader", "ac_safe", "ac_dict")
-    _dump_opts: typing.Tuple[str, ...] = (
+    _load_opts: tuple[str, ...] = ("Loader", "ac_safe", "ac_dict")
+    _dump_opts: tuple[str, ...] = (
         "stream", "ac_safe", "Dumper", "default_style",
         "default_flow_style", "canonical", "indent", "width",
         "allow_unicode", "line_break", "encoding", "explicit_start",

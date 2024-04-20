@@ -25,12 +25,14 @@ from .datatypes import (
 from .utils import are_same_file_types
 
 if typing.TYPE_CHECKING:
+    import collections.abc
+
     from ..common import (
         InDataT, InDataExT
     )
 
 
-MappingT = typing.Dict[str, typing.Any]
+MappingT = dict[str, typing.Any]
 MaybeParserOrIdOrTypeT = typing.Optional[typing.Union[str, ParserT]]
 
 
@@ -62,8 +64,9 @@ def try_to_load_schema(**options) -> typing.Optional[InDataT]:
 
 
 def _single_load(
-    ioi: ioinfo.IOInfo, *, ac_parser: MaybeParserOrIdOrTypeT = None,
-    ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
+    ioi: ioinfo.IOInfo, *,
+    ac_parser: MaybeParserOrIdOrTypeT = None, ac_template: bool = False,
+    ac_context: typing.Optional[MappingT] = None,
     **options
 ) -> InDataExT:
     """Load data from a given ``ioi``.
@@ -168,7 +171,7 @@ def single_load(
 
 def multi_load(
     inputs: typing.Union[
-        typing.Iterable[ioinfo.PathOrIOInfoT], ioinfo.PathOrIOInfoT
+        collections.abc.Iterable[ioinfo.PathOrIOInfoT], ioinfo.PathOrIOInfoT
     ], ac_parser: MaybeParserOrIdOrTypeT = None,
     *,
     ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
@@ -275,10 +278,10 @@ def multi_load(
 
 def load(
     path_specs: typing.Union[
-        typing.Iterable[ioinfo.PathOrIOInfoT], ioinfo.PathOrIOInfoT
+        collections.abc.Iterable[ioinfo.PathOrIOInfoT], ioinfo.PathOrIOInfoT
     ],
     ac_parser: typing.Optional[str] = None, *,
-    ac_dict: typing.Optional[typing.Callable] = None,
+    ac_dict: typing.Optional[collections.abc.Callable] = None,
     ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
     **options
 ) -> InDataExT:
@@ -328,7 +331,7 @@ def load(
 
 def loads(
     content: str, ac_parser: MaybeParserOrIdOrTypeT = None, *,
-    ac_dict: typing.Optional[typing.Callable] = None,
+    ac_dict: typing.Optional[collections.abc.Callable] = None,
     ac_template: typing.Union[str, bool] = False,
     ac_context: typing.Optional[MappingT] = None,
     **options

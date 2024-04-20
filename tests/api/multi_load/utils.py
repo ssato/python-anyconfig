@@ -1,9 +1,11 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """File based test data collector - utility functions.
 """
+from __future__ import annotations
+
 import pathlib
 import typing
 import warnings
@@ -13,18 +15,21 @@ from ... import base
 
 from .datatypes import TData
 
+if typing.TYPE_CHECKING:
+    import collections.abc
+
 
 # .. seealso:: tests.api.multi_load.datatypes
 MaybeDataT = typing.Optional[
-    typing.Union[str, pathlib.Path, typing.Dict[str, typing.Any]]
+    typing.Union[str, pathlib.Path, dict[str, typing.Any]]
 ]
 
 
-def load_data_or_path(datadir: pathlib.Path,
-                      should_exist: typing.Iterable[str] = (),
-                      load: bool = True,
-                      default: typing.Optional[typing.Any] = None
-                      ) -> MaybeDataT:
+def load_data_or_path(
+    datadir: pathlib.Path, should_exist: collections.abc.Iterable[str] = (),
+    load: bool = True,
+    default: typing.Optional[typing.Any] = None
+) -> MaybeDataT:
     """
     Load data from a file in the ``datadir`` of which name matches ``pattern``.
     """
@@ -38,10 +43,10 @@ def load_data_or_path(datadir: pathlib.Path,
     return maybe_file
 
 
-def each_data_from_dir(datadir: pathlib.Path,
-                       pattern: str = '*.json',
-                       should_exist: typing.Iterable[str] = ()
-                       ) -> typing.Iterator[TData]:
+def each_data_from_dir(
+    datadir: pathlib.Path, pattern: str = '*.json',
+    should_exist: collections.abc.Iterable[str] = ()
+) -> collections.abc.Iterator[TData]:
     """
     Yield a collection of paths of data files under given dir.
     """
@@ -68,5 +73,3 @@ def each_data_from_dir(datadir: pathlib.Path,
             load_data_or_path(subdir / 'q', should_exist, default=''),
             load_data_or_path(subdir / 'c', should_exist, default={}),
         )
-
-# vim:sw=4:ts=4:et:

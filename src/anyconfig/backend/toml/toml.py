@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 - 2023 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2015 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Ref. python -c "import toml; help(toml); ..."
@@ -33,14 +33,12 @@ class Parser(base.StringStreamFnParser):
 
     _cid: typing.ClassVar[str] = "toml.toml"
     _type: typing.ClassVar[str] = "toml"
-    _extensions: typing.Tuple[str, ...] = ("toml", )
+    _extensions: tuple[str, ...] = ("toml", )
     _ordered: typing.ClassVar[bool] = True
-    _load_opts: typing.Tuple[str] = ("_dict", )
+    _load_opts: tuple[str] = ("_dict", )
     _dump_opts = _dict_opts = _load_opts
 
     _load_from_string_fn = base.to_method(toml.loads)
     _load_from_stream_fn = base.to_method(toml.load)
     _dump_to_string_fn = base.to_method(toml.dumps)
     _dump_to_stream_fn = base.to_method(toml.dump)
-
-# vim:sw=4:ts=4:et:

@@ -1,11 +1,13 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 # pylint: disable=ungrouped-imports
 """Test cases for the loader.
 """
+from __future__ import annotations
+
 import pathlib
 import typing
 
@@ -37,7 +39,7 @@ class TestCase(tests.common.loader.TestCase):
         ("ipath", "aux"), DATA, ids=DATA_IDS,
     )
     def test_loads(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
+        self, ipath: pathlib.Path, aux: dict[str, typing.Any]
     ):
         self._assert_loads(ipath, aux)
 
@@ -45,6 +47,6 @@ class TestCase(tests.common.loader.TestCase):
         ("ipath", "aux"), DATA, ids=DATA_IDS,
     )
     def test_load(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any]
+        self, ipath: pathlib.Path, aux: dict[str, typing.Any]
     ):
         self._assert_load(ipath, aux)

@@ -3,7 +3,9 @@
 # SPDX-License-Identifier: MIT
 #
 """Some common constants, utility functions and so on."""
+from __future__ import annotations
+
 import typing
 
 
-ResultT = typing.Tuple[bool, typing.Union[str, typing.List[str]]]
+ResultT = tuple[bool, typing.Union[str, list[str]]]

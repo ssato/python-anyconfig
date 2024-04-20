@@ -13,13 +13,16 @@ import warnings
 
 from .constants import GLOB_MARKER, PATH_SEP
 
+if typing.TYPE_CHECKING:
+    import collections.abc
+
 
 def get_encoding() -> str:
     """Get the (prefered) encoding or 'utf-8'."""
     return (locale.getpreferredencoding() or "UTF-8").lower()
 
 
-def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
+def get_path_and_ext(path: pathlib.Path) -> tuple[pathlib.Path, str]:
     """Normaliez path objects and retunr it with file extension."""
     try:
         abs_path = path.expanduser().resolve()
@@ -35,9 +38,9 @@ def get_path_and_ext(path: pathlib.Path) -> typing.Tuple[pathlib.Path, str]:
     )
 
 
-def expand_from_path(path: pathlib.Path,
-                     marker: str = GLOB_MARKER
-                     ) -> typing.Iterator[pathlib.Path]:
+def expand_from_path(
+    path: pathlib.Path, marker: str = GLOB_MARKER
+) -> collections.abc.Iterator[pathlib.Path]:
     """Expand ``path`` contains '*' in its path str."""
     if not path.is_absolute():
         path = path.resolve()

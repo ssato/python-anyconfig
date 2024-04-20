@@ -11,7 +11,7 @@ import typing
 from . import datatypes
 
 
-IOI_KEYS_LIST: typing.List[str] = sorted(datatypes.IOI_KEYS)
+IOI_KEYS_LIST: list[str] = sorted(datatypes.IOI_KEYS)
 
 
 def is_path_str(obj: typing.Any) -> bool:

@@ -6,6 +6,8 @@
 # pylint: disable=ungrouped-imports
 """Test cases for the loader.
 """
+from __future__ import annotations
+
 import pathlib
 import typing
 
@@ -38,7 +40,7 @@ class TestCase(tests.common.dumper.TestCase):
         ("ipath", "aux"), DATA, ids=DATA_IDS,
     )
     def test_dumps(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
+        self, ipath: pathlib.Path, aux: dict[str, typing.Any],
     ):
         self._assert_dumps(ipath, aux)
 
@@ -46,7 +48,7 @@ class TestCase(tests.common.dumper.TestCase):
         ("ipath", "aux"), DATA, ids=DATA_IDS,
     )
     def test_dump(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
+        self, ipath: pathlib.Path, aux: dict[str, typing.Any],
         tmp_path: pathlib.Path
     ):
         self._assert_dump(ipath, aux, tmp_path)

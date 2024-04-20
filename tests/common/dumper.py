@@ -1,10 +1,12 @@
 #
-# Copyright (C) 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,too-few-public-methods
 r"""Dumper test cases.
 """
+from __future__ import annotations
+
 import pathlib
 import typing
 import warnings
@@ -20,7 +22,7 @@ class TestCase:
     exact_match: bool = True
 
     def _get_all(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
+        self, ipath: pathlib.Path, aux: dict[str, typing.Any],
     ):
         if self.psr_cls is None:
             warnings.warn(  # noqa
@@ -40,7 +42,7 @@ class TestCase:
         )
 
     def _assert_dumps(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
+        self, ipath: pathlib.Path, aux: dict[str, typing.Any],
     ):
         (exp, opts, psr, idata) = self._get_all(ipath, aux)
         out_s: str = psr.dumps(idata, **opts)
@@ -50,7 +52,7 @@ class TestCase:
             assert out_s == exp, f"'{out_s}' vs. '{exp}', opts={opts!r}"
 
     def _assert_dump(
-        self, ipath: pathlib.Path, aux: typing.Dict[str, typing.Any],
+        self, ipath: pathlib.Path, aux: dict[str, typing.Any],
         tmp_path: pathlib.Path
     ):
         (exp, opts, psr, idata) = self._get_all(ipath, aux)

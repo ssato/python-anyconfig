@@ -1,11 +1,12 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Provides base class to collect test data for cli test cases.
 """
+from __future__ import annotations
+
 import pathlib
-import typing
 
 from .. import base
 from . import datatypes
@@ -98,7 +99,7 @@ class MultiDataCollector(base.TDataCollector):
             scm or None
         )
 
-    def load_datasets(self) -> typing.List[datatypes.TData]:
+    def load_datasets(self) -> list[datatypes.TData]:
         """Load test data from files.
         """
         _datasets = [

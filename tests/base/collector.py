@@ -1,9 +1,11 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """File based test data collector.
 """
+from __future__ import annotations
+
 import inspect
 import pathlib
 import typing
@@ -11,6 +13,9 @@ import typing
 from . import (
     constants, datatypes, utils
 )
+
+if typing.TYPE_CHECKING:
+    import collections.abc
 
 
 DICT_0 = dict()
@@ -24,13 +29,13 @@ class TDataCollector:
     pattern: str = '*.json'  # input file name pattern
 
     # sub dir names of expected data files should be found always.
-    should_exist: typing.Iterable[str] = ('e', )
+    should_exist: collections.abc.Iterable[str] = ('e', )
 
     # True if you want to keep the order of keys of dicts loaded.
     ordered: bool = False
 
     root: typing.Optional[pathlib.Path] = None
-    datasets: typing.List[datatypes.TData] = []
+    datasets: list[datatypes.TData] = []
     initialized: bool = False
 
     @classmethod
@@ -75,7 +80,7 @@ class TDataCollector:
             utils.load_data(ctx, default=DICT_0, ordered=self.ordered)
         )
 
-    def load_datasets(self) -> typing.List[datatypes.TData]:
+    def load_datasets(self) -> list[datatypes.TData]:
         """Load test data from files.
         """
         _datasets = [
@@ -97,7 +102,7 @@ class TDataCollector:
 
         return _datasets
 
-    def each_data(self) -> typing.Iterable[datatypes.TData]:
+    def each_data(self) -> collections.abc.Iterable[datatypes.TData]:
         """Yields test data.
         """
         if not self.initialized:
@@ -106,5 +111,3 @@ class TDataCollector:
         for _datadir, data in self.datasets:
             for tdata in data:
                 yield tdata
-
-# vim:sw=4:ts=4:et:

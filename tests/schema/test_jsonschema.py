@@ -1,10 +1,13 @@
 #
-# Copyright (C) 2015 - 2019 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2015 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring, invalid-name, protected-access
 # pylint: disable=bare-except
-import unittest
+from __future__ import annotations
+
+import copy
+import pytest
 
 try:
     import anyconfig.schema.jsonschema as TT
@@ -13,167 +16,154 @@ except ImportError:
     SUPPORTED: bool = False  # type: ignore
 
 
-class Test_00_Base(unittest.TestCase):
-
-    obj = {"a": 1}
-    schema = {"type": "object",
-              "properties": {"a": {"type": "integer"}}}
-
-    obj2 = dict(a=1, b=[1, 2], c=dict(d="aaa", e=0.1))
-    ref_scm = {"properties": {"a": {"type": "integer"},
-                              "b": {"items": {"type": "integer"},
-                                    "type": "array"},
-                              "c": {"properties": {"d": {"type": "string"},
-                                                   "e": {"type":
-                                                         "number"}},
-                                    "type": "object"}},
-               "type": "object"}
-
-    opts = dict(ac_schema_typemap=SUPPORTED)
+@pytest.mark.parametrize(
+    ("arr", "ops", "exp"),
+    (([], {}, {"items": {"type": "string"}, "type": "array"}),
+     ([1], {}, {"items": {"type": "integer"}, "type": "array"}),
+     ),
+)
+def test_array_to_schema(arr, ops, exp):
+    assert TT.array_to_schema(arr, **ops) == exp
 
 
-class Test_00_Functions(Test_00_Base):
-
-    def test_20_array_to_schema(self):
-        scm = TT.array_to_schema([1])
-        ref = dict(items=dict(type="integer"), type="array")
-        self.assertEqual(scm, ref, scm)
-
-    def test_22_array_to_schema__empty_array(self):
-        scm = TT.array_to_schema([])
-        ref = dict(items=dict(type="string"), type="array")
-        self.assertEqual(scm, ref, scm)
-
-    def test_30_object_to_schema_nodes_iter(self):
-        scm = TT.object_to_schema({"a": 1})
-        ref = dict(type="object", properties=dict(a=dict(type="integer")))
-        self.assertEqual(scm, ref, scm)
+@pytest.mark.parametrize(
+    ("obj", "ops", "exp"),
+    (({"a": 1}, {},
+      {"type": "object", "properties": {"a": {"type": "integer"}}}),
+     ),
+)
+def test_object_to_schema(obj, ops, exp):
+    assert TT.object_to_schema(obj, **ops) == exp
 
 
-@unittest.skipIf(not SUPPORTED, "json schema lib is not available")
-class Test_10_Validation(Test_00_Base):
-    obj_ng = {"a": "aaa"}
+_OBJ_10: dict = {"a": 1}
+_SCM_10: dict = {
+    "properties": {"a": {"type": "integer"}},
+    "type": "object"
+}
+_STRICT_SCM_10 = copy.deepcopy(_SCM_10)
+_STRICT_SCM_10["required"] = ["a"]
 
-    def test_10_validate(self):
-        (ret, msg) = TT.validate(self.obj, self.schema)
-        self.assertFalse(msg)
-        self.assertTrue(ret)
-
-    def test_12_validate__ng(self):
-        (ret, msg) = TT.validate(self.obj_ng, self.schema)
-        self.assertTrue(msg)
-        self.assertFalse(ret)
-
-    def test_14_validate__ng_no_safe(self):
-        self.assertRaises(Exception, TT.validate, self.obj_ng,
-                          self.schema, ac_schema_safe=False)
-
-    def test_20_is_valid_ok(self):
-        self.assertTrue(TT.is_valid(self.obj, self.schema))
-
-    def test_22_is_valid_ng(self):
-        self.assertFalse(
-            TT.is_valid(self.obj_ng, self.schema, ac_schema_safe=True)
-        )
-
-    def test_24_is_valid_or_fail_ng_1(self):
-        with self.assertRaises(TT.ValidationError):
-            TT.is_valid(self.obj_ng, self.schema, ac_schema_safe=False)
+_OBJ_20: dict = {"a": 1, "b": [1, 2], "c": {"d": "aaa", "e": 0.1}}
+_SCM_20: dict = {
+    "properties": {
+        "a": {"type": "integer"},
+        "b": {"items": {"type": "integer"}, "type": "array"},
+        "c": {
+            "properties": {"d": {"type": "string"}, "e": {"type": "number"}},
+            "type": "object"
+        }
+    },
+    "type": "object"
+}
+_STRICT_SCM_20 = copy.deepcopy(_SCM_20)
+_STRICT_SCM_20["properties"]["b"]["minItems"] = 2
+_STRICT_SCM_20["properties"]["b"]["uniqueItems"] = True
+_STRICT_SCM_20["properties"]["c"]["required"] = ["d", "e"]
+_STRICT_SCM_20["required"] = ["a", "b", "c"]
 
 
-@unittest.skipIf(not SUPPORTED, "json schema lib is not available")
-class Test_12_Validation_Errors(Test_00_Base):
+@pytest.mark.parametrize(
+    ("obj", "exp_scm"),
+    ((None, {"type": "null"}),
+     (0, {"type": "integer"}),
+     ("aaa", {"type": "string"}),
+     ([1], {"items": {"type": "integer"}, "type": "array"}),
+     (_OBJ_10, _SCM_10),
+     (_OBJ_20, _SCM_20),
+     ),
+)
+def test_gen_schema_validate(obj, exp_scm):
+    assert TT.gen_schema(obj) == exp_scm
 
-    obj = dict(a=1, b=2.0)
-    scm = {"type": "object", "properties": {"a": {"type": "integer"},
-                                            "b": {"type": "string"}}}
-
-    def test_10_validate__ng(self):
-        (ret, msg) = TT.validate(self.obj, self.scm, ac_schema_errors=True)
-        self.assertTrue(msg)  # ["'a' is not of type ...", "'b' is not ..."]
-        self.assertFalse(ret)
-
-
-class Test_20_GenSchema(Test_00_Base):
-
-    def test_40_gen_schema__primitive_types(self):
-        self.assertEqual(TT.gen_schema(None), {"type": "null"})
-        self.assertEqual(TT.gen_schema(0), {"type": "integer"})
-        self.assertEqual(TT.gen_schema("aaa"), {"type": "string"})
-
-        scm = TT.gen_schema([1])
-        ref_scm = {"items": {"type": "integer"}, "type": "array"}
-        self.assertEqual(scm, ref_scm)
-
-        scm = TT.gen_schema({"a": 1})
-        ref_scm = {"properties": {"a": {"type": "integer"}}, "type": "object"}
-        self.assertEqual(scm, ref_scm)
-
-    def test_42_gen_schema_and_validate(self):
-        scm = TT.gen_schema(self.obj)
-        self.assertTrue(TT.validate(self.obj, scm))
-
-    def test_44_gen_schema__complex_types(self):
-        scm = TT.gen_schema(self.obj2)
-        self.assertEqual(scm, self.ref_scm)
-
-    def test_46_gen_schema_and_validate__complex_types(self):
-        scm = TT.gen_schema(self.obj2)
-        self.assertTrue(TT.validate(self.obj2, scm))
+    if SUPPORTED:
+        assert TT.validate(obj, exp_scm)
 
 
-def _gen_scm(val):
-    return TT.gen_schema(val, ac_schema_strict=True)
+@pytest.mark.parametrize(
+    ("obj", "exp_scm"),
+    ((None, {"type": "null"}),
+     (0, {"type": "integer"}),
+     ("aaa", {"type": "string"}),
+     ([1],
+      {"items": {"type": "integer"}, "type": "array",
+       "minItems": 1, "uniqueItems": True}),
+     (["aaa", "bbb", "aaa"],
+      {"items": {"type": "string"}, "type": "array",
+       "minItems": 3, "uniqueItems": False}),
+     (_OBJ_10, _STRICT_SCM_10),
+     (_OBJ_20, _STRICT_SCM_20),
+     ),
+)
+def test_gen_strict_schema_validate(obj, exp_scm):
+    assert TT.gen_schema(obj, ac_schema_strict=True) == exp_scm
+
+    if SUPPORTED:
+        assert TT.validate(obj, exp_scm)
 
 
-class Test_30_GenStrictSchema(Test_00_Base):
+_SKIP_MSG: str = "json schema lib is not available"
 
-    schema = {"type": "object",
-              "properties": {"a": {"type": "integer"}},
-              "required": ["a"]}
 
-    ref_scm = {"properties": {"a": {"type": "integer"},
-                              "b": {"items": {"type": "integer"},
-                                    "type": "array",
-                                    "minItems": 2, "uniqueItems": True},
-                              "c": {"properties": {"d": {"type": "string"},
-                                                   "e": {"type":
-                                                         "number"}},
-                                    "type": "object",
-                                    "required": ["d", "e"]}},
-               "type": "object",
-               "required": ["a", "b", "c"]}
+@pytest.mark.skipif(not SUPPORTED, reason=_SKIP_MSG)
+@pytest.mark.parametrize(
+    ("obj", "scm"),
+    ((_OBJ_10, _SCM_10),
+     (_OBJ_20, _SCM_20),
+     (_OBJ_10, _STRICT_SCM_10),
+     (_OBJ_20, _STRICT_SCM_20),
+     ),
+)
+def test_validate(obj, scm):
+    (ret, msg) = TT.validate(obj, scm)
+    assert not msg
+    assert ret
 
-    def test_40_gen_schema__primitive_types(self):
-        self.assertEqual(_gen_scm(None), {"type": "null"})
-        self.assertEqual(_gen_scm(0), {"type": "integer"})
-        self.assertEqual(_gen_scm("aaa"), {"type": "string"})
 
-        scm = _gen_scm([1])
-        ref_scm = {"items": {"type": "integer"}, "type": "array",
-                   "minItems": 1, "uniqueItems": True}
-        self.assertEqual(scm, ref_scm)
+_NG_OBJ_10: dict = {"a": "aaa"}
 
-        scm = _gen_scm(["aaa", "bbb", "aaa"])
-        ref_scm = {"items": {"type": "string"}, "type": "array",
-                   "minItems": 3, "uniqueItems": False}
-        self.assertEqual(scm, ref_scm)
 
-        scm = _gen_scm({"a": 1})
-        ref_scm = {"properties": {"a": {"type": "integer"}},
-                   "type": "object", "required": ["a"]}
-        self.assertEqual(scm, ref_scm)
+@pytest.mark.skipif(not SUPPORTED, reason=_SKIP_MSG)
+@pytest.mark.parametrize(
+    ("obj", "scm"),
+    ((_NG_OBJ_10, _SCM_10),
+     (_NG_OBJ_10, _SCM_20),
+     ),
+)
+def test_validate__an_error(obj, scm):
+    (ret, msg) = TT.validate(obj, scm, ac_schema_safe=True)
+    assert msg
+    assert not ret
 
-    def test_42_gen_schema_and_validate(self):
-        scm = _gen_scm(self.obj)
-        self.assertTrue(TT.validate(self.obj, scm))
+    with pytest.raises(Exception):  # noqa: B017
+        TT.validate(obj, scm, ac_schema_safe=False)
 
-    def test_44_gen_schema__complex_types(self):
-        scm = _gen_scm(self.obj2)
-        self.assertEqual(scm, self.ref_scm)
 
-    def test_46_gen_schema_and_validate__complex_types(self):
-        scm = _gen_scm(self.obj2)
-        self.assertTrue(TT.validate(self.obj2, scm))
+@pytest.mark.skipif(not SUPPORTED, reason=_SKIP_MSG)
+def test_validate__errors():
+    obj: dict = {"a": 1, "b": 2.0}
+    scm: dict = {
+        "type": "object",
+        "properties": {"a": {"type": "integer"}, "b": {"type": "string"}}
+    }
 
-# vim:sw=4:ts=4:et:
+    (ret, msg) = TT.validate(obj, scm, ac_schema_errors=True)
+    assert msg  # ["'a' is not of type ...", "'b' is not ..."]
+    assert not ret
+
+
+@pytest.mark.skipif(not SUPPORTED, reason=_SKIP_MSG)
+@pytest.mark.filterwarnings("ignore")
+@pytest.mark.parametrize(
+    ("obj", "scm", "success"),
+    ((_OBJ_10, _SCM_10, True),
+     (_NG_OBJ_10, _SCM_10, False),
+     (_NG_OBJ_10, _SCM_20, False),
+     ),
+)
+def test_is_valid(obj, scm, success):
+    assert TT.is_valid(obj, scm) == success
+
+    if not success:
+        with pytest.raises(TT.ValidationError):
+            TT.is_valid(obj, scm, ac_schema_safe=False)

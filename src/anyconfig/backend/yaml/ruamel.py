@@ -52,10 +52,10 @@ except AttributeError as exc:
     msg = "ruamel.yaml may be too old to use!"
     raise ImportError(msg) from exc
 
-_YAML_INIT_KWARGS: typing.Tuple[str, ...] = (  # kwargs for ruamel.yaml.YAML
+_YAML_INIT_KWARGS: tuple[str, ...] = (  # kwargs for ruamel.yaml.YAML
     "typ", "pure", "plug_ins"
 )
-_YAML_INSTANCE_MEMBERS: typing.Tuple[str, ...] = (
+_YAML_INSTANCE_MEMBERS: tuple[str, ...] = (
     "allow_duplicate_keys", "allow_unicode",
     "block_seq_indent", "canonical", "composer",
     "constructor", "default_flow_style", "default_style",

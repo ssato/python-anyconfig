@@ -11,6 +11,7 @@ Template rendering module for jinja2-based template config files.
 """
 from __future__ import annotations
 
+import collections.abc
 import locale
 import pathlib
 import os
@@ -24,12 +25,14 @@ from .. import utils
 
 
 # .. seealso:: jinja2.loaders.FileSystemLoader.__init__
-PathsT = typing.Sequence[typing.Union[str, pathlib.Path]]
+PathsT = collections.abc.Sequence[typing.Union[str, pathlib.Path]]
 MaybePathsT = typing.Optional[PathsT]
-MaybeContextT = typing.Optional[typing.Dict[str, typing.Any]]
-MaybeFiltersT = typing.Optional[typing.Iterable[typing.Callable]]
+MaybeContextT = typing.Optional[dict[str, typing.Any]]
+MaybeFiltersT = typing.Optional[
+    collections.abc.Iterable[collections.abc.Callable]
+]
 
-RENDER_S_OPTS: typing.Tuple[str, ...] = (
+RENDER_S_OPTS: tuple[str, ...] = (
     "ctx", "paths", "filters",
     "autoescape"
 )
@@ -52,9 +55,9 @@ def tmpl_env(
     )
 
 
-def make_template_paths(template_file: pathlib.Path,
-                        paths: MaybePathsT = None
-                        ) -> typing.List[pathlib.Path]:
+def make_template_paths(
+    template_file: pathlib.Path, paths: MaybePathsT = None
+) -> list[pathlib.Path]:
     """Make a template paths.
 
     Make up a list of template search paths from given ``template_file`` path
@@ -72,11 +75,10 @@ def make_template_paths(template_file: pathlib.Path,
     return [tmpldir]
 
 
-def render_s(tmpl_s: str, ctx: MaybeContextT = None,
-             paths: MaybePathsT = None,
-             filters: MaybeFiltersT = None, *,
-             autoescape: bool = True
-             ) -> str:
+def render_s(
+    tmpl_s: str, ctx: MaybeContextT = None, paths: MaybePathsT = None,
+    filters: MaybeFiltersT = None, *, autoescape: bool = True
+) -> str:
     """Render a template as a str.
 
     Compile and render given template string 'tmpl_s' with context 'context'.

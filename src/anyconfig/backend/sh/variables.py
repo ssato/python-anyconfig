@@ -31,7 +31,7 @@ from ... import utils
 
 def _parseline(
     line: str
-) -> typing.Tuple[typing.Optional[str], typing.Optional[str]]:
+) -> tuple[typing.Optional[str], typing.Optional[str]]:
     """Parse a line contains shell variable definition.
 
     :param line: A string to parse, must not start with '#' (comment)
@@ -89,9 +89,9 @@ class Parser(base.StreamParser):
 
     _cid: typing.ClassVar[str] = "sh.variables"
     _type: typing.ClassVar[str] = "shellvars"
-    _extensions: typing.Tuple[str, ...] = ("sh", )
+    _extensions: tuple[str, ...] = ("sh", )
     _ordered: typing.ClassVar[bool] = True
-    _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
+    _dict_opts: tuple[str, ...] = ("ac_dict", )
 
     def load_from_stream(
         self, stream: typing.IO, container: base.GenContainerT, **kwargs

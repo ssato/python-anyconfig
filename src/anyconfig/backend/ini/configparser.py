@@ -41,6 +41,9 @@ import typing
 from ... import parser, utils
 from .. import base
 
+if typing.TYPE_CHECKING:
+    import collections.abc
+
 
 _SEP = ","
 try:
@@ -49,7 +52,7 @@ except AttributeError:
     DEFAULTSECT: str = "DEFAULT"  # type: ignore[no-redef]
 
 
-_QUOTED_RE: typing.Pattern = re.compile(
+_QUOTED_RE: re.Pattern = re.compile(
     r"^("
     r'".*"'
     r"|"
@@ -59,7 +62,7 @@ _QUOTED_RE: typing.Pattern = re.compile(
 
 
 def parse(
-    val_s: str, sep: str = _SEP, quoted_re: typing.Pattern = _QUOTED_RE
+    val_s: str, sep: str = _SEP, quoted_re: re.Pattern = _QUOTED_RE
 ) -> typing.Any:
     """Parse expression.
 
@@ -91,9 +94,10 @@ def _to_s(val: typing.Any, sep: str = ", ") -> str:
     return str(val)
 
 
-def parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
-                 sep: str = _SEP, **options
-                 ) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
+def parsed_items(
+    items: collections.abc.Iterable[tuple[str, typing.Any]],
+    sep: str = _SEP, **options
+) -> collections.abc.Iterator[tuple[str, typing.Any]]:
     """Parse an iterable of items.
 
     :param items: List of pairs, [(key, value)], or generator yields pairs
@@ -105,9 +109,9 @@ def parsed_items(items: typing.Iterable[typing.Tuple[str, typing.Any]],
         yield (key, __parse(val, sep))  # type: ignore[operator]
 
 
-def _make_parser(**kwargs
-                 ) -> typing.Tuple[typing.Dict[str, typing.Any],
-                                   configparser.ConfigParser]:
+def _make_parser(
+    **kwargs
+) -> tuple[dict[str, typing.Any], configparser.ConfigParser]:
     """Make an instance of configparser.ConfigParser."""
     # Optional arguments for configparser.ConfigParser{,readfp}
     kwargs_0 = utils.filter_options(
@@ -128,8 +132,8 @@ def _make_parser(**kwargs
 
 
 def _load(
-    stream: typing.IO, container: base.GenContainerT, sep: str = _SEP,
-    dkey: str = DEFAULTSECT, **kwargs
+    stream: typing.IO, container: base.GenContainerT,
+    sep: str = _SEP, dkey: str = DEFAULTSECT, **kwargs
 ) -> base.InDataT:
     """Load data from ``stream`` of which file should be in INI format.
 
@@ -157,8 +161,8 @@ def _load(
 
 
 def _dumps_itr(
-    cnf: typing.Dict[str, typing.Any], dkey: str = DEFAULTSECT
-) -> typing.Iterator[str]:
+    cnf: dict[str, typing.Any], dkey: str = DEFAULTSECT
+) -> collections.abc.Iterator[str]:
     """Dump data iterably.
 
     :param cnf: Configuration data to dump
@@ -175,7 +179,7 @@ def _dumps_itr(
         yield ""  # it will be a separator between each sections.
 
 
-def _dumps(cnf: typing.Dict[str, typing.Any], **_kwargs) -> str:
+def _dumps(cnf: dict[str, typing.Any], **_kwargs) -> str:
     """Dump data as a str.
 
     :param cnf: Configuration data to dump
@@ -193,12 +197,12 @@ class Parser(base.Parser, base.FromStreamLoaderMixin,
 
     _cid: typing.ClassVar[str] = "ini.configparser"
     _type: typing.ClassVar[str] = "ini"
-    _extensions: typing.Tuple[str, ...] = ("ini", )
-    _load_opts: typing.Tuple[str, ...] = (
+    _extensions: tuple[str, ...] = ("ini", )
+    _load_opts: tuple[str, ...] = (
         "defaults", "dict_type", "allow_no_value", "filename",
         "ac_parse_value", "strict"
     )
-    _dict_opts: typing.Tuple[str, ...] = ("dict_type", )
+    _dict_opts: tuple[str, ...] = ("dict_type", )
 
     dump_to_string = base.to_method(_dumps)
     load_from_stream = base.to_method(_load)

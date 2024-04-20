@@ -12,6 +12,9 @@ from __future__ import annotations
 
 import typing
 
+if typing.TYPE_CHECKING:
+    import builtins
+
 
 class Processor:
     """Abstract processor class to provide basic implementation.
@@ -30,7 +33,7 @@ class Processor:
     _cid: typing.ClassVar[str] = ""
     _type: typing.ClassVar[str] = ""
     _priority: typing.ClassVar[int] = 0
-    _extensions: typing.Tuple[str, ...] = ()
+    _extensions: tuple[str, ...] = ()
 
     @classmethod
     def cid(cls) -> str:
@@ -48,13 +51,13 @@ class Processor:
         return cls._priority
 
     @classmethod
-    def extensions(cls) -> typing.Tuple[str, ...]:
+    def extensions(cls) -> tuple[str, ...]:
         """Get the list of file extensions of files it can process."""
         return cls._extensions
 
     @classmethod
     def __eq__(
-        cls, other: typing.Type[Processor]  # type: ignore[override]
+        cls, other: builtins.type[Processor]  # type: ignore[override]
     ) -> bool:
         """Test equality."""
         return cls.cid() == other.cid()

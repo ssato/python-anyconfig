@@ -44,10 +44,10 @@ class LoaderMixin:
     - _open_read_mode: Backend option to specify read mode passed to open()
     """
 
-    _load_opts: typing.Tuple[str, ...] = ()
+    _load_opts: tuple[str, ...] = ()
     _ordered: typing.ClassVar[bool] = False
     _allow_primitives: typing.ClassVar[bool] = False
-    _dict_opts: typing.Tuple[str, ...] = ()
+    _dict_opts: tuple[str, ...] = ()
     _open_read_mode: typing.ClassVar[str] = "r"
 
     @classmethod
@@ -66,7 +66,7 @@ class LoaderMixin:
         return cls._allow_primitives
 
     @classmethod
-    def dict_options(cls) -> typing.Tuple[str, ...]:
+    def dict_options(cls) -> tuple[str, ...]:
         """Get the list of dict factory options."""
         return cls._dict_opts
 

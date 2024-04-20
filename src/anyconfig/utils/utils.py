@@ -7,6 +7,9 @@ from __future__ import annotations
 
 import typing
 
+if typing.TYPE_CHECKING:
+    import collections.abc
+
 
 def noop(val: typing.Any, *_args, **_kwargs) -> typing.Any:
     """Do nothing.
@@ -18,8 +21,9 @@ def noop(val: typing.Any, *_args, **_kwargs) -> typing.Any:
 
 
 def filter_options(
-    keys: typing.Iterable[str], options: typing.Mapping[str, typing.Any]
-) -> typing.Dict[str, typing.Any]:
+    keys: collections.abc.Iterable[str],
+    options: collections.abc.Mapping[str, typing.Any]
+) -> dict[str, typing.Any]:
     """Filter 'options' with given 'keys'.
 
     :param keys: key names of optional keyword arguments

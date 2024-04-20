@@ -17,7 +17,7 @@ if typing.TYPE_CHECKING:
 
 
 @functools.lru_cache(None)
-def list_parser_types() -> typing.List[str]:
+def list_parser_types() -> list[str]:
     """Provide an wrapper of api.list_types() to memoize its result."""
     return api.list_types()
 
@@ -64,7 +64,7 @@ def exit_if_load_failure(cnf: api.InDataExT, msg: str) -> None:
 
 
 def load_diff(
-    args: argparse.Namespace, extra_opts: typing.Dict[str, typing.Any]
+    args: argparse.Namespace, extra_opts: dict[str, typing.Any]
 ) -> api.InDataExT:
     """Load update data.
 

@@ -1,10 +1,12 @@
 #
-# Copyright (C) 2023 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
 r"""Test cases for tests.common.paths.
 """
+from __future__ import annotations
+
 import json
 import pathlib
 import typing
@@ -44,8 +46,7 @@ def test_get_resource_dir(
      )
 )
 def test_get_aux_data_paths(
-    ipath: str, aux_paths: typing.Tuple[str, ...],
-    tmp_path: pathlib.Path
+    ipath: str, aux_paths: tuple[str, ...], tmp_path: pathlib.Path
 ):
     (tmp_path / ipath).touch()
     paths = [tmp_path / a for a in aux_paths]
@@ -81,7 +82,7 @@ def test_get_aux_data_paths(
      )
 )
 def test_get_data(
-    ipaths: typing.Tuple[str], aux_paths: typing.Tuple[str, ...],
+    ipaths: tuple[str], aux_paths: tuple[str, ...],
     tmp_path: pathlib.Path
 ):
     for ipath in ipaths:
@@ -131,8 +132,8 @@ def test_get_data(
      )
 )
 def test_load_data(
-    ipaths: typing.Tuple[str],
-    aux_data: typing.Tuple[typing.Tuple[str, typing.Any], ...],
+    ipaths: tuple[str],
+    aux_data: tuple[tuple[str, typing.Any], ...],
     tmp_path: pathlib.Path
 ):
     for ipath in ipaths:

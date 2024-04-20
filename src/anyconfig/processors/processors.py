@@ -10,7 +10,9 @@ import operator
 import typing
 
 from . import utils
+
 if typing.TYPE_CHECKING:
+    import builtins
     from .datatypes import (
         ProcT, ProcsT, ProcClsT, ProcClssT, MaybeProcT
     )
@@ -30,7 +32,7 @@ class Processors:
             children class objects to initialize this, or None
         """
         # {<processor_class_id>: <processor_instance>}
-        self._processors: typing.Dict[  # type: ignore[valid-type]
+        self._processors: dict[  # type: ignore[valid-type]
             str, ProcT
         ] = {}  # type: ignore[valid-type]
         if processors is not None:
@@ -62,7 +64,7 @@ class Processors:
 
         return list(prs)
 
-    def list_by_cid(self) -> typing.List[typing.Tuple[str, ProcsT]]:
+    def list_by_cid(self) -> builtins.list[tuple[str, ProcsT]]:
         """List processors by those IDs.
 
         :return:
@@ -70,10 +72,12 @@ class Processors:
             each cid, [(cid, [:class:`Processor`)]]
         """
         prs = self._processors
-        return sorted(((cid, [prs[cid]]) for cid in sorted(prs.keys())),
-                      key=operator.itemgetter(0))
+        return sorted(
+            ((cid, [prs[cid]]) for cid in sorted(prs.keys())),
+            key=operator.itemgetter(0)
+        )
 
-    def list_by_type(self) -> typing.List[typing.Tuple[str, ProcsT]]:
+    def list_by_type(self) -> builtins.list[tuple[str, ProcsT]]:
         """List processors by those types.
 
         :return:
@@ -82,8 +86,9 @@ class Processors:
         """
         return utils.list_by_x(self.list(), "type")
 
-    def list_by_x(self, item: typing.Optional[str] = None
-                  ) -> typing.List[typing.Tuple[str, ProcsT]]:
+    def list_by_x(
+        self, item: typing.Optional[str] = None
+    ) -> builtins.list[tuple[str, ProcsT]]:
         """List processors by those factor 'x'.
 
         :param item: Grouping key, one of 'cid', 'type' and 'extensions'
@@ -108,7 +113,7 @@ class Processors:
 
         return res
 
-    def list_x(self, key: typing.Optional[str] = None) -> typing.List[str]:
+    def list_x(self, key: typing.Optional[str] = None) -> builtins.list[str]:
         """List the factor 'x' of processors.
 
         :param key: Which of key to return from 'cid', 'type', and 'extention'
@@ -129,9 +134,10 @@ class Processors:
         )
         raise ValueError(msg)
 
-    def findall(self, obj: typing.Optional[ioinfo.PathOrIOInfoT],
-                forced_type: typing.Optional[str] = None
-                ) -> typing.List[ProcT]:
+    def findall(
+        self, obj: typing.Optional[ioinfo.PathOrIOInfoT],
+        forced_type: typing.Optional[str] = None
+    ) -> builtins.list[ProcT]:
         """Find all of the processors match with tthe given conditions.
 
         :param obj:

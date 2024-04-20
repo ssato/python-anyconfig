@@ -9,6 +9,9 @@ import functools
 import pathlib
 import typing
 
+if typing.TYPE_CHECKING:
+    import collections.abc
+
 
 def not_implemented(
     *_args, **_options
@@ -26,8 +29,8 @@ def ensure_outdir_exists(filepath: typing.Union[str, pathlib.Path]) -> None:
 
 
 def to_method(
-    func: typing.Callable[..., typing.Any]
-) -> typing.Callable[..., typing.Any]:
+    func: collections.abc.Callable[..., typing.Any]
+) -> collections.abc.Callable[..., typing.Any]:
     """Lift :func:`func` to a method.
 
     It will be called with the first argument 'self' ignored.
@@ -37,7 +40,7 @@ def to_method(
     @functools.wraps(func)
     def wrapper(
         *args, **kwargs
-    ) -> typing.Callable[..., typing.Any]:
+    ) -> collections.abc.Callable[..., typing.Any]:
         """Original function decorated."""
         return func(*args[1:], **kwargs)
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Misc simple parsers."""
@@ -9,15 +9,18 @@ import re
 import typing
 import warnings
 
+if typing.TYPE_CHECKING:
+    import collections.abc
 
-INT_PATTERN: typing.Pattern = re.compile(r"^(\d|([1-9]\d+))$")
-FLOAT_PATTERN: typing.Pattern = re.compile(r"^\d+[\.]\d+$")
-BOOL_TRUE_PATTERN: typing.Pattern = re.compile(r"^true$", re.I)
-BOOL_FALSE_PATTERN: typing.Pattern = re.compile(r"^false$", re.I)
-STR_PATTERN: typing.Pattern = re.compile(r"^['\"](.*)['\"]$")
+
+INT_PATTERN: re.Pattern = re.compile(r"^(\d|([1-9]\d+))$")
+FLOAT_PATTERN: re.Pattern = re.compile(r"^\d+[\.]\d+$")
+BOOL_TRUE_PATTERN: re.Pattern = re.compile(r"^true$", re.I)
+BOOL_FALSE_PATTERN: re.Pattern = re.compile(r"^false$", re.I)
+STR_PATTERN: re.Pattern = re.compile(r"^['\"](.*)['\"]$")
 
 PrimitiveT = typing.Union[str, int, float, bool]
-PrimitivesT = typing.List[PrimitiveT]
+PrimitivesT = list[PrimitiveT]
 
 
 def parse_single(  # noqa: PLR0911
@@ -59,11 +62,12 @@ def parse_list(str_: str, sep: str = ",") -> PrimitivesT:
     return [parse_single(x) for x in str_.split(sep) if x]
 
 
-AttrValsT = typing.Tuple[str, typing.Union[PrimitivesT, PrimitiveT]]
+AttrValsT = tuple[str, typing.Union[PrimitivesT, PrimitiveT]]
 
 
-def attr_val_itr(str_: str, avs_sep: str = ":", vs_sep: str = ",",
-                 as_sep: str = ";") -> typing.Iterator[AttrValsT]:
+def attr_val_itr(
+    str_: str, avs_sep: str = ":", vs_sep: str = ",", as_sep: str = ";"
+) -> collections.abc.Iterator[AttrValsT]:
     """Parse a list of atrribute and value pairs.
 
     This is a helper function for parse_attrlist_0.
@@ -95,8 +99,9 @@ def attr_val_itr(str_: str, avs_sep: str = ":", vs_sep: str = ",",
             yield (_attr, typing.cast(PrimitiveT, _values))
 
 
-def parse_attrlist_0(str_: str, avs_sep: str = ":", vs_sep: str = ",",
-                     as_sep: str = ";") -> typing.List[AttrValsT]:
+def parse_attrlist_0(
+    str_: str, avs_sep: str = ":", vs_sep: str = ",", as_sep: str = ";"
+) -> list[AttrValsT]:
     """Parse a list of atrribute and value pairs.
 
     This is a helper function for parse_attrlist.
@@ -117,7 +122,7 @@ def parse_attrlist_0(str_: str, avs_sep: str = ":", vs_sep: str = ",",
     return list(attr_val_itr(str_, avs_sep, vs_sep, as_sep))
 
 
-AttrValsDictT = typing.Dict[str, typing.Union[PrimitivesT, PrimitiveT]]
+AttrValsDictT = dict[str, typing.Union[PrimitivesT, PrimitiveT]]
 
 
 def parse_attrlist(str_: str, avs_sep: str = ":", vs_sep: str = ",",
@@ -142,9 +147,10 @@ ResultsT = typing.Union[
 ]
 
 
-def parse(str_: typing.Optional[str],
-          lsep: str = ",", avsep: str = ":", vssep: str = ",",
-          avssep: str = ";") -> ResultsT:
+def parse(
+    str_: typing.Optional[str], lsep: str = ",", avsep: str = ":",
+    vssep: str = ",", avssep: str = ";"
+) -> ResultsT:
     """Very simple generic parser."""
     if str_ is None or not str_:
         return parse_single(str_)
@@ -155,5 +161,3 @@ def parse(str_: typing.Optional[str],
         return parse_list(str_, lsep)
 
     return parse_single(str_)
-
-# vim:sw=4:ts=4:et:

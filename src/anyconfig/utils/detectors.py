@@ -34,6 +34,6 @@ _LIST_LIKE_TYPES = (collections.abc.Iterable, collections.abc.Sequence)
 def is_list_like(obj: typing.Any) -> TypeGuard[collections.abc.Iterable]:
     """Test if given object ``obj`` is a list or -like one."""
     return (
-        isinstance(obj, _LIST_LIKE_TYPES) and
-        not (isinstance(obj, str) or is_dict_like(obj))
+        isinstance(obj, _LIST_LIKE_TYPES)
+        and not (isinstance(obj, str) or is_dict_like(obj))
     )

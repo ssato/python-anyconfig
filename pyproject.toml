@@ -100,6 +100,15 @@ testpaths = [
 ]
 addopts = "--cov=src -vv -rxXs --cov --cov-report xml"
 
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+    "import-error",
+    "invalid-name",
+    "locally-disabled",
+    "too-many-ancestors",
+    "too-many-return-statements",
+]
+
 # .. seealso:: https://docs.astral.sh/ruff/settings/#top-level
 [tool.ruff]
 exclude = [

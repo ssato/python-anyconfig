@@ -5,10 +5,12 @@
 """Misc simple parsers."""
 from __future__ import annotations
 
-import collections.abc
 import re
 import typing
 import warnings
+
+if typing.TYPE_CHECKING:
+    import collections.abc
 
 
 INT_PATTERN: re.Pattern = re.compile(r"^(\d|([1-9]\d+))$")

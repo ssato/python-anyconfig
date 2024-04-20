@@ -6,12 +6,13 @@
 """A collection of models.processor.Processor and children classes."""
 from __future__ import annotations
 
-import builtins
 import operator
 import typing
 
 from . import utils
+
 if typing.TYPE_CHECKING:
+    import builtins
     from .datatypes import (
         ProcT, ProcsT, ProcClsT, ProcClssT, MaybeProcT
     )

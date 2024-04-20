@@ -9,7 +9,6 @@
 """Utility functions for anyconfig.processors."""
 from __future__ import annotations
 
-import collections
 import contextlib
 import operator
 import typing
@@ -21,6 +20,9 @@ from .. import common, ioinfo, models, utils
 from .datatypes import (
     ProcT, ProcsT, ProcClsT, MaybeProcT
 )
+
+if typing.TYPE_CHECKING:
+    import collections.abc
 
 
 def sort_by_prio(prs: collections.abc.Iterable[ProcT]) -> ProcsT:

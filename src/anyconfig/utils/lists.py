@@ -5,9 +5,11 @@
 """Misc utility routines for anyconfig module."""
 from __future__ import annotations
 
-import collections.abc
 import itertools
 import typing
+
+if typing.TYPE_CHECKING:
+    import collections.abc
 
 
 def groupby(

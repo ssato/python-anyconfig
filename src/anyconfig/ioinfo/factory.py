@@ -6,11 +6,13 @@
 """ioinfo.main to provide internal APIs used from other modules."""
 from __future__ import annotations
 
-import collections.abc
 import pathlib
 import typing
 
 from . import constants, datatypes, detectors, utils
+
+if typing.TYPE_CHECKING:
+    import collections.abc
 
 
 def from_path_object(path: pathlib.Path) -> datatypes.IOInfo:

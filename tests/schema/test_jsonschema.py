@@ -135,8 +135,8 @@ def test_validate__an_error(obj, scm):
     assert msg
     assert not ret
 
-    with pytest.raises(Exception):
-        _rm = TT.validate(obj, scm, ac_schema_safe=False)
+    with pytest.raises(Exception):  # noqa: B017
+        TT.validate(obj, scm, ac_schema_safe=False)
 
 
 @pytest.mark.skipif(not SUPPORTED, reason=_SKIP_MSG)
@@ -166,4 +166,4 @@ def test_is_valid(obj, scm, success):
 
     if not success:
         with pytest.raises(TT.ValidationError):
-            _rm = TT.is_valid(obj, scm, ac_schema_safe=False)
+            TT.is_valid(obj, scm, ac_schema_safe=False)

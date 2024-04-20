@@ -72,10 +72,7 @@ def _validate(
     Validate target object 'data' with given schema object.
     """
     try:
-        jsonschema.validate(
-            data, schema, format_checker=jsonschema.draft7_format_checker,
-            **options
-        )
+        jsonschema.validate(data, schema, **options)
     except (jsonschema.ValidationError, jsonschema.SchemaError,
             Exception) as exc:
         if ac_schema_safe:

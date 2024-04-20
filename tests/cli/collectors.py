@@ -7,7 +7,6 @@
 from __future__ import annotations
 
 import pathlib
-import typing
 
 from .. import base
 from . import datatypes

@@ -20,7 +20,7 @@ class TestCase:
     psr_cls = None
 
     def _get_all(
-        self, ipath: pathlib.Path, aux: Dict[str, typing.Any]
+        self, ipath: pathlib.Path, aux: dict[str, typing.Any]
     ):
         if self.psr_cls is None:
             warnings.warn(  # noqa

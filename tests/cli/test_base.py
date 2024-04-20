@@ -1,10 +1,12 @@
 #
-# Copyright (C) 2013 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2013 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
 """test cases for anyconfig.cli module.
 """
+from __future__ import annotations
+
 import contextlib
 import io
 import pathlib

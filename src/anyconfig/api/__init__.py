@@ -85,8 +85,6 @@ r"""Public APIs of anyconfig module.
 """
 from __future__ import annotations
 
-import typing
-
 from .datatypes import MaybeDataT
 from ._dump import (
     dump, dumps
@@ -123,7 +121,7 @@ from ..schema import (
 __version__ = "0.14.0"
 
 
-def version() -> typing.List[str]:
+def version() -> list[str]:
     """Version info.
 
     :return: A list of version info, [major, minor, release[, e.g. [0, 8, 2]

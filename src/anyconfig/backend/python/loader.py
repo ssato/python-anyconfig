@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to load python code conntains data.
@@ -62,7 +62,7 @@ class Loader(LoaderMixin):
     """Loader for python code files."""
 
     _allow_primitives: typing.ClassVar[bool] = True
-    _load_opts: typing.Tuple[str, ...] = ("allow_exec", )
+    _load_opts: tuple[str, ...] = ("allow_exec", )
 
     def loads(self, content: str, **options) -> InDataExT:
         """Load config from given string 'content' after some checks.

@@ -38,11 +38,11 @@ from .. import base
 from ... import utils
 
 
-_COMMENT_MARKERS: typing.Tuple[str, ...] = ("#", "!")
+_COMMENT_MARKERS: tuple[str, ...] = ("#", "!")
 _MIN_LEN_PAIR: int = 2
 
 
-def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
+def parseline(line: str) -> tuple[typing.Optional[str], str]:
     """Parse a line of Java properties file.
 
     :param line:
@@ -63,7 +63,7 @@ def parseline(line: str) -> typing.Tuple[typing.Optional[str], str]:
 
 def _pre_process_line(
     line: str,
-    cmarkers: typing.Tuple[str, ...] = _COMMENT_MARKERS
+    cmarkers: tuple[str, ...] = _COMMENT_MARKERS
 ) -> typing.Optional[str]:
     """Preprocess a line in properties; strip comments, etc.
 
@@ -143,9 +143,9 @@ class Parser(base.StreamParser):
 
     _cid: typing.ClassVar[str] = "properties.builtin"
     _type: typing.ClassVar[str] = "properties"
-    _extensions: typing.Tuple[str, ...] = ("properties", )
+    _extensions: tuple[str, ...] = ("properties", )
     _ordered: typing.ClassVar[bool] = True
-    _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
+    _dict_opts: tuple[str, ...] = ("ac_dict", )
 
     def load_from_stream(
         self, stream: typing.IO, container: base.GenContainerT, **kwargs

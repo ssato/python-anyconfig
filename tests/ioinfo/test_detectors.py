@@ -1,10 +1,12 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,consider-using-with
 r"""test cases for anyconfig.ioinfo.detectors.
 """
+from __future__ import annotations
+
 import pathlib
 import unittest
 import typing
@@ -12,13 +14,16 @@ import typing
 import anyconfig.ioinfo
 import anyconfig.ioinfo.detectors as TT
 
+if typing.TYPE_CHECKING:
+    import collections.abc
+
 
 class TestCase(unittest.TestCase):
 
-    def _run(self,
-             target_fn: typing.Callable[..., typing.Any],
-             ies: typing.Iterable[typing.Tuple[typing.Any, bool]]
-             ) -> None:
+    def _run(
+        self, target_fn: collections.abc.Callable[..., typing.Any],
+        ies: collections.abc.Iterable[tuple[typing.Any, bool]]
+    ) -> None:
         for inp, exp in ies:
             meth = self.assertTrue if exp else self.assertFalse
             meth(target_fn(inp), f'input: {inp!r}, expected: {exp!r}')

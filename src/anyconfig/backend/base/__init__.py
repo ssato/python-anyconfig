@@ -1,8 +1,10 @@
 #
-# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Backend basic classes, functions and constants."""
+from __future__ import annotations
+
 import typing
 
 from .compat import BinaryFilesMixin
@@ -27,8 +29,8 @@ from .parsers import (
 
 
 ParserT = typing.TypeVar("ParserT", bound=Parser)
-ParsersT = typing.List[ParserT]
-ParserClssT = typing.List[typing.Type[ParserT]]
+ParsersT = list[ParserT]
+ParserClssT = list[type[ParserT]]
 
 
 __all__ = [

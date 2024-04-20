@@ -6,6 +6,7 @@
 """ioinfo.main to provide internal APIs used from other modules."""
 from __future__ import annotations
 
+import collections.abc
 import pathlib
 import typing
 
@@ -58,8 +59,9 @@ def make(obj: typing.Any) -> datatypes.IOInfo:
     raise ValueError(repr(obj))
 
 
-def make_itr(obj: typing.Any, marker: str = constants.GLOB_MARKER
-             ) -> typing.Iterator[datatypes.IOInfo]:
+def make_itr(
+    obj: typing.Any, marker: str = constants.GLOB_MARKER
+) -> collections.abc.Iterator[datatypes.IOInfo]:
     """Make and yield a series of :class:`datatypes.IOInfo` objects."""
     if isinstance(obj, datatypes.IOInfo):
         yield obj
@@ -80,7 +82,8 @@ def make_itr(obj: typing.Any, marker: str = constants.GLOB_MARKER
             yield from make_itr(item, marker=marker)
 
 
-def makes(obj: typing.Any, marker: str = constants.GLOB_MARKER
-          ) -> typing.List[datatypes.IOInfo]:
+def makes(
+    obj: typing.Any, marker: str = constants.GLOB_MARKER
+) -> list[datatypes.IOInfo]:
     """Make and return a list of :class:`datatypes.IOInfo` objects."""
     return list(make_itr(obj, marker=marker))

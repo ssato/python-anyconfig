@@ -12,7 +12,7 @@ import typing
 from .. import ioinfo
 
 
-def make() -> typing.Optional[typing.Tuple[typing.IO, typing.IO]]:
+def make() -> typing.Optional[tuple[typing.IO, typing.IO]]:
     """Initialize sys.std{out,err} and returns them."""
     encoding = ioinfo.get_encoding()
 

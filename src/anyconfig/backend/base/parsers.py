@@ -17,6 +17,7 @@ needed:
 """
 from __future__ import annotations
 
+import collections.abc
 import typing
 
 from ...models import processor
@@ -68,8 +69,8 @@ class StreamParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     """
 
 
-LoadFnT = typing.Callable[..., InDataExT]
-DumpFnT = typing.Callable[..., str]
+LoadFnT = collections.abc.Callable[..., InDataExT]
+DumpFnT = collections.abc.Callable[..., str]
 
 
 def load_with_fn(

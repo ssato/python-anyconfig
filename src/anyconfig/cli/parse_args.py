@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Argument parser."""
@@ -28,14 +28,15 @@ def gen_type_help_txt(types: str, target: str = "Input") -> str:
     )
 
 
-def make_parser(defaults: typing.Optional[typing.Dict] = None,
-                prog: typing.Optional[str] = None
-                ) -> argparse.ArgumentParser:
+def make_parser(
+    defaults: typing.Optional[dict] = None,
+    prog: typing.Optional[str] = None
+) -> argparse.ArgumentParser:
     """Make an instance of argparse.ArgumentParser to parse arguments."""
     if defaults is None:
         defaults = DEFAULTS
 
-    ctypes: typing.List[str] = utils.list_parser_types()
+    ctypes: list[str] = utils.list_parser_types()
     ctypes_s: str = ", ".join(ctypes)
 
     apsr = argparse.ArgumentParser(prog=prog, usage=constants.USAGE)
@@ -103,11 +104,10 @@ def make_parser(defaults: typing.Optional[typing.Dict] = None,
     return apsr
 
 
-def parse(argv: typing.List[str],
-          prog: typing.Optional[str] = None
-          ) -> typing.Tuple[argparse.ArgumentParser, argparse.Namespace]:
+def parse(
+    argv: list[str],
+    prog: typing.Optional[str] = None
+) -> tuple[argparse.ArgumentParser, argparse.Namespace]:
     """Parse given arguments ``argv`` and return it with the parser."""
     psr = make_parser(prog=prog)
     return (psr, psr.parse_args(argv))
-
-# vim:sw=4:ts=4:et:

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Ref. python -c "import tomlkit; help(tomlkit); ..."
@@ -32,13 +32,11 @@ class Parser(base.StringStreamFnParser):
 
     _cid: typing.ClassVar[str] = "toml.tomlkit"
     _type: typing.ClassVar[str] = "toml"
-    _extensions: typing.Tuple[str, ...] = ("toml", )
+    _extensions: tuple[str, ...] = ("toml", )
     _ordered: typing.ClassVar[bool] = True
-    _dump_opts: typing.Tuple[str, ...] = ("sort_keys", )
+    _dump_opts: tuple[str, ...] = ("sort_keys", )
 
     _load_from_string_fn = base.to_method(tomlkit.loads)
     _load_from_stream_fn = base.to_method(tomlkit.load)
     _dump_to_string_fn = base.to_method(tomlkit.dumps)
     _dump_to_stream_fn = base.to_method(tomlkit.dump)
-
-# vim:sw=4:ts=4:et:

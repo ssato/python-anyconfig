@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2017 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=bare-except
@@ -48,9 +48,9 @@ def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
     return odata
 
 
-def query(data: InDataT, jexp: str, **_options
-          ) -> typing.Tuple[typing.Optional[InDataT],
-                            typing.Optional[Exception]]:
+def query(
+    data: InDataT, jexp: str, **_options
+) -> tuple[typing.Optional[InDataT], typing.Optional[Exception]]:
     """Filter data with given JMESPath expression.
 
     See also: https://github.com/jmespath/jmespath.py and http://jmespath.org.
@@ -68,5 +68,3 @@ def query(data: InDataT, jexp: str, **_options
 
     except ValueError as exc:  # jmespath.exceptions.*Error inherit from it.
         return (data, exc)
-
-# vim:sw=4:ts=4:et:

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Ref. python -c "import toml; help(toml); ..."
@@ -39,9 +39,9 @@ class Parser(base.StringStreamFnParser):
 
     _cid: typing.ClassVar[str] = "toml.tomllib"
     _type: typing.ClassVar[str] = "toml"
-    _extensions: typing.Tuple[str, ...] = ("toml", )
+    _extensions: tuple[str, ...] = ("toml", )
     _ordered: typing.ClassVar[bool] = True
-    _load_opts: typing.Tuple[str, ...] = ("parse_float", )
+    _load_opts: tuple[str, ...] = ("parse_float", )
     _open_read_mode: typing.ClassVar[str] = "rb"
     _open_write_mode: typing.ClassVar[str] = "wb"
 

@@ -75,6 +75,9 @@ from ...utils import (
     is_dict_like, is_iterable, noop
 )
 
+if typing.TYPE_CHECKING:
+    import collections.abc
+
 
 _TAGS = {"attrs": "@attrs", "text": "@text", "children": "@children"}
 _ET_NS_RE = re.compile(r"^{(\S+)}(\S+)$")
@@ -83,14 +86,14 @@ _ENCODING: str = "utf-8"
 
 
 if typing.TYPE_CHECKING:
-    DicType = typing.Dict[str, typing.Any]
-    DicsType = typing.Iterable[DicType]
-    GenDicType = typing.Callable[..., DicType]
+    DicType = dict[str, typing.Any]
+    DicsType = collections.abc.Iterable[DicType]
+    GenDicType = collections.abc.Callable[..., DicType]
 
 
 def _namespaces_from_file(
     xmlfile: typing.Union[base.PathOrStrT, typing.IO]
-) -> typing.Dict[str, typing.Tuple[str, str]]:
+) -> dict[str, tuple[str, str]]:
     """Get the namespace str from file.
 
     :param xmlfile: XML file or file-like object
@@ -102,7 +105,7 @@ def _namespaces_from_file(
     }
 
 
-def _tweak_ns(tag: str, **options: typing.Dict[str, str]) -> str:
+def _tweak_ns(tag: str, **options: dict[str, str]) -> str:
     """Tweak the namespace.
 
     :param tag: XML tag element
@@ -362,7 +365,7 @@ def root_to_container(
                              **_complement_tag_options(options))
 
 
-def _to_str_fn(**options: DicType) -> typing.Callable[..., str]:
+def _to_str_fn(**options: DicType) -> collections.abc.Callable[..., str]:
     """Convert any objects to a str.
 
     :param options: Keyword options might have 'ac_parse_value' key
@@ -376,7 +379,7 @@ def _to_str_fn(**options: DicType) -> typing.Callable[..., str]:
 
 def _elem_set_attrs(
     obj: DicType, parent: ElementTree.Element,
-    to_str: typing.Callable[..., str]
+    to_str: collections.abc.Callable[..., str]
 ) -> None:
     """Set attributes of the element ``parent``.
 
@@ -392,8 +395,8 @@ def _elem_set_attrs(
 
 
 def _elem_from_descendants(
-    children_nodes: typing.Iterable[DicType], **options
-) -> typing.Iterator[ElementTree.Element]:
+    children_nodes: collections.abc.Iterable[DicType], **options
+) -> collections.abc.Iterator[ElementTree.Element]:
     """Get the elements from the descendants ``children_nodes``.
 
     :param children_nodes: A list of child dict objects
@@ -407,7 +410,7 @@ def _elem_from_descendants(
 
 
 def _get_or_update_parent(
-    key: str, val: typing.Any, to_str: typing.Callable[..., str],
+    key: str, val: typing.Any, to_str: collections.abc.Callable[..., str],
     parent: typing.Optional[ElementTree.Element] = None,
     **options
 ) -> ElementTree.Element:
@@ -449,7 +452,7 @@ def _assert_if_invalid_node(
 
 def container_to_elem(
     obj: typing.Any, parent: typing.Optional[ElementTree.Element] = None,
-    to_str: typing.Optional[typing.Callable[..., str]] = None,
+    to_str: typing.Optional[collections.abc.Callable[..., str]] = None,
     **options
 ) -> ElementTree.Element:
     """Convert a dict-like object to XML ElementTree.
@@ -525,8 +528,8 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
 
     _cid: typing.ClassVar[str] = "xml.etree"
     _type: typing.ClassVar[str] = "xml"
-    _extensions: typing.Tuple[str, ...] = ("xml", )
-    _load_opts: typing.Tuple[str, ...] = (
+    _extensions: tuple[str, ...] = ("xml", )
+    _load_opts: tuple[str, ...] = (
         "tags", "merge_attrs", "ac_parse_value"
     )
     # .. seealso:: xml.etree.ElementTree.tostring
@@ -537,7 +540,7 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
     )
 
     _ordered: typing.ClassVar[bool] = True
-    _dict_opts: typing.Tuple[str, ...] = ("ac_dict", )
+    _dict_opts: tuple[str, ...] = ("ac_dict", )
     _open_read_mode: typing.ClassVar[str] = "rb"
     _open_write_mode: typing.ClassVar[str] = "wb"
 

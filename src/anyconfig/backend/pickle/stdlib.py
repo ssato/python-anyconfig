@@ -35,8 +35,8 @@ import typing
 from .. import base
 
 
-LOAD_OPTS: typing.Tuple[str, ...] = ("fix_imports", "encoding", "errors")
-DUMP_OPTS: typing.Tuple[str, ...] = ("protocol", "fix_imports")
+LOAD_OPTS: tuple[str, ...] = ("fix_imports", "encoding", "errors")
+DUMP_OPTS: tuple[str, ...] = ("protocol", "fix_imports")
 
 
 class Parser(base.StringStreamFnParser):
@@ -44,7 +44,7 @@ class Parser(base.StringStreamFnParser):
 
     _cid: typing.ClassVar[str] = "pickle.stdlib"
     _type: typing.ClassVar[str] = "pickle"
-    _extensions: typing.Tuple[str, ...] = ("pkl", "pickle")
+    _extensions: tuple[str, ...] = ("pkl", "pickle")
     _open_read_mode: typing.ClassVar[str] = "rb"
     _open_write_mode: typing.ClassVar[str] = "wb"
 

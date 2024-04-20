@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=inherit-non-class,too-few-public-methods
@@ -23,9 +23,7 @@ class IOInfo(typing.NamedTuple):
     extension: str
 
 
-IOI_KEYS: typing.Tuple[str, ...] = IOInfo._fields
+IOI_KEYS: tuple[str, ...] = IOInfo._fields
 
 PathOrIOT = typing.Union[str, pathlib.Path, typing.IO]
 PathOrIOInfoT = typing.Union[PathOrIOT, IOInfo]
-
-# vim:sw=4:ts=4:et:

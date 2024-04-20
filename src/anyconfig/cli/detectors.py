@@ -23,7 +23,7 @@ if typing.TYPE_CHECKING:
         from typing_extensions import TypeGuard
 
 
-def are_same_file_types(paths: typing.List[str]) -> bool:
+def are_same_file_types(paths: list[str]) -> bool:
     """Test if all of the types for given file paths ``paths`` are same."""
     if not paths:
         return False
@@ -56,9 +56,9 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
     return default
 
 
-def find_by_the_paths(paths: typing.List[str], *,
-                      ignore_errors: bool = True
-                      ) -> typing.Optional[str]:
+def find_by_the_paths(
+    paths: list[str], *, ignore_errors: bool = True
+) -> typing.Optional[str]:
     """Try to detect file (parser) type from given file paths ``paths``."""
     default = None
     msg = (
@@ -93,9 +93,9 @@ def find_by_the_paths(paths: typing.List[str], *,
     return default
 
 
-def try_detecting_input_type(args: argparse.Namespace, *,
-                             ignore_errors: bool = True
-                             ) -> typing.Optional[str]:
+def try_detecting_input_type(
+    args: argparse.Namespace, *, ignore_errors: bool = True
+) -> typing.Optional[str]:
     """Try to resolve a file type and parser of inputs."""
     # First, try the type given by users.
     if args.itype:
@@ -110,8 +110,9 @@ def try_detecting_input_type(args: argparse.Namespace, *,
     return None
 
 
-def try_detecting_output_type(args: argparse.Namespace
-                              ) -> typing.Optional[str]:
+def try_detecting_output_type(
+    args: argparse.Namespace
+) -> typing.Optional[str]:
     """Try to resolve a file type and parser of outputs (``args.output``)."""
     # First, try the type given by users.
     if args.otype:
@@ -138,6 +139,6 @@ def try_detecting_output_type(args: argparse.Namespace
     return itype
 
 
-def is_dict_like(obj: typing.Any) -> TypeGuard[typing.Dict]:
+def is_dict_like(obj: typing.Any) -> TypeGuard[dict]:
     """Return True if `obj` is a dict."""
     return isinstance(obj, (dict, collections.abc.Mapping))

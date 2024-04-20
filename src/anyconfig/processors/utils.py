@@ -9,6 +9,7 @@
 """Utility functions for anyconfig.processors."""
 from __future__ import annotations
 
+import collections
 import contextlib
 import operator
 import typing
@@ -22,7 +23,7 @@ from .datatypes import (
 )
 
 
-def sort_by_prio(prs: typing.Iterable[ProcT]) -> ProcsT:
+def sort_by_prio(prs: collections.abc.Iterable[ProcT]) -> ProcsT:
     """Sort an iterable of processor classes by each priority.
 
     :param prs: A list of :class:`anyconfig.models.processor.Processor` classes
@@ -32,12 +33,11 @@ def sort_by_prio(prs: typing.Iterable[ProcT]) -> ProcsT:
 
 
 def select_by_key(
-    items: typing.Iterable[
-        typing.Tuple[typing.Tuple[str, ...], typing.Any]],
-        sort_fn: typing.Callable[..., typing.Any] = sorted
-) -> typing.List[
-        typing.Tuple[str, typing.List[typing.Any]]
-]:
+    items: collections.abc.Iterable[
+        tuple[tuple[str, ...], typing.Any]
+    ],
+    sort_fn: collections.abc.Callable[..., typing.Any] = sorted
+) -> list[tuple[str, list[typing.Any]]]:
     """Select items from ``items`` by key.
 
     :param items: A list of tuples of keys and values, [([key], val)]
@@ -53,8 +53,9 @@ def select_by_key(
     ]
 
 
-def list_by_x(prs: typing.Iterable[ProcT], key: str
-              ) -> typing.List[typing.Tuple[str, ProcsT]]:
+def list_by_x(
+    prs: collections.abc.Iterable[ProcT], key: str
+) -> list[tuple[str, ProcsT]]:
     """List items by the factor 'x'.
 
     :param key: Grouping key, 'type' or 'extensions'
@@ -79,8 +80,9 @@ def list_by_x(prs: typing.Iterable[ProcT], key: str
     return res
 
 
-def findall_with_pred(predicate: typing.Callable[..., bool],
-                      prs: ProcsT) -> ProcsT:
+def findall_with_pred(
+    predicate: collections.abc.Callable[..., bool], prs: ProcsT
+) -> ProcsT:
     """Find all of the items match with given predicates.
 
     :param predicate: any callable to filter results
@@ -91,9 +93,10 @@ def findall_with_pred(predicate: typing.Callable[..., bool],
                   key=operator.methodcaller("priority"), reverse=True)
 
 
-def maybe_processor(type_or_id: typing.Union[ProcT, ProcClsT],
-                    cls: ProcClsT = models.processor.Processor
-                    ) -> typing.Optional[ProcT]:
+def maybe_processor(
+    type_or_id: typing.Union[ProcT, ProcClsT],
+    cls: ProcClsT = models.processor.Processor
+) -> typing.Optional[ProcT]:
     """Try to get the processor.
 
     :param type_or_id:
@@ -169,9 +172,10 @@ def find_by_maybe_file(obj: ioinfo.PathOrIOInfoT, prs: ProcsT) -> ProcsT:
     return find_by_fileext(ioinfo.make(obj).extension, prs)
 
 
-def findall(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
-            forced_type: typing.Optional[str] = None,
-            ) -> ProcsT:
+def findall(
+    obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
+    forced_type: typing.Optional[str] = None,
+) -> ProcsT:
     """Find all of the processors match with the conditions.
 
     :param obj:
@@ -240,7 +244,7 @@ def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
     return procs[0]
 
 
-def load_plugins(pgroup: str) -> typing.Iterator[ProcClsT]:
+def load_plugins(pgroup: str) -> collections.abc.Iterator[ProcClsT]:
     """Load processor plugins.
 
     A generator function to yield a class object of

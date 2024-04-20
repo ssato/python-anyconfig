@@ -17,7 +17,7 @@ if typing.TYPE_CHECKING:
 
 
 def do_filter(
-    cnf: typing.Dict[str, typing.Any], args: argparse.Namespace
+    cnf: dict[str, typing.Any], args: argparse.Namespace
 ) -> InDataExT:
     """Filter ``cnf`` by query/get/set and return filtered result."""
     if args.query:

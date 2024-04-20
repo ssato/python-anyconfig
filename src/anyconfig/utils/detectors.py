@@ -16,14 +16,14 @@ if typing.TYPE_CHECKING:
         from typing_extensions import TypeGuard
 
 
-def is_iterable(obj: typing.Any) -> TypeGuard[typing.Iterable]:
+def is_iterable(obj: typing.Any) -> TypeGuard[collections.abc.Iterable]:
     """Test if given object is an iterable object."""
     return (isinstance(obj, (list, tuple, types.GeneratorType))
             or (not isinstance(obj, (int, str, dict))
                 and bool(getattr(obj, "next", False))))
 
 
-def is_dict_like(obj: typing.Any) -> TypeGuard[typing.Dict]:
+def is_dict_like(obj: typing.Any) -> TypeGuard[dict]:
     """Test if given object ``obj`` is an dict."""
     return isinstance(obj, (dict, collections.abc.Mapping))  # any others?
 
@@ -31,7 +31,9 @@ def is_dict_like(obj: typing.Any) -> TypeGuard[typing.Dict]:
 _LIST_LIKE_TYPES = (collections.abc.Iterable, collections.abc.Sequence)
 
 
-def is_list_like(obj: typing.Any) -> TypeGuard[typing.Iterable]:
+def is_list_like(obj: typing.Any) -> TypeGuard[collections.abc.Iterable]:
     """Test if given object ``obj`` is a list or -like one."""
-    return isinstance(obj, _LIST_LIKE_TYPES) and \
+    return (
+        isinstance(obj, _LIST_LIKE_TYPES) and
         not (isinstance(obj, str) or is_dict_like(obj))
+    )

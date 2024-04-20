@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 class BinaryFilesMixin:
     """Mixin class to open configuration files as a binary data."""
 
-    _open_flags: typing.Tuple[str, str] = ("rb", "wb")
+    _open_flags: tuple[str, str] = ("rb", "wb")
 
     @classmethod
     def ropen(cls, filepath: PathOrStrT, **options) -> typing.IO:

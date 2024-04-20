@@ -1,16 +1,18 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """File based test data collector.
 """
+from __future__ import annotations
+
 import pathlib
 import typing
 
 from anyconfig.api import InDataExT
 
 
-DictT = typing.Dict[str, typing.Any]
+DictT = dict[str, typing.Any]
 MaybePathT = typing.Optional[pathlib.Path]
 
 
@@ -34,5 +36,3 @@ class TData(typing.NamedTuple):
     scm: typing.Union[pathlib.Path, str]
     query: str
     ctx: DictT
-
-# vim:sw=4:ts=4:et:

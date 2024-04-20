@@ -1,14 +1,16 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Basic data types for file based test data collectors.
 """
+from __future__ import annotations
+
 import pathlib
 import typing
 
 
-DictT = typing.Dict[str, typing.Any]
+DictT = dict[str, typing.Any]
 
 
 class Expected(typing.NamedTuple):
@@ -26,7 +28,7 @@ class TData(typing.NamedTuple):
     """
     datadir: pathlib.Path
     inp_path: pathlib.Path
-    opts: typing.List[str] = []
+    opts: list[str] = []
     exp: Expected = Expected()
 
     # Optional extra data.
@@ -40,8 +42,8 @@ class TDataSet(typing.NamedTuple):
     """A namedtuple object keeps test data to test cases with no file outputs.
     """
     datadir: pathlib.Path
-    inputs: typing.List[pathlib.Path]
-    opts: typing.List[str] = []
+    inputs: list[pathlib.Path]
+    opts: list[str] = []
     exp: Expected = Expected()
 
     # Likewise.
@@ -49,5 +51,3 @@ class TDataSet(typing.NamedTuple):
     ref: typing.Optional[DictT] = None
     oo_opts: DictT = {}
     scm: typing.Optional[pathlib.Path] = None
-
-# vim:sw=4:ts=4:et:

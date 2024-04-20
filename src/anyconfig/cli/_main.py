@@ -102,7 +102,7 @@ def try_validate(cnf: api.InDataExT, args: argparse.Namespace) -> None:
     utils.exit_with_output(*msg_code)
 
 
-def main(argv: typing.Optional[typing.List[str]] = None) -> None:
+def main(argv: typing.Optional[list[str]] = None) -> None:
     """Provide the entrypoint to run the CLI.
 
     :param argv: Argument list to parse or None (sys.argv will be set).

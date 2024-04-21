@@ -8,11 +8,12 @@ from __future__ import annotations
 
 import typing
 
+from .jsonschema import generator
+
 if typing.TYPE_CHECKING:
-    from ..common import (
-        InDataT, InDataExT
+    from .datatypes import (
+        InDataT, InDataExT, ResultT
     )
-    from .datatypes import ResultT
 
 
 def validate(
@@ -35,4 +36,4 @@ def is_valid(
 
 def gen_schema(data: InDataExT, **options) -> InDataT:
     """Provide a dummy function generates an empty dict in actual."""
-    return {}
+    return generator.gen_schema(data, **options)

@@ -1,9 +1,11 @@
 #
 # Forked from m9dicts.tests.{api,dicts}
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 #
-# pylint: disable=missing-docstring,invalid-name
+# pylint: disable=missing-docstring
+from __future__ import annotations
+
 import anyconfig.dicts as TT
 
 from .. import base
@@ -34,5 +36,3 @@ class TestCase(common.TestCase):
     def test_merge_with_invalid_data(self):
         with self.assertRaises((ValueError, TypeError)):
             TT.merge(dict(a=1), 1)
-
-# vim:sw=4:ts=4:et:

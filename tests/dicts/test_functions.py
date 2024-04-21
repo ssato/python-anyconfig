@@ -1,10 +1,11 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,protected-access
-"""Test cases for some functions in anyconfig.parser.
-"""
+"""Test cases for some functions in anyconfig.parser."""
+from __future__ import annotations
+
 import collections
 
 import pytest

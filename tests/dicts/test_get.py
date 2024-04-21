@@ -1,9 +1,11 @@
 #
 # Forked from m9dicts.tests.{api,dicts}
 #
-# Copyright (C) 2011 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 #
 # pylint: disable=missing-docstring,invalid-name
+from __future__ import annotations
+
 import anyconfig.dicts as TT
 
 from .. import base
@@ -24,5 +26,3 @@ class TestCase(common.TestCase):
                 self.assertEqual(err, '', data)
 
             self.assertEqual(res, data.exp, data)
-
-# vim:sw=4:ts=4:et:

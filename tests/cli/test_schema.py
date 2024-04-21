@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2013 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
@@ -20,7 +20,9 @@ class Collector(collectors.Collector):
     kind = 'schema'
 
 
-@unittest.skipIf(not anyconfig.schema.SUPPORTED, ERR)
+@unittest.skipIf(
+    "jsonschema" not in anyconfig.schema.VALIDATORS, ERR
+)
 class TestCase(test_base.BaseTestCase):
     collector = Collector()
 
@@ -47,5 +49,3 @@ class SchemaErrorsCollector(collectors.Collector):
 @unittest.skipIf(not anyconfig.schema.SUPPORTED, ERR)
 class SchemaErrorsTestCase(test_base.BaseTestCase):
     collector = SchemaErrorsCollector()
-
-# vim:sw=4:ts=4:et:

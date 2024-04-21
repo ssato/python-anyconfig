@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
@@ -17,7 +17,7 @@ from . import common
 SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
 
 
-@unittest.skipIf(not anyconfig.schema.SUPPORTED,
+@unittest.skipIf("jsonschema" not in anyconfig.schema.VALIDATORS,
                  'jsonschema lib is not available')
 class TestCase(common.TestCase):
     kind = 'schema'
@@ -46,5 +46,3 @@ class TestCase(common.TestCase):
 
             with self.assertRaises(ValidationError):
                 TT.loads(data.inp, ac_schema_safe=False, **opts)
-
-# vim:sw=4:ts=4:et:

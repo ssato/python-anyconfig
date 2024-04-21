@@ -2,14 +2,14 @@
 # Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring,consider-using-with
-r"""test cases for anyconfig.ioinfo.detectors.
-"""
+# pylint: disable=missing-docstring
+r"""test cases for anyconfig.ioinfo.detectors."""
 from __future__ import annotations
 
 import pathlib
-import unittest
 import typing
+
+import pytest
 
 import anyconfig.ioinfo
 import anyconfig.ioinfo.detectors as TT
@@ -18,76 +18,64 @@ if typing.TYPE_CHECKING:
     import collections.abc
 
 
-class TestCase(unittest.TestCase):
+PATH_STR_10 = __file__
+PATH_OBJ_10 = pathlib.Path(PATH_STR_10)
+FILE_OBJ_10 = open(__file__, encoding="utf-8")
+IOI_OBJ_10 = anyconfig.ioinfo.make(__file__)
 
-    def _run(
-        self, target_fn: collections.abc.Callable[..., typing.Any],
-        ies: collections.abc.Iterable[tuple[typing.Any, bool]]
-    ) -> None:
-        for inp, exp in ies:
-            meth = self.assertTrue if exp else self.assertFalse
-            meth(target_fn(inp), f'input: {inp!r}, expected: {exp!r}')
+PATH_OBJ_20 = PATH_OBJ_10.resolve()
+PATH_STR_20 = str(PATH_OBJ_20)
+IOI_OBJ_20 = anyconfig.ioinfo.make(FILE_OBJ_10)
 
-    def test_is_path_str(self):
-        self._run(
-            TT.is_path_str,
-            ((None, False),
-             ('/tmp/t.xt', True),
-             (0, False),
-             (pathlib.Path(__file__), False),
-             (open(__file__), False),
-             (anyconfig.ioinfo.make(__file__), False),
-             )
-        )
 
-    def test_is_path_obj(self):
-        self._run(
-            TT.is_path_obj,
-            ((None, False),
-             (__file__, False),
-             (pathlib.Path(__file__), True),
-             (str(pathlib.Path(__file__).resolve()), False),
-             (open(__file__), False),
-             (anyconfig.ioinfo.make(__file__), False),
-             )
-        )
-
-    def test_is_io_stream(self):
-        self._run(
-            TT.is_io_stream,
-            ((None, False),
-             (__file__, False),
-             (pathlib.Path(__file__), False),
-             (str(pathlib.Path(__file__).resolve()), False),
-             (open(__file__), True),
-             (anyconfig.ioinfo.make(__file__), False),
-             )
-        )
-
-    def test_is_ioinfo(self):
-        self._run(
-            TT.is_ioinfo,
-            ((None, False),
-             (__file__, False),
-             (pathlib.Path(__file__), False),
-             (str(pathlib.Path(__file__).resolve()), False),
-             (open(__file__), False),
-             (anyconfig.ioinfo.make(__file__), True),
-             (anyconfig.ioinfo.make(open(__file__)), True),
-             )
-        )
-
-    def test_is_stream(self):
-        self._run(
-            TT.is_stream,
-            ((None, False),
-             (__file__, False),
-             (pathlib.Path(__file__), False),
-             (str(pathlib.Path(__file__).resolve()), False),
-             (open(__file__), False),
-             (anyconfig.ioinfo.make(__file__), False),
-             (anyconfig.ioinfo.make(open(__file__)), True),
-             )
-        )
-
-# vim:sw=4:ts=4:et:
+@pytest.mark.parametrize(
+    ("target_fn", "obj", "exp"),
+    ((TT.is_path_str, None, False),
+     (TT.is_path_str, 0, False),
+     (TT.is_path_str, PATH_OBJ_10, False),
+     (TT.is_path_str, PATH_OBJ_20, False),
+     (TT.is_path_str, FILE_OBJ_10, False),
+     (TT.is_path_str, IOI_OBJ_10, False),
+     (TT.is_path_str, IOI_OBJ_20, False),
+     (TT.is_path_str, PATH_STR_10, True),
+     (TT.is_path_str, PATH_STR_20, True),
+     (TT.is_path_obj, None, False),
+     (TT.is_path_obj, 0, False),
+     (TT.is_path_obj, PATH_STR_10, False),
+     (TT.is_path_obj, PATH_STR_20, False),
+     (TT.is_path_obj, FILE_OBJ_10, False),
+     (TT.is_path_obj, IOI_OBJ_10, False),
+     (TT.is_path_obj, IOI_OBJ_20, False),
+     (TT.is_path_obj, PATH_OBJ_10, True),
+     (TT.is_path_obj, PATH_OBJ_20, True),
+     (TT.is_io_stream, None, False),
+     (TT.is_io_stream, 0, False),
+     (TT.is_io_stream, PATH_STR_10, False),
+     (TT.is_io_stream, PATH_STR_20, False),
+     (TT.is_io_stream, PATH_OBJ_10, False),
+     (TT.is_io_stream, PATH_OBJ_20, False),
+     (TT.is_io_stream, IOI_OBJ_10, False),
+     (TT.is_io_stream, IOI_OBJ_20, False),
+     (TT.is_io_stream, FILE_OBJ_10, True),
+     (TT.is_ioinfo, None, False),
+     (TT.is_ioinfo, 0, False),
+     (TT.is_ioinfo, PATH_STR_10, False),
+     (TT.is_ioinfo, PATH_STR_20, False),
+     (TT.is_ioinfo, PATH_OBJ_10, False),
+     (TT.is_ioinfo, PATH_OBJ_20, False),
+     (TT.is_ioinfo, FILE_OBJ_10, False),
+     (TT.is_ioinfo, IOI_OBJ_10, True),
+     (TT.is_ioinfo, IOI_OBJ_20, True),
+     (TT.is_stream, None, False),
+     (TT.is_stream, 0, False),
+     (TT.is_stream, PATH_STR_10, False),
+     (TT.is_stream, PATH_STR_20, False),
+     (TT.is_stream, PATH_OBJ_10, False),
+     (TT.is_stream, PATH_OBJ_20, False),
+     (TT.is_stream, FILE_OBJ_10, False),
+     (TT.is_stream, IOI_OBJ_10, False),
+     (TT.is_stream, IOI_OBJ_20, True),
+     ),
+)
+def test_is_path_str(target_fn, obj, exp):
+    assert (target_fn(obj) == exp if exp else not target_fn(obj))

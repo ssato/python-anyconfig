@@ -20,6 +20,10 @@ python-anyconfig
    :target: https://github.com/ssato/python-anyconfig/actions?query=workflow%3ATests
    :alt: [Github Actions: Test status]
 
+.. image:: https://dev.azure.com/satorusatoh0471/python-anyconfig/_apis/build/status/ssato.python-anyconfig?branchName=next
+   :target: https://dev.azure.com/satorusatoh0471/python-anyconfig/_build/latest?definitionId=1
+   :alt: [Azure Pipelines Status]
+
 .. image:: https://img.shields.io/coveralls/ssato/python-anyconfig.svg
    :target: https://coveralls.io/r/ssato/python-anyconfig
    :alt: [Coverage Status]

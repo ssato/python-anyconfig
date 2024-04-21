@@ -16,6 +16,15 @@ if typing.TYPE_CHECKING:
         from typing_extensions import TypeGuard
 
 
+PRIMITIVE_TYPES = (bool, int, float, str, bytes)
+PrimitiveType = typing.Union[bool, int, float, str, bytes]
+
+
+def is_primitive_type(obj: typing.Any) -> TypeGuard[PrimitiveType]:
+    """Test if given object is a primitive type."""
+    return type(obj) in PRIMITIVE_TYPES
+
+
 def is_iterable(obj: typing.Any) -> TypeGuard[collections.abc.Iterable]:
     """Test if given object is an iterable object."""
     return (isinstance(obj, (list, tuple, types.GeneratorType))

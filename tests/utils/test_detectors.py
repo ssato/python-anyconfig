@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,invalid-name
@@ -9,6 +9,24 @@ import collections
 import pytest
 
 import anyconfig.utils.detectors as TT
+
+
+@pytest.mark.parametrize(
+    ("inp", "exp"),
+    ((None, False),
+     ([], False),
+     ({}, False),
+     (object(), False),
+     ((1, ), False),
+     (True, True),
+     (2, True),
+     (3.14, True),
+     ("a string", True),
+     (b"a string", True),
+     ),
+)
+def test_is_primitive_type(inp, exp):
+    assert TT.is_primitive_type(inp) == exp
 
 
 @pytest.mark.parametrize(
@@ -53,5 +71,3 @@ def test_is_list_like(inp, exp):
 )
 def test_is_dict_like(inp, exp):
     assert TT.is_dict_like(inp) == exp
-
-# vim:sw=4:ts=4:et:

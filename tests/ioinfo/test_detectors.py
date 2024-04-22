@@ -7,15 +7,11 @@ r"""test cases for anyconfig.ioinfo.detectors."""
 from __future__ import annotations
 
 import pathlib
-import typing
 
 import pytest
 
 import anyconfig.ioinfo
 import anyconfig.ioinfo.detectors as TT
-
-if typing.TYPE_CHECKING:
-    import collections.abc
 
 
 PATH_STR_10 = __file__

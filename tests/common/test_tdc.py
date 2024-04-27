@@ -6,6 +6,7 @@
 r"""Test cases for Test Data Collecor."""
 from __future__ import annotations
 
+import json
 import typing
 
 import pytest
@@ -24,17 +25,19 @@ def test_get_mod_target_pair_from_path() -> None:
 
 # .. note:: See files under tests/res/1/common/tdc/.
 TEST_DATA_10 = [
-    ("10/00.json", {}),
-    ("20/10.json", {"a": "aaa"}),
-    ("30/20.json", {"b": [1, 2], "c": {"baz": "fbz"}}),
+    ("10/00.json", {}, {}),
+    ("20/10.json", [1, 2], {"a": "aaa"}),
+    ("30/20.json", {"a": "A"}, {"b": [1, 2], "c": {"baz": "fbz"}}),
 ]
 TEST_DATA_20 = [
     (
         G.RESOURCE_DIR / "common" / "tdc" / "10" / "100_null.json",
+        None,
         {"e": None}
     ),
     (
         G.RESOURCE_DIR / "common" / "tdc" / "20" / "220_a_list.json",
+        [1, 2],
         {"e": [1, 2], "o": {"ac_ordered": True}}
     ),
 ]
@@ -55,18 +58,18 @@ def test_collect_for(
     if topdir is None:
         exp_new = []
 
-        for rpath, data in exp:
+        for rpath, data, opts in exp:
             path = tmp_path / mod / target / rpath
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.touch()
+            json.dump(data, path.open("w"))
 
-            for subdir, val in data.items():
+            for subdir, val in opts.items():
                 (path.parent / subdir).mkdir(exist_ok=True)
 
                 aname = path.name.replace(path.suffix, ".py")
                 (path.parent / subdir / aname).write_text(repr(val))
 
-            exp_new.append((path, data))
+            exp_new.append((path, data, opts))
 
         assert TT.collect_for(mod, target, tmp_path) == exp_new
 

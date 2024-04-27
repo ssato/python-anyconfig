@@ -28,4 +28,4 @@ def collect_for(
 ) -> list[tuple[pathlib.Path, dict[str, typing.Any]]]:
     """Collct test data for mod.target."""
     datadir = topdir / mod / target  # e.g. tests/res/1/template/jinja2
-    return paths.load_data(datadir)
+    return paths.load_data_2(datadir)

@@ -2,7 +2,7 @@
 # Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring,too-few-public-methods
+# pylint: disable=missing-docstring
 r"""Test Data Collecor."""
 import pathlib
 import re

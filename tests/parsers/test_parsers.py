@@ -1,14 +1,17 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring, invalid-name
+# pylint: disable=missing-docstring
+"Test cases for anyconfig.parsers."""
+from __future__ import annotations
 
 import pathlib
-import unittest
+
+import pytest
 
 import anyconfig.backend.json
-import anyconfig.backend.json.stdlib as JSON
+import anyconfig.backend.json.stdlib as JSONStdlib
 try:
     import anyconfig.backend.yaml.pyyaml as PYYAML
 except ImportError:
@@ -21,50 +24,59 @@ from anyconfig.common import (
     UnknownProcessorTypeError, UnknownFileTypeError
 )
 
-from .. import base
+from ..common import RESOURCE_DIR
 
 
-CNF_PATH = base.RES_DIR / 'base/basics/10/10.json'
+CNF_PATH: pathlib.Path = (
+    RESOURCE_DIR / "loaders/json.stdlib/10/360_a_nested_map.json"
+)
 
 
-class Test(unittest.TestCase):
+@pytest.fixture(name="parsers")
+def found_parsers():
+    return TT.Parsers()
 
-    def setUp(self):
-        self.psrs = TT.Parsers()
 
-    def test_10_json_parsers(self):
-        jpsrs = self.psrs.findall(None, forced_type="json")
-        self.assertTrue(isinstance(jpsrs[0], JSON.Parser))
+def test_json_parsers(parsers):
+    psrs = parsers.findall(None, forced_type="json")
+    assert psrs
+    assert JSONStdlib.Parser in psrs
+    assert psrs[0] == JSONStdlib.Parser
 
-    def test_12_yaml_parsers(self):
-        if PYYAML:
-            ypsrs = self.psrs.findall(None, forced_type="yaml")
-            self.assertTrue(isinstance(ypsrs[0], PYYAML.Parser))
 
-    def test_30_find__ng_cases(self):
-        self.assertRaises(ValueError, self.psrs.find, None)
-        self.assertRaises(UnknownProcessorTypeError, self.psrs.find, None,
-                          forced_type="_unkonw_type_")
-        self.assertRaises(UnknownFileTypeError, self.psrs.find,
-                          "cnf.unknown_ext")
+@pytest.mark.skipif(PYYAML is None, reason="PyYAML is not available.")
+def test_yaml_parsers(parsers):
+    psrs = parsers.findall(None, forced_type="yaml")
+    assert psrs
+    assert PYYAML.Parser in psrs
+    assert psrs[0] == PYYAML.Parser
 
-    def test_32_find__ng_cases(self):
-        pcls = anyconfig.backend.json.Parser
-        self.assertTrue(isinstance(self.psrs.find("x.conf",
-                                                  forced_type="json"),
-                                   pcls))
-        self.assertTrue(isinstance(self.psrs.find("x.json"), pcls))
 
-        with open(CNF_PATH) as inp:
-            self.assertTrue(isinstance(self.psrs.find(inp), pcls))
+@pytest.mark.parametrize(
+    ("exc", "arg0", "kwargs"),
+    ((ValueError, None, {}),
+     (UnknownProcessorTypeError, None, {"forced_type": "_unkonw_type_"}),
+     (UnknownFileTypeError, "cnf.unknown_ext", {}),
+     ),
+)
+def test_find__failures(exc, arg0, kwargs, parsers):
+    with pytest.raises(exc):
+        parsers.find(arg0, **kwargs)
 
-        if pathlib is not None:
-            inp = pathlib.Path("x.json")
-            self.assertTrue(isinstance(self.psrs.find(inp), pcls))
 
-    def test_34_find__input_object(self):
-        inp = anyconfig.ioinfo.make(CNF_PATH)
-        psr = self.psrs.find(inp)
-        self.assertTrue(isinstance(psr, anyconfig.backend.json.Parser))
+def test_find(parsers):
+    pcls = anyconfig.backend.json.Parser
+    assert isinstance(parsers.find("x.conf", forced_type="json"), pcls)
+    assert isinstance(parsers.find("x.json"), pcls)
 
-# vim:sw=4:ts=4:et:
+    with open(CNF_PATH, encoding="utf-8") as inp:
+        assert isinstance(parsers.find(inp), pcls)
+
+    inp = pathlib.Path("x.json")
+    assert isinstance(parsers.find(inp), pcls)
+
+
+def test_find__input_object(parsers):
+    inp = anyconfig.ioinfo.make(CNF_PATH)
+    psr = parsers.find(inp)
+    assert isinstance(psr, anyconfig.backend.json.Parser)

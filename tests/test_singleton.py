@@ -21,6 +21,7 @@ def test_basic_singletons() -> None:
     assert b1 is b2
     assert a1 is not b1
 
+
 def test_descendants() -> None:
     class A(TT.Singleton):
         pass
@@ -30,6 +31,7 @@ def test_descendants() -> None:
 
     (a1, a2) = (A(), A2())
     assert a1 is a2
+
 
 def test_mixins() -> None:
     class Base:

@@ -19,7 +19,7 @@ from anyconfig.common import (
 from anyconfig.backend.json import PARSERS as JSON_PSR_CLSS
 
 
-PSRS =anyconfig.parsers.parsers.Parsers().list()
+PSRS = anyconfig.parsers.parsers.Parsers().list()
 JSON_PSRS = sorted(
     (p() for p in JSON_PSR_CLSS),
     key=operator.methodcaller("priority"), reverse=True

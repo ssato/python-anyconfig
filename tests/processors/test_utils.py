@@ -30,7 +30,7 @@ PRS = [p() for p in PRS]  # Instantiate all.
     (([], []),
      (((["a"], 1), ), [("a", [1])]),
      (((["a", "aaa"], 1), (["b", "bb"], 2), (["a"], 3)),
-       [("a", [1, 3]), ("aaa", [1]), ("b", [2]), ("bb", [2])])
+      [("a", [1, 3]), ("aaa", [1]), ("b", [2]), ("bb", [2])])
      ),
 )
 def test_select_by_key(
@@ -63,8 +63,10 @@ OBJ0 = anyconfig.ioinfo.make("/path/to/a.json")
      (([AI0], "type"), [(AI0.type(), [AI0])]),
      (([AI0], "extensions"), [(x, [AI0]) for x in AI0.extensions()]),
      (((AI0, AI2, AI3), "type"), [(AI0.type(), [AI3, AI2, AI0])]),
-     (([AI0, BI0, CI0], "type"), [(AI0.type(), [AI0]), (BI0.type(), [BI0, CI0])]),
-     ((PRS, "type"), [(AI0.type(), [AI3, AI2, AI0]), (BI0.type(), [BI0, CI0])]),
+     (([AI0, BI0, CI0], "type"),
+      [(AI0.type(), [AI0]), (BI0.type(), [BI0, CI0])]),
+     ((PRS, "type"),
+      [(AI0.type(), [AI3, AI2, AI0]), (BI0.type(), [BI0, CI0])]),
      ((PRS, "extensions"),
       [("js", [AI3, AI2, AI0]), ("json", [AI3, AI2, AI0]),
        ("jsn", [AI3, AI2, AI0]), ("yaml", [BI0, CI0]), ("yml", [BI0, CI0])]),
@@ -73,7 +75,7 @@ OBJ0 = anyconfig.ioinfo.make("/path/to/a.json")
 def test_list_by_x(
     items: collections.abc.Iterable, exp: collections.abc.Iterable
 ) -> None:
-    assert  sorted(TT.list_by_x(*items)) == sorted(exp)
+    assert sorted(TT.list_by_x(*items)) == sorted(exp)
 
 
 def test_list_by_x_ng_cases():
@@ -175,6 +177,7 @@ def test_find_by_fileext_ng_cases():
 )
 def test_find_by_maybe_file(objs, exp):
     assert TT.find_by_maybe_file(*objs) == exp
+
 
 @pytest.mark.parametrize(
     ("obj", ),

@@ -15,10 +15,6 @@ import anyconfig.dicts as TT
 from . import common
 
 
-if typing.TYPE_CHECKING:
-    import pathlib
-
-
 DATASETS: list[tuple[typing.Any, dict[str, typing.Any]]] = [
     (obj, data) for _, obj, data in common.collect_data("merge")
 ]

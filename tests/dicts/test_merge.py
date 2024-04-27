@@ -6,33 +6,54 @@
 # pylint: disable=missing-docstring
 from __future__ import annotations
 
+import typing
+
+import pytest
+
 import anyconfig.dicts as TT
 
-from .. import base
 from . import common
 
 
-class TestCase(common.TestCase):
-    kind = 'merge'
+if typing.TYPE_CHECKING:
+    import pathlib
 
-    def test_merge(self):
-        for data in self.each_data():
-            upd = base.load_data(data.scm, ordered=True)  # diversion.
-            TT.merge(data.inp, upd, **data.opts)
-            self.assertEqual(data.inp, data.exp, data)
 
-    def test_merge_with_a_dict(self):
-        for data in self.each_data():
-            upd = base.load_data(data.scm)
-            TT.merge(data.inp, upd, **data.opts)
-            self.assertEqual(data.inp, data.exp, data)
+DATASETS: list[tuple[typing.Any, dict[str, typing.Any]]] = [
+    (obj, data) for _, obj, data in common.collect_data("merge")
+]
 
-    def test_merge_with_an_iterable(self):
-        for data in self.each_data():
-            upd = base.load_data(data.scm).items()
-            TT.merge(data.inp, upd, **data.opts)
-            self.assertEqual(data.inp, data.exp, data)
 
-    def test_merge_with_invalid_data(self):
-        with self.assertRaises((ValueError, TypeError)):
-            TT.merge(dict(a=1), 1)
+@pytest.mark.parametrize(("obj", "data"), DATASETS)
+def test_merge(obj, data):
+    exp = data.get("e")
+    upd = data.get("s")
+    opts = data.get("o")
+
+    TT.merge(obj, upd, **opts)
+    assert obj == exp
+
+
+@pytest.mark.parametrize(("obj", "data"), DATASETS)
+def test_merge_with_a_dict(obj, data):
+    exp = data.get("e")
+    upd = data.get("s")
+    opts = data.get("o")
+
+    TT.merge(obj, upd, **opts)
+    assert obj == exp
+
+
+@pytest.mark.parametrize(("obj", "data"), DATASETS)
+def test_merge_with_an_iterable(obj, data):
+    exp = data.get("e")
+    upd = data.get("s").items()
+    opts = data.get("o")
+
+    TT.merge(obj, upd, **opts)
+    assert obj == exp
+
+
+def test_merge_with_invalid_data():
+    with pytest.raises((ValueError, TypeError)):
+        TT.merge({"a": 1}, 1)

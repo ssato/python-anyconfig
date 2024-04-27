@@ -6,23 +6,30 @@
 # pylint: disable=missing-docstring,invalid-name
 from __future__ import annotations
 
+import typing
+
+import pytest
+
 import anyconfig.dicts as TT
 
-from .. import base
 from . import common
 
+if typing.TYPE_CHECKING:
+    import pathlib
 
-class TestCase(common.TestCase):
-    kind = 'get'
 
-    def test_get(self):
-        for data in self.each_data():
-            emsg = base.load_data(data.scm)  # diversion.
-            (res, err) = TT.get(data.inp, data.query)
+DATASETS: list[tuple[typing.Any, dict[str, typing.Any]]] = [
+    (obj, data) for _, obj, data in common.collect_data("get")
+]
 
-            if emsg:
-                self.assertTrue(bool(err), data)
-            else:  # emsg = ''
-                self.assertEqual(err, '', data)
 
-            self.assertEqual(res, data.exp, data)
+@pytest.mark.parametrize(("obj", "data"), DATASETS)
+def test_get(obj, data):
+    query = data.get("q")
+    exp = data.get("e")
+    emsg = data.get("s")
+
+    (res, err) = TT.get(obj, query)
+
+    assert bool(err) if emsg else err == ""
+    assert res == exp

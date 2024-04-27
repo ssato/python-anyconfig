@@ -6,20 +6,24 @@
 # pylint: disable=missing-docstring
 from __future__ import annotations
 
+import typing
+
+import pytest
+
 import anyconfig.dicts as TT
 
 from . import common
 
 
-class TestCase(common.TestCase):
-    kind = 'mk_nested_dic'
-    pattern = '*.*'
-    ordered = False
+DATASETS: list[tuple[typing.Any, dict[str, typing.Any]]] = [
+    (obj, data) for _, obj, data in common.collect_data("mk_nested_dic")
+]
 
-    def test_mk_nested_dic(self):
-        for data in self.each_data():
-            val = data.query  # diversion.
-            self.assertEqual(
-                TT.mk_nested_dic(data.inp, val, **data.opts),
-                data.exp
-            )
+
+@pytest.mark.parametrize(("obj", "data"), DATASETS)
+def test_mk_nested_dic(obj, data):
+    val = data.get("q")
+    exp = data.get("e")
+    opts = data.get("o")
+
+    assert TT.mk_nested_dic(obj, val, **opts) == exp

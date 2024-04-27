@@ -1,25 +1,26 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-"""Test cases for anyconfig.parser.parse_list.
-"""
+"""Test cases for anyconfig.parser.parse_list."""
+from __future__ import annotations
+
+import typing
+
+import pytest
+
 import anyconfig.parser as TT
 
 from . import common
 
 
-class TestCase(common.TestCase):
-    kind = 'list'
-    pattern = '*.*'
+DATASETS: list[tuple[typing.Any, dict[str, typing.Any]]] = [
+    (obj, data.get("e"), data.get("o", {}))
+    for _, obj, data in common.collect_data("list")
+]
 
-    def test_parse_list(self):
-        for data in self.each_data():
-            self.assertEqual(
-                TT.parse_list(data.inp, **data.opts),
-                data.exp,
-                data
-            )
 
-# vim:sw=4:ts=4:et:
+@pytest.mark.parametrize(("obj", "exp", "opts"), DATASETS)
+def test_parse_list(obj, exp, opts) -> None:
+    assert TT.parse_list(obj, **opts) == exp

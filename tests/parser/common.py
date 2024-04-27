@@ -1,20 +1,17 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-import unittest
+from __future__ import annotations
 
-from .. import base
+import pathlib
 
-
-class Collector(base.TDataCollector):
-    pass
+from ..common import tdc
 
 
-class TestCase(unittest.TestCase, Collector):
+MOD: str = pathlib.Path(__file__).parent.name
 
-    def setUp(self):
-        self.init()
 
-# vim:sw=4:ts=4:et:
+def collect_data(target: str, mod: str = MOD):
+    return tdc.collect_for(mod, target)

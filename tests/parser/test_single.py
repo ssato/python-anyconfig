@@ -1,21 +1,25 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-"""Test cases for anyconfig.parser.parse_single.
-"""
+"""Test cases for anyconfig.parser.parse_single."""
+from __future__ import annotations
+
+import typing
+
+import pytest
+
 import anyconfig.parser as TT
 
 from . import common
 
 
-class TestCase(common.TestCase):
-    kind = 'single'
-    pattern = '*.*'
+DATASETS: list[tuple[typing.Any, dict[str, typing.Any]]] = [
+    (obj, data.get("e")) for _, obj, data in common.collect_data("single")
+]
 
-    def test_parse_single(self):
-        for data in self.each_data():
-            self.assertEqual(TT.parse_single(data.inp), data.exp)
 
-# vim:sw=4:ts=4:et:
+@pytest.mark.parametrize(("obj", "exp"), DATASETS)
+def test_parse_single(obj, exp) -> None:
+    assert TT.parse_single(obj) == exp

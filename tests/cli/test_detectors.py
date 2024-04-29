@@ -1,101 +1,116 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-"""test cases of anyconfig.cli.detectors.
-"""
+"""test cases of anyconfig.cli.detectors."""
+from __future__ import annotations
+
 import contextlib
 import io
-import unittest
 import warnings
+import typing
+
+import pytest
 
 import anyconfig.cli.detectors as TT
 import anyconfig.cli.parse_args
 
+if typing.TYPE_CHECKING:
+    import argparse
 
-class TestCase(unittest.TestCase):
 
-    def test_are_same_file_types(self):
-        ies = (([], False),
-               (['/tmp/a/b/c.conf'], True),
-               (['/tmp/a/b/c.yml', '/tmp/a/b/d.yml'], True),
-               )
-        for inp, exp in ies:
-            (self.assertTrue if exp else self.assertFalse)(
-                TT.are_same_file_types(inp)
-            )
+@pytest.mark.parametrize(
+    ("paths", "exp"),
+    (([], False),
+     (['/tmp/a/b/c.conf'], True),
+     (['/tmp/a/b/c.yml', '/tmp/a/b/d.yml'], True),
+     )
+)
+def test_are_same_file_types(paths: list[str], exp: bool) -> None:
+    assert TT.are_same_file_types(paths) == exp
 
-    def test_find_by_the_type(self):
-        ies = (('', None),
-               (None, None),
-               ('json', 'json'),
-               ('type_not_exit', None),
-               )
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            for inp, exp in ies:
-                self.assertEqual(
-                    TT.find_by_the_type(inp), exp
-                )
 
-    def test_find_by_the_paths(self):
-        ies = (([], None),
-               (['/tmp/a/b/c.yml', '/tmp/a/b/d.json'], None),
-               (['-'], None),
-               (['-', '/tmp/a/b/d.json'], None),
-               (['/tmp/a/b/c.json', '/tmp/a/b/d.json'], 'json'),
-               )
-        for inp, exp in ies:
-            self.assertEqual(
-                TT.find_by_the_paths(inp), exp
-            )
+@pytest.mark.parametrize(
+    ("typ", "exp"),
+    (('', None),
+     (None, None),
+     ('json', 'json'),
+     ('type_not_exit', None),
+     )
+)
+def test_find_by_the_type(typ: str, exp: typing.Optional[str]):
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        assert TT.find_by_the_paths(typ) == exp
 
-    def test_try_detecting_input_type(self):
-        ies = (([], None),
-               (['-'], None),
-               (['a.conf'], None),
-               (['-I', 'json', 'a.conf'], 'json'),
-               (['a.json'], 'json'),
-               )
-        for inp, exp in ies:
-            (_psr, args) = anyconfig.cli.parse_args.parse(
-                inp, prog='anyconfig_cli'
-            )
-            self.assertEqual(
-                TT.try_detecting_input_type(args), exp, args
-            )
 
-    def test_try_detecting_output_type(self):
-        ies = ((['-I', 'json', 'a.conf'], 'json'),
-               (['a.json'], 'json'),
-               (['-I', 'json', 'a.conf', '-o', 'b.conf'], 'json'),
-               (['a.json', '-o', 'b.conf'], 'json'),
-               (['a.json', '-O', 'json', '-o', 'b.conf'], 'json'),
-               )
-        for inp, exp in ies:
-            (_psr, args) = anyconfig.cli.parse_args.parse(
-                inp, prog='anyconfig_cli'
-            )
-            self.assertEqual(
-                TT.try_detecting_output_type(args), exp, args
-            )
+@pytest.mark.parametrize(
+    ("paths", "exp"),
+    (([], None),
+     (['/tmp/a/b/c.yml', '/tmp/a/b/d.json'], None),
+     (['-'], None),
+     (['-', '/tmp/a/b/d.json'], None),
+     (['/tmp/a/b/c.json', '/tmp/a/b/d.json'], 'json'),
+     )
+)
+def test_find_by_the_paths(
+    paths: list[str], exp: typing.Optional[str]
+) -> None:
+    assert TT.find_by_the_paths(paths) == exp
 
-    def test_try_detecting_output_type__failures(self):
-        ies = (['-'],
-               ['a.conf'],
-               ['a.conf', '-o', 'b.conf'],
-               )
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
 
-            for inp in ies:
-                (_psr, args) = anyconfig.cli.parse_args.parse(
-                    inp, prog='anyconfig_cli'
-                )
-                with self.assertRaises(SystemExit):
-                    with contextlib.redirect_stdout(io.StringIO()):
-                        with contextlib.redirect_stderr(io.StringIO()):
-                            TT.try_detecting_output_type(args)
+@pytest.mark.parametrize(
+    ("argv", "exp"),
+    (([], None),
+     (['-'], None),
+     (['a.conf'], None),
+     (['-I', 'json', 'a.conf'], 'json'),
+     (['a.json'], 'json'),
+     )
+)
+def test_try_detecting_input_type(
+    argv: list[str], exp: typing.Optional[str]
+) -> None:
+    (_psr, args) = anyconfig.cli.parse_args.parse(
+        argv, prog='anyconfig_cli'
+    )
+    assert TT.try_detecting_input_type(args) == exp
 
-# vim:sw=4:ts=4:et:
+
+@pytest.mark.parametrize(
+    ("argv", "exp"),
+    ((['-I', 'json', 'a.conf'], 'json'),
+     (['a.json'], 'json'),
+     (['-I', 'json', 'a.conf', '-o', 'b.conf'], 'json'),
+     (['a.json', '-o', 'b.conf'], 'json'),
+     (['a.json', '-O', 'json', '-o', 'b.conf'], 'json'),
+     )
+)
+def test_try_detecting_output_type(
+    argv: list[str], exp: typing.Optional[str]
+) -> None:
+    (_psr, args) = anyconfig.cli.parse_args.parse(
+        argv, prog='anyconfig_cli'
+    )
+    assert TT.try_detecting_output_type(args) == exp
+
+
+@pytest.mark.parametrize(
+    ("argv", ),
+    (['-'],
+     ['a.conf'],
+     ['a.conf', '-o', 'b.conf'],
+     )
+)
+def test_try_detecting_output_type__failures(argv: list[str]) -> None:
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+
+        (_psr, args) = anyconfig.cli.parse_args.parse(
+            argv, prog='anyconfig_cli'
+        )
+        with pytest.raises(SystemExit):
+            with contextlib.redirect_stdout(io.StringIO()):
+                with contextlib.redirect_stderr(io.StringIO()):
+                    TT.try_detecting_output_type(args)

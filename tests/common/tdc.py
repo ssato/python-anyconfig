@@ -24,8 +24,15 @@ def get_mod_target_pair_from_path(path: str):
 
 
 def collect_for(
-    mod: str, target: str, topdir: pathlib.Path = globals_.RESOURCE_DIR
-) -> list[tuple[pathlib.Path, dict[str, typing.Any]]]:
+    mod: str, target: str,
+    topdir: pathlib.Path = globals_.RESOURCE_DIR,
+    subdir: typing.Optional[pathlib.Path] = None,
+    load: bool = True
+) -> list[tuple[pathlib.Path, dict[str, typing.Any], ...]]:
     """Collct test data for mod.target."""
-    datadir = topdir / mod / target  # e.g. tests/res/1/template/jinja2
-    return paths.load_data_2(datadir)
+    if subdir is None:
+        datadir = topdir / mod / target  # e.g. tests/res/1/template/jinja2
+    else:
+        datadir = topdir / subdir / mod / target
+
+    return (paths.load_data_2 if load else paths.load_data)(datadir)

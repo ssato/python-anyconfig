@@ -1,59 +1,44 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-import pathlib
-import tempfile
-import unittest
+"""Test cases for anyconfig.api.single_load with template args."""
+from __future__ import annotations
+
 import warnings
 
-import anyconfig.template
+import pytest
+
+import anyconfig.api._load as TT
+try:
+    import anyconfig.template.jinja2  # pylint: disable=unused-import
+except ImportError:
+    pytest.skip(
+        "Requried jinja2 lib is not available.",
+        allow_module_level=True
+    )
 
 from . import common
 
 
-@unittest.skipIf(not anyconfig.template.SUPPORTED,
-                 'jinja2 template lib is not available')
-class TestCase(common.TestCase):
-    kind = 'template'
-    pattern = '*.j2'
+DATASETS = common.load_datasets("template")
 
-    def test_single_load(self):
-        for data in self.each_data():
-            self.assertEqual(
-                self.target_fn(
-                    data.inp_path, ac_context=data.ctx, **data.opts
-                ),
-                data.exp,
-                f'{data.datadir!s}, {data.inp_path!s}'
-            )
 
-    def test_single_load_from_invalid_template(self):
-        with tempfile.TemporaryDirectory() as tdir:
-            wdir = pathlib.Path(tdir)
-            inp = wdir / 'test.json'
-            inp.write_text('{"a": "{{ a"}')  # broken template string.
+@pytest.mark.parametrize(("ipath", "ctx", "exp", "opts"), DATASETS)
+def test_single_load(ipath, ctx, exp, opts):
+    assert TT.single_load(ipath, ac_context=ctx, **opts) == exp
 
-            with warnings.catch_warnings(record=True) as warns:
-                warnings.simplefilter('always')
-                res = self.target_fn(
-                    inp, ac_template=True, ac_context=dict(a=1)
-                )
-                self.assertEqual(res, dict(a='{{ a'))
-                self.assertTrue(len(warns) > 0)
-                self.assertTrue(issubclass(warns[-1].category, UserWarning))
-                self.assertTrue('ailed to compile ' in str(warns[-1].message))
 
-    def test_single_load_intentional_failures(self):
-        ng_exp = dict(z=1, zz='zz', zzz=[1, 2, 3], zzzz=dict(z=0))
-        for data in self.each_data():
-            with self.assertRaises(AssertionError):
-                self.assertEqual(
-                    self.target_fn(
-                        data.inp_path, ac_context=data.ctx, **data.opts
-                    ),
-                    ng_exp
-                )
+def test_single_load_from_invalid_template(tmp_path):
+    ipath = tmp_path / 'test.json'
+    ipath.write_text('{"a": "{{ a"}')  # broken template string.
 
-# vim:sw=4:ts=4:et:
+    with warnings.catch_warnings(record=True) as warns:
+        warnings.simplefilter('always')
+        res = TT.single_load(ipath, ac_template=True, ac_context={"a": 1})
+
+        assert res == {"a": '{{ a'}
+        assert len(warns) > 0
+        assert issubclass(warns[-1].category, UserWarning)
+        assert 'ailed to compile ' in str(warns[-1].message)

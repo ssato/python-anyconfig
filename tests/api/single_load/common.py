@@ -3,39 +3,27 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-import unittest
+""""Common functions of test cases for anyconfig.api.single_load."""
+from __future__ import annotations
 
-import anyconfig.api._load as TT
+import pathlib
+import typing
 
-from ... import base
-
-
-class Collector(base.TDataCollector):
-
-    @staticmethod
-    def target_fn(*args, **kwargs):
-        return TT.single_load(*args, **kwargs)
+from ...common import tdc
 
 
-class TestCase(unittest.TestCase, Collector):
+MOD: str = pathlib.Path(__file__).parent.name
 
-    def setUp(self):
-        self.init()
+VALUES: tuple[tuple[str, typing.Optional[dict], ...], ...] = (
+    ("c", {}), ("e", None), ("o", {})
+)
 
-    def test_single_load(self):
-        for data in self.each_data():
-            self.assertEqual(
-                self.target_fn(data.inp_path, **data.opts),
-                data.exp,
-                data
-            )
 
-    def test_single_load_intentional_failures(self):
-        for data in self.each_data():
-            with self.assertRaises(AssertionError):
-                self.assertEqual(
-                    self.target_fn(data.inp_path, **data.opts),
-                    None
-                )
-
-# vim:sw=4:ts=4:et:
+def load_datasets(
+    target: str, mod: str = MOD, values = VALUES,
+) -> list[tuple[pathlib.Path, dict, typing.Optional[dict], dict]]:
+    return [
+        (ipath, *[data.get(k, v) for k, v in values])
+        for ipath, data
+        in tdc.collect_for(mod, target, subdir="api", load=False)
+    ]

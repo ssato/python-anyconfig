@@ -39,7 +39,7 @@ def test_are_same_file_types(paths: list[str], exp: bool) -> None:
 def test_find_by_the_type(typ: str, exp: typing.Optional[str]):
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
-        assert TT.find_by_the_paths(typ) == exp
+        assert TT.find_by_the_type(typ) == exp
 
 
 @pytest.mark.parametrize(
@@ -95,9 +95,9 @@ def test_try_detecting_output_type(
 
 @pytest.mark.parametrize(
     ("argv", ),
-    (['-'],
-     ['a.conf'],
-     ['a.conf', '-o', 'b.conf'],
+    ((['-'], ),
+     (['a.conf'], ),
+     (['a.conf', '-o', 'b.conf'], ),
      )
 )
 def test_try_detecting_output_type__failures(argv: list[str]) -> None:

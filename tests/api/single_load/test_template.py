@@ -2,7 +2,7 @@
 # Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring, unused-import
 """Test cases for anyconfig.api.single_load with template args."""
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import pytest
 
 import anyconfig.api._load as TT
 try:
-    import anyconfig.template.jinja2  # pylint: disable=unused-import
+    import anyconfig.template.jinja2  # noqa: F401
 except ImportError:
     pytest.skip(
         "Requried jinja2 lib is not available.",

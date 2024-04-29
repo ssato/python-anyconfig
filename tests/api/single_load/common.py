@@ -20,7 +20,7 @@ VALUES: tuple[tuple[str, typing.Optional[dict], ...], ...] = (
 
 
 def load_datasets(
-    target: str, mod: str = MOD, values = VALUES,
+    target: str, mod: str = MOD, values: tuple = VALUES,
 ) -> list[tuple[pathlib.Path, dict, typing.Optional[dict], dict]]:
     return [
         (ipath, *[data.get(k, v) for k, v in values])

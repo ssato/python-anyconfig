@@ -16,9 +16,6 @@ import pytest
 import anyconfig.cli.detectors as TT
 import anyconfig.cli.parse_args
 
-if typing.TYPE_CHECKING:
-    import argparse
-
 
 @pytest.mark.parametrize(
     ("paths", "exp"),

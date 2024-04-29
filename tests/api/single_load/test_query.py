@@ -2,7 +2,7 @@
 # Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring, unused-import
 """Test cases for anyconfig.api.single_load to load primitive types."""
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ import pytest
 import anyconfig.api._load as TT
 
 try:
-    import anyconfig.query.query  # pylint: disable=unused-import
+    import anyconfig.query.query  # noqa: F401
 except ImportError:
     pytest.skip(
         "Required query module is not available",

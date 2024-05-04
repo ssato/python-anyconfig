@@ -3,7 +3,9 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=invalid-name,missing-docstring
-import unittest
+"""Test cases for tests.base.collector."""
+from __future__ import annotations
+
 import pathlib
 
 from . import collector as TT
@@ -15,26 +17,19 @@ CUR_DIR = pathlib.Path(__file__).parent
 class Collector(TT.TDataCollector):
     # To avoid error because there are no files with '.json' file extension in
     # tests/res/base/basics/20/.
-    pattern = '*.*'
+    pattern = "*.*"
     should_exist = ()  # Likewise.
 
 
-class TestCase(unittest.TestCase, Collector):
+def test_members():
+    obj = Collector()
+    obj.init()
 
-    def setUp(self):
-        self.init()
+    assert obj.target
+    assert obj.target != TT.TDataCollector.target
+    assert obj.target == CUR_DIR.name
 
-    def test_members(self):
-        self.assertTrue(self.target)
-        self.assertNotEqual(self.target, TT.TDataCollector.target)
-        self.assertEqual(self.target, CUR_DIR.name)
+    assert obj.root is not None
+    assert obj.root == CUR_DIR.parent / "res" / obj.target / obj.kind
 
-        self.assertTrue(self.root is not None)
-        self.assertEqual(
-            self.root,
-            CUR_DIR.parent / 'res' / self.target / self.kind
-        )
-
-        self.assertTrue(self.datasets)
-
-# vim:sw=4:ts=4:et:
+    assert obj.datasets

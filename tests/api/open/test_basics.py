@@ -20,7 +20,7 @@ if typing.TYPE_CHECKING:
     import pathlib
 
 
-DATASETS: list[tuple[pathlib.Path, typing.Optional[dict], dict]]  = [
+DATASETS: list[tuple[pathlib.Path, typing.Optional[dict], dict]] = [
     pytest.param(
         ipath, data.get("e", None), data.get("o", {}),
         id=f"{ipath.parent}/{ipath.name}"

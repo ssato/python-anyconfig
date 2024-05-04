@@ -1,112 +1,122 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
+"""Test cases for tests.base.utils."""
+from __future__ import annotations
+
 import pathlib
-import unittest
+import typing
+
+import pytest
 
 from . import constants, utils as TT
 
 
-RES_DIR = constants.RES_DIR / 'base'
+RES_DIR = constants.RES_DIR / "base"
 SELF = pathlib.Path(__file__)
 
 
-class TestCase(unittest.TestCase):
+@pytest.mark.parametrize(
+    ("path", "exp"),
+    ((None, "base"),
+     (__file__, "base"),
+     ),
+)
+def test_target_by_parent(path: typing.Optional[str], exp: str):
+    if path is None:
+        assert TT.target_by_parent() == exp
+    else:
+        assert TT.target_by_parent(path) == exp
 
-    def test_target_by_parent(self):
-        aes = [
-            ((), 'base'),
-            ((__file__, ), 'base'),
-        ]
-        for args, exp in aes:
-            self.assertEqual(TT.target_by_parent(*args), exp)
 
-    def test_load_from_py(self):
-        constants_py_path = SELF.parent / 'constants.py'
-        aes = [
-            ((constants_py_path, ), constants.DATA),
-            ((str(constants_py_path), ), constants.DATA),
-            ((constants_py_path, 'RES_DIR'), constants.RES_DIR),
-        ]
-        for args, exp in aes:
-            self.assertEqual(
-                TT.load_from_py(*args), exp,
-                f'args: {args!r}, exp: {exp!r}'
-            )
+CONSTANTS_PY: pathlib.Path = SELF.parent / "constants.py"
 
-    def test_load_literal_data_from_py(self):
-        py_path = RES_DIR / 'basics' / '20' / '00.py'
-        exp = TT.json.load(
-            (RES_DIR / 'basics' / '10' / '00.json').open()
-        )
-        aes = [
-            (py_path, exp),
-            (str(py_path), exp),
-        ]
-        for arg, exp in aes:
-            self.assertEqual(
-                TT.load_literal_data_from_py(arg), exp
-            )
 
-    def test_maybe_data_path(self):
-        aes = [
-            ((SELF.parent, SELF.stem, ), SELF),
-            ((pathlib.Path('/not/exist/dir'), 'foo', ), None),
-        ]
-        for args, exp in aes:
-            self.assertEqual(TT.maybe_data_path(*args), exp)
+@pytest.mark.parametrize(
+    ("args", "exp"),
+    (((CONSTANTS_PY, ), constants.DATA),
+     ((str(CONSTANTS_PY), ), constants.DATA),
+     ((CONSTANTS_PY, 'RES_DIR'), constants.RES_DIR),
+     ),
+)
+def test_load_from_py(args, exp):
+    assert TT.load_from_py(*args) == exp
 
-    def test_maybe_data_path_failures(self):
-        aes = [
-            (SELF.parent, SELF.stem, (SELF.parent.name, ), '.xyz'),
-        ]
-        for args in aes:
-            with self.assertRaises(OSError):
-                TT.maybe_data_path(*args)
 
-    def test_load_data(self):
-        aes = [
-            ((None, ), {}),
-            ((None, 1), 1),
-            ((RES_DIR / 'basics' / '10' / '00.json', ),
-             TT.json.load((RES_DIR / 'basics' / '10' / '00.json').open())
-             ),
-            ((RES_DIR / 'basics' / '20' / '00.py', ),
-             TT.json.load((RES_DIR / 'basics' / '10' / '00.json').open())
-             ),
-            ((RES_DIR / 'basics' / '30' / '20.txt', ),
-             (RES_DIR / 'basics' / '10' / '20.json').read_text()
-             ),
-        ]
-        for args, exp in aes:
-            res = TT.load_data(*args)
-            self.assertEqual(res, exp, res)
+def test_load_literal_data_from_py():
+    py_path: pathlib.Path = RES_DIR / "basics" / "20" / "00.py"
+    exp = TT.json.load((RES_DIR / "basics" / "10" / "00.json").open())
 
-    def test_load_data_failures(self):
-        aes = [
-            (pathlib.Path('not_exist.xyz'), ),
-        ]
-        for args in aes:
-            with self.assertRaises(ValueError):
-                TT.load_data(*args)
+    assert TT.load_literal_data_from_py(py_path) == exp
+    assert TT.load_literal_data_from_py(str(py_path)) == exp
 
-    def test_load_datasets_from_dir(self):
-        aes = [
-            ((RES_DIR / 'basics' / '10', '*.json'), 3),
-            ((RES_DIR / 'basics' / '20', '*.py'), 1),
-            ((RES_DIR / 'basics' / '30', '*.txt'), 3),
-        ]
-        for args, exp in aes:
-            res = TT.load_datasets_from_dir(
-                args[0], lambda *xs: xs[1], pattern=args[1]
-            )
-            self.assertTrue(bool(res))
-            self.assertEqual(len(res), exp)
 
-    def test_load_datasets_from_dir_failures(self):
-        with self.assertRaises(ValueError):
-            _ = TT.load_datasets_from_dir(SELF, list)
+@pytest.mark.parametrize(
+    ("datadir", "name", "exp"),
+    ((SELF.parent, SELF.stem, SELF),
+     (pathlib.Path("/not/exist/dir"), "foo", None),
+     ),
+)
+def test_maybe_data_path(datadir, name, exp):
+    assert TT.maybe_data_path(datadir, name) == exp
 
-# vim:sw=4:ts=4:et:
+
+@pytest.mark.parametrize(
+    ("args", ),
+    (((SELF.parent, SELF.stem, (SELF.parent.name, ), ".xyz"), ),
+     ),
+)
+def test_maybe_data_path_failures(args):
+    with pytest.raises(OSError):
+        TT.maybe_data_path(*args)
+
+
+@pytest.mark.parametrize(
+    ("args", "exp"),
+    (((None, ), {}),
+     ((None, 1), 1),
+     ((RES_DIR / "basics" / "10" / "00.json", ),
+      TT.json.load((RES_DIR / "basics" / "10" / "00.json").open())
+      ),
+     ((RES_DIR / "basics" / "20" / "00.py", ),
+      TT.json.load((RES_DIR / "basics" / "10" / "00.json").open())
+      ),
+     ((RES_DIR / "basics" / "30" / "20.txt", ),
+      (RES_DIR / "basics" / "10" / "20.json").read_text()
+      ),
+     ),
+)
+def test_load_data(args, exp):
+    assert TT.load_data(*args) == exp
+
+
+@pytest.mark.parametrize(
+    ("args", ),
+    (((pathlib.Path("not_exist.xyz"), ), ),
+     ),
+)
+def test_load_data_failures(args):
+    with pytest.raises(ValueError):
+        TT.load_data(*args)
+
+
+@pytest.mark.parametrize(
+    ("args", "exp"),
+    (((RES_DIR / "basics" / "10", "*.json"), 3),
+     ((RES_DIR / "basics" / "20", "*.py"), 1),
+     ((RES_DIR / "basics" / "30", "*.txt"), 3),
+     ),
+)
+def test_load_datasets_from_dir(args, exp):
+    res = TT.load_datasets_from_dir(
+        args[0], lambda *xs: xs[1], pattern=args[1]
+    )
+    assert bool(res)
+    assert len(res) == exp
+
+
+def test_load_datasets_from_dir_failures():
+    with pytest.raises(ValueError):
+        _ = TT.load_datasets_from_dir(SELF, list)

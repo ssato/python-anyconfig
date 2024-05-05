@@ -18,12 +18,13 @@ if typing.TYPE_CHECKING:
     import pathlib
 
 
-@pytest.mark.parametrize(
-    ("ipath", "opts", "exp"),
-    [
-        (ipath, opts, exp) for ipath, _, exp, opts
-        in common.load_datasets("primitives")
-    ],
+NAMES: tuple[str, ...] = ("ipath", "opts", "exp")
+DATA: list = common.load_datasets_by_test_filepath(
+    __file__, (("o", {}), ("e", None))
 )
+DATA_IDS: list[str] = common.get_test_ids(DATA)
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_single_load(ipath: pathlib.Path, opts: dict, exp) -> None:
     assert TT.single_load(ipath, **opts) == exp

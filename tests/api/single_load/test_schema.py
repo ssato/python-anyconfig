@@ -32,11 +32,6 @@ SCM_NG_0 = '''{
     "properties": {"key_never_exist": {"type": "string", "required": true}}
 }'''
 
-DATASETS = [
-    (ipath, exp, opts)
-    for ipath, _, exp, opts in common.load_datasets("schema")
-]
-
 
 def ipath_to_scm_path(ipath: pathlib.Path) -> typing.Optional[pathlib.Path]:
     basename: str = ipath.name.replace(ipath.suffix, "")
@@ -47,11 +42,18 @@ def ipath_to_scm_path(ipath: pathlib.Path) -> typing.Optional[pathlib.Path]:
     return None
 
 
-@pytest.mark.parametrize(
-    ("ipath", "exp", "opts", "scm"),
-    [(ipath, exp, opts, ipath_to_scm_path(ipath))
-     for ipath, exp, opts in DATASETS]
-)
+NAMES: tuple[str, ...] = ("ipath", "exp", "opts", "scm")
+DATA: list = [
+    (ipath, exp, opts, ipath_to_scm_path(ipath))
+    for ipath, exp, opts
+    in common.load_datasets_by_test_filepath(
+        __file__, (("e", None), ("o", {}))
+    )
+]
+DATA_IDS: list[str] = common.get_test_ids(DATA)
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_single_load(ipath, exp, opts, scm):
     assert scm, f"Not found: {scm!s} [{ipath!s}"
     assert TT.single_load(ipath, ac_schema=scm, **opts) == exp
@@ -59,7 +61,8 @@ def test_single_load(ipath, exp, opts, scm):
 
 @pytest.mark.parametrize(
     ("ipath", "opts"),
-    [(ipath, opts) for ipath, _, opts in DATASETS[:1]]
+    [(ipath, opts) for ipath, _, opts, _ in DATA[:1]],
+    ids=DATA_IDS[:1]
 )
 def test_single_load_failures(
     ipath, opts, tmp_path: pathlib.Path

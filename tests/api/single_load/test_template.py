@@ -22,16 +22,20 @@ except ImportError:
 from . import common
 
 
-DATASETS = common.load_datasets("template")
+NAMES: tuple[str, ...] = ("ipath", "ctx", "exp", "opts")
+DATA: list = common.load_datasets_by_test_filepath(
+    __file__, (("c", {}), ("e", None), ("o", {}))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 
-@pytest.mark.parametrize(("ipath", "ctx", "exp", "opts"), DATASETS)
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_single_load(ipath, ctx, exp, opts):
     assert TT.single_load(ipath, ac_context=ctx, **opts) == exp
 
 
 def test_single_load_from_invalid_template(tmp_path):
-    ipath = tmp_path / 'test.json'
+    ipath = tmp_path / "test.json"
     ipath.write_text('{"a": "{{ a"}')  # broken template string.
 
     with warnings.catch_warnings(record=True) as warns:

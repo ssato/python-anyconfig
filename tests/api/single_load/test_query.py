@@ -26,29 +26,22 @@ if typing.TYPE_CHECKING:
     import pathlib
 
 
-def load_datasets() -> list[tuple[pathlib.Path, typing.Any, str]]:
-    return [
-        (ipath, data.get("e"), data.get("q", ""), data.get("o", {}))
-        for ipath, data
-        in common.tdc.collect_for(
-            "single_load", "query", subdir="api", load=False
-        )
-    ]
-
-
-@pytest.mark.parametrize(
-    ("ipath", "exp", "query", "opts"),
-    load_datasets()
+NAMES: tuple[str, ...] = ("ipath", "exp", "query", "opts")
+DATA: list = common.load_datasets_by_test_filepath(
+    __file__, (("e", None), ("q", ""), ("o", {}))
 )
+DATA_IDS: list[str] = common.get_test_ids(DATA)
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_single_load(ipath: pathlib.Path, exp, query, opts):
-    assert TT.single_load(
-        ipath, ac_query=query.strip(), **opts
-    ) == exp
+    assert TT.single_load(ipath, ac_query=query.strip(), **opts) == exp
 
 
 @pytest.mark.parametrize(
     ("ipath", "opts"),
-    [(ipath, opts) for ipath, _, _, opts in load_datasets()]
+    [(ipath, opts) for ipath, _, _, opts in DATA],
+    ids=DATA_IDS
 )
 def test_single_load_with_invalid_query_string(
     ipath: pathlib.Path, opts

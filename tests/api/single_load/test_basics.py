@@ -21,45 +21,48 @@ from . import common
 
 JSON_PARSER = anyconfig.parsers.find(None, 'json')
 
-DATASETS = [
-    (ipath, opts, exp) for ipath, _, exp, opts
-    in common.load_datasets("basics")
-]
-DATASETS_WO_OPTS = [(ipath, exp) for ipath, _, exp in DATASETS]
+NAMES: tuple[str, ...] = ("ipath", "opts", "exp")
+DATA: list = common.load_datasets_by_test_filepath(
+    __file__, (("o", {}), ("e", None))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
+
+NAMES_2: tuple[str, ...] = ("ipath", "exp")
+DATA_2: list = [(ipath, exp) for ipath, _, exp in DATA]
 
 
 class MyDict(collections.OrderedDict):
     """My original dict class keep key orders."""
 
 
-@pytest.mark.parametrize(("ipath", "opts", "exp"), DATASETS)
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_single_load_from_stream(ipath, opts, exp):
     assert TT.single_load(ipath.open(), **opts) == exp
 
 
-@pytest.mark.parametrize(("ipath", "opts", "exp"), DATASETS)
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_single_load_from_path_str(ipath, opts, exp):
     assert TT.single_load(str(ipath), **opts) == exp
 
 
-@pytest.mark.parametrize(("ipath", "exp"), DATASETS_WO_OPTS)
+@pytest.mark.parametrize(NAMES_2, DATA_2, ids=DATA_IDS)
 def test_single_load_with_ac_parser_by_instance(ipath, exp):
     assert TT.single_load(ipath, ac_parser=JSON_PARSER) == exp
 
 
-@pytest.mark.parametrize(("ipath", "exp"), DATASETS_WO_OPTS)
+@pytest.mark.parametrize(NAMES_2, DATA_2, ids=DATA_IDS)
 def test_single_load_with_ac_parser_by_id(ipath, exp):
     assert TT.single_load(ipath, ac_parser=JSON_PARSER.cid()) == exp
 
 
-@pytest.mark.parametrize(("ipath", "exp"), DATASETS_WO_OPTS)
+@pytest.mark.parametrize(NAMES_2, DATA_2, ids=DATA_IDS)
 def test_single_load_with_ac_ordered(ipath, exp):
     assert TT.single_load(
         ipath, ac_ordered=True
     ) == collections.OrderedDict(exp)
 
 
-@pytest.mark.parametrize(("ipath", "exp"), DATASETS_WO_OPTS)
+@pytest.mark.parametrize(NAMES_2, DATA_2, ids=DATA_IDS)
 def test_single_load_with_ac_dict(ipath, exp):
     res = TT.single_load(ipath, ac_dict=MyDict)
     assert isinstance(res, MyDict)
@@ -82,8 +85,7 @@ def test_single_load_invalid_parser_object_failures():
 
 
 @pytest.mark.parametrize(
-    ("ipath", ),
-    [(ipath, ) for ipath, _, _ in DATASETS]
+    ("ipath", ), [(ipath, ) for ipath, _, _ in DATA], ids=DATA_IDS
 )
 def test_single_load_unknown_processor_type_failures(ipath):
     with pytest.raises(UnknownProcessorTypeError):

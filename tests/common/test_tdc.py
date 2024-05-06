@@ -52,7 +52,7 @@ TEST_DIR_0 = "/home/foo/projects/bar/tests"
      (f"{TEST_DIR_0}/foobar/baz/test_xyz.py",
       {"topdir": pathlib.Path("/home/foo/projects/bar/tests"),
        "resdir": pathlib.Path("/home/foo/projects/bar/tests/resources")},
-      pathlib.Path(f"{TEST_DIR_0}/resources") / "foobar/baz/xyz"),
+      pathlib.Path(f"{TEST_DIR_0}/resources") / "foobar" / "baz" / "xyz"),
      ),
     ids=(
         SELF.name, "test_paths.py",

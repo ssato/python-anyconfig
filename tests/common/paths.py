@@ -57,9 +57,10 @@ def get_data(
 
 
 def load_data(
-    topdir: typing.Optional[pathlib.Path], **kwargs
+    topdir: typing.Optional[pathlib.Path],
+    load_idata: bool = False, **kwargs
 ) -> list[tuple[pathlib.Path, dict[str, typing.Any]]]:
-    return [
+    res = [
         (
             ipath,
             {
@@ -69,18 +70,10 @@ def load_data(
         )
         for ipath, adata in get_data(topdir)
     ]
+    if load_idata:
+        return [
+            (ipath, load.load_data(ipath), adata)
+            for ipath, adata in res
+        ]
 
-
-def load_data_2(
-    topdir: typing.Optional[pathlib.Path], **kwargs
-) -> list[tuple[pathlib.Path, dict[str, typing.Any]]]:
-    return [
-        (
-            ipath, load.load_data(ipath),
-            {
-                subdir: load.load_data(a, **kwargs)
-                for subdir, a in adata.items()
-            }
-        )
-        for ipath, adata in get_data(topdir)
-    ]
+    return res

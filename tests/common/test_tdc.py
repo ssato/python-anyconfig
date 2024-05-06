@@ -7,20 +7,58 @@ r"""Test cases for Test Data Collecor."""
 from __future__ import annotations
 
 import json
-import typing
+import pathlib
 
 import pytest
 
 from . import tdc as TT, globals_ as G
 
-if typing.TYPE_CHECKING:
-    import pathlib
+
+SELF = pathlib.Path(__file__)
+CUDIR = SELF.parent
 
 
-def test_get_mod_target_pair_from_path() -> None:
-    assert TT.get_mod_target_pair_from_path(__file__) == (
-        "common", "tdc"
-    )
+@pytest.mark.parametrize(
+    ("path", "level", "exp"),
+    (("a/b/c/d/e.py", TT.LVL_DEFAULT, "c/d/e.py"),
+     ("/a/b/c/d/e.py", TT.LVL_DEFAULT, "c/d/e.py"),
+     ("/a/b/c/d/e.py", 4, "b/c/d/e.py"),
+     ),
+)
+def test_get_test_id(path, level, exp) -> None:
+    assert TT.get_test_id(pathlib.Path(path), level=level) == exp
+
+
+@pytest.mark.parametrize(
+    ("data", "level", "exp"),
+    (([], 1, []),
+     ([(pathlib.Path("a/b/c/d/e.py"), {}, None)],
+      TT.LVL_DEFAULT, ["c/d/e.py"]),
+     ),
+)
+def test_get_test_ids(data, level, exp) -> None:
+    assert TT.get_test_ids(data, level=level) == exp
+
+
+TEST_DIR_0 = "/home/foo/projects/bar/tests"
+
+
+@pytest.mark.parametrize(
+    ("path", "opts", "exp"),
+    ((str(SELF), {}, G.RESOURCE_DIR / "common" / "tdc"),
+     (str(CUDIR / "test_paths.py"), {}, G.RESOURCE_DIR / "common" / "paths"),
+     (f"{TEST_DIR_0}/foobar/baz/test_xyz.py",
+      {"topdir": pathlib.Path("/home/foo/projects/bar/tests"),
+       "resdir": pathlib.Path("/home/foo/projects/bar/tests/resources")},
+      pathlib.Path(f"{TEST_DIR_0}/resources") / "foobar/baz/xyz"),
+     ),
+    ids=(
+        SELF.name, "test_paths.py",
+        "/home/foo/projects/bar/tests/foobar/baz/test_xyz.py"
+    ),
+)
+def test_get_test_resdir(path, opts, exp):
+    assert TT.get_test_resdir(path, **opts) == exp
 
 
 # .. note:: See files under tests/res/1/common/tdc/.
@@ -44,34 +82,56 @@ TEST_DATA_20 = [
 
 
 @pytest.mark.parametrize(
-    ("mod", "target", "topdir", "exp"),
-    (("foo", "bar", None, TEST_DATA_10),
-     (*TT.get_mod_target_pair_from_path(__file__),
-      G.RESOURCE_DIR, TEST_DATA_20),
+    ("testfile", "kwargs", "exp"),
+    (pytest.param(
+        __file__, {},
+        [(i, *[a.get(k, v) for k, v in TT.VALUES])
+         for i, _, a in TEST_DATA_20],
+        id=f"{CUDIR.name}/{SELF.name} without loading data from ipath"),
+     pytest.param(
+        __file__, {"load_idata": True},
+        [(i, d, *[a.get(k, v) for k, v in TT.VALUES])
+         for i, d, a in TEST_DATA_20],
+        id=f"{CUDIR.name}/{SELF.name} with loading data from ipath"),
+     # ("foo/bar/test_baz.py", {"values": (("b", []), ("c", {}))},
+     #  TEST_DATA_10),
      ),
 )
-def test_collect_for(
-    mod: str, target: str, topdir: pathlib.Path,
-    exp: list[tuple[pathlib.Path, dict[str, typing.Any]]],
-    tmp_path: pathlib.Path
-) -> None:
-    if topdir is None:
+def test_load_data_for_testfile(
+    testfile, kwargs, exp, tmp_path
+):
+    if pathlib.Path(testfile).exists():
+        assert TT.load_data_for_testfile(testfile, **kwargs) == exp
+    else:
+        testfile = tmp_path / testfile
+        testfile.parent.mkdir(parents=True, exist_ok=True)
+        testfile.touch()
+
+        # kwargs for TT.get_test_resdir
+        kwargs.update(topdir=tmp_path, resdir=tmp_path)
+        resdir = tmp_path / TT.get_test_resdir(testfile, tmp_path, tmp_path)
+
         exp_new = []
 
-        for rpath, data, opts in exp:
-            path = tmp_path / mod / target / rpath
+        for ipath, data, opts in exp:
+            path = resdir / ipath
             path.parent.mkdir(parents=True, exist_ok=True)
             json.dump(data, path.open("w"))
 
+            opts_new = []
             for subdir, val in opts.items():
+                if subdir not in kwargs.get("values", TT.VALUES):
+                    continue
+
                 (path.parent / subdir).mkdir(exist_ok=True)
 
                 aname = path.name.replace(path.suffix, ".py")
                 (path.parent / subdir / aname).write_text(repr(val))
+                opts_new.append({subdir: val})
 
-            exp_new.append((path, data, opts))
+            if kwargs.get("load_idata", False):
+                exp_new.append((path, data, *opts_new))
+            else:
+                exp_new.append((path, *opts_new))
 
-        assert TT.collect_for(mod, target, tmp_path) == exp_new
-
-    else:
-        assert TT.collect_for(mod, target, topdir) == exp
+        assert TT.load_data_for_testfile(str(testfile), **kwargs) == exp_new

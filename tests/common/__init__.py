@@ -3,10 +3,12 @@
 # SPDX-License-Identifier: MIT
 #
 "tests.common - common global variables and functions."""
-from .globals_ import RESOURCE_DIR
-from .tdc import collect_for
+from .globals_ import TESTDIR, RESOURCE_DIR
+from .tdc import (
+    get_test_ids, load_data_for_testfile
+)
 
 __all__ = [
-    "RESOURCE_DIR",
-    "collect_for",
+    "TESTDIR", "RESOURCE_DIR",
+    "get_test_ids", "load_data_for_testfile",
 ]

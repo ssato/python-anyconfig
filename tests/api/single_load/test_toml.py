@@ -10,17 +10,22 @@ import pytest
 
 import anyconfig.api._load as TT
 
-from . import common
+from ... import common
+from .constants import LOADER_TYPES
 
 
 NAMES: tuple[str, ...] = ("ipath", "exp")
-DATA: list = common.load_datasets_by_test_filepath(__file__, (("e", None), ))
+DATA: list = common.load_data_for_testfile(__file__, (("e", None), ))
 DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 
+def test_data() -> None:
+    assert DATA
+
+
 @pytest.mark.skipif(
-    "toml" not in common.LOADER_TYPES,
-    reason="toml loader is not availabla."
+    "toml" not in LOADER_TYPES,
+    reason="toml lib is not availabla."
 )
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_single_load_for_toml_files(ipath, exp):

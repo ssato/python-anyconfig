@@ -16,19 +16,23 @@ import anyconfig.parsers
 from anyconfig.api import (
     UnknownFileTypeError, UnknownProcessorTypeError
 )
-from . import common
+from ... import common
 
 
 JSON_PARSER = anyconfig.parsers.find(None, 'json')
 
 NAMES: tuple[str, ...] = ("ipath", "opts", "exp")
-DATA: list = common.load_datasets_by_test_filepath(
+DATA: list = common.load_data_for_testfile(
     __file__, (("o", {}), ("e", None))
 )
 DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 NAMES_2: tuple[str, ...] = ("ipath", "exp")
 DATA_2: list = [(ipath, exp) for ipath, _, exp in DATA]
+
+
+def test_data() -> None:
+    assert DATA
 
 
 class MyDict(collections.OrderedDict):

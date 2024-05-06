@@ -12,17 +12,21 @@ import pytest
 
 import anyconfig.api._load as TT
 
-from . import common
+from ... import common
 
 if typing.TYPE_CHECKING:
     import pathlib
 
 
 NAMES: tuple[str, ...] = ("ipath", "opts", "exp")
-DATA: list = common.load_datasets_by_test_filepath(
+DATA: list = common.load_data_for_testfile(
     __file__, (("o", {}), ("e", None))
 )
 DATA_IDS: list[str] = common.get_test_ids(DATA)
+
+
+def test_data() -> None:
+    assert DATA
 
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)

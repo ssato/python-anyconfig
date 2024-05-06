@@ -19,14 +19,18 @@ except ImportError:
         allow_module_level=True
     )
 
-from . import common
+from ... import common
 
 
 NAMES: tuple[str, ...] = ("ipath", "ctx", "exp", "opts")
-DATA: list = common.load_datasets_by_test_filepath(
+DATA: list = common.load_data_for_testfile(
     __file__, (("c", {}), ("e", None), ("o", {}))
 )
 DATA_IDS: list[str] = common.get_test_ids(DATA)
+
+
+def test_data() -> None:
+    assert DATA
 
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)

@@ -16,7 +16,7 @@ import anyconfig.api._load as TT
 
 from anyconfig.api import ValidationError
 
-from . import common
+from ... import common
 
 try:
     import jsonschema  # noqa: F401
@@ -44,13 +44,14 @@ def ipath_to_scm_path(ipath: pathlib.Path) -> typing.Optional[pathlib.Path]:
 
 NAMES: tuple[str, ...] = ("ipath", "exp", "opts", "scm")
 DATA: list = [
-    (ipath, exp, opts, ipath_to_scm_path(ipath))
-    for ipath, exp, opts
-    in common.load_datasets_by_test_filepath(
-        __file__, (("e", None), ("o", {}))
-    )
+    (i, e, o, ipath_to_scm_path(i)) for i, o, e
+    in common.load_data_for_testfile(__file__)
 ]
 DATA_IDS: list[str] = common.get_test_ids(DATA)
+
+
+def test_data() -> None:
+    assert DATA
 
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)

@@ -6,6 +6,7 @@
 r"""Test Data Collecor."""
 from __future__ import annotations
 
+import itertools
 import os.path
 import pathlib
 import re
@@ -47,7 +48,10 @@ def get_test_resdir(
     """
     path = pathlib.Path(testfile).resolve()
     subdir = pattern.match(path.name).groups()[0]
-    relpath = str(path.parent).replace(f"{topdir!s}{os.path.sep}", "")
+    relpath = os.path.join(
+        *[x for x, y in itertools.zip_longest(path.parent.parts, topdir.parts)
+          if y is None]
+    )
 
     return resdir / relpath / subdir
 

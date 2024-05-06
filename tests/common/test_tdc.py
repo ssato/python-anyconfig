@@ -42,22 +42,21 @@ def test_get_test_ids(data, level, exp) -> None:
     assert TT.get_test_ids(data, level=level) == exp
 
 
-TEST_DIR_0 = "/home/foo/projects/bar/tests"
+TEST_FILE_10 = "foobar/baz/test_xyz.py"
+TEST_TOP_DIR_10 = pathlib.Path("/home/foo/projects/bar/tests")
+TEST_RES_DIR_10 = TEST_TOP_DIR_10 / "resources"
+TEST_DATA_PATH_10 = TEST_RES_DIR_10 / "foobar" / "baz" / "xyz"
 
 
 @pytest.mark.parametrize(
     ("path", "opts", "exp"),
     ((str(SELF), {}, G.RESOURCE_DIR / "common" / "tdc"),
      (str(CUDIR / "test_paths.py"), {}, G.RESOURCE_DIR / "common" / "paths"),
-     (f"{TEST_DIR_0}/foobar/baz/test_xyz.py",
-      {"topdir": pathlib.Path("/home/foo/projects/bar/tests"),
-       "resdir": pathlib.Path("/home/foo/projects/bar/tests/resources")},
-      pathlib.Path(f"{TEST_DIR_0}/resources") / "foobar" / "baz" / "xyz"),
+     (str(TEST_TOP_DIR_10 / TEST_FILE_10),
+      {"topdir": TEST_TOP_DIR_10, "resdir": TEST_RES_DIR_10},
+      TEST_DATA_PATH_10),
      ),
-    ids=(
-        SELF.name, "test_paths.py",
-        "/home/foo/projects/bar/tests/foobar/baz/test_xyz.py"
-    ),
+    ids=(SELF.name, "test_paths.py", TEST_FILE_10),
 )
 def test_get_test_resdir(path, opts, exp):
     assert TT.get_test_resdir(path, **opts) == exp

@@ -6,21 +6,26 @@
 """Test cases for anyconfig.parser.parse_list."""
 from __future__ import annotations
 
-import typing
-
 import pytest
 
 import anyconfig.parser as TT
 
-from . import common
+from .. import common
 
 
-DATASETS: list[tuple[typing.Any, dict[str, typing.Any]]] = [
-    (obj, data.get("e"), data.get("o", {}))
-    for _, obj, data in common.collect_data("list")
-]
+NAMES: list[str] = ("obj", "exp", "opts")
+DATA_0: list[tuple] = common.load_data_for_testfile(
+    __file__, (("e", None), ("o", {})),
+    load_idata=True
+)
+DATA: list[tuple] = [(d, *rest) for _, d, *rest in DATA_0]
+DATA_IDS: list[str] = common.get_test_ids(DATA_0)
 
 
-@pytest.mark.parametrize(("obj", "exp", "opts"), DATASETS)
+def test_data():
+    assert DATA
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_parse_list(obj, exp, opts) -> None:
     assert TT.parse_list(obj, **opts) == exp

@@ -26,6 +26,7 @@ CUDIR = SELF.parent
      ),
 )
 def test_get_test_id(path, level, exp) -> None:
+    exp = str(pathlib.Path(exp))
     assert TT.get_test_id(pathlib.Path(path), level=level) == exp
 
 
@@ -37,6 +38,7 @@ def test_get_test_id(path, level, exp) -> None:
      ),
 )
 def test_get_test_ids(data, level, exp) -> None:
+    exp = [str(pathlib.Path(e)) for e in exp]
     assert TT.get_test_ids(data, level=level) == exp
 
 

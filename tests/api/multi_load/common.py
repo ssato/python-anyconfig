@@ -8,7 +8,6 @@ anyconfig.api.multi_load.
 """
 from __future__ import annotations
 
-import anyconfig.api._load as TT
 import anyconfig.api.utils
 
 from ... import common

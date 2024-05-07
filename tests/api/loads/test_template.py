@@ -1,37 +1,55 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-import unittest
+"""Test cases for anyconfig.api.single_load with schema options."""
+from __future__ import annotations
+
+import typing
 import warnings
+
+import pytest
 
 import anyconfig.api._load as TT
 import anyconfig.template
 
-from . import common
+from ... import common
 
 
-@unittest.skipIf(not anyconfig.template.SUPPORTED,
-                 'jinja2 template lib is not available')
-class TestCase(common.TestCase):
-    kind = 'template'
+if not anyconfig.template.SUPPORTED:
+    pytest.skip(
+        "jinja2 template lib is not available",
+        allow_module_level=True
+    )
 
-    def test_loads_template(self):
-        for data in self.each_data():
-            self.assertEqual(
-                TT.loads(data.inp, ac_context=data.ctx, **data.opts),
-                data.exp,
-                f'{data.datadir!s}, {data.inp_path!s}'
-            )
 
-    def test_loads_from_template_failures(self):
-        inp = '{"a": "{{ a"}'
-        with warnings.catch_warnings(record=True) as warns:
-            warnings.simplefilter('always')
-            res = TT.loads(inp, ac_parser='json', ac_template=True)
-            self.assertEqual(res, dict(a='{{ a'))
-            # self.assertEqual(len(warns), 1)  # Needs to fix plugins
-            self.assertTrue(issubclass(warns[-1].category, UserWarning))
+NAMES: tuple[str, ...] = ("content", "exp", "ctx", "opts")
 
-# vim:sw=4:ts=4:et:
+# .. seealso:: tests.common.tdc
+DATA_0: list = common.load_data_for_testfile(
+    __file__, (("e", None), ("c", {}), ("o", {}))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA_0)
+DATA: list[tuple[str, dict, typing.Any]] = [
+    (i.read_text(), *eco) for i, *eco in DATA_0
+]
+
+
+def test_data() -> None:
+    assert DATA
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_loads(content: str, exp, ctx: dict, opts: dict):
+    assert TT.loads(content, ac_context=ctx, **opts) == exp
+
+
+def test_loads_failures():
+    content = '{"a": "{{ a"}'
+    with warnings.catch_warnings(record=True) as warns:
+        warnings.simplefilter("always")
+        res = TT.loads(content, ac_parser="json", ac_template=True)
+        assert res == {"a": "{{ a"}
+        # self.assertEqual(len(warns), 1)  # Needs to fix plugins
+        assert issubclass(warns[-1].category, UserWarning)

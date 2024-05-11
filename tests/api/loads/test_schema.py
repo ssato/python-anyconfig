@@ -54,13 +54,11 @@ SCM_NG_0 = '{"type": "object", "properties": {"a": {"type": "string"}}}'
 def test_loads_without_schema(content: str, exp, scm: str, opts: dict):
     assert scm or exp
 
-    opts.update(ac_schema=SCM_NG_0)
-
     with pytest.raises(ValidationError):
-        TT.loads(content, ac_schema_safe=False, **opts)
+        TT.loads(content, ac_schema=SCM_NG_0, ac_schema_safe=False, **opts)
 
     with warnings.catch_warnings(record=True) as warns:
         warnings.simplefilter("always")
-        assert TT.loads(content, **opts) is None
+        assert TT.loads(content, ac_schema=SCM_NG_0, **opts) is None
         assert len(warns) > 0
         assert issubclass(warns[-1].category, UserWarning)

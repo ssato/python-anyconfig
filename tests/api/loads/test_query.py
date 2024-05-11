@@ -15,9 +15,6 @@ import anyconfig.query
 
 from ... import common
 
-if typing.TYPE_CHECKING:
-    import pathlib
-
 
 if not anyconfig.query.SUPPORTED:
     pytest.skip(

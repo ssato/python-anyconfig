@@ -1,49 +1,59 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-import pathlib
-import tempfile
+"""Basic test cases for anyconfig.api.dump."""
+from __future__ import annotations
+
+import typing
+
+import pytest
 
 import anyconfig.api._dump as TT
 
 from anyconfig.api import (
-    UnknownProcessorTypeError, UnknownFileTypeError
+    UnknownFileTypeError, UnknownProcessorTypeError
 )
 
-from . import common
+from ... import common
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
-class TestCase(common.BaseTestCase):
+NAMES: tuple[str, ...] = ("obj", "opts", "exp")
 
-    def test_dump(self):
-        with tempfile.TemporaryDirectory() as tdir:
-            for data in self.each_data():
-                out = pathlib.Path(tdir) / 'out.json'
-                TT.dump(data.inp, out, **data.opts)
-                self.assertEqual(
-                    out.read_text().strip(),
-                    data.exp.strip(),
-                    f'{data.datadir!s}, {data.inp_path!s}'
-                )
+# .. seealso:: tests.common.tdc
+DATA_0: list = common.load_data_for_testfile(__file__, load_idata=True)
+DATA_IDS: list[str] = common.get_test_ids(DATA_0)
+DATA: list[tuple[typing.Any, dict, str]] = [
+    (i, o, e.strip()) for _, i, o, e in DATA_0
+]
 
-    def test_dump_intentional_failures(self):
-        with tempfile.TemporaryDirectory() as tdir:
-            for data in self.each_data():
-                out = pathlib.Path(tdir) / 'out.json'
-                TT.dump(data.inp, out, **data.opts)
-                with self.assertRaises(AssertionError):
-                    self.assertEqual(out.read_text().strip(), '')
 
-    def test_dump_failure_ac_parser_was_not_given(self):
-        for data in self.each_data():
-            with self.assertRaises(UnknownFileTypeError):
-                TT.dump(data.inp, 'dummy.txt')
+def test_data() -> None:
+    assert DATA
 
-    def test_dump_failure_invalid_ac_parser_was_given(self):
-        for data in self.each_data():
-            with self.assertRaises(UnknownProcessorTypeError):
-                TT.dump(data.inp, 'dummy.json', ac_parser='invalid_id')
 
-# vim:sw=4:ts=4:et:
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_dump(obj, opts: dict, exp, tmp_path: pathlib.Path) -> None:
+    out = tmp_path / "out.json"
+    TT.dump(obj, out, **opts)
+    assert out.read_text() == exp
+
+
+@pytest.mark.parametrize(NAMES, DATA[:1], ids=DATA_IDS[:1])
+def test_dump_without_ac_parser_option(obj, opts: dict, exp) -> None:
+    assert opts or exp
+    with pytest.raises(UnknownFileTypeError):
+        TT.dump(obj, "out.txt")
+
+
+@pytest.mark.parametrize(NAMES, DATA[:1], ids=DATA_IDS[:1])
+def test_dump_with_invalid_ac_parser_option(
+    obj, opts: dict, exp
+) -> None:
+    assert opts or exp
+    with pytest.raises(UnknownProcessorTypeError):
+        TT.dump(obj, "out.json", ac_parser="invalid_id")

@@ -1,37 +1,46 @@
 #
-# Copyright (C) 2013 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2013 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring
-"""test cases of anyconfig.cli.main without arguments to show info.
-"""
-import anyconfig.api
+# pylint: disable=missing-docstring, too-many-arguments
+"""Test cases of anyconfig.cli.main without arguments to show info."""
+from __future__ import annotations
 
-from . import collectors, datatypes, test_base
+import typing
 
+import pytest
 
-class Collector(collectors.Collector):
-    kind = 'show'
+import anyconfig.schema
 
+from .. import common
+from . import datatypes
+from .common import run_main
 
-class TestCase(test_base.NoInputTestCase):
-    collector = Collector()
+if typing.TYPE_CHECKING:
+    import pathlib
 
-
-class VersionCollector(collectors.Collector):
-    kind = 'show_version'
-
-    def load_dataset(self, datadir, inp):
-        ver = '.'.join(anyconfig.api.version())
-        tdata = super().load_dataset(datadir, inp)
-
-        return datatypes.TData(
-            tdata.datadir, tdata.inp_path, tdata.opts,
-            datatypes.Expected(words_in_stdout=ver)
-        )
+if not anyconfig.schema.SUPPORTED:
+    pytest.skip(
+        "Library for JSON schema validation is not available",
+        allow_module_level=True
+    )
 
 
-class VersionTestCase(test_base.NoInputTestCase):
-    collector = VersionCollector()
+NAMES: list[str] = ("ipath", "opts", "exp")
+DATA = common.load_data_for_testfile(
+    __file__, values=(("o", []), ("e", {}))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
-# vim:sw=4:ts=4:et:
+
+def test_data():
+    assert DATA
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_cli(
+    ipath: pathlib.Path, opts: list[str], exp: dict, tmp_path
+) -> None:
+    expected = datatypes.Expected(**exp)
+    tdata = datatypes.TData(ipath, [], opts, expected)
+    run_main(tdata, tmp_path)

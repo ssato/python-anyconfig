@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-"""test cases of anyconfig.cli.main without arguments."""
+"""Test cases of anyconfig.cli.main without arguments."""
 from __future__ import annotations
 
 import anyconfig.cli.parse_args as TT

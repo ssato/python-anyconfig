@@ -1,23 +1,43 @@
 #
-# Copyright (C) 2013 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2013 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring
-"""test cases of anyconfig.cli.main with multiple inputs.
-"""
-from . import collectors, test_base
+# pylint: disable=missing-docstring, too-many-arguments
+"""Test cases of anyconfig.cli.main with ignore-missing option."""
+from __future__ import annotations
+
+import typing
+
+import pytest
+
+from .. import common
+from . import datatypes
+from .common import run_main
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
-class Collector(collectors.MultiDataCollector):
-    kind = 'multi_inputs'
+NAMES: list[str] = ("ipath", "opts", "exp", "oname", "ref")
+DATA = [
+    (i, o, e, on, r) for i, o, e, on, r
+    in common.load_data_for_testfile(
+        __file__, values=(("o", []), ("e", {}), ("on", ""), ("r", None)),
+    ) if on
+]
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 
-class TestCase(test_base.BaseTestCase):
-    collector = Collector()
+def test_data():
+    assert DATA
 
-    def make_args(self, tdata):  # pylint: disable=no-self-use
-        """Make arguments to run cli.main.
-        """
-        return ['anyconfig_cli'] + tdata.opts + [str(p) for p in tdata.inputs]
 
-# vim:sw=4:ts=4:et:
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_cli(
+    ipath: pathlib.Path, opts: list[str], exp: dict, oname: str, ref,
+    tmp_path: pathlib.Path
+) -> None:
+    expected = datatypes.Expected(**exp)
+    ipaths = [str(p) for p in ipath.parent.glob("*.*")]
+    tdata = datatypes.TData(ipath, ipaths, opts, expected, oname, ref)
+    run_main(tdata, tmp_path)

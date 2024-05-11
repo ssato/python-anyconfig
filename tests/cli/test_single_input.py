@@ -1,18 +1,52 @@
 #
-# Copyright (C) 2013 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2013 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring
-"""test cases of anyconfig.cli.main without arguments and cause errors.
-"""
-from . import collectors, test_base
+# pylint: disable=missing-docstring, too-many-arguments
+"""Test cases of anyconfig.cli.main with sinngle file innputs."""
+from __future__ import annotations
+
+import typing
+
+import pytest
+
+import anyconfig.schema
+
+from .. import common
+from . import datatypes
+from .common import run_main
+
+if typing.TYPE_CHECKING:
+    import pathlib
+
+if not anyconfig.schema.SUPPORTED:
+    pytest.skip(
+        "Library for JSON schema validation is not available",
+        allow_module_level=True
+    )
 
 
-class Collector(collectors.Collector):
-    kind = 'single_input'
+NAMES: list[str] = ("ipath", "opts", "exp", "oname", "ref", "oopts")
+DATA = common.load_data_for_testfile(
+    __file__,
+    values=(("o", []), ("e", {}), ("on", ""), ("r", {}), ("oo", {}))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 
-class TestCase(test_base.BaseTestCase):
-    collector = Collector()
+def test_data():
+    assert DATA
 
-# vim:sw=4:ts=4:et:
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_cli(
+    ipath: pathlib.Path, opts: list[str], exp: dict,
+    oname: str, ref: dict, oopts: dict,
+    tmp_path: pathlib.Path
+) -> None:
+    expected = datatypes.Expected(**exp)
+    tdata = datatypes.TData(
+        ipath, [str(ipath)], opts, expected,
+        outname=oname, ref=ref, oo_opts=oopts
+    )
+    run_main(tdata, tmp_path)

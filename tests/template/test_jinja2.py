@@ -19,10 +19,10 @@ except ImportError:
         allow_module_level=True
     )
 
-from .. import base
+from .. import common
 
 
-TDATA_DIR = base.RES_DIR / "template/jinja2/"
+TDATA_DIR = common.RESOURCE_DIR / "template/jinja2/"
 
 TEMPLATES = [
     (path, (TDATA_DIR / "10/r/10.txt").read_text())

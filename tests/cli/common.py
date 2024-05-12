@@ -20,6 +20,10 @@ import anyconfig.cli as TT
 from . import datatypes
 
 
+NAMES: list[str] = ("ipath", "opts", "exp")
+NAMES_WITH_REF: list[str] = (*NAMES, "oname", "ref")
+
+
 def _run_main(
     tdata: datatypes.TData, tmp_path: pathlib.Path
 ) -> None:

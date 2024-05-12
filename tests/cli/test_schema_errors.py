@@ -15,7 +15,7 @@ import anyconfig.schema
 
 from .. import common
 from . import datatypes
-from .common import run_main
+from .common import run_main, NAMES
 
 if typing.TYPE_CHECKING:
     import pathlib
@@ -27,7 +27,6 @@ if not anyconfig.schema.SUPPORTED:
     )
 
 
-NAMES: list[str] = ("ipath", "opts", "exp")
 DATA = common.load_data_for_testfile(
     __file__, values=(("o", []), ("e", {}))
 )

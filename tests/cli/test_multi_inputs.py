@@ -12,18 +12,17 @@ import pytest
 
 from .. import common
 from . import datatypes
-from .common import run_main
+from .common import run_main, NAMES_WITH_REF as NAMES
 
 if typing.TYPE_CHECKING:
     import pathlib
 
 
-NAMES: list[str] = ("ipath", "opts", "exp", "oname", "ref")
 DATA = [
     (i, o, e, on, r) for i, o, e, on, r
     in common.load_data_for_testfile(
         __file__, values=(("o", []), ("e", {}), ("on", ""), ("r", None)),
-    ) if on
+    ) if r is not None
 ]
 DATA_IDS: list[str] = common.get_test_ids(DATA)
 

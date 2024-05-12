@@ -14,7 +14,7 @@ import anyconfig.api
 
 from .. import common
 from . import datatypes
-from .common import run_main
+from .common import run_main, NAMES_WITH_REF
 
 if typing.TYPE_CHECKING:
     import pathlib
@@ -26,7 +26,7 @@ if "yaml" not in anyconfig.api.list_types():
     )
 
 
-NAMES: list[str] = ("ipath", "opts", "exp", "oname", "ref", "oopts")
+NAMES: list[str] = (*NAMES_WITH_REF, "oopts")
 DATA = common.load_data_for_testfile(
     __file__,
     values=(("o", []), ("e", {}), ("on", ""), ("r", {}), ("oo", {}))

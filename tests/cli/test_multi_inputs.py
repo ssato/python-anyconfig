@@ -38,6 +38,6 @@ def test_cli(
     tmp_path: pathlib.Path
 ) -> None:
     expected = datatypes.Expected(**exp)
-    ipaths = [str(p) for p in ipath.parent.glob("*.*")]
+    ipaths = sorted(str(p) for p in ipath.parent.glob("*.*"))
     tdata = datatypes.TData(ipath, ipaths, opts, expected, oname, ref)
     run_main(tdata, tmp_path)

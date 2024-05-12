@@ -1,37 +1,49 @@
 #
-# Copyright (C) 2012 - 2019 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring, invalid-name, no-member
-import pathlib
+# pylint: disable=missing-docstring, no-member
+"""Test cases for api.open."""
+from __future__ import annotations
+
 import pickle
-import tempfile
+import typing
+
+import pytest
 
 import anyconfig.api._open as TT
 import anyconfig.api._load as LD
 
-from . import common
+from ... import common
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
-class TestCase(common.BaseTestCase):
+NAMES: tuple[str, ...] = ("ipath", "exp", "opts")
+DATA: list[
+    tuple[pathlib.Path, typing.Optional[dict], dict]
+] = common.load_data_for_testfile(__file__, values=(("e", None), ("o", {})))
 
-    def test_open_text_io(self):
-        for data in self.each_data():
-            with TT.open(data.inp_path, **data.opts) as inp:
-                self.assertEqual(LD.loads(inp.read(), **data.opts), data.inp)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
-    def test_open_byte_io(self):
-        cnf = dict(a=1, b='b')
 
-        with tempfile.TemporaryDirectory() as workdir:
-            path = pathlib.Path(workdir) / 'test.pkl'
-            pickle.dump(cnf, path.open(mode='wb'))
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_open_text_io(ipath, exp, opts):
+    with TT.open(ipath, **opts) as inp:
+        assert LD.load(inp, **opts) == exp
 
-            with TT.open(path) as fio:
-                self.assertEqual(fio.mode, 'rb')
-                self.assertEqual(
-                    LD.loads(fio.read(), ac_parser='pickle'),
-                    LD.load(path)
-                )
 
-# vim:sw=4:ts=4:et:
+def test_open_byte_io(tmp_path):
+    cnf = {"a": 1, "b": "b"}
+
+    path = tmp_path / "test.pickle"
+    pickle.dump(cnf, path.open(mode="wb"))
+
+    opts = {"ac_parser": "pickle"}
+
+    with TT.open(path, **opts) as fio:
+        assert fio.mode == "rb"
+        data: bytes = fio.read()
+
+        assert LD.loads(data, **opts) == cnf

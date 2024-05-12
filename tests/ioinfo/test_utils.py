@@ -1,10 +1,11 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-r"""Test cases for anyconfig.utils.files.
-"""
+r"""Test cases for anyconfig.utils.files."""
+from __future__ import annotations
+
 import pathlib
 
 import pytest
@@ -16,12 +17,12 @@ SELF: pathlib.Path = pathlib.Path(__file__)
 
 
 @pytest.mark.parametrize(
-    ("inp", "exp"),
+    ("obj", "exp"),
     ((SELF, (SELF.resolve(), "py")),
      )
 )
-def test_get_path_and_ext(inp, exp):
-    res = TT.get_path_and_ext(inp)
+def test_get_path_and_ext(obj, exp):
+    res = TT.get_path_and_ext(obj)
     assert res == exp
 
 
@@ -53,7 +54,7 @@ def test_expand_from_path(tmp_path):
 
     path = tdir / "d.txt"
 
-    for inp, exp in ((path, [path]),
+    for obj, exp in ((path, [path]),
                      (tdir / "*.txt",
                       [tdir / "d.txt", tdir / "e.txt"]),
                      (tdir.parent / "**" / "*.txt",
@@ -63,7 +64,5 @@ def test_expand_from_path(tmp_path):
                        tdir / "e.txt",
                        tdir / "f.json"]),
                      ):
-        res = sorted(TT.expand_from_path(inp))
-        assert res == sorted(exp), f"{inp!r} vs. {exp!r}"
-
-# vim:sw=4:ts=4:et:
+        res = sorted(TT.expand_from_path(obj))
+        assert res == sorted(exp), f"{obj!r} vs. {exp!r}"

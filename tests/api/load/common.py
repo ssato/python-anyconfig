@@ -1,22 +1,13 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-import anyconfig.api._load as TT
+# pylint: disable=unused-import
+"""Common module for tests.api.load."""
+from __future__ import annotations
 
-
-class Basa:
-    @staticmethod
-    def target_fn(*args, **kwargs):
-        return TT.load(*args, **kwargs)
-
-
-class MultiBase:
-    target: str = 'load/multi'
-
-
-class SingleBase:
-    target: str = 'load/single'
-
-# vim:sw=4:ts=4:et:
+from ...common import (  # noqa: F401
+    get_test_ids, load_data_for_testfile
+)
+from ..single_load.constants import LOADER_TYPES  # noqa: F401

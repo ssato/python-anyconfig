@@ -1,48 +1,36 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-"""Test cases for anyconfig.backend.base.utils.
-"""
+"""Test cases for anyconfig.backend.base.utils."""
+from __future__ import annotations
+
 import pathlib
-import tempfile
-import unittest
+
+import pytest
 
 import anyconfig.backend.base.utils as TT
 
 
-FILENAME = 'file_not_exist.txt'
+FILENAME: str = "file_not_exist.txt"
 
 
-class TestCase(unittest.TestCase):
+def test_not_implemented():
+    with pytest.raises(NotImplementedError):
+        TT.not_implemented()
 
-    def test_not_implemented(self):
-        with self.assertRaises(NotImplementedError):
-            TT.not_implemented()
 
-    def test_ensure_outdir_exists_for_file_if_it_exists(self):
-        outdir = pathlib.Path.cwd()
-        outfile = outdir / FILENAME
+@pytest.mark.parametrize(
+    ("rel_path", ),
+    ((FILENAME, ),
+     ("a/b/c", ),
+     ),
+)
+def test_ensure_outdir_exists(
+    rel_path: str, tmp_path: pathlib.Path
+) -> None:
+    outpath = tmp_path / rel_path
 
-        TT.ensure_outdir_exists(outfile)
-        TT.ensure_outdir_exists(str(outfile))
-        self.assertTrue(outdir.exists())
-
-    def test_ensure_outdir_exists_for_file_if_it_does_not_exist(self):
-        with tempfile.TemporaryDirectory() as outdir:
-            outdir = pathlib.Path(outdir)
-            outpath = outdir / FILENAME
-
-            TT.ensure_outdir_exists(outpath)
-            self.assertTrue(outdir.exists())
-
-    def test_ensure_outdir_exists_for_file_if_its_parent_does_not_exist(self):
-        with tempfile.TemporaryDirectory() as parent:
-            outdir = pathlib.Path(parent) / 'a' / 'b' / 'c'
-            outpath = outdir / FILENAME
-
-            TT.ensure_outdir_exists(outpath)
-            self.assertTrue(outdir.exists())
-
-# vim:sw=4:ts=4:et:
+    TT.ensure_outdir_exists(outpath)
+    assert outpath.parent.exists()

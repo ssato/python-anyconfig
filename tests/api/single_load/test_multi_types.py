@@ -1,13 +1,36 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-from . import common
+"""Test cases for anyconfig.api.single_load with multi-type inputs."""
+from __future__ import annotations
+
+import typing
+
+import pytest
+
+import anyconfig.api._load as TT
+
+from ... import common
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
-class TestCase(common.TestCase):
-    kind = 'multi_types'
-    pattern = '*.*'
+NAMES: tuple[str, ...] = ("ipath", "opts", "exp")
+DATA: list = common.load_data_for_testfile(
+    __file__, (("o", {}), ("e", None))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
-# vim:sw=4:ts=4:et:
+
+def test_data() -> None:
+    assert DATA
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_single_load(
+    ipath: pathlib.Path, opts: dict, exp
+):
+    assert TT.single_load(ipath, **opts) == exp

@@ -1,34 +1,49 @@
 #
-# Copyright (C) 2013 - 2021 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2013 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring
-"""test cases of anyconfig.cli.main with template options.
-"""
-import unittest
+# pylint: disable=missing-docstring, too-many-arguments
+"""Test cases for anyconfig.cli.main with template option."""
+from __future__ import annotations
+
+import typing
+
+import pytest
 
 import anyconfig.template
 
-from . import collectors, test_base
+from .. import common
+from . import datatypes
+from .common import run_main
+
+if typing.TYPE_CHECKING:
+    import pathlib
+
+if not anyconfig.template.SUPPORTED:
+    pytest.skip(
+        "Library for template rendering is not available",
+        allow_module_level=True
+    )
 
 
-class Collector(collectors.Collector):
-    kind = 'template'
+NAMES: list[str] = ("ipath", "opts", "exp", "oname", "ref")
+DATA = common.load_data_for_testfile(
+    __file__, values=(("o", []), ("e", {}), ("on", ""), ("r", {}))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 
-@unittest.skipIf(not anyconfig.template.SUPPORTED,
-                 'Library for template rendering is not available')
-class TestCase(test_base.BaseTestCase):
-    collector = Collector()
+def test_data():
+    assert DATA
 
 
-class NoTemplateCollector(collectors.Collector):
-    kind = 'no_template'
-
-
-@unittest.skipIf(anyconfig.template.SUPPORTED,
-                 'Library for template rendering is available')
-class SchemaErrorsTestCase(test_base.BaseTestCase):
-    collector = NoTemplateCollector()
-
-# vim:sw=4:ts=4:et:
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_cli(
+    ipath: pathlib.Path, opts: list[str], exp: dict, oname: str, ref: dict,
+    tmp_path: pathlib.Path
+) -> None:
+    expected = datatypes.Expected(**exp)
+    tdata = datatypes.TData(
+        ipath, [str(ipath)], opts, expected, outname=oname, ref=ref
+    )
+    run_main(tdata, tmp_path)

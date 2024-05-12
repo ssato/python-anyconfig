@@ -3,34 +3,52 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-import unittest
+"""Basic test cases for anyconfig.api.loads."""
+from __future__ import annotations
+
+import typing
+
+import pytest
 
 import anyconfig.api._load as TT
 import anyconfig.query
 
-from . import common
+from ... import common
 
 
-@unittest.skipIf(not anyconfig.query.SUPPORTED,
-                 'jmespath lib is not available')
-class TestCase(common.TestCase):
-    kind = 'query'
+if not anyconfig.query.SUPPORTED:
+    pytest.skip(
+        "Required query module is not available",
+        allow_module_level=True
+    )
 
-    def test_loads_with_query(self):
-        for data in self.each_data():
-            self.assertEqual(
-                TT.loads(data.inp, ac_query=data.query, **data.opts),
-                data.exp,
-                f'{data.datadir!s}, {data.inp_path!s}'
-            )
 
-    def test_loads_with_invalid_query(self):
-        opts = dict(ac_parser='json')
-        for data in self.each_data():
-            self.assertEqual(
-                TT.loads(data.inp, ac_query=None, **opts),
-                TT.single_load(data.inp_path, **opts),
-                f'{data.datadir!s}, {data.inp_path!s}'
-            )
+NAMES: tuple[str, ...] = ("content", "exp", "query", "opts")
 
-# vim:sw=4:ts=4:et:
+# .. seealso:: tests.common.tdc
+DATA_0: list = common.load_data_for_testfile(
+    __file__, (("e", None), ("q", ""), ("o", {}))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA_0)
+DATA: list[tuple[str, dict, typing.Any]] = [
+    (i.read_text(), e, q.strip(), o) for i, e, q, o in DATA_0
+]
+
+
+def test_data() -> None:
+    assert DATA
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_loads(content: str, exp, query: str, opts: dict):
+    assert TT.loads(content, ac_query=query, **opts) == exp
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_loads_with_invalid_query_option(
+    content: str, exp, query: str, opts: dict
+):
+    assert exp or query
+    assert TT.loads(
+        content, ac_query=None, **opts
+    ) == TT.loads(content, **opts)

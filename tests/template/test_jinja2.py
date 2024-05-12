@@ -1,18 +1,23 @@
 #
-# Copyright (C) 2015 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2015 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring, unused-variable, invalid-name
+# pylint: disable=missing-docstring
+from __future__ import annotations
+
 import os
 import pathlib
-import tempfile
-import unittest
 import unittest.mock
+
+import pytest
 
 try:
     import anyconfig.template.jinja2 as TT
 except ImportError:
-    raise unittest.SkipTest("jinja2 does not look available.")
+    pytest.skip(
+        "jinja2 does not look available.",
+        allow_module_level=True
+    )
 
 from .. import base
 
@@ -39,89 +44,79 @@ def negate(value):
     return - value
 
 
-class FunctionsTestCase(unittest.TestCase):
-
-    def test_make_template_paths(self):
-        tpath0 = pathlib.Path("/path/to/a/").resolve()
-        path0 = tpath0 / "tmpl.j2"
-        tmp0 = pathlib.Path("/tmp").resolve()
-        ies = (((path0, ), [tpath0]),
-               ((path0, [tmp0]), [tpath0, tmp0]),
-               )
-        for inp, exp in ies:
-            self.assertEqual(
-                TT.make_template_paths(*inp), exp
-            )
-
-    def test_make_template_paths_after_chdir(self):
-        tmp0 = pathlib.Path("/tmp").resolve()
-        saved = pathlib.Path().cwd().resolve()
-        try:
-            os.chdir(str(tmp0))
-            tpath1 = pathlib.Path(".")
-            path1 = tpath1 / "tmpl.j2"
-            ies = (((path1, ), [tmp0]),
-                   ((path1, [tmp0]), [tmp0]),
-                   )
-
-            for inp, exp in ies:
-                self.assertEqual(
-                    TT.make_template_paths(*inp), exp
-                )
-        except FileNotFoundError:
-            pass  # ``tmp0`` does not exist on windows.
-        finally:
-            os.chdir(str(saved))
+TMPL_DIR_10 = pathlib.Path("/path/to/a/").resolve()
+TMPL_PATH_10 = TMPL_DIR_10 / "tmpl.j2"
+TMP_DIR = pathlib.Path("/tmp").resolve()
 
 
-class TestCase(unittest.TestCase):
+@pytest.mark.parametrize(
+    ("args", "exp"),
+    (((TMPL_PATH_10, ), [TMPL_DIR_10]),
+     ((TMPL_PATH_10, [TMP_DIR]), [TMPL_DIR_10, TMP_DIR]),
+     ),
+)
+def test_make_template_paths(args, exp):
+    assert TT.make_template_paths(*args) == exp
 
-    def assertAlmostEqual(self, inp, exp, **_kwargs):
-        """Override to allow to compare texts.
-        """
-        self.assertEqual(normalize(inp), normalize(exp))
 
-    def test_render_impl_without_paths(self):
-        for inp, exp in TEMPLATES:
-            self.assertAlmostEqual(TT.render_impl(inp), exp)
+def test_make_template_paths_after_chdir(tmp_path):
+    old_pwd = pathlib.Path().cwd().resolve()
+    path_1 = tmp_path / "t.j2"
 
-    def test_render_impl_with_paths(self):
-        for inp, exp in TEMPLATES:
-            self.assertAlmostEqual(
-                TT.render_impl(inp, paths=[inp.parent]), exp
-            )
+    try:
+        os.chdir(str(tmp_path))
 
-    def test_render_without_paths(self):
-        for inp, exp in TEMPLATES:
-            self.assertAlmostEqual(TT.render(inp), exp)
+        assert TT.make_template_paths(path_1) == [tmp_path]
+        assert TT.make_template_paths(path_1, [tmp_path]) == [tmp_path]
+    except FileNotFoundError:
+        pass  # ``tmp0`` does not exist on windows.
+    finally:
+        os.chdir(str(old_pwd))
 
-    def test_render_with_wrong_path(self):
-        with tempfile.TemporaryDirectory() as tdir:
-            workdir = pathlib.Path(tdir)
 
-            ng_t = workdir / "ng.j2"
-            ok_t = workdir / "ok.j2"
-            ok_t_content = "a: {{ a }}"
-            ok_content = "a: aaa"
-            ctx = dict(a="aaa", )
+def __assert_almost_eq(lhs, rhs):
+    assert normalize(lhs) == normalize(rhs)
 
-            ok_t.write_text(ok_t_content)
 
-            with unittest.mock.patch("builtins.input") as mock_input:
-                mock_input.return_value = str(ok_t)
-                c_r = TT.render(str(ng_t), ctx, ask=True)
-                self.assertEqual(c_r, ok_content)
+@pytest.mark.parametrize(("tmpl", "exp"), TEMPLATES)
+def test_render_impl_without_paths(tmpl, exp):
+    __assert_almost_eq(TT.render_impl(tmpl), exp)
 
-            with self.assertRaises(TT.jinja2.TemplateNotFound):
-                TT.render(str(ng_t), ctx, ask=False)
 
-    def test_try_render_with_empty_filepath_and_content(self):
-        self.assertRaises(ValueError, TT.try_render)
+@pytest.mark.parametrize(("tmpl", "exp"), TEMPLATES)
+def test_render_impl_with_paths(tmpl, exp):
+    __assert_almost_eq(TT.render_impl(tmpl, paths=[tmpl.parent]), exp)
 
-    def test_render_with_filter(self):
-        for inp, exp in TEMPLATES_WITH_FILTERS:
-            self.assertAlmostEqual(
-                TT.render(inp, filters={"negate": negate}), exp
-            )
 
-# vim:sw=4:ts=4:et:
+@pytest.mark.parametrize(("tmpl", "exp"), TEMPLATES)
+def test_render_without_paths(tmpl, exp):
+    __assert_almost_eq(TT.render(tmpl), exp)
+
+
+def test_try_render_with_empty_filepath_and_content():
+    with pytest.raises(ValueError):
+        TT.try_render()
+
+
+@pytest.mark.parametrize(("tmpl", "exp"), TEMPLATES_WITH_FILTERS)
+def test_render_with_filter(tmpl, exp):
+    __assert_almost_eq(TT.render(tmpl, filters={"negate": negate}), exp)
+
+
+def test_render_with_wrong_path(tmp_path):
+    workdir = tmp_path
+
+    ng_t = workdir / "ng.j2"
+    ok_t = workdir / "ok.j2"
+    ok_t_content = "a: {{ a }}"
+    ok_content = "a: aaa"
+    ctx = {"a": "aaa"}
+
+    ok_t.write_text(ok_t_content)
+
+    with unittest.mock.patch("builtins.input") as mock_input:
+        mock_input.return_value = str(ok_t)
+        assert TT.render(str(ng_t), ctx, ask=True) == ok_content
+
+    with pytest.raises(TT.jinja2.TemplateNotFound):
+        TT.render(str(ng_t), ctx, ask=False)

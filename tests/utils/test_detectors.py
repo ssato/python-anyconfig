@@ -4,6 +4,8 @@
 #
 # pylint: disable=missing-docstring,invalid-name
 """test cases for anyconfig.utils."""
+from __future__ import annotations
+
 import collections
 
 import pytest

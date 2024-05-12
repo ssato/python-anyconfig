@@ -1,49 +1,53 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring
-import unittest
+# pylint: disable=missing-docstring, unused-import
+"""Test cases for anyconfig.api.single_load to load primitive types."""
+from __future__ import annotations
 
-import anyconfig.query
+import typing
 
-from . import common
+import pytest
+
+import anyconfig.api._load as TT
+
+try:
+    import anyconfig.query.query  # noqa: F401
+except ImportError:
+    pytest.skip(
+        "Required query module is not available",
+        allow_module_level=True
+    )
+
+from ... import common
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
-@unittest.skipIf(not anyconfig.query.SUPPORTED,
-                 'jmespath lib is not available')
-class TestCase(common.TestCase):
-    kind = 'query'
+NAMES: tuple[str, ...] = ("ipath", "exp", "query", "opts")
+DATA: list = common.load_data_for_testfile(
+    __file__, (("e", None), ("q", ""), ("o", {}))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
-    def test_single_load(self):
-        for data in self.each_data():
-            self.assertEqual(
-                self.target_fn(
-                    data.inp_path, ac_query=data.query.strip(), **data.opts
-                ),
-                data.exp,
-                f'{data.datadir!s}, {data.inp_path!s}'
-            )
+DATA_2 = [(i, o) for i, _, _, o in DATA]
 
-    def test_single_load_with_invalid_query_string(self):
-        for data in self.each_data():
-            self.assertEqual(
-                self.target_fn(
-                    data.inp_path, ac_query=None, **data.opts
-                ),
-                self.target_fn(data.inp_path, **data.opts),
-                f'{data.datadir!s}, {data.inp_path!s}'
-            )
 
-    def test_single_load_intentional_failures(self):
-        for data in self.each_data():
-            with self.assertRaises(AssertionError):
-                exp = dict(z=1, zz='zz', zzz=[1, 2, 3], zzzz=dict(z=0))
-                self.assertEqual(
-                    self.target_fn(
-                        data.inp_path, ac_query=data.query, **data.opts
-                    ),
-                    exp
-                )
+def test_data() -> None:
+    assert DATA
 
-# vim:sw=4:ts=4:et:
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_single_load(ipath: pathlib.Path, exp, query, opts):
+    assert TT.single_load(ipath, ac_query=query.strip(), **opts) == exp
+
+
+@pytest.mark.parametrize(("ipath", "opts"), DATA_2, ids=DATA_IDS)
+def test_single_load_with_invalid_query_string(
+    ipath: pathlib.Path, opts
+):
+    assert TT.single_load(
+        ipath, ac_query=None, **opts
+    ) == TT.single_load(ipath, **opts)

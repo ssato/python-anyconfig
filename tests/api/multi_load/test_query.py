@@ -1,35 +1,53 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-import unittest
+"""Test cases for anyconfig.api.multi_load with query options."""
+from __future__ import annotations
 
+import typing
+
+import pytest
+
+import anyconfig.api._load as TT
 import anyconfig.query
 
-from . import common
+from .common import (
+    load_data_for_testfile, get_test_ids
+)
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
-@unittest.skipIf(not anyconfig.query.SUPPORTED,
-                 'jmespath lib is not available')
-class TestCase(common.TestCase):
-    kind = 'query'
-    should_exist = ('e', 'q')
+if not anyconfig.query.SUPPORTED:
+    pytest.skip(
+        "jmespath lib to neede for query is not available.",
+        allow_module_level=True
+    )
 
-    def test_multi_load(self):
-        for tdata in self.each_data():
-            self.assertEqual(
-                self.target_fn(
-                    tdata.inputs, ac_query=tdata.query, **tdata.opts
-                ),
-                tdata.exp
-            )
+NAMES: tuple[str, ...] = ("inputs", "query", "exp")
+DATA = load_data_for_testfile(__file__, values=(("q", ""), ("e", None)))
+DATA_IDS: list[str] = get_test_ids(DATA)
 
-    def test_multi_load_with_invalid_query(self):
-        for tdata in self.each_data():
-            self.assertEqual(
-                self.target_fn(tdata.inputs, ac_query='', **tdata.opts),
-                self.target_fn(tdata.inputs)
-            )
 
-# vim:sw=4:ts=4:et:
+def test_data() -> None:
+    assert DATA
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_multi_load(
+    inputs: list[pathlib.Path], query: str, exp
+) -> None:
+    assert TT.multi_load(inputs, ac_query=query) == exp
+
+
+@pytest.mark.parametrize(NAMES, DATA[:1], ids=DATA_IDS[:1])
+def test_multi_load_with_invalid_query(
+    inputs: list[pathlib.Path], query: str, exp
+) -> None:
+    assert query or exp  # To avoid an error not using them.
+    assert TT.multi_load(
+        inputs, ac_query=""
+    ) == TT.multi_load(inputs)

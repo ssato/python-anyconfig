@@ -1,39 +1,43 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-import unittest
+"""Test cases for anyconfig.api.multi_load with template options."""
+from __future__ import annotations
 
+import typing
+
+import pytest
+
+import anyconfig.api._load as TT
 import anyconfig.template
 
 from . import common
 
+if typing.TYPE_CHECKING:
+    import pathlib
 
-@unittest.skipIf(not anyconfig.template.SUPPORTED,
-                 'jinja2 template lib is not available')
-class TestCase(common.TestCase):
-    kind = 'template'
+if not anyconfig.template.SUPPORTED:
+    pytest.skip(
+        "jinja2 lib neede for template option is not available",
+        allow_module_level=True
+    )
 
-    def test_multi_load(self):
-        for tdata in self.each_data():
-            self.assertEqual(
-                self.target_fn(
-                    tdata.inputs, ac_context=tdata.ctx, **tdata.opts
-                ),
-                tdata.exp,
-                tdata
-            )
 
-    def test_multi_load_failures(self):
-        for tdata in self.each_data():
-            with self.assertRaises(AssertionError):
-                self.assertEqual(
-                    self.target_fn(
-                        tdata.inputs, ac_context=tdata.ctx, **tdata.opts
-                    ),
-                    None,
-                    tdata
-                )
+NAMES: tuple[str, ...] = (*common.NAMES, "ctx")
+DATA: list = common.load_data_for_testfile(
+    __file__, values=(("o", {}), ("e", None), ("c", {}))
+)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
-# vim:sw=4:ts=4:et:
+
+def test_data() -> None:
+    assert DATA
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_multi_load(
+    inputs: list[pathlib.Path], opts: dict, exp, ctx: dict
+) -> None:
+    assert TT.multi_load(inputs, ac_context=ctx, **opts) == exp

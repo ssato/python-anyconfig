@@ -2,50 +2,54 @@
 # Copyright (C) 2013 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring
-"""test cases of anyconfig.cli.main with schema options.
-"""
-import unittest
+# pylint: disable=missing-docstring, too-many-arguments
+"""Test cases of anyconfig.cli.main with ignore-missing option."""
+from __future__ import annotations
+
+import typing
 import warnings
+
+import pytest
 
 import anyconfig.schema
 
-from . import collectors, test_base
+from .. import common
+from . import datatypes
+from .common import run_main
+
+if typing.TYPE_CHECKING:
+    import pathlib
+
+if not anyconfig.schema.SUPPORTED:
+    pytest.skip(
+        "Library for JSON schema validation is not available",
+        allow_module_level=True
+    )
 
 
-ERR = 'Library for JSON schema validation is not available'
-
-
-class Collector(collectors.Collector):
-    kind = 'schema'
-
-
-@unittest.skipIf(
-    "jsonschema" not in anyconfig.schema.VALIDATORS, ERR
+NAMES: list[str] = ("ipath", "opts", "exp")
+DATA = common.load_data_for_testfile(
+    __file__, values=(("o", []), ("e", {}))
 )
-class TestCase(test_base.BaseTestCase):
-    collector = Collector()
-
-    def make_args(self, tdata):  # pylint: disable=no-self-use
-        """Make arguments to run cli.main.
-        """
-        return [
-            'anyconfig_cli', '--validate', '--schema', str(tdata.scm),
-            str(tdata.inp_path), *tdata.opts
-        ]
-
-    def _run_main(self, tdata):
-        """Override it to suppress some warnings.
-        """
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            super()._run_main(tdata)
+DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 
-class SchemaErrorsCollector(collectors.Collector):
-    kind = 'schema_errors'
+def test_data():
+    assert DATA
 
 
-@unittest.skipIf(not anyconfig.schema.SUPPORTED, ERR)
-class SchemaErrorsTestCase(test_base.BaseTestCase):
-    collector = SchemaErrorsCollector()
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_cli(
+    ipath: pathlib.Path, opts: list[str], exp: dict,
+    tmp_path: pathlib.Path
+) -> None:
+    scm = list((ipath.parent / "s").glob("*.*"))[0]
+    sopts = ["--schema", str(scm)]
+
+    expected = datatypes.Expected(**exp)
+    tdata = datatypes.TData(
+        ipath, [str(ipath)], [*opts, *sopts], expected
+    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        run_main(tdata, tmp_path)

@@ -1,41 +1,33 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-r"""Common utility functions.
+"""Common constants and utility functions for test cases of
+anyconfig.api.multi_load.
 """
-import unittest
+from __future__ import annotations
 
-import anyconfig.api._load as TT
+import anyconfig.api.utils
 
-from . import collector
+from ... import common
 
 
-class TestCase(unittest.TestCase, collector.DataCollector):
+NAMES: tuple[str, ...] = ("inputs", "opts", "exp")
+GLOB_PATTERN: str = "*.*"
 
-    @staticmethod
-    def target_fn(*args, **kwargs):
-        return TT.multi_load(*args, **kwargs)
 
-    def setUp(self):
-        self.init()
+def load_data_for_testfile(testfile: str, **kwargs):
+    return [
+        (sorted(i.parent.glob(GLOB_PATTERN)), opts, exp, *rest)
+        for i, opts, exp, *rest
+        in common.load_data_for_testfile(testfile, **kwargs)
+        if exp is not None
+    ]
 
-    def test_multi_load(self):
-        for tdata in self.each_data():
-            self.assertEqual(
-                self.target_fn(tdata.inputs, **tdata.opts),
-                tdata.exp,
-                tdata
-            )
 
-    def test_multi_load_failures(self):
-        for tdata in self.each_data():
-            with self.assertRaises(AssertionError):
-                self.assertEqual(
-                    self.target_fn(tdata.inputs, **tdata.opts),
-                    None,
-                    tdata
-                )
-
-# vim:sw=4:ts=4:et:
+def get_test_ids(data: list) -> list[str]:
+    return common.get_test_ids(
+        [(mis[0] if anyconfig.utils.is_iterable(mis) else mis, *rest)
+         for mis, *rest in data]
+    )

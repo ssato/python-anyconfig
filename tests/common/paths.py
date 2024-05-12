@@ -58,9 +58,9 @@ def get_data(
 
 def load_data(
     topdir: typing.Optional[pathlib.Path],
-    **kwargs
+    load_idata: bool = False, **kwargs
 ) -> list[tuple[pathlib.Path, dict[str, typing.Any]]]:
-    return [
+    res = [
         (
             ipath,
             {
@@ -70,3 +70,10 @@ def load_data(
         )
         for ipath, adata in get_data(topdir)
     ]
+    if load_idata:
+        return [
+            (ipath, load.load_data(ipath), adata)
+            for ipath, adata in res
+        ]
+
+    return res

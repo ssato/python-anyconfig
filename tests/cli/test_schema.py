@@ -15,7 +15,7 @@ import anyconfig.schema
 
 from .. import common
 from . import datatypes
-from .common import run_main
+from .common import run_main, NAMES
 
 if typing.TYPE_CHECKING:
     import pathlib
@@ -27,7 +27,6 @@ if not anyconfig.schema.SUPPORTED:
     )
 
 
-NAMES: list[str] = ("ipath", "opts", "exp")
 DATA = common.load_data_for_testfile(
     __file__, values=(("o", []), ("e", {}))
 )
@@ -47,9 +46,7 @@ def test_cli(
     sopts = ["--schema", str(scm)]
 
     expected = datatypes.Expected(**exp)
-    tdata = datatypes.TData(
-        ipath, [str(ipath)], [*opts, *sopts], expected
-    )
+    tdata = datatypes.TData(ipath, [str(ipath)], [*opts, *sopts], expected)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         run_main(tdata, tmp_path)

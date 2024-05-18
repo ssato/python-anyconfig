@@ -12,16 +12,14 @@ import pytest
 
 from .. import common
 from . import datatypes
-from .common import run_main
+from .common import run_main, NAMES_WITH_REF as NAMES
 
 if typing.TYPE_CHECKING:
     import pathlib
 
 
-NAMES: list[str] = ("ipath", "ipaths", "opts", "exp", "oname", "ref")
 DATA = common.load_data_for_testfile(
     __file__, values=(("o", []), ("e", None), ("on", ""), ("r", None)),
-    load_idata=True
 )
 DATA_IDS: list[str] = common.get_test_ids(DATA)
 
@@ -32,12 +30,11 @@ def test_data():
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_cli(
-    ipath: pathlib.Path, ipaths: list[str], opts: list[str], exp: dict,
-    oname: str, ref,
+    ipath: pathlib.Path, opts: list[str], exp: dict, oname: str, ref,
     tmp_path: pathlib.Path
 ) -> None:
     expected = datatypes.Expected(**exp)
     tdata = datatypes.TData(
-        ipath, [*ipaths, "file_not_exist.json"], opts, expected, oname, ref
+        ipath, [str(ipath), "file_not_exist.json"], opts, expected, oname, ref
     )
     run_main(tdata, tmp_path)

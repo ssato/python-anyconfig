@@ -21,13 +21,12 @@ except ImportError:
 
 from .. import common
 from . import datatypes
-from .common import run_main
+from .common import run_main, NAMES_WITH_REF as NAMES
 
 if typing.TYPE_CHECKING:
     import pathlib
 
 
-NAMES: list[str] = ("ipath", "opts", "exp", "oname", "ref")
 DATA = common.load_data_for_testfile(
     __file__, values=(("o", []), ("e", {}), ("on", ""), ("r", None))
 )

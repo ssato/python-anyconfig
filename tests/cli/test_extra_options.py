@@ -2,8 +2,7 @@
 # Copyright (C) 2013 - 2024 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# pylint: disable=missing-docstring
-# pylint: disable=too-many-arguments
+# pylint: disable=missing-docstring, too-many-arguments
 """Test cases of anyconfig.cli.main with extra options."""
 from __future__ import annotations
 
@@ -13,13 +12,12 @@ import pytest
 
 from .. import common
 from . import datatypes
-from .common import run_main
+from .common import run_main, NAMES_WITH_REF as NAMES
 
 if typing.TYPE_CHECKING:
     import pathlib
 
 
-NAMES: list[str] = ("ipath", "opts", "exp", "oname", "ref")
 DATA = common.load_data_for_testfile(
     __file__, values=(("o", []), ("e", None), ("on", ""), ("r", None))
 )
@@ -36,7 +34,5 @@ def test_cli(
     tmp_path: pathlib.Path
 ) -> None:
     expected = datatypes.Expected(**exp)
-    tdata = datatypes.TData(
-        ipath, [str(ipath)], opts, expected, oname, ref
-    )
+    tdata = datatypes.TData(ipath, [str(ipath)], opts, expected, oname, ref)
     run_main(tdata, tmp_path)

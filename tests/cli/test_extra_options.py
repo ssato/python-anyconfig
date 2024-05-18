@@ -18,7 +18,6 @@ if typing.TYPE_CHECKING:
     import pathlib
 
 
-NAMES: list[str] = ("ipath", "opts", "exp", "oname", "ref")
 DATA = common.load_data_for_testfile(
     __file__, values=(("o", []), ("e", None), ("on", ""), ("r", None))
 )

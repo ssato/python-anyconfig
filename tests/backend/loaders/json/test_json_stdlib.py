@@ -16,6 +16,38 @@ import pytest
 import tests.common.tdi_base
 import tests.common.loader
 
+from ... import common
+
+
+try:
+    DATA_0 = common.load_data_for_testfile(__file__)
+except FileNotFoundError:
+    pytest.skip(
+        f"Not found test data for: {__file__}",
+        allow_module_level=True
+    )
+
+DATA_IDS_0: list[str] = common.get_test_ids(DATA_0)
+Parser = getattr(common.get_mod(__file__), "Parser", None)
+
+assert Parser is not None
+
+
+@pytest.mark.parametrize(common.NAMES, DATA_0, ids=DATA_IDS_0)
+def test_loads(ipath: str, opts: dict, exp) -> None:
+    psr = Parser()
+    content = psr.ropen(ipath).read()
+
+    assert psr.loads(content, **opts) == exp
+
+
+@pytest.mark.parametrize(common.NAMES, DATA_0, ids=DATA_IDS_0)
+def test_load(ipath: str, opts: dict, exp) -> None:
+    psr = Parser()
+    ioi = common.ioinfo_from_path(ipath)
+
+    assert psr.load(ioi, **opts) == exp
+
 
 class TDI(tests.common.tdi_base.TDI):
     _cid = tests.common.tdi_base.name_from_path(__file__)

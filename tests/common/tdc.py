@@ -60,6 +60,7 @@ def load_data_for_testfile(
     testfile: str,
     values: tuple[tuple[str, typing.Optional[dict], ...], ...] = VALUES,
     load_idata: bool = False,
+    datadir: typing.Optional[pathlib.Path] = None,
     **opts
 ) -> list[tuple[pathlib.Path, dict[str, typing.Any], ...]]:
     """Collct test data for test file, ``testfile``.
@@ -67,7 +68,9 @@ def load_data_for_testfile(
     :param testfile: a str represents test file path
     :param opts: keyword options for `get_test_resdir`
     """
-    datadir = get_test_resdir(testfile, **opts)
+    if datadir is None:
+        datadir = get_test_resdir(testfile, **opts)
+
     if load_idata:
         return [
             (ipath, idata, *[aux.get(k, v) for k, v in values])

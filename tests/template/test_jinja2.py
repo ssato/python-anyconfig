@@ -22,16 +22,24 @@ except ImportError:
 from .. import common
 
 
-TDATA_DIR = common.RESOURCE_DIR / "template/jinja2/"
+TDATA_DIR = common.RESOURCE_DIR / "templates" / "jinja2"
 
 TEMPLATES = [
-    (path, (TDATA_DIR / "10/r/10.txt").read_text())
-    for path in (TDATA_DIR / "10").glob("*.j2")
+    (p, r.read_text()) for p, r in (
+        (path, (TDATA_DIR / "10" / "r" / f"{path.stem}.txt"))
+        for path in (TDATA_DIR / "10").glob("*.j2")
+    ) if r.exists()
 ]
+
 TEMPLATES_WITH_FILTERS = [
-    (path, (TDATA_DIR / f"20/r/{path.stem}.txt").read_text())
-    for path in (TDATA_DIR / "20").glob("*.j2")
+    (p, r.read_text()) for p, r in (
+        (path, (TDATA_DIR / "20" / "r" / f"{path.stem}.txt"))
+        for path in (TDATA_DIR / "20").glob("*.j2")
+    ) if r.exists()
 ]
+
+assert TEMPLATES
+assert TEMPLATES_WITH_FILTERS
 
 
 def normalize(txt: str):

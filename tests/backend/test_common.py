@@ -45,9 +45,9 @@ def test_get_mod(testfile, exp):
 
 
 @pytest.mark.parametrize(
-    ("path", "is_loader", "exp"),
-    ((str(TESTFILE), True, TEST_DATADIR),
+    ("path", "exp"),
+    ((str(TESTFILE), TEST_DATADIR),
      ),
 )
-def test_get_test_resdir(path, is_loader, exp):
-    assert TT.get_test_resdir(path, is_loader) == exp
+def test_get_test_resdir(path, exp):
+    assert TT.get_test_resdir(path) == exp

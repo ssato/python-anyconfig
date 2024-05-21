@@ -59,7 +59,6 @@ def get_test_ids(*args, **opts):
 
 def get_test_resdir(
     testfile: str,
-    is_loader: bool = True,
     pattern: re.Pattern = PATH_PATTERN
 ) -> pathlib.Path:
     """Get test resource dir for given test file path.
@@ -67,7 +66,7 @@ def get_test_resdir(
     ex. tests/backend/loaders/json/test_json_stdlib.py
     -> tests/res/1/loaders/json.stdlib/
     """
-    subdir = "loaders" if is_loader else "dumpers"
+    subdir = pathlib.Path(testfile).parent.parent.name
     name = get_name(testfile, pattern=pattern)
 
     return common.RESOURCE_DIR / subdir / name
@@ -75,10 +74,9 @@ def get_test_resdir(
 
 def load_data_for_testfile(
     testfile: str,
-    is_loader: bool = True,
     **opts
 ) -> list[tuple[pathlib.Path, dict[str, typing.Any], ...]]:
-    datadir = get_test_resdir(testfile, is_loader=is_loader)
+    datadir = get_test_resdir(testfile)
     return common.load_data_for_testfile(
         testfile, datadir=datadir, **opts
     )

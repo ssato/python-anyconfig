@@ -39,10 +39,7 @@ def get_name(testfile: str, pattern: re.Pattern = PATH_PATTERN) -> str:
 
 
 def get_mod(testfile: str, pattern: re.Pattern = PATH_PATTERN):
-    """Get the module to test.
-
-    :raises: ModuleNotFoundError:
-    """
+    """Get the module to test."""
     name = get_name(testfile, pattern=pattern)
     mname = f"anyconfig.backend.{name}"
     try:
@@ -52,6 +49,8 @@ def get_mod(testfile: str, pattern: re.Pattern = PATH_PATTERN):
             f"Skip becuase it failed to import: {mname}",
             allow_module_level=True
         )
+
+    return None  # To suppress inconsistent-return-statements.
 
 
 def get_test_ids(*args, **opts):

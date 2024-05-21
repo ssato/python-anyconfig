@@ -22,7 +22,7 @@ TEST_DATADIR = TT.common.RESOURCE_DIR / "loaders" / "json.stdlib"
 
 
 @pytest.mark.parametrize(
-    ("testfile",  "exp"),
+    ("testfile", "exp"),
     ((str(TESTFILE), "json.stdlib"),
      (__file__, NameError),
      ),
@@ -36,7 +36,7 @@ def test_get_name(testfile, exp):
 
 
 @pytest.mark.parametrize(
-    ("testfile",  "exp"),
+    ("testfile", "exp"),
     ((str(TESTFILE), MOD),
      ),
 )

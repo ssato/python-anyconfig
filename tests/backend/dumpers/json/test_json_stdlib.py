@@ -16,6 +16,50 @@ import pytest
 import tests.common.tdi_base
 import tests.common.dumper
 
+from ... import common
+
+
+try:
+    DATA = common.load_data_for_testfile(__file__, load_idata=True)
+except FileNotFoundError:
+    pytest.skip(
+        f"Not found test data for: {__file__}",
+        allow_module_level=True
+    )
+
+NAMES: tuple[str, ...] = ("ipath", "idata", "opts", "exp")
+DATA_IDS: list[str] = common.get_test_ids(DATA)
+Parser = getattr(common.get_mod(__file__), "Parser", None)
+
+assert Parser is not None
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_dumps(ipath: str, idata, opts: dict, exp: str) -> None:
+    psr = Parser()
+    content = psr.dumps(idata, **opts)
+
+    assert psr.loads(content, **opts) == idata
+    assert content == exp
+
+
+@pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
+def test_dump(
+    ipath: str, idata, opts: dict, exp: str, tmp_path: pathlib.Path
+) -> None:
+    psr = Parser()
+
+    opath = tmp_path / f"{ipath.stem}.{psr.extensions()[0]}"
+    ioi = common.ioinfo_from_path(opath)
+
+    psr.dump(idata, ioi, **opts)
+
+    assert opath.exists()
+    assert psr.load(ioi, **opts) == idata
+
+    content = psr.ropen(str(opath)).read()
+    assert content == exp
+
 
 class TDI(tests.common.tdi_base.TDI):
     _cid = tests.common.tdi_base.name_from_path(__file__)

@@ -10,6 +10,8 @@ import pathlib
 
 import pytest
 
+import anyconfig.backend.json.stdlib as MOD
+
 from . import common as TT
 
 
@@ -20,9 +22,32 @@ TEST_DATADIR = TT.common.RESOURCE_DIR / "loaders" / "json.stdlib"
 
 
 @pytest.mark.parametrize(
-    ("path", "is_loader", "exp"),
-    ((str(TESTFILE), True, TEST_DATADIR),
+    ("testfile", "exp"),
+    ((str(TESTFILE), "json.stdlib"),
+     (__file__, NameError),
      ),
 )
-def test_get_test_resdir(path, is_loader, exp):
-    assert TT.get_test_resdir(path, is_loader) == exp
+def test_get_name(testfile, exp):
+    if isinstance(exp, str):
+        assert TT.get_name(testfile) == exp
+    else:
+        with pytest.raises(exp):
+            TT.get_name(testfile)
+
+
+@pytest.mark.parametrize(
+    ("testfile", "exp"),
+    ((str(TESTFILE), MOD),
+     ),
+)
+def test_get_mod(testfile, exp):
+    assert TT.get_mod(testfile) == exp
+
+
+@pytest.mark.parametrize(
+    ("path", "exp"),
+    ((str(TESTFILE), TEST_DATADIR),
+     ),
+)
+def test_get_test_resdir(path, exp):
+    assert TT.get_test_resdir(path) == exp

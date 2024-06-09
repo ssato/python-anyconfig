@@ -6,24 +6,19 @@
 r"""Test cases for Test Data Collecor."""
 from __future__ import annotations
 
-import pathlib
-
 import pytest
 
 import anyconfig.backend.json.stdlib as MOD
 
 from . import common as TT
-
-
-CURDIR: pathlib.Path = pathlib.Path(__file__).parent
-TESTFILE = CURDIR / "loaders" / "json" / "test_json_stdlib.py"
-
-TEST_DATADIR = TT.common.RESOURCE_DIR / "loaders" / "json.stdlib"
+from .constants import (
+    MOD_BACKEND, MOD_TYPE, TEST_FILE, TEST_DATADIR
+)
 
 
 @pytest.mark.parametrize(
     ("testfile", "exp"),
-    ((str(TESTFILE), "json.stdlib"),
+    ((str(TEST_FILE), f"{MOD_TYPE}.{MOD_BACKEND}"),
      (__file__, NameError),
      ),
 )
@@ -37,7 +32,7 @@ def test_get_name(testfile, exp):
 
 @pytest.mark.parametrize(
     ("testfile", "exp"),
-    ((str(TESTFILE), MOD),
+    ((str(TEST_FILE), MOD),
      ),
 )
 def test_get_mod(testfile, exp):
@@ -46,7 +41,7 @@ def test_get_mod(testfile, exp):
 
 @pytest.mark.parametrize(
     ("path", "exp"),
-    ((str(TESTFILE), TEST_DATADIR),
+    ((str(TEST_FILE), TEST_DATADIR),
      ),
 )
 def test_get_test_resdir(path, exp):

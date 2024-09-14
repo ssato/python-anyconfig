@@ -1,7 +1,10 @@
 mypy
+
+# 3rd party modules
 types-Jinja2
 types-PyYAML
-types-pkg_resources
+types-jmespath
+types-jsonschema
 types-simplejson
 types-toml
 typing-extensions; python_version < "3.10"

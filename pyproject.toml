@@ -131,6 +131,7 @@ ignore = [
     "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
     "I001",  # https://docs.astral.sh/ruff/rules/unsorted-imports/
              # https://github.com/PyCQA/isort/issues/2146
+    "ICN001",  # https://docs.astral.sh/ruff/rules/unconventional-import-alias/
     "TID252",  # https://docs.astral.sh/ruff/rules/relative-imports/
 
     # .. note:: These are disabled until py38 support is dropped.

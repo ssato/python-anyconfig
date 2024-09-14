@@ -26,10 +26,7 @@ if typing.TYPE_CHECKING:
 
 def is_valid_schema_object(maybe_scm: InDataExT) -> TypeGuard[InDataT]:
     """Determine given object ``maybe_scm`` is an expected schema object."""
-    if maybe_scm is None or not maybe_scm or not utils.is_dict_like(maybe_scm):
-        return False
-
-    return True
+    return maybe_scm and utils.is_dict_like(maybe_scm)
 
 
 def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:

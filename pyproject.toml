@@ -30,6 +30,9 @@ classifiers = [
     "Topic :: Utilities",
     "License :: OSI Approved :: MIT License",
 ]
+dependencies = [
+    "tox-uv",
+]
 # .. note:: It requires nothing at minimum.
 #dependencies = [
 #]

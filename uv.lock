@@ -42,7 +42,7 @@ requires-dist = [
     { name = "pyyaml", marker = "extra == 'yaml'" },
     { name = "tomli", marker = "python_full_version < '3.11' and extra == 'toml'" },
     { name = "tomli-w", marker = "extra == 'toml'" },
-    { name = "tox-uv", specifier = ">=1.13.1" },
+    { name = "tox-uv" },
 ]
 provides-extras = ["yaml", "toml", "query", "schema", "template"]
 

@@ -17,12 +17,13 @@ import warnings
 import importlib.metadata
 
 from .. import common, ioinfo, models, utils
-from .datatypes import (
-    ProcT, ProcsT, ProcClsT, MaybeProcT
-)
 
 if typing.TYPE_CHECKING:
     import collections.abc
+
+    from .datatypes import (
+        ProcT, ProcsT, ProcClsT, MaybeProcT
+    )
 
 
 def sort_by_prio(prs: collections.abc.Iterable[ProcT]) -> ProcsT:

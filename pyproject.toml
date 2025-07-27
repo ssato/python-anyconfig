@@ -204,7 +204,10 @@ select = [
 #[tool.ruff.lint.flake8-annotations]
 #[tool.ruff.lint.flake8-bandit]
 #[tool.ruff.lint.flake8-bugbear]
-#[tool.ruff.lint.flake8-builtins]
+[tool.ruff.lint.flake8-builtins]
+ignorelist = [
+    "open",  # for anyconfig.api.open
+]
 
 # .. note::
 # 

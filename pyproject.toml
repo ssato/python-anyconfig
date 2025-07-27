@@ -1,7 +1,7 @@
 # .. seealso:: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 [project]
 name = "anyconfig"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dynamic = [
     "version",
 ]
@@ -137,9 +137,9 @@ ignore = [
     "ICN001",  # https://docs.astral.sh/ruff/rules/unconventional-import-alias/
     "TID252",  # https://docs.astral.sh/ruff/rules/relative-imports/
 
-    # .. note:: These are disabled until py38 support is dropped.
-    "UP006",  # https://docs.astral.sh/ruff/rules/non-pep585-annotation/
-    "UP007",  # https://docs.astral.sh/ruff/rules/non-pep604-annotation/
+    # .. note:: These are disabled until py39 support is dropped.
+    "UP007",  # https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/
+    "UP045",  # https://docs.astral.sh/ruff/rules/non-pep604-annotation-optional/
 ]
 select = [
   "A",   # flake8-builtins
@@ -205,7 +205,6 @@ select = [
 #[tool.ruff.lint.flake8-bandit]
 #[tool.ruff.lint.flake8-bugbear]
 #[tool.ruff.lint.flake8-builtins]
-
 
 # .. note::
 # 

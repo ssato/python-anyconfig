@@ -121,7 +121,7 @@ def _tweak_ns(tag: str, **options: dict[str, str]) -> str:
     ...           nspaces={"http://example.com/ns/val/": "val"})
     'val:a'
     """
-    nspaces = options.get("nspaces", None)
+    nspaces = options.get("nspaces")
     if nspaces is not None:
         matched = _ET_NS_RE.match(tag)
         if matched:

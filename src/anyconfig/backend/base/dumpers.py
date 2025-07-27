@@ -112,7 +112,7 @@ class DumperMixin:
 
         if ioinfo.is_stream(ioi):
             self.dump_to_stream(
-                cnf, typing.cast(typing.IO, ioi.src), **options
+                cnf, typing.cast("typing.IO", ioi.src), **options
             )
         else:
             ensure_outdir_exists(ioi.path)

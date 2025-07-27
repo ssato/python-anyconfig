@@ -202,7 +202,7 @@ class LoaderMixin:
 
         if ioinfo.is_stream(ioi):
             cnf = self.load_from_stream(
-                typing.cast(typing.IO, ioi.src), container, **options
+                typing.cast("typing.IO", ioi.src), container, **options
             )
         else:
             if ac_ignore_missing and not pathlib.Path(ioi.path).exists():

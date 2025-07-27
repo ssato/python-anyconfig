@@ -254,8 +254,8 @@ def multi_load(
 
             if is_dict_like(cups):
                 dicts_merge(
-                    typing.cast(MappingT, cnf),
-                    typing.cast(MappingT, cups),
+                    typing.cast("MappingT", cnf),
+                    typing.cast("MappingT", cups),
                     **options
                 )
                 dicts_merge(ctx, typing.cast(MappingT, cups), **options)

@@ -97,7 +97,7 @@ def validate(
 
     options = utils.filter_options(("cls", ), options)
     if ac_schema_errors:
-        return _validate_all(data, typing.cast(InDataT, schema), **options)
+        return _validate_all(data, typing.cast("InDataT", schema), **options)
 
     return _validate(data, schema, ac_schema_safe=ac_schema_safe, **options)
 

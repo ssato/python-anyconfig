@@ -40,7 +40,7 @@ def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
         return data
 
     (odata, exc) = query(
-        typing.cast(InDataT, data), typing.cast(str, jexp), **options
+        typing.cast("InDataT", data), typing.cast("str", jexp), **options
     )
     if exc:
         raise exc

@@ -62,6 +62,11 @@ class Processor:
         """Test equality."""
         return cls.cid() == other.cid()
 
+    @classmethod
+    def __hash__(cls) -> int:
+        """Test equality."""
+        return hash(cls.cid())
+
     def __str__(self) -> str:
         """Provide a string representation."""
         return (

@@ -258,7 +258,7 @@ def multi_load(
                     typing.cast("MappingT", cups),
                     **options
                 )
-                dicts_merge(ctx, typing.cast(MappingT, cups), **options)
+                dicts_merge(ctx, typing.cast("MappingT", cups), **options)
             elif len(iois) > 1:
                 msg = (
                     f"Object loaded from {ioi!r} is not a mapping object and "

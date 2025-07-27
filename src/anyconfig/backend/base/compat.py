@@ -24,7 +24,7 @@ class BinaryFilesMixin:
 
         :param filepath: Path to file to open to read data
         """
-        return pathlib.Path(filepath).open(  # noqa: SIM115
+        return pathlib.Path(filepath).open(
             cls._open_flags[0], **options
         )
 
@@ -34,6 +34,6 @@ class BinaryFilesMixin:
 
         :param filepath: Path to file to open to write data to
         """
-        return pathlib.Path(filepath).open(  # noqa: SIM115
+        return pathlib.Path(filepath).open(
             cls._open_flags[1], **options
         )

@@ -75,7 +75,7 @@ class LoaderMixin:
         if "encoding" not in options and self._open_read_mode == "r":
             options["encoding"] = _ENCODING
 
-        return pathlib.Path(filepath).open(  # noqa: SIM115
+        return pathlib.Path(filepath).open(
             self._open_read_mode, **options
         )
 

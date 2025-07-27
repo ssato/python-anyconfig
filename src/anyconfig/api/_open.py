@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
 
 
 # pylint: disable=redefined-builtin
-def open(  # noqa: A001
+def open(
     path: ioinfo.PathOrIOInfoT,
     mode: typing.Optional[str] = None,
     ac_parser: parsers.MaybeParserT = None,

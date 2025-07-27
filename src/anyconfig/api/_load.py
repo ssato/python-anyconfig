@@ -48,7 +48,7 @@ def try_to_load_schema(**options) -> typing.Optional[InDataT]:
 
     :return: Mapping object or None means some errors
     """
-    ac_schema = options.get("ac_schema", None)
+    ac_schema = options.get("ac_schema")
     if ac_schema is not None:
         # Try to detect the appropriate parser to load the schema data as it
         # may be different from the original config file's format, perhaps.
@@ -364,7 +364,7 @@ def loads(
 
     psr: ParserT = parsers_find(None, forced_type=ac_parser)
     schema = None
-    ac_schema = options.get("ac_schema", None)
+    ac_schema = options.get("ac_schema")
     if ac_schema is not None:
         options["ac_schema"] = None
         schema = loads(ac_schema, ac_parser=psr, ac_dict=ac_dict,

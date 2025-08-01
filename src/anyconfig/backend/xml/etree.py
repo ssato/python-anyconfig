@@ -100,7 +100,8 @@ def _namespaces_from_file(
     :return: {namespace_uri: namespace_prefix} or {}
     """
     return {
-        url: prefix for _, (prefix, url)
+        typing.cast("str", url): typing.cast("tuple[str, str]", prefix)
+        for _, (prefix, url)
         in ElementTree.iterparse(xmlfile, events=("start-ns", ))
     }
 

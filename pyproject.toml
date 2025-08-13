@@ -128,12 +128,8 @@ src = [
 ignore = [
     "ANN002",  # https://docs.astral.sh/ruff/rules/missing-type-args/
     "ANN003",  # https://docs.astral.sh/ruff/rules/missing-type-kwargs/
-
-    "ANN101",  # https://docs.astral.sh/ruff/rules/missing-type-self/
-    "ANN102",  # I can't see any meaning in it as the first 'cls' argument
-               # should be the class itself as usual.
-               # https://docs.astral.sh/ruff/rules/missing-type-cls/
     "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
+    "D203",  # https://docs.astral.sh/ruff/rules/incorrect-blank-line-before-class/
     "I001",  # https://docs.astral.sh/ruff/rules/unsorted-imports/
              # https://github.com/PyCQA/isort/issues/2146
 

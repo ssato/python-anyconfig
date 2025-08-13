@@ -73,7 +73,7 @@ def test_convert_to(obj, opts, exp):
 
 @pytest.mark.parametrize(
     ("objs", "exp"),
-    ((([], (), [x for x in range(10)], (x for x in range(4))), True),
+    ((([], (), list(range(10)), list(range(4))), True),
      (([], {}), False),
      (([], "aaa"), False),
      ),

@@ -136,7 +136,7 @@ ignore = [
     "ICN001",  # https://docs.astral.sh/ruff/rules/unconventional-import-alias/
     "TID252",  # https://docs.astral.sh/ruff/rules/relative-imports/
 
-    "RUF022",  # https://docs.astral.sh/ruff/rules/unsorted-dunder-all/#unsorted-dunder-all-ruf022
+    "RUF022",  # https://docs.astral.sh/ruff/rules/unsorted-dunder-all/
 
     # .. note:: These are disabled until py39 support is dropped.
     "UP007",  # https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/

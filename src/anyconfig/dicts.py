@@ -259,7 +259,7 @@ def _get_update_fn(strategy: str) -> collections.abc.Callable[..., None]:
         strategy = MS_DICTS
     try:
         return typing.cast(
-            collections.abc.Callable[..., None], _MERGE_FNS[strategy]
+            "collections.abc.Callable[..., None]", _MERGE_FNS[strategy]
         )
     except KeyError as exc:
         if callable(strategy):
@@ -294,7 +294,7 @@ def merge(self: DictT, other: UpdatesT, ac_merge: str = MS_DICTS,
     else:
         try:
             iother = typing.cast(
-                collections.abc.Iterable[tuple[str, typing.Any]],
+                "collections.abc.Iterable[tuple[str, typing.Any]]",
                 other
             )
             for key, val in iother:

@@ -75,7 +75,7 @@ class LoaderMixin:
         if "encoding" not in options and self._open_read_mode == "r":
             options["encoding"] = _ENCODING
 
-        return pathlib.Path(filepath).open(  # noqa: SIM115
+        return pathlib.Path(filepath).open(
             self._open_read_mode, **options
         )
 
@@ -202,7 +202,7 @@ class LoaderMixin:
 
         if ioinfo.is_stream(ioi):
             cnf = self.load_from_stream(
-                typing.cast(typing.IO, ioi.src), container, **options
+                typing.cast("typing.IO", ioi.src), container, **options
             )
         else:
             if ac_ignore_missing and not pathlib.Path(ioi.path).exists():

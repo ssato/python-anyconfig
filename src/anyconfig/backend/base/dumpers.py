@@ -47,7 +47,7 @@ class DumperMixin:
         if "encoding" not in options and self._open_write_mode == "w":
             options["encoding"] = _ENCODING
 
-        return pathlib.Path(filepath).open(  # noqa: SIM115
+        return pathlib.Path(filepath).open(
             self._open_write_mode, **options
         )
 
@@ -112,7 +112,7 @@ class DumperMixin:
 
         if ioinfo.is_stream(ioi):
             self.dump_to_stream(
-                cnf, typing.cast(typing.IO, ioi.src), **options
+                cnf, typing.cast("typing.IO", ioi.src), **options
             )
         else:
             ensure_outdir_exists(ioi.path)

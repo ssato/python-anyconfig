@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
 
 
 # pylint: disable=redefined-builtin
-def open(  # noqa: A001
+def open(
     path: ioinfo.PathOrIOInfoT,
     mode: typing.Optional[str] = None,
     ac_parser: parsers.MaybeParserT = None,
@@ -43,7 +43,7 @@ def open(  # noqa: A001
     ioi = ioinfo.make(path)
     if ioinfo.is_stream(ioi):
         warnings.warn(f"Looks already opened stream: {ioi!r}", stacklevel=2)
-        return typing.cast(typing.IO, ioi.src)
+        return typing.cast("typing.IO", ioi.src)
 
     psr: ParserT = parsers.find(ioi, forced_type=ac_parser)
 

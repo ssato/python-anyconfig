@@ -48,7 +48,7 @@ def try_to_load_schema(**options) -> typing.Optional[InDataT]:
 
     :return: Mapping object or None means some errors
     """
-    ac_schema = options.get("ac_schema", None)
+    ac_schema = options.get("ac_schema")
     if ac_schema is not None:
         # Try to detect the appropriate parser to load the schema data as it
         # may be different from the original config file's format, perhaps.
@@ -254,11 +254,11 @@ def multi_load(
 
             if is_dict_like(cups):
                 dicts_merge(
-                    typing.cast(MappingT, cnf),
-                    typing.cast(MappingT, cups),
+                    typing.cast("MappingT", cnf),
+                    typing.cast("MappingT", cups),
                     **options
                 )
-                dicts_merge(ctx, typing.cast(MappingT, cups), **options)
+                dicts_merge(ctx, typing.cast("MappingT", cups), **options)
             elif len(iois) > 1:
                 msg = (
                     f"Object loaded from {ioi!r} is not a mapping object and "
@@ -364,7 +364,7 @@ def loads(
 
     psr: ParserT = parsers_find(None, forced_type=ac_parser)
     schema = None
-    ac_schema = options.get("ac_schema", None)
+    ac_schema = options.get("ac_schema")
     if ac_schema is not None:
         options["ac_schema"] = None
         schema = loads(ac_schema, ac_parser=psr, ac_dict=ac_dict,

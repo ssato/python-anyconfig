@@ -104,7 +104,7 @@ class Loader(LoaderMixin):
 
         if ioinfo.is_stream(ioi):
             return load_from_temp_file(
-                typing.cast(typing.IO, ioi.src).read(),
+                typing.cast("typing.IO", ioi.src).read(),
                 allow_exec=allow_exec
             )
 

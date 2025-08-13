@@ -78,7 +78,7 @@ def attr_val_itr(
     :param as_sep: char to separate attributes
     """
     for rel in parse_list(str_, as_sep):
-        rel = typing.cast(str, rel)
+        rel = typing.cast("str", rel)
         if avs_sep not in rel or rel.endswith(avs_sep):
             continue
 
@@ -91,12 +91,12 @@ def attr_val_itr(
                 stacklevel=2
             )
 
-        _attr = typing.cast(str, _attr)
+        _attr = typing.cast("str", _attr)
 
         if vs_sep in str(_values):
-            yield (_attr, parse_list(typing.cast(str, _values), vs_sep))
+            yield (_attr, parse_list(typing.cast("str", _values), vs_sep))
         elif _values:
-            yield (_attr, typing.cast(PrimitiveT, _values))
+            yield (_attr, typing.cast("PrimitiveT", _values))
 
 
 def parse_attrlist_0(

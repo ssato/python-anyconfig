@@ -18,12 +18,13 @@ import warnings
 
 import jmespath
 
-from ..common import (
-    InDataExT, InDataT
-)
 from ..utils import is_dict_like
 if typing.TYPE_CHECKING:
     from .datatypes import MaybeJexp
+
+    from ..common import (
+        InDataExT, InDataT
+    )
 
 
 def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
@@ -40,7 +41,7 @@ def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
         return data
 
     (odata, exc) = query(
-        typing.cast(InDataT, data), typing.cast(str, jexp), **options
+        typing.cast("InDataT", data), typing.cast("str", jexp), **options
     )
     if exc:
         raise exc

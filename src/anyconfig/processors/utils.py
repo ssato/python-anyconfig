@@ -17,12 +17,13 @@ import warnings
 import importlib.metadata
 
 from .. import common, ioinfo, models, utils
-from .datatypes import (
-    ProcT, ProcsT, ProcClsT, MaybeProcT
-)
 
 if typing.TYPE_CHECKING:
     import collections.abc
+
+    from .datatypes import (
+        ProcT, ProcsT, ProcClsT, MaybeProcT
+    )
 
 
 def sort_by_prio(prs: collections.abc.Iterable[ProcT]) -> ProcsT:
@@ -112,7 +113,7 @@ def maybe_processor(
         return type_or_id
 
     with contextlib.suppress(TypeError):
-        maybe_cls = typing.cast(ProcClsT, type_or_id)
+        maybe_cls = typing.cast("ProcClsT", type_or_id)
         if issubclass(maybe_cls, cls):
             return maybe_cls()
 
@@ -201,8 +202,9 @@ def findall(
         raise ValueError(msg)
 
     if forced_type is None:
-        pclss = find_by_maybe_file(typing.cast(ioinfo.PathOrIOInfoT, obj),
-                                   prs)  # :: [Processor], never []
+        pclss = find_by_maybe_file(
+            typing.cast("ioinfo.PathOrIOInfoT", obj), prs
+        )  # :: [Processor], never []
     else:
         pclss = find_by_type_or_id(forced_type, prs)  # Do.
 
@@ -231,7 +233,7 @@ def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
     """
     if forced_type is not None and not isinstance(forced_type, str):
         proc = maybe_processor(
-            typing.cast(typing.Union[ProcT, ProcClsT], forced_type)
+            typing.cast("typing.Union[ProcT, ProcClsT]", forced_type)
         )
         if proc is None:
             msg = (
@@ -242,7 +244,7 @@ def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
 
         return proc
 
-    procs = findall(obj, prs, forced_type=typing.cast(str, forced_type))
+    procs = findall(obj, prs, forced_type=typing.cast("str", forced_type))
     return procs[0]
 
 

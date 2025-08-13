@@ -102,7 +102,7 @@ class Processors:
             res = [(cid, [prs[cid]]) for cid in sorted(prs.keys())]
 
         elif item in ("type", "extensions"):
-            res = utils.list_by_x(prs.values(), typing.cast(str, item))
+            res = utils.list_by_x(prs.values(), typing.cast("str", item))
         else:
             msg = (
                 "keyword argument 'item' must be one of "

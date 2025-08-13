@@ -76,7 +76,8 @@ def parse(
 
     if sep in val_s:
         return [
-            parser.parse(typing.cast(str, x)) for x in parser.parse_list(val_s)
+            parser.parse(typing.cast("str", x))
+            for x in parser.parse_list(val_s)
         ]
 
     return parser.parse(val_s)

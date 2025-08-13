@@ -114,7 +114,7 @@ def render_s(
         ctx = {}
 
     return typing.cast(
-        jinja2.Environment,
+        "jinja2.Environment",
         tmpl_env(paths, autoescape=autoescape)
     ).from_string(tmpl_s).render(**ctx)
 
@@ -202,13 +202,13 @@ def try_render(
     try:
         if content is None:
             render_opts = utils.filter_options(RENDER_OPTS, options)
-            return render(typing.cast(str, filepath), **render_opts)
+            return render(typing.cast("str", filepath), **render_opts)
 
         render_s_opts = utils.filter_options(RENDER_S_OPTS, options)
         return render_s(content, **render_s_opts)
 
     except Exception as exc:  # pylint: disable=broad-except
-        tmpl_s = filepath or typing.cast(str, content)[:10] + " ..."
+        tmpl_s = filepath or typing.cast("str", content)[:10] + " ..."
         warnings.warn(
             f"Failed to compile '{tmpl_s!r}'. It may not be "
             f"a template.{os.linesep}, exc={exc!s}, "

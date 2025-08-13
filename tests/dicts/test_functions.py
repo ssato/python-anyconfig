@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2021 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring,protected-access
@@ -44,8 +44,8 @@ def test_split_path(args, exp):
 # FIXME: Add some more test cases
 @pytest.mark.parametrize(
     ("args", "exp"),
-    (((dict(a=1, b=dict(c=2, )), "a.b.d", 3),
-      dict(a=dict(b=dict(d=3)), b=dict(c=2))),
+    ((({"a": 1, "b": {"c": 2}}, "a.b.d", 3),
+      {"a": {"b": {"d": 3}}, "b": {"c": 2}}),
      ),
 )
 def test_set_(args, exp):
@@ -61,10 +61,10 @@ OD = collections.OrderedDict
     ("obj", "opts", "exp"),
     ((OD((("a", 1), )),
       {"ac_ordered": False, "ac_dict": dict},
-      dict(a=1)),
+      {"a": 1}),
      (OD((("a", OD((("b", OD((("c", 1), ))), ))), )),
       {"ac_ordered": False, "ac_dict": dict},
-      dict(a=dict(b=dict(c=1)))),
+      {"a": {"b": {"c": 1}}}),
      ),
 )
 def test_convert_to(obj, opts, exp):

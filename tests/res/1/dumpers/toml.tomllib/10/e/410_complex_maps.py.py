@@ -1,5 +1,4 @@
-DATA = """\
-title = "Table examples"
+DATA = """title = "Table examples"
 
 name = { first = "Tom", last = "Preston-Werner" }
 point = { x = 1, y = 2 }

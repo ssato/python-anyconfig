@@ -1,5 +1,4 @@
-DATA = """\
-a='0'
+DATA = """a='0'
 b='bbb'
 c='ccc'
 d='ddd'

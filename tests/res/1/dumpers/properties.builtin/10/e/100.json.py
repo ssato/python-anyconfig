@@ -1,6 +1,5 @@
 # flake8: noqa: W291
-DATA = """\
-a = 0
+DATA = """a = 0
 b = bbb
 c = 
 sect0.c = x;y;z

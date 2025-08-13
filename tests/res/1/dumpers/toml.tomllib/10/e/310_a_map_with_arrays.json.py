@@ -1,5 +1,4 @@
-DATA = """\
-[x]
+DATA = """[x]
 integers = [
     1,
     2,

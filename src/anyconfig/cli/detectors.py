@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Detect file type and parser from inputs and/or output."""
@@ -57,7 +57,7 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
 
 
 def find_by_the_paths(
-    paths: list[str], *, ignore_errors: bool = True
+    paths: list[str], *, ignore_errors: bool = True,
 ) -> typing.Optional[str]:
     """Try to detect file (parser) type from given file paths ``paths``."""
     default = None
@@ -75,7 +75,7 @@ def find_by_the_paths(
             "Failed to detect a file type because given file paths "
             "may contain files with multiple types: "
             f"{paths_s}{os.linesep}{msg}",
-            1
+            1,
         )
 
     if constants.STD_IN_OR_OUT not in paths:
@@ -87,14 +87,14 @@ def find_by_the_paths(
                 utils.exit_with_output(
                     "Failed to detect the file type because it is/those are "
                     f"unknown file type[s]: {paths_s}{os.linesep}{msg}",
-                    1
+                    1,
                 )
 
     return default
 
 
 def try_detecting_input_type(
-    args: argparse.Namespace, *, ignore_errors: bool = True
+    args: argparse.Namespace, *, ignore_errors: bool = True,
 ) -> typing.Optional[str]:
     """Try to resolve a file type and parser of inputs."""
     # First, try the type given by users.
@@ -111,7 +111,7 @@ def try_detecting_input_type(
 
 
 def try_detecting_output_type(
-    args: argparse.Namespace
+    args: argparse.Namespace,
 ) -> typing.Optional[str]:
     """Try to resolve a file type and parser of outputs (``args.output``)."""
     # First, try the type given by users.
@@ -133,7 +133,7 @@ def try_detecting_output_type(
             "Failed to find or detect the file type: "
             f"itype={args.itype}, otype={args.otype}, "
             f"output={args.output}, inputs={', '.join(args.inputs)}",
-            1
+            1,
         )
 
     return itype

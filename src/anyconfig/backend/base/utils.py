@@ -13,9 +13,7 @@ if typing.TYPE_CHECKING:
     import collections.abc
 
 
-def not_implemented(
-    *_args, **_options
-) -> None:
+def not_implemented(*_args, **_options) -> None:
     """Raise NotImplementedError."""
     raise NotImplementedError
 
@@ -29,7 +27,7 @@ def ensure_outdir_exists(filepath: typing.Union[str, pathlib.Path]) -> None:
 
 
 def to_method(
-    func: collections.abc.Callable[..., typing.Any]
+    func: collections.abc.Callable[..., typing.Any],
 ) -> collections.abc.Callable[..., typing.Any]:
     """Lift :func:`func` to a method.
 
@@ -39,7 +37,7 @@ def to_method(
     """
     @functools.wraps(func)
     def wrapper(
-        *args, **kwargs
+        *args, **kwargs,
     ) -> collections.abc.Callable[..., typing.Any]:
         """Original function decorated."""
         return func(*args[1:], **kwargs)

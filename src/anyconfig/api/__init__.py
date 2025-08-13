@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
@@ -87,10 +87,10 @@ from __future__ import annotations
 
 from .datatypes import MaybeDataT
 from ._dump import (
-    dump, dumps
+    dump, dumps,
 )
 from ._load import (
-    single_load, multi_load, load, loads
+    single_load, multi_load, load, loads,
 )
 from ._open import open  # pylint: disable=redefined-builtin
 
@@ -99,7 +99,7 @@ from ..backend import ParserT
 from ..common import (
     InDataT, InDataExT,
     UnknownFileTypeError, UnknownParserTypeError,
-    UnknownProcessorTypeError, ValidationError
+    UnknownProcessorTypeError, ValidationError,
 )
 from ..dicts import (
     MS_REPLACE, MS_NO_REPLACE, MS_DICTS, MS_DICTS_AND_LISTS, MERGE_STRATEGIES,
@@ -110,11 +110,11 @@ from ..ioinfo import (
 )
 from ..parsers import (
     load_plugins, list_types, list_by_cid, list_by_type, list_by_extension,
-    findall, find, MaybeParserT
+    findall, find, MaybeParserT,
 )
 from ..query import try_query
 from ..schema import (
-    validate, is_valid, gen_schema
+    validate, is_valid, gen_schema,
 )
 
 
@@ -160,5 +160,5 @@ __all__ = [
     "try_query",
 
     # anyconfig.validate
-    "validate", "is_valid", "gen_schema"
+    "validate", "is_valid", "gen_schema",
 ]

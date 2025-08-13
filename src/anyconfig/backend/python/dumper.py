@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2024, 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to dump python code conntains data.
@@ -23,7 +23,7 @@ Changelog:
 from __future__ import annotations
 
 from ..base import (
-    InDataExT, ToStringDumperMixin
+    InDataExT, ToStringDumperMixin,
 )
 
 

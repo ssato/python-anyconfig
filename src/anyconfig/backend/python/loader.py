@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2023 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to load python code conntains data.
@@ -36,15 +36,13 @@ import typing
 
 from ... import ioinfo
 from ..base import (
-    IoiT, InDataExT, LoaderMixin
+    IoiT, InDataExT, LoaderMixin,
 )
 
 from . import utils
 
 
-def load_from_temp_file(
-    content: str, **opts
-) -> InDataExT:
+def load_from_temp_file(content: str, **opts) -> InDataExT:
     """Dump `content` to tempoary file and load from it.
 
     :param content: A str to load data from
@@ -54,7 +52,7 @@ def load_from_temp_file(
         path.write_text(content, encoding="utf-8")
 
         return utils.load_from_path(
-            path, allow_exec=opts.get("allow_exec", False)
+            path, allow_exec=opts.get("allow_exec", False),
         )
 
 
@@ -105,9 +103,9 @@ class Loader(LoaderMixin):
         if ioinfo.is_stream(ioi):
             return load_from_temp_file(
                 typing.cast("typing.IO", ioi.src).read(),
-                allow_exec=allow_exec
+                allow_exec=allow_exec,
             )
 
         return utils.load_from_path(
-            pathlib.Path(ioi.path), allow_exec=allow_exec
+            pathlib.Path(ioi.path), allow_exec=allow_exec,
         )

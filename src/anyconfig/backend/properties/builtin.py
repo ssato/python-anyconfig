@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to load and dump (Java) properties files.
@@ -54,7 +54,8 @@ def parseline(line: str) -> tuple[typing.Optional[str], str]:
 
     if len(pair) < _MIN_LEN_PAIR:
         warnings.warn(
-            f"Invalid line found: {line}", category=SyntaxWarning, stacklevel=2
+            f"Invalid line found: {line}", category=SyntaxWarning,
+            stacklevel=2,
         )
         return (key or None, "")
 
@@ -63,7 +64,7 @@ def parseline(line: str) -> tuple[typing.Optional[str], str]:
 
 def _pre_process_line(
     line: str,
-    cmarkers: tuple[str, ...] = _COMMENT_MARKERS
+    cmarkers: tuple[str, ...] = _COMMENT_MARKERS,
 ) -> typing.Optional[str]:
     """Preprocess a line in properties; strip comments, etc.
 
@@ -97,7 +98,7 @@ def escape(in_s: str) -> str:
 
 
 def load(
-    stream: typing.IO, container: base.GenContainerT = dict, **kwargs
+    stream: typing.IO, container: base.GenContainerT = dict, **kwargs,
 ) -> base.InDataT:
     """Load data from a java properties files given as ``stream``.
 
@@ -148,7 +149,7 @@ class Parser(base.StreamParser):
     _dict_opts: tuple[str, ...] = ("ac_dict", )
 
     def load_from_stream(
-        self, stream: typing.IO, container: base.GenContainerT, **kwargs
+        self, stream: typing.IO, container: base.GenContainerT, **kwargs,
     ) -> base.InDataT:
         """Load config from given file like object 'stream'.
 
@@ -161,7 +162,7 @@ class Parser(base.StreamParser):
         return load(stream, container=container, **kwargs)
 
     def dump_to_stream(
-        self, cnf: base.InDataExT, stream: typing.IO, **_kwargs
+        self, cnf: base.InDataExT, stream: typing.IO, **_kwargs,
     ) -> None:
         """Dump config 'cnf' to a file or file-like object 'stream'.
 

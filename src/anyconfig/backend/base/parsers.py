@@ -23,13 +23,13 @@ import typing
 from ...models import processor
 from ...utils import is_dict_like
 from .datatypes import (
-    InDataExT, GenContainerT
+    InDataExT, GenContainerT,
 )
 from .dumpers import (
-    DumperMixin, ToStringDumperMixin, ToStreamDumperMixin
+    DumperMixin, ToStringDumperMixin, ToStreamDumperMixin,
 )
 from .loaders import (
-    LoaderMixin, FromStringLoaderMixin, FromStreamLoaderMixin
+    LoaderMixin, FromStringLoaderMixin, FromStreamLoaderMixin,
 )
 
 
@@ -78,7 +78,7 @@ def load_with_fn(
     content_or_strm: typing.Union[typing.AnyStr, typing.IO],
     container: GenContainerT, *,
     allow_primitives: bool = False,
-    **options
+    **options,
 ) -> InDataExT:
     """Load data from given string or stream 'content_or_strm'.
 
@@ -106,7 +106,7 @@ def load_with_fn(
 def dump_with_fn(
     dump_fn: typing.Optional[DumpFnT],
     data: InDataExT, stream: typing.Optional[typing.IO],
-    **options
+    **options,
 ) -> str:
     """Dump 'data' to a string.
 
@@ -155,7 +155,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
     _dump_to_stream_fn: typing.Optional[DumpFnT] = None
 
     def load_from_string(
-        self, content: typing.AnyStr, container: GenContainerT, **options
+        self, content: typing.AnyStr, container: GenContainerT, **options,
     ) -> InDataExT:
         """Load configuration data from given string 'content'.
 
@@ -165,12 +165,14 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
         :return: container object holding the configuration data
         """
-        return load_with_fn(self._load_from_string_fn, content, container,
-                            allow_primitives=self.allow_primitives(),
-                            **options)
+        return load_with_fn(
+            self._load_from_string_fn, content, container,
+            allow_primitives=self.allow_primitives(),
+            **options,
+        )
 
     def load_from_stream(
-        self, stream: typing.IO, container: GenContainerT, **options
+        self, stream: typing.IO, container: GenContainerT, **options,
     ) -> InDataExT:
         """Load data from given stream 'stream'.
 
@@ -180,9 +182,11 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
 
         :return: container object holding the configuration data
         """
-        return load_with_fn(self._load_from_stream_fn, stream, container,
-                            allow_primitives=self.allow_primitives(),
-                            **options)
+        return load_with_fn(
+            self._load_from_stream_fn, stream, container,
+            allow_primitives=self.allow_primitives(),
+            **options,
+        )
 
     def dump_to_string(self, cnf: InDataExT, **options) -> str:
         """Dump config 'cnf' to a string.
@@ -196,7 +200,7 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
                             **options)
 
     def dump_to_stream(
-        self, cnf: InDataExT, stream: typing.IO, **options
+        self, cnf: InDataExT, stream: typing.IO, **options,
     ) -> None:
         """Dump config 'cnf' to a file-like object 'stream'.
 
@@ -206,5 +210,4 @@ class StringStreamFnParser(Parser, FromStreamLoaderMixin, ToStreamDumperMixin):
         :param stream:  Config file or file like object
         :param options: optional keyword parameters to be sanitized :: dict
         """
-        dump_with_fn(self._dump_to_stream_fn, cnf, stream,
-                     **options)
+        dump_with_fn(self._dump_to_stream_fn, cnf, stream, **options)

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A backend module to load and dump YAML data files using rumael.yaml.
@@ -53,7 +53,7 @@ except AttributeError as exc:
     raise ImportError(msg) from exc
 
 _YAML_INIT_KWARGS: tuple[str, ...] = (  # kwargs for ruamel.yaml.YAML
-    "typ", "pure", "plug_ins"
+    "typ", "pure", "plug_ins",
 )
 _YAML_INSTANCE_MEMBERS: tuple[str, ...] = (
     "allow_duplicate_keys", "allow_unicode",
@@ -70,13 +70,13 @@ _YAML_INSTANCE_MEMBERS: tuple[str, ...] = (
     "resolver", "scanner", "seq", "sequence_dash_offset",
     "sequence_indent", "serializer", "stream", "tags",
     "top_level_block_style_scalar_no_indent_error_1_1",
-    "top_level_colon_align", "version", "width"
+    "top_level_colon_align", "version", "width",
 )
 _YAML_OPTS = (*_YAML_INIT_KWARGS, *_YAML_INSTANCE_MEMBERS)
 
 
 def yml_fnc(
-    fname: str, *args, **options
+    fname: str, *args, **options,
 ) -> typing.Optional[base.InDataExT]:
     """Call loading functions for yaml data.
 
@@ -102,7 +102,7 @@ def yml_fnc(
 
 
 def yml_load(
-    stream: typing.IO, container: base.GenContainerT, **options
+    stream: typing.IO, container: base.GenContainerT, **options,
 ) -> base.InDataExT:
     """See :func:`anyconfig.backend.yaml.pyyaml.yml_load`."""
     ret = yml_fnc("load", stream, **options)
@@ -113,7 +113,7 @@ def yml_load(
 
 
 def yml_dump(
-    data: base.InDataExT, stream: typing.IO, **options
+    data: base.InDataExT, stream: typing.IO, **options,
 ) -> None:
     """See :func:`anyconfig.backend.yaml.pyyaml.yml_dump`."""
     # .. todo::

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=consider-using-with
@@ -25,7 +25,7 @@ class BinaryFilesMixin:
         :param filepath: Path to file to open to read data
         """
         return pathlib.Path(filepath).open(
-            cls._open_flags[0], **options
+            cls._open_flags[0], **options,
         )
 
     @classmethod
@@ -35,5 +35,5 @@ class BinaryFilesMixin:
         :param filepath: Path to file to open to write data to
         """
         return pathlib.Path(filepath).open(
-            cls._open_flags[1], **options
+            cls._open_flags[1], **options,
         )

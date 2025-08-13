@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2016 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A simple backend module to load and dump files contain shell variables.
@@ -30,7 +30,7 @@ from ... import utils
 
 
 def _parseline(
-    line: str
+    line: str,
 ) -> tuple[typing.Optional[str], typing.Optional[str]]:
     """Parse a line contains shell variable definition.
 
@@ -41,11 +41,12 @@ def _parseline(
         r"^\s*(export)?\s*(\S+)=(?:(?:"
         r"(?:\"(.*[^\\])\")|(?:'(.*[^\\])')|"
         r"(?:([^\"'#\s]+)))?)\s*#*",
-        line
+        line,
     )
     if not match:
         warnings.warn(
-            f"Invalid line found: {line}", category=SyntaxWarning, stacklevel=2
+            f"Invalid line found: {line}", category=SyntaxWarning,
+            stacklevel=2,
         )
         return (None, None)
 
@@ -55,7 +56,7 @@ def _parseline(
 
 
 def load(
-    stream: typing.IO, container: base.GenContainerT = dict, **_kwargs
+    stream: typing.IO, container: base.GenContainerT = dict, **_kwargs,
 ) -> base.InDataT:
     """Load shell variable definitions data from ``stream``.
 
@@ -75,7 +76,7 @@ def load(
         if key is None:
             warnings.warn(
                 f"Empty val in the line: {line}",
-                category=SyntaxWarning, stacklevel=2
+                category=SyntaxWarning, stacklevel=2,
             )
             continue
 
@@ -94,7 +95,7 @@ class Parser(base.StreamParser):
     _dict_opts: tuple[str, ...] = ("ac_dict", )
 
     def load_from_stream(
-        self, stream: typing.IO, container: base.GenContainerT, **kwargs
+        self, stream: typing.IO, container: base.GenContainerT, **kwargs,
     ) -> base.InDataT:
         """Load config from given file like object ``stream``.
 
@@ -108,7 +109,7 @@ class Parser(base.StreamParser):
         return load(stream, container=container, **kwargs)
 
     def dump_to_stream(
-        self, cnf: base.InDataExT, stream: typing.IO, **_kwargs
+        self, cnf: base.InDataExT, stream: typing.IO, **_kwargs,
     ) -> None:
         """Dump config dat ``cnf`` to a file or file-like object ``stream``.
 

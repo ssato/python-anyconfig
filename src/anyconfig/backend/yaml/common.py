@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Common library for YAML backend modules."""
@@ -12,7 +12,7 @@ from .. import base
 
 
 def filter_from_options(
-    key: str, options: dict[str, typing.Any]
+    key: str, options: dict[str, typing.Any],
 ) -> dict[str, typing.Any]:
     """Filter a key ``key`` in ``options.
 

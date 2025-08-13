@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2012 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # For 'anyconfig.open':
@@ -31,7 +31,7 @@ from .api import (
     load_plugins, list_types, list_by_cid, list_by_type, list_by_extension,
     findall, find,
     try_query,
-    validate, is_valid, gen_schema
+    validate, is_valid, gen_schema,
 )
 
 
@@ -67,7 +67,7 @@ __all__ = [
     "try_query",
 
     # anyconfig.validate
-    "validate", "is_valid", "gen_schema"  # validation APIs.
+    "validate", "is_valid", "gen_schema",  # validation APIs.
 ]
 
 # vim:sw=4:ts=4:et:

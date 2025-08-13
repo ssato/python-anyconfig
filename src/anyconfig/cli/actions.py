@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Actions for anyconfig.cli.*."""
@@ -20,5 +20,5 @@ def try_output_result(
     """Try to output result."""
     api.dump(
         cnf, args.output, args.otype,
-        **(args.extra_opts if args.extra_opts else {})
+        **(args.extra_opts if args.extra_opts else {}),
     )

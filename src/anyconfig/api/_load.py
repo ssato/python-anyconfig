@@ -12,7 +12,7 @@ import warnings
 from .. import ioinfo
 from ..dicts import (
     convert_to as dicts_convert_to,
-    merge as dicts_merge
+    merge as dicts_merge,
 )
 from ..parsers import find as parsers_find
 from ..query import try_query
@@ -20,7 +20,7 @@ from ..schema import is_valid
 from ..template import try_render
 from ..utils import is_dict_like
 from .datatypes import (
-    ParserT
+    ParserT,
 )
 from .utils import are_same_file_types
 
@@ -28,7 +28,7 @@ if typing.TYPE_CHECKING:
     import collections.abc
 
     from ..common import (
-        InDataT, InDataExT
+        InDataT, InDataExT,
     )
 
 
@@ -67,7 +67,7 @@ def _single_load(
     ioi: ioinfo.IOInfo, *,
     ac_parser: MaybeParserOrIdOrTypeT = None, ac_template: bool = False,
     ac_context: typing.Optional[MappingT] = None,
-    **options
+    **options,
 ) -> InDataExT:
     """Load data from a given ``ioi``.
 
@@ -102,7 +102,7 @@ def single_load(
     input_: ioinfo.PathOrIOInfoT, ac_parser: MaybeParserOrIdOrTypeT = None,
     *,
     ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options
+    **options,
 ) -> InDataExT:
     r"""Load from single input ``input\_``.
 
@@ -161,7 +161,7 @@ def single_load(
     cnf = _single_load(ioi, ac_parser=ac_parser, ac_template=ac_template,
                        ac_context=ac_context, **options)
     schema = try_to_load_schema(
-        ac_template=ac_template, ac_context=ac_context, **options
+        ac_template=ac_template, ac_context=ac_context, **options,
     )
     if schema and not is_valid(cnf, schema, **options):
         return None
@@ -171,11 +171,12 @@ def single_load(
 
 def multi_load(
     inputs: typing.Union[
-        collections.abc.Iterable[ioinfo.PathOrIOInfoT], ioinfo.PathOrIOInfoT
+        collections.abc.Iterable[ioinfo.PathOrIOInfoT],
+        ioinfo.PathOrIOInfoT,
     ], ac_parser: MaybeParserOrIdOrTypeT = None,
     *,
     ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options
+    **options,
 ) -> InDataExT:
     r"""Load data from multiple inputs ``inputs``.
 
@@ -230,7 +231,7 @@ def multi_load(
     :raises: ValueError, UnknownProcessorTypeError, UnknownFileTypeError
     """
     schema = try_to_load_schema(
-        ac_template=ac_template, ac_context=ac_context, **options
+        ac_template=ac_template, ac_context=ac_context, **options,
     )
     options["ac_schema"] = None  # Avoid to load schema more than twice.
 
@@ -246,7 +247,7 @@ def multi_load(
     for ioi in iois:
         cups = _single_load(
             ioi, ac_parser=ac_parser, ac_template=ac_template,
-            ac_context=ctx, **options
+            ac_context=ctx, **options,
         )
         if cups:
             if cnf is None:
@@ -256,7 +257,7 @@ def multi_load(
                 dicts_merge(
                     typing.cast("MappingT", cnf),
                     typing.cast("MappingT", cups),
-                    **options
+                    **options,
                 )
                 dicts_merge(ctx, typing.cast("MappingT", cups), **options)
             elif len(iois) > 1:
@@ -278,12 +279,13 @@ def multi_load(
 
 def load(
     path_specs: typing.Union[
-        collections.abc.Iterable[ioinfo.PathOrIOInfoT], ioinfo.PathOrIOInfoT
+        collections.abc.Iterable[ioinfo.PathOrIOInfoT],
+        ioinfo.PathOrIOInfoT,
     ],
     ac_parser: typing.Optional[str] = None, *,
     ac_dict: typing.Optional[collections.abc.Callable] = None,
     ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options
+    **options,
 ) -> InDataExT:
     r"""Load from a file or files specified as ``path_specs``.
 
@@ -320,13 +322,17 @@ def load(
         raise ValueError(msg)
 
     if len(iois) == 1:
-        return single_load(iois[0], ac_parser=ac_parser, ac_dict=ac_dict,
-                           ac_template=ac_template, ac_context=ac_context,
-                           **options)
+        return single_load(
+            iois[0], ac_parser=ac_parser, ac_dict=ac_dict,
+            ac_template=ac_template, ac_context=ac_context,
+            **options,
+        )
 
-    return multi_load(iois, ac_parser=ac_parser, ac_dict=ac_dict,
-                      ac_template=ac_template, ac_context=ac_context,
-                      **options)
+    return multi_load(
+        iois, ac_parser=ac_parser, ac_dict=ac_dict,
+        ac_template=ac_template, ac_context=ac_context,
+        **options,
+    )
 
 
 def loads(
@@ -334,7 +340,7 @@ def loads(
     ac_dict: typing.Optional[collections.abc.Callable] = None,
     ac_template: typing.Union[str, bool] = False,
     ac_context: typing.Optional[MappingT] = None,
-    **options
+    **options,
 ) -> InDataExT:
     """Load data from a str, ``content``.
 
@@ -367,9 +373,11 @@ def loads(
     ac_schema = options.get("ac_schema")
     if ac_schema is not None:
         options["ac_schema"] = None
-        schema = loads(ac_schema, ac_parser=psr, ac_dict=ac_dict,
-                       ac_template=ac_template, ac_context=ac_context,
-                       **options)
+        schema = loads(
+            ac_schema, ac_parser=psr, ac_dict=ac_dict,
+            ac_template=ac_template, ac_context=ac_context,
+            **options,
+        )
 
     if ac_template:
         compiled = try_render(content=content, ctx=ac_context, **options)

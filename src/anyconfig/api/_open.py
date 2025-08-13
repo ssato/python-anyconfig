@@ -18,7 +18,7 @@ def open(
     path: ioinfo.PathOrIOInfoT,
     mode: typing.Optional[str] = None,
     ac_parser: parsers.MaybeParserT = None,
-    **options
+    **options,
 ) -> typing.IO:
     """Open given file ``path`` with appropriate open flag.
 

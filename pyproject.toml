@@ -149,6 +149,7 @@ select = [
   "ARG", # flake8-unused-arguments
   "B",   # flake8-bugbear
   "BLE", # flake8-blind-except
+#  "COM", # flake8-commas (It's not ready yet.)
   "C4",  # flake8-comprehensions
   "C90", # mccabe
   "D",   # pydocstyle

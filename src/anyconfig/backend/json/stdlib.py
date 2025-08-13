@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2011 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Ref. python -c "import json; help(json)"
@@ -51,5 +51,3 @@ class Parser(BaseParser):
     _load_from_stream_fn = base.to_method(json.load)
     _dump_to_string_fn = base.to_method(json.dumps)
     _dump_to_stream_fn = base.to_method(json.dump)
-
-# vim:sw=4:ts=4:et:

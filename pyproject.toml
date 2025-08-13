@@ -13,7 +13,10 @@ authors = [
 maintainers = [
     {"name" = "Satoru SATOH", email = "satoru.satoh@gmail.com"},
 ]
-license = { text = "MIT"}
+license = "MIT"
+license-files = [
+     "LICENSE.MIT", "AUTHORS.txt"
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -28,7 +31,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Text Processing :: Markup",
     "Topic :: Utilities",
-    "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
     "tox-uv",

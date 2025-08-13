@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2018 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
@@ -46,8 +46,8 @@ def test_processor_list_x():
     with pytest.raises(ValueError):
         prcs.list_x()
 
-    assert prcs.list_x("cid") == sorted(set(p.cid() for p in PRS))
-    assert prcs.list_x("type") == sorted(set(p.type() for p in PRS))
+    assert prcs.list_x("cid") == sorted({p.cid() for p in PRS})
+    assert prcs.list_x("type") == sorted({p.type() for p in PRS})
 
     res = sorted(set(A.extensions() + B.extensions() + C.extensions()))
     assert prcs.list_x("extension") == res

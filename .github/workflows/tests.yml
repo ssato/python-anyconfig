@@ -36,7 +36,7 @@ jobs:
           enable-cache: true
       - name: pin python version
         run: uv python pin ${{ matrix.python-version }}
-      - name: Install tox-uv
+      - name: Install tox and its plugins
         run: uv tool install tox --with tox-uv --with tox-gh-actions
       - name: Test with tox
         run: tox

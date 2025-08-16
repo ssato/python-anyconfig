@@ -32,9 +32,18 @@ def test_parseline(inp, exp):
 
 
 @pytest.mark.parametrize(
+    ('inp', 'exp', 'warning'),
+    (('# ', {}, SyntaxWarning),
+     ),
+)
+def test_load__with_warns(inp, exp, warning):
+    with pytest.warns(warning):
+        assert TT.load(io.StringIO(inp)) == exp
+
+
+@pytest.mark.parametrize(
     ('inp', 'exp'),
     (('', {}),
-     ('# ', {}),
      ('aaa=', {'aaa': ''}),
      ('aaa=bbb', {'aaa': 'bbb'}),
      ('aaa=bbb # ...', {'aaa': 'bbb'}),

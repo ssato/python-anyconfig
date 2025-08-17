@@ -28,21 +28,9 @@ python-anyconfig
    :target: https://coveralls.io/r/ssato/python-anyconfig
    :alt: [Coverage Status]
 
-.. .. image:: https://landscape.io/github/ssato/python-anyconfig/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/ssato/python-anyconfig/master
-   :alt: [Code Health]
-
-.. image:: https://scrutinizer-ci.com/g/ssato/python-anyconfig/badges/quality-score.png?b=master
+.. image:: https://scrutinizer-ci.com/g/ssato/python-anyconfig/badges/quality-score.png?b=next
    :target: https://scrutinizer-ci.com/g/ssato/python-anyconfig
    :alt: [Code Quality by Scrutinizer]
-
-.. .. image:: https://img.shields.io/lgtm/grade/python/g/ssato/python-anyconfig.svg
-   :target: https://lgtm.com/projects/g/ssato/python-anyconfig/context:python
-   :alt: [Code Quality by LGTM]
-
-.. .. image:: https://www.openhub.net/p/python-anyconfig/widgets/project_thin_badge.gif
-   :target: https://www.openhub.net/p/python-anyconfig
-   :alt: [Open HUB]
 
 .. image:: https://readthedocs.org/projects/python-anyconfig/badge/?version=latest
    :target: http://python-anyconfig.readthedocs.io/en/latest/?badge=latest
@@ -51,4 +39,3 @@ python-anyconfig
 .. .. image:: https://img.shields.io/github/contributors/ssato/python-anyconfig
    :target: https://github.com/ssato/python-anyconfig/graphs/contributors/
    :alt: [GitHub contributors]
-

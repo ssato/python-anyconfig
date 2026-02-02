@@ -118,7 +118,11 @@ disable = [
 # .. seealso:: https://docs.astral.sh/ruff/settings/#top-level
 [tool.ruff]
 exclude = [
-    "tests/res/**/*.py",
+    "tests/res/*/*/*/*.py",
+    "tests/res/*/*/*/*/*.py",
+    "tests/res/*/*/*/*/*/*.py",
+    "tests/res/*/*/*/*/*/*/*.py",
+    "tests/res/*/*/*/*/*/*/*/*.py",
 ]
 src = [
     "src",
@@ -126,72 +130,8 @@ src = [
 ]
 
 [tool.ruff.lint]
-ignore = [
-    "ANN002",  # https://docs.astral.sh/ruff/rules/missing-type-args/
-    "ANN003",  # https://docs.astral.sh/ruff/rules/missing-type-kwargs/
-    "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
-    "D203",  # https://docs.astral.sh/ruff/rules/incorrect-blank-line-before-class/
-    "I001",  # https://docs.astral.sh/ruff/rules/unsorted-imports/
-             # https://github.com/PyCQA/isort/issues/2146
-
-    "ICN001",  # https://docs.astral.sh/ruff/rules/unconventional-import-alias/
-    "TID252",  # https://docs.astral.sh/ruff/rules/relative-imports/
-
-    "RUF022",  # https://docs.astral.sh/ruff/rules/unsorted-dunder-all/
-
-    # .. note:: These are disabled until py39 support is dropped.
-    "UP007",  # https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/
-    "UP045",  # https://docs.astral.sh/ruff/rules/non-pep604-annotation-optional/
-]
 select = [
-  "A",   # flake8-builtins
-  "ANN", # flake8-annotations
-  "ARG", # flake8-unused-arguments
-  "B",   # flake8-bugbear
-  "BLE", # flake8-blind-except
-#  "COM", # flake8-commas (It's not ready yet.)
-  "C4",  # flake8-comprehensions
-  "C90", # mccabe
-  "D",   # pydocstyle
-  "DTZ", # flake8-datetimez
-  "E",   # pycodestyle
-  "EM",  # flake8-errmsg
-  "ERA", # flake8-eradicate
-  "EXE", # flake8-executable
-  "F",   # pyflakes
-  "FA",   # flake8-future-annotations
-  "FBT", # flake8-boolean-trap
-  "G",   # flake8-logging-format
-  "I",   # isort
-  "ICN", # flake8-import-conventions
-  "INP", # flake8-no-pep420
-  "ISC", # flake8-implicit-str-concat
-  "N",   # pep8-naming
-  "PD",  # flake8-vet
-  "PERF",  # Perflint
-  "PGH", # pygrep-hooks
-  "PIE", # flake8-pie
-  "PLC", # Pylint - Convention
-  "PLE", # Pylint - Error
-  "PLR", # Pylint - Refactor
-  "PLW", # Pylint - Warning
-  "PTH", # flake8-use-pathlib
-  "PYI", # flake8-pyi
-  "Q",   # flake8-quotes
-  "RET", # flake8-return
-  "RUF", # Ruff-specific rules
-  "RSE", # flake8-raise
-  "S",   # flake8-bandit
-  "SLF", # flake8-self
-  "SLOT", # flake8-slots
-  "SIM", # flake8-simplify
-  "T20", # flake8-print
-  "TCH", # flake8-type-checking
-  "TID", # flake8-tidy-imports
-  "TRY", # tryceratops
-  "UP",  # pyupgrade
-  "W",   # pycodestyle
-  "YTT", # flake8-2020
+  "ALL",
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]
@@ -203,6 +143,19 @@ select = [
 # .. todo:: security hardening
 # https://docs.astral.sh/ruff/rules/suspicious-xml-element-tree-usage/
 "src/anyconfig/backend/xml/etree.py" = ["S314"]
+
+"tests/*.py" = [
+    "S101",  # https://docs.astral.sh/ruff/rules/assert/
+]
+"tests/*/*.py" = [
+    "S101",
+]
+"tests/*/*/*.py" = [
+    "S101",
+]
+"tests/*/*/*/*.py" = [
+    "S101",
+]
 
 #[tool.ruff.lint.flake8-annotations]
 #[tool.ruff.lint.flake8-bandit]

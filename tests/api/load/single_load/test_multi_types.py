@@ -23,12 +23,12 @@ DATA: list = common.load_data_for_testfile(__file__)
 DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 
-def test_data() -> None:
+def test_data_is_non_empty() -> None:
     assert DATA
 
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_load(
-    ipath: pathlib.Path, opts: dict, exp
-):
+    ipath: pathlib.Path, opts: dict, exp,
+) -> None:
     assert TT.load(ipath, **opts) == exp

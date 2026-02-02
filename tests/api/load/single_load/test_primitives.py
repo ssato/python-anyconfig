@@ -23,7 +23,7 @@ DATA: list = common.load_data_for_testfile(__file__)
 DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 
-def test_data() -> None:
+def test_data_is_non_empty() -> None:
     assert DATA
 
 

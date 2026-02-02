@@ -134,7 +134,13 @@ src = [
 
 [tool.ruff.lint]
 select = [
-  "ALL",
+    "ALL",
+]
+ignore = [
+    "D203",  # Because it looks conflict with D211.
+             # https://docs.astral.sh/ruff/rules/incorrect-blank-line-before-class/
+    "D213",  # Because it looks conflict with D212.
+             # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]

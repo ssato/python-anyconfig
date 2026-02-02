@@ -118,6 +118,9 @@ disable = [
 # .. seealso:: https://docs.astral.sh/ruff/settings/#top-level
 [tool.ruff]
 exclude = [
+    "tests/__init__.py",
+    "tests/*/__init__.py",
+    "tests/*/*/__init__.py",
     "tests/res/*/*/*/*.py",
     "tests/res/*/*/*/*/*.py",
     "tests/res/*/*/*/*/*/*.py",
@@ -145,16 +148,38 @@ select = [
 "src/anyconfig/backend/xml/etree.py" = ["S314"]
 
 "tests/*.py" = [
+    # https://docs.astral.sh/ruff/rules/missing-type-function-argument/
+    "ANN001",
+    "D103",  # https://docs.astral.sh/ruff/rules/undocumented-public-function/
+    "I001",  # https://docs.astral.sh/ruff/rules/unsorted-imports/
+    # https://docs.astral.sh/ruff/rules/lowercase-imported-as-non-lowercase/
+    "N812",
     "S101",  # https://docs.astral.sh/ruff/rules/assert/
+    "TID252",  # https://docs.astral.sh/ruff/rules/relative-imports/
 ]
 "tests/*/*.py" = [
+    "ANN001",
+    "D103",
+    "I001",
+    "N812",
     "S101",
+    "TID252",
 ]
 "tests/*/*/*.py" = [
+    "ANN001",
+    "D103",
+    "I001",
+    "N812",
     "S101",
+    "TID252",
 ]
 "tests/*/*/*/*.py" = [
+    "ANN001",
+    "D103",
+    "I001",
+    "N812",
     "S101",
+    "TID252",
 ]
 
 #[tool.ruff.lint.flake8-annotations]

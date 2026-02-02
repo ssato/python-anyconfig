@@ -32,7 +32,7 @@ DATA: list[tuple[typing.Any, dict, str]] = [
 ]
 
 
-def test_data() -> None:
+def test_data_is_defined_and_not_empty() -> None:
     assert DATA
 
 

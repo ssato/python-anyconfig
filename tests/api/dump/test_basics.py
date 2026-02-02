@@ -13,7 +13,7 @@ import pytest
 import anyconfig.api._dump as TT
 
 from anyconfig.api import (
-    UnknownFileTypeError, UnknownProcessorTypeError
+    UnknownFileTypeError, UnknownProcessorTypeError,
 )
 
 from ... import common
@@ -37,14 +37,18 @@ def test_data_is_defined_and_not_empty() -> None:
 
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
-def test_dump(obj, opts: dict, exp, tmp_path: pathlib.Path) -> None:
+def test_dump(
+    obj, opts: dict, exp, tmp_path: pathlib.Path,
+) -> None:
     out = tmp_path / "out.json"
     TT.dump(obj, out, **opts)
     assert out.read_text() == exp
 
 
 @pytest.mark.parametrize(NAMES, DATA[:1], ids=DATA_IDS[:1])
-def test_dump_without_ac_parser_option(obj, opts: dict, exp) -> None:
+def test_dump_without_ac_parser_option(
+    obj, opts: dict, exp,
+) -> None:
     assert opts or exp
     with pytest.raises(UnknownFileTypeError):
         TT.dump(obj, "out.txt")
@@ -52,7 +56,7 @@ def test_dump_without_ac_parser_option(obj, opts: dict, exp) -> None:
 
 @pytest.mark.parametrize(NAMES, DATA[:1], ids=DATA_IDS[:1])
 def test_dump_with_invalid_ac_parser_option(
-    obj, opts: dict, exp
+    obj, opts: dict, exp,
 ) -> None:
     assert opts or exp
     with pytest.raises(UnknownProcessorTypeError):

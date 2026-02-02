@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
-"Test cases for anyconfig.parsers.utils."""
+"""Test cases for anyconfig.parsers.utils.
+"""
 from __future__ import annotations
 
 import operator

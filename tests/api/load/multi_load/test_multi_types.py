@@ -13,7 +13,7 @@ import pytest
 import anyconfig.api._load as TT
 
 from .common import (
-    NAMES, load_data_for_testfile, get_test_ids
+    NAMES, load_data_for_testfile, get_test_ids,
 )
 
 if typing.TYPE_CHECKING:
@@ -30,6 +30,6 @@ def test_data() -> None:
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_load(
-    inputs: list[pathlib.Path], opts: dict, exp
+    inputs: list[pathlib.Path], opts: dict, exp,
 ) -> None:
     assert TT.load(inputs, **opts) == exp

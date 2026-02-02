@@ -14,7 +14,7 @@ import pytest
 import anyconfig.api._load as TT
 
 from .common import (
-    NAMES, GLOB_PATTERN, load_data_for_testfile, get_test_ids
+    NAMES, GLOB_PATTERN, load_data_for_testfile, get_test_ids,
 )
 
 if typing.TYPE_CHECKING:
@@ -35,13 +35,13 @@ def test_data() -> None:
 
 
 def test_load_with_empty_list() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Maybe invalid input"):
         TT.load([])
 
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_load_for_a_list_of_path_objects(
-    inputs: list[pathlib.Path], opts: dict, exp
+    inputs: list[pathlib.Path], opts: dict, exp,
 ) -> None:
     assert TT.load(inputs, **opts) == exp
     assert TT.load((i for i in inputs), **opts) == exp
@@ -49,35 +49,35 @@ def test_load_for_a_list_of_path_objects(
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_load_for_a_list_of_path_strings(
-    inputs: list[pathlib.Path], opts: dict, exp
+    inputs: list[pathlib.Path], opts: dict, exp,
 ) -> None:
     assert TT.load([str(i) for i in inputs], **opts) == exp
     assert TT.load((str(i) for i in inputs), **opts) == exp
 
 
 @pytest.mark.parametrize(
-    NAMES, DATA_W_GLOB, ids=get_test_ids(DATA_W_GLOB)
+    NAMES, DATA_W_GLOB, ids=get_test_ids(DATA_W_GLOB),
 )
 def test_load_for_glob_patterns(
-    inputs: list[pathlib.Path], opts: dict, exp
+    inputs: list[pathlib.Path], opts: dict, exp,
 ) -> None:
     assert TT.load(inputs, **opts) == exp
 
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_load_for_a_list_of_streams(
-    inputs: list[pathlib.Path], opts: dict, exp
+    inputs: list[pathlib.Path], opts: dict, exp,
 ) -> None:
     assert TT.load([i.open() for i in inputs], **opts) == exp
 
 
 class MyDict(collections.OrderedDict):
-    pass
+    """Custom dict-like object."""
 
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_load_with_ac_dict_option(
-    inputs: list[pathlib.Path], opts: dict, exp
+    inputs: list[pathlib.Path], opts: dict, exp,
 ) -> None:
     res = TT.load(inputs, ac_dict=MyDict, **opts)
     assert res == exp
@@ -86,20 +86,20 @@ def test_load_with_ac_dict_option(
 
 @pytest.mark.parametrize(NAMES, DATA[:1], ids=DATA_IDS[:1])
 def test_load_with_wrong_merge_strategy(
-    inputs: list[pathlib.Path], opts: dict, exp
+    inputs: list[pathlib.Path], opts: dict, exp,
 ) -> None:
     assert exp  # dummy to avoid an error of unused argument.
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Wrong merge strategy"):
         TT.load(inputs, ac_merge="wrong_merge_strategy", **opts)
 
 
-def test_load_with_ignore_missing_option():
+def test_load_with_ignore_missing_option() -> None:
     paths = [
         "/path/to/file_not_exist_0.json",
         "/path/to/file_not_exist_1.json",
         "/path/to/file_not_exist_2.json",
     ]
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match="No such file or directory"):
         TT.load(paths)
 
     assert TT.load(paths, ac_ignore_missing=True) == {}

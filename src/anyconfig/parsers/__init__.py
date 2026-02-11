@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (C) 2021 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Utilities to list and find appropriate parser class objects and instances.
@@ -14,12 +14,10 @@
 """
 from .utils import (
     load_plugins, list_types, list_by_cid, list_by_type, list_by_extension,
-    findall, find, MaybeParserT
+    findall, find, MaybeParserT,
 )
 
 __all__ = [
     "load_plugins", "list_types", "list_by_cid", "list_by_type",
-    "list_by_extension", "findall", "find", "MaybeParserT"
+    "list_by_extension", "findall", "find", "MaybeParserT",
 ]
-
-# vim:sw=4:ts=4:et:

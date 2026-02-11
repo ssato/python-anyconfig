@@ -1,9 +1,7 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
-# FIXME:
-# mypy: disable-error-code=type-var
 """Internal APIs to load, list and find parser class objects."""
 from __future__ import annotations
 
@@ -47,8 +45,8 @@ def list_by_extension() -> list[tuple[str, ParsersT]]:
 
 
 def findall(
-    obj: typing.Optional[ioinfo.PathOrIOInfoT] = None,
-    forced_type: typing.Optional[str] = None
+    obj: ioinfo.PathOrIOInfoT | None = None,
+    forced_type: str | None = None,
 ) -> list[ParserT]:
     """Find out processor objects can process data from given ``obj``.
 
@@ -67,8 +65,8 @@ def findall(
 
 
 def find(
-    obj: typing.Optional[ioinfo.PathOrIOInfoT] = None,
-    forced_type: MaybeParserT = None
+    obj: ioinfo.PathOrIOInfoT | None = None,
+    forced_type: str | ParserT | type[ParserT] | None = None,
 ) -> ParserT:
     """Very similar to the above :func:`findall`.
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2025 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Actions for anyconfig.cli.*."""
@@ -15,10 +15,9 @@ def show_parsers_and_exit() -> None:
 
 
 def try_output_result(
-    cnf: api.InDataExT, args: argparse.Namespace
+    cnf: api.InDataExT, args: argparse.Namespace,
 ) -> None:
     """Try to output result."""
     api.dump(
-        cnf, args.output, args.otype,
-        **(args.extra_opts if args.extra_opts else {}),
+        cnf, args.output, args.otype, **(args.extra_opts or {}),
     )

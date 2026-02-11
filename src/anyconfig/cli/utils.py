@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Utilities for anyconfig.cli.*."""
@@ -39,7 +39,7 @@ def make_parsers_txt() -> str:
             f"{indent}{parser_types}",
             "Supported file extensions [extension: parsers]:",
             f"{file_ext_vs_parsers}",
-        ]
+        ],
     )
 
 
@@ -64,7 +64,7 @@ def exit_if_load_failure(cnf: api.InDataExT, msg: str) -> None:
 
 
 def load_diff(
-    args: argparse.Namespace, extra_opts: dict[str, typing.Any]
+    args: argparse.Namespace, extra_opts: dict[str, typing.Any],
 ) -> api.InDataExT:
     """Load update data.
 
@@ -84,12 +84,12 @@ def load_diff(
         exit_with_output(
             "No appropriate backend was found for given file "
             f"type=n{args.itype}', inputs={', '.join(args.inputs)}",
-            1
+            1,
         )
 
     if diff is None:
         exit_with_output(
-            f"Failed to load: args={', '.join(args.inputs)}", 1
+            f"Failed to load: args={', '.join(args.inputs)}", 1,
         )
 
     return diff

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2025 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Detect file type and parser from inputs and/or output."""
@@ -35,7 +35,7 @@ def are_same_file_types(paths: list[str]) -> bool:
     return all(x and exts[0] == x for x in exts[1:])
 
 
-def find_by_the_type(io_type: str) -> typing.Optional[str]:
+def find_by_the_type(io_type: str) -> str | None:
     """Check the type given by users."""
     default = None
 
@@ -50,7 +50,7 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
         warnings.warn(
             "Ignored the given type because it looks wrong or "
             "is not supported by installed parser backends: "
-            f"{io_type}", stacklevel=2
+            f"{io_type}", stacklevel=2,
         )
 
     return default
@@ -58,7 +58,7 @@ def find_by_the_type(io_type: str) -> typing.Optional[str]:
 
 def find_by_the_paths(
     paths: list[str], *, ignore_errors: bool = True,
-) -> typing.Optional[str]:
+) -> str | None:
     """Try to detect file (parser) type from given file paths ``paths``."""
     default = None
     msg = (
@@ -95,7 +95,7 @@ def find_by_the_paths(
 
 def try_detecting_input_type(
     args: argparse.Namespace, *, ignore_errors: bool = True,
-) -> typing.Optional[str]:
+) -> str | None:
     """Try to resolve a file type and parser of inputs."""
     # First, try the type given by users.
     if args.itype:
@@ -112,7 +112,7 @@ def try_detecting_input_type(
 
 def try_detecting_output_type(
     args: argparse.Namespace,
-) -> typing.Optional[str]:
+) -> str | None:
     """Try to resolve a file type and parser of outputs (``args.output``)."""
     # First, try the type given by users.
     if args.otype:

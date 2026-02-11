@@ -9,6 +9,5 @@ import typing
 from ..backend import base
 from ..common import InDataT
 
-
 MaybeDataT = typing.Optional[InDataT]
 ParserT = base.Parser

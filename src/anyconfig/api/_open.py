@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A API to open files by detecting those type automatically."""
@@ -9,6 +9,7 @@ import typing
 import warnings
 
 from .. import ioinfo, parsers
+
 if typing.TYPE_CHECKING:
     from .datatypes import ParserT
 
@@ -16,9 +17,9 @@ if typing.TYPE_CHECKING:
 # pylint: disable=redefined-builtin
 def open(
     path: ioinfo.PathOrIOInfoT,
-    mode: typing.Optional[str] = None,
+    mode: str | None = None,
     ac_parser: parsers.MaybeParserT = None,
-    **options,
+    **options: dict[str, typing.Any],
 ) -> typing.IO:
     """Open given file ``path`` with appropriate open flag.
 

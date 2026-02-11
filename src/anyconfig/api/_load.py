@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import,import-error,invalid-name
@@ -36,7 +36,7 @@ MappingT = dict[str, typing.Any]
 MaybeParserOrIdOrTypeT = typing.Optional[typing.Union[str, ParserT]]
 
 
-def try_to_load_schema(**options) -> typing.Optional[InDataT]:
+def try_to_load_schema(**options: typing.Any) -> InDataT | None:
     """Try to load a schema object for validation.
 
     :param options: Optional keyword arguments such as
@@ -65,9 +65,10 @@ def try_to_load_schema(**options) -> typing.Optional[InDataT]:
 
 def _single_load(
     ioi: ioinfo.IOInfo, *,
-    ac_parser: MaybeParserOrIdOrTypeT = None, ac_template: bool = False,
-    ac_context: typing.Optional[MappingT] = None,
-    **options,
+    ac_parser: MaybeParserOrIdOrTypeT = None,
+    ac_template: bool = False,
+    ac_context: MappingT | None = None,
+    **options: typing.Any,
 ) -> InDataExT:
     """Load data from a given ``ioi``.
 
@@ -99,10 +100,12 @@ def _single_load(
 
 
 def single_load(
-    input_: ioinfo.PathOrIOInfoT, ac_parser: MaybeParserOrIdOrTypeT = None,
+    input_: ioinfo.PathOrIOInfoT,
+    ac_parser: MaybeParserOrIdOrTypeT = None,
     *,
-    ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options,
+    ac_template: bool = False,
+    ac_context: MappingT | None = None,
+    **options: typing.Any,
 ) -> InDataExT:
     r"""Load from single input ``input\_``.
 
@@ -170,13 +173,15 @@ def single_load(
 
 
 def multi_load(
-    inputs: typing.Union[
+    inputs: typing.Union[  # noqa: UP007
         collections.abc.Iterable[ioinfo.PathOrIOInfoT],
         ioinfo.PathOrIOInfoT,
-    ], ac_parser: MaybeParserOrIdOrTypeT = None,
+    ],
+    ac_parser: MaybeParserOrIdOrTypeT = None,
     *,
-    ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options,
+    ac_template: bool = False,
+    ac_context: MappingT | None = None,
+    **options: typing.Any,
 ) -> InDataExT:
     r"""Load data from multiple inputs ``inputs``.
 
@@ -278,14 +283,16 @@ def multi_load(
 
 
 def load(
-    path_specs: typing.Union[
+    path_specs: typing.Union[  # noqa: UP007
         collections.abc.Iterable[ioinfo.PathOrIOInfoT],
         ioinfo.PathOrIOInfoT,
     ],
-    ac_parser: typing.Optional[str] = None, *,
-    ac_dict: typing.Optional[collections.abc.Callable] = None,
-    ac_template: bool = False, ac_context: typing.Optional[MappingT] = None,
-    **options,
+    ac_parser: str | None = None,
+    *,
+    ac_dict: collections.abc.Callable | None = None,
+    ac_template: bool = False,
+    ac_context: MappingT | None = None,
+    **options: typing.Any,
 ) -> InDataExT:
     r"""Load from a file or files specified as ``path_specs``.
 
@@ -336,11 +343,13 @@ def load(
 
 
 def loads(
-    content: str, ac_parser: MaybeParserOrIdOrTypeT = None, *,
-    ac_dict: typing.Optional[collections.abc.Callable] = None,
-    ac_template: typing.Union[str, bool] = False,
-    ac_context: typing.Optional[MappingT] = None,
-    **options,
+    content: str,
+    ac_parser: MaybeParserOrIdOrTypeT = None,
+    *,
+    ac_dict: collections.abc.Callable | None = None,
+    ac_template: str | bool = False,
+    ac_context: MappingT | None = None,
+    **options: typing.Any,
 ) -> InDataExT:
     """Load data from a str, ``content``.
 

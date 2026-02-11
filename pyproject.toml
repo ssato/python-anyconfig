@@ -136,11 +136,18 @@ src = [
 select = [
     "ALL",
 ]
+# This setting is intentional, although it breaks the rules.
 ignore = [
+    "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
     "D203",  # Because it looks conflict with D211.
              # https://docs.astral.sh/ruff/rules/incorrect-blank-line-before-class/
     "D213",  # Because it looks conflict with D212.
              # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/
+    "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
+    "I001",  # https://docs.astral.sh/ruff/rules/unsorted-imports/
+    "ICN001",  # https://docs.astral.sh/ruff/rules/unconventional-import-alias/
+    "RUF022",  # https://docs.astral.sh/ruff/rules/unsorted-dunder-all/
+    "TID252",  # https://docs.astral.sh/ruff/rules/relative-imports/
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]
@@ -153,6 +160,26 @@ ignore = [
 # https://docs.astral.sh/ruff/rules/suspicious-xml-element-tree-usage/
 "src/anyconfig/backend/xml/etree.py" = ["S314"]
 
+"docs/*.py" = [
+    "INP001",
+]
+
+# TODO:
+"src/anyconfig/backend/yaml/pyyaml.py" = [
+    "TD003",  # https://docs.astral.sh/ruff/rules/missing-todo-link/
+    "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
+]
+
+"src/anyconfig/parser.py" = [
+    # https://docs.astral.sh/ruff/rules/non-pep604-annotation-optional/
+    "UP045",
+]
+
+"src/anyconfig/schema/datatypes.py" = [
+    "UP045",
+]
+
+# Ignored:
 "tests/*.py" = [
     # https://docs.astral.sh/ruff/rules/missing-type-function-argument/
     "ANN001",

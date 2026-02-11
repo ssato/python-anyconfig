@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2021 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=too-few-public-methods
@@ -14,7 +14,7 @@ class BaseError(RuntimeError):
 
     _msg_fmt: str = "forced_type: {!s}"
 
-    def __init__(self, arg: typing.Optional[typing.Any] = None) -> None:
+    def __init__(self, arg: typing.Any | None = None) -> None:
         """Initialize the format."""
         super().__init__(self._msg_fmt.format(str(arg)))
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2018 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # mypy: disable-error-code=type-var
@@ -14,7 +14,7 @@ from . import utils
 if typing.TYPE_CHECKING:
     import builtins
     from .datatypes import (
-        ProcT, ProcsT, ProcClsT, ProcClssT, MaybeProcT
+        ProcT, ProcsT, ProcClsT, ProcClssT, MaybeProcT,
     )
     from .. import ioinfo
 
@@ -24,7 +24,7 @@ class Processors:
 
     _pgroup: str = ""  # processor group name to load plugins
 
-    def __init__(self, processors: typing.Optional[ProcClssT] = None) -> None:
+    def __init__(self, processors: ProcClssT | None = None) -> None:
         """Initialize with ``processors``.
 
         :param processors:
@@ -33,7 +33,7 @@ class Processors:
         """
         # {<processor_class_id>: <processor_instance>}
         self._processors: dict[  # type: ignore[valid-type]
-            str, ProcT
+            str, ProcT,
         ] = {}  # type: ignore[valid-type]
         if processors is not None:
             for pcls in processors:
@@ -74,7 +74,7 @@ class Processors:
         prs = self._processors
         return sorted(
             ((cid, [prs[cid]]) for cid in sorted(prs.keys())),
-            key=operator.itemgetter(0)
+            key=operator.itemgetter(0),
         )
 
     def list_by_type(self) -> builtins.list[tuple[str, ProcsT]]:
@@ -87,7 +87,7 @@ class Processors:
         return utils.list_by_x(self.list(), "type")
 
     def list_by_x(
-        self, item: typing.Optional[str] = None
+        self, item: str | None = None,
     ) -> builtins.list[tuple[str, ProcsT]]:
         """List processors by those factor 'x'.
 
@@ -113,7 +113,7 @@ class Processors:
 
         return res
 
-    def list_x(self, key: typing.Optional[str] = None) -> builtins.list[str]:
+    def list_x(self, key: str | None = None) -> builtins.list[str]:
         """List the factor 'x' of processors.
 
         :param key: Which of key to return from 'cid', 'type', and 'extention'
@@ -122,7 +122,7 @@ class Processors:
         if key in ("cid", "type"):
             return sorted(
                 {operator.methodcaller(key)(p)
-                 for p in self._processors.values()}
+                 for p in self._processors.values()},
             )
         if key == "extension":
             return sorted(k for k, _v in self.list_by_x("extensions"))
@@ -135,8 +135,8 @@ class Processors:
         raise ValueError(msg)
 
     def findall(
-        self, obj: typing.Optional[ioinfo.PathOrIOInfoT],
-        forced_type: typing.Optional[str] = None
+        self, obj: ioinfo.PathOrIOInfoT | None,
+        forced_type: str | None = None,
     ) -> builtins.list[ProcT]:
         """Find all of the processors match with tthe given conditions.
 
@@ -150,8 +150,10 @@ class Processors:
         """
         return utils.findall(obj, self.list(), forced_type=forced_type)
 
-    def find(self, obj: typing.Optional[ioinfo.PathOrIOInfoT],
-             forced_type: MaybeProcT = None) -> ProcT:
+    def find(
+        self, obj: ioinfo.PathOrIOInfoT | None,
+        forced_type: MaybeProcT = None,
+    ) -> ProcT:
         """Find the processor best match with tthe given conditions.
 
         :param obj:

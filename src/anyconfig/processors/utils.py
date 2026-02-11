@@ -1,10 +1,10 @@
 #
-# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2018 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unidiomatic-typecheck
 #
-# FIXME:
+# todo(ssato): #189 fix the mypy error, type-var.
 # mypy: disable-error-code=type-var
 """Utility functions for anyconfig.processors."""
 from __future__ import annotations
@@ -16,13 +16,15 @@ import warnings
 
 import importlib.metadata
 
-from .. import common, ioinfo, models, utils
+from .. import (
+    common, ioinfo, models, utils,
+)
 
 if typing.TYPE_CHECKING:
     import collections.abc
 
     from .datatypes import (
-        ProcT, ProcsT, ProcClsT, MaybeProcT
+        ProcT, ProcsT, ProcClsT, MaybeProcT,
     )
 
 
@@ -39,7 +41,7 @@ def select_by_key(
     items: collections.abc.Iterable[
         tuple[tuple[str, ...], typing.Any]
     ],
-    sort_fn: collections.abc.Callable[..., typing.Any] = sorted
+    sort_fn: collections.abc.Callable[..., typing.Any] = sorted,
 ) -> list[tuple[str, list[typing.Any]]]:
     """Select items from ``items`` by key.
 
@@ -57,7 +59,7 @@ def select_by_key(
 
 
 def list_by_x(
-    prs: collections.abc.Iterable[ProcT], key: str
+    prs: collections.abc.Iterable[ProcT], key: str,
 ) -> list[tuple[str, ProcsT]]:
     """List items by the factor 'x'.
 
@@ -74,7 +76,7 @@ def list_by_x(
 
     elif key == "extensions":
         res = select_by_key(
-            ((p.extensions(), p) for p in prs), sort_fn=sort_by_prio
+            ((p.extensions(), p) for p in prs), sort_fn=sort_by_prio,
         )
     else:
         msg = f"Argument 'key' must be 'type' or 'extensions' [{key}]"
@@ -84,7 +86,7 @@ def list_by_x(
 
 
 def findall_with_pred(
-    predicate: collections.abc.Callable[..., bool], prs: ProcsT
+    predicate: collections.abc.Callable[..., bool], prs: ProcsT,
 ) -> ProcsT:
     """Find all of the items match with given predicates.
 
@@ -97,9 +99,9 @@ def findall_with_pred(
 
 
 def maybe_processor(
-    type_or_id: typing.Union[ProcT, ProcClsT],
-    cls: ProcClsT = models.processor.Processor
-) -> typing.Optional[ProcT]:
+    type_or_id: ProcT | ProcClsT,
+    cls: ProcClsT = models.processor.Processor,
+) -> ProcT | None:
     """Try to get the processor.
 
     :param type_or_id:
@@ -176,8 +178,8 @@ def find_by_maybe_file(obj: ioinfo.PathOrIOInfoT, prs: ProcsT) -> ProcsT:
 
 
 def findall(
-    obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
-    forced_type: typing.Optional[str] = None,
+    obj: ioinfo.PathOrIOInfoT | None, prs: ProcsT,
+    forced_type: str | None = None,
 ) -> ProcsT:
     """Find all of the processors match with the conditions.
 
@@ -203,7 +205,7 @@ def findall(
 
     if forced_type is None:
         pclss = find_by_maybe_file(
-            typing.cast("ioinfo.PathOrIOInfoT", obj), prs
+            typing.cast("ioinfo.PathOrIOInfoT", obj), prs,
         )  # :: [Processor], never []
     else:
         pclss = find_by_type_or_id(forced_type, prs)  # Do.
@@ -211,9 +213,10 @@ def findall(
     return pclss
 
 
-def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
-         forced_type: MaybeProcT = None,
-         ) -> ProcT:
+def find(
+    obj: ioinfo.PathOrIOInfoT | None, prs: ProcsT,
+    forced_type: MaybeProcT = None,
+) -> ProcT:
     """Find the processors best match with the conditions.
 
     :param obj:
@@ -233,7 +236,7 @@ def find(obj: typing.Optional[ioinfo.PathOrIOInfoT], prs: ProcsT,
     """
     if forced_type is not None and not isinstance(forced_type, str):
         proc = maybe_processor(
-            typing.cast("typing.Union[ProcT, ProcClsT]", forced_type)
+            typing.cast("ProcT | ProcClsT", forced_type),
         )
         if proc is None:
             msg = (

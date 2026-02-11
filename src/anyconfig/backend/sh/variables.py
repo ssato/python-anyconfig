@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016 - 2025 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2016 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """A simple backend module to load and dump files contain shell variables.
@@ -21,6 +21,7 @@ Changelog:
 from __future__ import annotations
 
 import itertools
+import os
 import re
 import typing
 import warnings
@@ -31,7 +32,7 @@ from ... import utils
 
 def _parseline(
     line: str,
-) -> tuple[typing.Optional[str], typing.Optional[str]]:
+) -> tuple[str | None, str | None]:
     """Parse a line contains shell variable definition.
 
     :param line: A string to parse, must not start with '#' (comment)
@@ -56,7 +57,8 @@ def _parseline(
 
 
 def load(
-    stream: typing.IO, container: base.GenContainerT = dict, **_kwargs,
+    stream: typing.IO, container: base.GenContainerT = dict,
+    **_kwargs: typing.Any,
 ) -> base.InDataT:
     """Load shell variable definitions data from ``stream``.
 
@@ -95,7 +97,8 @@ class Parser(base.StreamParser):
     _dict_opts: tuple[str, ...] = ("ac_dict", )
 
     def load_from_stream(
-        self, stream: typing.IO, container: base.GenContainerT, **kwargs,
+        self, stream: typing.IO, container: base.GenContainerT,
+        **kwargs: typing.Any,
     ) -> base.InDataT:
         """Load config from given file like object ``stream``.
 
@@ -109,7 +112,8 @@ class Parser(base.StreamParser):
         return load(stream, container=container, **kwargs)
 
     def dump_to_stream(
-        self, cnf: base.InDataExT, stream: typing.IO, **_kwargs,
+        self, cnf: base.InDataExT, stream: typing.IO,
+        **_kwargs: typing.Any,
     ) -> None:
         """Dump config dat ``cnf`` to a file or file-like object ``stream``.
 
@@ -118,5 +122,7 @@ class Parser(base.StreamParser):
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         if utils.is_dict_like(cnf):
-            for key, val in cnf.items():
-                stream.write(f"{key}='{val}'\n")
+            stream.writelines(
+                f"{key}='{val}'{os.linesep}"
+                for key, val in cnf.items()
+            )

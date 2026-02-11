@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2025 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # type() is used to exactly match check instead of isinstance here.
@@ -65,7 +65,8 @@ _MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
 def _customized_loader(
     container: collections.abc.Callable[..., dict[str, typing.Any]],
-    loader: type[Loader] = Loader, mapping_tag: str = _MAPPING_TAG,
+    loader: type[Loader] = Loader,
+    mapping_tag: str = _MAPPING_TAG,
 ) -> type[Loader]:
     """Get the customized loader.
 
@@ -111,7 +112,7 @@ def _customized_loader(
 
     def construct_ustr(
         loader: Loader, node: typing.Any,
-    ) -> typing.Union[str, int, float, None]:
+    ) -> str | int | float | None:
         """Unicode string constructor."""
         return loader.construct_scalar(node)
 
@@ -139,7 +140,7 @@ def _customized_dumper(
 
 
 def yml_fnc_by_name(
-    fname: str, **options,
+    fname: str, **options: typing.Any,
 ) -> collections.abc.Callable[..., typing.Any]:
     """Get yaml loading/dumping function by name.
 
@@ -151,7 +152,9 @@ def yml_fnc_by_name(
     return getattr(yaml, f"safe_{fname}" if options.get("ac_safe") else fname)
 
 
-def yml_fnc_(fname: str, *args, **options) -> typing.Any:
+def yml_fnc_(
+    fname: str, *args: typing.Any, **options: typing.Any,
+) -> typing.Any:
     """Call yaml.safe_load, yaml.load, yaml.safe_dump and yaml.dump.
 
     :param fname:
@@ -167,7 +170,7 @@ def yml_fnc_(fname: str, *args, **options) -> typing.Any:
 def yml_load(
     stream: typing.IO, container: base.GenContainerT,
     yml_fnc: collections.abc.Callable[..., typing.Any] = yml_fnc_,
-    **options,
+    **options: typing.Any,
 ) -> dict[str, typing.Any]:
     """Call yaml.safe_load and yaml.load.
 
@@ -198,7 +201,7 @@ def yml_load(
 def yml_dump(
     data: typing.Any, stream: typing.IO,
     yml_fnc: collections.abc.Callable[..., typing.Any] = yml_fnc_,
-    **options,
+    **options: typing.Any,
 ) -> None:
     """Call yaml.safe_dump and yaml.dump.
 
@@ -211,7 +214,7 @@ def yml_dump(
         options = {"ac_safe": True}  # Same as yml_load.
 
     elif not options.get("Dumper", False) and _is_dict:
-        # TODO: Any other way to get its constructor?
+        # TODO(ssato): Any other way to get its constructor?
         maybe_container = options.get("ac_dict", type(data))
         options["Dumper"] = _customized_dumper(maybe_container)
 

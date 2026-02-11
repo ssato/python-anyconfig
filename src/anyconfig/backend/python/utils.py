@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 - 2025 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2023 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
@@ -46,7 +46,7 @@ def load_literal_data_from_path(path: pathlib.Path) -> typing.Any:
 
 def load_data_from_py(
     path: pathlib.Path, *,
-    data_name: typing.Optional[str] = None,
+    data_name: str | None = None,
     fallback: bool = False,
 ) -> typing.Any:
     """Load test data from .py files by evaluating it.
@@ -78,7 +78,7 @@ def load_data_from_py(
 def load_from_path(
     path: pathlib.Path, *,
     allow_exec: bool = False,
-    data_name: typing.Optional[str] = None,
+    data_name: str | None = None,
     fallback: bool = False,
 ) -> typing.Any:
     """Load data from given path `path`.

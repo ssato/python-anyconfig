@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=consider-using-with, unspecified-encoding
@@ -70,7 +70,9 @@ class LoaderMixin:
         """Get the list of dict factory options."""
         return cls._dict_opts
 
-    def ropen(self, filepath: PathOrStrT, **options) -> typing.IO:
+    def ropen(
+        self, filepath: PathOrStrT, **options: typing.Any,
+    ) -> typing.IO:
         """Open files with read only mode."""
         if "encoding" not in options and self._open_read_mode == "r":
             options["encoding"] = _ENCODING
@@ -79,7 +81,9 @@ class LoaderMixin:
             self._open_read_mode, **options,
         )
 
-    def _container_factory(self, **options) -> GenContainerT:
+    def _container_factory(
+        self, **options: typing.Any,
+    ) -> GenContainerT:
         """Get the factory to make container objects.
 
         The order of prirorities are ac_dict, backend specific dict class
@@ -102,7 +106,7 @@ class LoaderMixin:
         return dict
 
     def _load_options(
-        self, container: GenContainerT, **options,
+        self, container: GenContainerT, **options: typing.Any,
     ) -> OptionsT:
         """Select backend specific loading options."""
         # Force set dict option if available in backend. For example,
@@ -114,7 +118,8 @@ class LoaderMixin:
         return utils.filter_options(self._load_opts, options)
 
     def load_from_string(
-        self, content: str, container: GenContainerT, **options,
+        self, content: str, container: GenContainerT,
+        **options: typing.Any,
     ) -> InDataExT:
         """Load config from given string 'content'.
 
@@ -128,7 +133,8 @@ class LoaderMixin:
         return DATA_DEFAULT
 
     def load_from_path(
-        self, filepath: PathOrStrT, container: GenContainerT, **options,
+        self, filepath: PathOrStrT, container: GenContainerT,
+        **options: typing.Any,
     ) -> InDataExT:
         """Load config from given file path 'filepath`.
 
@@ -142,7 +148,8 @@ class LoaderMixin:
         return DATA_DEFAULT
 
     def load_from_stream(
-        self, stream: typing.IO, container: GenContainerT, **options,
+        self, stream: typing.IO, container: GenContainerT,
+        **options: typing.Any,
     ) -> InDataExT:
         """Load config from given file like object 'stream`.
 
@@ -155,7 +162,9 @@ class LoaderMixin:
         not_implemented(self, stream, container, **options)
         return DATA_DEFAULT
 
-    def loads(self, content: str, **options) -> InDataExT:
+    def loads(
+        self, content: str, **options: typing.Any,
+    ) -> InDataExT:
         """Load config from given string 'content' after some checks.
 
         :param content:  Config file content
@@ -175,7 +184,8 @@ class LoaderMixin:
         return self.load_from_string(content, container, **options)
 
     def load(
-        self, ioi: IoiT, *, ac_ignore_missing: bool = False, **options,
+        self, ioi: IoiT, *, ac_ignore_missing: bool = False,
+        **options: typing.Any,
     ) -> InDataExT:
         """Load config from ``ioi``.
 
@@ -202,7 +212,7 @@ class LoaderMixin:
 
         if ioinfo.is_stream(ioi):
             cnf = self.load_from_stream(
-                typing.cast("typing.IO", ioi.src), container, **options
+                typing.cast("typing.IO", ioi.src), container, **options,
             )
         else:
             if ac_ignore_missing and not pathlib.Path(ioi.path).exists():
@@ -230,7 +240,8 @@ class FromStringLoaderMixin(LoaderMixin):
     """
 
     def load_from_stream(
-        self, stream: typing.IO, container: GenContainerT, **options,
+        self, stream: typing.IO, container: GenContainerT,
+        **options: typing.Any,
     ) -> InDataExT:
         """Load config from given stream 'stream'.
 
@@ -243,7 +254,8 @@ class FromStringLoaderMixin(LoaderMixin):
         return self.load_from_string(stream.read(), container, **options)
 
     def load_from_path(
-        self, filepath: PathOrStrT, container: GenContainerT, **options,
+        self, filepath: PathOrStrT, container: GenContainerT,
+        **options: typing.Any,
     ) -> InDataExT:
         """Load config from given file path 'filepath'.
 
@@ -268,7 +280,8 @@ class FromStreamLoaderMixin(LoaderMixin):
     """
 
     def load_from_string(
-        self, content: str, container: GenContainerT, **options,
+        self, content: str, container: GenContainerT,
+        **options: typing.Any,
     ) -> InDataExT:
         """Load config from given string 'cnf_content'.
 
@@ -282,7 +295,8 @@ class FromStreamLoaderMixin(LoaderMixin):
         return self.load_from_stream(iof(content), container, **options)
 
     def load_from_path(
-        self, filepath: PathOrStrT, container: GenContainerT, **options,
+        self, filepath: PathOrStrT, container: GenContainerT,
+        **options: typing.Any,
     ) -> InDataExT:
         """Load config from given file path 'filepath'.
 

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2025 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=consider-using-with
@@ -19,7 +19,9 @@ class BinaryFilesMixin:
     _open_flags: tuple[str, str] = ("rb", "wb")
 
     @classmethod
-    def ropen(cls, filepath: PathOrStrT, **options) -> typing.IO:
+    def ropen(
+        cls, filepath: PathOrStrT, **options: typing.Any,
+    ) -> typing.IO:
         """Open ``filepath`` with read only mode.
 
         :param filepath: Path to file to open to read data
@@ -29,7 +31,9 @@ class BinaryFilesMixin:
         )
 
     @classmethod
-    def wopen(cls, filepath: PathOrStrT, **options) -> typing.IO:
+    def wopen(
+        cls, filepath: PathOrStrT, **options: typing.Any,
+    ) -> typing.IO:
         """Open ``filepath`` with write mode.
 
         :param filepath: Path to file to open to write data to

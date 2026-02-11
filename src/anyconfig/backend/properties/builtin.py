@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2025 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to load and dump (Java) properties files.
@@ -30,6 +30,7 @@ Changelog:
 """
 from __future__ import annotations
 
+import os
 import re
 import typing
 import warnings
@@ -42,7 +43,7 @@ _COMMENT_MARKERS: tuple[str, ...] = ("#", "!")
 _MIN_LEN_PAIR: int = 2
 
 
-def parseline(line: str) -> tuple[typing.Optional[str], str]:
+def parseline(line: str) -> tuple[str | None, str]:
     """Parse a line of Java properties file.
 
     :param line:
@@ -65,7 +66,7 @@ def parseline(line: str) -> tuple[typing.Optional[str], str]:
 def _pre_process_line(
     line: str,
     cmarkers: tuple[str, ...] = _COMMENT_MARKERS,
-) -> typing.Optional[str]:
+) -> str | None:
     """Preprocess a line in properties; strip comments, etc.
 
     :param line:
@@ -98,7 +99,8 @@ def escape(in_s: str) -> str:
 
 
 def load(
-    stream: typing.IO, container: base.GenContainerT = dict, **kwargs,
+    stream: typing.IO, container: base.GenContainerT = dict,
+    **kwargs: typing.Any,
 ) -> base.InDataT:
     """Load data from a java properties files given as ``stream``.
 
@@ -114,7 +116,7 @@ def load(
 
     for line_ in stream:
         line = _pre_process_line(
-            prev + line_.strip().rstrip(), comment_markers
+            prev + line_.strip().rstrip(), comment_markers,
         )
         # I don't think later case may happen but just in case.
         if line is None or not line:
@@ -130,7 +132,7 @@ def load(
         if key is None:
             warnings.warn(
                 f"Failed to parse the line: {line}",
-                category=SyntaxWarning, stacklevel=2
+                category=SyntaxWarning, stacklevel=2,
             )
             continue
 
@@ -149,7 +151,8 @@ class Parser(base.StreamParser):
     _dict_opts: tuple[str, ...] = ("ac_dict", )
 
     def load_from_stream(
-        self, stream: typing.IO, container: base.GenContainerT, **kwargs,
+        self, stream: typing.IO, container: base.GenContainerT,
+        **kwargs: typing.Any,
     ) -> base.InDataT:
         """Load config from given file like object 'stream'.
 
@@ -162,7 +165,8 @@ class Parser(base.StreamParser):
         return load(stream, container=container, **kwargs)
 
     def dump_to_stream(
-        self, cnf: base.InDataExT, stream: typing.IO, **_kwargs,
+        self, cnf: base.InDataExT, stream: typing.IO,
+        **_kwargs: typing.Any,
     ) -> None:
         """Dump config 'cnf' to a file or file-like object 'stream'.
 
@@ -171,5 +175,7 @@ class Parser(base.StreamParser):
         :param kwargs: backend-specific optional keyword parameters :: dict
         """
         if utils.is_dict_like(cnf):
-            for key, val in cnf.items():
-                stream.write(f"{key} = {escape(val)}\n")
+            stream.writelines(
+                f"{key} = {escape(val)}{os.linesep}"
+                for key, val in cnf.items()
+            )

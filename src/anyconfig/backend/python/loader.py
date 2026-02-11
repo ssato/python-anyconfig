@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 - 2025 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2023 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to load python code conntains data.
@@ -42,7 +42,9 @@ from ..base import (
 from . import utils
 
 
-def load_from_temp_file(content: str, **opts) -> InDataExT:
+def load_from_temp_file(
+    content: str, **opts: typing.Any,
+) -> InDataExT:
     """Dump `content` to tempoary file and load from it.
 
     :param content: A str to load data from
@@ -62,7 +64,9 @@ class Loader(LoaderMixin):
     _allow_primitives: typing.ClassVar[bool] = True
     _load_opts: tuple[str, ...] = ("allow_exec", )
 
-    def loads(self, content: str, **options) -> InDataExT:
+    def loads(
+        self, content: str, **options: typing.Any,
+    ) -> InDataExT:
         """Load config from given string 'content' after some checks.
 
         :param content: Config file content
@@ -80,7 +84,9 @@ class Loader(LoaderMixin):
 
         return utils.load_literal_data_from_string(content)
 
-    def load(self, ioi: IoiT, **options) -> InDataExT:
+    def load(
+        self, ioi: IoiT, **options: typing.Any,
+    ) -> InDataExT:
         """Load config from ``ioi``.
 
         :param ioi:

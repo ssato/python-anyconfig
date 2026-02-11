@@ -9,7 +9,8 @@ import typing
 
 from .compat import BinaryFilesMixin
 from .datatypes import (
-    GenContainerT, OptionsT, InDataT, InDataExT, OutDataExT, IoiT,
+    GenContainerT, OptionsT,
+    InDataT, InDataExT, OutDataExT, IoiT,
     PathOrStrT,
 )
 from .dumpers import (
@@ -35,7 +36,8 @@ ParserClssT = list[type[ParserT]]
 
 __all__ = [
     "BinaryFilesMixin",
-    "GenContainerT", "OptionsT", "InDataT", "InDataExT", "OutDataExT", "IoiT",
+    "GenContainerT", "OptionsT",
+    "InDataT", "InDataExT", "OutDataExT", "IoiT",
     "PathOrStrT",
     "ToStringDumperMixin", "ToStreamDumperMixin", "BinaryDumperMixin",
     "LoaderMixin",

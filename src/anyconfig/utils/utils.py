@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Misc utility functions."""
@@ -11,7 +11,9 @@ if typing.TYPE_CHECKING:
     import collections.abc
 
 
-def noop(val: typing.Any, *_args, **_kwargs) -> typing.Any:
+def noop(
+    val: typing.Any, *_args: typing.Any, **_kwargs: typing.Any,
+) -> typing.Any:
     """Do nothing.
 
     >>> noop(1)
@@ -22,7 +24,7 @@ def noop(val: typing.Any, *_args, **_kwargs) -> typing.Any:
 
 def filter_options(
     keys: collections.abc.Iterable[str],
-    options: collections.abc.Mapping[str, typing.Any]
+    options: collections.abc.Mapping[str, typing.Any],
 ) -> dict[str, typing.Any]:
     """Filter 'options' with given 'keys'.
 

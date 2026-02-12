@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2017 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=bare-except
@@ -23,11 +23,14 @@ if typing.TYPE_CHECKING:
     from .datatypes import MaybeJexp
 
     from ..common import (
-        InDataExT, InDataT
+        InDataExT, InDataT,
     )
 
 
-def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
+def try_query(
+    data: InDataExT, jexp: MaybeJexp = None,
+    **options: typing.Any,
+) -> InDataExT:
     """Try to query data with JMESPath expression `jexp`."""
     if jexp is None or not jexp:
         return data
@@ -36,12 +39,12 @@ def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
         warnings.warn(
             "Could not query because given data is not "
             f"a mapping object (type? {type(data)}",
-            stacklevel=2
+            stacklevel=2,
         )
         return data
 
     (odata, exc) = query(
-        typing.cast("InDataT", data), typing.cast("str", jexp), **options
+        typing.cast("InDataT", data), typing.cast("str", jexp), **options,
     )
     if exc:
         raise exc
@@ -50,8 +53,8 @@ def try_query(data: InDataExT, jexp: MaybeJexp = None, **options) -> InDataExT:
 
 
 def query(
-    data: InDataT, jexp: str, **_options
-) -> tuple[typing.Optional[InDataT], typing.Optional[Exception]]:
+    data: InDataT, jexp: str, **_options: typing.Any,
+) -> tuple[InDataT | None, Exception | None]:
     """Filter data with given JMESPath expression.
 
     See also: https://github.com/jmespath/jmespath.py and http://jmespath.org.
@@ -62,7 +65,7 @@ def query(
 
     :return: A tuple of query result and maybe exception if failed
     """
-    exc: typing.Optional[Exception] = None
+    exc: Exception | None = None
     try:
         pexp = jmespath.compile(jexp)
         return (pexp.search(data), exc)

@@ -1,7 +1,7 @@
 #
 # Jinja2 (http://jinja.pocoo.org) based template renderer.
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=wrong-import-position,wrong-import-order
@@ -34,13 +34,13 @@ MaybeFiltersT = typing.Optional[
 
 RENDER_S_OPTS: tuple[str, ...] = (
     "ctx", "paths", "filters",
-    "autoescape"
+    "autoescape",
 )
 RENDER_OPTS = (*RENDER_S_OPTS, "ask")
 
 
 def tmpl_env(
-    paths: MaybePathsT = None, *, autoescape: bool = True
+    paths: MaybePathsT = None, *, autoescape: bool = True,
 ) -> jinja2.Environment:
     """Get the template environment object from given ``paths``.
 
@@ -51,12 +51,12 @@ def tmpl_env(
 
     return jinja2.Environment(
         loader=jinja2.FileSystemLoader([str(p) for p in paths]),
-        autoescape=autoescape  # noqa: S701
+        autoescape=autoescape,  # noqa: S701
     )
 
 
 def make_template_paths(
-    template_file: pathlib.Path, paths: MaybePathsT = None
+    template_file: pathlib.Path, paths: MaybePathsT = None,
 ) -> list[pathlib.Path]:
     """Make a template paths.
 
@@ -77,7 +77,7 @@ def make_template_paths(
 
 def render_s(
     tmpl_s: str, ctx: MaybeContextT = None, paths: MaybePathsT = None,
-    filters: MaybeFiltersT = None, *, autoescape: bool = True
+    filters: MaybeFiltersT = None, *, autoescape: bool = True,
 ) -> str:
     """Render a template as a str.
 
@@ -103,7 +103,7 @@ def render_s(
     except AssertionError as exc:
         warnings.warn(
             f"Something went wrong with: paths={paths!r}, exc={exc!s}",
-            stacklevel=2
+            stacklevel=2,
         )
         return tmpl_s
 
@@ -115,7 +115,7 @@ def render_s(
 
     return typing.cast(
         "jinja2.Environment",
-        tmpl_env(paths, autoescape=autoescape)
+        tmpl_env(paths, autoescape=autoescape),
     ).from_string(tmpl_s).render(**ctx)
 
 
@@ -126,7 +126,7 @@ def render_impl(
     template_file: pathlib.Path, ctx: MaybeContextT = None,
     paths: MaybePathsT = None, filters: MaybeFiltersT = None,
     *,
-    autoescape: bool = True
+    autoescape: bool = True,
 ) -> str:
     """Render implementation.
 
@@ -137,7 +137,7 @@ def render_impl(
     """
     env = tmpl_env(
         make_template_paths(template_file, paths),
-        autoescape=autoescape
+        autoescape=autoescape,
     )
 
     if env is None:
@@ -153,10 +153,12 @@ def render_impl(
     return env.get_template(pathlib.Path(template_file).name).render(**ctx)
 
 
-def render(filepath: str, ctx: MaybeContextT = None,
-           paths: MaybePathsT = None, *,
-           ask: bool = False,
-           filters: MaybeFiltersT = None) -> str:
+def render(
+    filepath: str, ctx: MaybeContextT = None,
+    paths: MaybePathsT = None, *,
+    ask: bool = False,
+    filters: MaybeFiltersT = None,
+) -> str:
     """Compile and render template and return the result as a string.
 
     :param template_file: Absolute or relative path to the template file
@@ -175,7 +177,7 @@ def render(filepath: str, ctx: MaybeContextT = None,
 
         usr_tmpl = input(
             f"{os.linesep}*** Missing template '{mtmpl}'. Please enter "
-            "absolute or relative path starts from '.' to the template file: "
+            "absolute or relative path starts from '.' to the template file: ",
         )
         usr_tmpl_2 = pathlib.Path(usr_tmpl.strip()).resolve()
         paths_2 = make_template_paths(usr_tmpl_2, paths)
@@ -184,10 +186,10 @@ def render(filepath: str, ctx: MaybeContextT = None,
 
 
 def try_render(
-    filepath: typing.Optional[str] = None,
-    content: typing.Optional[str] = None,
-    **options
-) -> typing.Optional[str]:
+    filepath: str | None = None,
+    content: str | None = None,
+    **options: typing.Any,
+) -> str | None:
     """Compile and render template and return the result as a string.
 
     :param filepath: Absolute or relative path to the template file
@@ -213,6 +215,6 @@ def try_render(
             f"Failed to compile '{tmpl_s!r}'. It may not be "
             f"a template.{os.linesep}, exc={exc!s}, "
             f"filepath={filepath}, options={options!r}",
-            stacklevel=2
+            stacklevel=2,
         )
         return None

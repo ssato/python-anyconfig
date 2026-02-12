@@ -4,7 +4,7 @@
 #
 # pylint: disable=unidiomatic-typecheck
 #
-# todo(ssato): #189 fix the mypy error, type-var.
+# TODO(ssato): #189 fix the mypy error, type-var.
 # mypy: disable-error-code=type-var
 """Utility functions for anyconfig.processors."""
 from __future__ import annotations

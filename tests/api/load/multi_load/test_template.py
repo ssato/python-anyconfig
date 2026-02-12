@@ -21,13 +21,13 @@ if typing.TYPE_CHECKING:
 if not anyconfig.template.SUPPORTED:
     pytest.skip(
         "jinja2 lib neede for template option is not available",
-        allow_module_level=True
+        allow_module_level=True,
     )
 
 
 NAMES: tuple[str, ...] = (*common.NAMES, "ctx")
 DATA: list = common.load_data_for_testfile(
-    __file__, values=(("o", {}), ("e", None), ("c", {}))
+    __file__, values=(("o", {}), ("e", None), ("c", {})),
 )
 DATA_IDS: list[str] = common.get_test_ids(DATA)
 
@@ -38,6 +38,6 @@ def test_data() -> None:
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_load(
-    inputs: list[pathlib.Path], opts: dict, exp, ctx: dict
+    inputs: list[pathlib.Path], opts: dict, exp, ctx: dict,
 ) -> None:
     assert TT.load(inputs, ac_context=ctx, **opts) == exp

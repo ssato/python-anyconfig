@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2021 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Misc global constants, variables, classes and so on."""
@@ -14,10 +14,10 @@ except ImportError:  # jinja2 may not be available.
     SUPPORTED = False
 
     def try_render(
-        filepath: typing.Optional[str] = None,
-        content: typing.Optional[str] = None,
-        **_options
-    ) -> typing.Optional[str]:
+        filepath: str | None = None,
+        content: str | None = None,
+        **_options: typing.Any,
+    ) -> str | None:
         """Provide a dummy function does nothing but returns None."""
         if filepath and content:
             return None

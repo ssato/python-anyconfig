@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2018 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Abstract processor module.
@@ -57,7 +57,7 @@ class Processor:
 
     @classmethod
     def __eq__(
-        cls, other: builtins.type[Processor]  # type: ignore[override]
+        cls, other: builtins.type[Processor],  # type: ignore[override]
     ) -> bool:
         """Test equality."""
         return cls.cid() == other.cid()

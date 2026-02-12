@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # Some XML modules may be missing and Base.{load,dumps}_impl are not
@@ -72,7 +72,7 @@ from ... import dicts
 from ...parser import parse_single
 from ...utils import (
     filter_options, get_path_from_stream,
-    is_dict_like, is_iterable, noop
+    is_dict_like, is_iterable, noop,
 )
 
 if typing.TYPE_CHECKING:
@@ -92,7 +92,7 @@ if typing.TYPE_CHECKING:
 
 
 def _namespaces_from_file(
-    xmlfile: typing.Union[base.PathOrStrT, typing.IO]
+    xmlfile: base.PathOrStrT | typing.IO,
 ) -> dict[str, tuple[str, str]]:
     """Get the namespace str from file.
 
@@ -158,7 +158,7 @@ def _dicts_have_unique_keys(dics: DicsType) -> bool:
     return len(set(key_itr)) == sum(len(d) for d in dics)
 
 
-def _parse_text(val: str, **options) -> typing.Any:
+def _parse_text(val: str, **options: typing.Any) -> typing.Any:
     """Parse ``val`` and interpret its data to some value.
 
     :return: Parsed value or value itself depends on 'ac_parse_value'
@@ -171,7 +171,7 @@ def _parse_text(val: str, **options) -> typing.Any:
 
 def _process_elem_text(
     elem: ElementTree.Element, dic: DicType, subdic: DicType,
-    text: str = "@text", **options
+    text: str = "@text", **options: typing.Any,
 ) -> None:
     """Process the text in the element ``elem``.
 
@@ -197,7 +197,7 @@ def _process_elem_text(
 
 def _parse_attrs(
     elem: ElementTree.Element, container: GenDicType = dict,
-    **options
+    **options: typing.Any,
 ) -> DicType:
     """Parse the attributes of the element ``elem``.
 
@@ -215,7 +215,7 @@ def _parse_attrs(
 def _process_elem_attrs(
     elem: ElementTree.Element, dic: DicType, subdic: DicType,
     container: GenDicType = dict, attrs: str = "@attrs",
-    **options
+    **options: typing.Any,
 ) -> None:
     """Process attributes in the element ``elem``.
 
@@ -238,7 +238,7 @@ def _process_elem_attrs(
 def _process_children_elems(
     elem: ElementTree.Element, dic: DicType, subdic: DicType,
     container: GenDicType = dict, children: str = "@children",
-    **options
+    **options: typing.Any,
 ) -> None:
     """Process children of the element ``elem``.
 
@@ -275,8 +275,9 @@ def _process_children_elems(
 
 
 def elem_to_container(
-    elem: typing.Optional[ElementTree.Element], container: GenDicType = dict,
-    **options
+    elem: ElementTree.Element | None,
+    container: GenDicType = dict,
+    **options: typing.Any,
 ) -> DicType:
     """Convert XML ElementTree Element to a collection of container objects.
 
@@ -340,9 +341,10 @@ def _complement_tag_options(options: DicType) -> DicType:
 
 
 def root_to_container(
-    root: ElementTree.Element, container: GenDicType = dict,
-    nspaces: typing.Optional[DicType] = None,
-    **options
+    root: ElementTree.Element,
+    container: GenDicType = dict,
+    nspaces: DicType | None = None,
+    **options: typing.Any,
 ) -> DicType:
     """Convert XML ElementTree Root Element to container objects.
 
@@ -366,7 +368,9 @@ def root_to_container(
                              **_complement_tag_options(options))
 
 
-def _to_str_fn(**options: DicType) -> collections.abc.Callable[..., str]:
+def _to_str_fn(
+    **options: typing.Any,
+) -> collections.abc.Callable[..., str]:
     """Convert any objects to a str.
 
     :param options: Keyword options might have 'ac_parse_value' key
@@ -380,7 +384,7 @@ def _to_str_fn(**options: DicType) -> collections.abc.Callable[..., str]:
 
 def _elem_set_attrs(
     obj: DicType, parent: ElementTree.Element,
-    to_str: collections.abc.Callable[..., str]
+    to_str: collections.abc.Callable[..., str],
 ) -> None:
     """Set attributes of the element ``parent``.
 
@@ -396,7 +400,8 @@ def _elem_set_attrs(
 
 
 def _elem_from_descendants(
-    children_nodes: collections.abc.Iterable[DicType], **options
+    children_nodes: collections.abc.Iterable[DicType],
+    **options: typing.Any,
 ) -> collections.abc.Iterator[ElementTree.Element]:
     """Get the elements from the descendants ``children_nodes``.
 
@@ -411,9 +416,10 @@ def _elem_from_descendants(
 
 
 def _get_or_update_parent(
-    key: str, val: typing.Any, to_str: collections.abc.Callable[..., str],
-    parent: typing.Optional[ElementTree.Element] = None,
-    **options
+    key: str, val: typing.Any,
+    to_str: collections.abc.Callable[..., str],
+    parent: ElementTree.Element | None = None,
+    **options: typing.Any,
 ) -> ElementTree.Element:
     """Get or update the parent element ``parent``.
 
@@ -441,7 +447,7 @@ _ATC = ("attrs", "text", "children")
 
 def _assert_if_invalid_node(
     obj: typing.Any,
-    parent: typing.Optional[ElementTree.Element] = None,
+    parent: ElementTree.Element | None = None,
 ) -> None:
     """Make sure the ``obj`` or ``parent`` is not invalid."""
     if parent is None and (obj is None or not obj):
@@ -452,9 +458,10 @@ def _assert_if_invalid_node(
 
 
 def container_to_elem(
-    obj: typing.Any, parent: typing.Optional[ElementTree.Element] = None,
-    to_str: typing.Optional[collections.abc.Callable[..., str]] = None,
-    **options
+    obj: typing.Any,
+    parent: ElementTree.Element | None = None,
+    to_str: collections.abc.Callable[..., str] | None = None,
+    **options: typing.Any,
 ) -> ElementTree.Element:
     """Convert a dict-like object to XML ElementTree.
 
@@ -483,7 +490,7 @@ def container_to_elem(
     for key, val in obj.items():
         if parent is None:
             parent = _get_or_update_parent(
-                key, val, to_str, parent=parent, **options
+                key, val, to_str, parent=parent, **options,
             )
             continue
 
@@ -496,14 +503,15 @@ def container_to_elem(
                 parent.append(celem)
         else:
             parent = _get_or_update_parent(
-                key, val, to_str, parent=parent, **options
+                key, val, to_str, parent=parent, **options,
             )
 
     return parent  # type: ignore[return-value]
 
 
 def etree_write(
-    elem: ElementTree.Element, stream: typing.IO, **options
+    elem: ElementTree.Element, stream: typing.IO,
+    **options: typing.Any,
 ) -> None:
     """Write XML ElementTree 'root' content into 'stream'.
 
@@ -515,11 +523,11 @@ def etree_write(
         **filter_options(
             ("method", "xml_declaration", "default_namespace",
              "short_empty_elements"),
-            options
-        )
+            options,
+        ),
     )
     content: bytes = ElementTree.tostring(  # type: ignore[call-overload]
-        elem, **opts
+        elem, **opts,
     ).encode("utf-8")
     stream.write(content)
 
@@ -531,13 +539,13 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
     _type: typing.ClassVar[str] = "xml"
     _extensions: tuple[str, ...] = ("xml", )
     _load_opts: tuple[str, ...] = (
-        "tags", "merge_attrs", "ac_parse_value"
+        "tags", "merge_attrs", "ac_parse_value",
     )
     # .. seealso:: xml.etree.ElementTree.tostring
     _dump_opts = (
         *_load_opts,
         "encoding", "method", "xml_declaration", "default_namespace",
-        "short_empty_elements"
+        "short_empty_elements",
     )
 
     _ordered: typing.ClassVar[bool] = True
@@ -546,7 +554,8 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
     _open_write_mode: typing.ClassVar[str] = "wb"
 
     def load_from_string(
-        self, content: typing.AnyStr, container: GenDicType, **opts
+        self, content: typing.AnyStr, container: GenDicType,
+        **opts: typing.Any,
     ) -> DicType:
         """Load config from XML snippet (a string 'content').
 
@@ -566,12 +575,12 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
 
         nspaces = _namespaces_from_file(stream)
         return root_to_container(
-            elem, container=container, nspaces=nspaces, **opts
+            elem, container=container, nspaces=nspaces, **opts,
         )
 
     def load_from_path(
         self, filepath: base.PathOrStrT, container: GenDicType,
-        **opts
+        **opts: typing.Any,
     ) -> DicType:
         """Load data from path ``filepath``.
 
@@ -584,11 +593,12 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
         elem = ElementTree.parse(filepath).getroot()
         nspaces = _namespaces_from_file(filepath)
         return root_to_container(
-            elem, container=container, nspaces=nspaces, **opts
+            elem, container=container, nspaces=nspaces, **opts,
         )
 
     def load_from_stream(
-        self, stream: typing.IO, container: GenDicType, **opts
+        self, stream: typing.IO, container: GenDicType,
+        **opts: typing.Any,
     ) -> DicType:
         """Load data from IO stream ``stream``.
 
@@ -601,11 +611,12 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
         elem = ElementTree.parse(stream).getroot()
         path = get_path_from_stream(stream)
         nspaces = _namespaces_from_file(path)
-        return root_to_container(elem, container=container,
-                                 nspaces=nspaces, **opts)
+        return root_to_container(
+            elem, container=container, nspaces=nspaces, **opts,
+        )
 
     def dump_to_string(  # type: ignore[override]
-        self, cnf: base.InDataExT, **opts
+        self, cnf: base.InDataExT, **opts: typing.Any,
     ) -> bytes:
         """Dump data ``cnf`` as a str.
 
@@ -623,7 +634,8 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
         return bio.getvalue()
 
     def dump_to_stream(
-        self, cnf: base.InDataExT, stream: typing.IO, **opts
+        self, cnf: base.InDataExT, stream: typing.IO,
+        **opts: typing.Any,
     ) -> None:
         """Dump data ``cnf`` to the IO stream ``stream``.
 

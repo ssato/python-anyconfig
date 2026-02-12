@@ -32,20 +32,24 @@ def test_data() -> None:
 
 
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
-def test_dumps(obj, opts: dict, exp) -> None:
+def test_dumps(
+    obj, opts: dict, exp,
+) -> None:
     assert TT.dumps(obj, **opts) == exp
 
 
 @pytest.mark.parametrize(NAMES, DATA[:1], ids=DATA_IDS[:1])
-def test_dumps_without_ac_parser_option(obj, opts: dict, exp) -> None:
+def test_dumps_without_ac_parser_option(
+    obj, opts: dict, exp,
+) -> None:
     assert opts or exp
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="The first argument"):
         TT.dumps(obj)
 
 
 @pytest.mark.parametrize(NAMES, DATA[:1], ids=DATA_IDS[:1])
 def test_dumps_with_invalid_ac_parser_option(
-    obj, opts: dict, exp
+    obj, opts: dict, exp,
 ) -> None:
     assert opts or exp
     with pytest.raises(UnknownProcessorTypeError):

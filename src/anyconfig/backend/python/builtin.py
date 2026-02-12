@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2023 - 2025 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 r"""A backend module to load and dump python code conntains data.
@@ -35,7 +35,7 @@ import typing
 
 from .. import base
 from . import (
-    loader, dumper
+    loader, dumper,
 )
 
 

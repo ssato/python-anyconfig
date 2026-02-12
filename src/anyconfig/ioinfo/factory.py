@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 - 2024 Satoru SATOH <satoru.satoh gmmail.com>
+# Copyright (C) 2018 - 2026 Satoru SATOH <satoru.satoh gmmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=invalid-name
@@ -20,7 +20,7 @@ def from_path_object(path: pathlib.Path) -> datatypes.IOInfo:
     (abs_path, file_ext) = utils.get_path_and_ext(path)
 
     return datatypes.IOInfo(
-        abs_path, datatypes.IOI_PATH_OBJ, str(abs_path), file_ext
+        abs_path, datatypes.IOI_PATH_OBJ, str(abs_path), file_ext,
     )
 
 
@@ -39,7 +39,7 @@ def from_io_stream(strm: typing.IO) -> datatypes.IOInfo:
         (abs_path, file_ext) = (path, "")
 
     return datatypes.IOInfo(
-        strm, datatypes.IOI_STREAM, abs_path, file_ext
+        strm, datatypes.IOI_STREAM, abs_path, file_ext,
     )
 
 
@@ -62,7 +62,7 @@ def make(obj: typing.Any) -> datatypes.IOInfo:
 
 
 def make_itr(
-    obj: typing.Any, marker: str = constants.GLOB_MARKER
+    obj: typing.Any, marker: str = constants.GLOB_MARKER,
 ) -> collections.abc.Iterator[datatypes.IOInfo]:
     """Make and yield a series of :class:`datatypes.IOInfo` objects."""
     if isinstance(obj, datatypes.IOInfo):
@@ -85,7 +85,7 @@ def make_itr(
 
 
 def makes(
-    obj: typing.Any, marker: str = constants.GLOB_MARKER
+    obj: typing.Any, marker: str = constants.GLOB_MARKER,
 ) -> list[datatypes.IOInfo]:
     """Make and return a list of :class:`datatypes.IOInfo` objects."""
     return list(make_itr(obj, marker=marker))

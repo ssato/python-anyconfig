@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=broad-except
@@ -17,7 +17,7 @@ if typing.TYPE_CHECKING:
 
 
 def do_filter(
-    cnf: dict[str, typing.Any], args: argparse.Namespace
+    cnf: dict[str, typing.Any], args: argparse.Namespace,
 ) -> InDataExT:
     """Filter ``cnf`` by query/get/set and return filtered result."""
     if args.query:

@@ -16,10 +16,10 @@ from . import (
     sh,
     toml,
     yaml,
-    xml
+    xml,
 )
 from .base import (
-    ParserT, ParsersT, ParserClssT
+    ParserT, ParsersT, ParserClssT,
 )
 
 
@@ -33,7 +33,7 @@ def warn(name: str, feature: str) -> None:
     """Wraper for warnings.warn."""
     warnings.warn(
         f"'{name}' module is not available. Disabled {feature} support.",
-        category=ImportWarning, stacklevel=2
+        category=ImportWarning, stacklevel=2,
     )
 
 
@@ -49,6 +49,8 @@ else:
 
 
 __all__ = [
-    "ParserT", "ParsersT", "ParserClssT",
     "PARSERS",
+    "ParserClssT",
+    "ParserT",
+    "ParsersT",
 ]

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """CLI frontend module for anyconfig."""
@@ -12,7 +12,7 @@ import warnings
 
 from .. import api, parser
 from . import (
-    actions, constants, detectors, filters, parse_args, utils
+    actions, constants, detectors, filters, parse_args, utils,
 )
 
 if typing.TYPE_CHECKING:
@@ -36,8 +36,9 @@ def try_special_command_if_no_inputs(args: argparse.Namespace) -> None:
         sys.exit(0)
 
 
-def process_args_or_run_command(args: argparse.Namespace
-                                ) -> argparse.Namespace:
+def process_args_or_run_command(
+    args: argparse.Namespace,
+) -> argparse.Namespace:
     """Process ``args`` and/or run commands.
 
     Process ``args``, that is, validate and update it, and raise SystemExit if
@@ -49,7 +50,7 @@ def process_args_or_run_command(args: argparse.Namespace
                 and args.inputs[0] == constants.STD_IN_OR_OUT):
             utils.exit_with_output(
                 "No input type was given but required for the input '-'",
-                1
+                1,
             )
     else:
         try_special_command_if_no_inputs(args)
@@ -57,7 +58,7 @@ def process_args_or_run_command(args: argparse.Namespace
     if args.validate and not args.schema:
         utils.exit_with_output(
             "--validate and --schema options must be used together",
-            1
+            1,
         )
 
     # Update args:
@@ -96,18 +97,18 @@ def try_validate(cnf: api.InDataExT, args: argparse.Namespace) -> None:
         msg_code = (
             "Validation failed:"
             f"{(os.linesep + '  ').join(errors)}",
-            1
+            1,
         )
 
     utils.exit_with_output(*msg_code)
 
 
-def main(argv: typing.Optional[list[str]] = None) -> None:
+def main(argv: list[str] | None = None) -> None:
     """Provide the entrypoint to run the CLI.
 
     :param argv: Argument list to parse or None (sys.argv will be set).
     """
-    (_psr, args) = parse_args.parse((argv if argv else sys.argv)[1:])
+    (_psr, args) = parse_args.parse((argv or sys.argv)[1:])
     args = process_args_or_run_command(args)
 
     cnf = os.environ.copy() if args.env else {}
@@ -129,7 +130,6 @@ def main(argv: typing.Optional[list[str]] = None) -> None:
         api.merge(cnf, diff)  # type: ignore[arg-type]
 
     cnf = (
-        # fixme.
         api.gen_schema(cnf) if args.gen_schema  # type: ignore[assignment]
         else filters.do_filter(cnf, args)
     )

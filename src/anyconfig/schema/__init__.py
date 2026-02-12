@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2021 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Schema generation and validation."""
@@ -11,7 +11,7 @@ try:
     from .jsonschema.validator import validate, is_valid
 
     VALIDATORS = {
-        "jsonschema": validate
+        "jsonschema": validate,
     }
     SUPPORTED: bool = True
 except ImportError:
@@ -21,10 +21,10 @@ except ImportError:
 
 
 GENERATORS = {
-    "jsonschema": gen_schema
+    "jsonschema": gen_schema,
 }
 
 _all__ = [
     "validate", "is_valid", "gen_schema",
-    "VALIDATORS", "GENERATORS", "SUPPORTED"
+    "VALIDATORS", "GENERATORS", "SUPPORTED",
 ]

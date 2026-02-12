@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2021 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-argument
@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
 
 
 def try_query(
-    data: InDataExT, jexp: MaybeJexp = None, **options
+    data: InDataExT, jexp: MaybeJexp = None, **options: typing.Any,
 ) -> InDataExT:
     """Provide a dummy implementation of :func:`anyconfig.query.try_query`."""
     return data

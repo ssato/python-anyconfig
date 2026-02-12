@@ -1,12 +1,11 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Argument parser."""
 from __future__ import annotations
 
 import argparse
-import typing
 
 from .. import api
 from . import constants, utils
@@ -16,7 +15,7 @@ DEFAULTS = {
     "loglevel": 0, "list": False, "output": None, "itype": None, "otype": None,
     "atype": None, "merge": api.MS_DICTS, "ignore_missing": False,
     "template": False, "env": False, "schema": None, "validate": False,
-    "gen_schema": False, "extra_opts": None
+    "gen_schema": False, "extra_opts": None,
 }
 
 
@@ -29,8 +28,8 @@ def gen_type_help_txt(types: str, target: str = "Input") -> str:
 
 
 def make_parser(
-    defaults: typing.Optional[dict] = None,
-    prog: typing.Optional[str] = None
+    defaults: dict | None = None,
+    prog: str | None = None,
 ) -> argparse.ArgumentParser:
     """Make an instance of argparse.ArgumentParser to parse arguments."""
     if defaults is None:
@@ -45,7 +44,7 @@ def make_parser(
     apsr.add_argument("inputs", type=str, nargs="*", help="Input files")
     apsr.add_argument(
         "--version", action="version",
-        version=f"%%(prog)s {'.'.join(api.version())}"
+        version=f"%%(prog)s {'.'.join(api.version())}",
     )
 
     apsr.add_argument("-o", "--output", help="Output file path")
@@ -106,7 +105,7 @@ def make_parser(
 
 def parse(
     argv: list[str],
-    prog: typing.Optional[str] = None
+    prog: str | None = None,
 ) -> tuple[argparse.ArgumentParser, argparse.Namespace]:
     """Parse given arguments ``argv`` and return it with the parser."""
     psr = make_parser(prog=prog)

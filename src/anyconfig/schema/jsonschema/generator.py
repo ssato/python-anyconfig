@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2015 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """JSON schema generator."""
@@ -12,7 +12,7 @@ from ... import utils
 if typing.TYPE_CHECKING:
     import collections.abc
     from ..datatypes import (
-        InDataExT, InDataT
+        InDataExT, InDataT,
     )
 
 
@@ -28,7 +28,7 @@ _TYPE_MAP: dict[type, str] = {
 
 
 def _process_options(
-    **options
+    **options: typing.Any,
 ) -> tuple[dict[typing.Any, typing.Any], bool]:
     """Help to process keyword arguments passed to gen_schema.
 
@@ -36,15 +36,15 @@ def _process_options(
     """
     return (
         options.get("ac_schema_typemap", _TYPE_MAP),
-        bool(options.get("ac_schema_strict", False))
+        bool(options.get("ac_schema_strict", False)),
     )
 
 
 def array_to_schema(
     iarr: collections.abc.Iterable[InDataExT], *,
-    ac_schema_typemap: typing.Optional[dict[type, str]] = None,
+    ac_schema_typemap: dict[type, str] | None = None,
     ac_schema_strict: bool = False,
-    **options
+    **options: typing.Any,
 ) -> InDataT:
     """Generate a JSON schema object with type annotation added for ``iaa```.
 
@@ -63,8 +63,8 @@ def array_to_schema(
         "items": gen_schema(
             arr[0] if arr else "str",
             ac_schema_strict=ac_schema_strict,
-            **options
-        )
+            **options,
+        ),
     }
     if ac_schema_strict:
         nitems = len(arr)
@@ -76,9 +76,9 @@ def array_to_schema(
 
 def object_to_schema(
     obj: InDataT, *,
-    ac_schema_typemap: typing.Optional[dict[type, str]] = None,
+    ac_schema_typemap: dict[type, str] | None = None,
     ac_schema_strict: bool = False,
-    **options
+    **options: typing.Any,
 ) -> InDataT:
     """Generate a node represents JSON schema object for ``obj``.
 
@@ -99,7 +99,7 @@ def object_to_schema(
             v,
             ac_schema_typemap=ac_schema_typemap,
             ac_schema_strict=ac_schema_strict,
-            **options
+            **options,
         )
         for k, v in obj.items()
     }
@@ -111,7 +111,7 @@ def object_to_schema(
 
 
 def gen_schema(
-    data: InDataExT, **options
+    data: InDataExT, **options: typing.Any,
 ) -> InDataT:
     """Generate a JSON schema object validates ``data``.
 

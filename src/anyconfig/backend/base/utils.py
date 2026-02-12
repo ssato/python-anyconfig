@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Provides utility functions in anyconfig.backend.base."""
@@ -14,13 +14,15 @@ if typing.TYPE_CHECKING:
 
 
 def not_implemented(
-    *_args, **_options
+    *_args: typing.Any, **_options: typing.Any,
 ) -> None:
     """Raise NotImplementedError."""
     raise NotImplementedError
 
 
-def ensure_outdir_exists(filepath: typing.Union[str, pathlib.Path]) -> None:
+def ensure_outdir_exists(
+    filepath: str | pathlib.Path,
+) -> None:
     """Make dir to dump 'filepath' if that dir does not exist.
 
     :param filepath: path of file to dump
@@ -29,7 +31,7 @@ def ensure_outdir_exists(filepath: typing.Union[str, pathlib.Path]) -> None:
 
 
 def to_method(
-    func: collections.abc.Callable[..., typing.Any]
+    func: collections.abc.Callable[..., typing.Any],
 ) -> collections.abc.Callable[..., typing.Any]:
     """Lift :func:`func` to a method.
 
@@ -39,7 +41,7 @@ def to_method(
     """
     @functools.wraps(func)
     def wrapper(
-        *args, **kwargs
+        *args: typing.Any, **kwargs: typing.Any,
     ) -> collections.abc.Callable[..., typing.Any]:
         """Original function decorated."""
         return func(*args[1:], **kwargs)

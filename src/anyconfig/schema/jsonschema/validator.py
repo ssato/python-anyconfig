@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2015 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """JSON schema validator."""
@@ -20,7 +20,7 @@ if typing.TYPE_CHECKING:
         from typing_extensions import TypeGuard
 
     from .datatypes import (
-        InDataExT, ResultT
+        InDataExT, ResultT,
     )
 
 
@@ -29,7 +29,9 @@ def is_valid_schema_object(maybe_scm: InDataExT) -> TypeGuard[InDataT]:
     return maybe_scm and utils.is_dict_like(maybe_scm)
 
 
-def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:
+def _validate_all(
+    data: InDataExT, schema: InDataT, **_options: typing.Any,
+) -> ResultT:
     """Do all of the validation checks.
 
     See the description of :func:`validate` for more details of parameters and
@@ -47,7 +49,7 @@ def _validate_all(data: InDataExT, schema: InDataT, **_options) -> ResultT:
 def _validate(
     data: InDataExT, schema: InDataT, *,
     ac_schema_safe: bool = True,
-    **options: typing.Any
+    **options: typing.Any,
 ) -> ResultT:
     """Validate ``data`` with ``schema``.
 
@@ -71,7 +73,7 @@ def validate(
     data: InDataExT, schema: InDataExT, *,
     ac_schema_safe: bool = True,
     ac_schema_errors: bool = False,
-    **options
+    **options: typing.Any,
 ) -> ResultT:
     """Validate target object with given schema object.
 
@@ -106,7 +108,7 @@ def is_valid(
     data: InDataExT, schema: InDataExT, *,
     ac_schema_safe: bool = True,
     ac_schema_errors: bool = False,
-    **options
+    **options: typing.Any,
 ) -> bool:
     """Raise ValidationError if ``data`` was invalidated by schema `schema`."""
     if not is_valid_schema_object(schema):
@@ -114,7 +116,7 @@ def is_valid(
 
     (_success, error_or_errors) = validate(
         data, schema, ac_schema_safe=True,
-        ac_schema_errors=ac_schema_errors, **options
+        ac_schema_errors=ac_schema_errors, **options,
     )
     if error_or_errors:
         msg = f"scm={schema!s}, err={error_or_errors!s}"

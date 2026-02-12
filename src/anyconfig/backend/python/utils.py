@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023, 2024 Satoru SATOH <satoru.satoh @ gmail.com>
+# Copyright (C) 2023 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=missing-docstring
@@ -46,8 +46,8 @@ def load_literal_data_from_path(path: pathlib.Path) -> typing.Any:
 
 def load_data_from_py(
     path: pathlib.Path, *,
-    data_name: typing.Optional[str] = None,
-    fallback: bool = False
+    data_name: str | None = None,
+    fallback: bool = False,
 ) -> typing.Any:
     """Load test data from .py files by evaluating it.
 
@@ -65,7 +65,7 @@ def load_data_from_py(
         except (TypeError, ValueError, AttributeError):
             warnings.warn(
                 f"No valid data '{data_name}' was found in {mod!r}.",
-                stacklevel=2
+                stacklevel=2,
             )
 
     if fallback:
@@ -78,8 +78,8 @@ def load_data_from_py(
 def load_from_path(
     path: pathlib.Path, *,
     allow_exec: bool = False,
-    data_name: typing.Optional[str] = None,
-    fallback: bool = False
+    data_name: str | None = None,
+    fallback: bool = False,
 ) -> typing.Any:
     """Load data from given path `path`.
 
@@ -90,7 +90,7 @@ def load_from_path(
     """
     if allow_exec and (data_name or DATA_VAR_NAME) in path.read_text():
         return load_data_from_py(
-            path, data_name=data_name, fallback=fallback
+            path, data_name=data_name, fallback=fallback,
         )
 
     return load_literal_data_from_path(path)

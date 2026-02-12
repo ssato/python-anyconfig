@@ -8,6 +8,6 @@
 from __future__ import annotations
 
 from ...common import (  # noqa: F401
-    get_test_ids, load_data_for_testfile
+    get_test_ids, load_data_for_testfile,
 )
 from ..single_load.constants import LOADER_TYPES  # noqa: F401

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Misc simple parsers."""
@@ -15,8 +15,8 @@ if typing.TYPE_CHECKING:
 
 INT_PATTERN: re.Pattern = re.compile(r"^(\d|([1-9]\d+))$")
 FLOAT_PATTERN: re.Pattern = re.compile(r"^\d+[\.]\d+$")
-BOOL_TRUE_PATTERN: re.Pattern = re.compile(r"^true$", re.I)
-BOOL_FALSE_PATTERN: re.Pattern = re.compile(r"^false$", re.I)
+BOOL_TRUE_PATTERN: re.Pattern = re.compile(r"^true$", re.IGNORECASE)
+BOOL_FALSE_PATTERN: re.Pattern = re.compile(r"^false$", re.IGNORECASE)
 STR_PATTERN: re.Pattern = re.compile(r"^['\"](.*)['\"]$")
 
 PrimitiveT = typing.Union[str, int, float, bool]
@@ -24,7 +24,7 @@ PrimitivesT = list[PrimitiveT]
 
 
 def parse_single(  # noqa: PLR0911
-    str_: typing.Optional[str]
+    str_: str | None,
 ) -> PrimitiveT:
     """Parse an expression gives a primitive value."""
     if str_ is None:
@@ -66,7 +66,7 @@ AttrValsT = tuple[str, typing.Union[PrimitivesT, PrimitiveT]]
 
 
 def attr_val_itr(
-    str_: str, avs_sep: str = ":", vs_sep: str = ",", as_sep: str = ";"
+    str_: str, avs_sep: str = ":", vs_sep: str = ",", as_sep: str = ";",
 ) -> collections.abc.Iterator[AttrValsT]:
     """Parse a list of atrribute and value pairs.
 
@@ -88,7 +88,7 @@ def attr_val_itr(
             warnings.warn(
                 f"Extra strings {_rest!s} in {rel!s}"
                 f"It should be in the form of attr{avs_sep}value.",
-                stacklevel=2
+                stacklevel=2,
             )
 
         _attr = typing.cast("str", _attr)
@@ -100,7 +100,7 @@ def attr_val_itr(
 
 
 def parse_attrlist_0(
-    str_: str, avs_sep: str = ":", vs_sep: str = ",", as_sep: str = ";"
+    str_: str, avs_sep: str = ":", vs_sep: str = ",", as_sep: str = ";",
 ) -> list[AttrValsT]:
     """Parse a list of atrribute and value pairs.
 
@@ -140,17 +140,10 @@ def parse_attrlist(str_: str, avs_sep: str = ":", vs_sep: str = ",",
     return dict(parse_attrlist_0(str_, avs_sep, vs_sep, as_sep))
 
 
-ResultsT = typing.Union[
-    PrimitiveT,
-    PrimitivesT,
-    AttrValsDictT
-]
-
-
 def parse(
     str_: typing.Optional[str], lsep: str = ",", avsep: str = ":",
-    vssep: str = ",", avssep: str = ";"
-) -> ResultsT:
+    vssep: str = ",", avssep: str = ";",
+) -> PrimitiveT | PrimitivesT | AttrValsDictT:
     """Very simple generic parser."""
     if str_ is None or not str_:
         return parse_single(str_)

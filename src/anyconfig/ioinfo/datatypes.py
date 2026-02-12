@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2021 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=inherit-non-class,too-few-public-methods
@@ -17,7 +17,7 @@ IOI_STREAM: str = "stream"
 class IOInfo(typing.NamedTuple):
     """Equivalent to collections.namedtuple."""
 
-    src: typing.Union[pathlib.Path, typing.IO]
+    src: pathlib.Path | typing.IO
     type: str
     path: str
     extension: str

@@ -17,14 +17,14 @@ from .. import base
 
 JSON_LOAD_OPTS: tuple[str, ...] = (
     "cls", "object_hook", "parse_float", "parse_int",
-    "parse_constant", "object_pairs_hook"
+    "parse_constant", "object_pairs_hook",
 )
 JSON_DUMP_OPTS: tuple[str, ...] = (
     "skipkeys", "ensure_ascii", "check_circular", "allow_nan",
-    "cls", "indent", "separators", "default", "sort_keys"
+    "cls", "indent", "separators", "default", "sort_keys",
 )
 JSON_DICT_OPTS: tuple[str, ...] = (
-    "object_pairs_hook", "object_hook"
+    "object_pairs_hook", "object_hook",
 )
 
 

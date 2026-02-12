@@ -18,14 +18,14 @@ DATA: list = common.load_data_for_testfile(__file__, (("e", None), ))
 DATA_IDS: list[str] = common.get_test_ids(DATA)
 
 
-def test_data() -> None:
+def test_data_is_non_empty() -> None:
     assert DATA
 
 
 @pytest.mark.skipif(
     "toml" not in common.LOADER_TYPES,
-    reason="toml lib is not availabla."
+    reason="toml lib is not availabla.",
 )
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
-def test_load_for_toml_files(ipath, exp):
+def test_load_for_toml_files(ipath, exp) -> None:
     assert TT.load(ipath) == exp

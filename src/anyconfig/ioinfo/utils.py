@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2012 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 """Utility funtions for anyconfig.ionfo."""
@@ -34,19 +34,21 @@ def get_path_and_ext(path: pathlib.Path) -> tuple[pathlib.Path, str]:
 
     return (
         abs_path,
-        file_ext[1:] if file_ext.startswith(".") else ""
+        file_ext[1:] if file_ext.startswith(".") else "",
     )
 
 
 def expand_from_path(
-    path: pathlib.Path, marker: str = GLOB_MARKER
+    path: pathlib.Path, marker: str = GLOB_MARKER,
 ) -> collections.abc.Iterator[pathlib.Path]:
     """Expand ``path`` contains '*' in its path str."""
     if not path.is_absolute():
         path = path.resolve()
 
     idx_part = list(
-        enumerate(itertools.takewhile(lambda p: marker not in p, path.parts))
+        enumerate(
+            itertools.takewhile(lambda p: marker not in p, path.parts),
+        ),
     )[-1]
 
     if not idx_part:

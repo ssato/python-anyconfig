@@ -9,18 +9,19 @@ import typing
 
 from .compat import BinaryFilesMixin
 from .datatypes import (
-    GenContainerT, OptionsT, InDataT, InDataExT, OutDataExT, IoiT,
-    PathOrStrT
+    GenContainerT, OptionsT,
+    InDataT, InDataExT, OutDataExT, IoiT,
+    PathOrStrT,
 )
 from .dumpers import (
-    ToStringDumperMixin, ToStreamDumperMixin, BinaryDumperMixin
+    ToStringDumperMixin, ToStreamDumperMixin, BinaryDumperMixin,
 )
 from .loaders import (
     LoaderMixin, FromStringLoaderMixin, FromStreamLoaderMixin,
-    BinaryLoaderMixin
+    BinaryLoaderMixin,
 )
 from .utils import (
-    ensure_outdir_exists, to_method
+    ensure_outdir_exists, to_method,
 )
 from .parsers import (
     Parser,
@@ -35,7 +36,8 @@ ParserClssT = list[type[ParserT]]
 
 __all__ = [
     "BinaryFilesMixin",
-    "GenContainerT", "OptionsT", "InDataT", "InDataExT", "OutDataExT", "IoiT",
+    "GenContainerT", "OptionsT",
+    "InDataT", "InDataExT", "OutDataExT", "IoiT",
     "PathOrStrT",
     "ToStringDumperMixin", "ToStreamDumperMixin", "BinaryDumperMixin",
     "LoaderMixin",

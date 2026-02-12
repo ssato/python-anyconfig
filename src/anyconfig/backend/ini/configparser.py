@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2011 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 #  pylint: disable=deprecated-method
@@ -57,12 +57,12 @@ _QUOTED_RE: re.Pattern = re.compile(
     r'".*"'
     r"|"
     r"'.*'"
-    r")$"
+    r")$",
 )
 
 
 def parse(
-    val_s: str, sep: str = _SEP, quoted_re: re.Pattern = _QUOTED_RE
+    val_s: str, sep: str = _SEP, quoted_re: re.Pattern = _QUOTED_RE,
 ) -> typing.Any:
     """Parse expression.
 
@@ -97,7 +97,7 @@ def _to_s(val: typing.Any, sep: str = ", ") -> str:
 
 def parsed_items(
     items: collections.abc.Iterable[tuple[str, typing.Any]],
-    sep: str = _SEP, **options
+    sep: str = _SEP, **options: typing.Any,
 ) -> collections.abc.Iterator[tuple[str, typing.Any]]:
     """Parse an iterable of items.
 
@@ -111,12 +111,12 @@ def parsed_items(
 
 
 def _make_parser(
-    **kwargs
+    **kwargs: typing.Any,
 ) -> tuple[dict[str, typing.Any], configparser.ConfigParser]:
     """Make an instance of configparser.ConfigParser."""
     # Optional arguments for configparser.ConfigParser{,readfp}
     kwargs_0 = utils.filter_options(
-        ("defaults", "dict_type", "allow_no_value", "strict"), kwargs
+        ("defaults", "dict_type", "allow_no_value", "strict"), kwargs,
     )
     kwargs_1 = utils.filter_options(("filename", ), kwargs)
 
@@ -134,7 +134,8 @@ def _make_parser(
 
 def _load(
     stream: typing.IO, container: base.GenContainerT,
-    sep: str = _SEP, dkey: str = DEFAULTSECT, **kwargs
+    sep: str = _SEP, dkey: str = DEFAULTSECT,
+    **kwargs: typing.Any,
 ) -> base.InDataT:
     """Load data from ``stream`` of which file should be in INI format.
 
@@ -162,7 +163,7 @@ def _load(
 
 
 def _dumps_itr(
-    cnf: dict[str, typing.Any], dkey: str = DEFAULTSECT
+    cnf: dict[str, typing.Any], dkey: str = DEFAULTSECT,
 ) -> collections.abc.Iterator[str]:
     """Dump data iterably.
 
@@ -180,7 +181,9 @@ def _dumps_itr(
         yield ""  # it will be a separator between each sections.
 
 
-def _dumps(cnf: dict[str, typing.Any], **_kwargs) -> str:
+def _dumps(
+    cnf: dict[str, typing.Any], **_kwargs: typing.Any,
+) -> str:
     """Dump data as a str.
 
     :param cnf: Configuration data to dump
@@ -201,7 +204,7 @@ class Parser(base.Parser, base.FromStreamLoaderMixin,
     _extensions: tuple[str, ...] = ("ini", )
     _load_opts: tuple[str, ...] = (
         "defaults", "dict_type", "allow_no_value", "filename",
-        "ac_parse_value", "strict"
+        "ac_parse_value", "strict",
     )
     _dict_opts: tuple[str, ...] = ("dict_type", )
 

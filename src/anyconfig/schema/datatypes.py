@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 - 2024 Satoru SATOH <satoru.satoh gmail.com>
+# Copyright (C) 2021 - 2026 Satoru SATOH <satoru.satoh gmail.com>
 # SPDX-License-Identifier: MIT
 #
 # pylint: disable=unused-import
@@ -9,7 +9,7 @@ from __future__ import annotations
 import typing
 
 from ..common import (  # noqa: F401
-    ValidationError, InDataT, InDataExT
+    ValidationError, InDataT, InDataExT,
 )
 
 

@@ -21,7 +21,6 @@ Changelog:
 from __future__ import annotations
 
 import itertools
-import os
 import re
 import typing
 import warnings
@@ -123,6 +122,6 @@ class Parser(base.StreamParser):
         """
         if utils.is_dict_like(cnf):
             stream.writelines(
-                f"{key}='{val}'{os.linesep}"
+                f"{key}='{val}'\n"
                 for key, val in cnf.items()
             )

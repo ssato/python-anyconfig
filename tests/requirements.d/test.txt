@@ -3,3 +3,5 @@ pytest
 pytest-clarity
 pytest-cov
 pytest-randomly
+pytest-xdist
+pytest-xdist[psutil]; sys_platform == 'linux'

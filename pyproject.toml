@@ -104,7 +104,8 @@ anyconfig_cli = "anyconfig.cli:main"
 testpaths = [
     "tests",
 ]
-addopts = "--cov=src -vv -rxXs --cov --cov-report xml"
+# addopts = "--cov=src -vv -rxXs --cov-report xml"
+addopts = "--cov=src -v -ra --cov-report xml -n auto"
 
 [tool.pylint."MESSAGES CONTROL"]
 disable = [

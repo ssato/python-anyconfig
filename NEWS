@@ -1,3 +1,103 @@
+* Sat Feb 14 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.15.0-1
+- fix/change: migrate test cases from unittest.TestCase to pytest based with
+  new test data loader (#173)
+- fix: enable all rules by ruff linter by default
+- fix: correction for various type of ruff errors,
+  - blank-line-after-summary (D205)
+  - camelcase-imported-as-acronym (N817)
+  - commented-out-code (ERA001)
+  - future-rewritable-type-annotation (FA100)
+  - no-explicit-stacklevel (B028)
+  - non-self-return-type (PYI034)
+  - one-blank-line-after-class (D204)
+  - open-file-with-context-handler (SIM115)
+  - quoted-annotation (UP037)
+  - unnecessary-generator-dict (C402)
+  - unnecessary-generator-list (C400)
+  - unnecessary-generator-set (C401)#
+  - blanket-type-ignore (PGH003)
+  - mutable-class-default (RUF012)
+  - missing-type-args (ANN002)
+  - unused-method-argument (ARG002)
+  - builtin-open (PTH123)
+  - collapsible-if (SIM102)
+  - collection-literal-concatenation (RUF005)
+  - f-string-in-exception (EM102)
+  - future-rewritable-type-annotation (FA100)
+  - if-else-block-instead-of-if-exp (SIM108)
+  - multi-line-summary-first-line (D212)
+  - quoted-annotation (UP037)
+  - raise-without-from-inside-except (B904)
+  - raw-string-in-exception (EM101)
+  - redefined-loop-name (PLW2901)
+  - suppressible-exception (SIM105)
+  - typing-only-first-party-import (TCH001)
+  - unnecessary-paren-on-raise-exception (RSE102)
+  - yield-in-for-loop (UP028)
+  - workaround for a ruff error, B018
+  - workaround for blind-except (BLE001) by ruff
+  - workaround for builtin-variable-shadowing (A001) by ruff
+  - workaround for future-rewritable-type-annotation (FA100) by ruff
+  - workaround for open-file-with-context-handler (SIM115) by ruff
+  - workaround for raw-string-in-exception (EM101) by ruff
+  - workaround for some corner cases along with corrections for type hints
+  - workarounds for hardcoded-sql-expression (S608) by ruff
+  - workarounds for jinja2-autoescape-false (S701) by ruff
+  - workarounds for unused-function-argument (ARG001) by ruff
+  - workaround (suppress error) for try-except-in-loop (PERF203) by ruff
+- fix: add a configuration file for readthedocs.org
+- fix: add and correct type hints
+- fix: add build.os confguration for the readthedocs.org
+- fix: add build time dependency for the docs
+- fix: add full dependency file
+- fix: add missing test cases for json.stdlib to test option, 'sort_keys'
+- fix: add missing type hints, correc some type hints and add TypeGuards and
+  checks to make them robust
+- fix: check expected warnings was raised in a test case for shellvars backend
+- fix: cleanup the badge links in the header
+- fix: disable specific ruff rules to avoid conflicts
+- Fix/flake8 (#184)
+- Fix/pytest migration (#176)
+- fix: remove deprecated old test data collector module (#178)
+- fix: remove oboleted code not needed any more
+- fix: remove unused block, import, test data
+- fix: some flake8 errors and warnings (#182)
+- fix: [tox] enable 'lint' and 'type-check' targets run by default
+- fix: update configurations for flake8
+- fix: update gha for codecov and configure token
+- fix: update the list of ruff linter's rules to ignore (#183)
+- fix: use standard collections as type annotations (#171)
+- fix: workaround to suppress a flake8-bugbear error
+- fix: workaround to suppress a mypy error
+- fix: workaround to suppress errors only happen with tomllib
+- change: drop python 3.8.x support
+- change: enable all ruff rules with minimal exceptions
+- change: add new requirements.txt to list tox-uv
+- change: migration from unittest to pytest with pytest.mark.parametrize
+- change: add type check time dependency to typing-extensions for TypeGuard
+  if python < 3.10
+- chagne: add some exports of data types used internally
+- change: find test file for tests.backend.test_common dynamically if possible
+- change/fix: [api] make some arguments of the API load{,s} keyword-only
+- change/fix: [api] make some more arguments of the APIs keyword-only
+- change: re-organize requirements.txt files
+- change: re-organize schema module (#172)
+- change: switch to new test data loader based on tests.common.tdc (#177)
+- Change: switch to use uv as a package and project manager (#181)
+- change: use more strict typed arguments in a couple of test cases
+- enhancement: add python 3.13 support
+- enhancement: add lint-next target to prepare for ruff-by-default configuration
+- enhancement: add new test loader and its test cases, for test cases of backends
+- enhancement: add test data for xml backend with options
+- enhancement: [tox] add 'full' target to test together with optional
+  dependencies also
+- Migrate from setup.cfg to pyproject.toml (#168)
+- refactor: make items of envlist listed line by line to make those maintenance easier
+- refactor: move constants from tests.backend.test_common to tests.backend.constants
+- refactor: simplify test cases for anyconfig.backend.base.*Mixin.*open with
+  pytest.mark.parametrize
+- enhancement: add azure-pipelines.yml for Azure Pipelines
+
 * Sun Jan 14 2024 Satoru SATOH <satoru.satoh@gmail.com> - 0.14.0-1
 - change: drop the support py37 and add py311
 - change: drop python 3.6.x support

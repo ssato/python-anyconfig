@@ -554,7 +554,7 @@ class Parser(base.Parser, base.ToStreamDumperMixin):
     _open_write_mode: typing.ClassVar[str] = "wb"
 
     def load_from_string(
-        self, content: typing.AnyStr, container: GenDicType,
+        self, content: str | bytes, container: GenDicType,
         **opts: typing.Any,
     ) -> DicType:
         """Load config from XML snippet (a string 'content').

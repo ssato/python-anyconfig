@@ -37,10 +37,10 @@ jobs:
           enable-cache: true
       - name: pin python version
         run: uv python pin ${{ matrix.python-version }}
-      - name: Install some additional dependencies
-        run: uv pip install coveralls
       - name: Install tox and its plugins
         run: uv tool install tox --with tox-uv --with tox-gh-actions
+      - name: Install some additional dependencies
+        run: uv pip install coveralls
       - name: Test with tox
         run: tox
         env:

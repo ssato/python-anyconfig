@@ -1,7 +1,9 @@
 * Mon Feb 16 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.15.0-1
+- fix: correct deps; tox-uv is needed build time
 - fix/change: migrate test cases from unittest.TestCase to pytest based with
   new test data loader (#173)
 - fix: enable all rules by ruff linter by default
+- fix/change: [tox] swtich to ruff linter from flake8 and pylint
 - fix: correction for various type of ruff errors,
   - blank-line-after-summary (D205)
   - camelcase-imported-as-acronym (N817)
@@ -73,6 +75,7 @@
 - fix: remove rpm related hack as bdist_rpm was deprecated in the latest setuptools
 - fix: [tox] add missing dependencies in srpm target
 - fix: [rpm] add hack to avoid false-positive errors in pyproject.toml
+- fix: [tox] remove env var not used any more
 - change: drop python 3.8.x support
 - change: enable all ruff rules with minimal exceptions
 - change: add new requirements.txt to list tox-uv
@@ -101,6 +104,7 @@
   pytest.mark.parametrize
 - enhancement: add azure-pipelines.yml for Azure Pipelines
 - enhancement: add a script to build SRPM fom src dist and pkg/package.spec.in
+- enhancement: [tox] add environments, upload and upload-copr
 
 * Sun Jan 14 2024 Satoru SATOH <satoru.satoh@gmail.com> - 0.14.0-1
 - change: drop the support py37 and add py311

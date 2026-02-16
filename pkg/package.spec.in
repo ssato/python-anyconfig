@@ -16,7 +16,8 @@ Release:        @RELEASE@
 Summary:        Python library to load and dump configuration files in various formats
 License:        MIT
 URL:            https://github.com/ssato/python-anyconfig
-Source0:        %{url}/archive/RELEASE_%{version}.tar.gz
+# Source0:        %%{url}/archive/RELEASE_%%{version}.tar.gz
+Source0:        %{pkgname}-%{version}.tar.gz
 BuildArch:      noarch
 
 %if %{with doc}
@@ -60,6 +61,9 @@ HTML documentation for %{name}.
 %autosetup -n %{pkgname}-%{version}
 
 %build
+# hack: To avoid build-time error with the later license identifier format in
+# pyproject.toml since PEP 639.
+sed -i.save -r '/^license = /,/^]/s/^.*/# &/g' pyproject.toml
 %py3_build
 
 %if %{with doc}
@@ -90,6 +94,10 @@ tox -e py$(python -c "import sys; sys.stdout.write(sys.version[:3].replace('.', 
 %endif
 
 %changelog
+* Mon Feb 16 2026 Satoru SATOH <ssato@redhat.com> - 0.15.0-1
+- new upstream release
+- see NEWS fore more details
+
 * Mon Jan 15 2024 Satoru SATOH <ssato@redhat.com> - 0.14.0-1
 - new upstream release
 - see NEWS fore more details

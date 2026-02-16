@@ -1,4 +1,5 @@
-coveralls
+# It's not available in epel.
+#coveralls
 pytest
 # It's not available in fedora.
 #pytest-clarity

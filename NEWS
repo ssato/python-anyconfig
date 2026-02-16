@@ -5,7 +5,11 @@
 - fix: remove deps to pytest-clarity as it's not available in fedora
 - fix: limit deps to toml if python < 3.11
 - fix: correct path to SRPMs
-- fenhancement: [tox] check sdist just in case in dists environment
+- fix: try to make coveralls installed only in github ci env
+- fix: [rpm] move a hack to tweak pyproject.toml before %generate_buildrequires
+- fix/change: [rpm] test build before uploading to copr
+- enhancement: [tox] check sdist just in case in dists environment
+- enhancement: [tox] add an environment 'rpms' to test to build rpms with mock
 
 * Mon Feb 16 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.15.0-1
 - fix: correct deps; tox-uv is needed build time

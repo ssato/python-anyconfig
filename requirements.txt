@@ -4,6 +4,6 @@ jmespath
 jsonschema
 ruamel.yaml
 simplejson
-toml
+toml; python_version < "3.11"
 tomli; python_version < "3.11"
-tomli-w
+tomli-w; python_version >= "3.11"

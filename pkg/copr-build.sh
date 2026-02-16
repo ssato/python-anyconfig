@@ -9,12 +9,10 @@ set -ex
 
 curdir=${0%/*}
 topdir=${curdir}/../
-srpmdir=${topdir}/dist
+srpmdir=${topdir}/build
 
 copr_project=ssato/python-anyconfig
 srpm="$(ls -1 ${srpmdir:?}/*.src.rpm | sort -Vr | head -n 1)"  # FIXME
 
 test -f ~/.config/copr
 copr-cli build ${copr_project:?} "${srpm:?}"
-
-# vim:sw=4:ts=4:et:

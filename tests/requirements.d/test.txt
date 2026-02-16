@@ -1,6 +1,7 @@
 coveralls
 pytest
-pytest-clarity
+# It's not available in fedora.
+#pytest-clarity
 pytest-cov
 pytest-randomly
 pytest-xdist

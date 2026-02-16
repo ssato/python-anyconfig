@@ -28,7 +28,7 @@ python-anyconfig
    :target: https://coveralls.io/r/ssato/python-anyconfig
    :alt: [Coverage Status]
 
-.. image:: https://scrutinizer-ci.com/g/ssato/python-anyconfig/badges/quality-score.png?b=next
+.. .. image:: https://scrutinizer-ci.com/g/ssato/python-anyconfig/badges/quality-score.png?b=next
    :target: https://scrutinizer-ci.com/g/ssato/python-anyconfig
    :alt: [Code Quality by Scrutinizer]
 

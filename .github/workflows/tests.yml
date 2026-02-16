@@ -40,7 +40,7 @@ jobs:
       - name: Install tox and its plugins
         run: uv tool install tox --with tox-uv --with tox-gh-actions
       - name: Install some additional dependencies
-        run: uv pip install coveralls
+        run: uv pip install --system coveralls
       - name: Test with tox
         run: tox
         env:

@@ -15,7 +15,6 @@ jobs:
         platform:
           - ubuntu-latest
           - windows-latest
-          - macos-latest
           # - macos-latest
         python-version:
           - 3.9

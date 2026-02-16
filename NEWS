@@ -1,3 +1,12 @@
+* Mon Feb 16 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.15.1-1
+- fix: [doc] disable the badge of scrutinizer as it does not look worked
+- fix: [doc] add an extra empty line to avoid rst syntax error
+- fix: [rpm] corrections for rpm stuff to avoid build time errors
+- fix: remove deps to pytest-clarity as it's not available in fedora
+- fix: limit deps to toml if python < 3.11
+- fix: correct path to SRPMs
+- fenhancement: [tox] check sdist just in case in dists environment
+
 * Mon Feb 16 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.15.0-1
 - fix: correct deps; tox-uv is needed build time
 - fix/change: migrate test cases from unittest.TestCase to pytest based with

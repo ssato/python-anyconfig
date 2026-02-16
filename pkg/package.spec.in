@@ -58,14 +58,14 @@ HTML documentation for %{name}.
 
 %prep
 %autosetup -n %{pkgname}-%{version}
+# hack: To avoid build-time error with the later license identifier format in
+# pyproject.toml since PEP 639.
+sed -i.save -r '/^license = /,/^]/s/^.*/# &/g' pyproject.toml
 
 %generate_buildrequires
 %pyproject_buildrequires -t
 
 %build
-# hack: To avoid build-time error with the later license identifier format in
-# pyproject.toml since PEP 639.
-sed -i.save -r '/^license = /,/^]/s/^.*/# &/g' pyproject.toml
 %pyproject_wheel
 
 %if %{with doc}

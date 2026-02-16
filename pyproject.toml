@@ -33,9 +33,6 @@ classifiers = [
     "Topic :: Text Processing :: Markup",
     "Topic :: Utilities",
 ]
-dependencies = [
-    "tox-uv",
-]
 # .. note:: It requires nothing at minimum.
 #dependencies = [
 #]
@@ -57,6 +54,7 @@ CI = "https://github.com/ssato/python-anyconfig/actions"
 requires = [
     "setuptools >= 61.0",
     "wheel",
+    "tox-uv",
 ]
 build-backend = "setuptools.build_meta"
 

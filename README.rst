@@ -245,7 +245,6 @@ and backends in charge are enabled and ready to use:
 
    JSON, json, ``json`` (standard lib) or ``simplejson`` [#]_
    Ini-like, ini, ``configparser`` (standard lib)
-   Pickle, pickle, ``pickle`` (standard lib)
    XML, xml, ``ElementTree`` (standard lib)
    Java properties [#]_ , properties, None (native implementation with standard lib)
    B-sh, shellvars, None (native implementation with standard lib)

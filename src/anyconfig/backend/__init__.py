@@ -10,7 +10,6 @@ import warnings
 from . import (
     ini,
     json,
-    pickle,
     properties,
     python,
     sh,
@@ -24,7 +23,7 @@ from .base import (
 
 
 PARSERS: ParserClssT = [
-    *ini.PARSERS, *json.PARSERS, *pickle.PARSERS, *properties.PARSERS,
+    *ini.PARSERS, *json.PARSERS, *properties.PARSERS,
     *python.PARSERS, *sh.PARSERS, *xml.PARSERS,
 ]
 

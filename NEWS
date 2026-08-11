@@ -1,3 +1,10 @@
+* Tue Aug 11 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.16.0-1
+- fix: add py3.14 and make it as default test target
+- fix: [security][doc] related changes for the removal of pickle backend
+- fix: [security] remove pickle backend loader and dumper
+- fix; [ruff] correction for ISC004
+- fix: [ruff] add copyright headers which were missing
+
 * Mon Feb 16 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.15.1-1
 - fix: [doc] disable the badge of scrutinizer as it does not look worked
 - fix: [doc] add an extra empty line to avoid rst syntax error

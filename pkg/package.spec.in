@@ -96,6 +96,11 @@ rm -frv docs/build/html/_sources
 %endif
 
 %changelog
+* Tue Aug 11 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.16.0-1
+- new upstream release
+- security fix
+- see NEWS fore more details
+
 * Mon Feb 16 2026 Satoru SATOH <ssato@redhat.com> - 0.15.0-1
 - new upstream release
 - fix dependencies to deprecated python3-toml package

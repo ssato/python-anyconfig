@@ -6,7 +6,6 @@
 """Test cases for api.open."""
 from __future__ import annotations
 
-import pickle
 import typing
 
 import pytest
@@ -32,18 +31,3 @@ DATA_IDS: list[str] = common.get_test_ids(DATA)
 def test_open_text_io(ipath, exp, opts):
     with TT.open(ipath, **opts) as inp:
         assert LD.load(inp, **opts) == exp
-
-
-def test_open_byte_io(tmp_path):
-    cnf = {"a": 1, "b": "b"}
-
-    path = tmp_path / "test.pickle"
-    pickle.dump(cnf, path.open(mode="wb"))
-
-    opts = {"ac_parser": "pickle"}
-
-    with TT.open(path, **opts) as fio:
-        assert fio.mode == "rb"
-        data: bytes = fio.read()
-
-        assert LD.loads(data, **opts) == cnf

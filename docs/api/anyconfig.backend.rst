@@ -6,7 +6,6 @@
    anyconfig.backend.base
    anyconfig.backend.ini
    anyconfig.backend.json
-   anyconfig.backend.pickle
    anyconfig.backend.properties
    anyconfig.backend.python
    anyconfig.backend.sh

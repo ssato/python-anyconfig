@@ -118,7 +118,7 @@ from ..schema import (
 )
 
 
-__version__ = "0.15.1"
+__version__ = "0.16.0"
 
 
 def version() -> list[str]:

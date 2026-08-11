@@ -95,8 +95,8 @@ def try_validate(cnf: api.InDataExT, args: argparse.Namespace) -> None:
         msg_code = ("Validation succeeded", 0)
     else:
         msg_code = (
-            "Validation failed:"
-            f"{(os.linesep + '  ').join(errors)}",
+            ("Validation failed:"
+             f"{(os.linesep + '  ').join(errors)}"),
             1,
         )
 

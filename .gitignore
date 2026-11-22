@@ -1,4 +1,5 @@
 .tox
+uv.lock
 .coverage
 __pycache__/
 *.py[cod]

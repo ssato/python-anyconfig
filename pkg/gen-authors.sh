@@ -8,7 +8,7 @@ contributors=$(
 git log \
   --pretty=format:"# %an%n%B" \
   --perl-regexp \
-  --author='^((?!.*(satoru.satoh|lgtm-com).*).*)$' \
+  --author='^((?!.*(satoru.satoh|lgtm-com|dependabot).*).*)$' \
 | sed -r \
 '
 s///g

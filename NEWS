@@ -1,3 +1,9 @@
+* Sun Nov 22 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.16.1-1
+- fix: [security] corrections for GHSA-54pj-4qc4-fgmw: RCE in non-sandboxed
+  Jinja2 templating
+- fix: bump up versions of python to support; drop python <= 3.9 support
+- fix: workaround to suppress type errors as temporal solution
+
 * Tue Aug 11 2026 Satoru SATOH <satoru.satoh@gmail.com> - 0.16.0-1
 - fix: add py3.14 and make it as default test target
 - fix: [security][doc] related changes for the removal of pickle backend

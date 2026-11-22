@@ -20,6 +20,7 @@ import warnings
 
 import jinja2
 import jinja2.exceptions
+import jinja2.sandbox
 
 from .. import utils
 
@@ -41,7 +42,7 @@ RENDER_OPTS = (*RENDER_S_OPTS, "ask")
 
 def tmpl_env(
     paths: MaybePathsT = None, *, autoescape: bool = True,
-) -> jinja2.Environment:
+) -> jinja2.sandbox.SandboxedEnvironment:
     """Get the template environment object from given ``paths``.
 
     :param paths: A list of template search paths
@@ -49,9 +50,9 @@ def tmpl_env(
     if paths is None:
         paths = []
 
-    return jinja2.Environment(
+    return jinja2.sandbox.SandboxedEnvironment(
         loader=jinja2.FileSystemLoader([str(p) for p in paths]),
-        autoescape=autoescape,  # noqa: S701
+        autoescape=autoescape,
     )
 
 

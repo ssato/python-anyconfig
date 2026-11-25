@@ -15,8 +15,6 @@ r"""Utility functions to operate on mapping objects such as get, set and merge.
 from __future__ import annotations
 
 import collections
-import functools
-import operator
 import re
 import typing
 
@@ -102,17 +100,16 @@ def get(
     if not items:
         return (dic, "")
     try:
-        if len(items) == 1:
-            return (dic[items[0]], "")
-
-        prnt: typing.Any = functools.reduce(operator.getitem, items[:-1], dic)
-        arr = (idx_reg.match(items[-1])
-               if utils.is_list_like(prnt) else False)
-
-        return (prnt[int(items[-1])], "") if arr else (prnt[items[-1]], "")
-
+        result: typing.Any = dic
+        for item in items:
+            if utils.is_list_like(result) and idx_reg.fullmatch(item.rstrip()):
+                result = result[int(item)]
+            else:
+                result = result[item]
     except (TypeError, KeyError, IndexError) as exc:
         return (None, str(exc))
+    else:
+        return (result, "")
 
 
 def set_(

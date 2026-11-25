@@ -32,3 +32,33 @@ def test_get(obj, query, exp, emsg):
 
     assert bool(err) if emsg else err == ""
     assert res == exp
+
+
+@pytest.mark.parametrize(
+    ("query", "expected"),
+    (
+        ("services/0/host", "database"),
+        ("services.1.host", "api"),
+        ("services/0\n/host", "database"),
+        ("matrix/1/0", 3),
+        ("numeric/01", "mapping key"),
+        ("escaped/0/a~1b/~0key", 42),
+    ),
+)
+def test_get_through_nested_arrays(query, expected):
+    obj = {
+        "services": [{"host": "database"}, {"host": "api"}],
+        "matrix": [[1, 2], [3, 4]],
+        "numeric": {"01": "mapping key"},
+        "escaped": [{"a/b": {"~key": 42}}],
+    }
+
+    assert TT.get(obj, query) == (expected, "")
+
+
+@pytest.mark.parametrize("index", ("01", "1junk", "-1", "2"))
+def test_get_invalid_array_index(index):
+    value, error = TT.get({"values": [10, 20]}, "values/" + index)
+
+    assert value is None
+    assert error

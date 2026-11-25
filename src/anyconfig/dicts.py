@@ -300,12 +300,12 @@ def merge(
             _update_fn(self, other, key, **options)
     else:
         try:
-            iother = typing.cast(
+            iother = list(typing.cast(
                 "collections.abc.Iterable[tuple[str, typing.Any]]",
                 other,
-            )
+            ))
             for key, val in iother:
-                _update_fn(self, dict(other), key, val=val, **options)
+                _update_fn(self, dict(iother), key, val=val, **options)
         except (ValueError, TypeError) as exc:  # Re-raise w/ info.
             msg = f"{exc!s} other={other!r}"
             raise type(exc)(msg) from exc

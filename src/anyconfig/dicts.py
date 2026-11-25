@@ -149,9 +149,8 @@ def _update_with_replace(
 
     :return: None but 'self' will be updated
     """
-    oval = other.get(key, None)
-    if oval is not None:
-        self[key] = oval
+    if key in other:
+        self[key] = other[key]
     elif default is not None:
         self[key] = default
 

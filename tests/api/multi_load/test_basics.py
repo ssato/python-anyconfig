@@ -38,6 +38,17 @@ def test_multi_load_with_empty_list() -> None:
     assert TT.multi_load([]) == {}
 
 
+def test_multi_load_replace_preserves_null(tmp_path: pathlib.Path) -> None:
+    first = tmp_path / "first.json"
+    second = tmp_path / "second.json"
+    first.write_text('{"value": "previous", "keep": 1}', encoding="utf-8")
+    second.write_text('{"value": null, "new": null}', encoding="utf-8")
+
+    assert TT.multi_load([first, second], ac_merge="replace") == {
+        "value": None, "new": None, "keep": 1,
+    }
+
+
 @pytest.mark.parametrize(NAMES, DATA, ids=DATA_IDS)
 def test_multi_load_for_a_list_of_path_objects(
     inputs: list[pathlib.Path], opts: dict, exp

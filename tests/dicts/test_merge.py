@@ -43,3 +43,13 @@ def test_merge_with_an_iterable(obj, exp, upd, opts):
 def test_merge_with_invalid_data():
     with pytest.raises((ValueError, TypeError)):
         TT.merge({"a": 1}, 1)
+
+
+@pytest.mark.parametrize("as_items", (False, True))
+def test_replace_preserves_explicit_none(as_items):
+    obj = {"value": "previous", "keep": 1}
+    upd = {"value": None, "new": None}
+
+    TT.merge(obj, upd.items() if as_items else upd, ac_merge=TT.MS_REPLACE)
+
+    assert obj == {"value": None, "new": None, "keep": 1}

@@ -43,3 +43,33 @@ def test_merge_with_an_iterable(obj, exp, upd, opts):
 def test_merge_with_invalid_data():
     with pytest.raises((ValueError, TypeError)):
         TT.merge({"a": 1}, 1)
+
+
+@pytest.mark.parametrize(
+    ("strategy", "expected"),
+    (
+        (TT.MS_REPLACE, {"nested": {"b": 2}, "items": [2], "new": 3}),
+        (TT.MS_NO_REPLACE, {"nested": {"a": 1}, "items": [1], "new": 3}),
+        (TT.MS_DICTS, {"nested": {"a": 1, "b": 2}, "items": [2], "new": 3}),
+        (TT.MS_DICTS_AND_LISTS,
+         {"nested": {"a": 1, "b": 2}, "items": [1, 2], "new": 3}),
+    ),
+)
+def test_merge_with_a_one_shot_iterator(strategy, expected):
+    obj = {"nested": {"a": 1}, "items": [1]}
+    updates = ((key, value) for key, value in (
+        ("nested", {"b": 2}), ("items", [2]), ("new", 3),
+    ))
+
+    TT.merge(obj, updates, ac_merge=strategy)
+
+    assert obj == expected
+
+
+def test_merge_iterator_retains_repeated_keys():
+    obj = {"nested": {"original": 0}}
+    updates = iter((("nested", {"a": 1}), ("nested", {"b": 2})))
+
+    TT.merge(obj, updates, ac_merge=TT.MS_DICTS)
+
+    assert obj == {"nested": {"original": 0, "a": 1, "b": 2}}
